@@ -82,8 +82,8 @@ A continuacion se examinan los principales patrones arquitectonicos y su aplicab
   4. Capa de Base de Datos.
 * **Regla de Dependencia**: Cada capa solo puede comunicarse con la capa inmediatamente inferior.
 * **Limitaciones**:
-  * **Antipatron Sinkhole**: Frecuentemente, peticiones simples (ej. listar estados de tickets) atraviesan la capa de presentacion, la de aplicacion y la de datos sin agregar ningun valor de negocio, repitiendo metodos espejo \`obtenerEstados()\` en tres archivos diferentes.
-  * **Baja Cohesion de Funcionalidad**: Para agregar un campo a la entidad "Cambios", el desarrollador debe abrir archivos en 4 carpetas separadas (\`presentation/cambios\`, \`services/cambios\`, \`repositories/cambios\`, \`types/cambios\`).
+  * **Antipatron Sinkhole**: Frecuentemente, peticiones simples (ej. listar estados de tickets) atraviesan la capa de presentacion, la de aplicacion y la de datos sin agregar ningun valor de negocio, repitiendo metodos espejo `obtenerEstados()` en tres archivos diferentes.
+  * **Baja Cohesion de Funcionalidad**: Para agregar un campo a la entidad "Cambios", el desarrollador debe abrir archivos en 4 carpetas separadas (`presentation/cambios`, `services/cambios`, `repositories/cambios`, `types/cambios`).
 
 #### C. Arquitectura Hexagonal (Ports and Adapters - Alistair Cockburn)
 * **Concepto**:
@@ -91,7 +91,7 @@ A continuacion se examinan los principales patrones arquitectonicos y su aplicab
   * El exterior consiste en actores que interactuan con el nucleo: usuarios web, base de datos, APIs de terceros, colas de mensajeria.
   * La comunicacion entre el nucleo y el exterior se realiza exclusivamente mediante **Puertos** (interfaces en TypeScript) y **Adaptadores** (implementaciones concretas).
   * **Adaptadores Primarios (Driving)**: Inician la accion (ej. Next.js API Routes, Vistas React).
-  * **Adaptadores Secundarios (Driven)**: Son invocados por el nucleo (ej. adaptador de base de datos PostgreSQL con \`pg\`, adaptador de email con Nodemailer).
+  * **Adaptadores Secundarios (Driven)**: Son invocados por el nucleo (ej. adaptador de base de datos PostgreSQL con `pg`, adaptador de email con Nodemailer).
 * **Ventaja Principal**: Desacoplamiento total. Si se cambia PostgreSQL por MySQL o DynamoDB, el nucleo de negocio no sufre ninguna modificacion.
 * **Desventaja**: Mayor cantidad de interfaces, DTOs y clases intermedias (boiler-plate), lo cual puede ser excesivo si el equipo es reducido o el proyecto no cambia frecuentemente de infraestructura.
 
@@ -115,9 +115,9 @@ A continuacion se examinan los principales patrones arquitectonicos y su aplicab
 
 | Estrategia | Descripcion | Ventajas | Desventajas |
 |---|---|---|---|
-| **Package by Layer** | Carpetas como \`components/\`, \`services/\`, \`controllers/\`, \`models/\` | Facil de entender en proyectos pequenos. | A medida que el sistema crece, cada carpeta contiene 50+ archivos sin relacion entre si. Dificulta saber que archivos corresponden a cada modulo. |
-| **Package by Feature** | Carpetas por funcionalidad: \`incidentes/\`, \`usuarios/\`, \`reportes/\` | Alta cohesion espacial. Cada funcionalidad es autocontenida y facil de mover, probar o eliminar. | Requiere disciplina para no duplicar utilidades comunes y saber donde ubicar componentes transversales. |
-| **Package by Component / Bounded Context** | Carpetas por subdominios de negocio: \`itsm-core/\`, \`administracion/\`, \`seguridad/\` | Ideal para sistemas grandes con multiples dominios funcionales claramente diferenciados. | Requiere definir con precision los limites conceptuales entre modulos. |
+| **Package by Layer** | Carpetas como `components/`, `services/`, `controllers/`, `models/` | Facil de entender en proyectos pequenos. | A medida que el sistema crece, cada carpeta contiene 50+ archivos sin relacion entre si. Dificulta saber que archivos corresponden a cada modulo. |
+| **Package by Feature** | Carpetas por funcionalidad: `incidentes/`, `usuarios/`, `reportes/` | Alta cohesion espacial. Cada funcionalidad es autocontenida y facil de mover, probar o eliminar. | Requiere disciplina para no duplicar utilidades comunes y saber donde ubicar componentes transversales. |
+| **Package by Component / Bounded Context** | Carpetas por subdominios de negocio: `itsm-core/`, `administracion/`, `seguridad/` | Ideal para sistemas grandes con multiples dominios funcionales claramente diferenciados. | Requiere definir con precision los limites conceptuales entre modulos. |
 
 ---
 
@@ -136,7 +136,7 @@ La solucion arquitectonica para este dilema radica en la **Clasificacion de Domi
      * **Cambios**: Evaluacion de riesgos, comite CAB y autorizacion de despliegues.
      * **Tareas**: Actividades operativas asignadas a especialistas dentro de un ticket mayor.
      * **Catalogo de Servicios**: Vista al cliente de los servicios disponibles y sus categorias.
-   * *Conclusion*: Todos ellos pertenecen al mismo subdominio de negocio (\`itsm\` u \`operaciones\`).
+   * *Conclusion*: Todos ellos pertenecen al mismo subdominio de negocio (`itsm` u `operaciones`).
 
 2. **Dominio de Administracion y Parametrizacion de Plataforma**:
    * Funcionalidades que configuran las reglas maestras del sistema y la estructura organizacional:
@@ -147,7 +147,7 @@ La solucion arquitectonica para este dilema radica en la **Clasificacion de Domi
      * **Categorias de Servicios**: Clasificacion taxonomica de servicios en el catalogo.
      * **Formularios Dinamicos**: Configuracion de campos requeridos y opcionales por servicio.
      * **Encuestas de Satisfaccion**: Plantillas de calificacion post-cierre de tickets.
-   * *Conclusion*: Pertenecen al subdominio (\`admin\` o \`administracion\`). No son tickets operativos, sino tablas maestras y configuracion.
+   * *Conclusion*: Pertenecen al subdominio (`admin` o `administracion`). No son tickets operativos, sino tablas maestras y configuracion.
 
 3. **Dominio Transversal de Seguridad e Identidad**:
    * Mecanismos que controlan el acceso al sistema:
@@ -155,36 +155,36 @@ La solucion arquitectonica para este dilema radica en la **Clasificacion de Domi
      * Validacion perimetral humana (Captcha matematico).
      * Gestion de sesion y conmutacion de perfil activo en cookies.
      * Middleware de proteccion de rutas en Edge.
-   * *Conclusion*: Pertenecen al modulo (\`seguridad\` o \`auth\`).
+   * *Conclusion*: Pertenecen al modulo (`seguridad` o `auth`).
 
 4. **Dominio de Analitica, Inteligencia y Gobierno**:
    * Extraccion y visualizacion de datos historicos:
      * Reportes de gestion operativa (cumplimiento de SLA, volumen de tickets, rendimiento por tecnico).
      * Auditoria de cambios en el sistema (trazabilidad de accesos y modificaciones criticas).
-   * *Conclusion*: Pertenecen al subdominio (\`analitica\` o \`reportes-auditoria\`).
+   * *Conclusion*: Pertenecen al subdominio (`analitica` o `reportes-auditoria`).
 
 5. **Infraestructura y Componentes Compartidos (Shared / Core)**:
    * Elementos reutilizables sin logica de negocio particular:
-     * Pool de conexiones a PostgreSQL (\`db.ts\`).
-     * Motor de envio de emails (\`email.ts\`).
-     * Sanitizacion y validaciones universales de formato (\`validaciones.ts\`).
+     * Pool de conexiones a PostgreSQL (`db.ts`).
+     * Motor de envio de emails (`email.ts`).
+     * Sanitizacion y validaciones universales de formato (`validaciones.ts`).
      * Componentes UI primitivos (botones, tablas genericas, badges, modales de confirmacion).
-     * Definicion de tipos TypeScript globales (\`types/index.ts\`).
+     * Definicion de tipos TypeScript globales (`types/index.ts`).
 
 ---
 
 ### 1.5 La Realidad Tecnica de Next.js 14 App Router y el Principio de Thin Router
 
-Next.js 14 impone una regla inviolable: **las rutas URL se determinan por la presencia de archivos \`page.tsx\` y \`route.ts\` dentro de \`src/app/\`**. No es posible eliminar \`src/app/\` sin romper el enrutamiento de Next.js.
+Next.js 14 impone una regla inviolable: **las rutas URL se determinan por la presencia de archivos `page.tsx` y `route.ts` dentro de `src/app/`**. No es posible eliminar `src/app/` sin romper el enrutamiento de Next.js.
 
-Sin embargo, **no es obligatorio que toda la logica de programacion resida dentro de \`src/app/\`**. 
+Sin embargo, **no es obligatorio que toda la logica de programacion resida dentro de `src/app/`**. 
 
 El diseno optimo para Next.js 14 consiste en el patron **Thin Router (Enrutador Delgado)**:
-* La carpeta \`src/app/\` se mantiene extremadamente delgada:
-  * Un archivo \`route.ts\` solo debe recibir la peticion HTTP, extraer los parametros, llamar a una funcion de servicio ubicada en el modulo correspondiente y retornar una respuesta JSON (\`NextResponse.json(...)\`). Un \`route.ts\` optimo no supera las 20 a 30 lineas de codigo.
-  * Un archivo \`page.tsx\` solo debe importar y renderizar el componente o contenedor de la pagina ubicado en la carpeta del modulo.
-* Toda la logica pesada (consultas SQL complejas, validaciones, calculos de fechas SLA, componentes visuales enriquecidos, hooks de React) vive dentro de carpetas modulares organizadas fuera de \`app/\` (por ejemplo, en \`src/modules/\` o \`src/features/\`).
-* **Route Groups de Next.js**: Next.js permite nombrar carpetas entre parentesis como \`src/app/(itsm)/\`, \`src/app/(admin)/\`, \`src/app/(analitica)/\`. Los parentesis indican que el nombre de la carpeta **no se incluye en la URL del navegador**. Por ejemplo, \`src/app/(itsm)/incidentes/page.tsx\` se visualiza en el navegador limpiamente como \`/incidentes\`. Esto permite organizar visualmente las rutas de \`app/\` en perfecta concordancia con los dominios de negocio.
+* La carpeta `src/app/` se mantiene extremadamente delgada:
+  * Un archivo `route.ts` solo debe recibir la peticion HTTP, extraer los parametros, llamar a una funcion de servicio ubicada en el modulo correspondiente y retornar una respuesta JSON (`NextResponse.json(...)`). Un `route.ts` optimo no supera las 20 a 30 lineas de codigo.
+  * Un archivo `page.tsx` solo debe importar y renderizar el componente o contenedor de la pagina ubicado en la carpeta del modulo.
+* Toda la logica pesada (consultas SQL complejas, validaciones, calculos de fechas SLA, componentes visuales enriquecidos, hooks de React) vive dentro de carpetas modulares organizadas fuera de `app/` (por ejemplo, en `src/modules/` o `src/features/`).
+* **Route Groups de Next.js**: Next.js permite nombrar carpetas entre parentesis como `src/app/(itsm)/`, `src/app/(admin)/`, `src/app/(analitica)/`. Los parentesis indican que el nombre de la carpeta **no se incluye en la URL del navegador**. Por ejemplo, `src/app/(itsm)/incidentes/page.tsx` se visualiza en el navegador limpiamente como `/incidentes`. Esto permite organizar visualmente las rutas de `app/` en perfecta concordancia con los dominios de negocio.
 
 ---
 
@@ -193,19 +193,19 @@ El diseno optimo para Next.js 14 consiste en el patron **Thin Router (Enrutador 
 ### 2.1 Filosofia y Diseno Conceptual
 
 Esta arquitectura organiza el codigo en dos grandes niveles:
-1. **Primer Nivel (Dominios de Negocio)**: Agrupa los modulos en \`itsm\` (servicios operativos), \`admin\` (parametrizacion y maestros), \`seguridad\` (autenticacion y sesion), \`analitica\` (reportes y auditoria) y \`shared\` (utilidades y componentes comunes).
+1. **Primer Nivel (Dominios de Negocio)**: Agrupa los modulos en `itsm` (servicios operativos), `admin` (parametrizacion y maestros), `seguridad` (autenticacion y sesion), `analitica` (reportes y auditoria) y `shared` (utilidades y componentes comunes).
 2. **Segundo Nivel (Vertical Slices / Features)**: Dentro de cada dominio, cada modulo funcional contiene todo lo que necesita para operar: sus propios componentes, sus propios servicios con consultas a base de datos, sus esquemas de validacion y sus tipos.
 
 **Por que es la opcion recomendada para FlowDesk**:
-* Resuelve directamente la inquietud del desarrollador: los servicios operativos ITSM (\`incidentes\`, \`requerimientos\`, \`problemas\`, \`cambios\`, \`tareas\`, \`catalogo\`) quedan agrupados dentro de una misma carpeta padre \`src/modules/itsm/\`, completamente separados de \`src/modules/admin/\` y \`src/modules/seguridad/\`.
-* Reduce a cero los conflictos de Git: si un companero de equipo trabaja en "Problemas", solo editara archivos dentro de \`src/modules/itsm/problemas/\` y \`src/app/(itsm)/problemas/\`. Si otro companero trabaja en "Usuarios", solo editara archivos en \`src/modules/admin/usuarios/\`. Sus ramas nunca colisionaran en Git.
-* Adaptacion natural a Next.js 14: Los archivos en \`src/app/\` son cascarones de menos de 25 lineas que delegan a los modulos.
+* Resuelve directamente la inquietud del desarrollador: los servicios operativos ITSM (`incidentes`, `requerimientos`, `problemas`, `cambios`, `tareas`, `catalogo`) quedan agrupados dentro de una misma carpeta padre `src/modules/itsm/`, completamente separados de `src/modules/admin/` y `src/modules/seguridad/`.
+* Reduce a cero los conflictos de Git: si un companero de equipo trabaja en "Problemas", solo editara archivos dentro de `src/modules/itsm/problemas/` y `src/app/(itsm)/problemas/`. Si otro companero trabaja en "Usuarios", solo editara archivos en `src/modules/admin/usuarios/`. Sus ramas nunca colisionaran en Git.
+* Adaptacion natural a Next.js 14: Los archivos en `src/app/` son cascarones de menos de 25 lineas que delegan a los modulos.
 
 ---
 
 ### 2.2 Estructura Completa de Carpetas y Archivos (Opcion 1)
 
-\`\`\`text
+```text
 FlowDesk-Software-ITSM/
 |-- .env.local                                      // Variables de entorno locales (credenciales DB PostgreSQL, secret JWT)
 |-- .env.example                                    // Plantilla publica de variables requeridas para el equipo
@@ -502,7 +502,7 @@ FlowDesk-Software-ITSM/
         |
         +-- types/                                  // Tipos globales del sistema
             +-- index.ts                            // Definiciones base de entidades maestras compartidas
-\`\`\`
+```
 
 ---
 
@@ -512,18 +512,18 @@ La principal ventaja practica de la **Opcion 1** para un equipo de companeros de
 
 1. **Escenario de Desarrollo Colaborativo**:
    * **Desarrollador A** recibe la tarea: *"Implementar gestion de problemas y causas raiz"*.
-     * Crea su rama: \`feature/modulo-problemas\`.
-     * Sus archivos de trabajo estan 100% confinados en: \`src/modules/itsm/problemas/\` y \`src/app/(app)/(itsm)/problemas/\`.
+     * Crea su rama: `feature/modulo-problemas`.
+     * Sus archivos de trabajo estan 100% confinados en: `src/modules/itsm/problemas/` y `src/app/(app)/(itsm)/problemas/`.
    * **Desarrollador B** recibe la tarea: *"Implementar CRUD de categorias de servicios en administracion"*.
-     * Crea su rama: \`feature/crud-categorias-servicios\`.
-     * Sus archivos de trabajo estan 100% confinados en: \`src/modules/admin/categorias/\` y \`src/app/(app)/(admin)/categorias-servicios/\`.
+     * Crea su rama: `feature/crud-categorias-servicios`.
+     * Sus archivos de trabajo estan 100% confinados en: `src/modules/admin/categorias/` y `src/app/(app)/(admin)/categorias-servicios/`.
    * **Desarrollador C** recibe la tarea: *"Mejorar el sistema de login y agregar bloqueo de captcha por reintentos"*.
-     * Crea su rama: \`feature/seguridad-reintentos-captcha\`.
-     * Sus archivos estan confinados en: \`src/modules/seguridad/\`.
+     * Crea su rama: `feature/seguridad-reintentos-captcha`.
+     * Sus archivos estan confinados en: `src/modules/seguridad/`.
 
 2. **Resultado de la Fusion en Git (Merge)**:
-   * Cuando los tres desarrolladores suben sus ramas y abren Pull Requests hacia \`main\`, **Git fusiona los cambios automaticamente con cero conflictos**. No hay cruce de lineas de codigo porque ningun desarrollador toco los archivos de los demas.
-   * El unico archivo compartido que podria modificarse es la matriz de navegacion en \`src/shared/lib/menu.ts\`, pero al ser una lista estructurada, resolver un eventual conflicto toma menos de 2 minutos.
+   * Cuando los tres desarrolladores suben sus ramas y abren Pull Requests hacia `main`, **Git fusiona los cambios automaticamente con cero conflictos**. No hay cruce de lineas de codigo porque ningun desarrollador toco los archivos de los demas.
+   * El unico archivo compartido que podria modificarse es la matriz de navegacion en `src/shared/lib/menu.ts`, pero al ser una lista estructurada, resolver un eventual conflicto toma menos de 2 minutos.
 
 ---
 
@@ -532,12 +532,12 @@ La principal ventaja practica de la **Opcion 1** para un equipo de companeros de
 #### Ventajas:
 * **Separacion Clara de Dominios**: Responde exactamente al requerimiento de aislar los servicios operativos ITSM de la administracion y de la seguridad.
 * **Alta Cohesion Espacial**: Todo lo que concierne a un modulo (ej. incidentes) esta en una sola carpeta. No hay que saltar entre 6 directorios distantes para realizar un cambio.
-* **Excelente Sinergia con Next.js 14**: Respeta el App Router mediante \`Thin Routers\` y aprovecha los Route Groups \`(itsm)\`, \`(admin)\`, \`(analitica)\` para mantener URLs limpias y legibles.
+* **Excelente Sinergia con Next.js 14**: Respeta el App Router mediante `Thin Routers` y aprovecha los Route Groups `(itsm)`, `(admin)`, `(analitica)` para mantener URLs limpias y legibles.
 * **Minimos Conflictos en Git**: Maxima independencia de trabajo simultaneo entre companeros de equipo.
 * **Curva de Aprendizaje Moderada**: Cualquier desarrollador con conocimientos basicos de TypeScript y React entiende la estructura en pocos minutos.
 
 #### Desventajas:
-* Requiere una disciplina inicial para evitar que los modulos se importen directamente entre si de forma cruzada (por ejemplo, que \`incidentes\` importe directamente cosas privadas de \`usuarios\`; la regla debe ser importar a traves de \`shared\` o servicios publicos).
+* Requiere una disciplina inicial para evitar que los modulos se importen directamente entre si de forma cruzada (por ejemplo, que `incidentes` importe directamente cosas privadas de `usuarios`; la regla debe ser importar a traves de `shared` o servicios publicos).
 
 ---
 
@@ -554,22 +554,22 @@ Esta arquitectura se fundamenta en los principios de **Domain-Driven Design (DDD
   4. Contexto Analitica y Auditoria
 * **Estructura Interna por Contexto (Tres Capas Concentricas)**:
   1. **Domain (Nucleo)**:
-     * Contiene las entidades puras del negocio y sus invariantes (ej. \`Incidente.ts\`, \`TransicionEstado.ts\`).
-     * Define los **Puertos de Salida** (\`IncidenteRepositoryPort.ts\`, \`NotificadorPort.ts\`) mediante interfaces de TypeScript.
+     * Contiene las entidades puras del negocio y sus invariantes (ej. `Incidente.ts`, `TransicionEstado.ts`).
+     * Define los **Puertos de Salida** (`IncidenteRepositoryPort.ts`, `NotificadorPort.ts`) mediante interfaces de TypeScript.
      * Cero dependencias externas: no importa nada de Next.js, React ni bibliotecas SQL.
   2. **Application (Casos de Uso)**:
-     * Contiene los casos de uso especificos (ej. \`CrearIncidenteUseCase.ts\`, \`ResolverIncidenteUseCase.ts\`).
+     * Contiene los casos de uso especificos (ej. `CrearIncidenteUseCase.ts`, `ResolverIncidenteUseCase.ts`).
      * Orquesta el flujo: recibe un DTO, invoca el repositorio a traves de su interfaz y ejecuta las reglas del dominio.
   3. **Infrastructure (Adaptadores Secundarios)**:
-     * Implementa las interfaces de los puertos. Por ejemplo, \`PostgresIncidenteRepository.ts\` escribe las consultas SQL reales usando \`pg\`.
+     * Implementa las interfaces de los puertos. Por ejemplo, `PostgresIncidenteRepository.ts` escribe las consultas SQL reales usando `pg`.
 * **Primary Adapters (Adaptadores Primarios / Driving)**:
-  * La carpeta \`src/app/\` actua estrictamente como el adaptador primario exterior: recibe peticiones HTTP o eventos de usuario, invoca el caso de uso correspondiente y serializa el resultado.
+  * La carpeta `src/app/` actua estrictamente como el adaptador primario exterior: recibe peticiones HTTP o eventos de usuario, invoca el caso de uso correspondiente y serializa el resultado.
 
 ---
 
 ### 3.2 Estructura Completa de Carpetas y Archivos (Opcion 2)
 
-\`\`\`text
+```text
 FlowDesk-Software-ITSM/
 |-- .env.local                                      // Variables de entorno de base de datos y llaves criptograficas
 |-- .env.example                                    // Plantilla publica de configuracion para el equipo
@@ -712,17 +712,17 @@ FlowDesk-Software-ITSM/
             |-- Boton.tsx
             |-- Input.tsx
             +-- Modal.tsx
-\`\`\`
+```
 
 ---
 
 ### 3.3 Dinamica de Trabajo en Equipo y Prevencion de Conflictos en Git
 
 * La estricta separacion entre Domain, Application e Infrastructure permite una distribucion de tareas muy formal:
-  * Un integrante del equipo puede encargarse de modelar el dominio y los casos de uso (\`itsm/domain/\` e \`itsm/application/\`) definiendo los contratos (interfaces).
-  * Otro integrante puede encargarse de implementar la persistencia en base de datos (\`itsm/infrastructure/repositories/\`) satisfaciendo los contratos de las interfaces.
-  * Un tercer integrante puede construir la pantalla en Next.js (\`src/app/\` y componentes visuales) consumiendo los casos de uso a traves de sus DTOs.
-* **Impacto en Git**: Excelente aislamiento entre subdominios (\`contexts/itsm/\` vs \`contexts/admin/\`). Sin embargo, para una misma funcionalidad, un solo desarrollador debe crear o modificar 5 a 6 archivos diferentes (Entidad, Interfaz Puerto, Caso de Uso, DTO, Repositorio SQL, Mapper y Ruta HTTP).
+  * Un integrante del equipo puede encargarse de modelar el dominio y los casos de uso (`itsm/domain/` e `itsm/application/`) definiendo los contratos (interfaces).
+  * Otro integrante puede encargarse de implementar la persistencia en base de datos (`itsm/infrastructure/repositories/`) satisfaciendo los contratos de las interfaces.
+  * Un tercer integrante puede construir la pantalla en Next.js (`src/app/` y componentes visuales) consumiendo los casos de uso a traves de sus DTOs.
+* **Impacto en Git**: Excelente aislamiento entre subdominios (`contexts/itsm/` vs `contexts/admin/`). Sin embargo, para una misma funcionalidad, un solo desarrollador debe crear o modificar 5 a 6 archivos diferentes (Entidad, Interfaz Puerto, Caso de Uso, DTO, Repositorio SQL, Mapper y Ruta HTTP).
 
 ---
 
@@ -745,23 +745,23 @@ FlowDesk-Software-ITSM/
 
 Esta opcion toma la tradicional **Arquitectura en Capas (Layered Architecture)** de tres niveles (Presentacion, Negocio/Servicios y Datos) pero corrige su mayor defecto historico incorporando **subagrupacion por dominio dentro de cada capa**:
 
-1. **Capa de Presentacion (\`src/presentation/\`)**:
-   * Aloja la interfaz visual y el enrutador de Next.js (\`src/app/\`).
-   * Los componentes de interfaz se dividen en carpetas por dominio: \`itsm/\` (tickets, paneles tecnicos), \`admin/\` (mantenimiento de usuarios, tablas maestras) y \`shared/\` (primitivos visuales).
-2. **Capa de Negocio y Servicios (\`src/business/\`)**:
+1. **Capa de Presentacion (`src/presentation/`)**:
+   * Aloja la interfaz visual y el enrutador de Next.js (`src/app/`).
+   * Los componentes de interfaz se dividen en carpetas por dominio: `itsm/` (tickets, paneles tecnicos), `admin/` (mantenimiento de usuarios, tablas maestras) y `shared/` (primitivos visuales).
+2. **Capa de Negocio y Servicios (`src/business/`)**:
    * Aloja la logica de orquestacion, validaciones y reglas operativas.
-   * Se divide estrictamente en submodulos de dominio: \`itsm/\` (servicios de incidentes, cambios, problemas), \`admin/\` (servicios de usuarios, perfiles, SLA), \`security/\` (autenticacion y tokens) y \`analytics/\` (reportes).
-3. **Capa de Acceso a Datos / Persistencia (\`src/data/\`)**:
-   * Aloja los objetos de acceso a datos (DAOs / Repositorios SQL directos con \`pg\`).
-   * Contiene consultas parametrizadas agrupadas por entidad: \`TicketDAO.ts\`, \`UsuarioDAO.ts\`, \`CategoriaDAO.ts\`, \`SlaDAO.ts\`.
-4. **Capa Transversal / Cross-Cutting (\`src/crosscutting/\`)**:
+   * Se divide estrictamente en submodulos de dominio: `itsm/` (servicios de incidentes, cambios, problemas), `admin/` (servicios de usuarios, perfiles, SLA), `security/` (autenticacion y tokens) y `analytics/` (reportes).
+3. **Capa de Acceso a Datos / Persistencia (`src/data/`)**:
+   * Aloja los objetos de acceso a datos (DAOs / Repositorios SQL directos con `pg`).
+   * Contiene consultas parametrizadas agrupadas por entidad: `TicketDAO.ts`, `UsuarioDAO.ts`, `CategoriaDAO.ts`, `SlaDAO.ts`.
+4. **Capa Transversal / Cross-Cutting (`src/crosscutting/`)**:
    * Infraestructura compartida: conexion a base de datos, envio de correos, funciones de fecha, tokens JWT y tipos compartidos.
 
 ---
 
 ### 4.2 Estructura Completa de Carpetas y Archivos (Opcion 3)
 
-\`\`\`text
+```text
 FlowDesk-Software-ITSM/
 |-- .env.local                                      // Parametros locales de conexion y llaves de cifrado
 |-- .env.example                                    // Variables de entorno de referencia para colaboradores
@@ -871,7 +871,7 @@ FlowDesk-Software-ITSM/
         |   +-- sanitizadores.ts                    // Funciones universales de limpieza de strings
         +-- types/
             +-- domainTypes.ts                      // Interfaces globales de entidades y contratos
-\`\`\`
+```
 
 ---
 
@@ -879,11 +879,11 @@ FlowDesk-Software-ITSM/
 
 * **Dinamica**: Es el modelo clasico mas intuitivo para desarrolladores que provienen de entornos como Java Spring Boot, C# .NET o Express.js estructurado:
   * Si un companero crea una funcionalidad nueva (ej. "Modulo de Encuestas"):
-    * Agrega \`EncuestaDAO.ts\` en \`src/data/daos/\`.
-    * Agrega \`EncuestaService.ts\` en \`src/business/admin/\`.
-    * Agrega sus componentes en \`src/presentation/admin/encuestas/\`.
-    * Agrega su ruta en \`src/app/(app)/admin/encuestas/page.tsx\`.
-* **Impacto en Git**: Si dos desarrolladores tocan entidades de tickets al mismo tiempo (ejemplo: uno modifica incidentes y otro solicitudes), ambos podrian editar \`TicketDAO.ts\` para agregar nuevas consultas SQL, lo cual **si puede generar un conflicto de fusion en Git** en dicho archivo compartido. Esto se resuelve subdividiendo los DAOs si el proyecto crece (\`IncidenteDAO.ts\`, \`RequerimientoDAO.ts\`).
+    * Agrega `EncuestaDAO.ts` en `src/data/daos/`.
+    * Agrega `EncuestaService.ts` en `src/business/admin/`.
+    * Agrega sus componentes en `src/presentation/admin/encuestas/`.
+    * Agrega su ruta en `src/app/(app)/admin/encuestas/page.tsx`.
+* **Impacto en Git**: Si dos desarrolladores tocan entidades de tickets al mismo tiempo (ejemplo: uno modifica incidentes y otro solicitudes), ambos podrian editar `TicketDAO.ts` para agregar nuevas consultas SQL, lo cual **si puede generar un conflicto de fusion en Git** en dicho archivo compartido. Esto se resuelve subdividiendo los DAOs si el proyecto crece (`IncidenteDAO.ts`, `RequerimientoDAO.ts`).
 
 ---
 
@@ -891,12 +891,12 @@ FlowDesk-Software-ITSM/
 
 #### Ventajas:
 * **Estructura Muy Familiar**: Sigue el patron tradicional de tres capas (Presentacion, Negocio, Datos) con el que la mayoria de los estudiantes de informatica e ingenieria estan familiarizados desde la universidad.
-* **Separacion Clara de Responsabilidades Tecnicas**: El codigo SQL vive exclusivamente dentro de \`src/data/daos/\`, la logica de negocio en \`src/business/\` y la UI en \`src/presentation/\`.
+* **Separacion Clara de Responsabilidades Tecnicas**: El codigo SQL vive exclusivamente dentro de `src/data/daos/`, la logica de negocio en `src/business/` y la UI en `src/presentation/`.
 * **Menos Boilerplate que Clean Architecture**: No requiere definir puertos/interfaces abstractas para cada entidad si no se va a cambiar de motor de base de datos.
 
 #### Desventajas:
-* **Baja Cohesion Espacial**: Para trabajar en una funcionalidad concreta (ej. "Incidentes"), el programador debe alternar continuamente entre \`src/presentation/itsm/incidentes/\`, \`src/business/itsm/IncidenteService.ts\`, \`src/data/daos/TicketDAO.ts\` y \`src/app/api/incidentes/route.ts\`.
-* **Riesgo de DAOs Monoliticos**: Archivos como \`TicketDAO.ts\` pueden acumular cientos de lineas de metodos SQL de diferentes tipos de ticket, convirtiendose en cuellos de botella para el equipo.
+* **Baja Cohesion Espacial**: Para trabajar en una funcionalidad concreta (ej. "Incidentes"), el programador debe alternar continuamente entre `src/presentation/itsm/incidentes/`, `src/business/itsm/IncidenteService.ts`, `src/data/daos/TicketDAO.ts` y `src/app/api/incidentes/route.ts`.
+* **Riesgo de DAOs Monoliticos**: Archivos como `TicketDAO.ts` pueden acumular cientos de lineas de metodos SQL de diferentes tipos de ticket, convirtiendose en cuellos de botella para el equipo.
 
 ---
 
@@ -906,11 +906,11 @@ Cualquiera de las tres opciones requiere que los archivos de configuracion en la
 
 ### 5.1 Configuracion de Path Aliases en tsconfig.json
 
-Para evitar importaciones relativas fragiles y tediosas (como \`../../../../shared/lib/db\`), se deben configurar alias de rutas en \`tsconfig.json\`.
+Para evitar importaciones relativas fragiles y tediosas (como `../../../../shared/lib/db`), se deben configurar alias de rutas en `tsconfig.json`.
 
 Ejemplo de configuracion recomendada para la **Opcion 1**:
 
-\`\`\`json
+```json
 {
   "compilerOptions": {
     "target": "es5",
@@ -945,27 +945,27 @@ Ejemplo de configuracion recomendada para la **Opcion 1**:
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
-\`\`\`
+```
 
 Con esta configuracion:
 * Para importar el servicio de incidentes desde un endpoint:
-  \`import { incidentesService } from "@/itsm/incidentes/services/incidentesService";\`
+  `import { incidentesService } from "@/itsm/incidentes/services/incidentesService";`
 * Para importar la conexion de base de datos:
-  \`import { query } from "@/shared/lib/db";\`
+  `import { query } from "@/shared/lib/db";`
 * Para importar un boton generico:
-  \`import { Boton } from "@/shared/components/ui/Boton";\`
+  `import { Boton } from "@/shared/components/ui/Boton";`
 
 ---
 
 ### 5.2 Variables de Entorno, Scripts y Persistencia SQL
 
-Los archivos externos a \`src/\` cumplen funciones criticas de soporte que deben preservarse:
+Los archivos externos a `src/` cumplen funciones criticas de soporte que deben preservarse:
 
-* **\`.env.local\`**: Contiene secretos sensibles que no deben subirse a Git (credenciales de conexion PostgreSQL \`DATABASE_URL\`, secreto de firma JWT \`JWT_SECRET\`, credenciales SMTP para correos).
-* **\`.env.example\`**: Archivo de ejemplo versionado en Git que indica al equipo que variables deben configurar en su propia maquina.
-* **\`next.config.js\`**: Configuracion del compilador de Next.js. Si se utilizan componentes de servidor y cliente con paquetes externos, aqui se configuran las politicas de transpiled packages o cabeceras de seguridad HTTP.
-* **\`package.json\`**: Manifiesto de dependencias. Contiene scripts utiles como \`npm run dev\`, \`npm run build\`, \`npm run lint\`.
-* **\`db/migrations/\`**: Carpeta donde se deben almacenar los scripts SQL versionados (\`001_crear_tablas_iniciales.sql\`, \`002_agregar_categorias_servicios.sql\`, etc.) para que todos los companeros de equipo puedan tener exactamente la misma estructura de base de datos en su PostgreSQL local.
+* **`.env.local`**: Contiene secretos sensibles que no deben subirse a Git (credenciales de conexion PostgreSQL `DATABASE_URL`, secreto de firma JWT `JWT_SECRET`, credenciales SMTP para correos).
+* **`.env.example`**: Archivo de ejemplo versionado en Git que indica al equipo que variables deben configurar en su propia maquina.
+* **`next.config.js`**: Configuracion del compilador de Next.js. Si se utilizan componentes de servidor y cliente con paquetes externos, aqui se configuran las politicas de transpiled packages o cabeceras de seguridad HTTP.
+* **`package.json`**: Manifiesto de dependencias. Contiene scripts utiles como `npm run dev`, `npm run build`, `npm run lint`.
+* **`db/migrations/`**: Carpeta donde se deben almacenar los scripts SQL versionados (`001_crear_tablas_iniciales.sql`, `002_agregar_categorias_servicios.sql`, etc.) para que todos los companeros de equipo puedan tener exactamente la misma estructura de base de datos en su PostgreSQL local.
 
 ---
 
@@ -993,13 +993,13 @@ La siguiente matriz evalua cuantitativamente las tres opciones segun los criteri
 La **Opcion 1 (Vertical Slice Architecture + Feature Folders con Dominios Funcionales)** es la opcion ampliamente recomendada para FlowDesk ITSM por las siguientes razones de ingenieria:
 
 1. **Satisface con precision el requerimiento del proyecto**:
-   Permite agrupar los servicios operativos ITIL (\`incidentes\`, \`requerimientos\`, \`problemas\`, \`cambios\`, \`tareas\`, \`catalogo\`) bajo el paraguas comun \`src/modules/itsm/\`, manteniendolos estrictamente separados de \`src/modules/admin/\`, \`src/modules/seguridad/\` y \`src/modules/analitica/\`.
+   Permite agrupar los servicios operativos ITIL (`incidentes`, `requerimientos`, `problemas`, `cambios`, `tareas`, `catalogo`) bajo el paraguas comun `src/modules/itsm/`, manteniendolos estrictamente separados de `src/modules/admin/`, `src/modules/seguridad/` y `src/modules/analitica/`.
 2. **Elimina la pesadilla de los conflictos de Git entre companeros**:
    Al asignar a cada companero un modulo funcional especifico, sus ramas de Git nunca colisionaran entre si porque trabajaran en carpetas fisicamente independientes.
 3. **No introduce sobreingenieria innecesaria**:
    A diferencia de la Arquitectura Hexagonal pura (Opcion 2), que requiere crear 6 archivos para registrar una categoria simple, la Opcion 1 mantiene la agilidad del desarrollo fullstack de Next.js sin sacrificar orden ni arquitectura.
 4. **Respeta la filosofia de Next.js 14**:
-   Al implementar el patron de \`Thin Router\`, los archivos dentro de \`src/app/\` se convierten en controladores ligeros y limpios, facilitando el mantenimiento y la lectura del codigo.
+   Al implementar el patron de `Thin Router`, los archivos dentro de `src/app/` se convierten en controladores ligeros y limpios, facilitando el mantenimiento y la lectura del codigo.
 
 ---
 
@@ -1008,33 +1008,33 @@ La **Opcion 1 (Vertical Slice Architecture + Feature Folders con Dominios Funcio
 Para migrar el proyecto actual hacia la **Opcion 1** de forma segura, se recomienda seguir este plan gradual sin detener el desarrollo de nuevas caracteristicas:
 
 #### Fase 1: Configuracion de Infraestructura y Path Aliases (Dia 1)
-* Actualizar \`tsconfig.json\` agregando los alias \`@/modules/*\`, \`@/shared/*\`, \`@/itsm/*\`, \`@/admin/*\`, \`@/seguridad/*\`.
+* Actualizar `tsconfig.json` agregando los alias `@/modules/*`, `@/shared/*`, `@/itsm/*`, `@/admin/*`, `@/seguridad/*`.
 * Crear las carpetas base:
-  * \`src/modules/itsm/\`
-  * \`src/modules/admin/\`
-  * \`src/modules/seguridad/\`
-  * \`src/modules/analitica/\`
-  * \`src/shared/\`
+  * `src/modules/itsm/`
+  * `src/modules/admin/`
+  * `src/modules/seguridad/`
+  * `src/modules/analitica/`
+  * `src/shared/`
 
 #### Fase 2: Extraccion de Modulos Transversales y Seguridad (Dia 2)
-* Mover \`src/lib/db.ts\`, \`src/lib/sla.ts\`, \`src/lib/email.ts\`, \`src/lib/validaciones.ts\` a \`src/shared/lib/\`.
-* Mover \`src/components/ui/\` y componentes genericos a \`src/shared/components/\`.
-* Consolidar la autenticacion (\`login\`, \`captcha\`, \`jwt\`, \`sesion\`) en \`src/modules/seguridad/\`.
+* Mover `src/lib/db.ts`, `src/lib/sla.ts`, `src/lib/email.ts`, `src/lib/validaciones.ts` a `src/shared/lib/`.
+* Mover `src/components/ui/` y componentes genericos a `src/shared/components/`.
+* Consolidar la autenticacion (`login`, `captcha`, `jwt`, `sesion`) en `src/modules/seguridad/`.
 
 #### Fase 3: Migracion de Modulos de Administracion (Dia 3)
-* Organizar la carpeta \`src/modules/admin/\`:
-  * Mover la logica y componentes de usuarios a \`src/modules/admin/usuarios/\`.
-  * Mover la logica y componentes de categorias a \`src/modules/admin/categorias/\`.
-  * Mover la logica de SLA a \`src/modules/admin/sla/\`.
-* Adelgazar los endpoints de \`src/app/api/admin/\` haciendo que deleguen en los nuevos servicios.
+* Organizar la carpeta `src/modules/admin/`:
+  * Mover la logica y componentes de usuarios a `src/modules/admin/usuarios/`.
+  * Mover la logica y componentes de categorias a `src/modules/admin/categorias/`.
+  * Mover la logica de SLA a `src/modules/admin/sla/`.
+* Adelgazar los endpoints de `src/app/api/admin/` haciendo que deleguen en los nuevos servicios.
 
 #### Fase 4: Migracion del Dominio Operativo ITSM (Dia 4)
-* Organizar la carpeta \`src/modules/itsm/\`:
-  * Crear las rebanadas verticales de \`incidentes\`, \`requerimientos\`, \`problemas\`, \`cambios\`, \`tareas\` y \`catalogo\`.
-  * Mover los presentadores polimorficos (\`PresentadorConsumidor.tsx\`, \`PresentadorOperador.tsx\`, etc.) a \`src/modules/itsm/presentadores/\`.
-* Adelgazar los endpoints de \`src/app/api/tickets/\` y subrutas de tickets.
+* Organizar la carpeta `src/modules/itsm/`:
+  * Crear las rebanadas verticales de `incidentes`, `requerimientos`, `problemas`, `cambios`, `tareas` y `catalogo`.
+  * Mover los presentadores polimorficos (`PresentadorConsumidor.tsx`, `PresentadorOperador.tsx`, etc.) a `src/modules/itsm/presentadores/`.
+* Adelgazar los endpoints de `src/app/api/tickets/` y subrutas de tickets.
 
 #### Fase 5: Limpieza, Verificacion de Tipos y Pruebas de Integracion (Dia 5)
-* Ejecutar comprobacion estricta de TypeScript: \`npx tsc --noEmit\`.
+* Ejecutar comprobacion estricta de TypeScript: `npx tsc --noEmit`.
 * Probar el flujo completo de usuario en navegador: login con captcha, cambio de perfil activo, creacion de ticket de catalogo, atencion tecnica y cierre.
 * Publicar los cambios en la rama principal de Git y documentar para todo el equipo.
