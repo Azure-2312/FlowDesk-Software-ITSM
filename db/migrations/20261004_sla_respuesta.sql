@@ -1,0 +1,3 @@
+BEGIN;
+ALTER TABLE ticket ADD COLUMN IF NOT EXISTS fecha_limite_respuesta_sla TIMESTAMPTZ;
+COMMIT;
