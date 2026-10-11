@@ -1,123 +1,134 @@
-# Sistema de tickets — Programación Aplicada III
+# FlowDesk Software ITSM - Sistema de Gestion de Servicios de TI
 
-Proyecto base: PostgreSQL (Supabase) + Next.js 14 + TypeScript + CSS normal.
-Sin ORM: el acceso a datos se hace con SQL directo usando el driver `pg`,
-para poder estudiar cada consulta.
+Plataforma empresarial de gestion de servicios de tecnologias de la informacion alineada a las mejores practicas internacionales de **ITIL v4**, **ISO/IEC 20000-1** e **ISO/IEC 27001**.
 
-> **DOCUMENTACION DEL SISTEMA:**
-> Toda la documentacion tecnica, marcos normativos (ITIL v4, ISO/IEC 20000-1, COBIT 2019, ISO/IEC 27001), historias de usuario BDD, catalogo de 18 servicios y guia metodologica completa de ingenieria de software se encuentra centralizada en la carpeta [`DOCUMENTACIÓN/`](./DOCUMENTACIÓN/README.md).
+Desarrollada con **Next.js 14 (App Router)**, **TypeScript 5 (Strict Mode)**, **React 18** y **PostgreSQL 15 (Supabase)** utilizando acceso a datos relacional directo con pooling optimizado (`pg`).
 
-## Qué incluye esta primera entrega
+---
 
-- **Base de datos completa** (`db/schema.sql` y `db/seed.sql`): las tablas
-  del profesor (Usuario, Perfiles, OpcionesMenu, Usuario_Perfiles,
-  OpcionesMenu_Perfiles) traducidas a PostgreSQL, más las tablas propias
-  del sistema de tickets.
-- **Login básico** con contraseña hasheada (bcrypt), bloqueo tras 5 intentos
-  fallidos, y registro de auditoría de accesos (`log_acceso`).
-- **Sesión** manejada con JWT guardado en una cookie httpOnly (no en
-  localStorage, para evitar robos de sesión vía JavaScript malicioso).
-- **Menú dinámico de hasta 3 niveles**, armado según los perfiles del
-  usuario logueado (un usuario puede tener varios perfiles a la vez).
+## Documentacion Tecnica Maestra
 
-Lo que falta (siguientes entregas): CRUD de Usuario/Perfiles/OpcionesMenu,
-y el módulo de tickets en sí (crear, listar, comentar, cambiar estado).
+Toda la documentacion de arquitectura, base de datos, APIs, codigo fuente, reglas de negocio y marcos normativos se encuentra en el directorio [`DOCUMENTACION/`](./DOCUMENTACIÓN/):
 
-## 1. Requisitos previos
+* **[Documentacion Completa de Arquitectura y Codigo](./DOCUMENTACIÓN/DOCUMENTACION_COMPLETA_ARQUITECTURA_Y_CODIGO.md)**: Manual tecnico exhaustivo (mas de 14,000 lineas) que detalla las 77 tablas de base de datos, las 119 rutas de backend API, las 108 paginas de la aplicacion, componentes, bibliotecas, seguridad, reglas de negocio y guia para agentes de Inteligencia Artificial.
+* **[Indice Maestro de Documentacion](./DOCUMENTACIÓN/README.md)**: Catalogo de especificaciones de requerimientos, historias de usuario BDD, reglas de negocio y catalogo de servicios.
+* **[Reglas de Negocio](./DOCUMENTACIÓN/reglas_de_negocio.md)**: Compendio de politicas y directivas tecnicas del sistema.
+* **[Requerimientos Funcionales](./DOCUMENTACIÓN/requerimientos_funcionales.md)**: Alcance de capacidades del Service Desk.
+* **[Historias de Usuario](./DOCUMENTACIÓN/historias_de_usuario.md)**: Backlog con criterios BDD Gherkin y matrices de trazabilidad.
 
-- Node.js 18 o superior instalado (`node -v` para comprobar)
-- Una cuenta gratuita en [supabase.com](https://supabase.com)
-- VS Code (o el editor que prefieras)
+---
 
-## 2. Crear el proyecto en Supabase
+## Modulos y Capacidades Implementadas
 
-1. Entra a supabase.com → **New project**.
-2. Elige un nombre y una contraseña para la base de datos (guárdala, la
-   vas a necesitar).
-3. Espera 1-2 minutos a que se aprovisione el proyecto.
-4. Ve a **Project Settings → Database → Connection string → URI**, y
-   copia esa cadena de conexión (se ve algo así:
-   `postgresql://postgres:[TU-PASSWORD]@db.xxxxx.supabase.co:5432/postgres`).
+* **Gestion de Incidentes (Incident Management)**: Ciclo de vida completo, temporizadores de SLA en tiempo real, colas de atencion y presentadores personalizados por rol.
+* **Gestion de Solicitudes de Servicio (Service Request Management)**: Catalogo interactivo de autoservicio con filtrado reactivo por categorias, control de SLAs y flujos de aprobacion.
+* **Gestion de Problemas y KEDB (Problem Management)**: Analisis de causa raiz (RCA), soluciones temporales (Workarounds) y Base de Errores Conocidos.
+* **Habilitacion del Cambio (Change Enablement / RFC)**: Comite Asesor de Cambios (CAB), evaluacion de riesgos, ventanas de congelamiento y segregacion de funciones (SoD).
+* **Gestion de Configuraciones y Activos (CMDB & ITAM)**: Inventario de infraestructura, relaciones de dependencia de CIs, control de licencias y hardware.
+* **Gestion de Niveles de Servicio (SLA/OLA)**: Metas de primera respuesta y resolucion, matriz de Urgencia vs Impacto y semaforos de cumplimiento en tiempo real.
+* **Base de Conocimientos (KCS)**: Repositorio de articulos tecnicos y de autoservicio con gestion de estados y politicas de visibilidad.
+* **Encuestas de Satisfaccion (CSAT)**: Calificacion de 1 a 5 estrellas al resolver tickets con retroalimentacion cualitativa para mejora continua.
+* **Control de Acceso Basado en Roles (RBAC Multi-Perfil)**: Cinco perfiles oficiales (Administrador, Tecnico, Solicitante, Supervisor, Auditor) con conmutacion de perfil en caliente sin reinicio de sesion.
+* **Seguridad Defensiva**: Autenticacion JWT en cookies HTTP-only seguras, desafio Captcha matematico, bloqueo preventivo por fuerza bruta, restriccion de dominio corporativo y recuperacion de contrasena via OTP por correo electronico.
 
-## 3. Crear las tablas
+---
 
-1. En Supabase, ve a **SQL Editor** (panel izquierdo).
-2. Pega el contenido completo de `db/schema.sql` y dale **Run**.
-3. Cuando termine, abre una nueva consulta, pega `db/seed.sql` y dale
-   **Run** también (esto crea el usuario de prueba y el menú de ejemplo).
-4. Puedes verificar en **Table Editor** que las tablas se crearon con datos.
+## Requisitos Previos
 
-## 4. Configurar el proyecto en tu laptop
+* Node.js version 18.18.0 o superior (recomendado Node.js 20 LTS).
+* npm version 9 o superior.
+* Instancia de PostgreSQL 14+ o proyecto activo en Supabase.
+* Git 2.40+.
 
-Abre una terminal en la carpeta del proyecto y ejecuta:
+---
 
+## Instalacion y Puesta en Marcha Local
+
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/Azure-2312/FlowDesk-Software-ITSM.git
+cd FlowDesk-Software-ITSM
+```
+
+### 2. Instalar dependencias
 ```bash
 npm install
 ```
 
-Luego crea el archivo de variables de entorno:
+### 3. Configurar variables de entorno
+Crear el archivo `.env.local` en la raiz tomando como referencia `.env.example`:
+```env
+# Conexion a PostgreSQL / Supabase
+DATABASE_URL="postgresql://postgres.[tenant]:[password]@[host]:6543/postgres"
 
-```bash
-cp .env.example .env.local
+# Clave secreta para firma de tokens JWT
+JWT_SECRET="flowdesk-secret-key-2026-itsm"
+
+# Configuracion SMTP para recuperacion de clave (Opcional)
+GMAIL_USER="tu-correo@gmail.com"
+GMAIL_APP_PASSWORD="tu-password-de-aplicacion"
 ```
 
-Abre `.env.local` en VS Code y reemplaza:
+> **Nota de Seguridad**: El archivo `.env.local` se encuentra excluido del control de versiones mediante `.gitignore` para proteger las credenciales institucionales.
 
-- `DATABASE_URL` → pega la cadena de conexión que copiaste de Supabase en
-  el paso 2.
-- `JWT_SECRET` → escribe cualquier texto largo y aleatorio (por ejemplo,
-  generado en https://generate-secret.vercel.app/32).
+### 4. Inicializar base de datos
+Si se inicia desde cero:
+1. Ejecutar `db/schema.sql` en el SQL Editor de PostgreSQL / Supabase.
+2. Ejecutar `db/seed.sql` para cargar catalogos iniciales y usuarios de prueba.
+3. Ejecutar las migraciones pendientes en `db/migrations/` en orden cronologico.
 
-**Importante:** `.env.local` nunca se sube a GitHub (ya está en
-`.gitignore`) porque contiene credenciales.
+### 5. Verificar compilacion de TypeScript
+```bash
+npx tsc --noEmit
+```
 
-## 5. Correr el proyecto
-
+### 6. Iniciar en modo desarrollo
 ```bash
 npm run dev
 ```
+Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
 
-Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
-Deberías caer en la pantalla de login. Entra con:
-
-- **Correo:** `admin@sistema.com`
-- **Contraseña:** `admin123`
-
-Si el login funciona, vas a ver el dashboard con el menú de 3 niveles
-armado dinámicamente a la izquierda.
-
-## 6. Estructura del proyecto
-
-```
-db/
-  schema.sql          → todas las tablas (CREATE TABLE)
-  seed.sql             → datos de prueba (perfiles, menú, usuario admin)
-src/
-  lib/
-    db.ts               → conexión a PostgreSQL (pool de pg)
-    auth.ts              → hash de contraseñas, generar/verificar sesión (JWT)
-    menu.ts               → arma el árbol de menú según los perfiles del usuario
-    constants.ts           → nombre de la cookie de sesión
-  types/
-    index.ts               → interfaces de TypeScript (Usuario, Perfil, etc.)
-  middleware.ts             → protege /dashboard si no hay sesión
-  app/
-    login/page.tsx            → pantalla de login
-    dashboard/page.tsx         → pantalla protegida con el menú
-    api/auth/login/route.ts     → valida credenciales, crea la sesión
-    api/auth/logout/route.ts     → cierra sesión
-    api/menu/route.ts             → devuelve el menú del usuario (para uso futuro desde el cliente)
-  components/
-    Menu.tsx                       → componente recursivo que pinta el menú
-    BotonCerrarSesion.tsx           → botón de logout
+### 7. Compilar para produccion
+```bash
+npm run build
+npm run start
 ```
 
-## 7. Publicar en Vercel (cuando quieras mostrarlo desplegado)
+---
 
-1. Sube este proyecto a un repositorio de GitHub.
-2. En [vercel.com](https://vercel.com), **Add New → Project**, e importa
-   el repositorio.
-3. En **Environment Variables**, agrega `DATABASE_URL` y `JWT_SECRET` con
-   los mismos valores de tu `.env.local`.
-4. Dale **Deploy**. Cada `git push` a partir de ahí vuelve a desplegar
-   automáticamente.
+## Estructura del Proyecto
+
+```
+FlowDesk-Software-ITSM/
+|-- db/                                 # Scripts DDL, seed y migraciones de base de datos
+|   |-- schema.sql
+|   |-- seed.sql
+|   `-- migrations/                     # 15 migraciones SQL incrementales
+|-- DOCUMENTACION/                      # Manuales tecnicos y especificaciones
+|   |-- DOCUMENTACION_COMPLETA_ARQUITECTURA_Y_CODIGO.md  # Manual maestro (+14,000 lineas)
+|   |-- reglas_de_negocio.md
+|   |-- requerimientos_funcionales.md
+|   |-- requerimientos_no_funcionales.md
+|   |-- historias_de_usuario.md
+|   |-- matriz_trazabilidad_funciones_hu_rf_rn.md
+|   |-- catalogo_maestro_jerarquia_menu_por_perfil_itsm.md
+|   `-- carga_servicios_catalogo_30.md
+|-- public/                             # Recursos graficos estaticos
+|-- scripts/                            # Scripts de migracion y mantenimiento
+|-- src/
+|   |-- app/
+|   |   |-- (app)/                      # Rutas autenticadas de la aplicacion (108 paginas)
+|   |   |-- api/                        # Route Handlers RESTful (119 endpoints)
+|   |   |-- login/                      # Portal de autenticacion y recuperacion
+|   |   |-- globals.css                 # Estilos globales corporativos
+|   |   `-- layout.tsx                  # Layout raiz
+|   |-- components/                     # Componentes React reutilizables (28 modulos)
+|   |-- lib/                            # Bibliotecas del servidor (db, auth, validaciones, sla)
+|   |-- middleware.ts                   # Middleware de proteccion de rutas
+|   `-- types/                          # Definiciones TypeScript de dominio
+|-- .env.example
+|-- .gitignore
+|-- package.json
+|-- README.md
+`-- tsconfig.json
+```
