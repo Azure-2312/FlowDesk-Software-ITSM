@@ -16,7 +16,13 @@
     "plugins": [{ "name": "next" }],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@/modules/*": ["src/modules/*"],
+      "@/shared/*": ["src/shared/*"],
+      "@/itsm/*": ["src/modules/itsm/*"],
+      "@/admin/*": ["src/modules/admin/*"],
+      "@/seguridad/*": ["src/modules/seguridad/*"],
+      "@/analitica/*": ["src/modules/analitica/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
