@@ -1,11 +1,11 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
-import { obtenerMenuDelUsuario } from "@/lib/menu";
-import Menu from "@/components/Menu";
-import BotonCerrarSesion from "@/components/BotonCerrarSesion";
-import SelectorPerfilActivo from "@/components/SelectorPerfilActivo";
+import { verificarTokenSesion, COOKIE_SESION } from "@/modules/seguridad/authService";
+import { obtenerMenuDelUsuario } from "@/shared/lib/menu";
+import MenuLateral from "@/shared/components/layout/MenuLateral";
+import BotonLogout from "@/shared/components/layout/BotonLogout";
+import SelectorPerfil from "@/shared/components/layout/SelectorPerfil";
 
 /** Saca las iniciales del nombre para mostrarlas en el avatar circular. */
 function obtenerIniciales(nombres: string): string {
@@ -34,10 +34,10 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
           <div className="barra-lateral-cabecera">
             <div className="marca-fila">
               <span className="marca-titulo">Sistema de tickets</span>
-              <SelectorPerfilActivo perfiles={sesion.perfiles} perfilActivo={sesion.perfilActivo} />
+              <SelectorPerfil perfiles={sesion.perfiles} perfilActivo={sesion.perfilActivo} />
             </div>
           </div>
-          <Menu opciones={menu} />
+          <MenuLateral opciones={menu} />
         </div>
         <div className="barra-lateral-pie">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
@@ -83,7 +83,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
                 </span>
               </span>
             </Link>
-            <BotonCerrarSesion compacto={true} />
+            <BotonLogout compacto={true} />
           </div>
         </div>
       </aside>
