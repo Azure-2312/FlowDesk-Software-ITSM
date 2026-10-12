@@ -184,7 +184,7 @@ El diseno optimo para Next.js 14 consiste en el patron **Thin Router (Enrutador 
   * Un archivo `route.ts` solo debe recibir la peticion HTTP, extraer los parametros, llamar a una funcion de servicio ubicada en el modulo correspondiente y retornar una respuesta JSON (`NextResponse.json(...)`). Un `route.ts` optimo no supera las 20 a 30 lineas de codigo.
   * Un archivo `page.tsx` solo debe importar y renderizar el componente o contenedor de la pagina ubicado en la carpeta del modulo.
 * Toda la logica pesada (consultas SQL complejas, validaciones, calculos de fechas SLA, componentes visuales enriquecidos, hooks de React) vive dentro de carpetas modulares organizadas fuera de `app/` (por ejemplo, en `src/modules/` o `src/features/`).
-* **Route Groups de Next.js**: Next.js permite nombrar carpetas entre parentesis como `src/app/(itsm)/`, `src/app/(admin)/`, `src/app/(analitica)/`. Los parentesis indican que el nombre de la carpeta **no se incluye en la URL del navegador**. Por ejemplo, `src/app/(itsm)/incidentes/page.tsx` se visualiza en el navegador limpiamente como `/incidentes`. Esto permite organizar visualmente las rutas de `app/` en perfecta concordancia con los dominios de negocio.
+* **Route Groups de Next.js**: Next.js permite nombrar carpetas entre parentesis como `src/app/itsm/`, `src/app/admin/`, `src/app/analitica/`. Los parentesis indican que el nombre de la carpeta **no se incluye en la URL del navegador**. Por ejemplo, `src/app/itsm/incidentes/page.tsx` se visualiza en el navegador limpiamente como `/incidentes`. Esto permite organizar visualmente las rutas de `app/` en perfecta concordancia con los dominios de negocio.
 
 ---
 
@@ -198,7 +198,7 @@ Esta arquitectura organiza el codigo en dos grandes niveles:
 
 **Por que es la opcion recomendada para FlowDesk**:
 * Resuelve directamente la inquietud del desarrollador: los servicios operativos ITSM (`incidentes`, `requerimientos`, `problemas`, `cambios`, `tareas`, `catalogo`) quedan agrupados dentro de una misma carpeta padre `src/modules/itsm/`, completamente separados de `src/modules/admin/` y `src/modules/seguridad/`.
-* Reduce a cero los conflictos de Git: si un companero de equipo trabaja en "Problemas", solo editara archivos dentro de `src/modules/itsm/problemas/` y `src/app/(itsm)/problemas/`. Si otro companero trabaja en "Usuarios", solo editara archivos en `src/modules/admin/usuarios/`. Sus ramas nunca colisionaran en Git.
+* Reduce a cero los conflictos de Git: si un companero de equipo trabaja en "Problemas", solo editara archivos dentro de `src/modules/itsm/problemas/` y `src/app/itsm/problemas/`. Si otro companero trabaja en "Usuarios", solo editara archivos en `src/modules/admin/usuarios/`. Sus ramas nunca colisionaran en Git.
 * Adaptacion natural a Next.js 14: Los archivos en `src/app/` son cascarones de menos de 25 lineas que delegan a los modulos.
 
 ---
@@ -236,12 +236,12 @@ FlowDesk-Software-ITSM/
     |   |-- login/                                  // Ruta publica de autenticacion
     |   |   +-- page.tsx                            // Vista del login: importa componente LoginForm de @/modules/seguridad
     |   |
-    |   |-- (app)/                                  // GRUPO DE RUTAS AUTENTICADAS (COMPARTE LAYOUT GENERAL DEL SISTEMA)
+    |   |-- plataforma/                                  // GRUPO DE RUTAS AUTENTICADAS (COMPARTE LAYOUT GENERAL DEL SISTEMA)
     |   |   |-- layout.tsx                          // Layout privado: monta barra lateral Menu.tsx y Header con Perfiles
     |   |   |-- dashboard/                          // Tablero principal de bienvenida y resumen de indicadores
     |   |   |   +-- page.tsx                        // Renderiza vista DashboardView de @/modules/analitica
     |   |   |
-    |   |   |-- (itsm)/                             // SUBGRUPO DE ENRUTAMIENTO: SERVICIOS OPERATIVOS ITIL (URL limpia)
+    |   |   |-- itsm/                             // SUBGRUPO DE ENRUTAMIENTO: SERVICIOS OPERATIVOS ITIL (URL limpia)
     |   |   |   |-- incidentes/                     // Modulo de gestion de incidentes
     |   |   |   |   |-- page.tsx                    // Renderiza ListaIncidentesPage de @/modules/itsm/incidentes
     |   |   |   |   +-- [id]/                       // Detalle de incidente individual
@@ -263,7 +263,7 @@ FlowDesk-Software-ITSM/
     |   |   |   +-- catalogo/                       // Catalogo de servicios interactivo para solicitantes
     |   |   |       +-- page.tsx                    // Renderiza CatalogoServiciosView de @/modules/itsm/catalogo
     |   |   |
-    |   |   |-- (admin)/                            // SUBGRUPO DE ENRUTAMIENTO: ADMINISTRACION Y MAESTROS DE PLATAFORMA
+    |   |   |-- admin/                            // SUBGRUPO DE ENRUTAMIENTO: ADMINISTRACION Y MAESTROS DE PLATAFORMA
     |   |   |   |-- usuarios/                       // Administracion de usuarios del sistema
     |   |   |   |   +-- page.tsx                    // Renderiza GestionUsuariosView de @/modules/admin/usuarios
     |   |   |   |-- perfiles/                       // Matriz de perfiles y asignacion de permisos
@@ -281,7 +281,7 @@ FlowDesk-Software-ITSM/
     |   |   |   +-- encuestas/                      // Plantillas de encuestas de satisfaccion al cliente
     |   |   |       +-- page.tsx                    // Renderiza GestionEncuestasView de @/modules/admin/encuestas
     |   |   |
-    |   |   +-- (analitica)/                        // SUBGRUPO DE ENRUTAMIENTO: INTELIGENCIA OPERATIVA Y GOBIERNO
+    |   |   +-- analitica/                        // SUBGRUPO DE ENRUTAMIENTO: INTELIGENCIA OPERATIVA Y GOBIERNO
     |   |       |-- reportes/                       // Generacion de reportes consolidados y graficos
     |   |       |   +-- page.tsx                    // Renderiza ReportesView de @/modules/analitica/reportes
     |   |       +-- auditoria/                      // Visor de eventos y registros de seguridad del sistema
@@ -352,17 +352,17 @@ FlowDesk-Software-ITSM/
     |   |   |-- incidentes/                         // Feature vertical de Incidentes
     |   |   |   |-- components/                     // Componentes visuales especificos de incidentes
     |   |   |   |   |-- TablaIncidentes.tsx         // // Tabla enriquecida con estados, SLA y badges de prioridad
-    |   |   |   |   |-- ModalCrearIncidente.tsx     // // Formulario modal con validacion de impacto/urgencia
-    |   |   |   |   +-- PanelDetalleIncidente.tsx   // // Vista completa con historial de transiciones
+    |   |   |   |   |-- ModalIncidente.tsx     // // Formulario modal con validacion de impacto/urgencia
+    |   |   |   |   +-- PanelIncidente.tsx   // // Vista completa con historial de transiciones
     |   |   |   |-- services/                       // Capa de persistencia y logica de negocio de incidentes
     |   |   |   |   |-- incidentesService.ts        // // Consultas SQL a tabla tickets filtradas por tipo incidente
-    |   |   |   |   +-- incidentesTransitions.ts    // // Maquina de estados (abierto -> en_progreso -> resuelto)
+    |   |   |   |   +-- transicionesService.ts    // // Maquina de estados (abierto -> en_progreso -> resuelto)
     |   |   |   |-- hooks/                          // Hooks personalizados de React
     |   |   |   |   +-- useIncidentes.ts            // // Manejo del ciclo de vida, fetching y cache local
     |   |   |   |-- validaciones/                   // Esquemas de validacion de entrada de datos
     |   |   |   |   +-- incidenteValidaciones.ts    // // Validacion estricta de campos obligatorios
     |   |   |   +-- types/                          // Tipos TypeScript especificos del modulo
-    |   |   |       +-- incidenteTypes.ts           // // Interfaces de Incidente, FiltrosIncidente, TransicionIncidente
+    |   |   |       +-- incidentesTypes.ts           // // Interfaces de Incidente, FiltrosIncidente, TransicionIncidente
     |   |   |
     |   |   |-- requerimientos/                     // Feature vertical de Requerimientos / Solicitudes
     |   |   |   |-- components/
@@ -373,7 +373,7 @@ FlowDesk-Software-ITSM/
     |   |   |   |-- hooks/
     |   |   |   |   +-- useRequerimientos.ts        // // Hook de gestion de estado de requerimientos
     |   |   |   +-- types/
-    |   |   |       +-- requerimientoTypes.ts       // // Tipos de Requerimiento y Aprobaciones
+    |   |   |       +-- requerimientosTypes.ts       // // Tipos de Requerimiento y Aprobaciones
     |   |   |
     |   |   |-- problemas/                          // Feature vertical de Problemas y Errores Conocidos
     |   |   |   |-- components/
@@ -382,7 +382,7 @@ FlowDesk-Software-ITSM/
     |   |   |   |-- services/
     |   |   |   |   +-- problemasService.ts         // // Persistencia y asociacion de multiples incidentes a un problema
     |   |   |   +-- types/
-    |   |   |       +-- problemaTypes.ts            // // Tipos de Problema, CausaRaiz, ErrorConocido
+    |   |   |       +-- problemasTypes.ts            // // Tipos de Problema, CausaRaiz, ErrorConocido
     |   |   |
     |   |   |-- cambios/                            // Feature vertical de Gestion de Cambios (RFC)
     |   |   |   |-- components/
@@ -391,70 +391,70 @@ FlowDesk-Software-ITSM/
     |   |   |   |-- services/
     |   |   |   |   +-- cambiosService.ts           // // Evaluacion de riesgos y registro de planes de rollback
     |   |   |   +-- types/
-    |   |   |       +-- cambioTypes.ts              // // Tipos de Cambio, EvaluacionRiesgo, MiembroCAB
+    |   |   |       +-- cambiosTypes.ts              // // Tipos de Cambio, EvaluacionRiesgo, MiembroCAB
     |   |   |
     |   |   |-- tareas/                             // Feature vertical de Tareas Tecnicas Operativas
     |   |   |   |-- components/
-    |   |   |   |   +-- ListaTareasChecklist.tsx    // // Checklist interactivo dentro de un ticket
+    |   |   |   |   +-- ListaTareas.tsx    // // Checklist interactivo dentro de un ticket
     |   |   |   |-- services/
     |   |   |   |   +-- tareasService.ts            // // Operaciones de creacion, reasignacion y cierre de tarea
     |   |   |   +-- types/
-    |   |   |       +-- tareaTypes.ts               // // Interfaces de Tarea, Asignado, EstadoTarea
+    |   |   |       +-- tareasTypes.ts               // // Interfaces de Tarea, Asignado, EstadoTarea
     |   |   |
     |   |   +-- presentadores/                      // Presentadores polimorficos de tickets segun rol de usuario
     |   |       |-- PresentadorConsumidor.tsx       // // Vista simplificada para solicitante (estado + calificacion)
     |   |       |-- PresentadorOperador.tsx         // // Panel tecnico con acciones operativas y checklist
     |   |       |-- PresentadorSupervisor.tsx       // // Panel con reasignacion forzada y monitoreo SLA
-    |   |       |-- PresentadorAdministrador.tsx    // // Acceso total, auditoria y modificacion de parametros
+    |   |       |-- PresentadorAdmin.tsx    // // Acceso total, auditoria y modificacion de parametros
     |   |       +-- PresentadorGobierno.tsx         // // Enfoque en cumplimiento normativo y revision post-cierre
     |   |
     |   |-- admin/                                  // SUBDOMINIO: ADMINISTRACION, MAESTROS Y CONFIGURACION DE PLATAFORMA
     |   |   |-- usuarios/                           // Administracion de cuentas
     |   |   |   |-- components/
     |   |   |   |   |-- TablaUsuarios.tsx           // // Listado con badges de estado y roles asignados
-    |   |   |   |   +-- ModalEditarUsuario.tsx      // // Formulario con validacion de DNI, email y perfil
+    |   |   |   |   +-- ModalUsuario.tsx      // // Formulario con validacion de DNI, email y perfil
     |   |   |   |-- services/
-    |   |   |   |   +-- adminUsuariosService.ts     // // Insercion con hashing bcrypt y consultas transaccionales
+    |   |   |   |   +-- usuariosService.ts     // // Insercion con hashing bcrypt y consultas transaccionales
     |   |   |   +-- types/
-    |   |   |       +-- usuarioAdminTypes.ts        // // Tipos de Usuario, Credenciales, AsignacionRol
+    |   |   |       +-- usuariosTypes.ts        // // Tipos de Usuario, Credenciales, AsignacionRol
     |   |   |
     |   |   |-- perfiles/                           // Gestion de perfiles y autorizaciones
     |   |   |   |-- components/
-    |   |   |   |   +-- MatrizPermisosPerfiles.tsx  // // Tabla interactiva de perfiles y capacidades
+    |   |   |   |   +-- MatrizPerfiles.tsx  // // Tabla interactiva de perfiles y capacidades
     |   |   |   +-- services/
-    |   |   |       +-- adminPerfilesService.ts     // // Consulta a tablas perfiles y perfiles_usuarios
+    |   |   |       +-- perfilesService.ts     // // Consulta a tablas perfiles y perfiles_usuarios
     |   |   |
     |   |   |-- departamentos/                      // Areas y departamentos tecnicos
     |   |   |   |-- components/
     |   |   |   |   +-- ArbolDepartamentos.tsx      // // Jerarquia visual de departamentos y supervisores
     |   |   |   +-- services/
-    |   |   |       +-- adminDepartamentosService.ts // // CRUD de areas y vinculacion con especialistas
+    |   |   |       +-- departamentosService.ts // // CRUD de areas y vinculacion con especialistas
     |   |   |
     |   |   |-- categorias/                         // CRUD de categorias de servicios (desacoplado del catalogo)
     |   |   |   |-- components/
     |   |   |   |   |-- TablaCategorias.tsx         // // Tabla con acciones de editar, desactivar y ordenar
-    |   |   |   |   +-- ModalCrearCategoria.tsx     // // Formulario con validaciones estrictas anti-duplicados
+    |   |   |   |   +-- ModalCategoria.tsx     // // Formulario con validaciones estrictas anti-duplicados
     |   |   |   +-- services/
-    |   |   |       +-- adminCategoriasService.ts   // // Persistencia directa sobre tabla categorias_servicios
+    |   |   |       +-- categoriasService.ts   // // Persistencia directa sobre tabla categorias_servicios
     |   |   |
     |   |   |-- servicios/                          // Definicion y precios/tiempos de servicios del catalogo
     |   |   |   |-- components/
-    |   |   |   |   |-- TablaServiciosAdmin.tsx     // // Lista de servicios asociados a sus categorias
-    |   |   |   |   +-- ModalConfigurarServicio.tsx // // Formulario de SLA base y departamento responsable
+    |   |   |   |   |-- TablaServicios.tsx     // // Lista de servicios asociados a sus categorias
+    |   |   |   |   +-- ModalServicio.tsx // // Formulario de SLA base y departamento responsable
     |   |   |   +-- services/
-    |   |   |       +-- adminServiciosService.ts    // // Mantenimiento de tabla servicios
+    |   |   |       +-- serviciosService.ts    // // Mantenimiento de tabla servicios
     |   |   |
     |   |   |-- sla/                                // Configuracion de acuerdos de nivel de servicio
     |   |   |   |-- components/
-    |   |   |   |   +-- MatrizConfiguracionSLA.tsx  // // Matriz interactiva de tiempos de respuesta/solucion
+    |   |   |   |   +-- MatrizSla.tsx  // // Matriz interactiva de tiempos de respuesta/solucion
     |   |   |   +-- services/
-    |   |   |       +-- adminSlaService.ts          // // Persistencia y calculos de calendario habil vs corrido
+    |   |   |       +-- slaService.ts          // // Persistencia y calculos de calendario habil vs corrido
     |   |   |
     |   |   +-- formularios/                        // Campos dinamicos y formularios de solicitante
     |   |       |-- components/
-    |   |       |   +-- EditorCamposFormulario.tsx  // // Constructor de campos obligatorios/opcionales
+    |   |       |   +-- EditorFormulario.tsx  // // Constructor de campos obligatorios/opcionales
     |   |       +-- services/
-    |   |           +-- adminFormulariosService.ts  // // Almacenamiento en tabla configuraciones
+    |   |           +-- formulariosService.ts  // // Almacenamiento en tabla configuraciones
     |   |
     |   |-- seguridad/                              // SUBDOMINIO: IDENTIDAD, AUTENTICACION Y SESION
     |   |   |-- components/
@@ -469,9 +469,9 @@ FlowDesk-Software-ITSM/
     |   |
     |   +-- analitica/                              // SUBDOMINIO: REPORTES, AUDITORIA E INTELIGENCIA
     |       |-- components/
-    |       |   |-- GraficosKpiOperativos.tsx       // // Graficos de cumplimiento SLA, tasa de resolucion
-    |       |   |-- TablaAuditoriaLog.tsx           // // Visor filtrable de eventos de seguridad
-    |       |   +-- FiltrosRangoFechas.tsx          // // Selector de intervalos temporales para exportacion
+    |       |   |-- GraficosKpi.tsx       // // Graficos de cumplimiento SLA, tasa de resolucion
+    |       |   |-- TablaAuditoria.tsx           // // Visor filtrable de eventos de seguridad
+    |       |   +-- FiltrosFechas.tsx          // // Selector de intervalos temporales para exportacion
     |       |-- services/
     |       |   +-- analiticaService.ts             // // Consultas analiticas agregadas con GROUP BY y ventanas
     |       +-- types/
@@ -484,12 +484,12 @@ FlowDesk-Software-ITSM/
         |   |   |-- Input.tsx                       // // Input con soporte de errores y accesibilidad
         |   |   |-- Badge.tsx                       // // Insignia para estados y prioridades
         |   |   |-- Modal.tsx                       // // Contenedor modal generico con backdrop accesible
-        |   |   +-- TablaGenerica.tsx               // // Tabla con paginacion y ordenamiento reutilizable
+        |   |   +-- Tabla.tsx               // // Tabla con paginacion y ordenamiento reutilizable
         |   |-- layout/                             // Estructura envolvente de navegacion
         |   |   |-- MenuLateral.tsx                 // // Menu lateral que lee la matriz de permisos
-        |   |   +-- SelectorPerfilActivo.tsx        // // Conmutador superior de rol activo en caliente
+        |   |   +-- SelectorPerfil.tsx        // // Conmutador superior de rol activo en caliente
         |   +-- feedback/                           // Mensajeria al usuario
-        |       |-- AlertaNotificacion.tsx          // // Toast o banner de confirmacion y error
+        |       |-- AlertaToast.tsx          // // Toast o banner de confirmacion y error
         |       +-- SpinnerCarga.tsx                // // Indicador visual de espera asincrona
         |
         |-- lib/                                    // Utilidades de infraestructura y librerias del servidor
@@ -513,10 +513,10 @@ La principal ventaja practica de la **Opcion 1** para un equipo de companeros de
 1. **Escenario de Desarrollo Colaborativo**:
    * **Desarrollador A** recibe la tarea: *"Implementar gestion de problemas y causas raiz"*.
      * Crea su rama: `feature/modulo-problemas`.
-     * Sus archivos de trabajo estan 100% confinados en: `src/modules/itsm/problemas/` y `src/app/(app)/(itsm)/problemas/`.
+     * Sus archivos de trabajo estan 100% confinados en: `src/modules/itsm/problemas/` y `src/app/plataforma/itsm/problemas/`.
    * **Desarrollador B** recibe la tarea: *"Implementar CRUD de categorias de servicios en administracion"*.
      * Crea su rama: `feature/crud-categorias-servicios`.
-     * Sus archivos de trabajo estan 100% confinados en: `src/modules/admin/categorias/` y `src/app/(app)/(admin)/categorias-servicios/`.
+     * Sus archivos de trabajo estan 100% confinados en: `src/modules/admin/categorias/` y `src/app/plataforma/admin/categorias-servicios/`.
    * **Desarrollador C** recibe la tarea: *"Mejorar el sistema de login y agregar bloqueo de captcha por reintentos"*.
      * Crea su rama: `feature/seguridad-reintentos-captcha`.
      * Sus archivos estan confinados en: `src/modules/seguridad/`.
@@ -532,7 +532,7 @@ La principal ventaja practica de la **Opcion 1** para un equipo de companeros de
 #### Ventajas:
 * **Separacion Clara de Dominios**: Responde exactamente al requerimiento de aislar los servicios operativos ITSM de la administracion y de la seguridad.
 * **Alta Cohesion Espacial**: Todo lo que concierne a un modulo (ej. incidentes) esta en una sola carpeta. No hay que saltar entre 6 directorios distantes para realizar un cambio.
-* **Excelente Sinergia con Next.js 14**: Respeta el App Router mediante `Thin Routers` y aprovecha los Route Groups `(itsm)`, `(admin)`, `(analitica)` para mantener URLs limpias y legibles.
+* **Excelente Sinergia con Next.js 14**: Respeta el App Router mediante `Thin Routers` y aprovecha los Route Groups `itsm`, `admin`, `analitica` para mantener URLs limpias y legibles.
 * **Minimos Conflictos en Git**: Maxima independencia de trabajo simultaneo entre companeros de equipo.
 * **Curva de Aprendizaje Moderada**: Cualquier desarrollador con conocimientos basicos de TypeScript y React entiende la estructura en pocos minutos.
 
@@ -586,9 +586,9 @@ FlowDesk-Software-ITSM/
     |-- app/                                        // ADAPTADOR PRIMARIO EXTERNO (DRIVING ADAPTERS - HTTP Y REACT)
     |   |-- layout.tsx                              // Layout raiz HTML
     |   |-- globals.css                             // Estilos globales
-    |   |-- (web)/                                  // Adaptadores de Presentacion Web (Vistas React)
+    |   |-- web/                                  // Adaptadores de Presentacion Web (Vistas React)
     |   |   |-- login/page.tsx                      // Vista web de login (llama a IniciarSesionUseCase)
-    |   |   |-- (privado)/                          // Vistas privadas con layout protegido
+    |   |   |-- plataforma/                          // Vistas privadas con layout protegido
     |   |       |-- layout.tsx                      // Layout del panel con barra de navegacion
     |   |       |-- itsm/                           // Vistas operativas de servicios ITIL
     |   |       |   |-- incidentes/page.tsx         // // Renderiza vista conectada a ListarIncidentesUseCase
@@ -780,7 +780,7 @@ FlowDesk-Software-ITSM/
     |   |-- globals.css                             // Estilos globales con Tailwind
     |   |-- page.tsx                                // Redireccion inicial /login o /dashboard
     |   |-- login/page.tsx                          // Pagina de acceso al sistema
-    |   |-- (app)/                                  // Rutas privadas agrupadas
+    |   |-- plataforma/                                  // Rutas privadas agrupadas
     |   |   |-- layout.tsx                          // Layout privado con barra lateral y selector de perfil
     |   |   |-- dashboard/page.tsx                  // Tablero principal
     |   |   |-- incidentes/page.tsx                 // // Pagina: monta componentes de @/presentation/itsm/incidentes
@@ -882,7 +882,7 @@ FlowDesk-Software-ITSM/
     * Agrega `EncuestaDAO.ts` en `src/data/daos/`.
     * Agrega `EncuestaService.ts` en `src/business/admin/`.
     * Agrega sus componentes en `src/presentation/admin/encuestas/`.
-    * Agrega su ruta en `src/app/(app)/admin/encuestas/page.tsx`.
+    * Agrega su ruta en `src/app/plataforma/admin/encuestas/page.tsx`.
 * **Impacto en Git**: Si dos desarrolladores tocan entidades de tickets al mismo tiempo (ejemplo: uno modifica incidentes y otro solicitudes), ambos podrian editar `TicketDAO.ts` para agregar nuevas consultas SQL, lo cual **si puede generar un conflicto de fusion en Git** en dicho archivo compartido. Esto se resuelve subdividiendo los DAOs si el proyecto crece (`IncidenteDAO.ts`, `RequerimientoDAO.ts`).
 
 ---
