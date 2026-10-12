@@ -29,6 +29,22 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      { source: "/dashboard", destination: "/plataforma/dashboard" },
+      { source: "/admin/:path*", destination: "/plataforma/admin/:path*" },
+      { source: "/tickets/:path*", destination: "/plataforma/tickets/:path*" },
+      { source: "/incidentes/:path*", destination: "/plataforma/incidentes/:path*" },
+      { source: "/solicitudes/:path*", destination: "/plataforma/solicitudes/:path*" },
+      { source: "/cambios/:path*", destination: "/plataforma/cambios/:path*" },
+      { source: "/problemas/:path*", destination: "/plataforma/problemas/:path*" },
+      { source: "/activos/:path*", destination: "/plataforma/activos/:path*" },
+      { source: "/mi-cuenta/:path*", destination: "/plataforma/mi-cuenta/:path*" },
+      { source: "/operacion/:path*", destination: "/plataforma/operacion/:path*" },
+      { source: "/proveedores/:path*", destination: "/plataforma/proveedores/:path*" },
+      { source: "/tecnico/:path*", destination: "/plataforma/tecnico/:path*" },
+    ];
+  },
 };
 
 module.exports = nextConfig;

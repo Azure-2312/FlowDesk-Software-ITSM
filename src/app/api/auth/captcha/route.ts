@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
-import { generarCaptchaDesafio } from "@/lib/security";
+import { generarNuevoCaptcha } from "@/modules/seguridad/captchaService";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const desafio = generarCaptchaDesafio();
-    return NextResponse.json({
-      token: desafio.token,
-      svg: desafio.svg,
-    });
+    const desafio = generarNuevoCaptcha();
+    return NextResponse.json(desafio);
   } catch {
     return NextResponse.json(
       { error: "No se pudo generar el código de seguridad." },
