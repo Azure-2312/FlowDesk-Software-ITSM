@@ -8,6 +8,12 @@ import VistaTicketOperador from "./ticket-detail/presentadores/VistaTicketOperad
 import VistaTicketSupervisor from "./ticket-detail/presentadores/VistaTicketSupervisor";
 import VistaTicketGobernanza from "./ticket-detail/presentadores/VistaTicketGobernanza";
 import VistaTicketAdministrador from "./ticket-detail/presentadores/VistaTicketAdministrador";
+import PresentadorAuditor from "@/modules/itsm/presentadores/PresentadorAuditor";
+import PresentadorGestorArea from "@/modules/itsm/presentadores/PresentadorGestorArea";
+import PresentadorAprobador from "@/modules/itsm/presentadores/PresentadorAprobador";
+import PresentadorRfcEvaluador from "@/modules/itsm/presentadores/PresentadorRfcEvaluador";
+import PresentadorActivoGestor from "@/modules/itsm/presentadores/PresentadorActivoGestor";
+import PresentadorProblemaGestor from "@/modules/itsm/presentadores/PresentadorProblemaGestor";
 
 interface Props {
   idTicket: number;
@@ -381,7 +387,99 @@ export default function ModalDetalleTicket({ idTicket, apiBase = "/api/tickets",
             />
           )}
 
-          {(arquetipo === "GOBERNANZA_NEGOCIO" || arquetipo === "AUDITORIA_FORENSE") && (
+          {arquetipo === "GESTOR_AREA" && (
+            <PresentadorGestorArea
+              ticket={ticket}
+              comentarios={comentarios}
+              catalogos={catalogos}
+              sesion={sesion}
+              onEjecutarAccion={ejecutarTransicion}
+              onEnviarComentario={manejarEnviarComentario}
+              ejecutandoAccion={ejecutandoAccion}
+              enviandoComentario={enviandoComentario}
+              onCerrarModal={onCerrar}
+              onActualizado={onActualizado}
+            />
+          )}
+
+          {arquetipo === "AUDITORIA_FORENSE" && (
+            <PresentadorAuditor
+              ticket={ticket}
+              comentarios={comentarios}
+              catalogos={catalogos}
+              sesion={sesion}
+              onEjecutarAccion={ejecutarTransicion}
+              onEnviarComentario={manejarEnviarComentario}
+              ejecutandoAccion={ejecutandoAccion}
+              enviandoComentario={enviandoComentario}
+              onCerrarModal={onCerrar}
+              onActualizado={onActualizado}
+            />
+          )}
+
+          {arquetipo === "APROBADOR_CAB" && (
+            <PresentadorAprobador
+              ticket={ticket}
+              comentarios={comentarios}
+              catalogos={catalogos}
+              sesion={sesion}
+              onEjecutarAccion={ejecutarTransicion}
+              onEnviarComentario={manejarEnviarComentario}
+              ejecutandoAccion={ejecutandoAccion}
+              enviandoComentario={enviandoComentario}
+              onCerrarModal={onCerrar}
+              onActualizado={onActualizado}
+            />
+          )}
+
+          {arquetipo === "GESTOR_CAMBIOS" && (
+            <PresentadorRfcEvaluador
+              ticket={ticket}
+              comentarios={comentarios}
+              catalogos={catalogos}
+              sesion={sesion}
+              onEjecutarAccion={ejecutarTransicion}
+              onEnviarComentario={manejarEnviarComentario}
+              ejecutandoAccion={ejecutandoAccion}
+              enviandoComentario={enviandoComentario}
+              onCerrarModal={onCerrar}
+              onActualizado={onActualizado}
+            />
+          )}
+
+          {arquetipo === "GESTOR_ACTIVOS" && (
+            <PresentadorActivoGestor
+              ticket={ticket}
+              comentarios={comentarios}
+              catalogos={catalogos}
+              sesion={sesion}
+              onEjecutarAccion={ejecutarTransicion}
+              onEnviarComentario={manejarEnviarComentario}
+              ejecutandoAccion={ejecutandoAccion}
+              enviandoComentario={enviandoComentario}
+              onCerrarModal={onCerrar}
+              onActualizado={onActualizado}
+            />
+          )}
+
+          {arquetipo === "GESTOR_PROBLEMAS" && (
+            <PresentadorProblemaGestor
+              ticket={ticket}
+              comentarios={comentarios}
+              catalogos={catalogos}
+              sesion={sesion}
+              onEjecutarAccion={ejecutarTransicion}
+              onEnviarComentario={manejarEnviarComentario}
+              onElevarAProblema={elevarAProblema}
+              ejecutandoAccion={ejecutandoAccion}
+              enviandoComentario={enviandoComentario}
+              elevandoProblema={elevandoProblema}
+              onCerrarModal={onCerrar}
+              onActualizado={onActualizado}
+            />
+          )}
+
+          {arquetipo === "GOBERNANZA_NEGOCIO" && (
             <VistaTicketGobernanza
               ticket={ticket}
               comentarios={comentarios}

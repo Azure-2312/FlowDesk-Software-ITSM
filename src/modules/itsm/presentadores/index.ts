@@ -1,0 +1,11 @@
+export { default as PresentadorAdmin } from "./PresentadorAdmin";
+export { default as PresentadorConsumidor } from "./PresentadorConsumidor";
+export { default as PresentadorOperador } from "./PresentadorOperador";
+export { default as PresentadorSupervisor } from "./PresentadorSupervisor";
+export { default as PresentadorGobierno } from "./PresentadorGobierno";
+export { default as PresentadorAuditor } from "./PresentadorAuditor";
+export { default as PresentadorGestorArea } from "./PresentadorGestorArea";
+export { default as PresentadorAprobador } from "./PresentadorAprobador";
+export { default as PresentadorRfcEvaluador } from "./PresentadorRfcEvaluador";
+export { default as PresentadorActivoGestor } from "./PresentadorActivoGestor";
+export { default as PresentadorProblemaGestor } from "./PresentadorProblemaGestor";

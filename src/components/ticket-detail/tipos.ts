@@ -2,11 +2,16 @@ import { Ticket, ComentarioTicket, CatalogosTickets, SesionUsuario, ActualizarTi
 
 export type ArquetipoVistaTicket =
   | "CONSUMIDOR"           // Perfil 3: Solicitante
-  | "OPERADOR_TECNICO"     // Perfil 2: Técnico
+  | "OPERADOR_TECNICO"     // Perfil 2: Tecnico
   | "SUPERVISOR_OPERATIVO" // Perfil 4: Supervisor
-  | "GOBERNANZA_NEGOCIO"   // Perfil 5: Gestor de Área
-  | "AUDITORIA_FORENSE"   // Perfil 6: Auditor de Seguridad
-  | "ADMINISTRADOR_SISTEMA"; // Perfil 1: Administrador del Sistema
+  | "GESTOR_AREA"          // Perfil 5: Gestor de Area
+  | "AUDITORIA_FORENSE"    // Perfil 6: Auditor de Seguridad
+  | "APROBADOR_CAB"        // Perfil 7: Aprobador
+  | "GESTOR_CAMBIOS"       // Perfil 8: Gestor de Cambios
+  | "GESTOR_ACTIVOS"       // Perfil 9: Gestor de Activos y CMDB
+  | "GESTOR_PROBLEMAS"     // Perfil 10: Gestor de Problemas
+  | "ADMINISTRADOR_SISTEMA"// Perfil 1: Administrador del Sistema
+  | "GOBERNANZA_NEGOCIO";  // Alias de retrocompatibilidad
 
 export interface PropsVistaPresentadorTicket {
   ticket: Ticket;
@@ -24,25 +29,31 @@ export interface PropsVistaPresentadorTicket {
 }
 
 /**
- * Resuelve el arquetipo de experiencia visual segun el perfil activo del usuario
+ * Resuelve el arquetipo de experiencia visual segun el perfil activo del usuario (10 perfiles oficiales)
  */
 export function resolverArquetipoVista(idPerfil?: number): ArquetipoVistaTicket {
   switch (idPerfil) {
-    case 1: // Administrador
+    case 1:
       return "ADMINISTRADOR_SISTEMA";
-    case 3: // Solicitante
-      return "CONSUMIDOR";
-    case 2: // Tecnico de Soporte
+    case 2:
       return "OPERADOR_TECNICO";
-    case 4: // Supervisor
+    case 3:
+      return "CONSUMIDOR";
+    case 4:
       return "SUPERVISOR_OPERATIVO";
-    case 5: // Gestor de Area
-      return "GOBERNANZA_NEGOCIO";
-    case 6: // Auditor de Seguridad
+    case 5:
+      return "GESTOR_AREA";
+    case 6:
       return "AUDITORIA_FORENSE";
+    case 7:
+      return "APROBADOR_CAB";
+    case 8:
+      return "GESTOR_CAMBIOS";
+    case 9:
+      return "GESTOR_ACTIVOS";
+    case 10:
+      return "GESTOR_PROBLEMAS";
     default:
-      // Fallar al arquetipo de solo lectura; no otorgar la interfaz del solicitante
-      // a perfiles nuevos o fuera de la matriz explícita.
       return "AUDITORIA_FORENSE";
   }
 }
