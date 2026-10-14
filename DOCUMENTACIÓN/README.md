@@ -47,4 +47,7 @@ En este directorio se compila la documentacion tecnica, arquitectonica, funciona
 * **[PROPUESTAS_ARQUITECTURA_Y_ESTRUCTURA.md](PROPUESTAS_ARQUITECTURA_Y_ESTRUCTURA.md)**: Evaluacion arquitectonica y definicion de la Arquitectura Modular Orientada al Dominio (`src/modules/`, `src/shared/` y `src/app/plataforma/`).
 * **[ARQUITECTURA_Y_JERARQUIA_SRC.md](ARQUITECTURA_Y_JERARQUIA_SRC.md)**: Arbol jerarquico numerado de todas las carpetas y archivos dentro de `src/` con su respectiva explicacion funcional.
 * **[DISTRIBUCION_EQUIPO_Y_METODOLOGIA_SCRUM.md](DISTRIBUCION_EQUIPO_Y_METODOLOGIA_SCRUM.md)**: Plan maestro de division de responsabilidades desde cero entre los 5 integrantes (Miguel, Lourdes, Alexis, Nain y Junior), asignacion de Historias de Usuario (`HU-01` a `HU-44`), Requerimientos (`RF-01` a `RF-44`, `RNF-01` a `RNF-06`), Reglas de Negocio (`RN-01` a `RN-41`), aislamiento de ramas en Git, metodologia Scrum, actas de Daily Standup y prompts para asistentes de IA.
+* **[ESQUEMA_MENUS_POR_PERFIL.md](ESQUEMA_MENUS_POR_PERFIL.md)**: Esquema maestro de menus, opciones y subopciones por perfil (10 perfiles oficiales ITSM).
+* **[MATRIZ_BRECHA_ACTUAL_VS_PROPUESTA_POR_PERFIL.md](MATRIZ_BRECHA_ACTUAL_VS_PROPUESTA_POR_PERFIL.md)**: Matriz comparativa exhaustiva de brecha (Software Actual vs. Propuesta de Menus por Perfil) con porcentajes de completitud (% Hecho), diagnostico de pendientes y catalogacion de componentes fuera de la propuesta.
+
 
