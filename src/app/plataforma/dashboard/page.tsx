@@ -10,17 +10,22 @@ export default function PaginaDashboard() {
     redirect("/login");
   }
 
+  // Redireccion inteligente segun perfil activo en la sesion JWT (10 perfiles oficiales ITSM)
   const destinosPorPerfil: Record<number, string> = {
-    1: "/admin/usuarios",
-    2: "/tickets/gestion/asignados",
-    3: "/tickets/gestion/mios",
-    4: "/tickets/gestion/todos",
-    5: "/tickets/gestion/aprobaciones",
-    6: "/tickets/gestion/auditoria",
-    7: "/cambios/gestion/cab",
-    8: "/cambios",
-    9: "/activos",
+    1: "/admin/usuarios",              // 1. Administrador -> Gestion de identidades y accesos
+    2: "/tecnico/panel",               // 2. Tecnico -> Panel operativo de atencion y SLA
+    3: "/tickets",                     // 3. Solicitante -> Portal de tickets y autoservicio
+    4: "/tickets/gestion/asignar",     // 4. Supervisor -> Centro de despacho y monitoreo de equipo
+    5: "/tickets/gestion/aprobaciones",// 5. Gestor de Area -> Aprobaciones departamentales
+    6: "/tickets/gestion/auditoria",   // 6. Auditor -> Consola de auditoria forense inmutable
+    7: "/cambios/gestion/cab",         // 7. Aprobador -> Panel de dictamen colegiado CAB
+    8: "/cambios/gestion/todos",       // 8. Gestor de Cambios -> Consolidado de RFCs y calendario
+    9: "/activos/inventario",          // 9. Gestor de Activos y CMDB -> Inventario de hardware y software
+    10: "/problemas",                  // 10. Gestor de Problemas -> Registro de problemas y KEDB
   };
 
-  redirect(destinosPorPerfil[sesion.perfilActivo?.id_perfil] ?? "/login");
+  const idPerfil = sesion.perfilActivo?.id_perfil;
+  const destino = idPerfil ? destinosPorPerfil[idPerfil] : "/login";
+
+  redirect(destino || "/login");
 }
