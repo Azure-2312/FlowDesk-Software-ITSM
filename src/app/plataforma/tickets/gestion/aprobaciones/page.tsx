@@ -1,5 +1,5 @@
-import VistaTicketsPage from "@/modules/tickets/gestion/aprobaciones/VistaTicketsPage";
+import VistaTicketsGestionAprobaciones from "@/modules/tickets/gestion/aprobaciones/VistaTicketsGestionAprobaciones";
 
 export default function PaginaTicketsRoute() {
-  return <VistaTicketsPage />;
+  return <VistaTicketsGestionAprobaciones />;
 }

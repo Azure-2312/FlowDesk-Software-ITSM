@@ -1,5 +1,5 @@
-import VistaTecnicoPage from "@/modules/tecnico/cambios/calendario/VistaTecnicoPage";
+import VistaTecnicoCambiosCalendario from "@/modules/tecnico/cambios/calendario/VistaTecnicoCambiosCalendario";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoPage />;
+  return <VistaTecnicoCambiosCalendario />;
 }

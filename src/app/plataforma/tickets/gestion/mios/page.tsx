@@ -1,5 +1,5 @@
-import VistaTicketsPage from "@/modules/tickets/gestion/mios/VistaTicketsPage";
+import VistaTicketsGestionMios from "@/modules/tickets/gestion/mios/VistaTicketsGestionMios";
 
 export default function PaginaTicketsRoute() {
-  return <VistaTicketsPage />;
+  return <VistaTicketsGestionMios />;
 }
