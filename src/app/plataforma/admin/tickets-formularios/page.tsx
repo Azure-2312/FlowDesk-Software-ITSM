@@ -1,5 +1,5 @@
-import ConfiguracionFormulariosTickets from "@/modules/administracion/components/ConfiguracionFormulariosTickets";
+import VistaTicketsFormularios from "@/modules/administracion/config/tickets-formularios/VistaTicketsFormularios";
 
-export default function PaginaTicketsFormularios() {
-  return <ConfiguracionFormulariosTickets />;
+export default function PaginaAdminTicFuncional() {
+  return <VistaTicketsFormularios />;
 }
