@@ -1408,10 +1408,21 @@ La arquitectura objetivo no es solo "mover archivos". Es:
 - Nota de compatibilidad: las capacidades de lectura replican las listas de perfiles vigentes; se normalizaron algunas inconsistencias (p. ej. el perfil `Gestor de Problemas` (10) ahora accede a problemas/KEDB de forma coherente con su proposito).
 - Pendiente: la tabla `vistasPermitidas` de `ticketsController` (bandejas por perfil) sigue siendo un mapa perfil->vista y puede convertirse en capacidades `tickets:vista:*`.
 
-## 17.7 Siguiente nivel recomendado
+## 17.7 Fase de servicios por modulo (Service.ts)
+
+- Objetivo cumplido: la logica de datos y las reglas de negocio de la capa API se extrajeron de los controladores a `src/modules/<feature>/services/*Service.ts` (o a `*Service.ts` en la raiz del modulo cuando ese es el convenio del modulo, p. ej. `seguridad`).
+- Resultado: ningun archivo `src/modules/**/api/**/*Controller.ts` importa `@/shared/lib/db`; los controladores solo resuelven sesion/autenticacion, parsean la peticion (`new URL`, `req.json()`) y construyen la respuesta (`NextResponse`).
+- Patron de servicio: accede a datos con `query`/`queryRow`, valida reglas de negocio y lanza `ErrorDominio(mensaje, estado)` desde `src/shared/lib/errores.ts`.
+- Patron de controlador: captura el error y lo traduce con `respuestaError(error, mensajeInterno)` -> `{ error, status }`, preservando el cuerpo y el codigo HTTP originales.
+- Respuestas no-200 con cuerpo propio (p. ej. bloqueo concurrente `423 {bloqueado:true,...}`): el servicio devuelve `{ httpStatus, payload }` y el controlador emite `NextResponse.json(payload, { status: httpStatus })`.
+- Modulos cubiertos por la fase: `administracion`, `activos`, `cambios`, `conocimiento`, `incidentes`, `operacion`, `problemas`, `proveedores`, `reportes`, `seguridad`, `servicios`, `solicitudes`, `tecnico` y `tickets`.
+- Utilidades compartidas nuevas: `src/shared/lib/errores.ts` (`ErrorDominio`, `respuestaError`) y `src/shared/lib/configuracionModulo.ts` (`getUsuarioSesionConfig`, `calcularDiffConfig`, `calcularDiffDetalladoConfig`).
+- Contratos publicos: los modulos exponen sus servicios en `src/modules/<feature>/index.ts`.
+- Nota: se corrigieron cadenas con codificacion doble (mojibake) en los controladores de `solicitudes` e `incidentes` al migrarlos.
+
+## 17.8 Siguiente nivel recomendado
 
 1. Reemplazar el mapa puente `CAPACIDADES_POR_PERFIL` por una tabla `perfil_capacidades` en la base de datos.
-2. Llevar la logica de datos a `Service.ts` por modulo y adelgazar aun mas los controladores.
-3. Estandarizar nombres de vistas (`Vista<Feature>.tsx`) y de configuraciones.
-4. Incorporar pruebas de contrato por modulo.
-5. Exponer contratos publicos (`index.ts`) en los modulos que aun no los tienen.
+2. Estandarizar nombres de vistas (`Vista<Feature>.tsx`) y de configuraciones.
+3. Incorporar pruebas de contrato por modulo (servicios y controladores).
+4. Convertir la tabla `vistasPermitidas` de `tickets` (bandejas por perfil) en capacidades `tickets:vista:*`.
