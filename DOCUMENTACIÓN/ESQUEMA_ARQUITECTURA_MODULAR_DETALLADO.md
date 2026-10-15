@@ -1359,10 +1359,13 @@ La arquitectura objetivo no es solo "mover archivos". Es:
 
 ## 17.1 Resultado estructural
 
-- Todas las rutas en `src/app/` son delgadas: ninguna supera 50 lineas.
+- Todas las paginas en `src/app/**/page.tsx` son delgadas: ninguna supera 50 lineas.
+- Todos los route handlers en `src/app/api/**/route.ts` son delgados: ninguna supera 5 lineas.
 - La logica de render, estado, configuracion y vistas vive en `src/modules/<feature>/...`.
+- La logica de API vive en `src/modules/<feature>/api/*Controller.ts`.
 - La infraestructura transversal vive en `src/shared/lib` y `src/shared/components`.
 - No existe dependencia de rutas sobre `src/components` ni `src/lib` (ambas eliminadas).
+- No existen imports entre route handlers (`from "../<ruta>/route"`): los adaptadores consumen los controladores de modulo.
 
 ## 17.2 Modulos migrados
 
@@ -1387,10 +1390,18 @@ La arquitectura objetivo no es solo "mover archivos". Es:
 - `npm run build`: exitoso.
 - Sincronizacion en las cuatro ramas remotas: `main`, `feature/alexis-problemas-conocimiento`, `prueba-conexion`, `verify-junior`.
 
-## 17.5 Siguiente nivel recomendado
+## 17.5 Capa de API por modulo
+
+- Patron de controlador: la logica de cada endpoint se movio a `src/modules/<feature>/api/<nombre>Controller.ts`.
+- Patron de ruta API: `route.ts` solo reexporta los metodos HTTP y conserva la configuracion de segmento (`dynamic`, `revalidate`).
+- Adaptadores de dominio: `incidentes` y `solicitudes` validan el tipo de ticket y delegan en los controladores de `tickets`.
+- Duplicacion eliminada: `seguridad/authService.ts` reexporta la implementacion unica de `shared/lib/auth.ts`.
+- Contratos publicos: `src/modules/seguridad/index.ts` expone la API estable del modulo de seguridad.
+
+## 17.6 Siguiente nivel recomendado
 
 1. Sustituir gradualmente validaciones de perfil por capacidades (`dominio:accion`).
-2. Llevar la logica de datos a `Service.ts` por modulo y adelgazar aun mas las vistas.
+2. Llevar la logica de datos a `Service.ts` por modulo y adelgazar aun mas los controladores.
 3. Estandarizar nombres de vistas (`Vista<Feature>.tsx`) y de configuraciones.
-4. Mover contratos de API a `src/modules/<feature>/api` o `shared/api`, evitando logica en `route.ts`.
-5. Incorporar pruebas de contrato por modulo.
+4. Incorporar pruebas de contrato por modulo.
+5. Exponer contratos publicos (`index.ts`) en los modulos que aun no los tienen.
