@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { queryRow } from "@/shared/lib/db";
-import { GET as obtenerTicket, PATCH as actualizarTicket } from "../../tickets/[id]/route";
+import { GET as obtenerTicket, PATCH as actualizarTicket } from "@/modules/tickets/api/ticketDetalleController";
 
 type Contexto = { params: { id: string } };
 
