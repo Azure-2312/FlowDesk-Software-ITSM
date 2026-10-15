@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { queryRow } from "@/shared/lib/db";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
-import { POST as comentarTicket } from "../../../tickets/[id]/comentarios/route";
+import { POST as comentarTicket } from "@/modules/tickets/api/ticketComentariosController";
 
 type Contexto = { params: { id: string } };
 export async function POST(req: NextRequest, context: Contexto) {
