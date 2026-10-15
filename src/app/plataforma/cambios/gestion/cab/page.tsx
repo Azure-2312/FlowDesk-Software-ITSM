@@ -1,5 +1,5 @@
-import VistaCambiosPage from "@/modules/cambios/gestion/cab/VistaCambiosPage";
+import VistaCambiosGestionCab from "@/modules/cambios/gestion/cab/VistaCambiosGestionCab";
 
 export default function PaginaCambiosRoute() {
-  return <VistaCambiosPage />;
+  return <VistaCambiosGestionCab />;
 }

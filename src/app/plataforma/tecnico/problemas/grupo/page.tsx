@@ -1,5 +1,5 @@
-import VistaTecnicoPage from "@/modules/tecnico/problemas/grupo/VistaTecnicoPage";
+import VistaTecnicoProblemasGrupo from "@/modules/tecnico/problemas/grupo/VistaTecnicoProblemasGrupo";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoPage />;
+  return <VistaTecnicoProblemasGrupo />;
 }
