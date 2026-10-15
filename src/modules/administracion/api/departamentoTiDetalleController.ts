@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { DepartamentoTI, TecnicoConCarga } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -43,7 +44,7 @@ export async function GET(
     }
 
     const perfil = sesion.perfilActivo.id_perfil;
-    if (![1, 4, 6].includes(perfil)) {
+    if (!sesionTieneCapacidad(sesion, CAPACIDADES.ORGANIZACION_VER)) {
       return NextResponse.json({ error: "No autorizado para consultar equipos de TI." }, { status: 403 });
     }
     if (perfil === 4 && Number(departamento.id_supervisor) !== sesion.id_usuario) {
@@ -92,7 +93,7 @@ export async function PATCH(
 
   // La estructura y sus responsables se configuran centralmente; el Supervisor
   // coordina su equipo, pero no altera departamentos ni se asigna a sí mismo.
-  if (sesion.perfilActivo.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_ORGANIZACION)) {
     return NextResponse.json({ error: "No autorizado para modificar departamentos" }, { status: 403 });
   }
 

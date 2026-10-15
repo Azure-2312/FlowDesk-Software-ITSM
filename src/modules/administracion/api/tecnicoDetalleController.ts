@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 1) return NextResponse.json({ error: "Solo Administración puede retirar técnicos de un departamento." }, { status: 403 });
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_ORGANIZACION)) return NextResponse.json({ error: "Solo Administración puede retirar técnicos de un departamento." }, { status: 403 });
   const idUsuario = Number(params.id);
   if (!Number.isInteger(idUsuario)) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
   await query("UPDATE tecnico_detalle SET estado_registro=false,estado_operativo='INACTIVO' WHERE id_usuario=$1", [idUsuario]);
@@ -31,7 +32,7 @@ export async function PATCH(
     return NextResponse.json({ error: "ID de técnico inválido" }, { status: 400 });
   }
 
-  const esAdminOSupervisor = [1, 4].includes(sesion.perfilActivo.id_perfil);
+  const esAdminOSupervisor = sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_TECNICOS);
   const esElMismoTecnico = sesion.id_usuario === idUsuario;
 
   if (!esAdminOSupervisor && !esElMismoTecnico) {

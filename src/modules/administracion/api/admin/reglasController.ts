@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_NOTIFICACIONES)) {
     return NextResponse.json({ error: "Solo Administración puede consultar reglas de notificación." }, { status: 403 });
   }
 
@@ -41,7 +42,7 @@ export async function PUT(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 
-  if (!sesion || sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesion || !sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_NOTIFICACIONES)) {
     return NextResponse.json({ error: "Solo Administración puede configurar reglas de notificación." }, { status: 403 });
   }
 
@@ -111,7 +112,7 @@ export async function POST(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 
-  if (!sesion || sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesion || !sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_NOTIFICACIONES)) {
     return NextResponse.json({ error: "Solo Administración puede registrar nuevas reglas de notificación." }, { status: 403 });
   }
 

@@ -1398,9 +1398,19 @@ La arquitectura objetivo no es solo "mover archivos". Es:
 - Duplicacion eliminada: `seguridad/authService.ts` reexporta la implementacion unica de `shared/lib/auth.ts`.
 - Contratos publicos: `src/modules/seguridad/index.ts` expone la API estable del modulo de seguridad.
 
-## 17.6 Siguiente nivel recomendado
+## 17.6 RBAC por capacidades
 
-1. Sustituir gradualmente validaciones de perfil por capacidades (`dominio:accion`).
+- Catalogo unico: `src/shared/lib/capacidades.ts` define `PERFILES`, `CAPACIDADES` (`dominio:accion`) y el mapa puente `CAPACIDADES_POR_PERFIL`.
+- Resolucion: `resolverCapacidades`, `tieneCapacidad`, `tieneAlgunaCapacidad`, `tieneTodasLasCapacidades` y equivalentes de sesion (`sesionTieneCapacidad`, `sesionTieneAlgunaCapacidad`).
+- Paginas: `exigirCapacidadPagina(capacidades)` en `src/shared/lib/page-auth.ts` reemplaza a `exigirPerfilPagina` (que queda deprecado). Todas las paginas que antes enumeraban perfiles ahora consultan capacidades.
+- API: `src/shared/lib/api-auth.ts` expone `autorizarApi(req, capacidades)` y `obtenerSesionDeRequest(req)`; los controladores migrados usan `sesionTieneCapacidad(sesion, CAPACIDADES.X)` en lugar de arreglos de perfiles.
+- Alcance migrado: controladores de `administracion`, `activos`, `cambios`, `conocimiento`, `operacion`, `problemas`, `proveedores`, `servicios`, `tecnico`, `tickets` y `reportes`.
+- Nota de compatibilidad: las capacidades de lectura replican las listas de perfiles vigentes; se normalizaron algunas inconsistencias (p. ej. el perfil `Gestor de Problemas` (10) ahora accede a problemas/KEDB de forma coherente con su proposito).
+- Pendiente: la tabla `vistasPermitidas` de `ticketsController` (bandejas por perfil) sigue siendo un mapa perfil->vista y puede convertirse en capacidades `tickets:vista:*`.
+
+## 17.7 Siguiente nivel recomendado
+
+1. Reemplazar el mapa puente `CAPACIDADES_POR_PERFIL` por una tabla `perfil_capacidades` en la base de datos.
 2. Llevar la logica de datos a `Service.ts` por modulo y adelgazar aun mas los controladores.
 3. Estandarizar nombres de vistas (`Vista<Feature>.tsx`) y de configuraciones.
 4. Incorporar pruebas de contrato por modulo.

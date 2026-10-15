@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { COOKIE_SESION } from "@/shared/lib/constants";
 
 export const dynamic = "force-dynamic";
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest) {
   }
 
   const idPerfil = sesion.perfilActivo?.id_perfil;
-  if (![1, 8].includes(idPerfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_FORMULARIO_CONFIGURAR)) {
     return NextResponse.json({ error: "No autorizado para modificar catálogos" }, { status: 403 });
   }
 
@@ -161,7 +162,7 @@ export async function PUT(req: NextRequest) {
   }
 
   const idPerfil = sesion.perfilActivo?.id_perfil;
-  if (![1, 8].includes(idPerfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_FORMULARIO_CONFIGURAR)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
   }
 
@@ -223,7 +224,7 @@ export async function DELETE(req: NextRequest) {
   }
 
   const idPerfil = sesion.perfilActivo?.id_perfil;
-  if (![1, 8].includes(idPerfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_FORMULARIO_CONFIGURAR)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
   }
 

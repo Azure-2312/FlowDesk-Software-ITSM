@@ -2,8 +2,8 @@ import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/shared/lib/db";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
-const LECTURA = [6, 7, 8, 9];
 function sesionDe(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   return token ? verificarTokenSesion(token) : null;
@@ -12,7 +12,7 @@ function sesionDe(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const sesion = sesionDe(req);
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (!LECTURA.includes(sesion.perfilActivo?.id_perfil || 0)) return NextResponse.json({ error: "No autorizado para consultar proveedores y contratos" }, { status: 403 });
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROVEEDORES_VER)) return NextResponse.json({ error: "No autorizado para consultar proveedores y contratos" }, { status: 403 });
   try {
     const where = sesion.perfilActivo?.id_perfil === 9 ? "" : "WHERE estado_registro=true";
     const rows = await query(`SELECT id_proveedor,codigo_proveedor,nombre,tipo_servicio,contacto_nombre,contacto_correo,contacto_telefono,numero_contrato,fecha_inicio,fecha_vencimiento,servicio_soportado,compromiso_sla,evaluacion_desempeno,estado,observaciones,fecha_creacion FROM proveedor_ti ${where} ORDER BY fecha_vencimiento NULLS LAST,nombre`);
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const sesion = sesionDe(req);
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 9) return NextResponse.json({ error: "Solo el Gestor de Activos y Configuración mantiene proveedores técnicos" }, { status: 403 });
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROVEEDORES_GESTIONAR)) return NextResponse.json({ error: "Solo el Gestor de Activos y Configuración mantiene proveedores técnicos" }, { status: 403 });
   try {
     const b = await req.json();
     const nombre = String(b.nombre || "").trim();

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Permitido para Administrador (1) y Auditor (6)
-  if (sesion.perfilActivo.id_perfil !== 1 && sesion.perfilActivo.id_perfil !== 6) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.AUDITORIA_VER)) {
     return NextResponse.json({ error: "No autorizado para consultar la bitácora integral de auditoría." }, { status: 403 });
   }
 

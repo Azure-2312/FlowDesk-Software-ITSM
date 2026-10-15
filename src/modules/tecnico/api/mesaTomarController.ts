@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { queryRow, query } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function POST(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -10,7 +11,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (sesion.perfilActivo?.id_perfil !== 2) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.TICKETS_ATENDER)) {
     return NextResponse.json({ error: "Solo especialistas técnicos pueden tomar tickets de la cola." }, { status: 403 });
   }
 

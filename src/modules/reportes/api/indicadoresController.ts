@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,7 @@ export async function GET(req: NextRequest) {
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
 
   const perfil = sesion.perfilActivo?.id_perfil;
-  if (![1, 4, 5, 6].includes(perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.INDICADORES_VER)) {
     return NextResponse.json({ error: "Este perfil no puede consultar indicadores globales." }, { status: 403 });
   }
 

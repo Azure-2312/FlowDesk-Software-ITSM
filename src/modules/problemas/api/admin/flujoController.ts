@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -196,7 +197,7 @@ export async function POST(req: NextRequest) {
 
     // 2. Publicar Versión Oficial (Solo Admin)
     if (accion === "publicar") {
-      if (sesion.perfilActivo?.id_perfil !== 1) {
+      if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_CONFIGURAR)) {
         return NextResponse.json(
           { error: "Solo el perfil Administrador cuenta con privilegios para publicar versiones oficiales" },
           { status: 403 }
