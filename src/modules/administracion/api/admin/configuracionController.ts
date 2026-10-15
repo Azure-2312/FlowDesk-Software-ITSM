@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
+import {
+  obtenerConfiguraciones,
+  guardarConfiguracion,
+} from "@/modules/administracion/services/configuracionSistemaService";
 
 export const dynamic = "force-dynamic";
 
@@ -18,32 +22,12 @@ export async function GET(req: NextRequest) {
   const categoria = searchParams.get("categoria");
 
   try {
-    if (clave) {
-      const row = await queryRow(`
-        SELECT clave, categoria, descripcion, valor, fecha_modificacion
-        FROM configuracion_sistema
-        WHERE clave = $1
-      `, [clave]);
-
-      if (!row) {
-        return NextResponse.json({ error: "Configuracion no encontrada" }, { status: 404 });
-      }
-      return NextResponse.json({ configuracion: row });
-    }
-
-    let sql = `SELECT clave, categoria, descripcion, valor, fecha_modificacion FROM configuracion_sistema`;
-    const params: any[] = [];
-    if (categoria) {
-      sql += ` WHERE categoria = $1`;
-      params.push(categoria);
-    }
-    sql += ` ORDER BY categoria, clave`;
-
-    const configs = await query(sql, params);
-    return NextResponse.json({ configuraciones: configs });
-  } catch (error) {
-    console.error("Error al obtener configuraciones:", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    const data = await obtenerConfiguraciones(clave, categoria);
+    return NextResponse.json(data);
+  } catch (err) {
+    if (!(err instanceof ErrorDominio)) console.error("Error al obtener configuraciones:", err);
+    const { error, status } = respuestaError(err, "Error interno del servidor");
+    return NextResponse.json({ error }, { status });
   }
 }
 
@@ -62,54 +46,16 @@ export async function PUT(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { clave, valor, descripcion } = body;
-
-    if (!clave || valor === undefined) {
-      return NextResponse.json({ error: "Clave y valor son requeridos" }, { status: 400 });
-    }
-
-    // Obtener valor anterior para auditoria
-    const actual = await queryRow<{ valor: any; categoria: string }>(`
-      SELECT valor, categoria FROM configuracion_sistema WHERE clave = $1
-    `, [clave]);
-
-    const row = await queryRow(`
-      INSERT INTO configuracion_sistema (clave, categoria, descripcion, valor, usuario_modificacion, fecha_modificacion)
-      VALUES ($1, COALESCE($2, 'GENERAL'), $3, $4, $5, NOW())
-      ON CONFLICT (clave) DO UPDATE SET
-        valor = EXCLUDED.valor,
-        descripcion = COALESCE(EXCLUDED.descripcion, configuracion_sistema.descripcion),
-        usuario_modificacion = EXCLUDED.usuario_modificacion,
-        fecha_modificacion = NOW()
-      RETURNING clave, categoria, descripcion, valor, fecha_modificacion
-    `, [
-      clave,
-      actual?.categoria || 'GENERAL',
-      descripcion || null,
-      JSON.stringify(valor),
-      sesion.id_usuario
-    ]);
-
-    // Registrar en Audit Trail
     const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
-    await query(`
-      INSERT INTO log_auditoria_sistema (id_usuario, modulo, accion, descripcion, detalles, direccion_ip)
-      VALUES ($1, $2, $3, $4, $5, $6)
-    `, [
-      sesion.id_usuario,
-      actual?.categoria || 'CONFIGURACION',
-      'MODIFICAR_CONFIGURACION',
-      `El usuario ${sesion.nombres} actualizó la configuración de "${clave}"`,
-      JSON.stringify({ anterior: actual?.valor || null, nuevo: valor }),
-      ip
-    ]);
-
-    return NextResponse.json({
-      mensaje: "Configuración actualizada y registrada en auditoría exitosamente.",
-      configuracion: row
+    const data = await guardarConfiguracion(body, {
+      idUsuario: sesion.id_usuario,
+      nombres: sesion.nombres,
+      ip,
     });
-  } catch (error) {
-    console.error("Error al guardar configuracion:", error);
-    return NextResponse.json({ error: "Error interno al guardar configuracion" }, { status: 500 });
+    return NextResponse.json(data);
+  } catch (err) {
+    if (!(err instanceof ErrorDominio)) console.error("Error al guardar configuracion:", err);
+    const { error, status } = respuestaError(err, "Error interno al guardar configuracion");
+    return NextResponse.json({ error }, { status });
   }
 }
