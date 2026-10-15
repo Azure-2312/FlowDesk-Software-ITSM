@@ -1,9 +1,10 @@
-import { query, transaccion } from "c:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/lib/db";
+import { query, transaccion } from "@/lib/db";
+import type { PoolClient } from "pg";
 
 async function migrar() {
   console.log("Iniciando migración para Prompt 4 - Menú Técnico...");
 
-  await transaccion(async (client) => {
+  await transaccion(async (client: PoolClient) => {
     // 1. Columnas adicionales en opciones_menu
     console.log("1. Extendiendo opciones_menu...");
     await client.query(`
