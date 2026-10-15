@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { query } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import type { LogAccesoItem } from "@/modules/seguridad/logsTypes";
+import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
+import { listarLogsSeguridad } from "@/modules/administracion/services/logsSeguridadService";
 
 export const dynamic = "force-dynamic";
 
@@ -23,48 +23,16 @@ export async function GET(req: NextRequest) {
   }
 
   const { searchParams } = new URL(req.url);
-  const buscar = searchParams.get("buscar");
-  const filtroResultado = searchParams.get("resultado"); // "exitoso", "fallido", o null
-
-  const condiciones: string[] = ["1=1"];
-  const params: any[] = [];
-  let paramIdx = 1;
-
-  if (filtroResultado === "exitoso") {
-    condiciones.push("l.exitoso = true");
-  } else if (filtroResultado === "fallido") {
-    condiciones.push("l.exitoso = false");
-  }
-
-  if (buscar && buscar.trim().length > 0) {
-    condiciones.push(
-      `(l.correo_intento ILIKE $${paramIdx} OR l.ip ILIKE $${paramIdx} OR CONCAT(u.nombres, ' ', u.apellido_paterno) ILIKE $${paramIdx})`
-    );
-    params.push(`%${buscar.trim()}%`);
-    paramIdx++;
-  }
-
-  const sql = `
-    SELECT 
-      l.id_log,
-      l.id_usuario,
-      CONCAT(u.nombres, ' ', u.apellido_paterno) as usuario_nombre,
-      l.correo_intento,
-      l.exitoso,
-      l.ip,
-      l.fecha
-    FROM log_acceso l
-    LEFT JOIN usuario u ON u.id_usuario = l.id_usuario
-    WHERE ${condiciones.join(" AND ")}
-    ORDER BY l.fecha DESC
-    LIMIT 100
-  `;
 
   try {
-    const logs = await query<LogAccesoItem>(sql, params);
-    return NextResponse.json({ logs });
+    const data = await listarLogsSeguridad({
+      buscar: searchParams.get("buscar"),
+      resultado: searchParams.get("resultado"),
+    });
+    return NextResponse.json(data);
   } catch (err) {
-    console.error("Error al consultar logs de seguridad:", err);
-    return NextResponse.json({ error: "Error al consultar registros de seguridad" }, { status: 500 });
+    if (!(err instanceof ErrorDominio)) console.error("Error al consultar logs de seguridad:", err);
+    const { error, status } = respuestaError(err, "Error al consultar registros de seguridad");
+    return NextResponse.json({ error }, { status });
   }
 }
