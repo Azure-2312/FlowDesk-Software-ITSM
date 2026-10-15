@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import { NextRequest, NextResponse } from "next/server";
-import { queryRow } from "@/lib/db";
+import { queryRow } from "@/shared/lib/db";
 import { GET as listarTickets, POST as registrarTicket } from "../tickets/route";
 
 async function tipoId(codigo: string) {

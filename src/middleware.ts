@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { COOKIE_SESION } from "@/lib/constants";
+import { COOKIE_SESION } from "@/shared/lib/constants";
 
 export function middleware(req: NextRequest) {
   const tieneSesion = req.cookies.has(COOKIE_SESION);

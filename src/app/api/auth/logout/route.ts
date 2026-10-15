@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { COOKIE_SESION } from "@/lib/auth";
+import { COOKIE_SESION } from "@/shared/lib/auth";
 
 export async function POST() {
   const respuesta = NextResponse.json({ ok: true });

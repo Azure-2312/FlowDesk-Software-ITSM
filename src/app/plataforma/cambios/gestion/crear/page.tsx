@@ -4,7 +4,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ElementoConfiguracion, Problema, SesionUsuario } from "@/types";
-import { validarTexto, validarFechaNoPasada } from "@/lib/validaciones";
+import { validarTexto, validarFechaNoPasada } from "@/shared/lib/validaciones";
 
 export default function PaginaCrearRFC() {
   const router = useRouter();

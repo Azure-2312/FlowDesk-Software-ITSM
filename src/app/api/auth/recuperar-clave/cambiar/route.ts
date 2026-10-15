@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { query, transaccion } from "@/lib/db";
-import { compararClave, hashearClave } from "@/lib/auth";
+import { query, transaccion } from "@/shared/lib/db";
+import { compararClave, hashearClave } from "@/shared/lib/auth";
 
 export const dynamic = "force-dynamic";
 
