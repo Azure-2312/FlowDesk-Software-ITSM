@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { query, queryRow } from "@/lib/db";
-import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
-import { validarTexto, validarFechaNoPasada } from "@/lib/validaciones";
+import { query, queryRow } from "@/shared/lib/db";
+import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { validarTexto, validarFechaNoPasada } from "@/shared/lib/validaciones";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;

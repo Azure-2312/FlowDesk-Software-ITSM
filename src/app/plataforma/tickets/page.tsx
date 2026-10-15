@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
+import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 
 /** Envía la ruta común de tickets a la vista inicial autorizada para el perfil activo. */
 export default function PaginaTickets() {

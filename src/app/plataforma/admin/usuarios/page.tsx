@@ -2,13 +2,13 @@
 
 import { useEffect, useState, FormEvent } from "react";
 import { UsuarioConPerfiles, Perfil } from "@/types";
-import { generarCorreoCorporativo, generarClaveEstandar } from "@/lib/correo-util";
+import { generarCorreoCorporativo, generarClaveEstandar } from "@/shared/lib/correo-util";
 import {
   validarDni,
   validarNombre,
   validarCorreo,
   validarCelular,
-} from "@/lib/validaciones";
+} from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 type ModoVista = "tabla" | "crear" | "editar" | "resumen";

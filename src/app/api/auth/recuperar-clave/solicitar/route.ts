@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { query } from "@/lib/db";
-import { enviarCorreoCodigoRecuperacion } from "@/lib/email";
+import { query } from "@/shared/lib/db";
+import { enviarCorreoCodigoRecuperacion } from "@/shared/lib/email";
 
 export const dynamic = "force-dynamic";
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { query } from "@/lib/db";
+import { query } from "@/shared/lib/db";
 import {
   verificarTokenSesion,
   crearTokenSesion,
@@ -8,9 +8,9 @@ import {
   hashearClave,
   validarFortalezaClave,
   COOKIE_SESION,
-} from "@/lib/auth";
+} from "@/shared/lib/auth";
 import { Usuario, Perfil, SesionUsuario } from "@/types";
-import { validarNombre, validarCelular } from "@/lib/validaciones";
+import { validarNombre, validarCelular } from "@/shared/lib/validaciones";
 
 export const dynamic = "force-dynamic";
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { queryRow } from "@/lib/db";
-import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
+import { queryRow } from "@/shared/lib/db";
+import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 
 export const dynamic = "force-dynamic";
 
