@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { verificarTokenSesion, COOKIE_SESION } from "@/modules/seguridad/authService";
+import { verificarTokenSesion, COOKIE_SESION } from "@/modules/seguridad";
 import { obtenerMenuDelUsuario } from "@/shared/lib/menu";
 import MenuLateral from "@/shared/components/layout/MenuLateral";
 import BotonLogout from "@/shared/components/layout/BotonLogout";
