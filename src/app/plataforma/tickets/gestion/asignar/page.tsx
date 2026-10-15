@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Ticket, DepartamentoTI, TecnicoConCarga } from "@/types";
-import ModalDetalleTicket from "@/components/ModalDetalleTicket";
+import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
 
 const ESTADOS_OPERATIVOS: Record<string, { etiqueta: string; color: string; bg: string }> = {
   DISPONIBLE: { etiqueta: "Disponible", color: "#059669", bg: "#ecfdf5" },

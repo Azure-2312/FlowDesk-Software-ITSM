@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { PropsVistaPresentadorTicket } from "@/components/ticket-detail/tipos";
-import StepperProgresoConsumidor from "@/components/ticket-detail/secciones/StepperProgresoConsumidor";
-import StreamChatPublico from "@/components/ticket-detail/secciones/StreamChatPublico";
-import TarjetaAprobacionSod from "@/components/ticket-detail/secciones/TarjetaAprobacionSod";
-import TarjetaCalificacionCsat from "@/components/ticket-detail/secciones/TarjetaCalificacionCsat";
+import { PropsVistaPresentadorTicket } from "@/modules/tickets/ticket-detail/tipos";
+import StepperProgresoConsumidor from "@/modules/tickets/ticket-detail/secciones/StepperProgresoConsumidor";
+import StreamChatPublico from "@/modules/tickets/ticket-detail/secciones/StreamChatPublico";
+import TarjetaAprobacionSod from "@/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod";
+import TarjetaCalificacionCsat from "@/modules/tickets/ticket-detail/secciones/TarjetaCalificacionCsat";
 
 export default function VistaTicketConsumidor({
   ticket,

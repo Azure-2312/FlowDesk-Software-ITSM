@@ -2,18 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { Ticket, ComentarioTicket, CatalogosTickets, SesionUsuario } from "@/types";
-import { resolverArquetipoVista } from "./ticket-detail/tipos";
-import VistaTicketConsumidor from "./ticket-detail/presentadores/VistaTicketConsumidor";
-import VistaTicketOperador from "./ticket-detail/presentadores/VistaTicketOperador";
-import VistaTicketSupervisor from "./ticket-detail/presentadores/VistaTicketSupervisor";
-import VistaTicketGobernanza from "./ticket-detail/presentadores/VistaTicketGobernanza";
-import VistaTicketAdministrador from "./ticket-detail/presentadores/VistaTicketAdministrador";
-import PresentadorAuditor from "@/modules/itsm/presentadores/PresentadorAuditor";
-import PresentadorGestorArea from "@/modules/itsm/presentadores/PresentadorGestorArea";
-import PresentadorAprobador from "@/modules/itsm/presentadores/PresentadorAprobador";
-import PresentadorRfcEvaluador from "@/modules/itsm/presentadores/PresentadorRfcEvaluador";
-import PresentadorActivoGestor from "@/modules/itsm/presentadores/PresentadorActivoGestor";
-import PresentadorProblemaGestor from "@/modules/itsm/presentadores/PresentadorProblemaGestor";
+import { resolverArquetipoVista } from "../ticket-detail/tipos";
+import VistaTicketConsumidor from "../ticket-detail/presentadores/VistaTicketConsumidor";
+import VistaTicketOperador from "../ticket-detail/presentadores/VistaTicketOperador";
+import VistaTicketSupervisor from "../ticket-detail/presentadores/VistaTicketSupervisor";
+import VistaTicketGobernanza from "../ticket-detail/presentadores/VistaTicketGobernanza";
+import VistaTicketAdministrador from "../ticket-detail/presentadores/VistaTicketAdministrador";
+import PresentadorAuditor from "@/modules/tickets/presentadores/PresentadorAuditor";
+import PresentadorGestorArea from "@/modules/tickets/presentadores/PresentadorGestorArea";
+import PresentadorAprobador from "@/modules/tickets/presentadores/PresentadorAprobador";
+import PresentadorRfcEvaluador from "@/modules/tickets/presentadores/PresentadorRfcEvaluador";
+import PresentadorActivoGestor from "@/modules/tickets/presentadores/PresentadorActivoGestor";
+import PresentadorProblemaGestor from "@/modules/tickets/presentadores/PresentadorProblemaGestor";
 
 interface Props {
   idTicket: number;

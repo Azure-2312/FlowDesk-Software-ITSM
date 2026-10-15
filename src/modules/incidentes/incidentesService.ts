@@ -1,5 +1,5 @@
 import { query } from "@/shared/lib/db";
-import { IncidenteRegistro, CrearIncidenteInput } from "./incidentesTypes";
+import { IncidenteRegistro, CrearIncidenteInput } from "./types";
 import { sanitizarDatosIncidente } from "./incidentesValidaciones";
 
 export async function listarIncidentes(filtros?: {
