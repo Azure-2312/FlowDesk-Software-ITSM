@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { query } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest, { params }: Contexto) {
   }
 
   // Verificar que el perfil activo sea Administrador o soporte
-  if (sesion.perfilActivo.nombre.toLowerCase() !== "administrador") {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_USUARIOS)) {
     return NextResponse.json(
       { error: "Solo un administrador o personal de soporte técnico puede desbloquear usuarios" },
       { status: 403 }

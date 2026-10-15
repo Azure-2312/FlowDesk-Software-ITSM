@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { query, transaccion } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { OpcionMenuAdmin } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +15,7 @@ function obtenerSesionActual() {
 export async function GET() {
   const sesion = obtenerSesionActual();
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_MENU)) {
     return NextResponse.json({ error: "Solo el Administrador puede consultar la configuración del menú." }, { status: 403 });
   }
   const opciones = await query<Omit<OpcionMenuAdmin, "perfiles_ids">>(
@@ -45,7 +46,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const sesion = obtenerSesionActual();
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_MENU)) {
     return NextResponse.json({ error: "Solo el Administrador puede modificar el menú." }, { status: 403 });
   }
 

@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { queryRow } from "@/shared/lib/db";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   const perfil = sesion.perfilActivo?.id_perfil || 0;
-  if (![2, 4].includes(perfil)) return NextResponse.json({ error: "Solo Técnico o Supervisor puede atender el evento" }, { status: 403 });
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.OPERACION_ATENDER)) return NextResponse.json({ error: "Solo Técnico o Supervisor puede atender el evento" }, { status: 403 });
   const id = Number(params.id);
   if (!Number.isInteger(id)) return NextResponse.json({ error: "Evento no válido" }, { status: 400 });
 

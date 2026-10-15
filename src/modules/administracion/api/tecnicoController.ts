@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { TecnicoConCarga } from "@/types";
 import { validarNumeroPositivo, validarTexto } from "@/shared/lib/validaciones";
 
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (![1, 4].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_TECNICOS)) {
     return NextResponse.json({ error: "No autorizado para consultar la carga de técnicos" }, { status: 403 });
   }
 
@@ -119,7 +120,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Permitido para Administrador (1) y Supervisor (4)
-  if (![1, 4].includes(sesion.perfilActivo.id_perfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_TECNICOS)) {
     return NextResponse.json({ error: "No autorizado para configurar técnicos" }, { status: 403 });
   }
 
