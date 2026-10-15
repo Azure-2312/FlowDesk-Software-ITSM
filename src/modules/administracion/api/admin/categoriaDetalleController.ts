@@ -4,6 +4,7 @@ export const revalidate = 0;
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/shared/lib/validaciones";
 
 export async function GET(
@@ -71,7 +72,7 @@ export async function PATCH(
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_CONFIGURACION)) {
     return NextResponse.json(
       { error: "Solo los administradores tienen permiso para modificar categorías." },
       { status: 403 }
@@ -280,7 +281,7 @@ export async function DELETE(
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_CONFIGURACION)) {
     return NextResponse.json(
       { error: "Solo los administradores tienen permiso para eliminar categorías." },
       { status: 403 }

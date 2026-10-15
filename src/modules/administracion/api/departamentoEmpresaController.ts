@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { validarCodigo, validarTexto } from "@/shared/lib/validaciones";
 
 function sesion(req: NextRequest) {
@@ -10,14 +11,14 @@ function sesion(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const s = sesion(req);
   if (!s) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (s.perfilActivo?.id_perfil !== 1) return NextResponse.json({ error: "Solo Administración puede consultar departamentos." }, { status: 403 });
+  if (!sesionTieneCapacidad(s, CAPACIDADES.ADMIN_ORGANIZACION)) return NextResponse.json({ error: "Solo Administración puede consultar departamentos." }, { status: 403 });
   const departamentos = await query("SELECT d.*,COUNT(u.id_usuario)::int AS colaboradores FROM departamento_empresa d LEFT JOIN usuario u ON u.id_departamento_empresa=d.id_departamento_empresa AND u.estado_registro=true GROUP BY d.id_departamento_empresa ORDER BY d.nombre");
   return NextResponse.json({ departamentos });
 }
 export async function POST(req: NextRequest) {
   const s = sesion(req);
   if (!s) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (s.perfilActivo?.id_perfil !== 1) return NextResponse.json({ error: "Solo Administración puede crear departamentos." }, { status: 403 });
+  if (!sesionTieneCapacidad(s, CAPACIDADES.ADMIN_ORGANIZACION)) return NextResponse.json({ error: "Solo Administración puede crear departamentos." }, { status: 403 });
   const b = await req.json();
 
   const vCod = validarCodigo(b.codigo, 2, 20, "El código del departamento empresarial");

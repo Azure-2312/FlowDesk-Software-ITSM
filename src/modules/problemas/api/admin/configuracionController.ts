@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -267,7 +268,7 @@ export async function GET(req: NextRequest) {
   const idPerfil = sesion.perfilActivo?.id_perfil;
 
   // Permiso de lectura: Administrador (1), Gestor de Problemas (10), Supervisor (4), Auditor (6)
-  if (![1, 10, 4, 6].includes(idPerfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_CONFIG_VER)) {
     return NextResponse.json({ error: "No autorizado para consultar la configuración de problemas." }, { status: 403 });
   }
 
@@ -393,7 +394,7 @@ export async function PUT(req: NextRequest) {
 
   const idPerfil = sesion.perfilActivo?.id_perfil;
   // Solo Administrador (1) y Gestor de Problemas (10) pueden modificar configuración
-  if (![1, 10].includes(idPerfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_CONFIGURAR)) {
     return NextResponse.json({ error: "No tiene permisos para modificar la configuración de problemas." }, { status: 403 });
   }
 
@@ -409,7 +410,7 @@ export async function PUT(req: NextRequest) {
       WHERE recurso = $1 AND fecha_expiracion > NOW()
     `, [recurso]);
 
-    if (bloqueo && bloqueo.id_usuario !== sesion.id_usuario && idPerfil !== 1) {
+    if (bloqueo && bloqueo.id_usuario !== sesion.id_usuario && !sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_CONFIG_PUBLICAR)) {
       return NextResponse.json({ error: "El recurso está bloqueado por otro usuario en edición activa." }, { status: 423 });
     }
 
@@ -456,7 +457,7 @@ export async function PUT(req: NextRequest) {
     // ACCION 2: PUBLICAR CONFIGURACIÓN
     if (accion === "publicar") {
       // Solo perfil 1 (Administrador) puede publicar conforme a la matriz SoD
-      if (idPerfil !== 1) {
+      if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_CONFIG_PUBLICAR)) {
         return NextResponse.json({ error: "Segregación de Funciones: Solo el Administrador puede publicar configuraciones en producción." }, { status: 403 });
       }
 
