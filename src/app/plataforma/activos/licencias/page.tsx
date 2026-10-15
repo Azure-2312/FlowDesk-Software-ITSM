@@ -3,7 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { LicenciaSoftware } from "@/types";
 import { validarTexto, validarNumeroPositivo } from "@/lib/validaciones";
-import { AlertaCampo } from "@/components/ui/AlertaCampo";
+import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 type ModoVista = "tabla" | "nuevo" | "editar" | "asignaciones";
 

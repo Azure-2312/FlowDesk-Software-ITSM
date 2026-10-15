@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { validarCodigo, validarTexto } from "@/lib/validaciones";
-import { AlertaCampo } from "@/components/ui/AlertaCampo";
+import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 type Departamento = {
   id_departamento_empresa: number;

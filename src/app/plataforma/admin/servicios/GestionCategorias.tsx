@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, FormEvent } from "react";
 import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/lib/validaciones";
-import { AlertaCampo } from "@/components/ui/AlertaCampo";
+import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 export interface CategoriaAdmin {
   id_categoria: number;
