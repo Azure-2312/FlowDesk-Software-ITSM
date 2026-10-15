@@ -1,7 +1,8 @@
 import VistaProblemas from "@/modules/problemas/views/VistaProblemas";
-import { exigirPerfilPagina } from "@/shared/lib/page-auth";
+import { CAPACIDADES, tieneCapacidad } from "@/shared/lib/capacidades";
+import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 
 export default function PaginaProblemas() {
-  const { idPerfil } = exigirPerfilPagina([1, 2, 4, 6, 7, 8, 9]);
-  return <VistaProblemas puedeCrear={[2, 4].includes(idPerfil)} />;
+  const { idPerfil } = exigirCapacidadPagina(CAPACIDADES.PROBLEMAS_VER);
+  return <VistaProblemas puedeCrear={tieneCapacidad(idPerfil, CAPACIDADES.PROBLEMAS_CREAR)} />;
 }
