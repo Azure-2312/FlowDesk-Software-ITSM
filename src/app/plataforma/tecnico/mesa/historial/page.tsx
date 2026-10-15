@@ -1,5 +1,5 @@
-import VistaTecnicoPage from "@/modules/tecnico/mesa/historial/VistaTecnicoPage";
+import VistaTecnicoMesaHistorial from "@/modules/tecnico/mesa/historial/VistaTecnicoMesaHistorial";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoPage />;
+  return <VistaTecnicoMesaHistorial />;
 }
