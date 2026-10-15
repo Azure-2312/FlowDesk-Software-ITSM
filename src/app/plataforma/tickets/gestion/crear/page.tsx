@@ -11,7 +11,7 @@ import {
   validarNumeroPositivo,
   validarCorreo,
   validarSlaTiempos,
-} from "@/lib/validaciones";
+} from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 interface CampoConfigurado {

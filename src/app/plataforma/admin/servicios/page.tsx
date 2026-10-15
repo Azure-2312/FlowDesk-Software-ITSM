@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ServicioCatalogo, ServicioWorkflowPaso } from "@/types";
 import ConfiguracionObjetivosSla from "./ConfiguracionObjetivosSla";
 import GestionCategorias from "./GestionCategorias";
-import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/lib/validaciones";
+import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 type ModoVista = "tabla" | "nuevo" | "editar" | "workflow" | "desactivar" | "asignar";

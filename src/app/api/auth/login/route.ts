@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { query } from "@/lib/db";
+import { query } from "@/shared/lib/db";
 import {
   compararClave,
   crearTokenSesion,
   crearTokenPreSesion,
   COOKIE_SESION,
   MAX_INTENTOS_FALLIDOS,
-} from "@/lib/auth";
-import { sanitizarCorreo, sanitizarTexto, verificarCaptcha } from "@/lib/security";
+} from "@/shared/lib/auth";
+import { sanitizarCorreo, sanitizarTexto, verificarCaptcha } from "@/shared/lib/security";
 import { SesionUsuario } from "@/types";
-import { validarCorreo } from "@/lib/validaciones";
+import { validarCorreo } from "@/shared/lib/validaciones";
 
 export const dynamic = "force-dynamic";
 
