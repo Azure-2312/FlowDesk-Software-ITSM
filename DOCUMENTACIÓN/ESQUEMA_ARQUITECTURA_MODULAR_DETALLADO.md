@@ -1352,3 +1352,45 @@ La arquitectura objetivo no es solo "mover archivos". Es:
 9. Usar normativas ITIL v4, ISO 20000, ISO 27001 y benchmark de otros ITSM como criterio de cobertura.
 
 **Este es el esquema base recomendado para que FlowDesk deje de ser una plataforma funcional con estructura fragmentada y pase a ser una plataforma ITSM modular, escalable y defendible.**
+
+---
+
+# 17. Estado de migracion (corte actual)
+
+## 17.1 Resultado estructural
+
+- Todas las rutas en `src/app/` son delgadas: ninguna supera 50 lineas.
+- La logica de render, estado, configuracion y vistas vive en `src/modules/<feature>/...`.
+- La infraestructura transversal vive en `src/shared/lib` y `src/shared/components`.
+- No existe dependencia de rutas sobre `src/components` ni `src/lib` (ambas eliminadas).
+
+## 17.2 Modulos migrados
+
+| Bloque | Modulos/rutas cubiertos |
+|---|---|
+| Operacion ITIL | `incidentes`, `cambios`, `problemas`, `activos`, `cmdb`, `conocimiento`, `solicitudes`, `proveedores`, `operacion` |
+| Gestion de tickets | `tickets` (listado, creacion, asignacion, mios, tecnicos, aprobaciones, ayuda, reportes y detalle `[id]`) |
+| Mesa tecnica | `tecnico` (panel, agenda, tareas, mesa, activos, cambios, problemas, SLA, catalogo) |
+| Administracion | `administracion/config` (usuarios, perfiles, departamentos, menu, notificaciones, auditoria, seguridad, reportes, mantenimiento, tipos de cambio, formularios de tickets, servicios y SLA, activos-config, conocimiento) |
+| Acceso | `seguridad/views/VistaLogin.tsx` |
+
+## 17.3 Convencion aplicada
+
+- Patron de ruta delgada: `page.tsx` importa una vista desde `@/modules/<feature>/...` y la renderiza.
+- Patron de vista: si la ruta original es cliente, la vista conserva `"use client"`.
+- Patron de configuracion: cada modulo guarda sus vistas, componentes internos y configuraciones en subcarpetas propias.
+- Patron de imports: alias `@/modules/...`, `@/shared/...`; sin rutas relativas que crucen `src/app` hacia `src/modules`.
+
+## 17.4 Validacion
+
+- `npx tsc --noEmit`: sin errores.
+- `npm run build`: exitoso.
+- Sincronizacion en las cuatro ramas remotas: `main`, `feature/alexis-problemas-conocimiento`, `prueba-conexion`, `verify-junior`.
+
+## 17.5 Siguiente nivel recomendado
+
+1. Sustituir gradualmente validaciones de perfil por capacidades (`dominio:accion`).
+2. Llevar la logica de datos a `Service.ts` por modulo y adelgazar aun mas las vistas.
+3. Estandarizar nombres de vistas (`Vista<Feature>.tsx`) y de configuraciones.
+4. Mover contratos de API a `src/modules/<feature>/api` o `shared/api`, evitando logica en `route.ts`.
+5. Incorporar pruebas de contrato por modulo.
