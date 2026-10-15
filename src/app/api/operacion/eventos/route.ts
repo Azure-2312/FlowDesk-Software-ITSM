@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { query, queryRow } from "@/lib/db";
-import { COOKIE_SESION, verificarTokenSesion } from "@/lib/auth";
+import { query, queryRow } from "@/shared/lib/db";
+import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
 
 const LECTURA = [2, 4, 6, 7, 8, 9];
 

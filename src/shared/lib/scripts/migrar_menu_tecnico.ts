@@ -1,4 +1,4 @@
-import { query, transaccion } from "@/lib/db";
+import { query, transaccion } from "@/shared/lib/db";
 import type { PoolClient } from "pg";
 
 async function migrar() {

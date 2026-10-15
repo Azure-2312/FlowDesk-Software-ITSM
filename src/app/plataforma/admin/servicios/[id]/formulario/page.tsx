@@ -1,4 +1,4 @@
-import { exigirPerfilPagina } from "@/lib/page-auth";
+import { exigirPerfilPagina } from "@/shared/lib/page-auth";
 import FormularioServicioConfig from "./ui";
 
 export default function PaginaFormularioServicio({ params }: { params: { id: string } }) {
