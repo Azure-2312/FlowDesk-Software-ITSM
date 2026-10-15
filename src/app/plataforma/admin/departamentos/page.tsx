@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { DepartamentoTI, UsuarioConPerfiles } from "@/types";
-import { validarCodigo, validarTexto, validarNumeroPositivo } from "@/lib/validaciones";
+import { validarCodigo, validarTexto, validarNumeroPositivo } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 interface TecnicoDepto {

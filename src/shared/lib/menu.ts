@@ -1,4 +1,4 @@
-import { query } from "@/lib/db";
+import { query } from "@/shared/lib/db";
 import { OpcionMenuArbol, OpcionMenuPlana } from "@/types";
 
 /**

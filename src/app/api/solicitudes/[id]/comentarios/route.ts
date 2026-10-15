@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { queryRow } from "@/lib/db";
-import { COOKIE_SESION, verificarTokenSesion } from "@/lib/auth";
+import { queryRow } from "@/shared/lib/db";
+import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
 import { POST as comentarTicket } from "../../../tickets/[id]/comentarios/route";
 
 type Contexto = { params: { id: string } };
