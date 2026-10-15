@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { queryRow } from "@/lib/db";
-import { verificarTokenSesion } from "@/lib/auth";
-import { COOKIE_SESION } from "@/lib/constants";
+import { queryRow } from "@/shared/lib/db";
+import { verificarTokenSesion } from "@/shared/lib/auth";
+import { COOKIE_SESION } from "@/shared/lib/constants";
 
 export const dynamic = "force-dynamic";
 

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { query, queryRow } from "@/lib/db";
-import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
+import { query, queryRow } from "@/shared/lib/db";
+import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { ServicioCatalogo, ServicioWorkflowPaso } from "@/types";
-import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/lib/validaciones";
+import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/shared/lib/validaciones";
 
 export const dynamic = "force-dynamic";
 

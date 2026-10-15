@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { query, transaccion } from "@/lib/db";
-import { hashearClave, compararClave, validarFortalezaClave, verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
-import { asignarPerfilesAUsuario } from "@/lib/usuarios";
+import { query, transaccion } from "@/shared/lib/db";
+import { hashearClave, compararClave, validarFortalezaClave, verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { asignarPerfilesAUsuario } from "@/shared/lib/usuarios";
 import {
   validarDni,
   validarNombre,
   validarCorreo,
   validarCelular,
-} from "@/lib/validaciones";
+} from "@/shared/lib/validaciones";
 
 function obtenerSesionActual() {
   const token = cookies().get(COOKIE_SESION)?.value;

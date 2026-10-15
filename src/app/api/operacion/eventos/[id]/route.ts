@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { queryRow } from "@/lib/db";
-import { COOKIE_SESION, verificarTokenSesion } from "@/lib/auth";
+import { queryRow } from "@/shared/lib/db";
+import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const token = req.cookies.get(COOKIE_SESION)?.value;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { validarCodigo, validarTexto } from "@/lib/validaciones";
+import { validarCodigo, validarTexto } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 type Departamento = {
