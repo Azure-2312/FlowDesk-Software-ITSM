@@ -20,9 +20,10 @@
       "@/modules/*": ["src/modules/*"],
       "@/shared/*": ["src/shared/*"],
       "@/itsm/*": ["src/modules/itsm/*"],
-      "@/admin/*": ["src/modules/admin/*"],
+      "@/admin/*": ["src/modules/administracion/*"],
       "@/seguridad/*": ["src/modules/seguridad/*"],
-      "@/analitica/*": ["src/modules/analitica/*"]
+      "@/analitica/*": ["src/modules/analitica/*"],
+      "@/administracion/*": ["src/modules/administracion/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

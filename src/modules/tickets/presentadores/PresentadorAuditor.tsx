@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { PropsVistaPresentadorTicket } from "@/components/ticket-detail/tipos";
-import PanelInfraestructuraCi from "@/components/ticket-detail/secciones/PanelInfraestructuraCi";
-import TarjetaCalificacionCsat from "@/components/ticket-detail/secciones/TarjetaCalificacionCsat";
+import { PropsVistaPresentadorTicket } from "@/modules/tickets/ticket-detail/tipos";
+import PanelInfraestructuraCi from "@/modules/tickets/ticket-detail/secciones/PanelInfraestructuraCi";
+import TarjetaCalificacionCsat from "@/modules/tickets/ticket-detail/secciones/TarjetaCalificacionCsat";
 
 export default function PresentadorAuditor({
   ticket,
