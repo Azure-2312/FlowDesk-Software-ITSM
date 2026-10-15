@@ -101,10 +101,10 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 11052, padre: 11048, orden: 4, nivel: 2, nombre: "Problemas (consulta global)", url: "/problemas", desc: "", bloqueado: false, abierto: false },
     { id: 11053, padre: 11048, orden: 5, nivel: 2, nombre: "Inventario y CMDB (consulta global)", url: "/activos/inventario", desc: "", bloqueado: false, abierto: false },
     { id: 11054, padre: 11048, orden: 6, nivel: 2, nombre: "Eventos y resiliencia (consulta)", url: "/operacion", desc: "", bloqueado: false, abierto: false },
-    { id: 11055, padre: null, orden: 4, nivel: 1, nombre: "Salud del sistema", url: "/admin/salud-sistema", desc: "Estado técnico del sistema para el Administrador.", bloqueado: true, abierto: true },
+    { id: 11055, padre: null, orden: 4, nivel: 1, nombre: "Salud del sistema", url: "/admin/salud-sistema", desc: "Estado técnico del sistema para el Administrador.", bloqueado: false, abierto: true },
     { id: 11056, padre: null, orden: 5, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 11057, padre: 11056, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
-    { id: 11058, padre: 11056, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: true, abierto: false },
+    { id: 11058, padre: 11056, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
   ],
   // ===== PERFIL 2 — Técnico (44 opciones) =====
   2: [
@@ -151,7 +151,7 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 12041, padre: null, orden: 8, nivel: 1, nombre: "Catálogo de servicios (consulta)", url: "/tecnico/catalogo", desc: "", bloqueado: false, abierto: true },
     { id: 12042, padre: null, orden: 9, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 12043, padre: 12042, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
-    { id: 12044, padre: 12042, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: true, abierto: false },
+    { id: 12044, padre: 12042, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
   ],
   // ===== PERFIL 3 — Solicitante (13 opciones) =====
   3: [
@@ -161,13 +161,13 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 13004, padre: null, orden: 2, nivel: 1, nombre: "Catálogo de Servicios", url: "/tickets/catalogo", desc: "", bloqueado: false, abierto: true },
     { id: 13005, padre: 13004, orden: 1, nivel: 2, nombre: "Catálogo de incidentes", url: "/tickets/catalogo?tipo=incidente", desc: "Categorías y servicios para reportar fallas; sin botones superiores que repitan el menú.", bloqueado: false, abierto: false },
     { id: 13006, padre: 13004, orden: 2, nivel: 2, nombre: "Catálogo de solicitudes de servicio", url: "/tickets/catalogo?tipo=solicitud", desc: "Categorías y servicios para pedir requerimientos; muestra si requiere aprobación.", bloqueado: false, abierto: false },
-    { id: 13007, padre: null, orden: 3, nivel: 1, nombre: "Gestión de Conocimiento", url: "/conocimiento", desc: "Guías de autoayuda: solo artículos públicos publicados.", bloqueado: true, abierto: true },
-    { id: 13008, padre: 13007, orden: 1, nivel: 2, nombre: "Buscar y leer artículos", url: "/conocimiento", desc: "Buscador por texto, categoría y servicio.", bloqueado: true, abierto: false },
-    { id: 13009, padre: null, orden: 4, nivel: 1, nombre: "Mis activos", url: "/activos/mis-activos", desc: "Activos que el usuario tiene en custodia.", bloqueado: true, abierto: true },
-    { id: 13010, padre: null, orden: 5, nivel: 1, nombre: "Avisos de servicio", url: "/avisos/mantenimientos", desc: "Mantenimientos programados con interrupción que afectan a mi área, tomados del calendario de cambios.", bloqueado: true, abierto: true },
+    { id: 13007, padre: null, orden: 3, nivel: 1, nombre: "Gestión de Conocimiento", url: "/conocimiento", desc: "Guías de autoayuda: solo artículos públicos publicados.", bloqueado: false, abierto: true },
+    { id: 13008, padre: 13007, orden: 1, nivel: 2, nombre: "Buscar y leer artículos", url: "/conocimiento", desc: "Buscador por texto, categoría y servicio.", bloqueado: false, abierto: false },
+    { id: 13009, padre: null, orden: 4, nivel: 1, nombre: "Mis activos", url: "/activos/mis-activos", desc: "Activos que el usuario tiene en custodia.", bloqueado: false, abierto: true },
+    { id: 13010, padre: null, orden: 5, nivel: 1, nombre: "Avisos de servicio", url: "/avisos/mantenimientos", desc: "Mantenimientos programados con interrupción que afectan a mi área, tomados del calendario de cambios.", bloqueado: false, abierto: true },
     { id: 13011, padre: null, orden: 6, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 13012, padre: 13011, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
-    { id: 13013, padre: 13011, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: true, abierto: false },
+    { id: 13013, padre: 13011, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
   ],
   // ===== PERFIL 4 — Supervisor (48 opciones) =====
   4: [
@@ -205,8 +205,8 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 14032, padre: 14031, orden: 1, nivel: 2, nombre: "Inventario (consulta)", url: "/activos/inventario", desc: "", bloqueado: false, abierto: false },
     { id: 14033, padre: 14031, orden: 2, nivel: 2, nombre: "Aprobación de bajas de mi área", url: "/supervisor/activos/bajas", desc: "Aprueba o rechaza bajas solicitadas por técnicos.", bloqueado: true, abierto: false },
     { id: 14034, padre: 14031, orden: 3, nivel: 2, nombre: "Licencias (consulta)", url: "/activos/licencias", desc: "", bloqueado: false, abierto: false },
-    { id: 14035, padre: null, orden: 8, nivel: 1, nombre: "Gestión del Conocimiento", url: "/conocimiento", desc: "", bloqueado: true, abierto: true },
-    { id: 14036, padre: 14035, orden: 1, nivel: 2, nombre: "Base de conocimiento", url: "/conocimiento", desc: "", bloqueado: true, abierto: false },
+    { id: 14035, padre: null, orden: 8, nivel: 1, nombre: "Gestión del Conocimiento", url: "/conocimiento", desc: "", bloqueado: false, abierto: true },
+    { id: 14036, padre: 14035, orden: 1, nivel: 2, nombre: "Base de conocimiento", url: "/conocimiento", desc: "", bloqueado: false, abierto: false },
     { id: 14037, padre: 14035, orden: 2, nivel: 2, nombre: "Revisión y publicación de artículos", url: "/supervisor/conocimiento/revisiones", desc: "Revisa artículos del equipo cuando es revisor de la categoría.", bloqueado: true, abierto: false },
     { id: 14038, padre: null, orden: 9, nivel: 1, nombre: "Reportes del equipo", url: "/supervisor/reportes", desc: "", bloqueado: true, abierto: true },
     { id: 14039, padre: 14038, orden: 1, nivel: 2, nombre: "Indicadores operativos y SLA", url: "/tickets/reportes", desc: "Con alcance de mi área técnica.", bloqueado: false, abierto: false },
@@ -218,7 +218,7 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 14045, padre: 14043, orden: 2, nivel: 2, nombre: "Disponibilidad, capacidad y continuidad", url: "/operacion/resiliencia", desc: "Indicadores de resiliencia de los servicios del área.", bloqueado: false, abierto: false },
     { id: 14046, padre: null, orden: 12, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 14047, padre: 14046, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
-    { id: 14048, padre: 14046, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: true, abierto: false },
+    { id: 14048, padre: 14046, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
   ],
   // ===== PERFIL 5 — Gestor de Área (23 opciones) =====
   5: [
@@ -241,10 +241,10 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 15017, padre: 15016, orden: 1, nivel: 2, nombre: "Activos de mi área", url: "/gestor-area/activos", desc: "Lectura de activos por colaborador, sin datos financieros sensibles.", bloqueado: true, abierto: false },
     { id: 15018, padre: 15016, orden: 2, nivel: 2, nombre: "Licencias y contratos de mi departamento", url: "/gestor-area/contratos", desc: "", bloqueado: true, abierto: false },
     { id: 15019, padre: null, orden: 7, nivel: 1, nombre: "Reportes del área", url: "/gestor-area/reportes", desc: "Tickets por servicio, SLA percibido, satisfacción y costo referencial consumido.", bloqueado: true, abierto: true },
-    { id: 15020, padre: null, orden: 8, nivel: 1, nombre: "Gestión de Conocimiento", url: "/conocimiento", desc: "", bloqueado: true, abierto: true },
+    { id: 15020, padre: null, orden: 8, nivel: 1, nombre: "Gestión de Conocimiento", url: "/conocimiento", desc: "", bloqueado: false, abierto: true },
     { id: 15021, padre: null, orden: 9, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 15022, padre: 15021, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
-    { id: 15023, padre: 15021, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: true, abierto: false },
+    { id: 15023, padre: 15021, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
   ],
   // ===== PERFIL 6 — Auditor (29 opciones) =====
   6: [
@@ -276,7 +276,7 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 16026, padre: 16023, orden: 3, nivel: 2, nombre: "Informes de auditoría", url: "/auditor/informes", desc: "Hallazgos, recomendaciones y seguimiento.", bloqueado: true, abierto: false },
     { id: 16027, padre: null, orden: 7, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 16028, padre: 16027, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
-    { id: 16029, padre: 16027, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: true, abierto: false },
+    { id: 16029, padre: 16027, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
   ],
   // ===== PERFIL 7 — Aprobador (18 opciones) =====
   7: [
@@ -297,7 +297,7 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 17015, padre: null, orden: 7, nivel: 1, nombre: "Reportes de decisiones", url: "/aprobador/reportes", desc: "Tiempo de respuesta y tasas de aprobación y rechazo.", bloqueado: true, abierto: true },
     { id: 17016, padre: null, orden: 8, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 17017, padre: 17016, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
-    { id: 17018, padre: 17016, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: true, abierto: false },
+    { id: 17018, padre: 17016, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
   ],
   // ===== PERFIL 8 — Gestor de Cambios (25 opciones) =====
   8: [
@@ -325,7 +325,7 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 18022, padre: null, orden: 9, nivel: 1, nombre: "Reportes de cambios", url: "/gestor-cambios/reportes", desc: "Tasa de éxito, emergencias, tiempos de ciclo, incidentes causados y cumplimiento de ventana.", bloqueado: true, abierto: true },
     { id: 18023, padre: null, orden: 10, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 18024, padre: 18023, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
-    { id: 18025, padre: 18023, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: true, abierto: false },
+    { id: 18025, padre: 18023, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
   ],
   // ===== PERFIL 9 — Gestor de Activos y Configuración (31 opciones) =====
   9: [
@@ -359,7 +359,7 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 19028, padre: null, orden: 7, nivel: 1, nombre: "Reportes de activos", url: "/gestor-activos/reportes", desc: "Inventario, antigüedad, costos, garantías, cumplimiento y exactitud de CMDB.", bloqueado: true, abierto: true },
     { id: 19029, padre: null, orden: 8, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 19030, padre: 19029, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
-    { id: 19031, padre: 19029, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: true, abierto: false },
+    { id: 19031, padre: 19029, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
   ],
   // ===== PERFIL 10 — Gestor de Problemas (16 opciones) =====
   10: [
@@ -378,7 +378,7 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 20013, padre: null, orden: 11, nivel: 1, nombre: "Reportes de problemas", url: "/gestor-problemas/reportes", desc: "Tiempo hasta causa raíz, recurrencia, problemas mayores y uso de errores conocidos.", bloqueado: true, abierto: true },
     { id: 20014, padre: null, orden: 12, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 20015, padre: 20014, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
-    { id: 20016, padre: 20014, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: true, abierto: false },
+    { id: 20016, padre: 20014, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
   ],
 };
 

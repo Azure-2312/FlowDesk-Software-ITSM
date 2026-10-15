@@ -114,6 +114,41 @@ export async function listarCambios(sesion: any, filtros: FiltrosCambios) {
   return query(sql, params);
 }
 
+/**
+ * Avisos de mantenimiento visibles para cualquier usuario autenticado
+ * (página /avisos/mantenimientos): cambios aprobados, en planificación o en
+ * ejecución cuya ventana es vigente o futura. No expone datos internos.
+ */
+export async function listarAvisosMantenimiento() {
+  return query(
+    `SELECT
+       c.id_cambio,
+       c.codigo_cambio,
+       c.titulo,
+       c.descripcion,
+       c.tipo_cambio,
+       c.id_estado,
+       CASE c.id_estado
+         WHEN 3 THEN 'Aprobado'
+         WHEN 4 THEN 'En Planificación'
+         WHEN 5 THEN 'En Ejecución'
+         ELSE 'Programado'
+       END AS estado_nombre,
+       c.ventana_inicio,
+       c.ventana_fin,
+       it.nombre AS impacto_nombre,
+       ci.codigo_ci,
+       ci.nombre AS ci_nombre
+     FROM cambio c
+     LEFT JOIN impacto_ticket it ON c.id_impacto = it.id_impacto
+     LEFT JOIN elemento_configuracion ci ON c.id_ci_afectado = ci.id_ci
+     WHERE c.estado_registro = true
+       AND c.id_estado IN (3, 4, 5)
+       AND c.ventana_fin >= now() - interval '1 day'
+     ORDER BY c.ventana_inicio ASC`
+  );
+}
+
 export async function crearCambio(sesion: any, body: any) {
   const config = await queryRow<{
     perfiles_solicitantes: number[];
