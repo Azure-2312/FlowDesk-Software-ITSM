@@ -1,5 +1,5 @@
-import VistaTicketsPage from "@/modules/tickets/gestion/tecnicos/VistaTicketsPage";
+import VistaTicketsGestionTecnicos from "@/modules/tickets/gestion/tecnicos/VistaTicketsGestionTecnicos";
 
 export default function PaginaTicketsRoute() {
-  return <VistaTicketsPage />;
+  return <VistaTicketsGestionTecnicos />;
 }
