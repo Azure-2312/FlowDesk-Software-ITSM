@@ -4,7 +4,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Usuario, Perfil } from "@/types";
 import { validarNombre, validarCelular } from "@/lib/validaciones";
-import { AlertaCampo } from "@/components/ui/AlertaCampo";
+import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 export default function PaginaMiCuenta() {
   const router = useRouter();
