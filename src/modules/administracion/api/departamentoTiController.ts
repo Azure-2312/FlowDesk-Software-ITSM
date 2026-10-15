@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { DepartamentoTI } from "@/types";
 import { validarCodigo, validarTexto, validarNumeroPositivo } from "@/shared/lib/validaciones";
 
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest) {
   }
 
   const perfil = sesion.perfilActivo.id_perfil;
-  if (![1, 2, 4, 6].includes(perfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ORGANIZACION_VER)) {
     return NextResponse.json({ departamentos: [] });
   }
   const scope = perfil === 4
@@ -64,7 +65,7 @@ export async function POST(req: NextRequest) {
 
   // La estructura de grupos TI es dato maestro; el Supervisor coordina su
   // grupo, pero no crea la estructura organizacional.
-  if (sesion.perfilActivo.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_ORGANIZACION)) {
     return NextResponse.json({ error: "No autorizado para crear departamentos de TI" }, { status: 403 });
   }
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +9,7 @@ export async function GET(req: NextRequest) {
   const t = req.cookies.get(COOKIE_SESION)?.value;
   const s = t ? verificarTokenSesion(t) : null;
   if (!s) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (![1, 4].includes(s.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(s, CAPACIDADES.CONOCIMIENTO_GESTIONAR)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
   }
 
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
   const t = req.cookies.get(COOKIE_SESION)?.value;
   const s = t ? verificarTokenSesion(t) : null;
   if (!s) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (![1, 2, 4, 8].includes(s.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(s, CAPACIDADES.CONOCIMIENTO_REDACTAR)) {
     return NextResponse.json({ error: "No autorizado para redactar artículos de conocimiento." }, { status: 403 });
   }
 

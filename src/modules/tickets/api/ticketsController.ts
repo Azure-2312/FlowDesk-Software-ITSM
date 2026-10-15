@@ -4,6 +4,7 @@ export const revalidate = 0;
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { Ticket, CrearTicketPayload } from "@/types";
 import { calcularFechaLimiteHorasHabiles } from "@/shared/lib/sla";
 import { validarTexto, validarArchivoAdjunto } from "@/shared/lib/validaciones";
@@ -122,7 +123,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  if (vista === "aprobaciones" && idPerfil !== 5 && idPerfil !== 1) {
+  if (vista === "aprobaciones" && !sesionTieneCapacidad(sesion, CAPACIDADES.SOLICITUDES_APROBAR)) {
     return NextResponse.json({ error: "Esta bandeja está reservada al Gestor de Área." }, { status: 403 });
   }
 
@@ -313,7 +314,7 @@ export async function POST(req: NextRequest) {
   if (!sesion) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
-  if (![1, 2, 3, 4, 5, 8, 9, 10].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.TICKETS_VER)) {
     return NextResponse.json({ error: "Este perfil no puede registrar tickets." }, { status: 403 });
   }
 
