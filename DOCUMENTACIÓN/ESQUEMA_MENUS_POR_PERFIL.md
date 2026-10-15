@@ -1,7 +1,9 @@
 # ESQUEMA DE MENÚS Y FUNCIONALIDADES POR PERFIL — FlowDesk ITSM
 
-> **Versión:** 1.0 · **Fecha:** 2026-10-14 · **Base:** `ARQUITECTURA_Y_JERARQUIA_SRC.md` (lo que ya existe) más lo que debe existir para que cada perfil tenga su propia vista.
+> **Versión:** 2.0 · **Fecha:** 2026-10-15 · **Base:** `ARQUITECTURA_Y_JERARQUIA_SRC.md` (lo que ya existe) más lo que debe existir para que cada perfil tenga su propia vista.
 > **Perfiles (10):** Administrador · Técnico · Solicitante · Supervisor · Gestor de Área · Auditor · Aprobador · Gestor de Cambios · Gestor de Activos y Configuración · Gestor de Problemas.
+>
+> **Arquitectura de referencia (actualizada):** este documento ya está alineado con la **arquitectura modular vigente**. Las rutas de Next.js en `src/app` son **delgadas**: cada `page.tsx` solo renderiza la vista del módulo y cada `api/**/route.ts` solo reexporta el controlador del módulo. La lógica operativa vive en `src/modules/<feature>/` (vistas en `views/` o por sección, controladores en `api/`, servicios en `services/`) y lo transversal en `src/shared/lib` y `src/shared/components`. Las páginas y rutas de API de perfiles aún no implementados se listan como «Archivos por crear» con su ruta delgada en `src/app/...`; su lógica irá en `src/modules/<feature>/api/` y `src/modules/<feature>/services/`.
 
 ---
 
@@ -28,11 +30,11 @@
 ## 2. Decisiones de organización (recomendadas)
 
 1. **Espacio propio por rol para lo que es exclusivo de ese rol.** Los paneles, bandejas y herramientas de cada perfil viven en `/<perfil>/...` (por ejemplo `/supervisor/panel`, `/gestor-cambios/evaluacion`), igual que el Técnico ya usa `/tecnico/...`.
-2. **Páginas de dominio compartidas cuando el dato es el mismo.** El detalle del ticket (`/tickets/[id]`), de la RFC (`/cambios/gestion/[id]`), del problema (`/problemas/[id]`) y del activo (`/activos/inventario`) son únicos; **lo que cambia es el presentador por rol** (`src/modules/itsm/presentadores/`, carpeta ya prevista en la arquitectura modular) y los permisos que se verifican en el servidor.
+2. **Páginas de dominio compartidas cuando el dato es el mismo.** El detalle del ticket (`/tickets/[id]`), de la RFC (`/cambios/gestion/[id]`), del problema (`/problemas/[id]`) y del activo (`/activos/inventario`) son únicos; **lo que cambia es el presentador por rol** (`src/modules/tickets/presentadores/`, carpeta ya prevista en la arquitectura modular) y los permisos que se verifican en el servidor.
 3. **Páginas de gobierno existentes se conservan** (`/tickets/gestion/*`, `/cambios/gestion/*`): las comparten Supervisor, Gestor de Área, Auditor y Aprobador según permisos, sin duplicar archivos.
 4. **Cada perfil tiene una página de inicio** (`/<perfil>/panel`). `/dashboard` pasa a ser un redirector que envía al panel del perfil activo.
 5. **Reutilizar, no copiar.** Las configuraciones de cambios, problemas y activos se editan solo en `/admin/...`; los gestores acceden a la misma pantalla con permisos limitados (`config.cambios.calendario`, `config.activos.catalogos`).
-6. **Convención de módulos.** Todo servicio nuevo sigue el patrón `<modulo>Service.ts`, `<modulo>Validaciones.ts` y `<modulo>Types.ts` en `src/modules/<dominio>/<modulo>/`.
+6. **Convención de módulos (arquitectura modular).** Las rutas de Next.js en `src/app` son delgadas: `page.tsx` solo renderiza la vista del módulo y `api/**/route.ts` solo reexporta el controlador. Todo servicio nuevo sigue el patrón `<modulo>Service.ts`, `<modulo>Validaciones.ts` y `<modulo>Types.ts` dentro de `src/modules/<feature>/services/` (o en la raíz del módulo, como en `src/modules/seguridad/`), y su controlador en `src/modules/<feature>/api/<modulo>Controller.ts`. Lo transversal se ubica en `src/shared/lib` y `src/shared/components`.
 7. **Elementos comunes del encabezado** para todos los perfiles: selector de perfil (existe), búsqueda global `Ctrl+K` (nuevo), campana de notificaciones (nuevo) y menú de usuario con «Mi cuenta» (existe).
 
 ---
@@ -86,7 +88,7 @@ Grupo de configuración del sistema; solo el Administrador edita y publica.
     - Archivos existentes: `src/app/plataforma/admin/usuarios/page.tsx`, `src/app/api/usuarios/route.ts`, `src/app/api/usuarios/[id]/route.ts`, `src/app/api/usuarios/[id]/desbloquear/route.ts`, `src/app/api/usuarios/enviar-credenciales/route.ts`
     - **1.1.1.1** Alta y edición con validación de documento (DNI, RUC, CE, pasaporte) — `ADAPTAR`
       - Función: El tipo de documento cambia el validador del número en tiempo real.
-      - Archivos existentes: `src/lib/validaciones.ts`
+      - Archivos existentes: `src/shared/lib/validaciones.ts`
     - **1.1.1.2** Bloqueo, desbloqueo y envío de credenciales — `EXISTE`
   - **1.1.2** Perfiles y permisos — `EXISTE`
     - Ruta: `/admin/perfiles`
@@ -94,15 +96,15 @@ Grupo de configuración del sistema; solo el Administrador edita y publica.
     - Archivos existentes: `src/app/plataforma/admin/perfiles/page.tsx`, `src/app/api/perfiles/route.ts`, `src/app/api/perfiles/[id]/route.ts`
     - **1.1.2.1** Perfiles del sistema (los 10) y permisos por acción — `ADAPTAR`
       - Función: Incorporar el perfil Gestor de Problemas y los permisos de las secciones de los Prompts 1 a 4.
-      - Archivos por crear: `src/lib/permisos.ts`
+      - Archivos existentes: `src/shared/lib/capacidades.ts`
   - **1.1.3** Estructura del menú — `EXISTE`
     - Ruta: `/admin/menu`
     - Función: Orden, visibilidad y bloqueo de ítems por perfil.
-    - Archivos existentes: `src/app/plataforma/admin/menu/page.tsx`, `src/app/api/menu/admin/route.ts`, `src/app/api/menu/admin/[id]/route.ts`, `src/lib/menu.ts`
+    - Archivos existentes: `src/app/plataforma/admin/menu/page.tsx`, `src/app/api/menu/admin/route.ts`, `src/app/api/menu/admin/[id]/route.ts`, `src/shared/lib/menu.ts`
     - **1.1.3.1** Carga de los menús de los 10 perfiles — `ADAPTAR`
       - Función: Script idempotente que siembra el menú de cada perfil según este esquema.
-      - Archivos existentes: `src/lib/scripts/migrar_menu_tecnico.ts`
-      - Archivos por crear: `src/lib/scripts/migrar_menu_perfiles.ts`
+      - Archivos existentes: `src/shared/lib/scripts/migrar_menu_tecnico.ts`
+      - Archivos por crear: `src/shared/lib/scripts/migrar_menu_perfiles.ts`
 - **1.2** Catálogo de servicios y SLAs — `EXISTE`
   - Ruta: `/admin/servicios`
   - Función: Servicios de incidentes y de solicitudes, categorías y objetivos de tiempo.
@@ -118,15 +120,15 @@ Grupo de configuración del sistema; solo el Administrador edita y publica.
   - **1.2.3** Crear servicio — `EXISTE`
     - Ruta: `/admin/servicios?vista=crear`
     - Función: Formulario oficial de servicio con validaciones en tiempo real.
-    - Archivos existentes: `src/app/plataforma/admin/servicios/[id]/formulario/page.tsx`, `src/app/plataforma/admin/servicios/[id]/formulario/ui.tsx`
+    - Archivos existentes: `src/app/plataforma/admin/servicios/[id]/formulario/page.tsx`, `src/modules/servicios/admin/servicios/[id]/formulario/ui.tsx`
   - **1.2.4** Configuración de categorías — `EXISTE`
     - Ruta: `/admin/servicios?vista=categorias`
     - Función: CRUD de categorías con unicidad de nombre y código.
-    - Archivos existentes: `src/app/plataforma/admin/servicios/GestionCategorias.tsx`, `src/app/api/admin/categorias/route.ts`, `src/app/api/admin/categorias/[id]/route.ts`
+    - Archivos existentes: `src/modules/servicios/admin/servicios/GestionCategorias.tsx`, `src/app/api/admin/categorias/route.ts`, `src/app/api/admin/categorias/[id]/route.ts`
   - **1.2.5** Objetivos SLA — `EXISTE`
     - Ruta: `/admin/servicios/sla`
     - Función: Matriz institucional de tiempos por prioridad y matriz impacto × urgencia.
-    - Archivos existentes: `src/app/plataforma/admin/servicios/sla/page.tsx`, `src/app/plataforma/admin/servicios/sla/components/MatrizPrioridadSla.tsx`, `src/app/plataforma/admin/servicios/ConfiguracionObjetivosSla.tsx`, `src/app/api/admin/sla/route.ts`, `src/app/api/admin/sla/matriz/route.ts`
+    - Archivos existentes: `src/app/plataforma/admin/servicios/sla/page.tsx`, `src/modules/servicios/admin/servicios/sla/components/MatrizPrioridadSla.tsx`, `src/modules/servicios/admin/servicios/ConfiguracionObjetivosSla.tsx`, `src/app/api/admin/sla/route.ts`, `src/app/api/admin/sla/matriz/route.ts`
 - **1.3** Configuración de procesos — `EXISTE`
   - Ruta: `/admin/procesos`
   - Función: Formularios, flujos y reglas por proceso ITIL.
@@ -155,57 +157,57 @@ Grupo de configuración del sistema; solo el Administrador edita y publica.
     - **1.3.3.1** Configuración de formulario — `ADAPTAR`
       - Ruta: `/admin/procesos/problemas/formulario`
       - Función: Formulario configurable de problemas con versionado.
-      - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/formulario/page.tsx`, `src/app/plataforma/admin/procesos/problemas/formulario/components/BarraAccionesComun.tsx`, `src/app/plataforma/admin/procesos/problemas/formulario/components/ModalVistaPrevia.tsx`, `src/app/plataforma/admin/procesos/problemas/formulario/components/ModalPublicacion.tsx`, `src/app/plataforma/admin/procesos/problemas/formulario/components/ModalHistorialVersiones.tsx`, `src/app/plataforma/admin/procesos/problemas/formulario/components/ModalRestaurarFabrica.tsx`
+      - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/formulario/page.tsx`, `src/modules/problemas/config/formulario/components/BarraAccionesComun.tsx`, `src/modules/problemas/config/formulario/components/ModalVistaPrevia.tsx`, `src/modules/problemas/config/formulario/components/ModalPublicacion.tsx`, `src/modules/problemas/config/formulario/components/ModalHistorialVersiones.tsx`, `src/modules/problemas/config/formulario/components/ModalRestaurarFabrica.tsx`
       - **1.3.3.1.1** Campos — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/formulario/components/PestanaCampos.tsx`
+        - Archivos existentes: `src/modules/problemas/config/formulario/components/PestanaCampos.tsx`
       - **1.3.3.1.2** Campos personalizados — `NUEVO`
         - Función: API admin/problemas/campos-personalizados ya existe.
-        - Archivos por crear: `src/app/plataforma/admin/procesos/problemas/formulario/components/PestanaCamposPersonalizados.tsx`
+        - Archivos por crear: `src/modules/problemas/config/formulario/components/PestanaCamposPersonalizados.tsx`
       - **1.3.3.1.3** Listas y catálogos — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/formulario/components/PestanaListasCatalogos.tsx`
+        - Archivos existentes: `src/modules/problemas/config/formulario/components/PestanaListasCatalogos.tsx`
       - **1.3.3.1.4** Matriz de prioridad (compartida) — `NUEVO`
         - Función: API admin/problemas/matriz-prioridad ya existe.
-        - Archivos por crear: `src/app/plataforma/admin/procesos/problemas/formulario/components/PestanaPrioridad.tsx`
+        - Archivos por crear: `src/modules/problemas/config/formulario/components/PestanaPrioridad.tsx`
       - **1.3.3.1.5** Plantillas de problema — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/formulario/components/PestanaPlantillas.tsx`
+        - Archivos existentes: `src/modules/problemas/config/formulario/components/PestanaPlantillas.tsx`
       - **1.3.3.1.6** Vista del ticket — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/formulario/components/PestanaVistaTicket.tsx`
+        - Archivos existentes: `src/modules/problemas/config/formulario/components/PestanaVistaTicket.tsx`
     - **1.3.3.2** Flujo de investigación y seguimiento — `EXISTE`
       - Ruta: `/admin/procesos/problemas/flujo`
       - Función: Estados, transiciones, asignación, objetivos, escalamiento, reapertura, tareas y problemas mayores.
       - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/flujo/page.tsx`
       - **1.3.3.2.1** Estados — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/flujo/components/PestanaEstados.tsx`
+        - Archivos existentes: `src/modules/problemas/config/flujo/components/PestanaEstados.tsx`
       - **1.3.3.2.2** Transiciones y acciones — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/flujo/components/PestanaTransiciones.tsx`
+        - Archivos existentes: `src/modules/problemas/config/flujo/components/PestanaTransiciones.tsx`
       - **1.3.3.2.3** Asignación automática — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/flujo/components/PestanaAsignacion.tsx`
+        - Archivos existentes: `src/modules/problemas/config/flujo/components/PestanaAsignacion.tsx`
       - **1.3.3.2.4** Objetivos de tiempo — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/flujo/components/PestanaObjetivosTiempo.tsx`
+        - Archivos existentes: `src/modules/problemas/config/flujo/components/PestanaObjetivosTiempo.tsx`
       - **1.3.3.2.5** Escalamiento — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/flujo/components/PestanaEscalamiento.tsx`
+        - Archivos existentes: `src/modules/problemas/config/flujo/components/PestanaEscalamiento.tsx`
       - **1.3.3.2.6** Reapertura — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/flujo/components/PestanaReapertura.tsx`
+        - Archivos existentes: `src/modules/problemas/config/flujo/components/PestanaReapertura.tsx`
       - **1.3.3.2.7** Tareas predefinidas — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/flujo/components/PestanaTareas.tsx`
+        - Archivos existentes: `src/modules/problemas/config/flujo/components/PestanaTareas.tsx`
       - **1.3.3.2.8** Problemas mayores — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/flujo/components/PestanaMayores.tsx`
+        - Archivos existentes: `src/modules/problemas/config/flujo/components/PestanaMayores.tsx`
     - **1.3.3.3** Relación con incidentes, errores conocidos y conocimiento — `EXISTE`
       - Ruta: `/admin/procesos/problemas/relaciones`
       - Función: Umbrales, vínculos, KEDB, RFC, conocimiento y CI.
       - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/relaciones/page.tsx`
       - **1.3.3.3.1** Creación automática por umbral — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/relaciones/components/PestanaUmbral.tsx`
+        - Archivos existentes: `src/modules/problemas/config/relaciones/components/PestanaUmbral.tsx`
       - **1.3.3.3.2** Incidentes vinculados — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/relaciones/components/PestanaIncidentesVinculados.tsx`
+        - Archivos existentes: `src/modules/problemas/config/relaciones/components/PestanaIncidentesVinculados.tsx`
       - **1.3.3.3.3** Errores conocidos (KEDB) — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/relaciones/components/PestanaKedb.tsx`
+        - Archivos existentes: `src/modules/problemas/config/relaciones/components/PestanaKedb.tsx`
       - **1.3.3.3.4** Cambios (RFC) — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/relaciones/components/PestanaRfc.tsx`
+        - Archivos existentes: `src/modules/problemas/config/relaciones/components/PestanaRfc.tsx`
       - **1.3.3.3.5** Conocimiento — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/relaciones/components/PestanaConocimiento.tsx`
+        - Archivos existentes: `src/modules/problemas/config/relaciones/components/PestanaConocimiento.tsx`
       - **1.3.3.3.6** CI y servicios — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/problemas/relaciones/components/PestanaCmdb.tsx`
+        - Archivos existentes: `src/modules/problemas/config/relaciones/components/PestanaCmdb.tsx`
   - **1.3.4** Gestión de cambios — `EXISTE`
     - Ruta: `/admin/procesos/cambios`
     - Función: Prompt 2.
@@ -213,69 +215,69 @@ Grupo de configuración del sistema; solo el Administrador edita y publica.
     - **1.3.4.1** Configuración de formulario — `ADAPTAR`
       - Ruta: `/admin/procesos/cambios/formulario`
       - Función: Formulario de RFC configurable; unificar los modales con los de problemas.
-      - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/formulario/page.tsx`, `src/app/plataforma/admin/procesos/cambios/formulario/components/BarraAccionesComun.tsx`, `src/app/plataforma/admin/procesos/cambios/formulario/components/ModalVistaPrevia.tsx`, `src/app/plataforma/admin/procesos/cambios/formulario/components/ModalPublicacion.tsx`, `src/app/plataforma/admin/procesos/cambios/formulario/components/ModalHistorialVersiones.tsx`, `src/app/plataforma/admin/procesos/cambios/formulario/components/ModalRestaurarFabrica.tsx`
+      - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/formulario/page.tsx`, `src/modules/cambios/config/formulario/components/BarraAccionesComun.tsx`, `src/modules/cambios/config/formulario/components/ModalVistaPrevia.tsx`, `src/modules/cambios/config/formulario/components/ModalPublicacion.tsx`, `src/modules/cambios/config/formulario/components/ModalHistorialVersiones.tsx`, `src/modules/cambios/config/formulario/components/ModalRestaurarFabrica.tsx`
       - **1.3.4.1.1** Campos — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/formulario/components/PestanaCampos.tsx`
+        - Archivos existentes: `src/modules/cambios/config/formulario/components/PestanaCampos.tsx`
       - **1.3.4.1.2** Campos personalizados — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/formulario/components/PestanaCamposPersonalizados.tsx`
+        - Archivos existentes: `src/modules/cambios/config/formulario/components/PestanaCamposPersonalizados.tsx`
       - **1.3.4.1.3** Listas y catálogos — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/formulario/components/PestanaCatalogos.tsx`
+        - Archivos existentes: `src/modules/cambios/config/formulario/components/PestanaCatalogos.tsx`
       - **1.3.4.1.4** Cuestionario de riesgo — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/formulario/components/PestanaCuestionarioRiesgo.tsx`
+        - Archivos existentes: `src/modules/cambios/config/formulario/components/PestanaCuestionarioRiesgo.tsx`
       - **1.3.4.1.5** Prioridad (matriz compartida) — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/formulario/components/PestanaPrioridad.tsx`
+        - Archivos existentes: `src/modules/cambios/config/formulario/components/PestanaPrioridad.tsx`
       - **1.3.4.1.6** Plantillas de RFC — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/formulario/components/PestanaPlantillas.tsx`
+        - Archivos existentes: `src/modules/cambios/config/formulario/components/PestanaPlantillas.tsx`
       - **1.3.4.1.7** Vista del ticket — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/formulario/components/PestanaVistaTicket.tsx`
+        - Archivos existentes: `src/modules/cambios/config/formulario/components/PestanaVistaTicket.tsx`
     - **1.3.4.2** Tipos de cambio y requisitos — `EXISTE`
       - Ruta: `/admin/procesos/cambios/tipos-requisitos`
       - Función: Tipos, autoridad, modelos estándar y clasificación.
       - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/tipos-requisitos/page.tsx`
       - **1.3.4.2.1** Tipos de cambio — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/tipos-requisitos/components/PestanaTiposCambio.tsx`
+        - Archivos existentes: `src/modules/cambios/config/tipos-requisitos/components/PestanaTiposCambio.tsx`
       - **1.3.4.2.2** Matriz de autoridad — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/tipos-requisitos/components/PestanaMatrizAutoridad.tsx`
+        - Archivos existentes: `src/modules/cambios/config/tipos-requisitos/components/PestanaMatrizAutoridad.tsx`
       - **1.3.4.2.3** Modelos de cambio estándar — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/tipos-requisitos/components/PestanaModelosEstandar.tsx`
+        - Archivos existentes: `src/modules/cambios/config/tipos-requisitos/components/PestanaModelosEstandar.tsx`
       - **1.3.4.2.4** Reglas de clasificación — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/tipos-requisitos/components/PestanaReglasClasificacion.tsx`
+        - Archivos existentes: `src/modules/cambios/config/tipos-requisitos/components/PestanaReglasClasificacion.tsx`
     - **1.3.4.3** Flujo de evaluación, autorización y revisión posterior — `ADAPTAR`
       - Ruta: `/admin/procesos/cambios/flujo-evaluacion`
       - Función: Estados, transiciones, etapas, comités, plazos, tareas, cierre y PIR; unificar `Iconos.tsx`.
-      - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/page.tsx`, `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/components/Iconos.tsx`
+      - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/page.tsx`, `src/modules/cambios/config/flujo-evaluacion/components/Iconos.tsx`
       - **1.3.4.3.1** Estados — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/components/PestanaEstados.tsx`
+        - Archivos existentes: `src/modules/cambios/config/flujo-evaluacion/components/PestanaEstados.tsx`
       - **1.3.4.3.2** Transiciones y acciones — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/components/PestanaTransiciones.tsx`
+        - Archivos existentes: `src/modules/cambios/config/flujo-evaluacion/components/PestanaTransiciones.tsx`
       - **1.3.4.3.3** Etapas de aprobación — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/components/PestanaEtapasAprobacion.tsx`
+        - Archivos existentes: `src/modules/cambios/config/flujo-evaluacion/components/PestanaEtapasAprobacion.tsx`
       - **1.3.4.3.4** Comités (CAB y emergencia) — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/components/PestanaComites.tsx`
+        - Archivos existentes: `src/modules/cambios/config/flujo-evaluacion/components/PestanaComites.tsx`
       - **1.3.4.3.5** Plazos y escalamiento — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/components/PestanaPlazosEscalamiento.tsx`
+        - Archivos existentes: `src/modules/cambios/config/flujo-evaluacion/components/PestanaPlazosEscalamiento.tsx`
       - **1.3.4.3.6** Tareas y checklists — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/components/PestanaTareasChecklists.tsx`
+        - Archivos existentes: `src/modules/cambios/config/flujo-evaluacion/components/PestanaTareasChecklists.tsx`
       - **1.3.4.3.7** Implementación y cierre — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/components/PestanaImplementacionCierre.tsx`
+        - Archivos existentes: `src/modules/cambios/config/flujo-evaluacion/components/PestanaImplementacionCierre.tsx`
       - **1.3.4.3.8** Revisión post-implementación — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/flujo-evaluacion/components/PestanaPir.tsx`
+        - Archivos existentes: `src/modules/cambios/config/flujo-evaluacion/components/PestanaPir.tsx`
     - **1.3.4.4** Notificaciones y calendario de cambios — `ADAPTAR`
       - Ruta: `/admin/procesos/cambios/notificaciones-calendario`
       - Función: Eventos, ventanas, congelamientos, feriados, conflictos y presentación; el Gestor de Cambios edita solo las ventanas, congelamientos y feriados.
-      - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/page.tsx`, `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/components/Iconos.tsx`
+      - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/page.tsx`, `src/modules/cambios/config/notificaciones-calendario/components/Iconos.tsx`
       - **1.3.4.4.1** Notificaciones — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/components/PestanaNotificaciones.tsx`
+        - Archivos existentes: `src/modules/cambios/config/notificaciones-calendario/components/PestanaNotificaciones.tsx`
       - **1.3.4.4.2** Ventanas de mantenimiento — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/components/PestanaVentanasMantenimiento.tsx`
+        - Archivos existentes: `src/modules/cambios/config/notificaciones-calendario/components/PestanaVentanasMantenimiento.tsx`
       - **1.3.4.4.3** Períodos de congelamiento — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/components/PestanaPeriodosCongelamiento.tsx`
+        - Archivos existentes: `src/modules/cambios/config/notificaciones-calendario/components/PestanaPeriodosCongelamiento.tsx`
       - **1.3.4.4.4** Feriados — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/components/PestanaFeriados.tsx`
+        - Archivos existentes: `src/modules/cambios/config/notificaciones-calendario/components/PestanaFeriados.tsx`
       - **1.3.4.4.5** Conflictos y capacidad — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/components/PestanaConflictosCapacidad.tsx`
+        - Archivos existentes: `src/modules/cambios/config/notificaciones-calendario/components/PestanaConflictosCapacidad.tsx`
       - **1.3.4.4.6** Presentación del calendario — `EXISTE`
-        - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/components/PestanaPresentacionCalendario.tsx`
+        - Archivos existentes: `src/modules/cambios/config/notificaciones-calendario/components/PestanaPresentacionCalendario.tsx`
 - **1.4** Organización y soporte — `EXISTE`
   - Ruta: `/admin/organizacion`
   - **1.4.1** Departamentos empresariales — `EXISTE`
@@ -302,74 +304,74 @@ Grupo de configuración del sistema; solo el Administrador edita y publica.
     - Función: Clases, fabricantes, atributos, formulario, códigos, ubicaciones, listas, ficha e importación.
     - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/page.tsx`, `src/app/api/admin/activos-config/tipos-modelos-atributos/configuracion/route.ts`
     - **1.5.1.1** Jerarquía de clases y tipos — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaClasesTipos.tsx`
+      - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaClasesTipos.tsx`
     - **1.5.1.2** Fabricantes y modelos — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaFabricantesModelos.tsx`
+      - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaFabricantesModelos.tsx`
     - **1.5.1.3** Atributos por tipo — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaAtributosTipo.tsx`
+      - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaAtributosTipo.tsx`
     - **1.5.1.4** Configuración de formulario del activo — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaFormularioActivo.tsx`
+      - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaFormularioActivo.tsx`
     - **1.5.1.5** Código de activo y etiquetas — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaCodigoEtiquetas.tsx`
+      - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaCodigoEtiquetas.tsx`
     - **1.5.1.6** Ubicaciones — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaUbicaciones.tsx`
+      - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaUbicaciones.tsx`
     - **1.5.1.7** Listas y catálogos auxiliares — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaCatalogosAuxiliares.tsx`
+      - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaCatalogosAuxiliares.tsx`
     - **1.5.1.8** Ficha del activo y listado — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaFichaListado.tsx`
+      - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaFichaListado.tsx`
     - **1.5.1.9** Importación masiva e inventario físico — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaImportacionInventario.tsx`
+      - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaImportacionInventario.tsx`
   - **1.5.2** Ciclos de vida y reglas de transición — `EXISTE`
     - Ruta: `/admin/activos-config/ciclos-vida-transiciones`
     - Archivos existentes: `src/app/plataforma/admin/activos-config/ciclos-vida-transiciones/page.tsx`, `src/app/api/admin/activos-config/ciclos-vida-transiciones/configuracion/route.ts`
     - **1.5.2.1** Ciclos de vida y estados — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/ciclos-vida-transiciones/components/PestanaCiclosEstados.tsx`
+      - Archivos existentes: `src/modules/activos/config/ciclos-vida-transiciones/components/PestanaCiclosEstados.tsx`
     - **1.5.2.2** Transiciones y reglas — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/ciclos-vida-transiciones/components/PestanaTransicionesReglas.tsx`
+      - Archivos existentes: `src/modules/activos/config/ciclos-vida-transiciones/components/PestanaTransicionesReglas.tsx`
     - **1.5.2.3** Asignación, custodia y devolución — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/ciclos-vida-transiciones/components/PestanaAsignacionCustodia.tsx`
+      - Archivos existentes: `src/modules/activos/config/ciclos-vida-transiciones/components/PestanaAsignacionCustodia.tsx`
     - **1.5.2.4** Adquisición y recepción — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/ciclos-vida-transiciones/components/PestanaAdquisicionRecepcion.tsx`
+      - Archivos existentes: `src/modules/activos/config/ciclos-vida-transiciones/components/PestanaAdquisicionRecepcion.tsx`
     - **1.5.2.5** Mantenimiento y fin de vida — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/ciclos-vida-transiciones/components/PestanaMantenimientoFinVida.tsx`
+      - Archivos existentes: `src/modules/activos/config/ciclos-vida-transiciones/components/PestanaMantenimientoFinVida.tsx`
     - **1.5.2.6** Baja y disposición — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/ciclos-vida-transiciones/components/PestanaBajaDisposicion.tsx`
+      - Archivos existentes: `src/modules/activos/config/ciclos-vida-transiciones/components/PestanaBajaDisposicion.tsx`
   - **1.5.3** Licencias y contratos — `EXISTE`
     - Ruta: `/admin/activos-config/licencias-contratos`
     - Archivos existentes: `src/app/plataforma/admin/activos-config/licencias-contratos/page.tsx`, `src/app/api/admin/activos-config/licencias-contratos/configuracion/route.ts`
     - **1.5.3.1** Tipos de licencia y métricas — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/licencias-contratos/components/PestanaTiposLicencia.tsx`
+      - Archivos existentes: `src/modules/activos/config/licencias-contratos/components/PestanaTiposLicencia.tsx`
     - **1.5.3.2** Tipos de contrato y proveedores — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/licencias-contratos/components/PestanaTiposContrato.tsx`
+      - Archivos existentes: `src/modules/activos/config/licencias-contratos/components/PestanaTiposContrato.tsx`
     - **1.5.3.3** Formulario de licencia y contrato — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/licencias-contratos/components/PestanaFormularioLicenciaContrato.tsx`
+      - Archivos existentes: `src/modules/activos/config/licencias-contratos/components/PestanaFormularioLicenciaContrato.tsx`
     - **1.5.3.4** Cumplimiento y sobreuso — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/licencias-contratos/components/PestanaCumplimientoSobreuso.tsx`
+      - Archivos existentes: `src/modules/activos/config/licencias-contratos/components/PestanaCumplimientoSobreuso.tsx`
     - **1.5.3.5** Alertas de vencimiento y garantía — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/licencias-contratos/components/PestanaAlertasVencimiento.tsx`
+      - Archivos existentes: `src/modules/activos/config/licencias-contratos/components/PestanaAlertasVencimiento.tsx`
     - **1.5.3.6** Renovación — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/licencias-contratos/components/PestanaRenovacion.tsx`
+      - Archivos existentes: `src/modules/activos/config/licencias-contratos/components/PestanaRenovacion.tsx`
   - **1.5.4** Tipos de elementos de configuración y relaciones de CMDB — `EXISTE`
     - Ruta: `/admin/activos-config/cmdb-relaciones`
     - Archivos existentes: `src/app/plataforma/admin/activos-config/cmdb-relaciones/page.tsx`, `src/app/api/admin/activos-config/cmdb-relaciones/configuracion/route.ts`, `src/app/api/admin/cmdb/tipos/route.ts`
     - **1.5.4.1** Clases de CI — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/cmdb-relaciones/components/PestanaClasesCI.tsx`
+      - Archivos existentes: `src/modules/activos/config/cmdb-relaciones/components/PestanaClasesCI.tsx`
     - **1.5.4.2** Tipos de relación — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/cmdb-relaciones/components/PestanaTiposRelacion.tsx`
+      - Archivos existentes: `src/modules/activos/config/cmdb-relaciones/components/PestanaTiposRelacion.tsx`
     - **1.5.4.3** Criticidad y entornos — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/cmdb-relaciones/components/PestanaCriticidadEntornos.tsx`
+      - Archivos existentes: `src/modules/activos/config/cmdb-relaciones/components/PestanaCriticidadEntornos.tsx`
     - **1.5.4.4** Reglas de integridad — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/cmdb-relaciones/components/PestanaReglasIntegridad.tsx`
+      - Archivos existentes: `src/modules/activos/config/cmdb-relaciones/components/PestanaReglasIntegridad.tsx`
     - **1.5.4.5** Fuentes de datos y atributos protegidos — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/cmdb-relaciones/components/PestanaFuentesAtributosProtegidos.tsx`
+      - Archivos existentes: `src/modules/activos/config/cmdb-relaciones/components/PestanaFuentesAtributosProtegidos.tsx`
     - **1.5.4.6** Auditoría de CMDB y líneas base — `EXISTE`
-      - Archivos existentes: `src/app/plataforma/admin/activos-config/cmdb-relaciones/components/PestanaAuditoriaLineasBase.tsx`
+      - Archivos existentes: `src/modules/activos/config/cmdb-relaciones/components/PestanaAuditoriaLineasBase.tsx`
 - **1.6** Comunicaciones y notificaciones — `EXISTE`
   - Ruta: `/admin/comunicaciones`
   - **1.6.1** Plantillas de correo y otros canales — `EXISTE`
     - Ruta: `/admin/notificaciones?seccion=plantillas`
     - Función: Plantillas y reglas de notificación por evento.
-    - Archivos existentes: `src/app/plataforma/admin/notificaciones/page.tsx`, `src/app/api/admin/notificaciones/reglas/route.ts`, `src/lib/email.ts`, `src/lib/correo-util.ts`
+    - Archivos existentes: `src/app/plataforma/admin/notificaciones/page.tsx`, `src/app/api/admin/notificaciones/reglas/route.ts`, `src/shared/lib/email.ts`, `src/shared/lib/correo-util.ts`
   - **1.6.2** Configuración de contacto — `EXISTE`
     - Ruta: `/admin/notificaciones?seccion=contacto`
     - Función: Remitente, SMTP y datos de contacto de la mesa.
@@ -387,7 +389,7 @@ Grupo de configuración del sistema; solo el Administrador edita y publica.
     - Archivos existentes: `src/app/plataforma/admin/auditoria-sistema/page.tsx`, `src/app/api/admin/auditoria-sistema/route.ts`
   - **1.8.2** Registros de seguridad y autenticación — `EXISTE`
     - Ruta: `/admin/seguridad-logs`
-    - Archivos existentes: `src/app/plataforma/admin/seguridad-logs/page.tsx`, `src/app/api/admin/logs/route.ts`, `src/lib/security.ts`
+    - Archivos existentes: `src/app/plataforma/admin/seguridad-logs/page.tsx`, `src/app/api/admin/logs/route.ts`, `src/shared/lib/security.ts`
   - **1.8.3** Retención y mantenimiento de datos — `EXISTE`
     - Ruta: `/admin/mantenimiento-datos`
     - Archivos existentes: `src/app/plataforma/admin/mantenimiento-datos/page.tsx`, `src/app/api/admin/mantenimiento-datos/route.ts`
@@ -409,7 +411,7 @@ Acceso de solo consulta a toda la operación (el Administrador no opera tickets 
 - Archivos existentes: `src/app/plataforma/tickets/gestion/page.tsx`
 - **3.1** Todos los tickets — `EXISTE`
   - Ruta: `/tickets/gestion/todos`
-  - Archivos existentes: `src/app/plataforma/tickets/gestion/todos/page.tsx`, `src/components/ticket-detail/presentadores/VistaTicketAdministrador.tsx`
+  - Archivos existentes: `src/app/plataforma/tickets/gestion/todos/page.tsx`, `src/modules/tickets/ticket-detail/presentadores/VistaTicketAdministrador.tsx`
 - **3.2** Auditoría forense de tickets — `EXISTE`
   - Ruta: `/tickets/gestion/auditoria`
   - Archivos existentes: `src/app/plataforma/tickets/gestion/auditoria/page.tsx`
@@ -432,14 +434,14 @@ Estado técnico del sistema para el Administrador.
 - Archivos por crear: `src/app/plataforma/admin/salud-sistema/page.tsx`, `src/app/api/admin/salud-sistema/route.ts`
 - **4.1** Estado de la base de datos y servicios — `NUEVO`
   - Función: Conexión, latencia y detección de la base pausada.
-  - Archivos existentes: `src/lib/db.ts`
-  - Archivos por crear: `src/modules/admin/salud/saludService.ts`
+  - Archivos existentes: `src/shared/lib/db.ts`
+  - Archivos por crear: `src/modules/administracion/services/saludService.ts`
 - **4.2** Tareas programadas — `NUEVO`
   - Función: Última ejecución y resultado de los jobs (recordatorios, escalamientos, alertas).
   - Archivos por crear: `src/app/api/admin/salud-sistema/tareas/route.ts`
 - **4.3** Cola de correo y notificaciones — `NUEVO`
   - Función: Envíos pendientes, fallidos y reintento.
-  - Archivos existentes: `src/lib/email.ts`
+  - Archivos existentes: `src/shared/lib/email.ts`
   - Archivos por crear: `src/app/api/admin/salud-sistema/correo/route.ts`
 
 ### 5 Mi cuenta  `ADAPTAR`
@@ -494,11 +496,11 @@ Espacio personal del técnico (Prompt 4, M1).
 - **2.1** Mis tickets asignados — `EXISTE`
   - Ruta: `/tecnico/mesa/asignados`
   - Función: Cola personal con SLA y acciones rápidas.
-  - Archivos existentes: `src/app/plataforma/tecnico/mesa/asignados/page.tsx`, `src/components/TablaTickets.tsx`
+  - Archivos existentes: `src/app/plataforma/tecnico/mesa/asignados/page.tsx`, `src/modules/tickets/components/TablaTickets.tsx`
   - **2.1.1** Detalle del ticket (vista Operador) — `EXISTE`
     - Ruta: `/tickets/[id]`
     - Función: Tomar, atender, esperar, escalar, resolver, vincular problema o RFC.
-    - Archivos existentes: `src/app/plataforma/tickets/[id]/page.tsx`, `src/components/ticket-detail/presentadores/VistaTicketOperador.tsx`, `src/components/ticket-detail/secciones/BarraAccionesOperativas.tsx`, `src/components/ticket-detail/secciones/CockpitTemporizadorSla.tsx`, `src/components/ticket-detail/secciones/StreamChatPublico.tsx`, `src/components/ticket-detail/secciones/StreamNotasInternas.tsx`, `src/components/ticket-detail/secciones/PanelInfraestructuraCi.tsx`
+    - Archivos existentes: `src/app/plataforma/tickets/[id]/page.tsx`, `src/modules/tickets/ticket-detail/presentadores/VistaTicketOperador.tsx`, `src/modules/tickets/ticket-detail/secciones/BarraAccionesOperativas.tsx`, `src/modules/tickets/ticket-detail/secciones/CockpitTemporizadorSla.tsx`, `src/modules/tickets/ticket-detail/secciones/StreamChatPublico.tsx`, `src/modules/tickets/ticket-detail/secciones/StreamNotasInternas.tsx`, `src/modules/tickets/ticket-detail/secciones/PanelInfraestructuraCi.tsx`
 - **2.2** Bandeja de pendientes — `EXISTE`
   - Ruta: `/tecnico/mesa/pendientes`
   - Función: Cola sin asignar de mis grupos; tomar de forma atómica.
@@ -526,7 +528,7 @@ Espacio personal del técnico (Prompt 4, M1).
 - Ruta: `/tecnico/sla`
 - **3.1** Semáforo de SLA de mi cola — `EXISTE`
   - Ruta: `/tecnico/sla/semaforo`
-  - Archivos existentes: `src/app/plataforma/tecnico/sla/semaforo/page.tsx`, `src/lib/sla.ts`
+  - Archivos existentes: `src/app/plataforma/tecnico/sla/semaforo/page.tsx`, `src/shared/lib/sla.ts`
 - **3.2** Objetivos de tiempo vigentes — `EXISTE`
   - Ruta: `/tecnico/sla/objetivos`
   - Archivos existentes: `src/app/plataforma/tecnico/sla/objetivos/page.tsx`
@@ -535,7 +537,7 @@ Espacio personal del técnico (Prompt 4, M1).
 - Ruta: `/tecnico/problemas`
 - **4.1** Problemas asignados a mí — `EXISTE`
   - Ruta: `/tecnico/problemas/asignados`
-  - Archivos existentes: `src/app/plataforma/tecnico/problemas/asignados/page.tsx`, `src/components/itsm/ProblemasWorkspace.tsx`
+  - Archivos existentes: `src/app/plataforma/tecnico/problemas/asignados/page.tsx`, `src/modules/problemas/components/ProblemasWorkspace.tsx`
 - **4.2** Problemas de mi grupo — `EXISTE`
   - Ruta: `/tecnico/problemas/grupo`
   - Archivos existentes: `src/app/plataforma/tecnico/problemas/grupo/page.tsx`
@@ -641,7 +643,7 @@ Autoservicio: crear tickets y seguir los propios.
   - Función: Elegir el servicio en el catálogo y completar el formulario dinámico de incidente o solicitud.
   - Archivos existentes: `src/app/plataforma/tickets/catalogo/page.tsx`, `src/app/plataforma/incidentes/page.tsx`, `src/app/plataforma/solicitudes/page.tsx`, `src/app/api/incidentes/route.ts`, `src/app/api/solicitudes/route.ts`, `src/app/api/tickets/catalogos/route.ts`
   - **1.1.1** Formulario dinámico con texto guía — `EXISTE`
-    - Archivos existentes: `src/lib/validaciones.ts`
+    - Archivos existentes: `src/shared/lib/validaciones.ts`
   - **1.1.2** Adjuntar evidencias — `EXISTE`
   - **1.1.3** Sugerencia de artículos antes de enviar — `NUEVO`
     - Función: Deflexión: muestra artículos públicos relacionados al escribir el título.
@@ -649,15 +651,15 @@ Autoservicio: crear tickets y seguir los propios.
 - **1.2** Mis tickets — `EXISTE`
   - Ruta: `/tickets`
   - Función: Lista de los propios con estado y tiempo restante.
-  - Archivos existentes: `src/app/plataforma/tickets/page.tsx`, `src/components/TablaTickets.tsx`, `src/components/ModalDetalleTicket.tsx`, `src/app/api/tickets/route.ts`, `src/app/api/tickets/[id]/route.ts`
+  - Archivos existentes: `src/app/plataforma/tickets/page.tsx`, `src/modules/tickets/components/TablaTickets.tsx`, `src/modules/tickets/components/ModalDetalleTicket.tsx`, `src/app/api/tickets/route.ts`, `src/app/api/tickets/[id]/route.ts`
   - **1.2.1** Detalle y seguimiento — `EXISTE`
     - Ruta: `/tickets/[id]`
     - Función: Progreso por etapas y datos que el solicitante puede ver.
-    - Archivos existentes: `src/app/plataforma/tickets/[id]/page.tsx`, `src/components/ticket-detail/presentadores/VistaTicketConsumidor.tsx`, `src/components/ticket-detail/secciones/StepperProgresoConsumidor.tsx`
+    - Archivos existentes: `src/app/plataforma/tickets/[id]/page.tsx`, `src/modules/tickets/ticket-detail/presentadores/VistaTicketConsumidor.tsx`, `src/modules/tickets/ticket-detail/secciones/StepperProgresoConsumidor.tsx`
   - **1.2.2** Comunicación con el técnico — `EXISTE`
-    - Archivos existentes: `src/components/ticket-detail/secciones/StreamChatPublico.tsx`, `src/app/api/tickets/[id]/comentarios/route.ts`
+    - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/StreamChatPublico.tsx`, `src/app/api/tickets/[id]/comentarios/route.ts`
   - **1.2.3** Calificar la atención — `EXISTE`
-    - Archivos existentes: `src/components/ticket-detail/secciones/TarjetaCalificacionCsat.tsx`
+    - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/TarjetaCalificacionCsat.tsx`
   - **1.2.4** Reabrir o cancelar — `ADAPTAR` — Dentro de la ventana permitida y con motivo.
 
 ### 2 Catálogo de Servicios  `EXISTE`
@@ -679,7 +681,7 @@ Guías de autoayuda: solo artículos públicos publicados.
 - **3.1** Buscar y leer artículos — `NUEVO`
   - Ruta: `/conocimiento`
   - Función: Buscador por texto, categoría y servicio.
-  - Archivos por crear: `src/modules/itsm/conocimiento/conocimientoService.ts`
+  - Archivos por crear: `src/modules/conocimiento/services/conocimientoService.ts`
 - **3.2** Valorar la utilidad — `NUEVO`
   - Archivos por crear: `src/app/api/conocimiento/[id]/feedback/route.ts`
 
@@ -725,7 +727,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Página de inicio del supervisor: estado del equipo en un vistazo.
 - Ruta: `/supervisor/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/supervisor/panel/page.tsx`, `src/app/api/supervisor/panel/route.ts`, `src/modules/itsm/supervision/supervisionService.ts`
+- Archivos por crear: `src/app/plataforma/supervisor/panel/page.tsx`, `src/app/api/supervisor/panel/route.ts`, `src/modules/supervisor/services/supervisionService.ts`
 - **1.1** Indicadores del equipo — `NUEVO` — SLA del grupo, backlog, sin asignar, vencidos, escalados, CSAT y reabiertos.
 - **1.2** Alertas y riesgos — `NUEVO` — Incidentes mayores, P1/P2 sin asignar, técnicos sobrecargados y aprobaciones vencidas.
 - **1.3** Accesos rápidos — `NUEVO` — Asignar, ver monitoreo, declarar incidente mayor.
@@ -736,7 +738,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **2.1** Centro de asignación — `EXISTE`
   - Ruta: `/tickets/gestion/asignar`
   - Función: Asignar y reasignar tickets del área técnica.
-  - Archivos existentes: `src/app/plataforma/tickets/gestion/asignar/page.tsx`, `src/components/ticket-detail/secciones/ControlesDespacho.tsx`
+  - Archivos existentes: `src/app/plataforma/tickets/gestion/asignar/page.tsx`, `src/modules/tickets/ticket-detail/secciones/ControlesDespacho.tsx`
   - **2.1.1** Cola sin asignar — `EXISTE`
   - **2.1.2** Asignación manual y masiva — `ADAPTAR` — Selección múltiple con motivo y notificación al técnico.
   - **2.1.3** Reasignación forzada con motivo — `EXISTE`
@@ -753,16 +755,16 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
     - Archivos por crear: `src/app/plataforma/supervisor/equipo/ausencias/page.tsx`, `src/app/api/supervisor/ausencias/route.ts`
 - **2.3** Todos los tickets de mi área técnica — `EXISTE`
   - Ruta: `/tickets/gestion/todos`
-  - Archivos existentes: `src/app/plataforma/tickets/gestion/todos/page.tsx`, `src/components/ticket-detail/presentadores/VistaTicketSupervisor.tsx`
+  - Archivos existentes: `src/app/plataforma/tickets/gestion/todos/page.tsx`, `src/modules/tickets/ticket-detail/presentadores/VistaTicketSupervisor.tsx`
 - **2.4** Escalamientos y riesgos de SLA — `NUEVO`
   - Ruta: `/supervisor/sla/escalamientos`
   - Función: Tickets escalados jerárquicamente y en riesgo; permite intervenir.
-  - Archivos existentes: `src/lib/sla.ts`
+  - Archivos existentes: `src/shared/lib/sla.ts`
   - Archivos por crear: `src/app/plataforma/supervisor/sla/escalamientos/page.tsx`, `src/app/api/supervisor/sla/escalamientos/route.ts`
 - **2.5** Incidentes mayores — `NUEVO`
   - Ruta: `/supervisor/incidentes-mayores`
   - Función: Declarar, coordinar, comunicar y cerrar incidentes mayores.
-  - Archivos por crear: `src/app/plataforma/supervisor/incidentes-mayores/page.tsx`, `src/app/api/supervisor/incidentes-mayores/route.ts`, `src/modules/itsm/incidentes/incidentesMayoresService.ts`
+  - Archivos por crear: `src/app/plataforma/supervisor/incidentes-mayores/page.tsx`, `src/app/api/supervisor/incidentes-mayores/route.ts`, `src/modules/incidentes/services/incidentesMayoresService.ts`
 
 ### 3 Gestión de tickets  `EXISTE`
 - Ruta: `/tickets/gestion`
@@ -812,7 +814,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - Ruta: `/problemas`
 - **5.1** Registro de problemas — `EXISTE`
   - Ruta: `/problemas`
-  - Archivos existentes: `src/app/plataforma/problemas/page.tsx`, `src/components/itsm/ProblemasWorkspace.tsx`, `src/app/api/problemas/route.ts`, `src/app/api/problemas/[id]/route.ts`
+  - Archivos existentes: `src/app/plataforma/problemas/page.tsx`, `src/modules/problemas/components/ProblemasWorkspace.tsx`, `src/app/api/problemas/route.ts`, `src/app/api/problemas/[id]/route.ts`
 - **5.2** Asignación de problemas — `NUEVO`
   - Ruta: `/supervisor/problemas/asignar`
   - Función: Reparte problemas sin responsable mientras no exista el Gestor de Problemas.
@@ -826,7 +828,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **6.1** Aprobaciones técnicas de RFC — `NUEVO`
   - Ruta: `/supervisor/cambios/aprobaciones`
   - Función: Etapa Técnica de las RFC del grupo implementador; segregación de funciones.
-  - Archivos existentes: `src/components/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
+  - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
   - Archivos por crear: `src/app/plataforma/supervisor/cambios/aprobaciones/page.tsx`, `src/app/api/supervisor/cambios/aprobaciones/route.ts`
 - **6.2** Calendario de cambios — `EXISTE`
   - Ruta: `/cambios/gestion/calendario`
@@ -922,7 +924,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Inicio del jefe de área (no TI).
 - Ruta: `/gestor-area/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/gestor-area/panel/page.tsx`, `src/app/api/gestor-area/panel/route.ts`, `src/modules/itsm/area/areaService.ts`
+- Archivos por crear: `src/app/plataforma/gestor-area/panel/page.tsx`, `src/app/api/gestor-area/panel/route.ts`, `src/modules/gestor-area/services/areaService.ts`
 - **1.1** Aprobaciones pendientes y vencidas — `NUEVO`
 - **1.2** Tickets del área por estado y SLA — `NUEVO`
 - **1.3** Cambios próximos que afectan a mi área — `NUEVO`
@@ -940,8 +942,8 @@ Inicio del jefe de área (no TI).
   - **2.2.1** Detalle del ticket (vista Gobernanza) — `EXISTE`
     - Ruta: `/tickets/[id]`
     - Función: Presentador propio del jefe de área con contexto de departamento.
-    - Archivos existentes: `src/components/ticket-detail/presentadores/VistaTicketGobernanza.tsx`
-    - Archivos por crear: `src/modules/itsm/presentadores/PresentadorGestorArea.tsx`
+    - Archivos existentes: `src/modules/tickets/ticket-detail/presentadores/VistaTicketGobernanza.tsx`
+    - Archivos por crear: `src/modules/tickets/presentadores/PresentadorGestorArea.tsx`
 - **2.3** Colaboradores de mi área — `EXISTE`
   - Ruta: `/tickets/gestion/colaboradores`
   - Archivos existentes: `src/app/plataforma/tickets/gestion/colaboradores/page.tsx`, `src/app/api/area/colaboradores/route.ts`
@@ -954,7 +956,7 @@ Inicio del jefe de área (no TI).
 - **3.1** Mis aprobaciones de solicitudes — `EXISTE`
   - Ruta: `/tickets/gestion/aprobaciones`
   - Función: Solicitudes que requieren aprobación de jefatura.
-  - Archivos existentes: `src/app/plataforma/tickets/gestion/aprobaciones/page.tsx`, `src/components/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
+  - Archivos existentes: `src/app/plataforma/tickets/gestion/aprobaciones/page.tsx`, `src/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
 - **3.2** Aprobación de negocio de cambios — `NUEVO`
   - Ruta: `/gestor-area/cambios/aprobaciones`
   - Función: Etapa Negocio de las RFC que afectan a mi departamento.
@@ -1030,15 +1032,15 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Hallazgos, cumplimiento y muestras pendientes (solo lectura).
 - Ruta: `/auditor/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/auditor/panel/page.tsx`, `src/app/api/auditor/panel/route.ts`, `src/modules/analitica/auditoria/auditoriaService.ts`
+- Archivos por crear: `src/app/plataforma/auditor/panel/page.tsx`, `src/app/api/auditor/panel/route.ts`, `src/modules/auditor/services/auditoriaService.ts`
 
 ### 2 Auditoría de tickets  `EXISTE`
 - Ruta: `/tickets/gestion`
 - **2.1** Todos los tickets (solo lectura) — `ADAPTAR`
   - Ruta: `/tickets/gestion/todos`
   - Función: Presentador sin acciones, con línea de tiempo y evidencias.
-  - Archivos existentes: `src/app/plataforma/tickets/gestion/todos/page.tsx`, `src/components/ticket-detail/presentadores/VistaTicketGobernanza.tsx`
-  - Archivos por crear: `src/modules/itsm/presentadores/PresentadorAuditor.tsx`
+  - Archivos existentes: `src/app/plataforma/tickets/gestion/todos/page.tsx`, `src/modules/tickets/ticket-detail/presentadores/VistaTicketGobernanza.tsx`
+  - Archivos por crear: `src/modules/tickets/presentadores/PresentadorAuditor.tsx`
 - **2.2** Auditoría forense — `EXISTE`
   - Ruta: `/tickets/gestion/auditoria`
   - Función: Línea de tiempo inmutable por ticket, usuario, CI o fecha.
@@ -1049,7 +1051,7 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
 - **2.3** Segregación de funciones — `NUEVO`
   - Ruta: `/auditor/cumplimiento/sod`
   - Función: Detecta aprobaciones del mismo usuario, autoaprobaciones y excepciones.
-  - Archivos existentes: `src/components/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
+  - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
   - Archivos por crear: `src/app/plataforma/auditor/cumplimiento/sod/page.tsx`, `src/app/api/auditor/cumplimiento/sod/route.ts`
 - **2.4** Muestreo de auditoría — `NUEVO`
   - Ruta: `/auditor/muestreo`
@@ -1150,14 +1152,14 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Pendientes por vencer, reuniones del comité y decisiones recientes.
 - Ruta: `/aprobador/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/aprobador/panel/page.tsx`, `src/app/api/aprobador/panel/route.ts`, `src/modules/itsm/cambios/aprobacionesService.ts`
+- Archivos por crear: `src/app/plataforma/aprobador/panel/page.tsx`, `src/app/api/aprobador/panel/route.ts`, `src/modules/cambios/services/aprobacionesService.ts`
 
 ### 2 Aprobaciones pendientes  `NUEVO`
 - Ruta: `/aprobador/aprobaciones`
 - **2.1** Aprobaciones de cambios — `NUEVO`
   - Ruta: `/aprobador/cambios`
   - Función: Etapas Dirección y excepciones: aprobar, aprobar con condiciones, rechazar, pedir información o delegar.
-  - Archivos existentes: `src/components/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
+  - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
   - Archivos por crear: `src/app/plataforma/aprobador/cambios/page.tsx`, `src/app/api/aprobador/cambios/route.ts`
 - **2.2** Aprobaciones de solicitudes de servicio — `EXISTE`
   - Ruta: `/tickets/gestion/aprobaciones`
@@ -1194,7 +1196,7 @@ Pendientes por vencer, reuniones del comité y decisiones recientes.
 Presentador con evaluación, riesgo, plan, rollback y botones de decisión.
 - Ruta: `/cambios/gestion/[id]`
 - Archivos existentes: `src/app/plataforma/cambios/gestion/[id]/page.tsx`
-- Archivos por crear: `src/modules/itsm/presentadores/PresentadorRfcAprobador.tsx`
+- Archivos por crear: `src/modules/tickets/presentadores/PresentadorRfcAprobador.tsx`
 
 ### 6 Historial de mis decisiones  `NUEVO`
 - Ruta: `/aprobador/historial`
@@ -1237,7 +1239,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y PIR vencidas.
 - Ruta: `/gestor-cambios/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/gestor-cambios/panel/page.tsx`, `src/app/api/gestor-cambios/panel/route.ts`, `src/modules/itsm/cambios/cambiosService.ts`
+- Archivos por crear: `src/app/plataforma/gestor-cambios/panel/page.tsx`, `src/app/api/gestor-cambios/panel/route.ts`, `src/modules/cambios/services/cambiosService.ts`
 
 ### 2 Solicitudes de cambio (RFC)  `EXISTE`
 - Ruta: `/cambios/gestion`
@@ -1257,7 +1259,7 @@ Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y
   - Ruta: `/cambios/gestion/[id]`
   - Función: Presentador del evaluador: reclasificar tipo, ajustar riesgo, programar, cerrar.
   - Archivos existentes: `src/app/plataforma/cambios/gestion/[id]/page.tsx`, `src/app/api/cambios/[id]/route.ts`
-  - Archivos por crear: `src/modules/itsm/presentadores/PresentadorRfcEvaluador.tsx`
+  - Archivos por crear: `src/modules/tickets/presentadores/PresentadorRfcEvaluador.tsx`
 
 ### 3 Evaluación y autorización  `NUEVO`
 - Ruta: `/gestor-cambios/autorizaciones`
@@ -1280,7 +1282,7 @@ Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y
 - **4.3** Conflictos y capacidad — `NUEVO`
   - Ruta: `/gestor-cambios/conflictos`
   - Función: Solapamientos, congelamientos, feriados y máximos simultáneos.
-  - Archivos por crear: `src/app/plataforma/gestor-cambios/conflictos/page.tsx`, `src/app/api/gestor-cambios/conflictos/route.ts`, `src/modules/itsm/cambios/conflictosService.ts`
+  - Archivos por crear: `src/app/plataforma/gestor-cambios/conflictos/page.tsx`, `src/app/api/gestor-cambios/conflictos/route.ts`, `src/modules/cambios/services/conflictosService.ts`
 - **4.4** Seguimiento de ejecución — `NUEVO`
   - Ruta: `/gestor-cambios/ejecucion`
   - Función: Tablero en vivo de cambios en ejecución, extensiones de ventana y rollbacks.
@@ -1311,13 +1313,13 @@ Consulta y propuesta de modelos, métricas de éxito y suspensiones.
 - **8.1** Ventanas de mantenimiento — `ADAPTAR`
   - Ruta: `/admin/procesos/cambios/notificaciones-calendario?vista=ventanas`
   - Función: Edición permitida por el permiso `config.cambios.calendario`.
-  - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/components/PestanaVentanasMantenimiento.tsx`
+  - Archivos existentes: `src/modules/cambios/config/notificaciones-calendario/components/PestanaVentanasMantenimiento.tsx`
 - **8.2** Períodos de congelamiento — `ADAPTAR`
   - Ruta: `/admin/procesos/cambios/notificaciones-calendario?vista=congelamiento`
-  - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/components/PestanaPeriodosCongelamiento.tsx`
+  - Archivos existentes: `src/modules/cambios/config/notificaciones-calendario/components/PestanaPeriodosCongelamiento.tsx`
 - **8.3** Feriados — `ADAPTAR`
   - Ruta: `/admin/procesos/cambios/notificaciones-calendario?vista=feriados`
-  - Archivos existentes: `src/app/plataforma/admin/procesos/cambios/notificaciones-calendario/components/PestanaFeriados.tsx`
+  - Archivos existentes: `src/modules/cambios/config/notificaciones-calendario/components/PestanaFeriados.tsx`
 
 ### 9 Reportes de cambios  `NUEVO`
 Tasa de éxito, emergencias, tiempos de ciclo, incidentes causados y cumplimiento de ventana.
@@ -1351,7 +1353,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y campañas activas.
 - Ruta: `/gestor-activos/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/gestor-activos/panel/page.tsx`, `src/app/api/gestor-activos/panel/route.ts`, `src/modules/itsm/activos/activosService.ts`
+- Archivos por crear: `src/app/plataforma/gestor-activos/panel/page.tsx`, `src/app/api/gestor-activos/panel/route.ts`, `src/modules/activos/services/activosService.ts`
 
 ### 2 Inventario de activos (HAM)  `EXISTE`
 - Ruta: `/activos/inventario`
@@ -1360,11 +1362,11 @@ Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y 
   - Ruta: `/activos/inventario`
   - Función: Ficha con atributos, relaciones, tickets, mantenimiento y auditoría.
   - Archivos existentes: `src/app/plataforma/activos/inventario/page.tsx`
-  - Archivos por crear: `src/modules/itsm/presentadores/PresentadorActivoGestor.tsx`
+  - Archivos por crear: `src/modules/tickets/presentadores/PresentadorActivoGestor.tsx`
 - **2.2** Alta y edición con validaciones — `ADAPTAR`
   - Función: Formulario del Prompt 3 con IP, MAC, serie, hostname e IMEI.
-  - Archivos existentes: `src/lib/validaciones.ts`
-  - Archivos por crear: `src/modules/itsm/activos/activosValidaciones.ts`
+  - Archivos existentes: `src/shared/lib/validaciones.ts`
+  - Archivos por crear: `src/modules/activos/activosValidaciones.ts`
 - **2.3** Importación masiva — `NUEVO`
   - Ruta: `/gestor-activos/importacion`
   - Función: Validación en seco, mapeo de columnas y reversión.
@@ -1407,7 +1409,7 @@ Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y 
 - **4.1** Proveedores — `EXISTE`
   - Ruta: `/proveedores`
   - Función: Proveedores con validación de RUC y contacto.
-  - Archivos existentes: `src/app/plataforma/proveedores/page.tsx`, `src/components/itsm/ProveedoresWorkspace.tsx`, `src/app/api/proveedores/route.ts`, `src/app/api/proveedores/[id]/route.ts`
+  - Archivos existentes: `src/app/plataforma/proveedores/page.tsx`, `src/modules/proveedores/components/ProveedoresWorkspace.tsx`, `src/app/api/proveedores/route.ts`, `src/app/api/proveedores/[id]/route.ts`
 - **4.2** Contratos y cobertura — `NUEVO`
   - Ruta: `/gestor-activos/contratos`
   - Archivos por crear: `src/app/plataforma/gestor-activos/contratos/page.tsx`, `src/app/api/gestor-activos/contratos/route.ts`
@@ -1446,13 +1448,13 @@ Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y 
 - Ruta: `/gestor-activos/catalogos`
 - **6.1** Fabricantes y modelos — `ADAPTAR`
   - Ruta: `/admin/activos-config/tipos-modelos-atributos?vista=fabricantes`
-  - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaFabricantesModelos.tsx`
+  - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaFabricantesModelos.tsx`
 - **6.2** Ubicaciones — `ADAPTAR`
   - Ruta: `/admin/activos-config/tipos-modelos-atributos?vista=ubicaciones`
-  - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaUbicaciones.tsx`
+  - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaUbicaciones.tsx`
 - **6.3** Listas auxiliares — `ADAPTAR`
   - Ruta: `/admin/activos-config/tipos-modelos-atributos?vista=catalogos`
-  - Archivos existentes: `src/app/plataforma/admin/activos-config/tipos-modelos-atributos/components/PestanaCatalogosAuxiliares.tsx`
+  - Archivos existentes: `src/modules/activos/config/tipos-modelos-atributos/components/PestanaCatalogosAuxiliares.tsx`
 
 ### 7 Reportes de activos  `NUEVO`
 Inventario, antigüedad, costos, garantías, cumplimiento y exactitud de CMDB.
@@ -1486,18 +1488,18 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Problemas abiertos, sin asignar, por vencer, mayores y errores conocidos por revisar.
 - Ruta: `/gestor-problemas/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/gestor-problemas/panel/page.tsx`, `src/app/api/gestor-problemas/panel/route.ts`, `src/modules/itsm/problemas/problemasService.ts`
+- Archivos por crear: `src/app/plataforma/gestor-problemas/panel/page.tsx`, `src/app/api/gestor-problemas/panel/route.ts`, `src/modules/problemas/services/problemaService.ts`
 
 ### 2 Registro de problemas  `EXISTE`
 - Ruta: `/problemas`
-- Archivos existentes: `src/app/plataforma/problemas/page.tsx`, `src/components/itsm/ProblemasWorkspace.tsx`, `src/app/api/problemas/route.ts`, `src/app/api/problemas/[id]/route.ts`
+- Archivos existentes: `src/app/plataforma/problemas/page.tsx`, `src/modules/problemas/components/ProblemasWorkspace.tsx`, `src/app/api/problemas/route.ts`, `src/app/api/problemas/[id]/route.ts`
 - **2.1** Registrar problema — `EXISTE`
   - Función: Formulario del Prompt 1 con detección de duplicados.
-  - Archivos existentes: `src/lib/validaciones.ts`
+  - Archivos existentes: `src/shared/lib/validaciones.ts`
 - **2.2** Detalle del problema — `NUEVO`
   - Ruta: `/problemas/[id]`
   - Función: Investigación, causa raíz, workaround, solución, RFC y cierre.
-  - Archivos por crear: `src/app/plataforma/problemas/[id]/page.tsx`, `src/modules/itsm/presentadores/PresentadorProblemaGestor.tsx`
+  - Archivos por crear: `src/app/plataforma/problemas/[id]/page.tsx`, `src/modules/tickets/presentadores/PresentadorProblemaGestor.tsx`
 
 ### 3 Bandeja y asignación  `NUEVO`
 Asignar responsables, grupos y prioridad.
@@ -1570,8 +1572,8 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 |---|---|---|
 | Modales y barra de acciones de configuración | Duplicados en `problemas/formulario/components` y `cambios/formulario/components` | Unificar en `src/shared/components/admin/` y que importen los tres módulos (problemas, cambios, activos). |
 | `Iconos.tsx` locales | Uno en `cambios/flujo-evaluacion/components` y otro en `cambios/notificaciones-calendario/components` | Reemplazar por `src/shared/components/ui/Iconos.tsx` y borrar las copias. |
-| Configuración antigua de RFC | `/admin/rfc`, `/api/admin/rfc-config`, `src/components/itsm/ConfiguracionRfc.tsx` | Migrar sus datos a `/admin/procesos/cambios` y retirarla. |
+| Configuración antigua de RFC | `/admin/rfc`, `/api/admin/rfc-config`, `src/modules/cambios/components/ConfiguracionRfc.tsx` | Migrar sus datos a `/admin/procesos/cambios` y retirarla. |
 | Carpetas vacías | `tickets/gestion/cambios/` y `tickets/gestion/problemas/` sin `page.tsx` | Eliminar o convertir en redirecciones a `/cambios/gestion` y `/problemas`. |
 | `/dashboard` | Página única para todos | Convertir en redirector al panel del perfil activo. |
 | Ventanas faltantes de problemas | Faltan `PestanaCamposPersonalizados` y `PestanaPrioridad` | Crearlas (sus APIs ya existen). |
-| Páginas de admin que el Auditor debe ver | `auditoria-sistema`, `seguridad-logs`, `mantenimiento-datos`, `perfiles`, `reportes-disenador` | Autorizar al perfil Auditor en solo lectura mediante `src/lib/page-auth.ts`. |
+| Páginas de admin que el Auditor debe ver | `auditoria-sistema`, `seguridad-logs`, `mantenimiento-datos`, `perfiles`, `reportes-disenador` | Autorizar al perfil Auditor en solo lectura mediante `src/shared/lib/page-auth.ts`. |
