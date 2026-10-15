@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { query, transaccion } from "@/shared/lib/db";
 import { hashearClave, validarFortalezaClave, verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { asignarPerfilesAUsuario } from "@/shared/lib/usuarios";
 import { UsuarioConPerfiles } from "@/types";
 import {
@@ -23,7 +24,7 @@ function obtenerSesionActual() {
 export async function GET() {
   const sesion = obtenerSesionActual();
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_USUARIOS)) {
     return NextResponse.json({ error: "Solo el Administrador puede consultar el directorio de usuarios." }, { status: 403 });
   }
 
@@ -61,7 +62,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const sesion = obtenerSesionActual();
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_USUARIOS)) {
     return NextResponse.json({ error: "Solo el Administrador puede crear usuarios." }, { status: 403 });
   }
 

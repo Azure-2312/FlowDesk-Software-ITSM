@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (![1, 2, 4, 6, 9].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.LICENCIAS_ASIGNACIONES_VER)) {
     return NextResponse.json({ error: "No autorizado para consultar asignaciones de licencias" }, { status: 403 });
   }
 
@@ -74,7 +75,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (sesion.perfilActivo?.id_perfil !== 9) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.LICENCIAS_GESTIONAR)) {
     return NextResponse.json({ error: "Solo Gestión de Activos puede asignar licencias de software." }, { status: 403 });
   }
 
@@ -140,7 +141,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (sesion.perfilActivo?.id_perfil !== 9) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.LICENCIAS_GESTIONAR)) {
     return NextResponse.json({ error: "Solo Gestión de Activos puede revocar asignaciones." }, { status: 403 });
   }
 

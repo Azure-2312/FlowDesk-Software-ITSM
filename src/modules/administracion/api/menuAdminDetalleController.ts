@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { query, transaccion } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 function obtenerSesionActual() {
   const token = cookies().get(COOKIE_SESION)?.value;
@@ -15,7 +16,7 @@ interface Contexto {
 export async function PUT(req: NextRequest, { params }: Contexto) {
   const sesion = obtenerSesionActual();
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_MENU)) {
     return NextResponse.json({ error: "Solo el Administrador puede modificar el menú." }, { status: 403 });
   }
 
@@ -102,7 +103,7 @@ export async function PUT(req: NextRequest, { params }: Contexto) {
 export async function DELETE(_req: NextRequest, { params }: Contexto) {
   const sesion = obtenerSesionActual();
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_MENU)) {
     return NextResponse.json({ error: "Solo el Administrador puede activar o desactivar opciones del menú." }, { status: 403 });
   }
 

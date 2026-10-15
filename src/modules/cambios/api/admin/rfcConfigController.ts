@@ -1,11 +1,12 @@
 import { NextRequest,NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { COOKIE_SESION,verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
-function admin(req:NextRequest){const token=req.cookies.get(COOKIE_SESION)?.value;const sesion=token?verificarTokenSesion(token):null;return sesion?.perfilActivo?.id_perfil===1?sesion:null}
+function admin(req:NextRequest){const token=req.cookies.get(COOKIE_SESION)?.value;const sesion=token?verificarTokenSesion(token):null;return sesion&&sesionTieneCapacidad(sesion,CAPACIDADES.CAMBIOS_CONFIGURAR)?sesion:null}
 export async function GET(req:NextRequest){
   const token=req.cookies.get(COOKIE_SESION)?.value;const sesion=token?verificarTokenSesion(token):null;
-  if(!sesion||![1,2,8].includes(sesion.perfilActivo?.id_perfil||0))return NextResponse.json({error:"No autorizado para consultar la configuración de RFC"},{status:403});
+  if(!sesion||!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_CONFIG_VER))return NextResponse.json({error:"No autorizado para consultar la configuración de RFC"},{status:403});
   try{const row=await queryRow("SELECT perfiles_solicitantes,tipos_rfc,exige_ci,exige_plan_pruebas,permite_emergencia,campos_personalizados,exige_rollback,duracion_maxima_horas FROM configuracion_rfc WHERE id_configuracion=1");return NextResponse.json(row||{perfiles_solicitantes:[2,8],tipos_rfc:["ESTANDAR","NORMAL","EMERGENCIA"],exige_ci:false,exige_plan_pruebas:false,permite_emergencia:true,campos_personalizados:[],exige_rollback:true,duracion_maxima_horas:24})}
   catch(e){console.error("Error al consultar configuración RFC:",e);return NextResponse.json({error:"No se pudo consultar la configuración RFC"},{status:500})}
 }
