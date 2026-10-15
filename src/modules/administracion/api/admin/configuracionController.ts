@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -55,7 +56,7 @@ export async function PUT(req: NextRequest) {
   }
 
   // Solo Administrador del Sistema (id_perfil 1)
-  if (sesion.perfilActivo.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_CONFIGURACION)) {
     return NextResponse.json({ error: "No autorizado. Solo Administradores pueden cambiar configuraciones del sistema." }, { status: 403 });
   }
 

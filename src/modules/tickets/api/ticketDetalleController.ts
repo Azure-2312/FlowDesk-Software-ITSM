@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { Ticket, ComentarioTicket, ActualizarTicketPayload, TicketAprobacion, AdjuntoTicket } from "@/types";
 
 export async function GET(
@@ -297,7 +298,7 @@ export async function PATCH(
 
     // 1. GESTIÓN DE COMPUERTA DE APROBACIÓN (ITIL 4 / SOX / ISO 27001)
     if (body.decision_aprobacion) {
-      if (idPerfilActivo !== 5) {
+      if (!sesionTieneCapacidad(sesion, CAPACIDADES.SOLICITUDES_APROBAR)) {
         return NextResponse.json(
           { error: "Solo el Gestor de Área puede resolver aprobaciones de negocio." },
           { status: 403 }

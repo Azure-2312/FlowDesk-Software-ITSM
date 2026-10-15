@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -172,7 +173,7 @@ export async function POST(req: NextRequest) {
   const sesion = token ? verificarTokenSesion(token) : null;
 
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (![1, 10].includes(sesion.perfilActivo?.id_perfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_CONFIGURAR)) {
     return NextResponse.json({ error: "No autorizado." }, { status: 403 });
   }
 
@@ -288,7 +289,7 @@ export async function PUT(req: NextRequest) {
   const sesion = token ? verificarTokenSesion(token) : null;
 
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (![1, 10].includes(sesion.perfilActivo?.id_perfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_CONFIGURAR)) {
     return NextResponse.json({ error: "No autorizado." }, { status: 403 });
   }
 
@@ -381,7 +382,7 @@ export async function DELETE(req: NextRequest) {
   const sesion = token ? verificarTokenSesion(token) : null;
 
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_CONFIGURAR)) {
     return NextResponse.json({ error: "Solo administradores pueden eliminar valores de catálogos." }, { status: 403 });
   }
 

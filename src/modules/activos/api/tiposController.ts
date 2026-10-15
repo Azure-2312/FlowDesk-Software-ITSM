@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 
-  if (!sesion || ![1, 9].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesion || !sesionTieneCapacidad(sesion, CAPACIDADES.ACTIVOS_CONFIGURAR)) {
     return NextResponse.json({ error: "No autorizado para registrar tipos de activo." }, { status: 403 });
   }
 

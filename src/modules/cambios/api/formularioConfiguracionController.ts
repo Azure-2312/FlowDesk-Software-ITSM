@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { COOKIE_SESION } from "@/shared/lib/constants";
 
 export const dynamic = "force-dynamic";
@@ -360,7 +361,7 @@ export async function GET(req: NextRequest) {
   const idPerfil = sesion.perfilActivo?.id_perfil;
 
   // Permiso de lectura: Administrador (1), Gestor de Cambios (8), Supervisor (4), Auditor (6)
-  if (![1, 8, 4, 6].includes(idPerfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_FORMULARIO_VER)) {
     return NextResponse.json({ error: "No autorizado para consultar la configuración de cambios." }, { status: 403 });
   }
 
@@ -460,7 +461,7 @@ export async function POST(req: NextRequest) {
 
   const idPerfil = sesion.perfilActivo?.id_perfil;
   // Solo Administrador (1) y Gestor de Cambios (8) pueden editar borradores
-  if (![1, 8].includes(idPerfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_FORMULARIO_CONFIGURAR)) {
     return NextResponse.json({ error: "No autorizado para modificar la configuración de cambios." }, { status: 403 });
   }
 
@@ -547,7 +548,7 @@ export async function PUT(req: NextRequest) {
 
   const idPerfil = sesion.perfilActivo?.id_perfil;
   // Solo Administrador (1) y Gestor de Cambios (8) pueden publicar
-  if (![1, 8].includes(idPerfil)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_FORMULARIO_CONFIGURAR)) {
     return NextResponse.json({ error: "No autorizado para publicar cambios de configuración." }, { status: 403 });
   }
 
