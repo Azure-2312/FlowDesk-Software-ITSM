@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ServicioWorkflowPaso } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -58,7 +59,7 @@ export async function PUT(
   }
 
   // Solo Administrador (1)
-  if (sesion.perfilActivo.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.SERVICIOS_CONFIGURAR)) {
     return NextResponse.json(
       { error: "Solo los administradores tienen permiso para modificar el workflow" },
       { status: 403 }

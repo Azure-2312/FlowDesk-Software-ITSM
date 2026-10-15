@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +9,7 @@ export async function POST(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 
-  if (!sesion || sesion.perfilActivo.id_perfil !== 1) {
+  if (!sesion || !sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_MANTENIMIENTO)) {
     return NextResponse.json({ error: "No autorizado. Solo Administradores pueden gestionar purga de datos." }, { status: 403 });
   }
 

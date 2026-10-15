@@ -4,6 +4,7 @@ export const revalidate = 0;
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/shared/lib/validaciones";
 
 interface CategoriaConStats {
@@ -33,8 +34,8 @@ export async function GET(req: NextRequest) {
   }
 
   // Permitir a perfiles administrativos y de gestión técnica
-  const perfilesAutorizados = [1, 2, 4];
-  if (!sesion.perfilActivo || !perfilesAutorizados.includes(sesion.perfilActivo.id_perfil)) {
+  // (acceso gestionado por la capacidad CATEGORIAS_VER)
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CATEGORIAS_VER)) {
     return NextResponse.json(
       { error: "No tienes permisos para consultar la administración de categorías." },
       { status: 403 }
@@ -125,7 +126,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_CONFIGURACION)) {
     return NextResponse.json(
       { error: "Solo los administradores tienen permiso para registrar nuevas categorías." },
       { status: 403 }

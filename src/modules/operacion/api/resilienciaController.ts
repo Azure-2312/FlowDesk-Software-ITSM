@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
-const LECTURA = [4, 6, 7, 8, 9];
 function sesionDe(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   return token ? verificarTokenSesion(token) : null;
@@ -11,7 +11,7 @@ function sesionDe(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const sesion = sesionDe(req);
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (!LECTURA.includes(sesion.perfilActivo?.id_perfil || 0)) return NextResponse.json({ error: "No autorizado para consultar resiliencia de servicios" }, { status: 403 });
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.OPERACION_RESILIENCIA)) return NextResponse.json({ error: "No autorizado para consultar resiliencia de servicios" }, { status: 403 });
   try {
     const rows = await query(`
       SELECT r.*,s.codigo_servicio,s.nombre AS servicio_nombre
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const sesion = sesionDe(req);
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 4) return NextResponse.json({ error: "Solo el Supervisor mantiene el registro operativo de resiliencia" }, { status: 403 });
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.OPERACION_GESTIONAR)) return NextResponse.json({ error: "Solo el Supervisor mantiene el registro operativo de resiliencia" }, { status: 403 });
   try {
     const b = await req.json();
     const idServicio = Number(b.id_servicio);

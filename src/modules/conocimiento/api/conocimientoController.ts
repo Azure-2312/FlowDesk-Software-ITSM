@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest) {
   if (!sesion) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
-  if (![1, 2, 4].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CONOCIMIENTO_VER)) {
     return NextResponse.json({ error: "Este perfil no puede publicar artículos de conocimiento." }, { status: 403 });
   }
 

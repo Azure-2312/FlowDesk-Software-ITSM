@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (![1, 4].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CONOCIMIENTO_GESTIONAR)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
   }
 
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 
-  if (!sesion || sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesion || !sesionTieneCapacidad(sesion, CAPACIDADES.CONOCIMIENTO_CONFIGURAR)) {
     return NextResponse.json({ error: "Solo Administración puede crear categorías de conocimiento." }, { status: 403 });
   }
 
@@ -89,7 +90,7 @@ export async function PATCH(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 
-  if (!sesion || sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesion || !sesionTieneCapacidad(sesion, CAPACIDADES.CONOCIMIENTO_CONFIGURAR)) {
     return NextResponse.json({ error: "Solo Administración puede actualizar categorías." }, { status: 403 });
   }
 

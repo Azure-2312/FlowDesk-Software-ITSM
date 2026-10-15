@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (![1, 2, 4, 6, 9].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ACTIVOS_VER)) {
     return NextResponse.json({ error: "No autorizado para consultar el inventario de activos" }, { status: 403 });
   }
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function GET(
   req: NextRequest,
@@ -12,7 +13,7 @@ export async function GET(
   if (!sesion) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
-  if (![1, 2, 4, 6, 7, 8, 9, 10].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_VER)) {
     return NextResponse.json({ error: "Este perfil no puede consultar solicitudes de cambio." }, { status: 403 });
   }
 
@@ -139,7 +140,7 @@ export async function PATCH(
   if (!sesion) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
-  if (![7, 8].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_MODIFICAR)) {
     return NextResponse.json({ error: "Solo el Aprobador CAB o el Gestor de Cambios pueden modificar RFC." }, { status: 403 });
   }
 
@@ -171,7 +172,7 @@ export async function PATCH(
     // Caso A: Emisión de Voto en el Comité CAB
     if (decision) {
       // Solo el perfil oficial Aprobador CAB puede emitir votos.
-      if (sesion.perfilActivo?.id_perfil !== 7) {
+      if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_APROBAR)) {
         return NextResponse.json(
           { error: "Solo el perfil Aprobador CAB puede emitir un voto." },
           { status: 403 }
@@ -253,7 +254,7 @@ export async function PATCH(
     }
 
     // Solo Gestor de Cambios puede actualizar ejecución y revisión post-implementación.
-    if (sesion.perfilActivo?.id_perfil !== 8) {
+    if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_GESTIONAR)) {
       return NextResponse.json({ error: "Solo el Gestor de Cambios puede actualizar el ciclo de vida y el PIR." }, { status: 403 });
     }
     const camposPermitidos = ["id_estado", "resultado_pir", "incidentes_inducidos"];

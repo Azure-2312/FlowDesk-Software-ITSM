@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ServicioCatalogo, ServicioWorkflowPaso } from "@/types";
 import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/shared/lib/validaciones";
 
@@ -139,7 +140,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Solo Administrador (1)
-  if (sesion.perfilActivo.id_perfil !== 1) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.SERVICIOS_CONFIGURAR)) {
     return NextResponse.json(
       { error: "Solo los administradores tienen permiso para crear servicios" },
       { status: 403 }
@@ -337,7 +338,7 @@ export async function PATCH(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 
-  if (!sesion || sesion.perfilActivo?.id_perfil !== 1) {
+  if (!sesion || !sesionTieneCapacidad(sesion, CAPACIDADES.SERVICIOS_CONFIGURAR)) {
     return NextResponse.json({ error: "Solo el Administrador puede asignar servicios a categorías." }, { status: 403 });
   }
 
