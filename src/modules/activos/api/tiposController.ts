@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
+import { crearTipoActivo, listarTiposActivo } from "@/modules/activos/services/tiposActivoService";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -12,9 +13,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const tipos = await query(
-      "SELECT * FROM tipo_activo_catalogo WHERE estado_registro = true ORDER BY clase ASC, nombre ASC"
-    );
+    const tipos = await listarTiposActivo();
     return NextResponse.json({ tipos });
   } catch (error) {
     console.error("Error al obtener tipos de activo:", error);
@@ -32,31 +31,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { codigo, nombre, clase, atributos } = body;
-
-    if (!codigo?.trim() || !nombre?.trim() || !clase) {
-      return NextResponse.json({ error: "Código, nombre y clase ('HARDWARE' o 'SOFTWARE') son requeridos." }, { status: 400 });
-    }
-
-    const row = await queryRow(
-      `INSERT INTO tipo_activo_catalogo (codigo, nombre, clase, atributos, usuario_modificacion, fecha_modificacion)
-       VALUES ($1, $2, $3, $4, $5, now())
-       RETURNING *`,
-      [
-        codigo.trim().toUpperCase(),
-        nombre.trim(),
-        clase.trim().toUpperCase(),
-        JSON.stringify(atributos || []),
-        sesion.id_usuario
-      ]
-    );
-
-    return NextResponse.json({ mensaje: "Tipo de activo registrado exitosamente.", tipo: row }, { status: 201 });
-  } catch (error: any) {
-    console.error("Error al registrar tipo de activo:", error);
-    if (error?.code === "23505") {
-      return NextResponse.json({ error: "Ya existe un tipo de activo con ese código." }, { status: 400 });
-    }
-    return NextResponse.json({ error: "Error al registrar tipo de activo" }, { status: 500 });
+    const data = await crearTipoActivo(sesion, body);
+    return NextResponse.json(data, { status: 201 });
+  } catch (error) {
+    if (!(error instanceof ErrorDominio)) console.error("Error al registrar tipo de activo:", error);
+    const { error: mensaje, status } = respuestaError(error, "Error al registrar tipo de activo");
+    return NextResponse.json({ error: mensaje }, { status });
   }
 }
