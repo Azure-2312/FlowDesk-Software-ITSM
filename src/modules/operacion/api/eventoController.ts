@@ -2,8 +2,7 @@ import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
-
-const LECTURA = [2, 4, 6, 7, 8, 9];
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 function obtenerSesion(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -13,7 +12,7 @@ function obtenerSesion(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const sesion = obtenerSesion(req);
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (!LECTURA.includes(sesion.perfilActivo?.id_perfil || 0)) return NextResponse.json({ error: "No autorizado para consultar eventos" }, { status: 403 });
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.OPERACION_EVENTOS)) return NextResponse.json({ error: "No autorizado para consultar eventos" }, { status: 403 });
 
   const estado = new URL(req.url).searchParams.get("estado");
   const where = estado ? "AND e.estado = $1" : "";
@@ -38,7 +37,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const sesion = obtenerSesion(req);
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (sesion.perfilActivo?.id_perfil !== 4) return NextResponse.json({ error: "Solo el Supervisor registra y clasifica eventos manuales" }, { status: 403 });
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.OPERACION_GESTIONAR)) return NextResponse.json({ error: "Solo el Supervisor registra y clasifica eventos manuales" }, { status: 403 });
 
   try {
     const body = await req.json();

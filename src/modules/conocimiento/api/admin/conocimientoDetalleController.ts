@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -64,7 +65,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  if (![1, 4].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CONOCIMIENTO_GESTIONAR)) {
     return NextResponse.json({ error: "Solo Administración o Supervisor pueden revisar artículos." }, { status: 403 });
   }
 

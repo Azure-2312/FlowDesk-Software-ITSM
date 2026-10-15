@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryRow } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 
 export async function GET(
   req: NextRequest,
@@ -12,7 +13,7 @@ export async function GET(
   if (!sesion) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
-  if (![2, 4, 6, 7, 8, 9].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_VER)) {
     return NextResponse.json({ error: "Este perfil no puede consultar problemas." }, { status: 403 });
   }
 
@@ -127,7 +128,7 @@ export async function PATCH(
   if (!sesion) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
-  if (![2, 4].includes(sesion.perfilActivo?.id_perfil || 0)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_GESTIONAR)) {
     return NextResponse.json({ error: "Solo Técnicos y Supervisores pueden modificar problemas." }, { status: 403 });
   }
 
