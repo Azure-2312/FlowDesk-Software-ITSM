@@ -1,5 +1,5 @@
-import VistaTecnicoPage from "@/modules/tecnico/cambios/implementacion/VistaTecnicoPage";
+import VistaTecnicoCambiosImplementacion from "@/modules/tecnico/cambios/implementacion/VistaTecnicoCambiosImplementacion";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoPage />;
+  return <VistaTecnicoCambiosImplementacion />;
 }

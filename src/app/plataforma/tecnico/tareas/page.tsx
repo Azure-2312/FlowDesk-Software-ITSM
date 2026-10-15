@@ -1,5 +1,5 @@
-import VistaTecnicoPage from "@/modules/tecnico/tareas/VistaTecnicoPage";
+import VistaTecnicoTareas from "@/modules/tecnico/tareas/VistaTecnicoTareas";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoPage />;
+  return <VistaTecnicoTareas />;
 }
