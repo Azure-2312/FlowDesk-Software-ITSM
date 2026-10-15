@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, FormEvent } from "react";
-import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/lib/validaciones";
+import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 export interface CategoriaAdmin {

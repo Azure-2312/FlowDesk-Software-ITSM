@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
-import { enviarCorreoCredencialesNuevas } from "@/lib/email";
+import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { enviarCorreoCredencialesNuevas } from "@/shared/lib/email";
 
 export const dynamic = "force-dynamic";
 

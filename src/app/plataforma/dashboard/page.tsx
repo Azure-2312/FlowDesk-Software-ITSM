@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
+import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 
 export default function PaginaDashboard() {
   const token = cookies().get(COOKIE_SESION)?.value;

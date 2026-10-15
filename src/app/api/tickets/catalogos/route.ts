@@ -2,8 +2,8 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import { NextRequest, NextResponse } from "next/server";
-import { query } from "@/lib/db";
-import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
+import { query } from "@/shared/lib/db";
+import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import {
   TipoTicket,
   ImpactoTicket,

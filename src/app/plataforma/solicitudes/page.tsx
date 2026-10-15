@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
-import { obtenerMenuDelUsuario } from "@/lib/menu";
+import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { obtenerMenuDelUsuario } from "@/shared/lib/menu";
 import TablaTickets from "@/modules/tickets/components/TablaTickets";
 
 export default async function PaginaSolicitudes() {
