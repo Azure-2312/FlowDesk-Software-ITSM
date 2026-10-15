@@ -1,5 +1,5 @@
-import VistaTecnicoPage from "@/modules/tecnico/activos/mapa/VistaTecnicoPage";
+import VistaTecnicoActivosMapa from "@/modules/tecnico/activos/mapa/VistaTecnicoActivosMapa";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoPage />;
+  return <VistaTecnicoActivosMapa />;
 }

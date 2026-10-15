@@ -1,5 +1,5 @@
-import VistaTecnicoPage from "@/modules/tecnico/problemas/asignados/VistaTecnicoPage";
+import VistaTecnicoProblemasAsignados from "@/modules/tecnico/problemas/asignados/VistaTecnicoProblemasAsignados";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoPage />;
+  return <VistaTecnicoProblemasAsignados />;
 }
