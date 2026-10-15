@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { query } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
+import { desbloquearUsuario } from "@/modules/administracion/services/usuarioDetalleDesbloquearService";
 
 export const dynamic = "force-dynamic";
 
@@ -35,23 +36,11 @@ export async function POST(req: NextRequest, { params }: Contexto) {
   }
 
   try {
-    await query(
-      `UPDATE usuario
-       SET intentos_fallidos = 0,
-           cuenta_bloqueada = false,
-           bloqueado_hasta = NULL,
-           usuario_modificacion = $1,
-           fecha_modificacion = now()
-       WHERE id_usuario = $2`,
-      [sesion.id_usuario, idUsuario]
-    );
-
-    return NextResponse.json({
-      ok: true,
-      mensaje: "Usuario desbloqueado exitosamente. Ya puede iniciar sesión.",
-    });
-  } catch (error) {
-    console.error("Error al desbloquear usuario:", error);
-    return NextResponse.json({ error: "Error al desbloquear el usuario" }, { status: 500 });
+    const data = await desbloquearUsuario(idUsuario, sesion.id_usuario);
+    return NextResponse.json(data);
+  } catch (err) {
+    if (!(err instanceof ErrorDominio)) console.error("Error al desbloquear usuario:", err);
+    const { error, status } = respuestaError(err, "Error al desbloquear el usuario");
+    return NextResponse.json({ error }, { status });
   }
 }
