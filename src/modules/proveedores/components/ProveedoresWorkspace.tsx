@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { validarRuc, validarCorreo, validarCelular } from "@/lib/validaciones";
-import { AlertaCampo } from "@/components/ui/AlertaCampo";
+import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 interface Proveedor {
   id_proveedor: number;
