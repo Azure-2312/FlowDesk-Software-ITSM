@@ -3,7 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Ticket, ComentarioTicket, Usuario, CatalogosTickets } from "@/types";
-import { validarTexto } from "@/lib/validaciones";
+import { validarTexto } from "@/shared/lib/validaciones";
 
 interface CampoConfigurado {
   id: string;

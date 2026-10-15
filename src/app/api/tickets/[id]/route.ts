@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { query, queryRow } from "@/lib/db";
-import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
+import { query, queryRow } from "@/shared/lib/db";
+import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { Ticket, ComentarioTicket, ActualizarTicketPayload, TicketAprobacion, AdjuntoTicket } from "@/types";
 
 export async function GET(

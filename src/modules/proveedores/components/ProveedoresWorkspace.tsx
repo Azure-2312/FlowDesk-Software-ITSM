@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { validarRuc, validarCorreo, validarCelular } from "@/lib/validaciones";
+import { validarRuc, validarCorreo, validarCelular } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 interface Proveedor {

@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { SesionUsuario, PerfilBasico } from "@/types";
-import { COOKIE_SESION } from "@/lib/constants";
+import { COOKIE_SESION } from "@/shared/lib/constants";
 
 const DURACION_SESION = "8h";
 const DURACION_PRE_SESION = "5m";
