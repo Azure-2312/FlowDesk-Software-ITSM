@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, FormEvent, ClipboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { PerfilBasico } from "@/types";
 import { validarCorreo } from "@/lib/validaciones";
-import { AlertaCampo } from "@/components/ui/AlertaCampo";
+import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 type Modo = "login" | "recuperar-correo" | "recuperar-codigo" | "recuperar-nueva-clave";
 type PasoLogin = "credenciales" | "seleccionar-perfil";
