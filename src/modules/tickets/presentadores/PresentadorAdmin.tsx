@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { PropsVistaPresentadorTicket } from "@/components/ticket-detail/tipos";
-import PanelInfraestructuraCi from "@/components/ticket-detail/secciones/PanelInfraestructuraCi";
+import { PropsVistaPresentadorTicket } from "@/modules/tickets/ticket-detail/tipos";
+import PanelInfraestructuraCi from "@/modules/tickets/ticket-detail/secciones/PanelInfraestructuraCi";
 
 export default function VistaTicketAdministrador({
   ticket,

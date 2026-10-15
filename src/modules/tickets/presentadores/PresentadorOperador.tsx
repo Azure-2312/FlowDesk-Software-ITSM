@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { PropsVistaPresentadorTicket } from "@/components/ticket-detail/tipos";
-import CockpitTemporizadorSla from "@/components/ticket-detail/secciones/CockpitTemporizadorSla";
-import StreamChatPublico from "@/components/ticket-detail/secciones/StreamChatPublico";
-import StreamNotasInternas from "@/components/ticket-detail/secciones/StreamNotasInternas";
-import PanelInfraestructuraCi from "@/components/ticket-detail/secciones/PanelInfraestructuraCi";
-import TarjetaAprobacionSod from "@/components/ticket-detail/secciones/TarjetaAprobacionSod";
-import BarraAccionesOperativas from "@/components/ticket-detail/secciones/BarraAccionesOperativas";
+import { PropsVistaPresentadorTicket } from "@/modules/tickets/ticket-detail/tipos";
+import CockpitTemporizadorSla from "@/modules/tickets/ticket-detail/secciones/CockpitTemporizadorSla";
+import StreamChatPublico from "@/modules/tickets/ticket-detail/secciones/StreamChatPublico";
+import StreamNotasInternas from "@/modules/tickets/ticket-detail/secciones/StreamNotasInternas";
+import PanelInfraestructuraCi from "@/modules/tickets/ticket-detail/secciones/PanelInfraestructuraCi";
+import TarjetaAprobacionSod from "@/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod";
+import BarraAccionesOperativas from "@/modules/tickets/ticket-detail/secciones/BarraAccionesOperativas";
 
 export default function VistaTicketOperador({
   ticket,
