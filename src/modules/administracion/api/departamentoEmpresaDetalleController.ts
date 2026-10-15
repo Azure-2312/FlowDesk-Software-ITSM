@@ -1,3 +1,24 @@
-import{NextRequest,NextResponse}from"next/server";import{queryRow}from"@/shared/lib/db";import{COOKIE_SESION,verificarTokenSesion}from"@/shared/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
-export async function PATCH(req:NextRequest,{params}:{params:{id:string}}){const t=req.cookies.get(COOKIE_SESION)?.value;const s=t?verificarTokenSesion(t):null;if(!s)return NextResponse.json({error:"No autenticado"},{status:401});if(!sesionTieneCapacidad(s, CAPACIDADES.ADMIN_ORGANIZACION))return NextResponse.json({error:"Solo Administración puede editar departamentos."},{status:403});const id=Number(params.id);const b=await req.json();const actual=await queryRow<any>("SELECT * FROM departamento_empresa WHERE id_departamento_empresa=$1",[id]);if(!actual)return NextResponse.json({error:"Departamento no encontrado."},{status:404});const activo=b.estado_registro===undefined?actual.estado_registro:Boolean(b.estado_registro);if(!activo){const asignados=await queryRow<{total:number}>("SELECT COUNT(*)::int AS total FROM usuario WHERE id_departamento_empresa=$1 AND estado_registro=true",[id]);if((asignados?.total||0)>0)return NextResponse.json({error:"No se puede inactivar: aún hay usuarios activos asignados. Reasígnalos primero."},{status:409})}try{const row=await queryRow("UPDATE departamento_empresa SET codigo=$1,nombre=$2,descripcion=$3,estado_registro=$4 WHERE id_departamento_empresa=$5 RETURNING *",[String(b.codigo??actual.codigo).trim().toUpperCase(),String(b.nombre??actual.nombre).trim(),String(b.descripcion??actual.descripcion??"").trim()||null,activo,id]);return NextResponse.json({departamento:row})}catch(e:any){if(e.code==="23505")return NextResponse.json({error:"El código o nombre ya existe."},{status:409});return NextResponse.json({error:"No se pudo actualizar el departamento."},{status:500})}}
+import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
+import { actualizarDepartamentoEmpresa } from "@/modules/administracion/services/departamentoEmpresaDetalleService";
+
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  const t = req.cookies.get(COOKIE_SESION)?.value;
+  const s = t ? verificarTokenSesion(t) : null;
+  if (!s) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  if (!sesionTieneCapacidad(s, CAPACIDADES.ADMIN_ORGANIZACION)) return NextResponse.json({ error: "Solo Administración puede editar departamentos." }, { status: 403 });
+
+  const id = Number(params.id);
+
+  try {
+    const b = await req.json();
+    const data = await actualizarDepartamentoEmpresa(id, b);
+    return NextResponse.json(data);
+  } catch (err) {
+    if (!(err instanceof ErrorDominio)) console.error("Error al actualizar el departamento:", err);
+    const { error, status } = respuestaError(err, "No se pudo actualizar el departamento.");
+    return NextResponse.json({ error }, { status });
+  }
+}
