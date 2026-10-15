@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verificarTokenSesion, COOKIE_SESION } from "@/lib/auth";
 import { obtenerMenuDelUsuario } from "@/lib/menu";
-import TablaTickets from "@/components/TablaTickets";
+import TablaTickets from "@/modules/tickets/components/TablaTickets";
 
 export default async function PaginaSolicitudes() {
   const token = cookies().get(COOKIE_SESION)?.value;
@@ -20,3 +20,4 @@ export default async function PaginaSolicitudes() {
     />
   );
 }
+

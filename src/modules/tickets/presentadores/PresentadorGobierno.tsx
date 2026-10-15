@@ -1,10 +1,10 @@
 "use client";
 
-import { PropsVistaPresentadorTicket } from "@/components/ticket-detail/tipos";
-import TarjetaAprobacionSod from "@/components/ticket-detail/secciones/TarjetaAprobacionSod";
-import TarjetaCalificacionCsat from "@/components/ticket-detail/secciones/TarjetaCalificacionCsat";
-import PanelInfraestructuraCi from "@/components/ticket-detail/secciones/PanelInfraestructuraCi";
-import StreamChatPublico from "@/components/ticket-detail/secciones/StreamChatPublico";
+import { PropsVistaPresentadorTicket } from "@/modules/tickets/ticket-detail/tipos";
+import TarjetaAprobacionSod from "@/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod";
+import TarjetaCalificacionCsat from "@/modules/tickets/ticket-detail/secciones/TarjetaCalificacionCsat";
+import PanelInfraestructuraCi from "@/modules/tickets/ticket-detail/secciones/PanelInfraestructuraCi";
+import StreamChatPublico from "@/modules/tickets/ticket-detail/secciones/StreamChatPublico";
 
 export default function VistaTicketGobernanza({
   ticket,

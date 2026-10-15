@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Ticket } from "@/types";
-import ModalDetalleTicket from "@/components/ModalDetalleTicket";
+import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
 
 export default function PaginaAprobaciones() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
