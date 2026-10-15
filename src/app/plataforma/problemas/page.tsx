@@ -1,4 +1,4 @@
-import ProblemasWorkspace from "@/components/itsm/ProblemasWorkspace";
+import ProblemasWorkspace from "@/modules/problemas/components/ProblemasWorkspace";
 import { exigirPerfilPagina } from "@/lib/page-auth";
 
 export default function PaginaProblemas() {

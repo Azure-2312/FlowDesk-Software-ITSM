@@ -3,7 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Ticket, CatalogosTickets, DepartamentoTI } from "@/types";
-import ModalDetalleTicket from "@/components/ModalDetalleTicket";
+import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
 
 interface Props {
   vista: "mios" | "bandeja" | "asignados" | "resueltos" | "todos" | "asignar" | "departamento" | "auditoria" | "aprobaciones";
