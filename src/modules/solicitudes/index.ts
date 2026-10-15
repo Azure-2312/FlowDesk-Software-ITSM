@@ -1,1 +1,1 @@
-export {}
+export { obtenerIdTipoTicketPorCodigo, validarTipoTicket } from "./solicitudesService";
