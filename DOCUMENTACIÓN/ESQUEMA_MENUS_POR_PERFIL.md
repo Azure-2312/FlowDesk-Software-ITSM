@@ -101,10 +101,9 @@ Grupo de configuración del sistema; solo el Administrador edita y publica.
     - Ruta: `/admin/menu`
     - Función: Orden, visibilidad y bloqueo de ítems por perfil.
     - Archivos existentes: `src/app/plataforma/admin/menu/page.tsx`, `src/app/api/menu/admin/route.ts`, `src/app/api/menu/admin/[id]/route.ts`, `src/shared/lib/menu.ts`
-    - **1.1.3.1** Carga de los menús de los 10 perfiles — `ADAPTAR`
-      - Función: Script idempotente que siembra el menú de cada perfil según este esquema.
-      - Archivos existentes: `src/shared/lib/scripts/migrar_menu_tecnico.ts`
-      - Archivos por crear: `src/shared/lib/scripts/migrar_menu_perfiles.ts`
+    - **1.1.3.1** Carga de los menús de los 10 perfiles — `EXISTE`
+      - Función: Script idempotente que siembra el menú de cada perfil según este esquema (árbol por perfil, con rango de IDs propio `10000 + id_perfil * 1000` y `bloqueado = true` en las opciones cuya página aún no existe).
+      - Archivos existentes: `src/shared/lib/scripts/migrar_menu_tecnico.ts`, `src/shared/lib/scripts/migrar_menu_perfiles.ts`
 - **1.2** Catálogo de servicios y SLAs — `EXISTE`
   - Ruta: `/admin/servicios`
   - Función: Servicios de incidentes y de solicitudes, categorías y objetivos de tiempo.
