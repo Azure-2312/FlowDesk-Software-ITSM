@@ -1,6 +1,6 @@
 "use client";
 
-import TablaTickets from "@/components/TablaTickets";
+import TablaTickets from "@/modules/tickets/components/TablaTickets";
 
 export default function PaginaGestionTickets() {
   return (
@@ -11,3 +11,4 @@ export default function PaginaGestionTickets() {
     />
   );
 }
+

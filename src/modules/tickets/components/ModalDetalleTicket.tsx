@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Ticket, ComentarioTicket, CatalogosTickets, SesionUsuario } from "@/types";
-import { resolverArquetipoVista } from "./ticket-detail/tipos";
-import VistaTicketConsumidor from "./ticket-detail/presentadores/VistaTicketConsumidor";
-import VistaTicketOperador from "./ticket-detail/presentadores/VistaTicketOperador";
-import VistaTicketSupervisor from "./ticket-detail/presentadores/VistaTicketSupervisor";
-import VistaTicketGobernanza from "./ticket-detail/presentadores/VistaTicketGobernanza";
-import VistaTicketAdministrador from "./ticket-detail/presentadores/VistaTicketAdministrador";
+import { resolverArquetipoVista } from "../ticket-detail/tipos";
+import VistaTicketConsumidor from "../ticket-detail/presentadores/VistaTicketConsumidor";
+import VistaTicketOperador from "../ticket-detail/presentadores/VistaTicketOperador";
+import VistaTicketSupervisor from "../ticket-detail/presentadores/VistaTicketSupervisor";
+import VistaTicketGobernanza from "../ticket-detail/presentadores/VistaTicketGobernanza";
+import VistaTicketAdministrador from "../ticket-detail/presentadores/VistaTicketAdministrador";
 import PresentadorAuditor from "@/modules/tickets/presentadores/PresentadorAuditor";
 import PresentadorGestorArea from "@/modules/tickets/presentadores/PresentadorGestorArea";
 import PresentadorAprobador from "@/modules/tickets/presentadores/PresentadorAprobador";

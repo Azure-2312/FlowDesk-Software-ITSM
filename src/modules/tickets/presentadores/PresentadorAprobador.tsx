@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { PropsVistaPresentadorTicket } from "@/components/ticket-detail/tipos";
-import PanelInfraestructuraCi from "@/components/ticket-detail/secciones/PanelInfraestructuraCi";
-import TarjetaAprobacionSod from "@/components/ticket-detail/secciones/TarjetaAprobacionSod";
+import { PropsVistaPresentadorTicket } from "@/modules/tickets/ticket-detail/tipos";
+import PanelInfraestructuraCi from "@/modules/tickets/ticket-detail/secciones/PanelInfraestructuraCi";
+import TarjetaAprobacionSod from "@/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod";
 
 export default function PresentadorAprobador({
   ticket,
