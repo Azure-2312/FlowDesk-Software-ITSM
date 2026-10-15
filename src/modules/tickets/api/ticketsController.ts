@@ -3,7 +3,7 @@ export const revalidate = 0;
 
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { CAPACIDADES, Capacidad, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { CrearTicketPayload } from "@/types";
 import { crearTicket, listarTickets } from "@/modules/tickets/services/ticketsService";
@@ -20,19 +20,19 @@ export async function GET(req: NextRequest) {
   const vista = searchParams.get("vista") || "todos";
   const idPerfil = sesion.perfilActivo?.id_perfil;
 
-  const vistasPermitidas: Record<number, string[]> = {
-    1: ["todos", "mios", "asignados", "bandeja", "resueltos", "aprobaciones", "departamento", "auditoria"],
-    2: ["todos", "mios", "asignados", "bandeja", "resueltos", "departamento"],
-    3: ["mios"],
-    4: ["todos", "mios", "asignados", "bandeja", "resueltos", "aprobaciones", "departamento", "auditoria"],
-    5: ["mios", "aprobaciones", "departamento"],
-    6: ["todos", "auditoria", "resueltos"],
-    7: ["mios", "aprobaciones"],
-    8: ["todos", "mios", "asignados", "bandeja", "resueltos", "aprobaciones", "departamento", "auditoria"],
-    9: ["todos", "mios", "asignados", "bandeja", "resueltos", "departamento"],
-    10: ["todos", "mios", "asignados", "bandeja", "resueltos", "departamento"],
+  // Cada bandeja del listado corresponde a una capacidad `tickets:vista:*`.
+  const CAPACIDAD_POR_VISTA: Record<string, Capacidad> = {
+    todos: CAPACIDADES.TICKETS_VISTA_TODOS,
+    mios: CAPACIDADES.TICKETS_VISTA_MIOS,
+    asignados: CAPACIDADES.TICKETS_VISTA_ASIGNADOS,
+    bandeja: CAPACIDADES.TICKETS_VISTA_BANDEJA,
+    resueltos: CAPACIDADES.TICKETS_VISTA_RESUELTOS,
+    aprobaciones: CAPACIDADES.TICKETS_VISTA_APROBACIONES,
+    departamento: CAPACIDADES.TICKETS_VISTA_DEPARTAMENTO,
+    auditoria: CAPACIDADES.TICKETS_VISTA_AUDITORIA,
   };
-  if (!vistasPermitidas[idPerfil]?.includes(vista)) {
+  const capacidadVista = CAPACIDAD_POR_VISTA[vista];
+  if (!capacidadVista || !sesionTieneCapacidad(sesion, capacidadVista)) {
     return NextResponse.json({ error: "No tienes permiso para consultar esta bandeja." }, { status: 403 });
   }
 
