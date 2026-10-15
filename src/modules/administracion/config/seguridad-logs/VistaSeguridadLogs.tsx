@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LogAccesoItem } from "@/app/api/admin/logs/route";
+import { LogAccesoItem } from "@/modules/seguridad/logsTypes";
 
 export default function PaginaSeguridadLogs() {
   const [logs, setLogs] = useState<LogAccesoItem[]>([]);
