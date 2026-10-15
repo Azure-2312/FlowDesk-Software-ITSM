@@ -67,6 +67,36 @@ export async function listarActivos(idPerfil: number, filtros: FiltrosActivos) {
   return rows;
 }
 
+/**
+ * Activos bajo custodia del usuario autenticado (página /activos/mis-activos).
+ * No expone datos financieros: es una vista de autoservicio.
+ */
+export async function listarMisActivos(idUsuario: number) {
+  const rows = await query<any>(
+    `SELECT
+       a.id_activo,
+       a.codigo_patrimonial,
+       a.numero_serie,
+       a.tipo_activo,
+       a.marca,
+       a.modelo,
+       dep.nombre AS departamento_nombre,
+       a.estado_activo,
+       a.fecha_adquisicion,
+       a.fecha_fin_garantia,
+       a.atributos,
+       m.nombre_modelo,
+       m.fabricante AS modelo_fabricante
+     FROM activo a
+     LEFT JOIN departamento_ti dep ON a.id_departamento = dep.id_departamento
+     LEFT JOIN modelo_activo m ON a.id_modelo = m.id_modelo
+     WHERE a.estado_registro = true AND a.id_usuario_custodio = $1
+     ORDER BY a.id_activo ASC`,
+    [idUsuario]
+  );
+  return rows;
+}
+
 export async function crearActivo(sesion: any, body: any) {
   const {
     codigo_patrimonial,

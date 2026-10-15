@@ -430,7 +430,7 @@ Acceso de solo consulta a toda la operación (el Administrador no opera tickets 
 ### 4 Salud del sistema  `NUEVO`
 Estado técnico del sistema para el Administrador.
 - Ruta: `/admin/salud-sistema`
-- Archivos por crear: `src/app/plataforma/admin/salud-sistema/page.tsx`, `src/app/api/admin/salud-sistema/route.ts`
+- Archivos existentes: `src/app/plataforma/admin/salud-sistema/page.tsx`, `src/app/api/admin/salud-sistema/route.ts`
 - **4.1** Estado de la base de datos y servicios — `NUEVO`
   - Función: Conexión, latencia y detección de la base pausada.
   - Archivos existentes: `src/shared/lib/db.ts`
@@ -454,7 +454,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 - **5.2** Preferencias de notificación — `NUEVO`
   - Ruta: `/mi-cuenta/notificaciones`
   - Función: Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.
-  - Archivos por crear: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
 
 ---
 
@@ -621,7 +621,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 - **9.2** Preferencias de notificación — `NUEVO`
   - Ruta: `/mi-cuenta/notificaciones`
   - Función: Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.
-  - Archivos por crear: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
 
 ---
 
@@ -676,7 +676,8 @@ Autoservicio: crear tickets y seguir los propios.
 Guías de autoayuda: solo artículos públicos publicados.
 - Ruta: `/conocimiento`
 - Archivos existentes: `src/app/api/conocimiento/route.ts`, `src/app/api/conocimiento/[id]/route.ts`
-- Archivos por crear: `src/app/plataforma/conocimiento/page.tsx`, `src/app/plataforma/conocimiento/[id]/page.tsx`
+- Archivos existentes: `src/app/plataforma/conocimiento/page.tsx`
+- Archivos por crear: `src/app/plataforma/conocimiento/[id]/page.tsx`
 - **3.1** Buscar y leer artículos — `NUEVO`
   - Ruta: `/conocimiento`
   - Función: Buscador por texto, categoría y servicio.
@@ -687,7 +688,7 @@ Guías de autoayuda: solo artículos públicos publicados.
 ### 4 Mis activos  `NUEVO`
 Activos que el usuario tiene en custodia.
 - Ruta: `/activos/mis-activos`
-- Archivos por crear: `src/app/plataforma/activos/mis-activos/page.tsx`, `src/app/api/activos/mis-activos/route.ts`
+- Archivos existentes: `src/app/plataforma/activos/mis-activos/page.tsx`, `src/app/api/activos/mis-activos/route.ts`
 - **4.1** Activos bajo mi custodia — `NUEVO` — Lista con estado, ubicación y garantía.
 - **4.2** Aceptar actas de entrega y devolución — `NUEVO`
   - Función: Aceptación digital de la política de uso.
@@ -697,7 +698,7 @@ Activos que el usuario tiene en custodia.
 ### 5 Avisos de servicio  `NUEVO`
 Mantenimientos programados con interrupción que afectan a mi área, tomados del calendario de cambios.
 - Ruta: `/avisos/mantenimientos`
-- Archivos por crear: `src/app/plataforma/avisos/mantenimientos/page.tsx`, `src/app/api/avisos/mantenimientos/route.ts`
+- Archivos existentes: `src/app/plataforma/avisos/mantenimientos/page.tsx`, `src/app/api/avisos/mantenimientos/route.ts`
 
 ### 6 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
@@ -710,7 +711,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 - **6.2** Preferencias de notificación — `NUEVO`
   - Ruta: `/mi-cuenta/notificaciones`
   - Función: Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.
-  - Archivos por crear: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
 
 ---
 
@@ -859,7 +860,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - Ruta: `/conocimiento`
 - **8.1** Base de conocimiento — `NUEVO`
   - Ruta: `/conocimiento`
-  - Archivos por crear: `src/app/plataforma/conocimiento/page.tsx`
+  - Archivos existentes: `src/app/plataforma/conocimiento/page.tsx`
 - **8.2** Revisión y publicación de artículos — `NUEVO`
   - Ruta: `/supervisor/conocimiento/revisiones`
   - Función: Revisa artículos del equipo cuando es revisor de la categoría.
@@ -907,7 +908,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 - **12.2** Preferencias de notificación — `NUEVO`
   - Ruta: `/mi-cuenta/notificaciones`
   - Función: Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.
-  - Archivos por crear: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
 
 ---
 
@@ -1002,7 +1003,7 @@ Tickets por servicio, SLA percibido, satisfacción y costo referencial consumido
 
 ### 8 Gestión de Conocimiento  `NUEVO`
 - Ruta: `/conocimiento`
-- Archivos por crear: `src/app/plataforma/conocimiento/page.tsx`
+- Archivos existentes: `src/app/plataforma/conocimiento/page.tsx`
 
 ### 9 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
@@ -1015,7 +1016,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 - **9.2** Preferencias de notificación — `NUEVO`
   - Ruta: `/mi-cuenta/notificaciones`
   - Función: Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.
-  - Archivos por crear: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
 
 ---
 
@@ -1135,7 +1136,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 - **7.2** Preferencias de notificación — `NUEVO`
   - Ruta: `/mi-cuenta/notificaciones`
   - Función: Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.
-  - Archivos por crear: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
 
 ---
 
@@ -1222,7 +1223,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 - **9.2** Preferencias de notificación — `NUEVO`
   - Ruta: `/mi-cuenta/notificaciones`
   - Función: Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.
-  - Archivos por crear: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
 
 ---
 
@@ -1336,7 +1337,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 - **10.2** Preferencias de notificación — `NUEVO`
   - Ruta: `/mi-cuenta/notificaciones`
   - Función: Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.
-  - Archivos por crear: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
 
 ---
 
@@ -1471,7 +1472,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 - **8.2** Preferencias de notificación — `NUEVO`
   - Ruta: `/mi-cuenta/notificaciones`
   - Función: Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.
-  - Archivos por crear: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
 
 ---
 
@@ -1562,7 +1563,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 - **12.2** Preferencias de notificación — `NUEVO`
   - Ruta: `/mi-cuenta/notificaciones`
   - Función: Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.
-  - Archivos por crear: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/mi-cuenta/notificaciones/page.tsx`, `src/app/api/mi-cuenta/notificaciones/route.ts`
 
 ---
 
