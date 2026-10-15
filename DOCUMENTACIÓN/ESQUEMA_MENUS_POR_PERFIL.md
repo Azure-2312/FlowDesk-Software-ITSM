@@ -727,7 +727,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Página de inicio del supervisor: estado del equipo en un vistazo.
 - Ruta: `/supervisor/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/supervisor/panel/page.tsx`, `src/app/api/supervisor/panel/route.ts`, `src/modules/supervisor/services/supervisionService.ts`
+- Archivos existentes: `src/app/plataforma/supervisor/panel/page.tsx`, `src/app/api/supervisor/panel/route.ts`, `src/modules/supervisor/services/supervisionService.ts`
 - **1.1** Indicadores del equipo — `NUEVO` — SLA del grupo, backlog, sin asignar, vencidos, escalados, CSAT y reabiertos.
 - **1.2** Alertas y riesgos — `NUEVO` — Incidentes mayores, P1/P2 sin asignar, técnicos sobrecargados y aprobaciones vencidas.
 - **1.3** Accesos rápidos — `NUEVO` — Asignar, ver monitoreo, declarar incidente mayor.
@@ -752,7 +752,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
     - Ruta: `/supervisor/equipo/ausencias`
     - Función: Registrar y editar ausencias de mi equipo; las usa la asignación automática.
     - Archivos existentes: `src/app/api/admin/tecnicos/ausencias/route.ts`
-    - Archivos por crear: `src/app/plataforma/supervisor/equipo/ausencias/page.tsx`, `src/app/api/supervisor/ausencias/route.ts`
+    - Archivos existentes: `src/app/plataforma/supervisor/equipo/ausencias/page.tsx`, `src/app/api/supervisor/ausencias/route.ts`
 - **2.3** Todos los tickets de mi área técnica — `EXISTE`
   - Ruta: `/tickets/gestion/todos`
   - Archivos existentes: `src/app/plataforma/tickets/gestion/todos/page.tsx`, `src/modules/tickets/ticket-detail/presentadores/VistaTicketSupervisor.tsx`
@@ -760,11 +760,11 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
   - Ruta: `/supervisor/sla/escalamientos`
   - Función: Tickets escalados jerárquicamente y en riesgo; permite intervenir.
   - Archivos existentes: `src/shared/lib/sla.ts`
-  - Archivos por crear: `src/app/plataforma/supervisor/sla/escalamientos/page.tsx`, `src/app/api/supervisor/sla/escalamientos/route.ts`
+  - Archivos existentes: `src/app/plataforma/supervisor/sla/escalamientos/page.tsx`, `src/app/api/supervisor/sla/escalamientos/route.ts`
 - **2.5** Incidentes mayores — `NUEVO`
   - Ruta: `/supervisor/incidentes-mayores`
   - Función: Declarar, coordinar, comunicar y cerrar incidentes mayores.
-  - Archivos por crear: `src/app/plataforma/supervisor/incidentes-mayores/page.tsx`, `src/app/api/supervisor/incidentes-mayores/route.ts`, `src/modules/incidentes/services/incidentesMayoresService.ts`
+  - Archivos existentes: `src/app/plataforma/supervisor/incidentes-mayores/page.tsx`, `src/app/api/supervisor/incidentes-mayores/route.ts`, `src/modules/incidentes/services/incidentesMayoresService.ts`
 
 ### 3 Gestión de tickets  `EXISTE`
 - Ruta: `/tickets/gestion`
@@ -800,7 +800,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
   - Ruta: `/supervisor/sla/semaforo`
   - Función: Misma vista que el técnico con alcance de todo el grupo.
   - Archivos existentes: `src/app/plataforma/tecnico/sla/semaforo/page.tsx`
-  - Archivos por crear: `src/app/plataforma/supervisor/sla/semaforo/page.tsx`
+  - Archivos existentes: `src/app/plataforma/supervisor/sla/semaforo/page.tsx`
 - **4.2** Objetivos de tiempo vigentes — `ADAPTAR`
   - Ruta: `/tecnico/sla/objetivos`
   - Función: Se reutiliza en modo consulta.
@@ -808,7 +808,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **4.3** Incumplimientos y causas — `NUEVO`
   - Ruta: `/supervisor/sla/incumplimientos`
   - Función: Análisis de tickets vencidos por servicio, técnico y causa.
-  - Archivos por crear: `src/app/plataforma/supervisor/sla/incumplimientos/page.tsx`, `src/app/api/supervisor/sla/incumplimientos/route.ts`
+  - Archivos existentes: `src/app/plataforma/supervisor/sla/incumplimientos/page.tsx`, `src/app/api/supervisor/sla/incumplimientos/route.ts`
 
 ### 5 Gestión de Problemas  `EXISTE`
 - Ruta: `/problemas`
@@ -818,7 +818,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **5.2** Asignación de problemas — `NUEVO`
   - Ruta: `/supervisor/problemas/asignar`
   - Función: Reparte problemas sin responsable mientras no exista el Gestor de Problemas.
-  - Archivos por crear: `src/app/plataforma/supervisor/problemas/asignar/page.tsx`
+  - Archivos existentes: `src/app/plataforma/supervisor/problemas/asignar/page.tsx`
 - **5.3** Errores conocidos — `EXISTE`
   - Ruta: `/problemas/kedb`
   - Archivos existentes: `src/app/plataforma/problemas/kedb/page.tsx`
@@ -829,7 +829,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
   - Ruta: `/supervisor/cambios/aprobaciones`
   - Función: Etapa Técnica de las RFC del grupo implementador; segregación de funciones.
   - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
-  - Archivos por crear: `src/app/plataforma/supervisor/cambios/aprobaciones/page.tsx`, `src/app/api/supervisor/cambios/aprobaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/supervisor/cambios/aprobaciones/page.tsx`, `src/app/api/supervisor/cambios/aprobaciones/route.ts`
 - **6.2** Calendario de cambios — `EXISTE`
   - Ruta: `/cambios/gestion/calendario`
   - Archivos existentes: `src/app/plataforma/cambios/gestion/calendario/page.tsx`
@@ -837,11 +837,11 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
   - Ruta: `/supervisor/cambios/impacto`
   - Función: Misma lógica del técnico con alcance de grupo.
   - Archivos existentes: `src/app/plataforma/tecnico/cambios/impacto/page.tsx`
-  - Archivos por crear: `src/app/plataforma/supervisor/cambios/impacto/page.tsx`
+  - Archivos existentes: `src/app/plataforma/supervisor/cambios/impacto/page.tsx`
 - **6.4** Programación de implementaciones del equipo — `NUEVO`
   - Ruta: `/supervisor/cambios/programar`
   - Función: Programar y reprogramar dentro de ventanas permitidas.
-  - Archivos por crear: `src/app/plataforma/supervisor/cambios/programar/page.tsx`
+  - Archivos existentes: `src/app/plataforma/supervisor/cambios/programar/page.tsx`
 
 ### 7 Activos  `EXISTE`
 - Ruta: `/activos`
@@ -851,7 +851,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **7.2** Aprobación de bajas de mi área — `NUEVO`
   - Ruta: `/supervisor/activos/bajas`
   - Función: Aprueba o rechaza bajas solicitadas por técnicos.
-  - Archivos por crear: `src/app/plataforma/supervisor/activos/bajas/page.tsx`, `src/app/api/supervisor/activos/bajas/route.ts`
+  - Archivos existentes: `src/app/plataforma/supervisor/activos/bajas/page.tsx`, `src/app/api/supervisor/activos/bajas/route.ts`
 - **7.3** Licencias (consulta) — `EXISTE`
   - Ruta: `/activos/licencias`
   - Archivos existentes: `src/app/plataforma/activos/licencias/page.tsx`
@@ -865,7 +865,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
   - Ruta: `/supervisor/conocimiento/revisiones`
   - Función: Revisa artículos del equipo cuando es revisor de la categoría.
   - Archivos existentes: `src/app/plataforma/tecnico/conocimiento/revisiones/page.tsx`
-  - Archivos por crear: `src/app/plataforma/supervisor/conocimiento/revisiones/page.tsx`
+  - Archivos existentes: `src/app/plataforma/supervisor/conocimiento/revisiones/page.tsx`
 
 ### 9 Reportes del equipo  `NUEVO`
 - Ruta: `/supervisor/reportes`
@@ -876,14 +876,14 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **9.2** Productividad individual — `NUEVO`
   - Ruta: `/supervisor/reportes/productividad`
   - Función: Resueltos, tiempos, reabiertos y satisfacción por técnico (uso de gestión, no punitivo).
-  - Archivos por crear: `src/app/plataforma/supervisor/reportes/productividad/page.tsx`, `src/app/api/supervisor/reportes/productividad/route.ts`
+  - Archivos existentes: `src/app/plataforma/supervisor/reportes/productividad/page.tsx`, `src/app/api/supervisor/reportes/productividad/route.ts`
 
 ### 10 Mi equipo  `NUEVO`
 - Ruta: `/supervisor/equipo`
 - **10.1** Vistas y respuestas compartidas — `NUEVO`
   - Ruta: `/supervisor/equipo/vistas`
   - Función: Vistas guardadas y respuestas predefinidas del grupo.
-  - Archivos por crear: `src/app/plataforma/supervisor/equipo/vistas/page.tsx`, `src/app/api/supervisor/equipo/vistas/route.ts`
+  - Archivos existentes: `src/app/plataforma/supervisor/equipo/vistas/page.tsx`, `src/app/api/supervisor/equipo/vistas/route.ts`
 
 ### 11 Operación de servicios  `EXISTE`
 - Ruta: `/operacion`
