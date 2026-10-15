@@ -12,7 +12,7 @@ import {
   validarCorreo,
   validarSlaTiempos,
 } from "@/lib/validaciones";
-import { AlertaCampo } from "@/components/ui/AlertaCampo";
+import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 interface CampoConfigurado {
   id: string;
