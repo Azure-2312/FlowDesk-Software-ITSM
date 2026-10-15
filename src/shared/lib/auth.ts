@@ -73,7 +73,7 @@ export { COOKIE_SESION };
 // duración (5 minutos) para no tener que pedirle la contraseña otra vez,
 // sin dejar todavía una sesión (cookie) abierta.
 
-interface DatosPreSesion {
+export interface DatosPreSesion {
   tipo: "pre-sesion";
   id_usuario: number;
   nombres: string;

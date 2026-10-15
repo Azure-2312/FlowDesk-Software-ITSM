@@ -1,18 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/shared/lib/db";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import type { LogAccesoItem } from "@/modules/seguridad/logsTypes";
 
 export const dynamic = "force-dynamic";
-
-export interface LogAccesoItem {
-  id_log: number;
-  id_usuario: number | null;
-  usuario_nombre?: string | null;
-  correo_intento: string;
-  exitoso: boolean;
-  ip: string;
-  fecha: string;
-}
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
