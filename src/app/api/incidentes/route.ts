@@ -3,7 +3,7 @@ export const revalidate = 0;
 
 import { NextRequest, NextResponse } from "next/server";
 import { queryRow } from "@/shared/lib/db";
-import { GET as listarTickets, POST as registrarTicket } from "../tickets/route";
+import { GET as listarTickets, POST as registrarTicket } from "@/modules/tickets/api/ticketsController";
 
 async function tipoId(codigo: string) {
   const tipo = await queryRow<{ id_tipo_ticket: number }>(
@@ -15,7 +15,7 @@ async function tipoId(codigo: string) {
 
 export async function GET(req: NextRequest) {
   const idTipo = await tipoId("INCIDENTE");
-  if (!idTipo) return NextResponse.json({ error: "El tipo Incidente no está configurado." }, { status: 503 });
+  if (!idTipo) return NextResponse.json({ error: "El tipo Incidente no estÃ¡ configurado." }, { status: 503 });
   const url = new URL(req.url);
   url.searchParams.set("id_tipo", String(idTipo));
   return listarTickets(new NextRequest(url, { headers: req.headers }));
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const idTipo = await tipoId("INCIDENTE");
-  if (!idTipo) return NextResponse.json({ error: "El tipo Incidente no está configurado." }, { status: 503 });
+  if (!idTipo) return NextResponse.json({ error: "El tipo Incidente no estÃ¡ configurado." }, { status: 503 });
   try {
     const payload = await req.json();
     const headers = new Headers(req.headers);
@@ -34,6 +34,6 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({ ...payload, id_tipo_ticket: idTipo }),
     }));
   } catch {
-    return NextResponse.json({ error: "El cuerpo de la solicitud no es válido." }, { status: 400 });
+    return NextResponse.json({ error: "El cuerpo de la solicitud no es vÃ¡lido." }, { status: 400 });
   }
 }
