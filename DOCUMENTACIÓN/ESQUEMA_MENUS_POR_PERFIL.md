@@ -521,7 +521,7 @@ Espacio personal del técnico (Prompt 4, M1).
 - **2.7** Incidente mayor (sala de crisis) — `NUEVO`
   - Ruta: `/tecnico/mesa/incidente-mayor`
   - Función: Vista de coordinación cuando el Supervisor declara un incidente mayor: línea de tiempo, tareas y comunicados.
-  - Archivos por crear: `src/app/plataforma/tecnico/mesa/incidente-mayor/page.tsx`, `src/app/api/tecnico/incidente-mayor/route.ts`
+  - Archivos existentes: `src/app/plataforma/tecnico/mesa/incidente-mayor/page.tsx`, `src/app/api/tecnico/incidente-mayor/route.ts`
 
 ### 3 Seguimiento de SLA  `EXISTE`
 - Ruta: `/tecnico/sla`
@@ -1488,7 +1488,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Problemas abiertos, sin asignar, por vencer, mayores y errores conocidos por revisar.
 - Ruta: `/gestor-problemas/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/gestor-problemas/panel/page.tsx`, `src/app/api/gestor-problemas/panel/route.ts`, `src/modules/problemas/services/problemaService.ts`
+- Archivos existentes: `src/app/plataforma/gestor-problemas/panel/page.tsx`, `src/app/api/gestor-problemas/panel/route.ts`, `src/modules/problemas/services/gestorProblemasService.ts`
 
 ### 2 Registro de problemas  `EXISTE`
 - Ruta: `/problemas`
@@ -1504,7 +1504,7 @@ Problemas abiertos, sin asignar, por vencer, mayores y errores conocidos por rev
 ### 3 Bandeja y asignación  `NUEVO`
 Asignar responsables, grupos y prioridad.
 - Ruta: `/gestor-problemas/asignacion`
-- Archivos por crear: `src/app/plataforma/gestor-problemas/asignacion/page.tsx`, `src/app/api/gestor-problemas/asignacion/route.ts`
+- Archivos existentes: `src/app/plataforma/gestor-problemas/asignacion/page.tsx`, `src/app/api/gestor-problemas/asignacion/route.ts`
 
 ### 4 Identificación proactiva  `NUEVO`
 - Ruta: `/gestor-problemas/candidatos`
@@ -1512,16 +1512,16 @@ Asignar responsables, grupos y prioridad.
   - Ruta: `/gestor-problemas/candidatos`
   - Función: Sugerencias de las reglas de umbral con alcance global.
   - Archivos existentes: `src/app/plataforma/tecnico/problemas/candidatos/page.tsx`
-  - Archivos por crear: `src/app/plataforma/gestor-problemas/candidatos/page.tsx`
+  - Archivos existentes: `src/app/plataforma/gestor-problemas/candidatos/page.tsx`, `src/app/api/gestor-problemas/candidatos/route.ts`
 - **4.2** Incidentes recurrentes — `NUEVO`
   - Ruta: `/gestor-problemas/recurrentes`
   - Función: Agrupación por servicio, CI, categoría y código de resolución.
-  - Archivos por crear: `src/app/plataforma/gestor-problemas/recurrentes/page.tsx`, `src/app/api/gestor-problemas/recurrentes/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-problemas/recurrentes/page.tsx`, `src/app/api/gestor-problemas/recurrentes/route.ts`
 
 ### 5 Análisis de causa raíz  `NUEVO`
 Herramientas de 5 porqués, Ishikawa y línea de tiempo.
 - Ruta: `/gestor-problemas/analisis`
-- Archivos por crear: `src/app/plataforma/gestor-problemas/analisis/page.tsx`, `src/app/api/gestor-problemas/analisis/route.ts`
+- Archivos existentes: `src/app/plataforma/gestor-problemas/analisis/page.tsx`, `src/app/api/gestor-problemas/analisis/route.ts`
 
 ### 6 Errores conocidos (KEDB)  `EXISTE`
 Publicar, retirar y revisar periódicamente.
@@ -1530,27 +1530,27 @@ Publicar, retirar y revisar periódicamente.
 
 ### 7 Problemas mayores y revisión  `NUEVO`
 - Ruta: `/gestor-problemas/mayores`
-- Archivos por crear: `src/app/plataforma/gestor-problemas/mayores/page.tsx`, `src/app/api/gestor-problemas/mayores/route.ts`
+- Archivos existentes: `src/app/plataforma/gestor-problemas/mayores/page.tsx`, `src/app/api/gestor-problemas/mayores/route.ts`
 
 ### 8 Solicitudes de cambio derivadas  `NUEVO`
 RFC vinculadas a problemas y su estado.
 - Ruta: `/gestor-problemas/cambios`
-- Archivos por crear: `src/app/plataforma/gestor-problemas/cambios/page.tsx`, `src/app/api/gestor-problemas/cambios/route.ts`
+- Archivos existentes: `src/app/plataforma/gestor-problemas/cambios/page.tsx`, `src/app/api/gestor-problemas/cambios/route.ts`
 
 ### 9 Conocimiento derivado  `NUEVO`
 Artículos generados y pendientes por problema.
 - Ruta: `/gestor-problemas/conocimiento`
-- Archivos por crear: `src/app/plataforma/gestor-problemas/conocimiento/page.tsx`
+- Archivos existentes: `src/app/plataforma/gestor-problemas/conocimiento/page.tsx`, `src/app/api/gestor-problemas/conocimiento/route.ts`
 
 ### 10 Objetivos de tiempo  `NUEVO`
 Consulta de los objetivos internos de problemas.
 - Ruta: `/gestor-problemas/objetivos`
-- Archivos por crear: `src/app/plataforma/gestor-problemas/objetivos/page.tsx`
+- Archivos existentes: `src/app/plataforma/gestor-problemas/objetivos/page.tsx`, `src/app/api/gestor-problemas/objetivos/route.ts`
 
 ### 11 Reportes de problemas  `NUEVO`
 Tiempo hasta causa raíz, recurrencia, problemas mayores y uso de errores conocidos.
 - Ruta: `/gestor-problemas/reportes`
-- Archivos por crear: `src/app/plataforma/gestor-problemas/reportes/page.tsx`, `src/app/api/gestor-problemas/reportes/route.ts`
+- Archivos existentes: `src/app/plataforma/gestor-problemas/reportes/page.tsx`, `src/app/api/gestor-problemas/reportes/route.ts`
 
 ### 12 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
