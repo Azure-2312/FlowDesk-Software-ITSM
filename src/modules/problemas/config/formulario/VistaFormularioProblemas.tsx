@@ -8,13 +8,17 @@ import { ModalHistorialVersiones } from "./components/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "./components/ModalRestaurarFabrica";
 import { ModalVistaPrevia } from "./components/ModalVistaPrevia";
 import { PestanaCampos } from "./components/PestanaCampos";
+import { PestanaCamposPersonalizados } from "./components/PestanaCamposPersonalizados";
 import { PestanaListasCatalogos } from "./components/PestanaListasCatalogos";
+import { PestanaPrioridad } from "./components/PestanaPrioridad";
 import { PestanaPlantillas } from "./components/PestanaPlantillas";
 import { PestanaVistaTicket } from "./components/PestanaVistaTicket";
 
 type TabId =
   | "campos"
+  | "campos_personalizados"
   | "listas_catalogos"
+  | "matriz_prioridad"
   | "plantillas"
   | "vista_ticket";
 
@@ -147,25 +151,37 @@ export default function ConfiguracionFormularioPage() {
     cargarDatos();
   }, [cargarDatos]);
 
+  // Construye el snapshot del ámbito activo para guardar borrador / publicar
+  const construirSnapshot = (): any => {
+    if (tabActiva === "campos") {
+      return { secciones: seccionesFormulario };
+    }
+    if (tabActiva === "vista_ticket") {
+      return { cabecera: elementosCabecera, pestanas: pestanasTicket };
+    }
+    if (tabActiva === "campos_personalizados") {
+      return { campos_personalizados: camposPersonalizados };
+    }
+    if (tabActiva === "matriz_prioridad") {
+      return { config: configMatriz, celdas_problemas: celdasProblemas, prioridades: prioridadesData };
+    }
+    return {};
+  };
+
   // Guardar Borrador
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      let payloadDatos: any = {};
-
-      if (tabActiva === "campos") {
-        payloadDatos = { secciones: seccionesFormulario };
-      } else if (tabActiva === "vista_ticket") {
-        payloadDatos = { cabecera: elementosCabecera, pestanas: pestanasTicket };
-      }
+      const payloadDatos = construirSnapshot();
 
       const res = await fetch("/api/admin/problemas/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           accion: "guardar_borrador",
-          ambito: tabActiva,
-          datos: payloadDatos,
+          pestana: tabActiva,
+          snapshot: payloadDatos,
+          motivo: `Guardado de borrador en pestaña ${tabActiva}`,
         }),
       });
 
@@ -221,8 +237,10 @@ export default function ConfiguracionFormularioPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           accion: "publicar",
-          ambito: tabActiva,
+          pestana: tabActiva,
+          snapshot: construirSnapshot(),
           motivo,
+          diff: { tipo: "modificacion_general", pestana: tabActiva },
         }),
       });
 
@@ -231,10 +249,11 @@ export default function ConfiguracionFormularioPage() {
         throw new Error(resData.error || "No se pudo publicar la versión");
       }
 
-      setVersionPublicada(resData.version?.numero_version || versionPublicada + 1);
+      const nuevaVersion = resData.nueva_version || versionPublicada + 1;
+      setVersionPublicada(nuevaVersion);
       setFechaPublicada(new Date().toISOString());
       setHayBorrador(false);
-      alert(`Versión v${resData.version?.numero_version || versionPublicada + 1} publicada e implementada.`);
+      alert(`Versión v${nuevaVersion} publicada e implementada.`);
     } finally {
       setPublicando(false);
     }
@@ -251,7 +270,7 @@ export default function ConfiguracionFormularioPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           accion: "descartar",
-          ambito: tabActiva,
+          pestana: tabActiva,
         }),
       });
       const resData = await res.json();
@@ -271,7 +290,8 @@ export default function ConfiguracionFormularioPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         accion: "restaurar_fabrica",
-        ambito: tabActiva,
+        pestana: tabActiva,
+        confirmacion: "RESTAURAR",
       }),
     });
     const resData = await res.json();
@@ -304,8 +324,8 @@ export default function ConfiguracionFormularioPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           accion: "guardar_borrador",
-          ambito: tabActiva,
-          datos: ver.snapshot,
+          pestana: tabActiva,
+          snapshot: ver.snapshot,
         }),
       });
       const data = await res.json();
@@ -324,7 +344,7 @@ export default function ConfiguracionFormularioPage() {
   const handleExportar = () => {
     const dataSnapshot = {
       modulo: "gestion_de_problemas",
-      pantalla: "1.3.4.1 Configuración de formulario",
+      pantalla: "1.3.3.1 Configuración de formulario",
       ambito: tabActiva,
       version: versionPublicada,
       fecha_exportacion: new Date().toISOString(),
@@ -386,10 +406,10 @@ export default function ConfiguracionFormularioPage() {
           Gestión de problemas
         </Link>
         {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>1.3.4.1 Configuración de formulario</span>
+        <span style={{ color: "#0f172a", fontWeight: 600 }}>1.3.3.1 Configuración de formulario</span>
       </nav>
 
-      {/* Encabezado Principal de la Pantalla 1.3.4.1 */}
+      {/* Encabezado Principal de la Pantalla 1.3.3.1 */}
       <div style={{
         display: "flex",
         justifyContent: "space-between",
@@ -411,7 +431,7 @@ export default function ConfiguracionFormularioPage() {
               borderRadius: 4,
               fontFamily: "monospace"
             }}>
-              1.3.4.1
+              1.3.3.1
             </span>
             <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
               Configuración de Formulario de Problemas
@@ -473,10 +493,12 @@ export default function ConfiguracionFormularioPage() {
         overflowX: "auto"
       }}>
         {[
-          { id: "campos", label: "1.3.4.1.1 Campos" },
-          { id: "listas_catalogos", label: "1.3.4.1.2 Listas y catálogos" },
-          { id: "plantillas", label: "1.3.4.1.3 Plantillas de problema" },
-          { id: "vista_ticket", label: "1.3.4.1.4 Vista del ticket" },
+          { id: "campos", label: "1.3.3.1.1 Campos" },
+          { id: "campos_personalizados", label: "1.3.3.1.2 Campos personalizados" },
+          { id: "listas_catalogos", label: "1.3.3.1.3 Listas y catálogos" },
+          { id: "matriz_prioridad", label: "1.3.3.1.4 Matriz de prioridad" },
+          { id: "plantillas", label: "1.3.3.1.5 Plantillas de problema" },
+          { id: "vista_ticket", label: "1.3.3.1.6 Vista del ticket" },
         ].map((tab) => {
           const activa = tabActiva === tab.id;
           return (
@@ -534,6 +556,14 @@ export default function ConfiguracionFormularioPage() {
               />
             )}
 
+            {tabActiva === "campos_personalizados" && (
+              <PestanaCamposPersonalizados
+                campos={camposPersonalizados}
+                limite={limiteCampos}
+                onRecargar={cargarDatos}
+              />
+            )}
+
             {tabActiva === "listas_catalogos" && (
               <PestanaListasCatalogos
                 catalogos={catalogosData}
@@ -580,6 +610,29 @@ export default function ConfiguracionFormularioPage() {
                   const r = await res.json();
                   if (!r.ok) throw new Error(r.error || "Error al fusionar");
                   cargarDatos();
+                }}
+              />
+            )}
+
+            {tabActiva === "matriz_prioridad" && (
+              <PestanaPrioridad
+                prioridades={prioridadesData}
+                celdasCompartidas={celdasCompartidas}
+                celdasProblemas={celdasProblemas}
+                config={configMatriz}
+                puedeEditar={puedeEditar}
+                onGuardar={async (nuevaConfig, celdasProblemasActualizadas) => {
+                  const res = await fetch("/api/admin/problemas/matriz-prioridad", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      config: nuevaConfig,
+                      celdas_problemas: celdasProblemasActualizadas,
+                    }),
+                  });
+                  const r = await res.json();
+                  if (!res.ok || !r.ok) throw new Error(r.error || "No se pudo guardar la matriz de prioridad");
+                  await cargarDatos();
                 }}
               />
             )}

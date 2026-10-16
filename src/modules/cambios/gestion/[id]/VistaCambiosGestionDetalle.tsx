@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Cambio, SesionUsuario } from "@/types";
+import PresentadorRfcAprobador, { DecisionRfc } from "@/modules/tickets/presentadores/PresentadorRfcAprobador";
+import { PERFILES } from "@/shared/lib/capacidades";
 
 export default function PaginaDetalleTicketRFC() {
   const params = useParams();
@@ -15,6 +17,7 @@ export default function PaginaDetalleTicketRFC() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pestanaActiva, setPestanaActiva] = useState<string>("solicitud");
+  const [procesandoDecision, setProcesandoDecision] = useState(false);
 
   async function cargarTicket() {
     setCargando(true);
@@ -47,6 +50,36 @@ export default function PaginaDetalleTicketRFC() {
     if (id) cargarTicket();
   }, [id]);
 
+  async function decidirCambio(decision: DecisionRfc, comentario: string) {
+    if (!cambio) return;
+    if (comentario.trim().length < 3) {
+      alert("El sustento del dictamen es obligatorio (mínimo 3 caracteres).");
+      return;
+    }
+    setProcesandoDecision(true);
+    try {
+      const res = await fetch("/api/aprobador/cambios", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_cambio: cambio.id_cambio,
+          decision,
+          comentario: comentario.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "No se pudo registrar el dictamen.");
+        return;
+      }
+      await cargarTicket();
+    } catch {
+      alert("Error de conexión al registrar el dictamen.");
+    } finally {
+      setProcesandoDecision(false);
+    }
+  }
+
   if (cargando) {
     return (
       <div className="vista-contenedor" style={{ padding: 48, textAlign: "center", color: "#2563eb", fontWeight: 600 }}>
@@ -75,6 +108,28 @@ export default function PaginaDetalleTicketRFC() {
       : cambio.tipo_cambio === "ESTANDAR"
       ? { bg: "#f1f5f9", text: "#334155", border: "#cbd5e1" }
       : { bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe" };
+
+  // El perfil Aprobador (CAB) consume una vista de dictamen dedicada y de solo lectura.
+  if (sesion?.perfilActivo?.id_perfil === PERFILES.APROBADOR) {
+    return (
+      <div className="vista-contenedor" style={{ paddingBottom: 60 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
+          <Link href="/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
+          <span>›</span>
+          <Link href="/cambios/gestion/todos" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
+          <span>›</span>
+          <span style={{ color: "#0f172a", fontWeight: 700, fontFamily: "monospace" }}>{cambio.codigo_cambio}</span>
+        </div>
+
+        <PresentadorRfcAprobador
+          cambio={cambio}
+          sesion={sesion}
+          onDecidir={decidirCambio}
+          procesando={procesandoDecision}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="vista-contenedor" style={{ paddingBottom: 60 }}>
