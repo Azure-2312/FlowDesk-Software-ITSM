@@ -247,6 +247,11 @@ export const CAPACIDADES_POR_PERFIL: Record<number, readonly Capacidad[]> = {
     CAPACIDADES.AREA_COLABORADORES,
     CAPACIDADES.OPERACION_VER,
     CAPACIDADES.INDICADORES_VER,
+    // Lectura necesaria para las páginas del portal de área (Fase 3).
+    CAPACIDADES.CAMBIOS_VER,
+    CAPACIDADES.ACTIVOS_VER,
+    CAPACIDADES.LICENCIAS_VER,
+    CAPACIDADES.REPORTES_VER,
   ],
 
   // Auditor: lectura integral sin modificar datos.
