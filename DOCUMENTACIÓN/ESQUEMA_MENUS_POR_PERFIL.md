@@ -1353,7 +1353,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y campañas activas.
 - Ruta: `/gestor-activos/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/gestor-activos/panel/page.tsx`, `src/app/api/gestor-activos/panel/route.ts`, `src/modules/activos/services/activosService.ts`
+- Archivos existentes: `src/app/plataforma/gestor-activos/panel/page.tsx`, `src/app/api/gestor-activos/panel/route.ts`, `src/modules/activos/services/gestorActivosService.ts`
 
 ### 2 Inventario de activos (HAM)  `EXISTE`
 - Ruta: `/activos/inventario`
@@ -1370,28 +1370,28 @@ Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y 
 - **2.3** Importación masiva — `NUEVO`
   - Ruta: `/gestor-activos/importacion`
   - Función: Validación en seco, mapeo de columnas y reversión.
-  - Archivos por crear: `src/app/plataforma/gestor-activos/importacion/page.tsx`, `src/app/api/gestor-activos/importacion/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/importacion/page.tsx`, `src/app/api/gestor-activos/importacion/route.ts`
 - **2.4** Etiquetas e impresión — `NUEVO`
-  - Archivos por crear: `src/app/api/gestor-activos/etiquetas/route.ts`
+  - Archivos existentes: `src/app/api/gestor-activos/etiquetas/route.ts`
 - **2.5** Recepción de adquisiciones — `NUEVO`
   - Ruta: `/gestor-activos/recepcion`
   - Función: Recepción por lote con series, garantía y vínculo a la solicitud de origen.
-  - Archivos por crear: `src/app/plataforma/gestor-activos/recepcion/page.tsx`, `src/app/api/gestor-activos/recepcion/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/recepcion/page.tsx`, `src/app/api/gestor-activos/recepcion/route.ts`
 - **2.6** Asignación, custodia y actas — `NUEVO`
   - Ruta: `/gestor-activos/asignaciones`
   - Función: Asignar, transferir, devolver; actas y aceptación del custodio.
-  - Archivos por crear: `src/app/plataforma/gestor-activos/asignaciones/page.tsx`, `src/app/api/gestor-activos/asignaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/asignaciones/page.tsx`, `src/app/api/gestor-activos/asignaciones/route.ts`
 - **2.7** Mantenimiento y garantías — `NUEVO`
   - Ruta: `/gestor-activos/mantenimiento`
-  - Archivos por crear: `src/app/plataforma/gestor-activos/mantenimiento/page.tsx`, `src/app/api/gestor-activos/mantenimiento/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/mantenimiento/page.tsx`, `src/app/api/gestor-activos/mantenimiento/route.ts`
 - **2.8** Bajas y disposición — `NUEVO`
   - Ruta: `/gestor-activos/bajas`
   - Función: Solicitudes de baja, borrado seguro, acta y destino final.
-  - Archivos por crear: `src/app/plataforma/gestor-activos/bajas/page.tsx`, `src/app/api/gestor-activos/bajas/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/bajas/page.tsx`, `src/app/api/gestor-activos/bajas/route.ts`
 - **2.9** Inventario físico (campañas) — `NUEVO`
   - Ruta: `/gestor-activos/inventario-fisico`
   - Función: Crear campañas, revisar discrepancias y cerrar con acta (el conteo en campo lo hace el técnico).
-  - Archivos por crear: `src/app/plataforma/gestor-activos/inventario-fisico/page.tsx`, `src/app/api/gestor-activos/inventario-fisico/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/inventario-fisico/page.tsx`, `src/app/api/gestor-activos/inventario-fisico/route.ts`
 
 ### 3 Licencias de software (SAM)  `EXISTE`
 - Ruta: `/activos/licencias`
@@ -1399,10 +1399,10 @@ Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y 
 - **3.1** Licencias y asignaciones — `EXISTE`
 - **3.2** Cumplimiento y sobreuso — `NUEVO`
   - Ruta: `/gestor-activos/licencias/cumplimiento`
-  - Archivos por crear: `src/app/plataforma/gestor-activos/licencias/cumplimiento/page.tsx`, `src/app/api/gestor-activos/licencias/cumplimiento/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/licencias/cumplimiento/page.tsx`, `src/app/api/gestor-activos/licencias/cumplimiento/route.ts`
 - **3.3** Catálogo de software autorizado — `NUEVO`
   - Ruta: `/gestor-activos/licencias/catalogo-software`
-  - Archivos por crear: `src/app/plataforma/gestor-activos/licencias/catalogo-software/page.tsx`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/licencias/catalogo-software/page.tsx`, `src/app/api/gestor-activos/licencias/catalogo-software/route.ts`
 
 ### 4 Proveedores y contratos  `EXISTE`
 - Ruta: `/proveedores`
@@ -1412,11 +1412,11 @@ Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y 
   - Archivos existentes: `src/app/plataforma/proveedores/page.tsx`, `src/modules/proveedores/components/ProveedoresWorkspace.tsx`, `src/app/api/proveedores/route.ts`, `src/app/api/proveedores/[id]/route.ts`
 - **4.2** Contratos y cobertura — `NUEVO`
   - Ruta: `/gestor-activos/contratos`
-  - Archivos por crear: `src/app/plataforma/gestor-activos/contratos/page.tsx`, `src/app/api/gestor-activos/contratos/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/contratos/page.tsx`, `src/app/api/gestor-activos/contratos/route.ts`
 - **4.3** Renovaciones y vencimientos — `NUEVO`
   - Ruta: `/gestor-activos/renovaciones`
   - Función: Genera solicitudes de renovación y registra el historial.
-  - Archivos por crear: `src/app/plataforma/gestor-activos/renovaciones/page.tsx`, `src/app/api/gestor-activos/renovaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/renovaciones/page.tsx`, `src/app/api/gestor-activos/renovaciones/route.ts`
 
 ### 5 CMDB  `EXISTE`
 - Ruta: `/activos/cmdb`
@@ -1432,17 +1432,17 @@ Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y 
 - **5.4** Actualizaciones de CMDB desde cambios — `NUEVO`
   - Ruta: `/gestor-activos/cmdb/actualizaciones`
   - Función: Aplica a la CMDB lo propuesto en las RFC cerradas.
-  - Archivos por crear: `src/app/plataforma/gestor-activos/cmdb/actualizaciones/page.tsx`, `src/app/api/gestor-activos/cmdb/actualizaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/cmdb/actualizaciones/page.tsx`, `src/app/api/gestor-activos/cmdb/actualizaciones/route.ts`
 - **5.5** Calidad y auditoría de CMDB — `NUEVO`
   - Ruta: `/gestor-activos/cmdb/auditoria`
-  - Archivos por crear: `src/app/plataforma/gestor-activos/cmdb/auditoria/page.tsx`, `src/app/api/gestor-activos/cmdb/auditoria/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/cmdb/auditoria/page.tsx`, `src/app/api/gestor-activos/cmdb/auditoria/route.ts`
 - **5.6** Líneas base — `NUEVO`
   - Ruta: `/gestor-activos/cmdb/lineas-base`
-  - Archivos por crear: `src/app/plataforma/gestor-activos/cmdb/lineas-base/page.tsx`, `src/app/api/gestor-activos/cmdb/lineas-base/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/cmdb/lineas-base/page.tsx`, `src/app/api/gestor-activos/cmdb/lineas-base/route.ts`
 - **5.7** Inexactitudes reportadas — `NUEVO`
   - Ruta: `/gestor-activos/cmdb/inexactitudes`
   - Función: Tareas generadas por técnicos.
-  - Archivos por crear: `src/app/plataforma/gestor-activos/cmdb/inexactitudes/page.tsx`, `src/app/api/gestor-activos/cmdb/inexactitudes/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-activos/cmdb/inexactitudes/page.tsx`, `src/app/api/gestor-activos/cmdb/inexactitudes/route.ts`
 
 ### 6 Catálogos de activos  `ADAPTAR`
 - Ruta: `/gestor-activos/catalogos`
@@ -1459,7 +1459,7 @@ Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y 
 ### 7 Reportes de activos  `NUEVO`
 Inventario, antigüedad, costos, garantías, cumplimiento y exactitud de CMDB.
 - Ruta: `/gestor-activos/reportes`
-- Archivos por crear: `src/app/plataforma/gestor-activos/reportes/page.tsx`, `src/app/api/gestor-activos/reportes/route.ts`
+- Archivos existentes: `src/app/plataforma/gestor-activos/reportes/page.tsx`, `src/app/api/gestor-activos/reportes/route.ts`
 
 ### 8 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
