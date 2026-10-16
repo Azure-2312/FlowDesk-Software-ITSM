@@ -211,7 +211,13 @@ export default function PaginaBaseConocimiento() {
                 }}
               >
                 <span>Por {a.autor_nombre || "Especialista"}</span>
-                <span style={{ color: "#2563eb", fontWeight: 600 }}>Leer artículo</span>
+                <Link
+                  href={`/conocimiento/${a.id_articulo}`}
+                  onClick={(e) => e.stopPropagation()}
+                  style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}
+                >
+                  Leer artículo →
+                </Link>
               </div>
             </div>
           ))}

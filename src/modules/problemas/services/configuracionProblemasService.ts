@@ -248,6 +248,27 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
       { id: "historial", nombre: "Historial / auditoría", visible: true, fijo: true, orden: 12 },
     ],
   },
+  campos_personalizados: {
+    formularios_visibles: ["registro", "edicion"],
+    limite: 30,
+    campos: [],
+  },
+  matriz_prioridad: {
+    usar_matriz_propia: false,
+    permitir_prioridad_manual: true,
+    perfiles_prioridad_manual: [1, 10, 4], // Administrador, Gestor de Problemas, Supervisor
+    recalcular_al_cambiar: true,
+    tooltips_impacto: {
+      "1": "Baja: afecta a funciones accesorias o a un único usuario sin impacto en operaciones críticas.",
+      "2": "Media: degradación parcial del rendimiento de un servicio sin paralización total.",
+      "3": "Alta: afectación crítica o interrupción total de un servicio esencial o más de 100 usuarios.",
+    },
+    tooltips_urgencia: {
+      "1": "Baja: la investigación puede programarse de forma estándar sin riesgo de recurrencia inmediata.",
+      "2": "Media: existen incidentes concurrentes o riesgo de recurrencia en horas punta.",
+      "3": "Alta: incidentes activos bloqueantes o compromiso de continuidad de negocio inminente.",
+    },
+  },
 };
 
 export async function obtenerConfiguracionProblemas(opciones: {

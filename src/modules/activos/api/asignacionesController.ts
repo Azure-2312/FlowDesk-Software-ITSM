@@ -3,6 +3,11 @@ import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { sesionConCapacidad } from "@/modules/activos/api/guardiaGestor";
 import { listarAsignaciones, registrarMovimientoActivo } from "@/modules/activos/services/gestorActivosService";
+import {
+  validarAccionAsignacion,
+  validarCoherenciaCustodia,
+  validarEstadoActivo,
+} from "@/modules/activos/activosValidaciones";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +30,22 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
+
+    const vAccion = validarAccionAsignacion(body.accion);
+    if (!vAccion.valido) throw new ErrorDominio(vAccion.mensaje!);
+
+    const vCustodia = validarCoherenciaCustodia({
+      accion: body.accion,
+      id_usuario_custodio: body.id_usuario_custodio,
+      estado_activo: body.estado_activo,
+    });
+    if (!vCustodia.valido) throw new ErrorDominio(vCustodia.mensaje!);
+
+    if (body.estado_activo !== undefined && body.estado_activo !== null) {
+      const vEstado = validarEstadoActivo(body.estado_activo);
+      if (!vEstado.valido) throw new ErrorDominio(vEstado.mensaje!);
+    }
+
     return NextResponse.json(await registrarMovimientoActivo(sesion.id_usuario, body));
   } catch (err) {
     if (!(err instanceof ErrorDominio)) console.error("Error en la asignación:", err);

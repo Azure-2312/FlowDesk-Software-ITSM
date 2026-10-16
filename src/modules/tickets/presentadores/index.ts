@@ -7,5 +7,6 @@ export { default as PresentadorAuditor } from "./PresentadorAuditor";
 export { default as PresentadorGestorArea } from "./PresentadorGestorArea";
 export { default as PresentadorAprobador } from "./PresentadorAprobador";
 export { default as PresentadorRfcEvaluador } from "./PresentadorRfcEvaluador";
+export { default as PresentadorRfcAprobador } from "./PresentadorRfcAprobador";
 export { default as PresentadorActivoGestor } from "./PresentadorActivoGestor";
 export { default as PresentadorProblemaGestor } from "./PresentadorProblemaGestor";
