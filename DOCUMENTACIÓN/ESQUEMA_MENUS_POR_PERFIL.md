@@ -1032,7 +1032,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Hallazgos, cumplimiento y muestras pendientes (solo lectura).
 - Ruta: `/auditor/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/auditor/panel/page.tsx`, `src/app/api/auditor/panel/route.ts`, `src/modules/auditor/services/auditoriaService.ts`
+- Archivos existentes: `src/app/plataforma/auditor/panel/page.tsx`, `src/app/api/auditor/panel/route.ts`, `src/modules/auditor/services/auditoriaService.ts`
 
 ### 2 Auditoría de tickets  `EXISTE`
 - Ruta: `/tickets/gestion`
@@ -1052,11 +1052,11 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
   - Ruta: `/auditor/cumplimiento/sod`
   - Función: Detecta aprobaciones del mismo usuario, autoaprobaciones y excepciones.
   - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
-  - Archivos por crear: `src/app/plataforma/auditor/cumplimiento/sod/page.tsx`, `src/app/api/auditor/cumplimiento/sod/route.ts`
+  - Archivos existentes: `src/app/plataforma/auditor/cumplimiento/sod/page.tsx`, `src/app/api/auditor/cumplimiento/sod/route.ts`
 - **2.4** Muestreo de auditoría — `NUEVO`
   - Ruta: `/auditor/muestreo`
   - Función: Selecciona muestras aleatorias de tickets, cambios y bajas para revisión.
-  - Archivos por crear: `src/app/plataforma/auditor/muestreo/page.tsx`, `src/app/api/auditor/muestreo/route.ts`
+  - Archivos existentes: `src/app/plataforma/auditor/muestreo/page.tsx`, `src/app/api/auditor/muestreo/route.ts`
 
 ### 3 Auditoría del sistema  `NUEVO`
 - Ruta: `/auditor/sistema`
@@ -1079,7 +1079,7 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
 - **3.5** Recertificación de accesos — `NUEVO`
   - Ruta: `/auditor/accesos/recertificacion`
   - Función: Revisión periódica de usuarios y perfiles con confirmación o retiro.
-  - Archivos por crear: `src/app/plataforma/auditor/accesos/recertificacion/page.tsx`, `src/app/api/auditor/accesos/recertificacion/route.ts`
+  - Archivos existentes: `src/app/plataforma/auditor/accesos/recertificacion/page.tsx`, `src/app/api/auditor/accesos/recertificacion/route.ts`
 
 ### 4 Cumplimiento de procesos  `NUEVO`
 - Ruta: `/auditor/cumplimiento`
@@ -1088,7 +1088,7 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
   - Archivos existentes: `src/app/plataforma/cambios/gestion/todos/page.tsx`
 - **4.2** Cambios sin autorización o fuera de ventana — `NUEVO`
   - Ruta: `/auditor/cumplimiento/cambios`
-  - Archivos por crear: `src/app/plataforma/auditor/cumplimiento/cambios/page.tsx`, `src/app/api/auditor/cumplimiento/cambios/route.ts`
+  - Archivos existentes: `src/app/plataforma/auditor/cumplimiento/cambios/page.tsx`, `src/app/api/auditor/cumplimiento/cambios/route.ts`
 - **4.3** Problemas y errores conocidos — `ADAPTAR`
   - Ruta: `/problemas`
   - Archivos existentes: `src/app/plataforma/problemas/page.tsx`, `src/app/plataforma/problemas/kedb/page.tsx`
@@ -1106,11 +1106,11 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
   - Archivos existentes: `src/app/plataforma/activos/licencias/page.tsx`
 - **5.3** Resultados de auditorías de CMDB — `NUEVO`
   - Ruta: `/auditor/cmdb/resultados`
-  - Archivos por crear: `src/app/plataforma/auditor/cmdb/resultados/page.tsx`, `src/app/api/auditor/cmdb/resultados/route.ts`
+  - Archivos existentes: `src/app/plataforma/auditor/cmdb/resultados/page.tsx`, `src/app/api/auditor/cmdb/resultados/route.ts`
 - **5.4** Bajas y disposición — `NUEVO`
   - Ruta: `/auditor/activos/bajas`
   - Función: Actas de baja, borrado seguro y destino final.
-  - Archivos por crear: `src/app/plataforma/auditor/activos/bajas/page.tsx`, `src/app/api/auditor/activos/bajas/route.ts`
+  - Archivos existentes: `src/app/plataforma/auditor/activos/bajas/page.tsx`, `src/app/api/auditor/activos/bajas/route.ts`
 
 ### 6 Reportes y evidencias  `NUEVO`
 - Ruta: `/auditor/informes`
@@ -1123,7 +1123,7 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
 - **6.3** Informes de auditoría — `NUEVO`
   - Ruta: `/auditor/informes`
   - Función: Hallazgos, recomendaciones y seguimiento.
-  - Archivos por crear: `src/app/plataforma/auditor/informes/page.tsx`, `src/app/api/auditor/informes/route.ts`
+  - Archivos existentes: `src/app/plataforma/auditor/informes/page.tsx`, `src/app/api/auditor/informes/route.ts`
 
 ### 7 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
