@@ -132,6 +132,7 @@ Grupo de configuración del sistema; solo el Administrador edita y publica.
   - Ruta: `/admin/procesos`
   - Función: Formularios, flujos y reglas por proceso ITIL.
   - **1.3.1** Incidentes — `EXISTE`
+    - Ruta: `/admin/procesos/incidentes` (carpeta contenedora; redirige a su primer ítem)
     - **1.3.1.1** Configuración de formulario — `EXISTE`
       - Ruta: `/admin/tickets-formularios?tipo=incidente`
       - Función: Campos, orden y obligatoriedad del formulario de incidente.
@@ -141,6 +142,7 @@ Grupo de configuración del sistema; solo el Administrador edita y publica.
       - Función: Estados, transiciones y acciones por rol.
       - Archivos existentes: `src/app/plataforma/admin/tickets-vistas/page.tsx`
   - **1.3.2** Solicitudes de servicio — `EXISTE`
+    - Ruta: `/admin/procesos/solicitudes` (carpeta contenedora; redirige a su primer ítem)
     - **1.3.2.1** Configuración de formulario — `EXISTE`
       - Ruta: `/admin/tickets-formularios?tipo=solicitud`
       - Función: Formulario de solicitud.
