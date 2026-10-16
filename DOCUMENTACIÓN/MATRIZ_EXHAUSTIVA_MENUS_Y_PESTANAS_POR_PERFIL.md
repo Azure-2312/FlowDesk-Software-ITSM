@@ -1,6 +1,6 @@
 # MATRIZ EXHAUSTIVA DE MENÚS Y PESTAÑAS POR PERFIL — FlowDesk ITSM
 
-> **Versión:** 1.0 · **Fecha:** 2026-10-15 · **Commit:** `f507bff`
+> **Versión:** 1.1 · **Fecha:** 2026-10-16 · **Base:** `f507bff` + reestructuración del menú de procesos (carpetas *Gestión de incidentes* y *Gestión de solicitudes*).
 > **Alcance:** los **10 perfiles**, con **cada opción de menú**, **cada subopción** y **cada pestaña interna**, indicando **qué hace** y **su estado real** tras completar las brechas.
 > **Fuente autoritativa de opciones:** tabla `opciones_menu` + `opciones_menu_perfiles` (árbol real cargado en la BD).
 > **Fuente de pestañas:** componentes `Pestana*.tsx` reales en `src/modules/**` y `src/app/**`.
@@ -24,7 +24,7 @@
 ---
 
 ## PERFIL 1 — Administrador
-**Inicio:** `/admin` · **Nodos de menú:** 58 · **Resultado:** 56 ✅ · 2 🟢 (redirecciones internas) · 0 ⚠️ · 0 ❌
+**Inicio:** `/admin` · **Nodos de menú:** 60 · **Resultado:** 58 ✅ · 2 🟢 (redirecciones internas) · 0 ⚠️ · 0 ❌
 
 | Código | Opción / Pestaña | Ruta | Qué hace | Marco | Estado |
 |---|---|---|---|---|---|
@@ -40,64 +40,66 @@
 | 1.2.4 | Configuración de categorías | `/admin/servicios?vista=categorias` | CRUD de categorías con unicidad. | CAT | ✅ |
 | 1.2.5 | Objetivos SLA | `/admin/servicios/sla` | Matriz de tiempos por prioridad e impacto × urgencia. | SLM | ✅ |
 | 1.3 | Configuración de procesos | `/admin/procesos` | Formularios, flujos y reglas por proceso. | CHG, PRB, INC | ✅ |
-| 1.3.1 | Configuración de formulario (incidente) | `/admin/tickets-formularios?tipo=incidente` | Campos, orden y obligatoriedad. | INC | ✅ |
-| 1.3.2 | Flujo de estados y acciones (incidente) | `/admin/tickets-vistas?seccion=estados&tipo=incidente` | Estados, transiciones y acciones por rol. | INC | ✅ |
-| 1.3.3 | Configuración de formulario (solicitud) | `/admin/tickets-formularios?tipo=solicitud` | Formulario de solicitud. | SR | ✅ |
-| 1.3.4 | Flujo de atención y aprobaciones (solicitud) | `/admin/tickets-vistas?seccion=estados&tipo=solicitud` | Estados, tareas y etapas de aprobación. | SR | ✅ |
-| 1.3.5 | Gestión de problemas | `/admin/procesos/problemas` | Configuración del proceso de problemas. | PRB | ✅ |
-| 1.3.5.1 | ↳ Configuración de formulario | `/admin/procesos/problemas/formulario` | Formulario configurable con versionado. | PRB | ✅ |
-| 1.3.5.1.1 | ↳↳ Campos | (pestaña) | Definición de secciones y campos del formulario. | PRB | ✅ |
-| 1.3.5.1.2 | ↳↳ Campos personalizados | (pestaña) | Alta de campos propios del problema (asistente). | PRB | ✅ |
-| 1.3.5.1.3 | ↳↳ Listas y catálogos | (pestaña) | Categorías, orígenes, causas raíz, códigos, métodos. | PRB | ✅ |
-| 1.3.5.1.4 | ↳↳ Matriz de prioridad | (pestaña) | Matriz impacto × urgencia propia + toggles y tooltips. | PRB, SLM | ✅ |
-| 1.3.5.1.5 | ↳↳ Plantillas de problema | (pestaña) | Plantillas reutilizables de registro. | PRB | ✅ |
-| 1.3.5.1.6 | ↳↳ Vista del ticket | (pestaña) | Cabecera y pestañas de la vista del problema. | PRB | ✅ |
-| 1.3.5.2 | ↳ Flujo de investigación y seguimiento | `/admin/procesos/problemas/flujo` | Ciclo de vida del problema. | PRB | ✅ |
-| 1.3.5.2.1 | ↳↳ Estados | (pestaña) | Estados del problema. | PRB | ✅ |
-| 1.3.5.2.2 | ↳↳ Transiciones y acciones | (pestaña) | Transiciones y acciones por rol. | PRB | ✅ |
-| 1.3.5.2.3 | ↳↳ Asignación automática | (pestaña) | Reglas de asignación. | PRB | ✅ |
-| 1.3.5.2.4 | ↳↳ Objetivos de tiempo | (pestaña) | Objetivos de investigación por prioridad. | PRB, SLM | ✅ |
-| 1.3.5.2.5 | ↳↳ Escalamiento | (pestaña) | Reglas de escalamiento. | PRB | ✅ |
-| 1.3.5.2.6 | ↳↳ Reapertura | (pestaña) | Reglas de reapertura. | PRB | ✅ |
-| 1.3.5.2.7 | ↳↳ Tareas predefinidas | (pestaña) | Paquetes de tareas. | PRB | ✅ |
-| 1.3.5.2.8 | ↳↳ Problemas mayores | (pestaña) | Criterios de problema mayor. | PRB | ✅ |
-| 1.3.5.3 | ↳ Relación con incidentes, errores conocidos y conocimiento | `/admin/procesos/problemas/relaciones` | Vínculos del problema con otros procesos. | PRB | ✅ |
-| 1.3.5.3.1 | ↳↳ Creación automática por umbral | (pestaña) | Umbrales que generan problemas. | PRB, INC | ✅ |
-| 1.3.5.3.2 | ↳↳ Incidentes vinculados | (pestaña) | Reglas de vinculación de incidentes. | PRB, INC | ✅ |
-| 1.3.5.3.3 | ↳↳ Errores conocidos (KEDB) | (pestaña) | Política de KEDB. | PRB, KM | ✅ |
-| 1.3.5.3.4 | ↳↳ Cambios (RFC) | (pestaña) | RFC derivadas del problema. | PRB, CHG | ✅ |
-| 1.3.5.3.5 | ↳↳ Conocimiento | (pestaña) | Generación de artículos desde problemas. | PRB, KM | ✅ |
-| 1.3.5.3.6 | ↳↳ CI y servicios | (pestaña) | Vínculo con CI y servicios afectados. | PRB, SCM | ✅ |
-| 1.3.6 | Gestión de cambios | `/admin/procesos/cambios` | Configuración del proceso de cambios. | CHG | ✅ |
-| 1.3.6.1 | ↳ Configuración de formulario | `/admin/procesos/cambios/formulario` | Formulario de RFC configurable. | CHG | ✅ |
-| 1.3.6.1.1 | ↳↳ Campos | (pestaña) | Secciones y campos de la RFC. | CHG | ✅ |
-| 1.3.6.1.2 | ↳↳ Campos personalizados | (pestaña) | Campos propios de la RFC. | CHG | ✅ |
-| 1.3.6.1.3 | ↳↳ Listas y catálogos | (pestaña) | Catálogos de cambio. | CHG | ✅ |
-| 1.3.6.1.4 | ↳↳ Cuestionario de riesgo | (pestaña) | Preguntas de evaluación de riesgo. | CHG, RISK | ✅ |
-| 1.3.6.1.5 | ↳↳ Prioridad (matriz compartida) | (pestaña) | Matriz impacto × urgencia compartida. | CHG, SLM | ✅ |
-| 1.3.6.1.6 | ↳↳ Plantillas de RFC | (pestaña) | Plantillas de solicitud de cambio. | CHG | ✅ |
-| 1.3.6.1.7 | ↳↳ Vista del ticket | (pestaña) | Cabecera y pestañas de la RFC. | CHG | ✅ |
-| 1.3.6.2 | ↳ Tipos de cambio y requisitos | `/admin/procesos/cambios/tipos-requisitos` | Tipos, autoridad y clasificación. | CHG | ✅ |
-| 1.3.6.2.1 | ↳↳ Tipos de cambio | (pestaña) | Tipos (estándar, normal, emergencia). | CHG | ✅ |
-| 1.3.6.2.2 | ↳↳ Matriz de autoridad | (pestaña) | Quién autoriza cada tipo. | CHG, RISK | ✅ |
-| 1.3.6.2.3 | ↳↳ Modelos de cambio estándar | (pestaña) | Catálogo preautorizado. | CHG | ✅ |
-| 1.3.6.2.4 | ↳↳ Reglas de clasificación | (pestaña) | Clasificación automática del cambio. | CHG | ✅ |
-| 1.3.6.3 | ↳ Flujo de evaluación, autorización y revisión posterior | `/admin/procesos/cambios/flujo-evaluacion` | Ciclo de vida de la RFC. | CHG | ✅ |
-| 1.3.6.3.1 | ↳↳ Estados | (pestaña) | Estados del cambio. | CHG | ✅ |
-| 1.3.6.3.2 | ↳↳ Transiciones y acciones | (pestaña) | Transiciones y acciones. | CHG | ✅ |
-| 1.3.6.3.3 | ↳↳ Etapas de aprobación | (pestaña) | Etapas y quórum. | CHG | ✅ |
-| 1.3.6.3.4 | ↳↳ Comités (CAB y emergencia) | (pestaña) | CAB y ECAB. | CHG, COBIT | ✅ |
-| 1.3.6.3.5 | ↳↳ Plazos y escalamiento | (pestaña) | Plazos por etapa y escalamiento. | CHG | ✅ |
-| 1.3.6.3.6 | ↳↳ Tareas y checklists | (pestaña) | Tareas y listas de verificación. | CHG | ✅ |
-| 1.3.6.3.7 | ↳↳ Implementación y cierre | (pestaña) | Reglas de implementación y cierre. | CHG | ✅ |
-| 1.3.6.3.8 | ↳↳ Revisión post-implementación | (pestaña) | PIR. | CHG, CI | ✅ |
-| 1.3.6.4 | ↳ Notificaciones y calendario de cambios | `/admin/procesos/cambios/notificaciones-calendario` | Calendario y avisos del cambio. | CHG | ✅ |
-| 1.3.6.4.1 | ↳↳ Notificaciones | (pestaña) | Eventos y avisos del cambio. | CHG | ✅ |
-| 1.3.6.4.2 | ↳↳ Ventanas de mantenimiento | (pestaña) | Ventanas autorizadas. | CHG | ✅ |
-| 1.3.6.4.3 | ↳↳ Períodos de congelamiento | (pestaña) | Freeze periods. | CHG | ✅ |
-| 1.3.6.4.4 | ↳↳ Feriados | (pestaña) | Calendario de feriados. | CHG | ✅ |
-| 1.3.6.4.5 | ↳↳ Conflictos y capacidad | (pestaña) | Detección de conflictos. | CHG, CAP | ✅ |
-| 1.3.6.4.6 | ↳↳ Presentación del calendario | (pestaña) | Vistas del calendario. | CHG | ✅ |
+| 1.3.1 | Gestión de incidentes | `/admin/procesos/incidentes` | Carpeta del proceso de incidentes; redirige a su primer ítem. | INC | 🟢 redirige |
+| 1.3.1.1 | ↳ Configuración de formulario (incidente) | `/admin/tickets-formularios?tipo=incidente` | Campos, orden y obligatoriedad. | INC | ✅ |
+| 1.3.1.2 | ↳ Flujo de estados y acciones (incidente) | `/admin/tickets-vistas?seccion=estados&tipo=incidente` | Estados, transiciones y acciones por rol. | INC | ✅ |
+| 1.3.2 | Gestión de solicitudes | `/admin/procesos/solicitudes` | Carpeta del proceso de solicitudes; redirige a su primer ítem. | SR | 🟢 redirige |
+| 1.3.2.1 | ↳ Configuración de formulario (solicitud) | `/admin/tickets-formularios?tipo=solicitud` | Formulario de solicitud. | SR | ✅ |
+| 1.3.2.2 | ↳ Flujo de atención y aprobaciones (solicitud) | `/admin/tickets-vistas?seccion=estados&tipo=solicitud` | Estados, tareas y etapas de aprobación. | SR | ✅ |
+| 1.3.3 | Gestión de problemas | `/admin/procesos/problemas` | Configuración del proceso de problemas. | PRB | ✅ |
+| 1.3.3.1 | ↳ Configuración de formulario | `/admin/procesos/problemas/formulario` | Formulario configurable con versionado. | PRB | ✅ |
+| 1.3.3.1.1 | ↳↳ Campos | (pestaña) | Definición de secciones y campos del formulario. | PRB | ✅ |
+| 1.3.3.1.2 | ↳↳ Campos personalizados | (pestaña) | Alta de campos propios del problema (asistente). | PRB | ✅ |
+| 1.3.3.1.3 | ↳↳ Listas y catálogos | (pestaña) | Categorías, orígenes, causas raíz, códigos, métodos. | PRB | ✅ |
+| 1.3.3.1.4 | ↳↳ Matriz de prioridad | (pestaña) | Matriz impacto × urgencia propia + toggles y tooltips. | PRB, SLM | ✅ |
+| 1.3.3.1.5 | ↳↳ Plantillas de problema | (pestaña) | Plantillas reutilizables de registro. | PRB | ✅ |
+| 1.3.3.1.6 | ↳↳ Vista del ticket | (pestaña) | Cabecera y pestañas de la vista del problema. | PRB | ✅ |
+| 1.3.3.2 | ↳ Flujo de investigación y seguimiento | `/admin/procesos/problemas/flujo` | Ciclo de vida del problema. | PRB | ✅ |
+| 1.3.3.2.1 | ↳↳ Estados | (pestaña) | Estados del problema. | PRB | ✅ |
+| 1.3.3.2.2 | ↳↳ Transiciones y acciones | (pestaña) | Transiciones y acciones por rol. | PRB | ✅ |
+| 1.3.3.2.3 | ↳↳ Asignación automática | (pestaña) | Reglas de asignación. | PRB | ✅ |
+| 1.3.3.2.4 | ↳↳ Objetivos de tiempo | (pestaña) | Objetivos de investigación por prioridad. | PRB, SLM | ✅ |
+| 1.3.3.2.5 | ↳↳ Escalamiento | (pestaña) | Reglas de escalamiento. | PRB | ✅ |
+| 1.3.3.2.6 | ↳↳ Reapertura | (pestaña) | Reglas de reapertura. | PRB | ✅ |
+| 1.3.3.2.7 | ↳↳ Tareas predefinidas | (pestaña) | Paquetes de tareas. | PRB | ✅ |
+| 1.3.3.2.8 | ↳↳ Problemas mayores | (pestaña) | Criterios de problema mayor. | PRB | ✅ |
+| 1.3.3.3 | ↳ Relación con incidentes, errores conocidos y conocimiento | `/admin/procesos/problemas/relaciones` | Vínculos del problema con otros procesos. | PRB | ✅ |
+| 1.3.3.3.1 | ↳↳ Creación automática por umbral | (pestaña) | Umbrales que generan problemas. | PRB, INC | ✅ |
+| 1.3.3.3.2 | ↳↳ Incidentes vinculados | (pestaña) | Reglas de vinculación de incidentes. | PRB, INC | ✅ |
+| 1.3.3.3.3 | ↳↳ Errores conocidos (KEDB) | (pestaña) | Política de KEDB. | PRB, KM | ✅ |
+| 1.3.3.3.4 | ↳↳ Cambios (RFC) | (pestaña) | RFC derivadas del problema. | PRB, CHG | ✅ |
+| 1.3.3.3.5 | ↳↳ Conocimiento | (pestaña) | Generación de artículos desde problemas. | PRB, KM | ✅ |
+| 1.3.3.3.6 | ↳↳ CI y servicios | (pestaña) | Vínculo con CI y servicios afectados. | PRB, SCM | ✅ |
+| 1.3.4 | Gestión de cambios | `/admin/procesos/cambios` | Configuración del proceso de cambios. | CHG | ✅ |
+| 1.3.4.1 | ↳ Configuración de formulario | `/admin/procesos/cambios/formulario` | Formulario de RFC configurable. | CHG | ✅ |
+| 1.3.4.1.1 | ↳↳ Campos | (pestaña) | Secciones y campos de la RFC. | CHG | ✅ |
+| 1.3.4.1.2 | ↳↳ Campos personalizados | (pestaña) | Campos propios de la RFC. | CHG | ✅ |
+| 1.3.4.1.3 | ↳↳ Listas y catálogos | (pestaña) | Catálogos de cambio. | CHG | ✅ |
+| 1.3.4.1.4 | ↳↳ Cuestionario de riesgo | (pestaña) | Preguntas de evaluación de riesgo. | CHG, RISK | ✅ |
+| 1.3.4.1.5 | ↳↳ Prioridad (matriz compartida) | (pestaña) | Matriz impacto × urgencia compartida. | CHG, SLM | ✅ |
+| 1.3.4.1.6 | ↳↳ Plantillas de RFC | (pestaña) | Plantillas de solicitud de cambio. | CHG | ✅ |
+| 1.3.4.1.7 | ↳↳ Vista del ticket | (pestaña) | Cabecera y pestañas de la RFC. | CHG | ✅ |
+| 1.3.4.2 | ↳ Tipos de cambio y requisitos | `/admin/procesos/cambios/tipos-requisitos` | Tipos, autoridad y clasificación. | CHG | ✅ |
+| 1.3.4.2.1 | ↳↳ Tipos de cambio | (pestaña) | Tipos (estándar, normal, emergencia). | CHG | ✅ |
+| 1.3.4.2.2 | ↳↳ Matriz de autoridad | (pestaña) | Quién autoriza cada tipo. | CHG, RISK | ✅ |
+| 1.3.4.2.3 | ↳↳ Modelos de cambio estándar | (pestaña) | Catálogo preautorizado. | CHG | ✅ |
+| 1.3.4.2.4 | ↳↳ Reglas de clasificación | (pestaña) | Clasificación automática del cambio. | CHG | ✅ |
+| 1.3.4.3 | ↳ Flujo de evaluación, autorización y revisión posterior | `/admin/procesos/cambios/flujo-evaluacion` | Ciclo de vida de la RFC. | CHG | ✅ |
+| 1.3.4.3.1 | ↳↳ Estados | (pestaña) | Estados del cambio. | CHG | ✅ |
+| 1.3.4.3.2 | ↳↳ Transiciones y acciones | (pestaña) | Transiciones y acciones. | CHG | ✅ |
+| 1.3.4.3.3 | ↳↳ Etapas de aprobación | (pestaña) | Etapas y quórum. | CHG | ✅ |
+| 1.3.4.3.4 | ↳↳ Comités (CAB y emergencia) | (pestaña) | CAB y ECAB. | CHG, COBIT | ✅ |
+| 1.3.4.3.5 | ↳↳ Plazos y escalamiento | (pestaña) | Plazos por etapa y escalamiento. | CHG | ✅ |
+| 1.3.4.3.6 | ↳↳ Tareas y checklists | (pestaña) | Tareas y listas de verificación. | CHG | ✅ |
+| 1.3.4.3.7 | ↳↳ Implementación y cierre | (pestaña) | Reglas de implementación y cierre. | CHG | ✅ |
+| 1.3.4.3.8 | ↳↳ Revisión post-implementación | (pestaña) | PIR. | CHG, CI | ✅ |
+| 1.3.4.4 | ↳ Notificaciones y calendario de cambios | `/admin/procesos/cambios/notificaciones-calendario` | Calendario y avisos del cambio. | CHG | ✅ |
+| 1.3.4.4.1 | ↳↳ Notificaciones | (pestaña) | Eventos y avisos del cambio. | CHG | ✅ |
+| 1.3.4.4.2 | ↳↳ Ventanas de mantenimiento | (pestaña) | Ventanas autorizadas. | CHG | ✅ |
+| 1.3.4.4.3 | ↳↳ Períodos de congelamiento | (pestaña) | Freeze periods. | CHG | ✅ |
+| 1.3.4.4.4 | ↳↳ Feriados | (pestaña) | Calendario de feriados. | CHG | ✅ |
+| 1.3.4.4.5 | ↳↳ Conflictos y capacidad | (pestaña) | Detección de conflictos. | CHG, CAP | ✅ |
+| 1.3.4.4.6 | ↳↳ Presentación del calendario | (pestaña) | Vistas del calendario. | CHG | ✅ |
 | 1.4 | Organización y soporte | `/admin/organizacion` | Estructura organizativa y de soporte. | WTM | ✅ |
 | 1.4.1 | Departamentos empresariales | `/admin/departamentos-empresa` | Áreas de negocio y su Gestor de Área. | WTM, REL | ✅ |
 | 1.4.2 | Departamentos y grupos resolutores de TI | `/admin/departamentos` | Áreas técnicas y grupos. | WTM | ✅ |
@@ -500,7 +502,7 @@
 
 | Perfil | Nodos de menú | ✅ | 🟢 | ⬛ | ⚠️ | ❌ |
 |---|---:|---:|---:|---:|---:|---:|
-| 1 Administrador | 58 | 56 | 2 | 0 | 0 | 0 |
+| 1 Administrador | 60 | 58 | 2 | 0 | 0 | 0 |
 | 2 Técnico | 44 | 42 | 2 | 0 | 0 | 0 |
 | 3 Solicitante | 13 | 13 | 0 | 0 | 0 | 0 |
 | 4 Supervisor | 48 | 46 | 2 | 0 | 0 | 0 |
@@ -510,7 +512,7 @@
 | 8 Gestor de Cambios | 25 | 23 | 0 | 2 | 0 | 0 |
 | 9 Gestor de Activos | 31 | 29 | 0 | 2 | 0 | 0 |
 | 10 Gestor de Problemas | 16 | 16 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **305** | **295** | **6** | **4** | **0** | **0** |
+| **TOTAL** | **307** | **297** | **6** | **4** | **0** | **0** |
 
 - **0 opciones ausentes** y **0 opciones parciales** en los 10 perfiles.
 - **6 redirecciones** operativas (alias a vistas compartidas del dominio; no son stubs).
@@ -574,7 +576,7 @@
 
 ## 14. Conclusión
 
-- **Los 10 perfiles quedaron sin opciones ausentes ni parciales**: 295 nodos completos, 6 redirecciones operativas y 4 carpetas de agrupación por diseño.
+- **Los 10 perfiles quedaron sin opciones ausentes ni parciales**: 297 nodos completos, 6 redirecciones operativas y 4 carpetas de agrupación por diseño.
 - **Todas las brechas detectadas en la auditoría anterior fueron cerradas** e incluyen migraciones de BD aplicadas y verificadas.
 - La **cobertura ITIL 4 / ISO 20000 / ISO 19770 es alta**; las únicas ausencias de marco corresponden a **gobierno corporativo y finanzas**, fuera del alcance de un ITSM.
 
