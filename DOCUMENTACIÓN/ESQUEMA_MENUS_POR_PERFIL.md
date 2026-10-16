@@ -1152,7 +1152,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Pendientes por vencer, reuniones del comité y decisiones recientes.
 - Ruta: `/aprobador/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/aprobador/panel/page.tsx`, `src/app/api/aprobador/panel/route.ts`, `src/modules/cambios/services/aprobacionesService.ts`
+- Archivos existentes: `src/app/plataforma/aprobador/panel/page.tsx`, `src/app/api/aprobador/panel/route.ts`, `src/modules/aprobador/services/aprobacionesService.ts`
 
 ### 2 Aprobaciones pendientes  `NUEVO`
 - Ruta: `/aprobador/aprobaciones`
@@ -1160,19 +1160,19 @@ Pendientes por vencer, reuniones del comité y decisiones recientes.
   - Ruta: `/aprobador/cambios`
   - Función: Etapas Dirección y excepciones: aprobar, aprobar con condiciones, rechazar, pedir información o delegar.
   - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
-  - Archivos por crear: `src/app/plataforma/aprobador/cambios/page.tsx`, `src/app/api/aprobador/cambios/route.ts`
+  - Archivos existentes: `src/app/plataforma/aprobador/cambios/page.tsx`, `src/app/api/aprobador/cambios/route.ts`
 - **2.2** Aprobaciones de solicitudes de servicio — `EXISTE`
   - Ruta: `/tickets/gestion/aprobaciones`
   - Archivos existentes: `src/app/plataforma/tickets/gestion/aprobaciones/page.tsx`
 - **2.3** Modelos de cambio estándar — `NUEVO`
   - Ruta: `/aprobador/cambios/modelos`
-  - Archivos por crear: `src/app/plataforma/aprobador/cambios/modelos/page.tsx`
+  - Archivos existentes: `src/app/plataforma/aprobador/cambios/modelos/page.tsx`
 - **2.4** Bajas y renovaciones por monto — `NUEVO`
   - Ruta: `/aprobador/activos`
-  - Archivos por crear: `src/app/plataforma/aprobador/activos/page.tsx`, `src/app/api/aprobador/activos/route.ts`
+  - Archivos existentes: `src/app/plataforma/aprobador/activos/page.tsx`, `src/app/api/aprobador/activos/route.ts`
 - **2.5** Riesgo aceptado y cierre de problemas mayores — `NUEVO`
   - Ruta: `/aprobador/problemas`
-  - Archivos por crear: `src/app/plataforma/aprobador/problemas/page.tsx`, `src/app/api/aprobador/problemas/route.ts`
+  - Archivos existentes: `src/app/plataforma/aprobador/problemas/page.tsx`, `src/app/api/aprobador/problemas/route.ts`
 
 ### 3 Comité asesor de cambios (CAB)  `EXISTE`
 - Ruta: `/cambios/gestion/cab`
@@ -1182,11 +1182,11 @@ Pendientes por vencer, reuniones del comité y decisiones recientes.
   - Archivos existentes: `src/app/plataforma/cambios/gestion/cab/page.tsx`
 - **3.2** Agenda y actas — `NUEVO`
   - Ruta: `/aprobador/cab/agenda`
-  - Archivos por crear: `src/app/plataforma/aprobador/cab/agenda/page.tsx`, `src/app/api/aprobador/cab/agenda/route.ts`
+  - Archivos existentes: `src/app/plataforma/aprobador/cab/agenda/page.tsx`, `src/app/api/aprobador/cab/agenda/route.ts`
 - **3.3** Comité de emergencia (ECAB) — `NUEVO`
   - Ruta: `/aprobador/cab/emergencia`
   - Función: Decisión rápida con plazo y revisión retroactiva.
-  - Archivos por crear: `src/app/plataforma/aprobador/cab/emergencia/page.tsx`, `src/app/api/aprobador/cab/emergencia/route.ts`
+  - Archivos existentes: `src/app/plataforma/aprobador/cab/emergencia/page.tsx`, `src/app/api/aprobador/cab/emergencia/route.ts`
 
 ### 4 Calendario de cambios  `EXISTE`
 - Ruta: `/cambios/gestion/calendario`
@@ -1200,17 +1200,17 @@ Presentador con evaluación, riesgo, plan, rollback y botones de decisión.
 
 ### 6 Historial de mis decisiones  `NUEVO`
 - Ruta: `/aprobador/historial`
-- Archivos por crear: `src/app/plataforma/aprobador/historial/page.tsx`, `src/app/api/aprobador/historial/route.ts`
+- Archivos existentes: `src/app/plataforma/aprobador/historial/page.tsx`, `src/app/api/aprobador/historial/route.ts`
 
 ### 7 Delegaciones  `NUEVO`
 Delegar por ausencia a un suplente con vigencia.
 - Ruta: `/aprobador/delegaciones`
-- Archivos por crear: `src/app/plataforma/aprobador/delegaciones/page.tsx`, `src/app/api/aprobador/delegaciones/route.ts`
+- Archivos existentes: `src/app/plataforma/aprobador/delegaciones/page.tsx`, `src/app/api/aprobador/delegaciones/route.ts`
 
 ### 8 Reportes de decisiones  `NUEVO`
 Tiempo de respuesta y tasas de aprobación y rechazo.
 - Ruta: `/aprobador/reportes`
-- Archivos por crear: `src/app/plataforma/aprobador/reportes/page.tsx`
+- Archivos existentes: `src/app/plataforma/aprobador/reportes/page.tsx`
 
 ### 9 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
