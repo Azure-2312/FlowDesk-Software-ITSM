@@ -295,6 +295,10 @@ export const CAPACIDADES_POR_PERFIL: Record<number, readonly Capacidad[]> = {
     CAPACIDADES.OPERACION_VER,
     CAPACIDADES.OPERACION_EVENTOS,
     CAPACIDADES.OPERACION_RESILIENCIA,
+    // Lectura necesaria para las páginas del portal del aprobador (Fase 5).
+    CAPACIDADES.ACTIVOS_VER,
+    CAPACIDADES.LICENCIAS_VER,
+    CAPACIDADES.REPORTES_VER,
   ],
 
   // Gestor de Cambios: coordina el calendario de cambios.
