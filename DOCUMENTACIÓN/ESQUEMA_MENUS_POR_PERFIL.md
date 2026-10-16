@@ -924,7 +924,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Inicio del jefe de área (no TI).
 - Ruta: `/gestor-area/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/gestor-area/panel/page.tsx`, `src/app/api/gestor-area/panel/route.ts`, `src/modules/gestor-area/services/areaService.ts`
+- Archivos existentes: `src/app/plataforma/gestor-area/panel/page.tsx`, `src/app/api/gestor-area/panel/route.ts`, `src/modules/gestor-area/services/areaService.ts`
 - **1.1** Aprobaciones pendientes y vencidas — `NUEVO`
 - **1.2** Tickets del área por estado y SLA — `NUEVO`
 - **1.3** Cambios próximos que afectan a mi área — `NUEVO`
@@ -960,14 +960,14 @@ Inicio del jefe de área (no TI).
 - **3.2** Aprobación de negocio de cambios — `NUEVO`
   - Ruta: `/gestor-area/cambios/aprobaciones`
   - Función: Etapa Negocio de las RFC que afectan a mi departamento.
-  - Archivos por crear: `src/app/plataforma/gestor-area/cambios/aprobaciones/page.tsx`, `src/app/api/gestor-area/cambios/aprobaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-area/cambios/aprobaciones/page.tsx`, `src/app/api/gestor-area/cambios/aprobaciones/route.ts`
 - **3.3** Historial de mis decisiones — `NUEVO`
   - Ruta: `/gestor-area/aprobaciones/historial`
-  - Archivos por crear: `src/app/plataforma/gestor-area/aprobaciones/historial/page.tsx`
+  - Archivos existentes: `src/app/plataforma/gestor-area/aprobaciones/historial/page.tsx`
 - **3.4** Delegación de aprobaciones — `NUEVO`
   - Ruta: `/gestor-area/aprobaciones/delegacion`
   - Función: Delegar por ausencia a un suplente del área.
-  - Archivos por crear: `src/app/plataforma/gestor-area/aprobaciones/delegacion/page.tsx`, `src/app/api/gestor-area/aprobaciones/delegacion/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-area/aprobaciones/delegacion/page.tsx`, `src/app/api/gestor-area/aprobaciones/delegacion/route.ts`
 
 ### 4 Catálogo de servicios (consulta)  `EXISTE`
 - Ruta: `/tickets/catalogo`
@@ -980,7 +980,7 @@ Inicio del jefe de área (no TI).
   - Archivos existentes: `src/app/plataforma/cambios/gestion/calendario/page.tsx`
 - **5.2** Cambios con interrupción para mi área — `NUEVO`
   - Ruta: `/gestor-area/cambios/impacto`
-  - Archivos por crear: `src/app/plataforma/gestor-area/cambios/impacto/page.tsx`, `src/app/api/gestor-area/cambios/impacto/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-area/cambios/impacto/page.tsx`, `src/app/api/gestor-area/cambios/impacto/route.ts`
 - **5.3** Solicitar un cambio de negocio — `ADAPTAR`
   - Ruta: `/cambios/gestion/crear`
   - Función: Solo tipo Normal.
@@ -991,15 +991,15 @@ Inicio del jefe de área (no TI).
 - **6.1** Activos de mi área — `NUEVO`
   - Ruta: `/gestor-area/activos`
   - Función: Lectura de activos por colaborador, sin datos financieros sensibles.
-  - Archivos por crear: `src/app/plataforma/gestor-area/activos/page.tsx`, `src/app/api/gestor-area/activos/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-area/activos/page.tsx`, `src/app/api/gestor-area/activos/route.ts`
 - **6.2** Licencias y contratos de mi departamento — `NUEVO`
   - Ruta: `/gestor-area/contratos`
-  - Archivos por crear: `src/app/plataforma/gestor-area/contratos/page.tsx`, `src/app/api/gestor-area/contratos/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-area/contratos/page.tsx`, `src/app/api/gestor-area/contratos/route.ts`
 
 ### 7 Reportes del área  `NUEVO`
 Tickets por servicio, SLA percibido, satisfacción y costo referencial consumido.
 - Ruta: `/gestor-area/reportes`
-- Archivos por crear: `src/app/plataforma/gestor-area/reportes/page.tsx`, `src/app/api/gestor-area/reportes/route.ts`
+- Archivos existentes: `src/app/plataforma/gestor-area/reportes/page.tsx`, `src/app/api/gestor-area/reportes/route.ts`
 
 ### 8 Gestión de Conocimiento  `NUEVO`
 - Ruta: `/conocimiento`
