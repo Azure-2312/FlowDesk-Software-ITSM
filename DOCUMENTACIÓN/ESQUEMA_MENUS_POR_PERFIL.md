@@ -1239,7 +1239,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y PIR vencidas.
 - Ruta: `/gestor-cambios/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos por crear: `src/app/plataforma/gestor-cambios/panel/page.tsx`, `src/app/api/gestor-cambios/panel/route.ts`, `src/modules/cambios/services/cambiosService.ts`
+- Archivos existentes: `src/app/plataforma/gestor-cambios/panel/page.tsx`, `src/app/api/gestor-cambios/panel/route.ts`, `src/modules/gestor-cambios/services/cambiosGestionService.ts`
 
 ### 2 Solicitudes de cambio (RFC)  `EXISTE`
 - Ruta: `/cambios/gestion`
@@ -1251,7 +1251,7 @@ Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y
 - **2.2** Bandeja de RFC por evaluar — `NUEVO`
   - Ruta: `/gestor-cambios/evaluacion`
   - Función: Asignar evaluador, calcular riesgo, revisar conflictos y enviar a autorización.
-  - Archivos por crear: `src/app/plataforma/gestor-cambios/evaluacion/page.tsx`, `src/app/api/gestor-cambios/evaluacion/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-cambios/evaluacion/page.tsx`, `src/app/api/gestor-cambios/evaluacion/route.ts`
 - **2.3** Historial consolidado — `EXISTE`
   - Ruta: `/cambios/gestion/todos`
   - Archivos existentes: `src/app/plataforma/cambios/gestion/todos/page.tsx`
@@ -1266,10 +1266,10 @@ Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y
 - **3.1** Seguimiento de etapas de aprobación — `NUEVO`
   - Ruta: `/gestor-cambios/autorizaciones`
   - Función: Etapas pendientes, plazos, recordatorios y escalamiento.
-  - Archivos por crear: `src/app/plataforma/gestor-cambios/autorizaciones/page.tsx`, `src/app/api/gestor-cambios/autorizaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-cambios/autorizaciones/page.tsx`, `src/app/api/gestor-cambios/autorizaciones/route.ts`
 - **3.2** Reclasificación y excepciones — `NUEVO`
   - Función: Reclasificar el tipo, conceder excepción de conflicto o de congelamiento con motivo.
-  - Archivos por crear: `src/app/api/gestor-cambios/excepciones/route.ts`
+  - Archivos existentes: `src/app/api/gestor-cambios/excepciones/route.ts`
 
 ### 4 Programación e implementación  `NUEVO`
 - Ruta: `/gestor-cambios/programacion`
@@ -1278,15 +1278,15 @@ Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y
   - Archivos existentes: `src/app/plataforma/cambios/gestion/calendario/page.tsx`
 - **4.2** Programación de cambios autorizados — `NUEVO`
   - Ruta: `/gestor-cambios/programacion`
-  - Archivos por crear: `src/app/plataforma/gestor-cambios/programacion/page.tsx`, `src/app/api/gestor-cambios/programacion/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-cambios/programacion/page.tsx`, `src/app/api/gestor-cambios/programacion/route.ts`
 - **4.3** Conflictos y capacidad — `NUEVO`
   - Ruta: `/gestor-cambios/conflictos`
   - Función: Solapamientos, congelamientos, feriados y máximos simultáneos.
-  - Archivos por crear: `src/app/plataforma/gestor-cambios/conflictos/page.tsx`, `src/app/api/gestor-cambios/conflictos/route.ts`, `src/modules/cambios/services/conflictosService.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-cambios/conflictos/page.tsx`, `src/app/api/gestor-cambios/conflictos/route.ts`, `src/modules/gestor-cambios/services/conflictosService.ts`
 - **4.4** Seguimiento de ejecución — `NUEVO`
   - Ruta: `/gestor-cambios/ejecucion`
   - Función: Tablero en vivo de cambios en ejecución, extensiones de ventana y rollbacks.
-  - Archivos por crear: `src/app/plataforma/gestor-cambios/ejecucion/page.tsx`, `src/app/api/gestor-cambios/ejecucion/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-cambios/ejecucion/page.tsx`, `src/app/api/gestor-cambios/ejecucion/route.ts`
 
 ### 5 Comité asesor de cambios (CAB)  `EXISTE`
 - Ruta: `/cambios/gestion/cab`
@@ -1296,17 +1296,17 @@ Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y
 - **5.2** Convocatoria, agenda y actas — `NUEVO`
   - Ruta: `/gestor-cambios/cab/agenda`
   - Función: Genera agenda con corte, convoca reuniones extraordinarias y emite el acta.
-  - Archivos por crear: `src/app/plataforma/gestor-cambios/cab/agenda/page.tsx`, `src/app/api/gestor-cambios/cab/agenda/route.ts`
+  - Archivos existentes: `src/app/plataforma/gestor-cambios/cab/agenda/page.tsx`, `src/app/api/gestor-cambios/cab/agenda/route.ts`
 
 ### 6 Revisión post-implementación  `NUEVO`
 PIR pendientes y vencidas; incidentes causados; lecciones aprendidas.
 - Ruta: `/gestor-cambios/pir`
-- Archivos por crear: `src/app/plataforma/gestor-cambios/pir/page.tsx`, `src/app/api/gestor-cambios/pir/route.ts`
+- Archivos existentes: `src/app/plataforma/gestor-cambios/pir/page.tsx`, `src/app/api/gestor-cambios/pir/route.ts`
 
 ### 7 Modelos de cambio estándar  `NUEVO`
 Consulta y propuesta de modelos, métricas de éxito y suspensiones.
 - Ruta: `/gestor-cambios/modelos`
-- Archivos por crear: `src/app/plataforma/gestor-cambios/modelos/page.tsx`, `src/app/api/gestor-cambios/modelos/route.ts`
+- Archivos existentes: `src/app/plataforma/gestor-cambios/modelos/page.tsx`, `src/app/api/gestor-cambios/modelos/route.ts`
 
 ### 8 Reglas de calendario  `ADAPTAR`
 - Ruta: `/gestor-cambios/calendario-reglas`
@@ -1324,7 +1324,7 @@ Consulta y propuesta de modelos, métricas de éxito y suspensiones.
 ### 9 Reportes de cambios  `NUEVO`
 Tasa de éxito, emergencias, tiempos de ciclo, incidentes causados y cumplimiento de ventana.
 - Ruta: `/gestor-cambios/reportes`
-- Archivos por crear: `src/app/plataforma/gestor-cambios/reportes/page.tsx`, `src/app/api/gestor-cambios/reportes/route.ts`
+- Archivos existentes: `src/app/plataforma/gestor-cambios/reportes/page.tsx`, `src/app/api/gestor-cambios/reportes/route.ts`
 
 ### 10 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
