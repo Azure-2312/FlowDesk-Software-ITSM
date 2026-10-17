@@ -32,6 +32,7 @@ const nextConfig = {
   async rewrites() {
     return [
       { source: "/dashboard", destination: "/plataforma/dashboard" },
+      { source: "/reportes", destination: "/plataforma/reportes" },
       { source: "/admin/:path*", destination: "/plataforma/admin/:path*" },
       { source: "/tickets/:path*", destination: "/plataforma/tickets/:path*" },
       { source: "/incidentes/:path*", destination: "/plataforma/incidentes/:path*" },
