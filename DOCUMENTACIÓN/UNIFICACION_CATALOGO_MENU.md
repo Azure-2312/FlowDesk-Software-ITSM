@@ -381,6 +381,23 @@ iban a `/admin/usuarios` y `/tickets`).
 Tambien se renombro `Configuración › Cambios › Notificaciones y calendario de
 cambios` a **Notificaciones de cambios**.
 
+### 6.2 Nombres repetidos dentro de la misma carpeta
+
+Quedaban dos pares de pantallas con el mismo nombre bajo la misma carpeta. En
+ambos casos son componentes distintos (datos y permisos distintos), asi que se
+les dio un nombre descriptivo en vez de un sufijo de rol:
+
+| Carpeta | Antes | Despues | Perfil |
+| :--- | :--- | :--- | ---: |
+| Aprobaciones | Historial de mis decisiones | Historial de aprobaciones de mi área | 5 |
+| Aprobaciones | Historial de mis decisiones | Historial de aprobaciones y dictámenes | 7 |
+| Bajas y disposición | Bajas y disposición | Consulta de bajas | 6 |
+| Bajas y disposición | Bajas y disposición | Gestión de bajas | 9 |
+
+Se actualizaron tambien los `<h1>` de las cuatro vistas para que coincidan con
+la entrada del menu. Verificado: 0 nombres repetidos dentro de una misma
+carpeta.
+
 Archivos tocados: la migracion, `db/seed.sql` (bloque de menu reescrito con el
 catalogo unico) y `db/schema.sql` (las 6 columnas de menu que solo existian en
 migraciones: `permiso_requerido`, `modulo_requerido`, `condicion_nivel`,

@@ -44,7 +44,7 @@ export default function VistaBajasDisposicion() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Bajas y disposición</h1>
+        <h1>Consulta de bajas</h1>
         <p>Actas de baja, sustento de la inactivación y consistencia con la CMDB (solo lectura).</p>
       </div>
 

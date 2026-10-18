@@ -49,7 +49,7 @@ export default function VistaHistorialAprobador() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Historial de mis decisiones</h1>
+        <h1>Historial de aprobaciones y dictámenes</h1>
         <p>RFC, dictámenes del ECAB, aprobaciones por monto y cierres de problemas.</p>
       </div>
 
