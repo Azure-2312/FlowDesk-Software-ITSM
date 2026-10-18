@@ -40,7 +40,7 @@ export default function PaginaOpcionesMenu() {
     try {
       const [respMenu, respPerfiles] = await Promise.all([
         fetch("/api/menu/admin").then((r) => r.json()),
-        fetch("/api/perfiles").then((r) => r.json()),
+        fetch("/api/identidades/perfiles").then((r) => r.json()),
       ]);
 
       setOpciones(respMenu.opciones ?? []);

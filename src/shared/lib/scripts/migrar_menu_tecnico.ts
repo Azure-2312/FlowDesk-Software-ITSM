@@ -84,60 +84,60 @@ async function migrar() {
     console.log("4. Insertando árbol M1..M8 en opciones_menu...");
     const opcionesTecnico = [
       // M1 Mi trabajo
-      { id: 2000, padre: null, orden: 1, nivel: 1, nombre: "Mi trabajo", url: "/tecnico/panel", desc: "Panel personal, tareas, agenda y desempeño", bloqueado: true, abierto: true },
-      { id: 2001, padre: 2000, orden: 1, nivel: 2, nombre: "Panel del técnico", url: "/tecnico/panel", desc: "Página de inicio y resumen operativo de turno", bloqueado: true, contador: null },
-      { id: 2002, padre: 2000, orden: 2, nivel: 2, nombre: "Mis tareas", url: "/tecnico/tareas", desc: "Tareas pendientes de tickets, cambios y activos", bloqueado: false, contador: "mis_tareas" },
-      { id: 2003, padre: 2000, orden: 3, nivel: 2, nombre: "Mi agenda y disponibilidad", url: "/tecnico/agenda", desc: "Calendario de actividades y gestión de disponibilidad", bloqueado: false, contador: null },
-      { id: 2004, padre: 2000, orden: 4, nivel: 2, nombre: "Mi desempeño", url: "/tecnico/desempeno", desc: "Indicadores personales y del grupo", bloqueado: false, contador: null },
+      { id: 2000, padre: null, orden: 1, nivel: 1, nombre: "Mi trabajo", url: "/plataforma/perfiles/tecnico/panel", desc: "Panel personal, tareas, agenda y desempeño", bloqueado: true, abierto: true },
+      { id: 2001, padre: 2000, orden: 1, nivel: 2, nombre: "Panel del técnico", url: "/plataforma/perfiles/tecnico/panel", desc: "Página de inicio y resumen operativo de turno", bloqueado: true, contador: null },
+      { id: 2002, padre: 2000, orden: 2, nivel: 2, nombre: "Mis tareas", url: "/plataforma/perfiles/tecnico/tareas", desc: "Tareas pendientes de tickets, cambios y activos", bloqueado: false, contador: "mis_tareas" },
+      { id: 2003, padre: 2000, orden: 3, nivel: 2, nombre: "Mi agenda y disponibilidad", url: "/plataforma/perfiles/tecnico/agenda", desc: "Calendario de actividades y gestión de disponibilidad", bloqueado: false, contador: null },
+      { id: 2004, padre: 2000, orden: 4, nivel: 2, nombre: "Mi desempeño", url: "/plataforma/perfiles/tecnico/desempeno", desc: "Indicadores personales y del grupo", bloqueado: false, contador: null },
 
       // M2 Mesa de Servicio
-      { id: 2100, padre: null, orden: 2, nivel: 1, nombre: "Mesa de Servicio", url: "/tecnico/mesa/asignados", desc: "Gestión de incidentes y solicitudes de servicio", bloqueado: true, abierto: true },
-      { id: 2101, padre: 2100, orden: 1, nivel: 2, nombre: "Mis tickets asignados", url: "/tecnico/mesa/asignados", desc: "Tickets abiertos asignados a mí", bloqueado: true, contador: "mis_asignados" },
-      { id: 2102, padre: 2100, orden: 2, nivel: 2, nombre: "Bandeja de pendientes", url: "/tecnico/mesa/pendientes", desc: "Cola de tickets sin asignar de mis grupos", bloqueado: true, contador: "pendientes_grupo" },
-      { id: 2103, padre: 2100, orden: 3, nivel: 2, nombre: "Tickets de mi área técnica", url: "/tecnico/mesa/area", desc: "Visibilidad integral de tickets del área", bloqueado: false, contador: null },
-      { id: 2104, padre: 2100, orden: 4, nivel: 2, nombre: "Registrar ticket para un usuario", url: "/tecnico/mesa/registrar", desc: "Creación de ticket en nombre del solicitante", bloqueado: false, contador: null },
-      { id: 2105, padre: 2100, orden: 5, nivel: 2, nombre: "Búsqueda avanzada", url: "/tecnico/mesa/buscar", desc: "Búsqueda combinada multifiltro", bloqueado: false, contador: null },
-      { id: 2106, padre: 2100, orden: 6, nivel: 2, nombre: "Historial de resueltos", url: "/tecnico/mesa/historial", desc: "Tickets resueltos y cerrados", bloqueado: false, contador: null },
+      { id: 2100, padre: null, orden: 2, nivel: 1, nombre: "Mesa de Servicio", url: "/plataforma/perfiles/tecnico/mesa/asignados", desc: "Gestión de incidentes y solicitudes de servicio", bloqueado: true, abierto: true },
+      { id: 2101, padre: 2100, orden: 1, nivel: 2, nombre: "Mis tickets asignados", url: "/plataforma/perfiles/tecnico/mesa/asignados", desc: "Tickets abiertos asignados a mí", bloqueado: true, contador: "mis_asignados" },
+      { id: 2102, padre: 2100, orden: 2, nivel: 2, nombre: "Bandeja de pendientes", url: "/plataforma/perfiles/tecnico/mesa/pendientes", desc: "Cola de tickets sin asignar de mis grupos", bloqueado: true, contador: "pendientes_grupo" },
+      { id: 2103, padre: 2100, orden: 3, nivel: 2, nombre: "Tickets de mi área técnica", url: "/plataforma/perfiles/tecnico/mesa/area", desc: "Visibilidad integral de tickets del área", bloqueado: false, contador: null },
+      { id: 2104, padre: 2100, orden: 4, nivel: 2, nombre: "Registrar ticket para un usuario", url: "/plataforma/perfiles/tecnico/mesa/registrar", desc: "Creación de ticket en nombre del solicitante", bloqueado: false, contador: null },
+      { id: 2105, padre: 2100, orden: 5, nivel: 2, nombre: "Búsqueda avanzada", url: "/plataforma/perfiles/tecnico/mesa/buscar", desc: "Búsqueda combinada multifiltro", bloqueado: false, contador: null },
+      { id: 2106, padre: 2100, orden: 6, nivel: 2, nombre: "Historial de resueltos", url: "/plataforma/perfiles/tecnico/mesa/historial", desc: "Tickets resueltos y cerrados", bloqueado: false, contador: null },
 
       // M3 Seguimiento de SLA
-      { id: 2200, padre: null, orden: 3, nivel: 1, nombre: "Seguimiento de SLA", url: "/tecnico/sla/semaforo", desc: "Control de compromisos de tiempo y semáforos", bloqueado: false, abierto: false },
-      { id: 2201, padre: 2200, orden: 1, nivel: 2, nombre: "Semáforo de SLA de mi cola", url: "/tecnico/sla/semaforo", desc: "Tablero de riesgo y vencimientos en tiempo real", bloqueado: false, contador: "sla_riesgo" },
-      { id: 2202, padre: 2200, orden: 2, nivel: 2, nombre: "Objetivos de tiempo vigentes", url: "/tecnico/sla/objetivos", desc: "Matriz de tiempos institucionales y calculadora", bloqueado: false, contador: null },
+      { id: 2200, padre: null, orden: 3, nivel: 1, nombre: "Seguimiento de SLA", url: "/plataforma/perfiles/tecnico/sla/semaforo", desc: "Control de compromisos de tiempo y semáforos", bloqueado: false, abierto: false },
+      { id: 2201, padre: 2200, orden: 1, nivel: 2, nombre: "Semáforo de SLA de mi cola", url: "/plataforma/perfiles/tecnico/sla/semaforo", desc: "Tablero de riesgo y vencimientos en tiempo real", bloqueado: false, contador: "sla_riesgo" },
+      { id: 2202, padre: 2200, orden: 2, nivel: 2, nombre: "Objetivos de tiempo vigentes", url: "/plataforma/perfiles/tecnico/sla/objetivos", desc: "Matriz de tiempos institucionales y calculadora", bloqueado: false, contador: null },
 
       // M4 Gestión de Problemas
-      { id: 2300, padre: null, orden: 4, nivel: 1, nombre: "Gestión de Problemas", url: "/tecnico/problemas/asignados", desc: "Investigación de causa raíz y errores conocidos", bloqueado: false, abierto: false },
-      { id: 2301, padre: 2300, orden: 1, nivel: 2, nombre: "Problemas asignados a mí", url: "/tecnico/problemas/asignados", desc: "Problemas bajo mi investigación", bloqueado: false, contador: "mis_problemas" },
-      { id: 2302, padre: 2300, orden: 2, nivel: 2, nombre: "Problemas de mi grupo", url: "/tecnico/problemas/grupo", desc: "Problemas asignados a mi grupo de soporte", bloqueado: false, contador: null },
-      { id: 2303, padre: 2300, orden: 3, nivel: 2, nombre: "Registrar problema", url: "/tecnico/problemas/nuevo", desc: "Formulario de nuevo problema", bloqueado: false, contador: null },
-      { id: 2304, padre: 2300, orden: 4, nivel: 2, nombre: "Candidatos a problema", url: "/tecnico/problemas/candidatos", desc: "Incidentes recurrentes sugeridos para análisis", bloqueado: false, contador: "candidatos_problema" },
-      { id: 2305, padre: 2300, orden: 5, nivel: 2, nombre: "Errores conocidos (KEDB)", url: "/tecnico/problemas/errores-conocidos", desc: "Base de soluciones temporales documentadas", bloqueado: false, contador: null },
+      { id: 2300, padre: null, orden: 4, nivel: 1, nombre: "Gestión de Problemas", url: "/plataforma/perfiles/tecnico/problemas/asignados", desc: "Investigación de causa raíz y errores conocidos", bloqueado: false, abierto: false },
+      { id: 2301, padre: 2300, orden: 1, nivel: 2, nombre: "Problemas asignados a mí", url: "/plataforma/perfiles/tecnico/problemas/asignados", desc: "Problemas bajo mi investigación", bloqueado: false, contador: "mis_problemas" },
+      { id: 2302, padre: 2300, orden: 2, nivel: 2, nombre: "Problemas de mi grupo", url: "/plataforma/perfiles/tecnico/problemas/grupo", desc: "Problemas asignados a mi grupo de soporte", bloqueado: false, contador: null },
+      { id: 2303, padre: 2300, orden: 3, nivel: 2, nombre: "Registrar problema", url: "/plataforma/perfiles/tecnico/problemas/nuevo", desc: "Formulario de nuevo problema", bloqueado: false, contador: null },
+      { id: 2304, padre: 2300, orden: 4, nivel: 2, nombre: "Candidatos a problema", url: "/plataforma/perfiles/tecnico/problemas/candidatos", desc: "Incidentes recurrentes sugeridos para análisis", bloqueado: false, contador: "candidatos_problema" },
+      { id: 2305, padre: 2300, orden: 5, nivel: 2, nombre: "Errores conocidos (KEDB)", url: "/plataforma/perfiles/tecnico/problemas/errores-conocidos", desc: "Base de soluciones temporales documentadas", bloqueado: false, contador: null },
 
       // M5 Gestión de Cambios
-      { id: 2400, padre: null, orden: 5, nivel: 1, nombre: "Gestión de Cambios", url: "/tecnico/cambios/mis-cambios", desc: "RFC, calendario y consola de implementación", bloqueado: false, abierto: false },
-      { id: 2401, padre: 2400, orden: 1, nivel: 2, nombre: "Mis cambios", url: "/tecnico/cambios/mis-cambios", desc: "RFC solicitadas o donde participo", bloqueado: false, contador: "mis_cambios" },
-      { id: 2402, padre: 2400, orden: 2, nivel: 2, nombre: "Registrar solicitud RFC", url: "/tecnico/cambios/nuevo", desc: "Formulario para nueva solicitud de cambio", bloqueado: false, contador: null },
-      { id: 2403, padre: 2400, orden: 3, nivel: 2, nombre: "Cambios por implementar", url: "/tecnico/cambios/implementacion", desc: "Consola de ejecución de RFC y rollback", bloqueado: false, contador: "cambios_implementar" },
-      { id: 2404, padre: 2400, orden: 4, nivel: 2, nombre: "Calendario de cambios", url: "/tecnico/cambios/calendario", desc: "Ventanas de mantenimiento y congelamientos", bloqueado: false, contador: null },
-      { id: 2405, padre: 2400, orden: 5, nivel: 2, nombre: "Cambios que afectan mis servicios", url: "/tecnico/cambios/impacto", desc: "RFC programadas con posible impacto operativo", bloqueado: false, contador: "cambios_afectan" },
-      { id: 2406, padre: 2400, orden: 6, nivel: 2, nombre: "Historial de cambios", url: "/tecnico/cambios/historial", desc: "Auditoría de cambios ejecutados en servicios y CI", bloqueado: false, contador: null },
+      { id: 2400, padre: null, orden: 5, nivel: 1, nombre: "Gestión de Cambios", url: "/plataforma/perfiles/tecnico/cambios/mis-cambios", desc: "RFC, calendario y consola de implementación", bloqueado: false, abierto: false },
+      { id: 2401, padre: 2400, orden: 1, nivel: 2, nombre: "Mis cambios", url: "/plataforma/perfiles/tecnico/cambios/mis-cambios", desc: "RFC solicitadas o donde participo", bloqueado: false, contador: "mis_cambios" },
+      { id: 2402, padre: 2400, orden: 2, nivel: 2, nombre: "Registrar solicitud RFC", url: "/plataforma/perfiles/tecnico/cambios/nuevo", desc: "Formulario para nueva solicitud de cambio", bloqueado: false, contador: null },
+      { id: 2403, padre: 2400, orden: 3, nivel: 2, nombre: "Cambios por implementar", url: "/plataforma/perfiles/tecnico/cambios/implementacion", desc: "Consola de ejecución de RFC y rollback", bloqueado: false, contador: "cambios_implementar" },
+      { id: 2404, padre: 2400, orden: 4, nivel: 2, nombre: "Calendario de cambios", url: "/plataforma/perfiles/tecnico/cambios/calendario", desc: "Ventanas de mantenimiento y congelamientos", bloqueado: false, contador: null },
+      { id: 2405, padre: 2400, orden: 5, nivel: 2, nombre: "Cambios que afectan mis servicios", url: "/plataforma/perfiles/tecnico/cambios/impacto", desc: "RFC programadas con posible impacto operativo", bloqueado: false, contador: "cambios_afectan" },
+      { id: 2406, padre: 2400, orden: 6, nivel: 2, nombre: "Historial de cambios", url: "/plataforma/perfiles/tecnico/cambios/historial", desc: "Auditoría de cambios ejecutados en servicios y CI", bloqueado: false, contador: null },
 
       // M6 Activos y CMDB
-      { id: 2500, padre: null, orden: 6, nivel: 1, nombre: "Activos y CMDB", url: "/tecnico/activos/inventario", desc: "Inventario técnico, topología y mantenimiento", bloqueado: false, abierto: false },
-      { id: 2501, padre: 2500, orden: 1, nivel: 2, nombre: "Inventario de activos", url: "/tecnico/activos/inventario", desc: "Consulta y edición técnica de ítems", bloqueado: false, contador: null },
-      { id: 2502, padre: 2500, orden: 2, nivel: 2, nombre: "Mapa de topología CMDB", url: "/tecnico/activos/mapa", desc: "Visualización de dependencias e impacto", bloqueado: false, contador: null },
-      { id: 2503, padre: 2500, orden: 3, nivel: 2, nombre: "Mantenimiento y reparaciones", url: "/tecnico/activos/mantenimiento", desc: "Planes preventivos y equipos en taller", bloqueado: false, contador: "mantenimientos" },
-      { id: 2504, padre: 2500, orden: 4, nivel: 2, nombre: "Inventario físico en campo", url: "/tecnico/activos/conteos", desc: "Módulo mobile-first para auditoría y escaneo", bloqueado: false, contador: "conteos" },
-      { id: 2505, padre: 2500, orden: 5, nivel: 2, nombre: "Licencias de software (consulta)", url: "/tecnico/activos/licencias", desc: "Consulta de disponibilidad de licencias", bloqueado: false, contador: null },
+      { id: 2500, padre: null, orden: 6, nivel: 1, nombre: "Activos y CMDB", url: "/plataforma/perfiles/tecnico/activos/inventario", desc: "Inventario técnico, topología y mantenimiento", bloqueado: false, abierto: false },
+      { id: 2501, padre: 2500, orden: 1, nivel: 2, nombre: "Inventario de activos", url: "/plataforma/perfiles/tecnico/activos/inventario", desc: "Consulta y edición técnica de ítems", bloqueado: false, contador: null },
+      { id: 2502, padre: 2500, orden: 2, nivel: 2, nombre: "Mapa de topología CMDB", url: "/plataforma/perfiles/tecnico/activos/mapa", desc: "Visualización de dependencias e impacto", bloqueado: false, contador: null },
+      { id: 2503, padre: 2500, orden: 3, nivel: 2, nombre: "Mantenimiento y reparaciones", url: "/plataforma/perfiles/tecnico/activos/mantenimiento", desc: "Planes preventivos y equipos en taller", bloqueado: false, contador: "mantenimientos" },
+      { id: 2504, padre: 2500, orden: 4, nivel: 2, nombre: "Inventario físico en campo", url: "/plataforma/perfiles/tecnico/activos/conteos", desc: "Módulo mobile-first para auditoría y escaneo", bloqueado: false, contador: "conteos" },
+      { id: 2505, padre: 2500, orden: 5, nivel: 2, nombre: "Licencias de software (consulta)", url: "/plataforma/perfiles/tecnico/activos/licencias", desc: "Consulta de disponibilidad de licencias", bloqueado: false, contador: null },
 
       // M7 Gestión del Conocimiento
-      { id: 2600, padre: null, orden: 7, nivel: 1, nombre: "Gestión del Conocimiento", url: "/tecnico/conocimiento/base", desc: "Base de conocimiento, artículos y revisiones", bloqueado: false, abierto: false },
-      { id: 2601, padre: 2600, orden: 1, nivel: 2, nombre: "Base de conocimiento", url: "/tecnico/conocimiento/base", desc: "Búsqueda y consulta de artículos técnicos", bloqueado: true, contador: null },
-      { id: 2602, padre: 2600, orden: 2, nivel: 2, nombre: "Mis artículos", url: "/tecnico/conocimiento/mis-articulos", desc: "Artículos redactados por el técnico", bloqueado: false, contador: "mis_articulos" },
-      { id: 2603, padre: 2600, orden: 3, nivel: 2, nombre: "Crear artículo", url: "/tecnico/conocimiento/nuevo", desc: "Redactor de nuevo artículo de conocimiento", bloqueado: false, contador: null },
-      { id: 2604, padre: 2600, orden: 4, nivel: 2, nombre: "Revisiones pendientes", url: "/tecnico/conocimiento/revisiones", desc: "Artículos asignados para aprobación técnica", bloqueado: false, contador: "revisiones_articulos" },
+      { id: 2600, padre: null, orden: 7, nivel: 1, nombre: "Gestión del Conocimiento", url: "/plataforma/perfiles/tecnico/conocimiento/base", desc: "Base de conocimiento, artículos y revisiones", bloqueado: false, abierto: false },
+      { id: 2601, padre: 2600, orden: 1, nivel: 2, nombre: "Base de conocimiento", url: "/plataforma/perfiles/tecnico/conocimiento/base", desc: "Búsqueda y consulta de artículos técnicos", bloqueado: true, contador: null },
+      { id: 2602, padre: 2600, orden: 2, nivel: 2, nombre: "Mis artículos", url: "/plataforma/perfiles/tecnico/conocimiento/mis-articulos", desc: "Artículos redactados por el técnico", bloqueado: false, contador: "mis_articulos" },
+      { id: 2603, padre: 2600, orden: 3, nivel: 2, nombre: "Crear artículo", url: "/plataforma/perfiles/tecnico/conocimiento/nuevo", desc: "Redactor de nuevo artículo de conocimiento", bloqueado: false, contador: null },
+      { id: 2604, padre: 2600, orden: 4, nivel: 2, nombre: "Revisiones pendientes", url: "/plataforma/perfiles/tecnico/conocimiento/revisiones", desc: "Artículos asignados para aprobación técnica", bloqueado: false, contador: "revisiones_articulos" },
 
       // M8 Catálogo de servicios (consulta)
-      { id: 2700, padre: null, orden: 8, nivel: 1, nombre: "Catálogo de servicios (consulta)", url: "/tecnico/catalogo", desc: "Consulta de servicios y SLAs comprometidos", bloqueado: false, abierto: false },
+      { id: 2700, padre: null, orden: 8, nivel: 1, nombre: "Catálogo de servicios (consulta)", url: "/plataforma/perfiles/tecnico/catalogo", desc: "Consulta de servicios y SLAs comprometidos", bloqueado: false, abierto: false },
     ];
 
     for (const op of opcionesTecnico) {

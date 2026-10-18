@@ -46,7 +46,7 @@ export default function PaginaMisTareas() {
         descripcion: r.descripcion,
         origenTipo: "Recordatorio",
         origenCodigo: `REC-${r.id_recordatorio}`,
-        origenUrl: "/tecnico/agenda",
+        origenUrl: "/plataforma/perfiles/tecnico/agenda",
         fechaVencimiento: r.fecha_hora,
         completada: r.completado,
         esPersonal: true,

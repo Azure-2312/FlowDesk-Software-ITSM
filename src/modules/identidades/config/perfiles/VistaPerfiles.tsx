@@ -33,7 +33,7 @@ export default function PaginaPerfiles() {
     setCargando(true);
     try {
       const [respPerfiles, respMenu] = await Promise.all([
-        fetch("/api/perfiles?todos=true").then((r) => r.json()),
+        fetch("/api/identidades/perfiles?todos=true").then((r) => r.json()),
         fetch("/api/menu/admin").then((r) => r.json()),
       ]);
 
@@ -208,7 +208,7 @@ export default function PaginaPerfiles() {
     setGuardando(true);
 
     const esEdicion = formulario.id_perfil !== null;
-    const url = esEdicion ? `/api/perfiles/${formulario.id_perfil}` : "/api/perfiles";
+    const url = esEdicion ? `/api/identidades/perfiles/${formulario.id_perfil}` : "/api/identidades/perfiles";
     const metodo = esEdicion ? "PUT" : "POST";
 
     try {
@@ -240,7 +240,7 @@ export default function PaginaPerfiles() {
     if (!confirm(`¿Seguro que deseas ${accion} el perfil "${perfil.nombre}"?`)) return;
 
     try {
-      const res = await fetch(`/api/perfiles/${perfil.id_perfil}`, { method: "DELETE" });
+      const res = await fetch(`/api/identidades/perfiles/${perfil.id_perfil}`, { method: "DELETE" });
       const datos = await res.json();
 
       if (!res.ok) {
