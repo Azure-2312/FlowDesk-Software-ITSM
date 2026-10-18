@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import { NextRequest, NextResponse } from "next/server";
-import { GET as listarTickets, POST as registrarTicket } from "@/modules/tickets/api/ticketsController";
+import { ticketsGet as listarTickets, ticketsPost as registrarTicket } from "@/modules/tickets";
 import { obtenerIdTipoTicketPorCodigo } from "@/modules/solicitudes/solicitudesService";
 
 export async function GET(req: NextRequest) {

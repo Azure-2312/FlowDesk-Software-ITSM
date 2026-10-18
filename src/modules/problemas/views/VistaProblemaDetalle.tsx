@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Ticket, SesionUsuario, Problema, ErrorConocido } from "@/types";
-import PresentadorProblemaGestor from "@/modules/tickets/presentadores/PresentadorProblemaGestor";
+import { PresentadorProblemaGestor } from "@/modules/tickets/ui";
 
 type ProblemaDetalle = Problema & { errores_conocidos?: ErrorConocido[] };
 

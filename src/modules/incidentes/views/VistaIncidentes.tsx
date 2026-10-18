@@ -1,6 +1,6 @@
 "use client";
 
-import TablaTickets from "@/modules/tickets/components/TablaTickets";
+import { TablaTickets } from "@/modules/tickets/ui";
 
 export default function VistaIncidentes() {
   return (
