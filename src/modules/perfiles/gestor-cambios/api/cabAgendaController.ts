@@ -7,7 +7,7 @@ import {
   listarCambiosParaAgenda,
   crearReunion,
   actualizarReunion,
-} from "@/modules/perfiles/gestor-cambios/services/cabGestionService";
+} from "@/modules/cambios";
 
 export const dynamic = "force-dynamic";
 
