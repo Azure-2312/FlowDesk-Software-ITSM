@@ -158,3 +158,10 @@ export {
   listarEmergencias,
   resolverEmergencia,
 } from "./services/ecabService";
+
+// --- Acciones del Supervisor (perfil 4) sobre cambios, movidas desde
+// src/modules/perfiles/supervisor para que el rol solo conserve su UI. ---
+export {
+  resolverAprobacionTecnica,
+  reprogramarCambio,
+} from "./services/supervisionCambiosService";

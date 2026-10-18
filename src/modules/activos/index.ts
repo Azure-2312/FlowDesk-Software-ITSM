@@ -52,3 +52,7 @@ export {
   listarRenovaciones,
   resolverRenovacion,
 } from "./services/aprobacionesMontoService";
+
+// --- Resolución de bajas por el Supervisor (perfil 4), movida desde
+// src/modules/perfiles/supervisor para que el rol solo conserve su UI. ---
+export { resolverBajaArea } from "./services/supervisionBajasService";
