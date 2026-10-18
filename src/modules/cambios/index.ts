@@ -165,3 +165,7 @@ export {
   resolverAprobacionTecnica,
   reprogramarCambio,
 } from "./services/supervisionCambiosService";
+
+// --- Aprobación de negocio del Gestor de Área (perfil 5), movida desde
+// src/modules/perfiles/gestor-area. El rol resuelve su alcance y delega. ---
+export { resolverAprobacionNegocio } from "./services/aprobacionNegocioService";
