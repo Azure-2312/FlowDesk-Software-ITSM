@@ -1,4 +1,4 @@
-import VistaTecnicoSlaSemaforo from "@/modules/tecnico/sla/semaforo/VistaTecnicoSlaSemaforo";
+import VistaTecnicoSlaSemaforo from "@/modules/perfiles/tecnico/sla/semaforo/VistaTecnicoSlaSemaforo";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

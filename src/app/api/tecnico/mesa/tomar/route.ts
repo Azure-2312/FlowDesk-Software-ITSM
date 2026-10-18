@@ -1,1 +1,1 @@
-export { POST } from "@/modules/tecnico/api/mesaTomarController";
+export { POST } from "@/modules/perfiles/tecnico/api/mesaTomarController";

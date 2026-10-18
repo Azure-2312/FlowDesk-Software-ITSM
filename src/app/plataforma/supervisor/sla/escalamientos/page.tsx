@@ -1,4 +1,4 @@
-import VistaEscalamientosSla from "@/modules/supervisor/views/VistaEscalamientosSla";
+import VistaEscalamientosSla from "@/modules/perfiles/supervisor/views/VistaEscalamientosSla";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

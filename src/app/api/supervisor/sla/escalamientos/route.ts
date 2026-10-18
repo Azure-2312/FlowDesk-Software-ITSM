@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET } from "@/modules/supervisor/api/escalamientosController";
+export { GET } from "@/modules/perfiles/supervisor/api/escalamientosController";

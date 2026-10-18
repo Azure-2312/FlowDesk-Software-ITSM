@@ -1,4 +1,4 @@
-import VistaBajasRenovaciones from "@/modules/aprobador/views/VistaBajasRenovaciones";
+import VistaBajasRenovaciones from "@/modules/perfiles/aprobador/views/VistaBajasRenovaciones";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

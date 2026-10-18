@@ -1,1 +1,1 @@
-export { POST } from "@/modules/tecnico/api/cambiosEnteradoController";
+export { POST } from "@/modules/perfiles/tecnico/api/cambiosEnteradoController";

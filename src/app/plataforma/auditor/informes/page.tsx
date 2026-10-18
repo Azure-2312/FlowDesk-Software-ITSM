@@ -1,4 +1,4 @@
-import VistaInformesAuditoria from "@/modules/auditor/views/VistaInformesAuditoria";
+import VistaInformesAuditoria from "@/modules/perfiles/auditor/views/VistaInformesAuditoria";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

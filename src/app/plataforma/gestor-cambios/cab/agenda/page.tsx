@@ -1,4 +1,4 @@
-import VistaCabAgendaGestion from "@/modules/gestor-cambios/views/VistaCabAgendaGestion";
+import VistaCabAgendaGestion from "@/modules/perfiles/gestor-cambios/views/VistaCabAgendaGestion";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

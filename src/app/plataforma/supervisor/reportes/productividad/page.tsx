@@ -1,4 +1,4 @@
-import VistaProductividad from "@/modules/supervisor/views/VistaProductividad";
+import VistaProductividad from "@/modules/perfiles/supervisor/views/VistaProductividad";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

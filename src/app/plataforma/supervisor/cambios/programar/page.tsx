@@ -1,4 +1,4 @@
-import VistaProgramacionCambios from "@/modules/supervisor/views/VistaProgramacionCambios";
+import VistaProgramacionCambios from "@/modules/perfiles/supervisor/views/VistaProgramacionCambios";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

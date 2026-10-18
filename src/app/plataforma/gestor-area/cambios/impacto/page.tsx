@@ -1,4 +1,4 @@
-import VistaCambiosImpactoArea from "@/modules/gestor-area/views/VistaCambiosImpactoArea";
+import VistaCambiosImpactoArea from "@/modules/perfiles/gestor-area/views/VistaCambiosImpactoArea";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

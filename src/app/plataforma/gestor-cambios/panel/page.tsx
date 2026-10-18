@@ -1,4 +1,4 @@
-import VistaPanelGestion from "@/modules/gestor-cambios/views/VistaPanelGestion";
+import VistaPanelGestion from "@/modules/perfiles/gestor-cambios/views/VistaPanelGestion";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

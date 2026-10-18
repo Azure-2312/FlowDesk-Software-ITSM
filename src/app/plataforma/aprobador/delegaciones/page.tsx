@@ -1,4 +1,4 @@
-import VistaDelegacionesAprobador from "@/modules/aprobador/views/VistaDelegacionesAprobador";
+import VistaDelegacionesAprobador from "@/modules/perfiles/aprobador/views/VistaDelegacionesAprobador";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

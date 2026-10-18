@@ -1,4 +1,4 @@
-import VistaAprobacionesTecnicas from "@/modules/supervisor/views/VistaAprobacionesTecnicas";
+import VistaAprobacionesTecnicas from "@/modules/perfiles/supervisor/views/VistaAprobacionesTecnicas";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

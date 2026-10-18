@@ -1,4 +1,4 @@
-import VistaPanelSupervisor from "@/modules/supervisor/views/VistaPanelSupervisor";
+import VistaPanelSupervisor from "@/modules/perfiles/supervisor/views/VistaPanelSupervisor";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

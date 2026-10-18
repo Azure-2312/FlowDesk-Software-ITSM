@@ -1,4 +1,4 @@
-import VistaProblemasMayores from "@/modules/aprobador/views/VistaProblemasMayores";
+import VistaProblemasMayores from "@/modules/perfiles/aprobador/views/VistaProblemasMayores";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

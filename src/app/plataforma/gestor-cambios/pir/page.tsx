@@ -1,4 +1,4 @@
-import VistaPir from "@/modules/gestor-cambios/views/VistaPir";
+import VistaPir from "@/modules/perfiles/gestor-cambios/views/VistaPir";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 
