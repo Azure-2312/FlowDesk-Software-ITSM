@@ -1,1 +1,1 @@
-export { PUT, DELETE } from "@/modules/administracion/api/usuarioDetalleController";
+export { PUT, DELETE } from "@/modules/identidades/api/usuarioDetalleController";

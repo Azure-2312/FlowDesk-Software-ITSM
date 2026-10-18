@@ -1,1 +1,1 @@
-export { PATCH } from "@/modules/administracion/api/departamentoEmpresaDetalleController";
+export { PATCH } from "@/modules/organizacion/api/departamentoEmpresaDetalleController";

@@ -1,4 +1,4 @@
-import VistaSeguridadLogs from "@/modules/administracion/config/seguridad-logs/VistaSeguridadLogs";
+import VistaSeguridadLogs from "@/modules/plataforma/config/seguridad-logs/VistaSeguridadLogs";
 
 export default function PaginaAdminSeguridadLogs() {
   return <VistaSeguridadLogs />;

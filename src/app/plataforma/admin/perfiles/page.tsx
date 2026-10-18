@@ -1,4 +1,4 @@
-import VistaPerfiles from "@/modules/administracion/config/perfiles/VistaPerfiles";
+import VistaPerfiles from "@/modules/identidades/config/perfiles/VistaPerfiles";
 
 export default function PaginaAdminPerfiles() {
   return <VistaPerfiles />;

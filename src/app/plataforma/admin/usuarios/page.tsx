@@ -1,4 +1,4 @@
-import VistaUsuarios from "@/modules/administracion/config/usuarios/VistaUsuarios";
+import VistaUsuarios from "@/modules/identidades/config/usuarios/VistaUsuarios";
 
 export default function PaginaAdminUsuarios() {
   return <VistaUsuarios />;
