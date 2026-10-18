@@ -1,4 +1,4 @@
-import VistaAsignacionProblemas from "@/modules/supervisor/views/VistaAsignacionProblemas";
+import VistaAsignacionProblemas from "@/modules/perfiles/supervisor/views/VistaAsignacionProblemas";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

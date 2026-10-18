@@ -1,4 +1,4 @@
-import VistaPanelAuditoria from "@/modules/auditor/views/VistaPanelAuditoria";
+import VistaPanelAuditoria from "@/modules/perfiles/auditor/views/VistaPanelAuditoria";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

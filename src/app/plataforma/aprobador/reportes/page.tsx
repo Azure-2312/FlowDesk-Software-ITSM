@@ -1,4 +1,4 @@
-import VistaReportesAprobador from "@/modules/aprobador/views/VistaReportesAprobador";
+import VistaReportesAprobador from "@/modules/perfiles/aprobador/views/VistaReportesAprobador";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

@@ -1,4 +1,4 @@
-import VistaProgramacion from "@/modules/gestor-cambios/views/VistaProgramacion";
+import VistaProgramacion from "@/modules/perfiles/gestor-cambios/views/VistaProgramacion";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

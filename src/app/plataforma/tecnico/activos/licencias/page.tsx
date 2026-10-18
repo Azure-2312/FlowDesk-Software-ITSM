@@ -1,4 +1,4 @@
-import VistaTecnicoActivosLicencias from "@/modules/tecnico/activos/licencias/VistaTecnicoActivosLicencias";
+import VistaTecnicoActivosLicencias from "@/modules/perfiles/tecnico/activos/licencias/VistaTecnicoActivosLicencias";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoActivosLicencias />;

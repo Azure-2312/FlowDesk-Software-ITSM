@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET } from "@/modules/aprobador/api/panelController";
+export { GET } from "@/modules/perfiles/aprobador/api/panelController";

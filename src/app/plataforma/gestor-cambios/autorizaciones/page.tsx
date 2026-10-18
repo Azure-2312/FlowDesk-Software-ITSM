@@ -1,4 +1,4 @@
-import VistaAutorizaciones from "@/modules/gestor-cambios/views/VistaAutorizaciones";
+import VistaAutorizaciones from "@/modules/perfiles/gestor-cambios/views/VistaAutorizaciones";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

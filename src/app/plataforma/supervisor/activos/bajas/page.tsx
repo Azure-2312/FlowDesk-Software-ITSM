@@ -1,4 +1,4 @@
-import VistaBajasActivos from "@/modules/supervisor/views/VistaBajasActivos";
+import VistaBajasActivos from "@/modules/perfiles/supervisor/views/VistaBajasActivos";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

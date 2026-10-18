@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET, POST } from "@/modules/supervisor/api/bajasController";
+export { GET, POST } from "@/modules/perfiles/supervisor/api/bajasController";

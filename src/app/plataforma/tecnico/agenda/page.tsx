@@ -1,4 +1,4 @@
-import VistaTecnicoAgenda from "@/modules/tecnico/agenda/VistaTecnicoAgenda";
+import VistaTecnicoAgenda from "@/modules/perfiles/tecnico/agenda/VistaTecnicoAgenda";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoAgenda />;

@@ -1,4 +1,4 @@
-import VistaCmdbResultados from "@/modules/auditor/views/VistaCmdbResultados";
+import VistaCmdbResultados from "@/modules/perfiles/auditor/views/VistaCmdbResultados";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 
