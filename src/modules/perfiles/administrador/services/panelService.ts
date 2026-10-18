@@ -10,13 +10,11 @@ export async function obtenerPanelAdministrador() {
   const kpis = await queryRow<any>(
     `SELECT
        (SELECT COUNT(*) FROM ticket t
-          LEFT JOIN estado_ticket et ON et.id_estado = t.id_estado
-        WHERE t.estado_registro = true AND et.es_terminal = false)::int AS tickets_abiertos,
+        WHERE t.estado_registro = true AND t.id_estado IN (1, 2, 3, 4))::int AS tickets_abiertos,
        (SELECT COUNT(*) FROM ticket t
-          LEFT JOIN estado_ticket et ON et.id_estado = t.id_estado
-        WHERE t.estado_registro = true AND et.es_terminal = false
+        WHERE t.estado_registro = true AND t.id_estado IN (1, 2, 3, 4)
           AND t.fecha_limite_sla IS NOT NULL AND t.fecha_limite_sla < now())::int AS sla_vencidos,
-       (SELECT COUNT(*) FROM cambio WHERE estado_registro = true AND id_estado IN (3, 4, 5))::int AS cambios_activos,
+       (SELECT COUNT(*) FROM cambio WHERE estado_registro = true AND id_estado IN (1, 2, 3, 4, 5))::int AS cambios_activos,
        (SELECT COUNT(*) FROM problema WHERE estado_registro = true)::int AS problemas_abiertos,
        (SELECT COUNT(*) FROM usuario WHERE estado_registro = true)::int AS usuarios_activos,
        (SELECT COUNT(*) FROM log_acceso WHERE exitoso = false AND fecha >= now() - interval '7 days')::int AS accesos_fallidos`
@@ -27,8 +25,7 @@ export async function obtenerPanelAdministrador() {
             COUNT(*)::int AS abiertos
      FROM ticket t
      LEFT JOIN tipo_ticket tt ON tt.id_tipo_ticket = t.id_tipo_ticket
-     LEFT JOIN estado_ticket et ON et.id_estado = t.id_estado
-     WHERE t.estado_registro = true AND et.es_terminal = false
+     WHERE t.estado_registro = true AND t.id_estado IN (1, 2, 3, 4)
      GROUP BY COALESCE(tt.nombre, 'Sin tipo')
      ORDER BY abiertos DESC`
   );
