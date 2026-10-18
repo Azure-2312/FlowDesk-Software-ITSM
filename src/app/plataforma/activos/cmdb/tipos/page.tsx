@@ -1,4 +1,4 @@
-import VistaTiposCi from "@/modules/activos/views/VistaTiposCi";
+import VistaTiposCi from "@/modules/cmdb/views/VistaTiposCi";
 
 export default function PaginaTiposCi() {
   return <VistaTiposCi />;

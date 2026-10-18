@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET, POST, PUT } from "@/modules/activos/api/cmdbInexactitudesController";
+export { GET, POST, PUT } from "@/modules/cmdb/api/cmdbInexactitudesController";

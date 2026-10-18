@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET, POST } from "@/modules/activos/api/cmdbActualizacionesController";
+export { GET, POST } from "@/modules/cmdb/api/cmdbActualizacionesController";

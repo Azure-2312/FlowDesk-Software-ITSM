@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { actualizarCi, crearCi, listarCmdb } from "@/modules/activos/services/cmdbService";
+import { actualizarCi, crearCi, listarCmdb } from "@/modules/cmdb/services/cmdbService";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
