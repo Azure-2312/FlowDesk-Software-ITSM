@@ -1529,519 +1529,519 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12 Directorio: `src/app/plataforma/tecnico/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/`
+### 1.1.1.12 Directorio: `src/app/plataforma/perfiles/tecnico/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Consola operativa especializada para el personal de Mesa de Ayuda (Perfil 2: Tecnico).
 * **Que hace**: Brinda al especialista una estacion de trabajo optimizada para atender su carga de trabajo diaria.
 * **Que contiene**: Submodulos de activos, agenda, cambios, catalogo, base de conocimiento, desempeno, colas de mesa (area, asignados, buscar, historial, pendientes, registrar), panel de control y SLAs.
 
-### 1.1.1.12.1 Directorio: `src/app/plataforma/tecnico/activos/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/activos/`
+### 1.1.1.12.1 Directorio: `src/app/plataforma/perfiles/tecnico/activos/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/activos/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `activos`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-### 1.1.1.12.1.1 Directorio: `src/app/plataforma/tecnico/activos/conteos/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/activos/conteos/`
+### 1.1.1.12.1.1 Directorio: `src/app/plataforma/perfiles/tecnico/activos/conteos/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/activos/conteos/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `conteos`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.1.1.1 Archivo: `src/app/plataforma/tecnico/activos/conteos/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/activos/conteos/page.tsx`
+#### 1.1.1.12.1.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/activos/conteos/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/activos/conteos/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/activos/conteos`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.1.2 Directorio: `src/app/plataforma/tecnico/activos/inventario/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/activos/inventario/`
+### 1.1.1.12.1.2 Directorio: `src/app/plataforma/perfiles/tecnico/activos/inventario/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/activos/inventario/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `inventario`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.1.2.1 Archivo: `src/app/plataforma/tecnico/activos/inventario/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/activos/inventario/page.tsx`
+#### 1.1.1.12.1.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/activos/inventario/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/activos/inventario/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/activos/inventario`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.1.3 Directorio: `src/app/plataforma/tecnico/activos/licencias/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/activos/licencias/`
+### 1.1.1.12.1.3 Directorio: `src/app/plataforma/perfiles/tecnico/activos/licencias/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/activos/licencias/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `licencias`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.1.3.1 Archivo: `src/app/plataforma/tecnico/activos/licencias/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/activos/licencias/page.tsx`
+#### 1.1.1.12.1.3.1 Archivo: `src/app/plataforma/perfiles/tecnico/activos/licencias/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/activos/licencias/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/activos/licencias`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.1.4 Directorio: `src/app/plataforma/tecnico/activos/mantenimiento/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/activos/mantenimiento/`
+### 1.1.1.12.1.4 Directorio: `src/app/plataforma/perfiles/tecnico/activos/mantenimiento/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/activos/mantenimiento/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `mantenimiento`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.1.4.1 Archivo: `src/app/plataforma/tecnico/activos/mantenimiento/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/activos/mantenimiento/page.tsx`
+#### 1.1.1.12.1.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/activos/mantenimiento/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/activos/mantenimiento/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/activos/mantenimiento`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.1.5 Directorio: `src/app/plataforma/tecnico/activos/mapa/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/activos/mapa/`
+### 1.1.1.12.1.5 Directorio: `src/app/plataforma/perfiles/tecnico/activos/mapa/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/activos/mapa/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `mapa`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.1.5.1 Archivo: `src/app/plataforma/tecnico/activos/mapa/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/activos/mapa/page.tsx`
+#### 1.1.1.12.1.5.1 Archivo: `src/app/plataforma/perfiles/tecnico/activos/mapa/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/activos/mapa/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/activos/mapa`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.2 Directorio: `src/app/plataforma/tecnico/agenda/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/agenda/`
+### 1.1.1.12.2 Directorio: `src/app/plataforma/perfiles/tecnico/agenda/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/agenda/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `agenda`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.2.1 Archivo: `src/app/plataforma/tecnico/agenda/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/agenda/page.tsx`
+#### 1.1.1.12.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/agenda/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/agenda/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/agenda`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.3 Directorio: `src/app/plataforma/tecnico/cambios/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/cambios/`
+### 1.1.1.12.3 Directorio: `src/app/plataforma/perfiles/tecnico/cambios/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/cambios/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `cambios`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-### 1.1.1.12.3.1 Directorio: `src/app/plataforma/tecnico/cambios/calendario/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/cambios/calendario/`
+### 1.1.1.12.3.1 Directorio: `src/app/plataforma/perfiles/tecnico/cambios/calendario/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/cambios/calendario/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `calendario`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.3.1.1 Archivo: `src/app/plataforma/tecnico/cambios/calendario/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/cambios/calendario/page.tsx`
+#### 1.1.1.12.3.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/calendario/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/calendario/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/calendario`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.3.2 Directorio: `src/app/plataforma/tecnico/cambios/historial/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/cambios/historial/`
+### 1.1.1.12.3.2 Directorio: `src/app/plataforma/perfiles/tecnico/cambios/historial/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/cambios/historial/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `historial`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.3.2.1 Archivo: `src/app/plataforma/tecnico/cambios/historial/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/cambios/historial/page.tsx`
+#### 1.1.1.12.3.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/historial/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/historial/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/historial`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.3.3 Directorio: `src/app/plataforma/tecnico/cambios/impacto/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/cambios/impacto/`
+### 1.1.1.12.3.3 Directorio: `src/app/plataforma/perfiles/tecnico/cambios/impacto/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/cambios/impacto/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `impacto`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.3.3.1 Archivo: `src/app/plataforma/tecnico/cambios/impacto/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/cambios/impacto/page.tsx`
+#### 1.1.1.12.3.3.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/impacto/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/impacto/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/impacto`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.3.4 Directorio: `src/app/plataforma/tecnico/cambios/implementacion/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/cambios/implementacion/`
+### 1.1.1.12.3.4 Directorio: `src/app/plataforma/perfiles/tecnico/cambios/implementacion/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/cambios/implementacion/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `implementacion`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.3.4.1 Archivo: `src/app/plataforma/tecnico/cambios/implementacion/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/cambios/implementacion/page.tsx`
+#### 1.1.1.12.3.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/implementacion/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/implementacion/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/implementacion`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.3.5 Directorio: `src/app/plataforma/tecnico/cambios/mis-cambios/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/cambios/mis-cambios/`
+### 1.1.1.12.3.5 Directorio: `src/app/plataforma/perfiles/tecnico/cambios/mis-cambios/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/cambios/mis-cambios/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `mis-cambios`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.3.5.1 Archivo: `src/app/plataforma/tecnico/cambios/mis-cambios/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/cambios/mis-cambios/page.tsx`
+#### 1.1.1.12.3.5.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/mis-cambios/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/mis-cambios/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/mis-cambios`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.3.6 Directorio: `src/app/plataforma/tecnico/cambios/nuevo/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/cambios/nuevo/`
+### 1.1.1.12.3.6 Directorio: `src/app/plataforma/perfiles/tecnico/cambios/nuevo/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/cambios/nuevo/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `nuevo`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.3.6.1 Archivo: `src/app/plataforma/tecnico/cambios/nuevo/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/cambios/nuevo/page.tsx`
+#### 1.1.1.12.3.6.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/nuevo/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/nuevo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/nuevo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.4 Directorio: `src/app/plataforma/tecnico/catalogo/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/catalogo/`
+### 1.1.1.12.4 Directorio: `src/app/plataforma/perfiles/tecnico/catalogo/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/catalogo/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `catalogo`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.4.1 Archivo: `src/app/plataforma/tecnico/catalogo/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/catalogo/page.tsx`
+#### 1.1.1.12.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/catalogo/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/catalogo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/catalogo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.5 Directorio: `src/app/plataforma/tecnico/conocimiento/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/conocimiento/`
+### 1.1.1.12.5 Directorio: `src/app/plataforma/perfiles/tecnico/conocimiento/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/conocimiento/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `conocimiento`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-### 1.1.1.12.5.1 Directorio: `src/app/plataforma/tecnico/conocimiento/base/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/conocimiento/base/`
+### 1.1.1.12.5.1 Directorio: `src/app/plataforma/perfiles/tecnico/conocimiento/base/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/conocimiento/base/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `base`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.5.1.1 Archivo: `src/app/plataforma/tecnico/conocimiento/base/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/conocimiento/base/page.tsx`
+#### 1.1.1.12.5.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/conocimiento/base/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/conocimiento/base/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/conocimiento/base`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.5.2 Directorio: `src/app/plataforma/tecnico/conocimiento/mis-articulos/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/conocimiento/mis-articulos/`
+### 1.1.1.12.5.2 Directorio: `src/app/plataforma/perfiles/tecnico/conocimiento/mis-articulos/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/conocimiento/mis-articulos/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `mis-articulos`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.5.2.1 Archivo: `src/app/plataforma/tecnico/conocimiento/mis-articulos/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/conocimiento/mis-articulos/page.tsx`
+#### 1.1.1.12.5.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/conocimiento/mis-articulos/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/conocimiento/mis-articulos/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/conocimiento/mis-articulos`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.5.3 Directorio: `src/app/plataforma/tecnico/conocimiento/nuevo/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/conocimiento/nuevo/`
+### 1.1.1.12.5.3 Directorio: `src/app/plataforma/perfiles/tecnico/conocimiento/nuevo/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/conocimiento/nuevo/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `nuevo`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.5.3.1 Archivo: `src/app/plataforma/tecnico/conocimiento/nuevo/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/conocimiento/nuevo/page.tsx`
+#### 1.1.1.12.5.3.1 Archivo: `src/app/plataforma/perfiles/tecnico/conocimiento/nuevo/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/conocimiento/nuevo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/conocimiento/nuevo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.5.4 Directorio: `src/app/plataforma/tecnico/conocimiento/revisiones/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/conocimiento/revisiones/`
+### 1.1.1.12.5.4 Directorio: `src/app/plataforma/perfiles/tecnico/conocimiento/revisiones/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/conocimiento/revisiones/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `revisiones`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.5.4.1 Archivo: `src/app/plataforma/tecnico/conocimiento/revisiones/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/conocimiento/revisiones/page.tsx`
+#### 1.1.1.12.5.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/conocimiento/revisiones/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/conocimiento/revisiones/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/conocimiento/revisiones`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.6 Directorio: `src/app/plataforma/tecnico/desempeno/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/desempeno/`
+### 1.1.1.12.6 Directorio: `src/app/plataforma/perfiles/tecnico/desempeno/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/desempeno/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `desempeno`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.6.1 Archivo: `src/app/plataforma/tecnico/desempeno/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/desempeno/page.tsx`
+#### 1.1.1.12.6.1 Archivo: `src/app/plataforma/perfiles/tecnico/desempeno/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/desempeno/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/desempeno`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.7 Directorio: `src/app/plataforma/tecnico/mesa/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/mesa/`
+### 1.1.1.12.7 Directorio: `src/app/plataforma/perfiles/tecnico/mesa/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/mesa/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `mesa`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-### 1.1.1.12.7.1 Directorio: `src/app/plataforma/tecnico/mesa/area/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/mesa/area/`
+### 1.1.1.12.7.1 Directorio: `src/app/plataforma/perfiles/tecnico/mesa/area/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/mesa/area/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `area`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.7.1.1 Archivo: `src/app/plataforma/tecnico/mesa/area/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/mesa/area/page.tsx`
+#### 1.1.1.12.7.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/area/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/area/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/area`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.7.2 Directorio: `src/app/plataforma/tecnico/mesa/asignados/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/mesa/asignados/`
+### 1.1.1.12.7.2 Directorio: `src/app/plataforma/perfiles/tecnico/mesa/asignados/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/mesa/asignados/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `asignados`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.7.2.1 Archivo: `src/app/plataforma/tecnico/mesa/asignados/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/mesa/asignados/page.tsx`
+#### 1.1.1.12.7.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/asignados/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/asignados/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/asignados`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.7.3 Directorio: `src/app/plataforma/tecnico/mesa/buscar/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/mesa/buscar/`
+### 1.1.1.12.7.3 Directorio: `src/app/plataforma/perfiles/tecnico/mesa/buscar/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/mesa/buscar/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `buscar`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.7.3.1 Archivo: `src/app/plataforma/tecnico/mesa/buscar/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/mesa/buscar/page.tsx`
+#### 1.1.1.12.7.3.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/buscar/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/buscar/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/buscar`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.7.4 Directorio: `src/app/plataforma/tecnico/mesa/historial/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/mesa/historial/`
+### 1.1.1.12.7.4 Directorio: `src/app/plataforma/perfiles/tecnico/mesa/historial/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/mesa/historial/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `historial`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.7.4.1 Archivo: `src/app/plataforma/tecnico/mesa/historial/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/mesa/historial/page.tsx`
+#### 1.1.1.12.7.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/historial/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/historial/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/historial`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.7.5 Directorio: `src/app/plataforma/tecnico/mesa/pendientes/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/mesa/pendientes/`
+### 1.1.1.12.7.5 Directorio: `src/app/plataforma/perfiles/tecnico/mesa/pendientes/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/mesa/pendientes/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `pendientes`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.7.5.1 Archivo: `src/app/plataforma/tecnico/mesa/pendientes/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/mesa/pendientes/page.tsx`
+#### 1.1.1.12.7.5.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/pendientes/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/pendientes/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/pendientes`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.7.6 Directorio: `src/app/plataforma/tecnico/mesa/registrar/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/mesa/registrar/`
+### 1.1.1.12.7.6 Directorio: `src/app/plataforma/perfiles/tecnico/mesa/registrar/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/mesa/registrar/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `registrar`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.7.6.1 Archivo: `src/app/plataforma/tecnico/mesa/registrar/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/mesa/registrar/page.tsx`
+#### 1.1.1.12.7.6.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/registrar/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/registrar/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/registrar`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-#### 1.1.1.12.8 Archivo: `src/app/plataforma/tecnico/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/page.tsx`
+#### 1.1.1.12.8 Archivo: `src/app/plataforma/perfiles/tecnico/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.9 Directorio: `src/app/plataforma/tecnico/panel/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/panel/`
+### 1.1.1.12.9 Directorio: `src/app/plataforma/perfiles/tecnico/panel/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/panel/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `panel`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.9.1 Archivo: `src/app/plataforma/tecnico/panel/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/panel/page.tsx`
+#### 1.1.1.12.9.1 Archivo: `src/app/plataforma/perfiles/tecnico/panel/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/panel/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/panel`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.10 Directorio: `src/app/plataforma/tecnico/problemas/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/problemas/`
+### 1.1.1.12.10 Directorio: `src/app/plataforma/perfiles/tecnico/problemas/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/problemas/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `problemas`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-### 1.1.1.12.10.1 Directorio: `src/app/plataforma/tecnico/problemas/asignados/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/problemas/asignados/`
+### 1.1.1.12.10.1 Directorio: `src/app/plataforma/perfiles/tecnico/problemas/asignados/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/problemas/asignados/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `asignados`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.10.1.1 Archivo: `src/app/plataforma/tecnico/problemas/asignados/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/problemas/asignados/page.tsx`
+#### 1.1.1.12.10.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/problemas/asignados/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/problemas/asignados/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/problemas/asignados`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.10.2 Directorio: `src/app/plataforma/tecnico/problemas/candidatos/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/problemas/candidatos/`
+### 1.1.1.12.10.2 Directorio: `src/app/plataforma/perfiles/tecnico/problemas/candidatos/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/problemas/candidatos/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `candidatos`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.10.2.1 Archivo: `src/app/plataforma/tecnico/problemas/candidatos/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/problemas/candidatos/page.tsx`
+#### 1.1.1.12.10.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/problemas/candidatos/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/problemas/candidatos/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/problemas/candidatos`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.10.3 Directorio: `src/app/plataforma/tecnico/problemas/errores-conocidos/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/problemas/errores-conocidos/`
+### 1.1.1.12.10.3 Directorio: `src/app/plataforma/perfiles/tecnico/problemas/errores-conocidos/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/problemas/errores-conocidos/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `errores-conocidos`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.10.3.1 Archivo: `src/app/plataforma/tecnico/problemas/errores-conocidos/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/problemas/errores-conocidos/page.tsx`
+#### 1.1.1.12.10.3.1 Archivo: `src/app/plataforma/perfiles/tecnico/problemas/errores-conocidos/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/problemas/errores-conocidos/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/problemas/errores-conocidos`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.10.4 Directorio: `src/app/plataforma/tecnico/problemas/grupo/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/problemas/grupo/`
+### 1.1.1.12.10.4 Directorio: `src/app/plataforma/perfiles/tecnico/problemas/grupo/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/problemas/grupo/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `grupo`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.10.4.1 Archivo: `src/app/plataforma/tecnico/problemas/grupo/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/problemas/grupo/page.tsx`
+#### 1.1.1.12.10.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/problemas/grupo/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/problemas/grupo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/problemas/grupo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.10.5 Directorio: `src/app/plataforma/tecnico/problemas/nuevo/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/problemas/nuevo/`
+### 1.1.1.12.10.5 Directorio: `src/app/plataforma/perfiles/tecnico/problemas/nuevo/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/problemas/nuevo/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `nuevo`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.10.5.1 Archivo: `src/app/plataforma/tecnico/problemas/nuevo/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/problemas/nuevo/page.tsx`
+#### 1.1.1.12.10.5.1 Archivo: `src/app/plataforma/perfiles/tecnico/problemas/nuevo/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/problemas/nuevo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/problemas/nuevo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.11 Directorio: `src/app/plataforma/tecnico/sla/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/sla/`
+### 1.1.1.12.11 Directorio: `src/app/plataforma/perfiles/tecnico/sla/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/sla/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `sla`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-### 1.1.1.12.11.1 Directorio: `src/app/plataforma/tecnico/sla/objetivos/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/sla/objetivos/`
+### 1.1.1.12.11.1 Directorio: `src/app/plataforma/perfiles/tecnico/sla/objetivos/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/sla/objetivos/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `objetivos`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.11.1.1 Archivo: `src/app/plataforma/tecnico/sla/objetivos/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/sla/objetivos/page.tsx`
+#### 1.1.1.12.11.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/sla/objetivos/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/sla/objetivos/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/sla/objetivos`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.11.2 Directorio: `src/app/plataforma/tecnico/sla/semaforo/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/sla/semaforo/`
+### 1.1.1.12.11.2 Directorio: `src/app/plataforma/perfiles/tecnico/sla/semaforo/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/sla/semaforo/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `semaforo`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.11.2.1 Archivo: `src/app/plataforma/tecnico/sla/semaforo/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/sla/semaforo/page.tsx`
+#### 1.1.1.12.11.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/sla/semaforo/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/sla/semaforo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/sla/semaforo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
-### 1.1.1.12.12 Directorio: `src/app/plataforma/tecnico/tareas/`
-* **Ruta Relativa**: `src/app/plataforma/tecnico/tareas/`
+### 1.1.1.12.12 Directorio: `src/app/plataforma/perfiles/tecnico/tareas/`
+* **Ruta Relativa**: `src/app/plataforma/perfiles/tecnico/tareas/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `tareas`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.1.12.12.1 Archivo: `src/app/plataforma/tecnico/tareas/page.tsx`
-* **Ruta de Archivo**: `src/app/plataforma/tecnico/tareas/page.tsx`
+#### 1.1.1.12.12.1 Archivo: `src/app/plataforma/perfiles/tecnico/tareas/page.tsx`
+* **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/tareas/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
 * **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/tareas`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
@@ -3979,94 +3979,94 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 * **Que hace**: Recibe peticiones HTTP (GET, POST, PATCH, PUT o DELETE), valida la cookie de sesion JWT, evalua el perfil activo, ejecuta consultas SQL parametrizadas en PostgreSQL y responde con JSON estandarizado.
 * **Que contiene**: Funciones asincronas exportadas segun los verbos HTTP soportados, integradas con `src/lib/db.ts` y `src/lib/validaciones.ts`.
 
-### 1.1.2.19 Directorio: `src/app/api/tecnico/`
-* **Ruta Relativa**: `src/app/api/tecnico/`
+### 1.1.2.19 Directorio: `src/app/api/perfiles/tecnico/`
+* **Ruta Relativa**: `src/app/api/perfiles/tecnico/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `tecnico`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-### 1.1.2.19.1 Directorio: `src/app/api/tecnico/cambios/`
-* **Ruta Relativa**: `src/app/api/tecnico/cambios/`
+### 1.1.2.19.1 Directorio: `src/app/api/perfiles/tecnico/cambios/`
+* **Ruta Relativa**: `src/app/api/perfiles/tecnico/cambios/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `cambios`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-### 1.1.2.19.1.1 Directorio: `src/app/api/tecnico/cambios/enterado/`
-* **Ruta Relativa**: `src/app/api/tecnico/cambios/enterado/`
+### 1.1.2.19.1.1 Directorio: `src/app/api/perfiles/tecnico/cambios/enterado/`
+* **Ruta Relativa**: `src/app/api/perfiles/tecnico/cambios/enterado/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `enterado`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.2.19.1.1.1 Archivo: `src/app/api/tecnico/cambios/enterado/route.ts`
-* **Ruta de Archivo**: `src/app/api/tecnico/cambios/enterado/route.ts`
+#### 1.1.2.19.1.1.1 Archivo: `src/app/api/perfiles/tecnico/cambios/enterado/route.ts`
+* **Ruta de Archivo**: `src/app/api/perfiles/tecnico/cambios/enterado/route.ts`
 * **Tipo de Archivo**: Archivo de Codigo (`.ts`)
-* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/tecnico/cambios/enterado`.
+* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/perfiles/tecnico/cambios/enterado`.
 * **Que hace**: Recibe peticiones HTTP (GET, POST, PATCH, PUT o DELETE), valida la cookie de sesion JWT, evalua el perfil activo, ejecuta consultas SQL parametrizadas en PostgreSQL y responde con JSON estandarizado.
 * **Que contiene**: Funciones asincronas exportadas segun los verbos HTTP soportados, integradas con `src/lib/db.ts` y `src/lib/validaciones.ts`.
 
-### 1.1.2.19.2 Directorio: `src/app/api/tecnico/contadores/`
-* **Ruta Relativa**: `src/app/api/tecnico/contadores/`
+### 1.1.2.19.2 Directorio: `src/app/api/perfiles/tecnico/contadores/`
+* **Ruta Relativa**: `src/app/api/perfiles/tecnico/contadores/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `contadores`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.2.19.2.1 Archivo: `src/app/api/tecnico/contadores/route.ts`
-* **Ruta de Archivo**: `src/app/api/tecnico/contadores/route.ts`
+#### 1.1.2.19.2.1 Archivo: `src/app/api/perfiles/tecnico/contadores/route.ts`
+* **Ruta de Archivo**: `src/app/api/perfiles/tecnico/contadores/route.ts`
 * **Tipo de Archivo**: Archivo de Codigo (`.ts`)
-* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/tecnico/contadores`.
+* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/perfiles/tecnico/contadores`.
 * **Que hace**: Recibe peticiones HTTP (GET, POST, PATCH, PUT o DELETE), valida la cookie de sesion JWT, evalua el perfil activo, ejecuta consultas SQL parametrizadas en PostgreSQL y responde con JSON estandarizado.
 * **Que contiene**: Funciones asincronas exportadas segun los verbos HTTP soportados, integradas con `src/lib/db.ts` y `src/lib/validaciones.ts`.
 
-### 1.1.2.19.3 Directorio: `src/app/api/tecnico/mesa/`
-* **Ruta Relativa**: `src/app/api/tecnico/mesa/`
+### 1.1.2.19.3 Directorio: `src/app/api/perfiles/tecnico/mesa/`
+* **Ruta Relativa**: `src/app/api/perfiles/tecnico/mesa/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `mesa`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-### 1.1.2.19.3.1 Directorio: `src/app/api/tecnico/mesa/tomar/`
-* **Ruta Relativa**: `src/app/api/tecnico/mesa/tomar/`
+### 1.1.2.19.3.1 Directorio: `src/app/api/perfiles/tecnico/mesa/tomar/`
+* **Ruta Relativa**: `src/app/api/perfiles/tecnico/mesa/tomar/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `tomar`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.2.19.3.1.1 Archivo: `src/app/api/tecnico/mesa/tomar/route.ts`
-* **Ruta de Archivo**: `src/app/api/tecnico/mesa/tomar/route.ts`
+#### 1.1.2.19.3.1.1 Archivo: `src/app/api/perfiles/tecnico/mesa/tomar/route.ts`
+* **Ruta de Archivo**: `src/app/api/perfiles/tecnico/mesa/tomar/route.ts`
 * **Tipo de Archivo**: Archivo de Codigo (`.ts`)
-* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/tecnico/mesa/tomar`.
+* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/perfiles/tecnico/mesa/tomar`.
 * **Que hace**: Recibe peticiones HTTP (GET, POST, PATCH, PUT o DELETE), valida la cookie de sesion JWT, evalua el perfil activo, ejecuta consultas SQL parametrizadas en PostgreSQL y responde con JSON estandarizado.
 * **Que contiene**: Funciones asincronas exportadas segun los verbos HTTP soportados, integradas con `src/lib/db.ts` y `src/lib/validaciones.ts`.
 
-### 1.1.2.19.4 Directorio: `src/app/api/tecnico/recordatorios/`
-* **Ruta Relativa**: `src/app/api/tecnico/recordatorios/`
+### 1.1.2.19.4 Directorio: `src/app/api/perfiles/tecnico/recordatorios/`
+* **Ruta Relativa**: `src/app/api/perfiles/tecnico/recordatorios/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `recordatorios`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.2.19.4.1 Archivo: `src/app/api/tecnico/recordatorios/route.ts`
-* **Ruta de Archivo**: `src/app/api/tecnico/recordatorios/route.ts`
+#### 1.1.2.19.4.1 Archivo: `src/app/api/perfiles/tecnico/recordatorios/route.ts`
+* **Ruta de Archivo**: `src/app/api/perfiles/tecnico/recordatorios/route.ts`
 * **Tipo de Archivo**: Archivo de Codigo (`.ts`)
-* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/tecnico/recordatorios`.
+* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/perfiles/tecnico/recordatorios`.
 * **Que hace**: Recibe peticiones HTTP (GET, POST, PATCH, PUT o DELETE), valida la cookie de sesion JWT, evalua el perfil activo, ejecuta consultas SQL parametrizadas en PostgreSQL y responde con JSON estandarizado.
 * **Que contiene**: Funciones asincronas exportadas segun los verbos HTTP soportados, integradas con `src/lib/db.ts` y `src/lib/validaciones.ts`.
 
-### 1.1.2.19.5 Directorio: `src/app/api/tecnico/usuarios/`
-* **Ruta Relativa**: `src/app/api/tecnico/usuarios/`
+### 1.1.2.19.5 Directorio: `src/app/api/perfiles/tecnico/usuarios/`
+* **Ruta Relativa**: `src/app/api/perfiles/tecnico/usuarios/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `usuarios`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.2.19.5.1 Archivo: `src/app/api/tecnico/usuarios/route.ts`
-* **Ruta de Archivo**: `src/app/api/tecnico/usuarios/route.ts`
+#### 1.1.2.19.5.1 Archivo: `src/app/api/perfiles/tecnico/usuarios/route.ts`
+* **Ruta de Archivo**: `src/app/api/perfiles/tecnico/usuarios/route.ts`
 * **Tipo de Archivo**: Archivo de Codigo (`.ts`)
-* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/tecnico/usuarios`.
+* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/perfiles/tecnico/usuarios`.
 * **Que hace**: Recibe peticiones HTTP (GET, POST, PATCH, PUT o DELETE), valida la cookie de sesion JWT, evalua el perfil activo, ejecuta consultas SQL parametrizadas en PostgreSQL y responde con JSON estandarizado.
 * **Que contiene**: Funciones asincronas exportadas segun los verbos HTTP soportados, integradas con `src/lib/db.ts` y `src/lib/validaciones.ts`.
 

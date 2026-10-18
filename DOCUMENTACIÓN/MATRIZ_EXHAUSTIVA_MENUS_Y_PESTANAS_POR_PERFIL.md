@@ -366,7 +366,7 @@
 | 6.1 | Indicadores operativos y SLA | `/tickets/reportes` | Indicadores. | MR | ✅ |
 | 6.2 | Tableros (lectura) | `/admin/reportes-disenador` | Tableros. | MR | ✅ |
 | 6.3 | Informes de auditoría | `/auditor/informes` | Informes y evidencias adjuntas. | ISM, COBIT | ✅ |
-| 6.3.1 | ↳ Evidencias del informe | `/api/auditor/evidencia` | Listar y agregar evidencias por informe. | ISM, COBIT | ✅ |
+| 6.3.1 | ↳ Evidencias del informe | `/api/perfiles/auditor/evidencia` | Listar y agregar evidencias por informe. | ISM, COBIT | ✅ |
 | **7** | **Mi cuenta** | `/mi-cuenta` | Datos y preferencias. | — | ✅ |
 | 7.1 | Mi perfil y seguridad | `/mi-cuenta` | Datos, clave y sesiones. | ISM | ✅ |
 | 7.2 | Preferencias de notificación | `/mi-cuenta/notificaciones` | Eventos × canales. | — | ✅ |
@@ -550,7 +550,7 @@
 | 5 | Solicitante 3.2 | Detalle de artículo | Página `/conocimiento/[id]` + `VistaConocimientoDetalle` + enlace desde la base. |
 | 6 | Solicitante 4.2 | Aceptar actas de activos | Tabla `acta_entrega` + API `/api/activos/mis-activos/aceptar` + acción en la vista. |
 | 7 | Gestor de Área 2.3.1 | Autorizaciones de colaboradores | Tabla `colaborador_autorizacion` + API `/api/area/colaboradores/autorizaciones` + UI. |
-| 8 | Auditor 6.3.1 | Evidencias de informe | Tabla `informe_evidencia` + API `/api/auditor/evidencia` + UI. |
+| 8 | Auditor 6.3.1 | Evidencias de informe | Tabla `informe_evidencia` + API `/api/perfiles/auditor/evidencia` + UI. |
 | 9 | Aprobador 5.1 | Presentador de RFC | `PresentadorRfcAprobador.tsx` + enrutado en el detalle del cambio. |
 | 10 | Gestor de Problemas 2.1 | Detalle del problema | Página `/problemas/[id]` + `VistaProblemaDetalle` + enlace desde el listado. |
 | 11 | Activos (interno) | Validaciones | `src/modules/activos/activosValidaciones.ts` + uso en asignaciones. |

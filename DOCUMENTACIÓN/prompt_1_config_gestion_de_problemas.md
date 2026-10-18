@@ -137,7 +137,7 @@ Cambios respecto de versiones anteriores de este prompt: **(a)** Gestión de pro
 |---|---|---|
 | 4.1 Registro de problemas | `/problemas` | `src/app/plataforma/problemas/page.tsx` y `src/components/itsm/ProblemasWorkspace.tsx` |
 | 4.2 Errores conocidos (KEDB) | `/problemas/kedb` | `src/app/plataforma/problemas/kedb/page.tsx` |
-| Técnico M4.1 a M4.5 | `/tecnico/problemas/{asignados,grupo,nuevo,candidatos,errores-conocidos}` | `src/app/plataforma/tecnico/problemas/*` |
+| Técnico M4.1 a M4.5 | `/tecnico/problemas/{asignados,grupo,nuevo,candidatos,errores-conocidos}` | `src/app/plataforma/perfiles/tecnico/problemas/*` |
 | API de operación | `/api/problemas` | `src/app/api/problemas/*` |
 Las secciones 4 y 5 de este documento describen lo que esas pantallas deben mostrar; si algo difiere, aplica la pregunta 1 de la sección 14.
 
