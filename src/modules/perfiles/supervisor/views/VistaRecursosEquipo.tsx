@@ -26,7 +26,7 @@ export default function VistaRecursosEquipo() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/supervisor/equipo/vistas?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/supervisor/equipo/vistas?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar los recursos.");
@@ -45,7 +45,7 @@ export default function VistaRecursosEquipo() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/supervisor/equipo/vistas", {
+      const res = await fetch("/api/perfiles/supervisor/equipo/vistas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tipo, nombre, contenido: { detalle } }),
@@ -69,7 +69,7 @@ export default function VistaRecursosEquipo() {
     if (!window.confirm("¿Eliminar este recurso del equipo?")) return;
     setError(null);
     try {
-      const res = await fetch(`/api/supervisor/equipo/vistas?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/perfiles/supervisor/equipo/vistas?id=${id}`, { method: "DELETE" });
       const json = await res.json();
       if (!res.ok) setError(json.error ?? "No se pudo eliminar.");
       else await cargar();

@@ -41,7 +41,7 @@ export default function VistaAprobacionesCambios() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/aprobador/cambios?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/aprobador/cambios?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar los cambios.");
@@ -65,7 +65,7 @@ export default function VistaAprobacionesCambios() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/aprobador/cambios", {
+      const res = await fetch("/api/perfiles/aprobador/cambios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cambio: idCambio, decision, comentario }),

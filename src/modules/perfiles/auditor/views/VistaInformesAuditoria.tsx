@@ -60,7 +60,7 @@ export default function VistaInformesAuditoria() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/auditor/informes?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/auditor/informes?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar los informes.");
@@ -79,7 +79,7 @@ export default function VistaInformesAuditoria() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/auditor/informes", {
+      const res = await fetch("/api/perfiles/auditor/informes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ titulo, periodo, hallazgos, recomendaciones }),
@@ -101,7 +101,7 @@ export default function VistaInformesAuditoria() {
   async function cambiarEstado(idInforme: number, estado: string) {
     setError(null);
     try {
-      const res = await fetch("/api/auditor/informes", {
+      const res = await fetch("/api/perfiles/auditor/informes", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_informe: idInforme, estado }),
@@ -126,7 +126,7 @@ export default function VistaInformesAuditoria() {
     setError(null);
     setCargandoEvidencias(true);
     try {
-      const res = await fetch(`/api/auditor/evidencia?id_informe=${idInforme}&_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/auditor/evidencia?id_informe=${idInforme}&_t=${Date.now()}`);
       const json = await res.json();
       if (!res.ok) setError(json.error ?? "No se pudieron cargar las evidencias.");
       else setEvidencias(Array.isArray(json) ? json : []);
@@ -143,7 +143,7 @@ export default function VistaInformesAuditoria() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/auditor/evidencia", {
+      const res = await fetch("/api/perfiles/auditor/evidencia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_informe: idInforme, descripcion: descripcionEvidencia, contenido: contenidoEvidencia }),
@@ -166,7 +166,7 @@ export default function VistaInformesAuditoria() {
   async function verEvidenciasRecargar(idInforme: number) {
     setCargandoEvidencias(true);
     try {
-      const res = await fetch(`/api/auditor/evidencia?id_informe=${idInforme}&_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/auditor/evidencia?id_informe=${idInforme}&_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setEvidencias(Array.isArray(json) ? json : []);
     } catch {

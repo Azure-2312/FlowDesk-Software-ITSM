@@ -27,7 +27,7 @@ export default function VistaEscalamientosSla() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/supervisor/sla/escalamientos?_t=${Date.now()}`);
+        const res = await fetch(`/api/perfiles/supervisor/sla/escalamientos?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setItems(Array.isArray(json) ? json : []);
         else setError(json.error ?? "No se pudieron cargar los escalamientos.");

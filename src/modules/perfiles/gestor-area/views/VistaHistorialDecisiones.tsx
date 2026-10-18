@@ -33,7 +33,7 @@ export default function VistaHistorialDecisiones() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/gestor-area/aprobaciones/historial?_t=${Date.now()}`);
+        const res = await fetch(`/api/perfiles/gestor-area/aprobaciones/historial?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setItems(Array.isArray(json) ? json : []);
         else setError(json.error ?? "No se pudo cargar el historial.");

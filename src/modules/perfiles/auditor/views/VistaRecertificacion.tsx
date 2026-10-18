@@ -31,7 +31,7 @@ export default function VistaRecertificacion() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/auditor/accesos/recertificacion?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/auditor/accesos/recertificacion?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudo cargar la recertificación.");
@@ -56,7 +56,7 @@ export default function VistaRecertificacion() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/auditor/accesos/recertificacion", {
+      const res = await fetch("/api/perfiles/auditor/accesos/recertificacion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_usuario: fila.id_usuario, id_perfil: fila.id_perfil, decision, comentario }),

@@ -262,7 +262,7 @@ function ContenidoCrearTicket() {
   async function buscarUsuariosEnApi(termino: string) {
     setBuscandoUsuarios(true);
     try {
-      const res = await fetch(`/api/tecnico/usuarios?q=${encodeURIComponent(termino.trim())}`);
+      const res = await fetch(`/api/perfiles/tecnico/usuarios?q=${encodeURIComponent(termino.trim())}`);
       if (res.ok) {
         const data = await res.json();
         setUsuariosEncontrados(data.usuarios || []);

@@ -41,7 +41,7 @@ export default function VistaMuestreo() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/auditor/muestreo?_t=${Date.now()}`);
+        const res = await fetch(`/api/perfiles/auditor/muestreo?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setUniverso(json);
       } catch {
@@ -55,7 +55,7 @@ export default function VistaMuestreo() {
     setError(null);
     setGenerado(false);
     try {
-      const res = await fetch("/api/auditor/muestreo", {
+      const res = await fetch("/api/perfiles/auditor/muestreo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tipo, tamano }),

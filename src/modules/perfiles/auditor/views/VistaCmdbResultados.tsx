@@ -30,7 +30,7 @@ export default function VistaCmdbResultados() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/auditor/cmdb/resultados?_t=${Date.now()}`);
+        const res = await fetch(`/api/perfiles/auditor/cmdb/resultados?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setControles(Array.isArray(json?.controles) ? json.controles : []);
         else setError(json.error ?? "No se pudieron cargar los resultados de CMDB.");

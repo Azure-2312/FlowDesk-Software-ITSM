@@ -55,7 +55,7 @@ export default function VistaSod() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/auditor/cumplimiento/sod?_t=${Date.now()}`);
+        const res = await fetch(`/api/perfiles/auditor/cumplimiento/sod?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudo analizar la segregación de funciones.");

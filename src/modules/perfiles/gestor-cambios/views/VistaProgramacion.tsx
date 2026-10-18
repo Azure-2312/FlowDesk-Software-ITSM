@@ -35,7 +35,7 @@ export default function VistaProgramacion() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-cambios/programacion?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/gestor-cambios/programacion?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudo cargar la programación.");
@@ -63,7 +63,7 @@ export default function VistaProgramacion() {
     setOk(null);
     setAvisos((prev) => ({ ...prev, [idCambio]: [] }));
     try {
-      const res = await fetch("/api/gestor-cambios/programacion", {
+      const res = await fetch("/api/perfiles/gestor-cambios/programacion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cambio: idCambio, ventana_inicio: valores.inicio, ventana_fin: valores.fin }),
