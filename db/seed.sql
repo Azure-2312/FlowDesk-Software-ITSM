@@ -102,7 +102,6 @@ INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_pad
 -- Nivel 2 bajo Administración
 (510, 'Identidades y Accesos (IAM)', '/admin/usuarios', 'Administración de usuarios corporativos y roles RBAC', 500, 2, 1, true),
 (520, 'Gobierno del Portafolio', '/admin/servicios', 'Parámetros de catálogo, SLAs y plantillas de captura', 500, 2, 2, true),
-(530, 'Estructura organizacional y soporte', '/admin/departamentos', 'Estructura empresarial y capacidad resolutora de TI', 500, 2, 3, true),
 (540, 'Seguridad ISO 27001', '/admin/seguridad-logs', 'Trazabilidad de seguridad de la información ISO 27001', 500, 2, 4, true),
 
 -- Nivel 3 bajo Identidades y Accesos (510)
@@ -114,33 +113,23 @@ INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_pad
 (521, 'Catálogo de servicios y SLAs', '/admin/servicios', 'Definición de servicios corporativos y acuerdos SLA', 520, 3, 1, true),
 (522, 'Configurador de esquemas RFC', '/admin/rfc', 'Plantillas RFC, campos obligatorios y perfiles solicitantes permitidos', 520, 3, 2, true),
 
--- Nivel 3 bajo Organización y Capacidad (530)
-(531, 'Departamentos de TI', '/admin/departamentos', 'Equipos técnicos resolutores', 530, 3, 1, true),
-(532, 'Especialistas técnicos', '/admin/tecnicos', 'Niveles de soporte L1/L2/L3 y capacidad WIP', 530, 3, 2, true),
-(533, 'Departamentos empresariales', '/admin/departamentos-empresa', 'Unidades organizativas de cada cliente', 530, 3, 3, true),
 
--- Nivel 3 bajo Seguridad ISO 27001 (540)
-(541, 'Logs de seguridad ISO 27001', '/admin/seguridad-logs', 'Registro de accesos, intentos fallidos y bloqueos', 540, 3, 1, true),
 (135, 'Incidentes', '/incidentes', 'Módulo independiente de registro y gestión de incidentes', NULL, 1, 2, true),
 (136, 'Solicitudes de Servicio', '/solicitudes', 'Módulo independiente de atención de solicitudes de servicio', NULL, 1, 3, true),
 (143, 'Colaboradores de mi área', '/tickets/gestion/colaboradores', 'Colaboradores de la unidad empresarial del Gestor de Área', 140, 3, 3, true),
 (340, 'Modelado de clases CI', '/activos/cmdb/tipos', 'Configuración del modelo de elementos de configuración', 300, 2, 4, true),
 (550, 'Diseño de formularios y vistas', '/admin/tickets-vistas', 'Configuración de formularios y vistas de trabajo', 500, 2, 5, true),
 (560, 'Comunicaciones y notificaciones', '/admin/notificaciones', 'Canales y plantillas de comunicación del sistema', 500, 2, 6, true),
-(570, 'Auditoría y mantenimiento', '/admin/auditoria-sistema', 'Auditoría y mantenimiento administrativo', 500, 2, 7, true),
 (580, 'Experiencia y conocimiento', '/admin/portal-autoservicio', 'Configuración administrativa del portal y conocimiento', 500, 2, 8, true),
 (590, 'Configuración de Activos y CMDB', '/activos/cmdb/tipos', 'Modelos y clases de configuración tecnológica', 500, 2, 9, true),
 (551, 'Vistas de ticket por perfil', '/admin/tickets-vistas', 'Configuración de vistas por perfil', 550, 3, 1, true),
 (552, 'Constructor de formularios', '/admin/tickets-formularios', 'Configuración de formularios', 550, 3, 2, true),
 (561, 'Plantillas de correo y canales', '/admin/notificaciones', 'Plantillas y canales de notificación', 560, 3, 1, true),
-(571, 'Auditoría integral', '/admin/auditoria-sistema', 'Trazabilidad integral del sistema', 570, 3, 1, true),
-(573, 'Mantenimiento de datos', '/admin/mantenimiento-datos', 'Retención, depuración y mantenimiento de datos', 570, 3, 2, true),
 (581, 'Configuración del portal', '/admin/portal-autoservicio', 'Gestión administrativa de la experiencia del portal', 580, 3, 1, true),
 (582, 'Gobierno del conocimiento', '/admin/conocimiento-config', 'Revisión y publicación de artículos de conocimiento', 580, 3, 2, true),
 (591, 'Clases de elementos de configuración', '/activos/cmdb/tipos', 'Definición administrativa de clases y atributos CMDB', 590, 3, 1, true),
 (610, 'Eventos y alertas', '/operacion/eventos', 'Registro y triage de eventos vinculados a CI e incidentes', 600, 2, 1, true),
 (620, 'Disponibilidad, capacidad y continuidad', '/operacion/resiliencia', 'Objetivos de servicio, resiliencia y pruebas de continuidad', 600, 2, 2, true),
-(710, 'Registro de problemas', '/problemas', 'Investigación y seguimiento de problemas ITSM', 700, 2, 1, true),
 (720, 'Errores conocidos (KEDB)', '/problemas/kedb', 'Consulta de errores conocidos y workarounds', 700, 2, 2, true)
 ON CONFLICT (id_opcion_menu) DO UPDATE SET 
   nombre = EXCLUDED.nombre, 
@@ -151,8 +140,6 @@ ON CONFLICT (id_opcion_menu) DO UPDATE SET
   orden = EXCLUDED.orden, 
   estado_registro = true;
 
-UPDATE opciones_menu SET nombre='Auditoría y registros',descripcion='Consulta de auditoría operativa, seguridad y mantenimiento de registros' WHERE id_opcion_menu=570;
-UPDATE opciones_menu SET id_padre=570,nivel=3,orden=2,nombre='Registros de seguridad',descripcion='Accesos, intentos fallidos y bloqueos' WHERE id_opcion_menu=541;
 DELETE FROM opciones_menu_perfiles WHERE id_opcion_menu=540;
 DELETE FROM opciones_menu WHERE id_opcion_menu=540;
 DELETE FROM opciones_menu_perfiles WHERE id_opcion_menu IN (137,138);
@@ -169,7 +156,7 @@ WHERE id_opcion_menu IN (
   200, 210, 212, 213,
   300, 310, 320, 330,
   400, 410,
-  500, 510, 511, 512, 513, 520, 521, 522, 530, 531, 532, 540, 541
+  500, 510, 511, 512, 513, 520, 521, 522
 )
 ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
 
@@ -200,7 +187,7 @@ WHERE id_opcion_menu IN (
   130, 131, 132, 133, 134,
   200, 210, 212, 213,
   400, 410,
-  500, 530, 531, 532
+  500
 )
 ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
 
@@ -222,7 +209,7 @@ WHERE id_opcion_menu IN (
   200, 210, 213,
   300, 310, 330,
   400, 410,
-  500, 520, 521, 540, 541
+  500, 520, 521
 )
 ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
 
@@ -261,18 +248,18 @@ ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, es
 DELETE FROM opciones_menu_perfiles WHERE id_opcion_menu IN (
 100,110,111,112,113,114,120,121,122,123,124,130,131,132,133,134,135,136,137,138,140,141,142,
 200,210,211,212,213,220,221,300,310,320,330,340,400,410,500,510,511,512,513,520,521,522,
-530,531,532,540,541,550,551,552,560,561,570,571,572,573,580,581,582,590,591,600,610,620,700,710,720,800
+550,551,552,560,561,572,580,581,582,590,591,600,610,620,700,720,800
 );
 WITH matriz(id_opcion_menu,id_perfil) AS (VALUES
-(100,2),(110,2),(112,2),(114,2),(120,2),(121,2),(122,2),(123,2),(124,2),(135,2),(136,2),(200,2),(210,2),(211,2),(212,2),(213,2),(300,2),(310,2),(320,2),(600,2),(610,2),(620,2),(700,2),(710,2),(720,2),
+(100,2),(110,2),(112,2),(114,2),(120,2),(121,2),(122,2),(123,2),(124,2),(135,2),(136,2),(200,2),(210,2),(211,2),(212,2),(213,2),(300,2),(310,2),(320,2),(600,2),(610,2),(620,2),(700,2),(720,2),
 (100,3),(110,3),(111,3),(112,3),(113,3),(114,3),
-(100,4),(120,4),(122,4),(124,4),(130,4),(131,4),(132,4),(133,4),(134,4),(135,4),(136,4),(200,4),(210,4),(212,4),(213,4),(400,4),(410,4),(500,4),(530,4),(531,4),(532,4),(600,4),(610,4),(620,4),(700,4),(710,4),(720,4),
+(100,4),(120,4),(122,4),(124,4),(130,4),(131,4),(132,4),(133,4),(134,4),(135,4),(136,4),(200,4),(210,4),(212,4),(213,4),(400,4),(410,4),(500,4),(600,4),(610,4),(620,4),(700,4),(720,4),
 (100,5),(110,5),(111,5),(112,5),(113,5),(140,5),(141,5),(142,5),(143,5),(400,5),(410,5),
-(100,6),(130,6),(133,6),(134,6),(200,6),(210,6),(213,6),(300,6),(310,6),(320,6),(330,6),(340,6),(400,6),(410,6),(500,6),(520,6),(521,6),(541,6),(570,6),(571,6),(600,6),(610,6),(620,6),(700,6),(710,6),(720,6),(800,6),
-(200,7),(210,7),(212,7),(213,7),(220,7),(221,7),(300,7),(320,7),(600,7),(610,7),(620,7),(700,7),(710,7),(720,7),(800,7),
-(200,8),(210,8),(211,8),(212,8),(213,8),(220,8),(221,8),(300,8),(320,8),(600,8),(610,8),(620,8),(700,8),(710,8),(720,8),(800,8),
-(200,9),(210,9),(212,9),(213,9),(300,9),(310,9),(320,9),(330,9),(340,9),(600,9),(610,9),(620,9),(700,9),(710,9),(720,9),(800,9),
-(400,1),(410,1),(500,1),(510,1),(511,1),(512,1),(513,1),(520,1),(521,1),(522,1),(530,1),(531,1),(532,1),(533,1),(541,1),(550,1),(551,1),(552,1),(560,1),(561,1),(570,1),(571,1),(572,1),(573,1),(580,1),(581,1),(582,1),(590,1),(591,1)
+(100,6),(130,6),(133,6),(134,6),(200,6),(210,6),(213,6),(300,6),(310,6),(320,6),(330,6),(340,6),(400,6),(410,6),(500,6),(520,6),(521,6),(600,6),(610,6),(620,6),(700,6),(720,6),(800,6),
+(200,7),(210,7),(212,7),(213,7),(220,7),(221,7),(300,7),(320,7),(600,7),(610,7),(620,7),(700,7),(720,7),(800,7),
+(200,8),(210,8),(211,8),(212,8),(213,8),(220,8),(221,8),(300,8),(320,8),(600,8),(610,8),(620,8),(700,8),(720,8),(800,8),
+(200,9),(210,9),(212,9),(213,9),(300,9),(310,9),(320,9),(330,9),(340,9),(600,9),(610,9),(620,9),(700,9),(720,9),(800,9),
+(400,1),(410,1),(500,1),(510,1),(511,1),(512,1),(513,1),(520,1),(521,1),(522,1),(550,1),(551,1),(552,1),(560,1),(561,1),(572,1),(580,1),(581,1),(582,1),(590,1),(591,1)
 )
 INSERT INTO opciones_menu_perfiles (id_opcion_menu,id_perfil,orden,estado_registro)
 SELECT id_opcion_menu,id_perfil,ROW_NUMBER() OVER (PARTITION BY id_perfil ORDER BY id_opcion_menu),true FROM matriz
