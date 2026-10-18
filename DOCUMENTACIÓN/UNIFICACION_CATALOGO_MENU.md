@@ -29,7 +29,7 @@ visibilidad por perfil".
    modulo**. Resultado: 189 paginas + 43 carpetas, y **ningun perfil pierde ni
    gana pantallas** (solo cambia el nombre y la ubicacion de algunas).
 7. **Ejecutada el 2026-10-18**: el catalogo quedo en **232 opciones** (43
-   carpetas + 189 pantallas) y **350 filas de visibilidad**. Ya no hay 10 menus
+   carpetas + 189 pantallas) y **369 filas de visibilidad**. Ya no hay 10 menus
    paralelos: hay uno solo y cada perfil ve su parte (ver 6).
 
 ---
@@ -255,13 +255,23 @@ Reconstruccion completa, no cirugia fila por fila:
 ### 5.4 Visibilidad
 
 Cada pantalla nueva recibe una fila por cada perfil que hoy la ve (union de los
-perfiles de sus filas actuales): **308 filas, igual que antes**. Lo que cambia es
-que ahora 51 de esas filas cuelgan de una opcion compartida en vez de una copia.
+perfiles de sus filas actuales): **239 filas** (antes 240; la que sobra es el
+duplicado interno del Auditor). Lo que cambia es que ahora 51 de esas filas
+cuelgan de una opcion compartida en vez de una copia.
 
 Ademas, **cada carpeta necesita su propia fila de visibilidad**: el arbol se
 construye uniendose contra `opciones_menu_perfiles`, asi que una carpeta sin
-perfil no se dibuja y sus hijos desaparecen. Las 43 carpetas aportan **42 filas**
-(una por perfil que ve al menos un hijo). Total: **350 filas**.
+perfil no se dibuja y sus hijos desaparecen con ella. La regla es:
+
+> Una carpeta es visible para todo perfil que vea **al menos un descendiente**
+> (hijo, nieto...), no solo un hijo directo.
+
+Eso importa en las raices cuyos hijos son todas carpetas: `Mesa de Servicio`,
+`Activos y CMDB` y `Configuracion` no tienen ninguna pantalla colgando
+directamente, asi que mirar solo a los hijos directos las dejaba sin visibilidad
+y el modulo entero desaparecia del menu. Con la regla de descendientes, las 43
+carpetas aportan **130 filas**. Total: **369 filas** (239 pantallas + 130
+carpetas).
 
 ### 5.5 Orden y nombres
 
@@ -292,14 +302,14 @@ Migracion aplicada: `db/migrations/20261019_unificacion_catalogo_menu.sql`.
 | Carpetas (`url_menu = ''`) | 68 | **43** |
 | Pantallas (URL con valor) | 240 | **189** |
 | URLs distintas | 189 | **189** |
-| Filas en `opciones_menu_perfiles` | 308 | **350** (308 paginas + 42 carpetas) |
+| Filas en `opciones_menu_perfiles` | 308 | **369** (239 pantallas + 130 carpetas) |
 | Opciones sin ningun perfil | 143 | **0** |
 | Enlaces a rutas inexistentes | 0 | **0** |
 
 Invariante verificado contra el respaldo (`opciones_menu_bak_20261018`): **0 URLs
 que falten, 0 que sobren**, en los 10 perfiles.
 
-| Perfil | Filas antes | Filas despues | URLs distintas |
+| Perfil | Pantallas antes | Pantallas despues | URLs distintas |
 | :--- | ---: | ---: | ---: |
 | 1 Administrador | 44 | 44 | 44 |
 | 2 Tecnico | 36 | 36 | 36 |
@@ -316,7 +326,14 @@ El Auditor baja de 23 a 22 filas porque tenia `/tickets/reportes` dos veces en s
 propio menu. El conjunto de URLs no cambia en ningun perfil.
 
 Integridad: 0 visibilidades huerfanas, 0 `id_padre` inexistente, 0 URL duplicada
-entre pantallas, 0 pantallas cuyo padre no sea visible para el mismo perfil.
+entre pantallas, 0 carpetas sin visibilidad.
+
+**Correccion posterior al primer intento:** la primera pasada calculo la
+visibilidad de cada carpeta solo con sus hijos directos. Eso dejo sin fila a las
+tres raices cuyos hijos son todas carpetas (`Mesa de Servicio`, `Activos y CMDB`,
+`Configuracion`): el arbol no las dibujaba y se perdian 3 modulos completos. Se
+corrigio con la regla de descendientes (5.4), que agrego 19 filas. Verificado con
+la consulta recursiva de render: los 10 perfiles ven sus raices.
 
 Archivos tocados: la migracion, `db/seed.sql` (bloque de menu reescrito con el
 catalogo unico) y `db/schema.sql` (las 6 columnas de menu que solo existian en

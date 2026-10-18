@@ -1,0 +1,232 @@
+- Mi trabajo  _(carpeta)_  **(Tecnico, Supervisor, Gestor de Area, Auditor, Aprobador (CAB), Gestor de Cambios, Gestor de Activos, Gestor de Problemas)**
+  - Aprobaciones  _(carpeta)_  **(Gestor de Area, Aprobador (CAB))**
+    - Delegación de aprobaciones  **(Gestor de Area)**
+    - Delegaciones  **(Aprobador (CAB))**
+    - Historial de mis decisiones  **(Gestor de Area)**
+    - Historial de mis decisiones  **(Aprobador (CAB))**
+  - Panel de activos y CMDB  **(Gestor de Activos)**
+  - Equipo  _(carpeta)_  **(Supervisor)**
+    - Ausencias y guardias del equipo  **(Supervisor)**
+    - Vistas y respuestas compartidas  **(Supervisor)**
+  - Panel de auditoría  **(Auditor)**
+  - Panel de gestión de cambios  **(Gestor de Cambios)**
+  - Panel de gestión de problemas  **(Gestor de Problemas)**
+  - Panel de supervisión  **(Supervisor)**
+  - Panel del aprobador  **(Aprobador (CAB))**
+  - Panel del área  **(Gestor de Area)**
+  - Panel del técnico  **(Tecnico)**
+  - Mi agenda y disponibilidad  **(Tecnico)**
+  - Mi desempeño  **(Tecnico)**
+  - Mis tareas  **(Tecnico)**
+- Mesa de Servicio  _(carpeta)_  **(Administrador, Tecnico, Solicitante, Supervisor, Gestor de Area, Auditor, Aprobador (CAB))**
+  - Gestión  _(carpeta)_  **(Administrador, Supervisor, Gestor de Area, Auditor)**
+    - Asignados  **(Supervisor)**
+    - Bandeja de pendientes  **(Supervisor)**
+    - Centro de asignación  **(Supervisor)**
+    - Colaboradores de mi área  **(Gestor de Area)**
+    - Historial de resueltos  **(Supervisor)**
+    - Incidentes  **(Supervisor)**
+    - Mis tickets  **(Supervisor)**
+    - Registrar ticket para un usuario  **(Supervisor, Gestor de Area)**
+    - Solicitudes de servicio  **(Supervisor)**
+    - Tickets de mi departamento  **(Gestor de Area)**
+    - Todos los tickets  **(Administrador, Supervisor, Auditor)**
+  - Mi mesa  _(carpeta)_  **(Tecnico)**
+    - Bandeja de mi grupo  **(Tecnico)**
+    - Búsqueda avanzada  **(Tecnico)**
+    - Historial de mis tickets  **(Tecnico)**
+    - Incidente mayor (sala de crisis)  **(Tecnico)**
+    - Mis tickets asignados  **(Tecnico)**
+    - Registrar ticket para un usuario  **(Tecnico)**
+    - Tickets de mi área técnica  **(Tecnico)**
+  - SLA  _(carpeta)_  **(Tecnico, Supervisor)**
+    - Escalamientos y riesgos de SLA  **(Supervisor)**
+    - Incumplimientos y causas  **(Supervisor)**
+    - Objetivos de tiempo vigentes  **(Tecnico, Supervisor)**
+    - Semáforo de SLA de mi cola  **(Tecnico)**
+    - Semáforo de SLA del grupo  **(Supervisor)**
+  - Catálogo  _(carpeta)_  **(Solicitante, Gestor de Area)**
+    - Catálogo de incidentes  **(Solicitante)**
+    - Catálogo de servicios  **(Solicitante, Gestor de Area)**
+    - Catálogo de solicitudes de servicio  **(Solicitante)**
+    - Mis tickets  **(Solicitante)**
+  - Aprobaciones  _(carpeta)_  **(Gestor de Area, Aprobador (CAB))**
+    - Aprobaciones de solicitudes  **(Gestor de Area, Aprobador (CAB))**
+  - Auditoría  _(carpeta)_  **(Administrador, Supervisor, Auditor)**
+    - Auditoría de tickets  **(Administrador, Supervisor, Auditor)**
+  - Incidentes mayores  _(carpeta)_  **(Supervisor)**
+    - Incidentes mayores  **(Supervisor)**
+  - Avisos  _(carpeta)_  **(Solicitante)**
+    - Avisos de servicio  **(Solicitante)**
+- Cambios  _(carpeta)_  **(Administrador, Tecnico, Supervisor, Gestor de Area, Auditor, Aprobador (CAB), Gestor de Cambios)**
+  - Mis cambios  _(carpeta)_  **(Tecnico, Supervisor, Gestor de Area)**
+    - Aprobaciones técnicas de RFC  **(Supervisor)**
+    - Calendario de mis cambios  **(Tecnico)**
+    - Cambios con interrupción para mi área  **(Gestor de Area)**
+    - Cambios por implementar  **(Tecnico)**
+    - Cambios que afectan a mi equipo  **(Supervisor)**
+    - Cambios que afectan mis servicios  **(Tecnico)**
+    - Historial de mis cambios  **(Tecnico)**
+    - Mis cambios  **(Tecnico)**
+    - Programación de implementaciones del equipo  **(Supervisor)**
+    - Registrar solicitud RFC  **(Tecnico)**
+  - Calendario de cambios  **(Supervisor, Gestor de Area, Aprobador (CAB), Gestor de Cambios)**
+  - Gestión  _(carpeta)_  **(Gestor de Cambios)**
+    - Bandeja de RFC por evaluar  **(Gestor de Cambios)**
+    - Conflictos y capacidad  **(Gestor de Cambios)**
+    - Modelos de cambio estándar  **(Gestor de Cambios)**
+    - Programación de cambios autorizados  **(Gestor de Cambios)**
+    - Revisión post-implementación  **(Gestor de Cambios)**
+    - Seguimiento de ejecución  **(Gestor de Cambios)**
+    - Seguimiento de etapas de aprobación  **(Gestor de Cambios)**
+  - Historial de cambios  **(Administrador, Auditor, Gestor de Cambios)**
+  - CAB  _(carpeta)_  **(Aprobador (CAB), Gestor de Cambios)**
+    - Agenda y actas  **(Aprobador (CAB))**
+    - Comité de emergencia (ECAB)  **(Aprobador (CAB))**
+    - Convocatoria, agenda y actas  **(Gestor de Cambios)**
+    - Dictamen colegiado (CAB)  **(Aprobador (CAB), Gestor de Cambios)**
+  - Solicitar un cambio  **(Gestor de Area, Gestor de Cambios)**
+  - Aprobaciones  _(carpeta)_  **(Gestor de Area, Aprobador (CAB))**
+    - Aprobación de negocio de cambios  **(Gestor de Area)**
+    - Aprobaciones de cambios  **(Aprobador (CAB))**
+    - Modelos de cambio estándar  **(Aprobador (CAB))**
+- Problemas  _(carpeta)_  **(Administrador, Tecnico, Supervisor, Auditor, Aprobador (CAB), Gestor de Problemas)**
+  - Análisis de causa raíz  **(Gestor de Problemas)**
+  - Asignación de problemas  **(Supervisor)**
+  - Bandeja y asignación  **(Gestor de Problemas)**
+  - Candidatos a problema  **(Gestor de Problemas)**
+  - Candidatos de mi grupo  **(Tecnico)**
+  - Conocimiento derivado  **(Gestor de Problemas)**
+  - Consultar KEDB  **(Tecnico)**
+  - Errores conocidos (KEDB)  **(Supervisor, Gestor de Problemas)**
+  - Incidentes recurrentes  **(Gestor de Problemas)**
+  - Objetivos de tiempo  **(Gestor de Problemas)**
+  - Problemas asignados a mí  **(Tecnico)**
+  - Problemas de mi grupo  **(Tecnico)**
+  - Problemas mayores y revisión  **(Gestor de Problemas)**
+  - Registrar problema  **(Tecnico)**
+  - Registro de problemas  **(Administrador, Supervisor, Auditor, Gestor de Problemas)**
+  - Riesgo aceptado y cierre de problemas mayores  **(Aprobador (CAB))**
+  - Solicitudes de cambio derivadas  **(Gestor de Problemas)**
+- Activos y CMDB  _(carpeta)_  **(Administrador, Tecnico, Solicitante, Supervisor, Gestor de Area, Auditor, Aprobador (CAB), Gestor de Activos)**
+  - Inventario  _(carpeta)_  **(Administrador, Tecnico, Solicitante, Supervisor, Gestor de Area, Auditor, Gestor de Activos)**
+    - Activos de mi área  **(Gestor de Area)**
+    - Asignación, custodia y actas  **(Gestor de Activos)**
+    - Importación masiva  **(Gestor de Activos)**
+    - Inventario de activos  **(Administrador, Supervisor, Auditor, Gestor de Activos)**
+    - Inventario físico (campañas)  **(Gestor de Activos)**
+    - Inventario físico en campo  **(Tecnico)**
+    - Inventario técnico  **(Tecnico)**
+    - Mis activos  **(Solicitante)**
+    - Recepción de adquisiciones  **(Gestor de Activos)**
+  - Bajas y disposición  _(carpeta)_  **(Supervisor, Auditor, Aprobador (CAB), Gestor de Activos)**
+    - Aprobación de bajas de mi área  **(Supervisor)**
+    - Bajas y disposición  **(Auditor)**
+    - Bajas y disposición  **(Gestor de Activos)**
+    - Bajas y renovaciones por monto  **(Aprobador (CAB))**
+  - Mantenimiento  _(carpeta)_  **(Tecnico, Gestor de Activos)**
+    - Mantenimiento y garantías  **(Gestor de Activos)**
+    - Mantenimiento y reparaciones  **(Tecnico)**
+  - Licencias  _(carpeta)_  **(Tecnico, Supervisor, Auditor, Gestor de Activos)**
+    - Catálogo de software autorizado  **(Gestor de Activos)**
+    - Consultar licencias  **(Tecnico)**
+    - Cumplimiento y sobreuso  **(Gestor de Activos)**
+    - Licencias de software  **(Supervisor, Auditor)**
+  - CMDB  _(carpeta)_  **(Tecnico, Auditor, Gestor de Activos)**
+    - Actualizaciones de CMDB desde cambios  **(Gestor de Activos)**
+    - Análisis e impacto  **(Gestor de Activos)**
+    - Calidad y auditoría de CMDB  **(Gestor de Activos)**
+    - Inexactitudes reportadas  **(Gestor de Activos)**
+    - Líneas base  **(Gestor de Activos)**
+    - Mapa de topología  **(Gestor de Activos)**
+    - Mapa de topología CMDB  **(Tecnico)**
+    - Modelado de clases CI  **(Gestor de Activos)**
+    - Resultados de auditorías de CMDB  **(Auditor)**
+  - Proveedores y contratos  _(carpeta)_  **(Gestor de Area, Gestor de Activos)**
+    - Contratos y cobertura  **(Gestor de Activos)**
+    - Licencias y contratos de mi departamento  **(Gestor de Area)**
+    - Proveedores  **(Gestor de Activos)**
+    - Renovaciones y vencimientos  **(Gestor de Activos)**
+  - Catálogos  _(carpeta)_  **(Administrador, Gestor de Activos)**
+    - Ciclos de vida y reglas de transición  **(Administrador)**
+    - Fabricantes y modelos  **(Gestor de Activos)**
+    - Licencias y contratos  **(Administrador)**
+    - Listas auxiliares  **(Gestor de Activos)**
+    - Tipos de elementos de configuración y relaciones de CMDB  **(Administrador)**
+    - Tipos, modelos y atributos  **(Administrador)**
+    - Ubicaciones  **(Gestor de Activos)**
+- Conocimiento  _(carpeta)_  **(Tecnico, Solicitante, Supervisor, Gestor de Area)**
+  - Base de conocimiento  **(Solicitante, Supervisor, Gestor de Area)**
+  - Consultar base de conocimiento  **(Tecnico)**
+  - Crear artículo  **(Tecnico)**
+  - Mis artículos  **(Tecnico)**
+  - Revisión y publicación de artículos  **(Supervisor)**
+  - Revisiones pendientes  **(Tecnico)**
+- Catálogo de Servicios  _(carpeta)_  **(Administrador, Tecnico)**
+  - Catálogo de servicios  **(Tecnico)**
+  - Configuración de categorías  **(Administrador)**
+  - Crear servicio  **(Administrador)**
+  - Objetivos SLA  **(Administrador)**
+  - Servicios de incidentes  **(Administrador)**
+  - Servicios de solicitudes  **(Administrador)**
+- Operación  _(carpeta)_  **(Administrador, Supervisor)**
+  - Disponibilidad, capacidad y continuidad  **(Supervisor)**
+  - Eventos y alertas  **(Supervisor)**
+  - Eventos y resiliencia  **(Administrador)**
+- Reportes  _(carpeta)_  **(Administrador, Supervisor, Gestor de Area, Auditor, Aprobador (CAB), Gestor de Cambios, Gestor de Activos, Gestor de Problemas)**
+  - Auditoría  _(carpeta)_  **(Auditor)**
+    - Informes de auditoría  **(Auditor)**
+  - Indicadores operativos y SLA  **(Administrador, Supervisor, Auditor)**
+  - Productividad individual  **(Supervisor)**
+  - Reportes de activos  **(Gestor de Activos)**
+  - Reportes de cambios  **(Gestor de Cambios)**
+  - Reportes de decisiones  **(Aprobador (CAB))**
+  - Reportes de problemas  **(Gestor de Problemas)**
+  - Reportes del área  **(Gestor de Area)**
+  - Tableros  **(Administrador, Auditor)**
+- Configuración  _(carpeta)_  **(Administrador, Auditor, Gestor de Cambios)**
+  - Mesa de Servicio  _(carpeta)_  **(Administrador)**
+    - Flujo de atención y aprobaciones  **(Administrador)**
+    - Flujo de estados y acciones  **(Administrador)**
+    - Formulario de incidentes  **(Administrador)**
+    - Formulario de solicitudes  **(Administrador)**
+  - Cambios  _(carpeta)_  **(Administrador, Gestor de Cambios)**
+    - Configuración de formulario  **(Administrador)**
+    - Feriados  **(Gestor de Cambios)**
+    - Flujo de evaluación, autorización y revisión posterior  **(Administrador)**
+    - Notificaciones y calendario de cambios  **(Administrador)**
+    - Períodos de congelamiento  **(Gestor de Cambios)**
+    - Tipos de cambio y requisitos  **(Administrador)**
+    - Ventanas de mantenimiento  **(Gestor de Cambios)**
+  - Problemas  _(carpeta)_  **(Administrador)**
+    - Configuración de formulario  **(Administrador)**
+    - Flujo de investigación y seguimiento  **(Administrador)**
+    - Relación con incidentes, errores conocidos y conocimiento  **(Administrador)**
+  - Conocimiento  _(carpeta)_  **(Administrador)**
+    - Categorías, responsables y reglas de publicación y revisión  **(Administrador)**
+  - Organización  _(carpeta)_  **(Administrador)**
+    - Departamentos empresariales  **(Administrador)**
+    - Departamentos y grupos resolutores de TI  **(Administrador)**
+    - Supervisores  **(Administrador)**
+    - Técnicos y niveles de soporte  **(Administrador)**
+  - Identidades  _(carpeta)_  **(Administrador, Auditor)**
+    - Gestión de usuarios  **(Administrador)**
+    - Perfiles y permisos  **(Administrador, Auditor)**
+  - Menú y notificaciones  _(carpeta)_  **(Administrador)**
+    - Configuración de contacto  **(Administrador)**
+    - Estructura del menú  **(Administrador)**
+    - Plantillas de correo y otros canales  **(Administrador)**
+- Plataforma  _(carpeta)_  **(Administrador, Auditor)**
+  - Cumplimiento  _(carpeta)_  **(Auditor)**
+    - Cambios sin autorización o fuera de ventana  **(Auditor)**
+    - Muestreo de auditoría  **(Auditor)**
+    - Segregación de funciones  **(Auditor)**
+  - Auditoría de cambios de configuración  **(Administrador, Auditor)**
+  - Accesos  _(carpeta)_  **(Auditor)**
+    - Recertificación de accesos  **(Auditor)**
+  - Registros de seguridad y autenticación  **(Administrador, Auditor)**
+  - Retención y mantenimiento de datos  **(Administrador, Auditor)**
+  - Salud del sistema  **(Administrador)**
+- Mi cuenta  _(carpeta)_  **(Administrador, Tecnico, Solicitante, Supervisor, Gestor de Area, Auditor, Aprobador (CAB), Gestor de Cambios, Gestor de Activos, Gestor de Problemas)**
+  - Mi perfil y seguridad  **(Administrador, Tecnico, Solicitante, Supervisor, Gestor de Area, Auditor, Aprobador (CAB), Gestor de Cambios, Gestor de Activos, Gestor de Problemas)**
+  - Preferencias de notificación  **(Administrador, Tecnico, Solicitante, Supervisor, Gestor de Area, Auditor, Aprobador (CAB), Gestor de Cambios, Gestor de Activos, Gestor de Problemas)**
