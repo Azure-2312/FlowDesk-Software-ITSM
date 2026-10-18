@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { sesionConCapacidad } from "@/modules/gestor-cambios/api/guardia";
+import { sesionConCapacidad } from "@/shared/lib/api-auth";
 import { detectarConflictos } from "@/modules/gestor-cambios/services/conflictosService";
 
 export const dynamic = "force-dynamic";
