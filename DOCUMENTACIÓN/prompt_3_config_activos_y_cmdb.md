@@ -159,7 +159,7 @@ Los nombres de componente son los del árbol de archivos; si alguno no lleva el 
 | 7.3 Licencias de software (SAM) | `/activos/licencias` | `.../activos/licencias/page.tsx` |
 | 7.4 Modelado de clases CI | `/activos/cmdb/tipos` | `.../activos/cmdb/tipos/page.tsx` |
 | 8 Proveedores y Contratos TI | `/proveedores` | `src/app/plataforma/proveedores/*` |
-| Técnico M6.1 a M6.5 | `/tecnico/activos/{inventario,mapa,mantenimiento,conteos,licencias}` | `src/app/plataforma/tecnico/activos/*` |
+| Técnico M6.1 a M6.5 | `/tecnico/activos/{inventario,mapa,mantenimiento,conteos,licencias}` | `src/app/plataforma/perfiles/tecnico/activos/*` |
 | API de operación | `/api/activos/*` | `src/app/api/activos/*` |
 Las secciones 4 y 5 describen lo que esas pantallas deben mostrar; si algo difiere, aplica la pregunta 1 de la sección 15.
 

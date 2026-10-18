@@ -8375,14 +8375,14 @@ SELECT * FROM entidad WHERE estado_registro = true
 
 ---
 
-### 5.105 Endpoint: `/api/tecnico/cambios/enterado`
-* **Ruta Canonica**: `/api/tecnico/cambios/enterado`
+### 5.105 Endpoint: `/api/perfiles/tecnico/cambios/enterado`
+* **Ruta Canonica**: `/api/perfiles/tecnico/cambios/enterado`
 * **Metodos HTTP Disponibles**: `POST`
 * **Archivo Fuente en Repositorio**: `api/tecnico/cambios/enterado/route.ts`
 * **Nivel de Seguridad y Perfil Requerido**: Autenticacion obligatoria (Sesion JWT en cookie sesion_tickets)
 
 #### Proposito Operacional y Contexto ITIL v4
-Este controlador atiende las peticiones dirigidas al recurso `/api/tecnico/cambios/enterado`.
+Este controlador atiende las peticiones dirigidas al recurso `/api/perfiles/tecnico/cambios/enterado`.
 Implementa transacciones parametrizadas contra PostgreSQL que garantizan integridad referencial absoluta.
 
 #### Flujo de Procesamiento Interno Paso a Paso
@@ -8429,14 +8429,14 @@ INSERT INTO cambio_enterado (id_cambio, id_usuario) VALUES ($1, $2) ON CONFLICT 
 
 ---
 
-### 5.106 Endpoint: `/api/tecnico/contadores`
-* **Ruta Canonica**: `/api/tecnico/contadores`
+### 5.106 Endpoint: `/api/perfiles/tecnico/contadores`
+* **Ruta Canonica**: `/api/perfiles/tecnico/contadores`
 * **Metodos HTTP Disponibles**: `GET`
 * **Archivo Fuente en Repositorio**: `api/tecnico/contadores/route.ts`
 * **Nivel de Seguridad y Perfil Requerido**: Autenticacion obligatoria (Sesion JWT en cookie sesion_tickets)
 
 #### Proposito Operacional y Contexto ITIL v4
-Este controlador atiende las peticiones dirigidas al recurso `/api/tecnico/contadores`.
+Este controlador atiende las peticiones dirigidas al recurso `/api/perfiles/tecnico/contadores`.
 Implementa transacciones parametrizadas contra PostgreSQL que garantizan integridad referencial absoluta.
 
 #### Flujo de Procesamiento Interno Paso a Paso
@@ -8471,14 +8471,14 @@ SELECT COUNT(*)::text as total, COUNT(CASE WHEN fecha_limite_sla < NOW() THEN 1 
 
 ---
 
-### 5.107 Endpoint: `/api/tecnico/mesa/tomar`
-* **Ruta Canonica**: `/api/tecnico/mesa/tomar`
+### 5.107 Endpoint: `/api/perfiles/tecnico/mesa/tomar`
+* **Ruta Canonica**: `/api/perfiles/tecnico/mesa/tomar`
 * **Metodos HTTP Disponibles**: `POST`
 * **Archivo Fuente en Repositorio**: `api/tecnico/mesa/tomar/route.ts`
 * **Nivel de Seguridad y Perfil Requerido**: Autenticacion obligatoria (Sesion JWT en cookie sesion_tickets)
 
 #### Proposito Operacional y Contexto ITIL v4
-Este controlador atiende las peticiones dirigidas al recurso `/api/tecnico/mesa/tomar`.
+Este controlador atiende las peticiones dirigidas al recurso `/api/perfiles/tecnico/mesa/tomar`.
 Implementa transacciones parametrizadas contra PostgreSQL que garantizan integridad referencial absoluta.
 
 #### Flujo de Procesamiento Interno Paso a Paso
@@ -8525,14 +8525,14 @@ UPDATE ticket SET id_usuario_asignado = $1, id_estado = CASE WHEN id_estado = 1 
 
 ---
 
-### 5.108 Endpoint: `/api/tecnico/recordatorios`
-* **Ruta Canonica**: `/api/tecnico/recordatorios`
+### 5.108 Endpoint: `/api/perfiles/tecnico/recordatorios`
+* **Ruta Canonica**: `/api/perfiles/tecnico/recordatorios`
 * **Metodos HTTP Disponibles**: `GET`, `POST`, `PATCH`
 * **Archivo Fuente en Repositorio**: `api/tecnico/recordatorios/route.ts`
 * **Nivel de Seguridad y Perfil Requerido**: Autenticacion obligatoria (Sesion JWT en cookie sesion_tickets)
 
 #### Proposito Operacional y Contexto ITIL v4
-Este controlador atiende las peticiones dirigidas al recurso `/api/tecnico/recordatorios`.
+Este controlador atiende las peticiones dirigidas al recurso `/api/perfiles/tecnico/recordatorios`.
 Implementa transacciones parametrizadas contra PostgreSQL que garantizan integridad referencial absoluta.
 
 #### Flujo de Procesamiento Interno Paso a Paso
@@ -8591,14 +8591,14 @@ SELECT * FROM tecnico_recordatorios WHERE id_usuario = $1 ORDER BY fecha_hora AS
 
 ---
 
-### 5.109 Endpoint: `/api/tecnico/usuarios`
-* **Ruta Canonica**: `/api/tecnico/usuarios`
+### 5.109 Endpoint: `/api/perfiles/tecnico/usuarios`
+* **Ruta Canonica**: `/api/perfiles/tecnico/usuarios`
 * **Metodos HTTP Disponibles**: `GET`
 * **Archivo Fuente en Repositorio**: `api/tecnico/usuarios/route.ts`
 * **Nivel de Seguridad y Perfil Requerido**: Autenticacion obligatoria (Sesion JWT en cookie sesion_tickets)
 
 #### Proposito Operacional y Contexto ITIL v4
-Este controlador atiende las peticiones dirigidas al recurso `/api/tecnico/usuarios`.
+Este controlador atiende las peticiones dirigidas al recurso `/api/perfiles/tecnico/usuarios`.
 Implementa transacciones parametrizadas contra PostgreSQL que garantizan integridad referencial absoluta.
 
 #### Flujo de Procesamiento Interno Paso a Paso
@@ -11493,8 +11493,8 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 #### Dependencias de Servicios API (Data Fetching)
 Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints:
 * `/api/tickets?vista=asignados&_t=${Date.now()}`
-* `/api/tecnico/recordatorios?_t=${Date.now()}`
-* `/api/tecnico/recordatorios`
+* `/api/perfiles/tecnico/recordatorios?_t=${Date.now()}`
+* `/api/perfiles/tecnico/recordatorios`
 
 #### Flujo de Interaccion del Usuario y Reglas de UX
 1. **Carga Inicial**: Se evalua la sesion activa. Si no cumple con el perfil, el layout redirige o restringe la operacion.
@@ -11601,7 +11601,7 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 #### Dependencias de Servicios API (Data Fetching)
 Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints:
 * `/api/cambios?vista=impacto&_t=${Date.now()}`
-* `/api/tecnico/cambios/enterado`
+* `/api/perfiles/tecnico/cambios/enterado`
 
 #### Flujo de Interaccion del Usuario y Reglas de UX
 1. **Carga Inicial**: Se evalua la sesion activa. Si no cumple con el perfil, el layout redirige o restringe la operacion.
@@ -12104,7 +12104,7 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 #### Dependencias de Servicios API (Data Fetching)
 Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints:
 * `/api/tickets?vista=bandeja&_t=${Date.now()}`
-* `/api/tecnico/mesa/tomar`
+* `/api/perfiles/tecnico/mesa/tomar`
 
 #### Flujo de Interaccion del Usuario y Reglas de UX
 1. **Carga Inicial**: Se evalua la sesion activa. Si no cumple con el perfil, el layout redirige o restringe la operacion.
@@ -12196,7 +12196,7 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints:
 * `/api/tickets?vista=asignados&_t=${Date.now()}`
 * `/api/tickets?vista=bandeja&_t=${Date.now()}`
-* `/api/tecnico/recordatorios?_t=${Date.now()}`
+* `/api/perfiles/tecnico/recordatorios?_t=${Date.now()}`
 * `/api/tickets?vista=resueltos&solo_asignados_a_mi=1&_t=${Date.now()}`
 
 #### Flujo de Interaccion del Usuario y Reglas de UX
@@ -12493,8 +12493,8 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 #### Dependencias de Servicios API (Data Fetching)
 Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints:
-* `/api/tecnico/recordatorios?_t=${Date.now()}`
-* `/api/tecnico/recordatorios`
+* `/api/perfiles/tecnico/recordatorios?_t=${Date.now()}`
+* `/api/perfiles/tecnico/recordatorios`
 
 #### Flujo de Interaccion del Usuario y Reglas de UX
 1. **Carga Inicial**: Se evalua la sesion activa. Si no cumple con el perfil, el layout redirige o restringe la operacion.
@@ -12863,7 +12863,7 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 * `/api/mi-cuenta`
 * `/api/admin/configuracion?clave=formularios_solicitante_config`
 * `/api/admin/sla`
-* `/api/tecnico/usuarios?q=${encodeURIComponent(termino.trim())}`
+* `/api/perfiles/tecnico/usuarios?q=${encodeURIComponent(termino.trim())}`
 
 #### Flujo de Interaccion del Usuario y Reglas de UX
 1. **Carga Inicial**: Se evalua la sesion activa. Si no cumple con el perfil, el layout redirige o restringe la operacion.

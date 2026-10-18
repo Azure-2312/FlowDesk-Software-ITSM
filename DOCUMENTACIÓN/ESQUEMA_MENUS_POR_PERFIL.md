@@ -471,33 +471,33 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 ### 1 Mi trabajo  `EXISTE`
 Espacio personal del técnico (Prompt 4, M1).
 - Ruta: `/tecnico`
-- Archivos existentes: `src/app/plataforma/tecnico/page.tsx`
+- Archivos existentes: `src/app/plataforma/perfiles/tecnico/page.tsx`
 - **1.1** Panel del técnico — `EXISTE`
   - Ruta: `/tecnico/panel`
   - Función: Qué atender ahora: indicadores, tickets urgentes, agenda, avisos y carga.
-  - Archivos existentes: `src/app/plataforma/tecnico/panel/page.tsx`, `src/app/api/tecnico/contadores/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/panel/page.tsx`, `src/app/api/perfiles/tecnico/contadores/route.ts`
   - **1.1.1** Indicadores y atender ahora — `EXISTE` — Asignados, sin asignar, por vencer, vencidos, en espera y resueltos hoy.
   - **1.1.2** Avisos y menciones — `EXISTE`
   - **1.1.3** Personalizar panel — `EXISTE` — Mostrar, ocultar y reordenar widgets.
 - **1.2** Mis tareas — `EXISTE`
   - Ruta: `/tecnico/tareas`
   - Función: Tareas de tickets, problemas, cambios, mantenimientos y recordatorios personales.
-  - Archivos existentes: `src/app/plataforma/tecnico/tareas/page.tsx`, `src/app/api/tecnico/recordatorios/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/tareas/page.tsx`, `src/app/api/perfiles/tecnico/recordatorios/route.ts`
 - **1.3** Mi agenda y disponibilidad — `EXISTE`
   - Ruta: `/tecnico/agenda`
   - Función: Calendario personal y estado Disponible / Ocupado / No disponible.
-  - Archivos existentes: `src/app/plataforma/tecnico/agenda/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/agenda/page.tsx`
 - **1.4** Mi desempeño — `EXISTE`
   - Ruta: `/tecnico/desempeno`
   - Función: Indicadores propios y agregados del grupo.
-  - Archivos existentes: `src/app/plataforma/tecnico/desempeno/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/desempeno/page.tsx`
 
 ### 2 Mesa de Servicio  `EXISTE`
 - Ruta: `/tecnico/mesa`
 - **2.1** Mis tickets asignados — `EXISTE`
   - Ruta: `/tecnico/mesa/asignados`
   - Función: Cola personal con SLA y acciones rápidas.
-  - Archivos existentes: `src/app/plataforma/tecnico/mesa/asignados/page.tsx`, `src/modules/tickets/components/TablaTickets.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/mesa/asignados/page.tsx`, `src/modules/tickets/components/TablaTickets.tsx`
   - **2.1.1** Detalle del ticket (vista Operador) — `EXISTE`
     - Ruta: `/tickets/[id]`
     - Función: Tomar, atender, esperar, escalar, resolver, vincular problema o RFC.
@@ -505,112 +505,112 @@ Espacio personal del técnico (Prompt 4, M1).
 - **2.2** Bandeja de pendientes — `EXISTE`
   - Ruta: `/tecnico/mesa/pendientes`
   - Función: Cola sin asignar de mis grupos; tomar de forma atómica.
-  - Archivos existentes: `src/app/plataforma/tecnico/mesa/pendientes/page.tsx`, `src/app/api/tecnico/mesa/tomar/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/mesa/pendientes/page.tsx`, `src/app/api/perfiles/tecnico/mesa/tomar/route.ts`
 - **2.3** Tickets de mi área técnica — `EXISTE`
   - Ruta: `/tecnico/mesa/area`
   - Función: Consulta de todo el departamento de TI y ofrecer ayuda.
-  - Archivos existentes: `src/app/plataforma/tecnico/mesa/area/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/mesa/area/page.tsx`
 - **2.4** Registrar ticket para un usuario — `EXISTE`
   - Ruta: `/tecnico/mesa/registrar`
   - Función: Registro por teléfono, chat o presencial, con resolución en primer contacto.
-  - Archivos existentes: `src/app/plataforma/tecnico/mesa/registrar/page.tsx`, `src/app/api/tecnico/usuarios/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/mesa/registrar/page.tsx`, `src/app/api/perfiles/tecnico/usuarios/route.ts`
 - **2.5** Búsqueda avanzada — `EXISTE`
   - Ruta: `/tecnico/mesa/buscar`
-  - Archivos existentes: `src/app/plataforma/tecnico/mesa/buscar/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/mesa/buscar/page.tsx`
 - **2.6** Historial de resueltos — `EXISTE`
   - Ruta: `/tecnico/mesa/historial`
-  - Archivos existentes: `src/app/plataforma/tecnico/mesa/historial/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/mesa/historial/page.tsx`
 - **2.7** Incidente mayor (sala de crisis) — `NUEVO`
   - Ruta: `/tecnico/mesa/incidente-mayor`
   - Función: Vista de coordinación cuando el Supervisor declara un incidente mayor: línea de tiempo, tareas y comunicados.
-  - Archivos existentes: `src/app/plataforma/tecnico/mesa/incidente-mayor/page.tsx`, `src/app/api/tecnico/incidente-mayor/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/mesa/incidente-mayor/page.tsx`, `src/app/api/perfiles/tecnico/incidente-mayor/route.ts`
 
 ### 3 Seguimiento de SLA  `EXISTE`
 - Ruta: `/tecnico/sla`
 - **3.1** Semáforo de SLA de mi cola — `EXISTE`
   - Ruta: `/tecnico/sla/semaforo`
-  - Archivos existentes: `src/app/plataforma/tecnico/sla/semaforo/page.tsx`, `src/shared/lib/sla.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/sla/semaforo/page.tsx`, `src/shared/lib/sla.ts`
 - **3.2** Objetivos de tiempo vigentes — `EXISTE`
   - Ruta: `/tecnico/sla/objetivos`
-  - Archivos existentes: `src/app/plataforma/tecnico/sla/objetivos/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/sla/objetivos/page.tsx`
 
 ### 4 Gestión de Problemas  `EXISTE`
 - Ruta: `/tecnico/problemas`
 - **4.1** Problemas asignados a mí — `EXISTE`
   - Ruta: `/tecnico/problemas/asignados`
-  - Archivos existentes: `src/app/plataforma/tecnico/problemas/asignados/page.tsx`, `src/modules/problemas/components/ProblemasWorkspace.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/problemas/asignados/page.tsx`, `src/modules/problemas/components/ProblemasWorkspace.tsx`
 - **4.2** Problemas de mi grupo — `EXISTE`
   - Ruta: `/tecnico/problemas/grupo`
-  - Archivos existentes: `src/app/plataforma/tecnico/problemas/grupo/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/problemas/grupo/page.tsx`
 - **4.3** Registrar problema — `EXISTE`
   - Ruta: `/tecnico/problemas/nuevo`
-  - Archivos existentes: `src/app/plataforma/tecnico/problemas/nuevo/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/problemas/nuevo/page.tsx`
 - **4.4** Candidatos a problema — `EXISTE`
   - Ruta: `/tecnico/problemas/candidatos`
-  - Archivos existentes: `src/app/plataforma/tecnico/problemas/candidatos/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/problemas/candidatos/page.tsx`
 - **4.5** Errores conocidos (KEDB) — `EXISTE`
   - Ruta: `/tecnico/problemas/errores-conocidos`
-  - Archivos existentes: `src/app/plataforma/tecnico/problemas/errores-conocidos/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/problemas/errores-conocidos/page.tsx`
 
 ### 5 Gestión de Cambios  `EXISTE`
 - Ruta: `/tecnico/cambios`
 - **5.1** Mis cambios — `EXISTE`
   - Ruta: `/tecnico/cambios/mis-cambios`
-  - Archivos existentes: `src/app/plataforma/tecnico/cambios/mis-cambios/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/cambios/mis-cambios/page.tsx`
 - **5.2** Registrar solicitud RFC — `EXISTE`
   - Ruta: `/tecnico/cambios/nuevo`
-  - Archivos existentes: `src/app/plataforma/tecnico/cambios/nuevo/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/cambios/nuevo/page.tsx`
 - **5.3** Cambios por implementar — `EXISTE`
   - Ruta: `/tecnico/cambios/implementacion`
   - Función: Consola de implementación: Go/No-Go, bitácora, rollback y resultado.
-  - Archivos existentes: `src/app/plataforma/tecnico/cambios/implementacion/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/cambios/implementacion/page.tsx`
 - **5.4** Calendario de cambios — `EXISTE`
   - Ruta: `/tecnico/cambios/calendario`
-  - Archivos existentes: `src/app/plataforma/tecnico/cambios/calendario/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/cambios/calendario/page.tsx`
 - **5.5** Cambios que afectan mis servicios — `EXISTE`
   - Ruta: `/tecnico/cambios/impacto`
-  - Archivos existentes: `src/app/plataforma/tecnico/cambios/impacto/page.tsx`, `src/app/api/tecnico/cambios/enterado/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/cambios/impacto/page.tsx`, `src/app/api/perfiles/tecnico/cambios/enterado/route.ts`
 - **5.6** Historial de cambios — `EXISTE`
   - Ruta: `/tecnico/cambios/historial`
-  - Archivos existentes: `src/app/plataforma/tecnico/cambios/historial/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/cambios/historial/page.tsx`
 
 ### 6 Activos y CMDB  `EXISTE`
 - Ruta: `/tecnico/activos`
 - **6.1** Inventario de activos — `EXISTE`
   - Ruta: `/tecnico/activos/inventario`
-  - Archivos existentes: `src/app/plataforma/tecnico/activos/inventario/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/activos/inventario/page.tsx`
 - **6.2** Mapa de topología CMDB — `EXISTE`
   - Ruta: `/tecnico/activos/mapa`
-  - Archivos existentes: `src/app/plataforma/tecnico/activos/mapa/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/activos/mapa/page.tsx`
 - **6.3** Mantenimiento y reparaciones — `EXISTE`
   - Ruta: `/tecnico/activos/mantenimiento`
-  - Archivos existentes: `src/app/plataforma/tecnico/activos/mantenimiento/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/activos/mantenimiento/page.tsx`
 - **6.4** Inventario físico en campo — `EXISTE`
   - Ruta: `/tecnico/activos/conteos`
   - Función: Conteo con escaneo desde teléfono.
-  - Archivos existentes: `src/app/plataforma/tecnico/activos/conteos/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/activos/conteos/page.tsx`
 - **6.5** Licencias de software (consulta) — `EXISTE`
   - Ruta: `/tecnico/activos/licencias`
-  - Archivos existentes: `src/app/plataforma/tecnico/activos/licencias/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/activos/licencias/page.tsx`
 
 ### 7 Gestión del Conocimiento  `EXISTE`
 - Ruta: `/tecnico/conocimiento`
 - **7.1** Base de conocimiento — `EXISTE`
   - Ruta: `/tecnico/conocimiento/base`
-  - Archivos existentes: `src/app/plataforma/tecnico/conocimiento/base/page.tsx`, `src/app/api/conocimiento/route.ts`, `src/app/api/conocimiento/[id]/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/conocimiento/base/page.tsx`, `src/app/api/conocimiento/route.ts`, `src/app/api/conocimiento/[id]/route.ts`
 - **7.2** Mis artículos — `EXISTE`
   - Ruta: `/tecnico/conocimiento/mis-articulos`
-  - Archivos existentes: `src/app/plataforma/tecnico/conocimiento/mis-articulos/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/conocimiento/mis-articulos/page.tsx`
 - **7.3** Crear artículo — `EXISTE`
   - Ruta: `/tecnico/conocimiento/nuevo`
-  - Archivos existentes: `src/app/plataforma/tecnico/conocimiento/nuevo/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/conocimiento/nuevo/page.tsx`
 - **7.4** Revisiones pendientes — `EXISTE`
   - Ruta: `/tecnico/conocimiento/revisiones`
-  - Archivos existentes: `src/app/plataforma/tecnico/conocimiento/revisiones/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/conocimiento/revisiones/page.tsx`
 
 ### 8 Catálogo de servicios (consulta)  `EXISTE`
 - Ruta: `/tecnico/catalogo`
-- Archivos existentes: `src/app/plataforma/tecnico/catalogo/page.tsx`
+- Archivos existentes: `src/app/plataforma/perfiles/tecnico/catalogo/page.tsx`
 
 ### 9 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
@@ -729,7 +729,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Página de inicio del supervisor: estado del equipo en un vistazo.
 - Ruta: `/supervisor/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos existentes: `src/app/plataforma/supervisor/panel/page.tsx`, `src/app/api/supervisor/panel/route.ts`, `src/modules/supervisor/services/supervisionService.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/supervisor/panel/page.tsx`, `src/app/api/perfiles/supervisor/panel/route.ts`, `src/modules/supervisor/services/supervisionService.ts`
 - **1.1** Indicadores del equipo — `NUEVO` — SLA del grupo, backlog, sin asignar, vencidos, escalados, CSAT y reabiertos.
 - **1.2** Alertas y riesgos — `NUEVO` — Incidentes mayores, P1/P2 sin asignar, técnicos sobrecargados y aprobaciones vencidas.
 - **1.3** Accesos rápidos — `NUEVO` — Asignar, ver monitoreo, declarar incidente mayor.
@@ -754,7 +754,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
     - Ruta: `/supervisor/equipo/ausencias`
     - Función: Registrar y editar ausencias de mi equipo; las usa la asignación automática.
     - Archivos existentes: `src/app/api/admin/tecnicos/ausencias/route.ts`
-    - Archivos existentes: `src/app/plataforma/supervisor/equipo/ausencias/page.tsx`, `src/app/api/supervisor/ausencias/route.ts`
+    - Archivos existentes: `src/app/plataforma/perfiles/supervisor/equipo/ausencias/page.tsx`, `src/app/api/perfiles/supervisor/ausencias/route.ts`
 - **2.3** Todos los tickets de mi área técnica — `EXISTE`
   - Ruta: `/tickets/gestion/todos`
   - Archivos existentes: `src/app/plataforma/tickets/gestion/todos/page.tsx`, `src/modules/tickets/ticket-detail/presentadores/VistaTicketSupervisor.tsx`
@@ -762,11 +762,11 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
   - Ruta: `/supervisor/sla/escalamientos`
   - Función: Tickets escalados jerárquicamente y en riesgo; permite intervenir.
   - Archivos existentes: `src/shared/lib/sla.ts`
-  - Archivos existentes: `src/app/plataforma/supervisor/sla/escalamientos/page.tsx`, `src/app/api/supervisor/sla/escalamientos/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/sla/escalamientos/page.tsx`, `src/app/api/perfiles/supervisor/sla/escalamientos/route.ts`
 - **2.5** Incidentes mayores — `NUEVO`
   - Ruta: `/supervisor/incidentes-mayores`
   - Función: Declarar, coordinar, comunicar y cerrar incidentes mayores.
-  - Archivos existentes: `src/app/plataforma/supervisor/incidentes-mayores/page.tsx`, `src/app/api/supervisor/incidentes-mayores/route.ts`, `src/modules/incidentes/services/incidentesMayoresService.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/incidentes-mayores/page.tsx`, `src/app/api/perfiles/supervisor/incidentes-mayores/route.ts`, `src/modules/incidentes/services/incidentesMayoresService.ts`
 
 ### 3 Gestión de tickets  `EXISTE`
 - Ruta: `/tickets/gestion`
@@ -801,16 +801,16 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **4.1** Semáforo de SLA del grupo — `NUEVO`
   - Ruta: `/supervisor/sla/semaforo`
   - Función: Misma vista que el técnico con alcance de todo el grupo.
-  - Archivos existentes: `src/app/plataforma/tecnico/sla/semaforo/page.tsx`
-  - Archivos existentes: `src/app/plataforma/supervisor/sla/semaforo/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/sla/semaforo/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/sla/semaforo/page.tsx`
 - **4.2** Objetivos de tiempo vigentes — `ADAPTAR`
   - Ruta: `/tecnico/sla/objetivos`
   - Función: Se reutiliza en modo consulta.
-  - Archivos existentes: `src/app/plataforma/tecnico/sla/objetivos/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/sla/objetivos/page.tsx`
 - **4.3** Incumplimientos y causas — `NUEVO`
   - Ruta: `/supervisor/sla/incumplimientos`
   - Función: Análisis de tickets vencidos por servicio, técnico y causa.
-  - Archivos existentes: `src/app/plataforma/supervisor/sla/incumplimientos/page.tsx`, `src/app/api/supervisor/sla/incumplimientos/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/sla/incumplimientos/page.tsx`, `src/app/api/perfiles/supervisor/sla/incumplimientos/route.ts`
 
 ### 5 Gestión de Problemas  `EXISTE`
 - Ruta: `/problemas`
@@ -820,7 +820,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **5.2** Asignación de problemas — `NUEVO`
   - Ruta: `/supervisor/problemas/asignar`
   - Función: Reparte problemas sin responsable mientras no exista el Gestor de Problemas.
-  - Archivos existentes: `src/app/plataforma/supervisor/problemas/asignar/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/problemas/asignar/page.tsx`
 - **5.3** Errores conocidos — `EXISTE`
   - Ruta: `/problemas/kedb`
   - Archivos existentes: `src/app/plataforma/problemas/kedb/page.tsx`
@@ -831,19 +831,19 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
   - Ruta: `/supervisor/cambios/aprobaciones`
   - Función: Etapa Técnica de las RFC del grupo implementador; segregación de funciones.
   - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
-  - Archivos existentes: `src/app/plataforma/supervisor/cambios/aprobaciones/page.tsx`, `src/app/api/supervisor/cambios/aprobaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/cambios/aprobaciones/page.tsx`, `src/app/api/perfiles/supervisor/cambios/aprobaciones/route.ts`
 - **6.2** Calendario de cambios — `EXISTE`
   - Ruta: `/cambios/gestion/calendario`
   - Archivos existentes: `src/app/plataforma/cambios/gestion/calendario/page.tsx`
 - **6.3** Cambios que afectan a mi equipo — `NUEVO`
   - Ruta: `/supervisor/cambios/impacto`
   - Función: Misma lógica del técnico con alcance de grupo.
-  - Archivos existentes: `src/app/plataforma/tecnico/cambios/impacto/page.tsx`
-  - Archivos existentes: `src/app/plataforma/supervisor/cambios/impacto/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/cambios/impacto/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/cambios/impacto/page.tsx`
 - **6.4** Programación de implementaciones del equipo — `NUEVO`
   - Ruta: `/supervisor/cambios/programar`
   - Función: Programar y reprogramar dentro de ventanas permitidas.
-  - Archivos existentes: `src/app/plataforma/supervisor/cambios/programar/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/cambios/programar/page.tsx`
 
 ### 7 Activos  `EXISTE`
 - Ruta: `/activos`
@@ -853,7 +853,7 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **7.2** Aprobación de bajas de mi área — `NUEVO`
   - Ruta: `/supervisor/activos/bajas`
   - Función: Aprueba o rechaza bajas solicitadas por técnicos.
-  - Archivos existentes: `src/app/plataforma/supervisor/activos/bajas/page.tsx`, `src/app/api/supervisor/activos/bajas/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/activos/bajas/page.tsx`, `src/app/api/perfiles/supervisor/activos/bajas/route.ts`
 - **7.3** Licencias (consulta) — `EXISTE`
   - Ruta: `/activos/licencias`
   - Archivos existentes: `src/app/plataforma/activos/licencias/page.tsx`
@@ -866,8 +866,8 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **8.2** Revisión y publicación de artículos — `NUEVO`
   - Ruta: `/supervisor/conocimiento/revisiones`
   - Función: Revisa artículos del equipo cuando es revisor de la categoría.
-  - Archivos existentes: `src/app/plataforma/tecnico/conocimiento/revisiones/page.tsx`
-  - Archivos existentes: `src/app/plataforma/supervisor/conocimiento/revisiones/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/conocimiento/revisiones/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/conocimiento/revisiones/page.tsx`
 
 ### 9 Reportes del equipo  `NUEVO`
 - Ruta: `/supervisor/reportes`
@@ -878,14 +878,14 @@ Página de inicio del supervisor: estado del equipo en un vistazo.
 - **9.2** Productividad individual — `NUEVO`
   - Ruta: `/supervisor/reportes/productividad`
   - Función: Resueltos, tiempos, reabiertos y satisfacción por técnico (uso de gestión, no punitivo).
-  - Archivos existentes: `src/app/plataforma/supervisor/reportes/productividad/page.tsx`, `src/app/api/supervisor/reportes/productividad/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/reportes/productividad/page.tsx`, `src/app/api/perfiles/supervisor/reportes/productividad/route.ts`
 
 ### 10 Mi equipo  `NUEVO`
 - Ruta: `/supervisor/equipo`
 - **10.1** Vistas y respuestas compartidas — `NUEVO`
   - Ruta: `/supervisor/equipo/vistas`
   - Función: Vistas guardadas y respuestas predefinidas del grupo.
-  - Archivos existentes: `src/app/plataforma/supervisor/equipo/vistas/page.tsx`, `src/app/api/supervisor/equipo/vistas/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/supervisor/equipo/vistas/page.tsx`, `src/app/api/perfiles/supervisor/equipo/vistas/route.ts`
 
 ### 11 Operación de servicios  `EXISTE`
 - Ruta: `/operacion`
@@ -926,7 +926,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Inicio del jefe de área (no TI).
 - Ruta: `/gestor-area/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos existentes: `src/app/plataforma/gestor-area/panel/page.tsx`, `src/app/api/gestor-area/panel/route.ts`, `src/modules/gestor-area/services/areaService.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/gestor-area/panel/page.tsx`, `src/app/api/perfiles/gestor-area/panel/route.ts`, `src/modules/gestor-area/services/areaService.ts`
 - **1.1** Aprobaciones pendientes y vencidas — `NUEVO`
 - **1.2** Tickets del área por estado y SLA — `NUEVO`
 - **1.3** Cambios próximos que afectan a mi área — `NUEVO`
@@ -962,14 +962,14 @@ Inicio del jefe de área (no TI).
 - **3.2** Aprobación de negocio de cambios — `NUEVO`
   - Ruta: `/gestor-area/cambios/aprobaciones`
   - Función: Etapa Negocio de las RFC que afectan a mi departamento.
-  - Archivos existentes: `src/app/plataforma/gestor-area/cambios/aprobaciones/page.tsx`, `src/app/api/gestor-area/cambios/aprobaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-area/cambios/aprobaciones/page.tsx`, `src/app/api/perfiles/gestor-area/cambios/aprobaciones/route.ts`
 - **3.3** Historial de mis decisiones — `NUEVO`
   - Ruta: `/gestor-area/aprobaciones/historial`
-  - Archivos existentes: `src/app/plataforma/gestor-area/aprobaciones/historial/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-area/aprobaciones/historial/page.tsx`
 - **3.4** Delegación de aprobaciones — `NUEVO`
   - Ruta: `/gestor-area/aprobaciones/delegacion`
   - Función: Delegar por ausencia a un suplente del área.
-  - Archivos existentes: `src/app/plataforma/gestor-area/aprobaciones/delegacion/page.tsx`, `src/app/api/gestor-area/aprobaciones/delegacion/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-area/aprobaciones/delegacion/page.tsx`, `src/app/api/perfiles/gestor-area/aprobaciones/delegacion/route.ts`
 
 ### 4 Catálogo de servicios (consulta)  `EXISTE`
 - Ruta: `/tickets/catalogo`
@@ -982,7 +982,7 @@ Inicio del jefe de área (no TI).
   - Archivos existentes: `src/app/plataforma/cambios/gestion/calendario/page.tsx`
 - **5.2** Cambios con interrupción para mi área — `NUEVO`
   - Ruta: `/gestor-area/cambios/impacto`
-  - Archivos existentes: `src/app/plataforma/gestor-area/cambios/impacto/page.tsx`, `src/app/api/gestor-area/cambios/impacto/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-area/cambios/impacto/page.tsx`, `src/app/api/perfiles/gestor-area/cambios/impacto/route.ts`
 - **5.3** Solicitar un cambio de negocio — `ADAPTAR`
   - Ruta: `/cambios/gestion/crear`
   - Función: Solo tipo Normal.
@@ -993,15 +993,15 @@ Inicio del jefe de área (no TI).
 - **6.1** Activos de mi área — `NUEVO`
   - Ruta: `/gestor-area/activos`
   - Función: Lectura de activos por colaborador, sin datos financieros sensibles.
-  - Archivos existentes: `src/app/plataforma/gestor-area/activos/page.tsx`, `src/app/api/gestor-area/activos/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-area/activos/page.tsx`, `src/app/api/perfiles/gestor-area/activos/route.ts`
 - **6.2** Licencias y contratos de mi departamento — `NUEVO`
   - Ruta: `/gestor-area/contratos`
-  - Archivos existentes: `src/app/plataforma/gestor-area/contratos/page.tsx`, `src/app/api/gestor-area/contratos/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-area/contratos/page.tsx`, `src/app/api/perfiles/gestor-area/contratos/route.ts`
 
 ### 7 Reportes del área  `NUEVO`
 Tickets por servicio, SLA percibido, satisfacción y costo referencial consumido.
 - Ruta: `/gestor-area/reportes`
-- Archivos existentes: `src/app/plataforma/gestor-area/reportes/page.tsx`, `src/app/api/gestor-area/reportes/route.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/gestor-area/reportes/page.tsx`, `src/app/api/perfiles/gestor-area/reportes/route.ts`
 
 ### 8 Gestión de Conocimiento  `NUEVO`
 - Ruta: `/conocimiento`
@@ -1034,7 +1034,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Hallazgos, cumplimiento y muestras pendientes (solo lectura).
 - Ruta: `/auditor/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos existentes: `src/app/plataforma/auditor/panel/page.tsx`, `src/app/api/auditor/panel/route.ts`, `src/modules/auditor/services/auditoriaService.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/auditor/panel/page.tsx`, `src/app/api/perfiles/auditor/panel/route.ts`, `src/modules/auditor/services/auditoriaService.ts`
 
 ### 2 Auditoría de tickets  `EXISTE`
 - Ruta: `/tickets/gestion`
@@ -1049,16 +1049,16 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
   - Archivos existentes: `src/app/plataforma/tickets/gestion/auditoria/page.tsx`
   - **2.2.1** Exportar evidencia firmada — `NUEVO`
     - Función: PDF o CSV con huella (hash) y fecha de exportación.
-    - Archivos por crear: `src/app/api/auditor/evidencia/route.ts`
+    - Archivos por crear: `src/app/api/perfiles/auditor/evidencia/route.ts`
 - **2.3** Segregación de funciones — `NUEVO`
   - Ruta: `/auditor/cumplimiento/sod`
   - Función: Detecta aprobaciones del mismo usuario, autoaprobaciones y excepciones.
   - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
-  - Archivos existentes: `src/app/plataforma/auditor/cumplimiento/sod/page.tsx`, `src/app/api/auditor/cumplimiento/sod/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/auditor/cumplimiento/sod/page.tsx`, `src/app/api/perfiles/auditor/cumplimiento/sod/route.ts`
 - **2.4** Muestreo de auditoría — `NUEVO`
   - Ruta: `/auditor/muestreo`
   - Función: Selecciona muestras aleatorias de tickets, cambios y bajas para revisión.
-  - Archivos existentes: `src/app/plataforma/auditor/muestreo/page.tsx`, `src/app/api/auditor/muestreo/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/auditor/muestreo/page.tsx`, `src/app/api/perfiles/auditor/muestreo/route.ts`
 
 ### 3 Auditoría del sistema  `NUEVO`
 - Ruta: `/auditor/sistema`
@@ -1081,7 +1081,7 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
 - **3.5** Recertificación de accesos — `NUEVO`
   - Ruta: `/auditor/accesos/recertificacion`
   - Función: Revisión periódica de usuarios y perfiles con confirmación o retiro.
-  - Archivos existentes: `src/app/plataforma/auditor/accesos/recertificacion/page.tsx`, `src/app/api/auditor/accesos/recertificacion/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/auditor/accesos/recertificacion/page.tsx`, `src/app/api/perfiles/auditor/accesos/recertificacion/route.ts`
 
 ### 4 Cumplimiento de procesos  `NUEVO`
 - Ruta: `/auditor/cumplimiento`
@@ -1090,7 +1090,7 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
   - Archivos existentes: `src/app/plataforma/cambios/gestion/todos/page.tsx`
 - **4.2** Cambios sin autorización o fuera de ventana — `NUEVO`
   - Ruta: `/auditor/cumplimiento/cambios`
-  - Archivos existentes: `src/app/plataforma/auditor/cumplimiento/cambios/page.tsx`, `src/app/api/auditor/cumplimiento/cambios/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/auditor/cumplimiento/cambios/page.tsx`, `src/app/api/perfiles/auditor/cumplimiento/cambios/route.ts`
 - **4.3** Problemas y errores conocidos — `ADAPTAR`
   - Ruta: `/problemas`
   - Archivos existentes: `src/app/plataforma/problemas/page.tsx`, `src/app/plataforma/problemas/kedb/page.tsx`
@@ -1108,11 +1108,11 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
   - Archivos existentes: `src/app/plataforma/activos/licencias/page.tsx`
 - **5.3** Resultados de auditorías de CMDB — `NUEVO`
   - Ruta: `/auditor/cmdb/resultados`
-  - Archivos existentes: `src/app/plataforma/auditor/cmdb/resultados/page.tsx`, `src/app/api/auditor/cmdb/resultados/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/auditor/cmdb/resultados/page.tsx`, `src/app/api/perfiles/auditor/cmdb/resultados/route.ts`
 - **5.4** Bajas y disposición — `NUEVO`
   - Ruta: `/auditor/activos/bajas`
   - Función: Actas de baja, borrado seguro y destino final.
-  - Archivos existentes: `src/app/plataforma/auditor/activos/bajas/page.tsx`, `src/app/api/auditor/activos/bajas/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/auditor/activos/bajas/page.tsx`, `src/app/api/perfiles/auditor/activos/bajas/route.ts`
 
 ### 6 Reportes y evidencias  `NUEVO`
 - Ruta: `/auditor/informes`
@@ -1125,7 +1125,7 @@ Hallazgos, cumplimiento y muestras pendientes (solo lectura).
 - **6.3** Informes de auditoría — `NUEVO`
   - Ruta: `/auditor/informes`
   - Función: Hallazgos, recomendaciones y seguimiento.
-  - Archivos existentes: `src/app/plataforma/auditor/informes/page.tsx`, `src/app/api/auditor/informes/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/auditor/informes/page.tsx`, `src/app/api/perfiles/auditor/informes/route.ts`
 
 ### 7 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
@@ -1154,7 +1154,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Pendientes por vencer, reuniones del comité y decisiones recientes.
 - Ruta: `/aprobador/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos existentes: `src/app/plataforma/aprobador/panel/page.tsx`, `src/app/api/aprobador/panel/route.ts`, `src/modules/aprobador/services/aprobacionesService.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/aprobador/panel/page.tsx`, `src/app/api/perfiles/aprobador/panel/route.ts`, `src/modules/aprobador/services/aprobacionesService.ts`
 
 ### 2 Aprobaciones pendientes  `NUEVO`
 - Ruta: `/aprobador/aprobaciones`
@@ -1162,19 +1162,19 @@ Pendientes por vencer, reuniones del comité y decisiones recientes.
   - Ruta: `/aprobador/cambios`
   - Función: Etapas Dirección y excepciones: aprobar, aprobar con condiciones, rechazar, pedir información o delegar.
   - Archivos existentes: `src/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod.tsx`
-  - Archivos existentes: `src/app/plataforma/aprobador/cambios/page.tsx`, `src/app/api/aprobador/cambios/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/aprobador/cambios/page.tsx`, `src/app/api/perfiles/aprobador/cambios/route.ts`
 - **2.2** Aprobaciones de solicitudes de servicio — `EXISTE`
   - Ruta: `/tickets/gestion/aprobaciones`
   - Archivos existentes: `src/app/plataforma/tickets/gestion/aprobaciones/page.tsx`
 - **2.3** Modelos de cambio estándar — `NUEVO`
   - Ruta: `/aprobador/cambios/modelos`
-  - Archivos existentes: `src/app/plataforma/aprobador/cambios/modelos/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/aprobador/cambios/modelos/page.tsx`
 - **2.4** Bajas y renovaciones por monto — `NUEVO`
   - Ruta: `/aprobador/activos`
-  - Archivos existentes: `src/app/plataforma/aprobador/activos/page.tsx`, `src/app/api/aprobador/activos/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/aprobador/activos/page.tsx`, `src/app/api/perfiles/aprobador/activos/route.ts`
 - **2.5** Riesgo aceptado y cierre de problemas mayores — `NUEVO`
   - Ruta: `/aprobador/problemas`
-  - Archivos existentes: `src/app/plataforma/aprobador/problemas/page.tsx`, `src/app/api/aprobador/problemas/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/aprobador/problemas/page.tsx`, `src/app/api/perfiles/aprobador/problemas/route.ts`
 
 ### 3 Comité asesor de cambios (CAB)  `EXISTE`
 - Ruta: `/cambios/gestion/cab`
@@ -1184,11 +1184,11 @@ Pendientes por vencer, reuniones del comité y decisiones recientes.
   - Archivos existentes: `src/app/plataforma/cambios/gestion/cab/page.tsx`
 - **3.2** Agenda y actas — `NUEVO`
   - Ruta: `/aprobador/cab/agenda`
-  - Archivos existentes: `src/app/plataforma/aprobador/cab/agenda/page.tsx`, `src/app/api/aprobador/cab/agenda/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/aprobador/cab/agenda/page.tsx`, `src/app/api/perfiles/aprobador/cab/agenda/route.ts`
 - **3.3** Comité de emergencia (ECAB) — `NUEVO`
   - Ruta: `/aprobador/cab/emergencia`
   - Función: Decisión rápida con plazo y revisión retroactiva.
-  - Archivos existentes: `src/app/plataforma/aprobador/cab/emergencia/page.tsx`, `src/app/api/aprobador/cab/emergencia/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/aprobador/cab/emergencia/page.tsx`, `src/app/api/perfiles/aprobador/cab/emergencia/route.ts`
 
 ### 4 Calendario de cambios  `EXISTE`
 - Ruta: `/cambios/gestion/calendario`
@@ -1202,17 +1202,17 @@ Presentador con evaluación, riesgo, plan, rollback y botones de decisión.
 
 ### 6 Historial de mis decisiones  `NUEVO`
 - Ruta: `/aprobador/historial`
-- Archivos existentes: `src/app/plataforma/aprobador/historial/page.tsx`, `src/app/api/aprobador/historial/route.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/aprobador/historial/page.tsx`, `src/app/api/perfiles/aprobador/historial/route.ts`
 
 ### 7 Delegaciones  `NUEVO`
 Delegar por ausencia a un suplente con vigencia.
 - Ruta: `/aprobador/delegaciones`
-- Archivos existentes: `src/app/plataforma/aprobador/delegaciones/page.tsx`, `src/app/api/aprobador/delegaciones/route.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/aprobador/delegaciones/page.tsx`, `src/app/api/perfiles/aprobador/delegaciones/route.ts`
 
 ### 8 Reportes de decisiones  `NUEVO`
 Tiempo de respuesta y tasas de aprobación y rechazo.
 - Ruta: `/aprobador/reportes`
-- Archivos existentes: `src/app/plataforma/aprobador/reportes/page.tsx`
+- Archivos existentes: `src/app/plataforma/perfiles/aprobador/reportes/page.tsx`
 
 ### 9 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
@@ -1241,7 +1241,7 @@ Datos personales, cambio de clave y selector de perfil (ya existentes); se ampl�
 Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y PIR vencidas.
 - Ruta: `/gestor-cambios/panel`
 - Archivos existentes: `src/app/plataforma/dashboard/page.tsx`
-- Archivos existentes: `src/app/plataforma/gestor-cambios/panel/page.tsx`, `src/app/api/gestor-cambios/panel/route.ts`, `src/modules/gestor-cambios/services/cambiosGestionService.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/gestor-cambios/panel/page.tsx`, `src/app/api/perfiles/gestor-cambios/panel/route.ts`, `src/modules/gestor-cambios/services/cambiosGestionService.ts`
 
 ### 2 Solicitudes de cambio (RFC)  `EXISTE`
 - Ruta: `/cambios/gestion`
@@ -1253,7 +1253,7 @@ Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y
 - **2.2** Bandeja de RFC por evaluar — `NUEVO`
   - Ruta: `/gestor-cambios/evaluacion`
   - Función: Asignar evaluador, calcular riesgo, revisar conflictos y enviar a autorización.
-  - Archivos existentes: `src/app/plataforma/gestor-cambios/evaluacion/page.tsx`, `src/app/api/gestor-cambios/evaluacion/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-cambios/evaluacion/page.tsx`, `src/app/api/perfiles/gestor-cambios/evaluacion/route.ts`
 - **2.3** Historial consolidado — `EXISTE`
   - Ruta: `/cambios/gestion/todos`
   - Archivos existentes: `src/app/plataforma/cambios/gestion/todos/page.tsx`
@@ -1268,10 +1268,10 @@ Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y
 - **3.1** Seguimiento de etapas de aprobación — `NUEVO`
   - Ruta: `/gestor-cambios/autorizaciones`
   - Función: Etapas pendientes, plazos, recordatorios y escalamiento.
-  - Archivos existentes: `src/app/plataforma/gestor-cambios/autorizaciones/page.tsx`, `src/app/api/gestor-cambios/autorizaciones/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-cambios/autorizaciones/page.tsx`, `src/app/api/perfiles/gestor-cambios/autorizaciones/route.ts`
 - **3.2** Reclasificación y excepciones — `NUEVO`
   - Función: Reclasificar el tipo, conceder excepción de conflicto o de congelamiento con motivo.
-  - Archivos existentes: `src/app/api/gestor-cambios/excepciones/route.ts`
+  - Archivos existentes: `src/app/api/perfiles/gestor-cambios/excepciones/route.ts`
 
 ### 4 Programación e implementación  `NUEVO`
 - Ruta: `/gestor-cambios/programacion`
@@ -1280,15 +1280,15 @@ Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y
   - Archivos existentes: `src/app/plataforma/cambios/gestion/calendario/page.tsx`
 - **4.2** Programación de cambios autorizados — `NUEVO`
   - Ruta: `/gestor-cambios/programacion`
-  - Archivos existentes: `src/app/plataforma/gestor-cambios/programacion/page.tsx`, `src/app/api/gestor-cambios/programacion/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-cambios/programacion/page.tsx`, `src/app/api/perfiles/gestor-cambios/programacion/route.ts`
 - **4.3** Conflictos y capacidad — `NUEVO`
   - Ruta: `/gestor-cambios/conflictos`
   - Función: Solapamientos, congelamientos, feriados y máximos simultáneos.
-  - Archivos existentes: `src/app/plataforma/gestor-cambios/conflictos/page.tsx`, `src/app/api/gestor-cambios/conflictos/route.ts`, `src/modules/gestor-cambios/services/conflictosService.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-cambios/conflictos/page.tsx`, `src/app/api/perfiles/gestor-cambios/conflictos/route.ts`, `src/modules/gestor-cambios/services/conflictosService.ts`
 - **4.4** Seguimiento de ejecución — `NUEVO`
   - Ruta: `/gestor-cambios/ejecucion`
   - Función: Tablero en vivo de cambios en ejecución, extensiones de ventana y rollbacks.
-  - Archivos existentes: `src/app/plataforma/gestor-cambios/ejecucion/page.tsx`, `src/app/api/gestor-cambios/ejecucion/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-cambios/ejecucion/page.tsx`, `src/app/api/perfiles/gestor-cambios/ejecucion/route.ts`
 
 ### 5 Comité asesor de cambios (CAB)  `EXISTE`
 - Ruta: `/cambios/gestion/cab`
@@ -1298,17 +1298,17 @@ Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y
 - **5.2** Convocatoria, agenda y actas — `NUEVO`
   - Ruta: `/gestor-cambios/cab/agenda`
   - Función: Genera agenda con corte, convoca reuniones extraordinarias y emite el acta.
-  - Archivos existentes: `src/app/plataforma/gestor-cambios/cab/agenda/page.tsx`, `src/app/api/gestor-cambios/cab/agenda/route.ts`
+  - Archivos existentes: `src/app/plataforma/perfiles/gestor-cambios/cab/agenda/page.tsx`, `src/app/api/perfiles/gestor-cambios/cab/agenda/route.ts`
 
 ### 6 Revisión post-implementación  `NUEVO`
 PIR pendientes y vencidas; incidentes causados; lecciones aprendidas.
 - Ruta: `/gestor-cambios/pir`
-- Archivos existentes: `src/app/plataforma/gestor-cambios/pir/page.tsx`, `src/app/api/gestor-cambios/pir/route.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/gestor-cambios/pir/page.tsx`, `src/app/api/perfiles/gestor-cambios/pir/route.ts`
 
 ### 7 Modelos de cambio estándar  `NUEVO`
 Consulta y propuesta de modelos, métricas de éxito y suspensiones.
 - Ruta: `/gestor-cambios/modelos`
-- Archivos existentes: `src/app/plataforma/gestor-cambios/modelos/page.tsx`, `src/app/api/gestor-cambios/modelos/route.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/gestor-cambios/modelos/page.tsx`, `src/app/api/perfiles/gestor-cambios/modelos/route.ts`
 
 ### 8 Reglas de calendario  `ADAPTAR`
 - Ruta: `/gestor-cambios/calendario-reglas`
@@ -1326,7 +1326,7 @@ Consulta y propuesta de modelos, métricas de éxito y suspensiones.
 ### 9 Reportes de cambios  `NUEVO`
 Tasa de éxito, emergencias, tiempos de ciclo, incidentes causados y cumplimiento de ventana.
 - Ruta: `/gestor-cambios/reportes`
-- Archivos existentes: `src/app/plataforma/gestor-cambios/reportes/page.tsx`, `src/app/api/gestor-cambios/reportes/route.ts`
+- Archivos existentes: `src/app/plataforma/perfiles/gestor-cambios/reportes/page.tsx`, `src/app/api/perfiles/gestor-cambios/reportes/route.ts`
 
 ### 10 Mi cuenta  `ADAPTAR`
 Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.
@@ -1517,7 +1517,7 @@ Asignar responsables, grupos y prioridad.
 - **4.1** Candidatos a problema — `NUEVO`
   - Ruta: `/gestor-problemas/candidatos`
   - Función: Sugerencias de las reglas de umbral con alcance global.
-  - Archivos existentes: `src/app/plataforma/tecnico/problemas/candidatos/page.tsx`
+  - Archivos existentes: `src/app/plataforma/perfiles/tecnico/problemas/candidatos/page.tsx`
   - Archivos existentes: `src/app/plataforma/gestor-problemas/candidatos/page.tsx`, `src/app/api/gestor-problemas/candidatos/route.ts`
 - **4.2** Incidentes recurrentes — `NUEVO`
   - Ruta: `/gestor-problemas/recurrentes`

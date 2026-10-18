@@ -619,7 +619,7 @@ modules/conocimiento/
 - KEDB y known errors.
 
 ### Archivos actuales
-- `src/app/plataforma/tecnico/conocimiento/**/*.tsx`
+- `src/app/plataforma/perfiles/tecnico/conocimiento/**/*.tsx`
 - `src/app/api/conocimiento/route.ts`
 - `src/app/api/conocimiento/[id]/route.ts`
 - `src/app/api/admin/conocimiento/**/*.ts`

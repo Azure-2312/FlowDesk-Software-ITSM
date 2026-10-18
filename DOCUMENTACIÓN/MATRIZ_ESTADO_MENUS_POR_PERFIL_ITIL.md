@@ -221,7 +221,7 @@
 | **6** | **Reportes y evidencias** | — | ⚠️ | MR | COBIT | — |
 | 6.1 | Indicadores operativos y SLA | `/tickets/reportes` | ✅ | MR | 20000 | — |
 | 6.2 | Tableros (lectura) | `/admin/reportes-disenador` | ✅ | MR | COBIT | — |
-| 6.3 | Informes de auditoría | `/auditor/informes` | ⚠️ | ISM | COBIT | Falta API `/api/auditor/evidencia` |
+| 6.3 | Informes de auditoría | `/auditor/informes` | ⚠️ | ISM | COBIT | Falta API `/api/perfiles/auditor/evidencia` |
 | **7** | **Mi cuenta** | `/mi-cuenta` | ✅ | — | — | — |
 | 7.1 | Mi perfil y seguridad | `/mi-cuenta` | ✅ | ISM | 27001 | — |
 | 7.2 | Preferencias de notificación | `/mi-cuenta/notificaciones` | ✅ | — | — | — |
@@ -352,7 +352,7 @@
 | 3 Solicitante | 3.1 Buscar/leer artículos | Página de detalle `/conocimiento/[id]` | ITIL KM |
 | 3 Solicitante | 4.2 Aceptar actas | API `/api/activos/mis-activos/aceptar` | ISO 27001 A.5.11 |
 | 5 Gestor de Área | 2.3 Colaboradores del área | API `/api/area/colaboradores/autorizaciones` | ITIL WTM |
-| 6 Auditor | 6.3 Informes de auditoría | API `/api/auditor/evidencia` | COBIT |
+| 6 Auditor | 6.3 Informes de auditoría | API `/api/perfiles/auditor/evidencia` | COBIT |
 | 7 Aprobador | 5 Detalle de RFC | `PresentadorRfcAprobador.tsx` | ITIL CHG |
 | 10 Gestor de Problemas | 2.2 Detalle del problema | Página `/problemas/[id]` | ITIL PRB |
 | — | (interno) Activos | `src/modules/activos/activosValidaciones.ts` | ISO 19770 |

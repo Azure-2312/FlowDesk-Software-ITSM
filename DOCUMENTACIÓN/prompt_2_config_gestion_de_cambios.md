@@ -153,7 +153,7 @@ Cambios respecto de versiones anteriores de este prompt: **(a)** Gestión de cam
 | 5.1.3 Historial consolidado | `/cambios/gestion/todos` | `.../gestion/todos/page.tsx` |
 | 5.2.1 Dictamen colegiado CAB | `/cambios/gestion/cab` | `.../gestion/cab/page.tsx` |
 | Ticket de RFC | `/cambios/gestion/[id]` | `.../gestion/[id]/page.tsx` |
-| Técnico M5.1 a M5.6 | `/tecnico/cambios/{mis-cambios,nuevo,implementacion,calendario,impacto,historial}` | `src/app/plataforma/tecnico/cambios/*` |
+| Técnico M5.1 a M5.6 | `/tecnico/cambios/{mis-cambios,nuevo,implementacion,calendario,impacto,historial}` | `src/app/plataforma/perfiles/tecnico/cambios/*` |
 | API de operación | `/api/cambios`, `/api/cambios/[id]` | `src/app/api/cambios/*` |
 Las secciones 4 y 5 describen lo que esas pantallas deben mostrar; si algo difiere, aplica la pregunta 1 de la sección 15.
 

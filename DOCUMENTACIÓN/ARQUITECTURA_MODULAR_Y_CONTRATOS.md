@@ -168,6 +168,20 @@ La constante transversal de aprobaciones por monto
 (`UMBRAL_MONTO_APROBACION`) vive en `src/shared/lib/parametros.ts` para no acoplar
 `cambios` con `activos`.
 
+**Rutas de `src/app`.** Por orden, las rutas de rol tambien se agrupan:
+
+- API: `src/app/api/perfiles/<rol>/**` -> URL `/api/perfiles/<rol>/...`
+  (convive con `src/app/api/perfiles/route.ts`, que es el endpoint de **identidades**).
+- Paginas: `src/app/plataforma/perfiles/<rol>/**` -> URL `/plataforma/perfiles/<rol>/...`.
+- Las URL raiz `/tecnico/...`, `/supervisor/...`, `/gestor-area/...`, `/aprobador/...`,
+  `/auditor/...` y `/gestor-cambios/...` se conservan con `rewrites` en `next.config.js`
+  (apuntan a `/plataforma/perfiles/<rol>/:path*`), de modo que el menu guardado en
+  `opciones_menu` sigue funcionando sin migracion de datos.
+
+Las rutas de API de los roles **cambiaron de URL** a `/api/perfiles/<rol>/...`; las
+paginas conservan su URL publica raiz pero su carpeta interna es
+`src/app/plataforma/perfiles/<rol>/`.
+
 ---
 
 ## 4. Propiedad de carpetas por integrante
@@ -178,11 +192,11 @@ cambios cruzados se piden por Pull Request.
 | Integrante | Dominio | Modulos (`src/modules/...`) | Rutas (`src/app/...`) |
 | :--- | :--- | :--- | :--- |
 | **Nucleo** (responsable del nucleo) | Nucleo ITSM con cruces + seguridad | `tickets`, `incidentes`, `solicitudes`, `cambios`, `problemas`, `seguridad`, `plataforma` | `/tickets`, `/incidentes`, `/solicitudes`, `/cambios`, `/problemas`, `/login`, `/mi-cuenta`, `/plataforma/admin/*` del nucleo |
-| **Miguel** (Tech Lead) | Servicios, operacion, SLA y aprobaciones | `servicios`, `operacion`, `perfiles/supervisor`, `perfiles/aprobador` (+ `shared/lib`) | `/plataforma/admin/servicios/*`, `/plataforma/operacion/*`, `/plataforma/supervisor/*`, `/plataforma/aprobador/*` |
-| **Lourdes (Lu)** | Configuracion, consola tecnica y consola de area | `configuracion`, `perfiles/tecnico`, `perfiles/gestor-area` (+ `shared/components`) | `/plataforma/admin/menu`, `/plataforma/admin/notificaciones`, `/plataforma/admin/tickets-*`, `/plataforma/tecnico/*`, `/plataforma/gestor-area/*` |
+| **Miguel** (Tech Lead) | Servicios, operacion, SLA y aprobaciones | `servicios`, `operacion`, `perfiles/supervisor`, `perfiles/aprobador` (+ `shared/lib`) | `/plataforma/admin/servicios/*`, `/plataforma/operacion/*`, `/plataforma/perfiles/supervisor/*`, `/plataforma/perfiles/aprobador/*` |
+| **Lourdes (Lu)** | Configuracion, consola tecnica y consola de area | `configuracion`, `perfiles/tecnico`, `perfiles/gestor-area` (+ `shared/components`) | `/plataforma/admin/menu`, `/plataforma/admin/notificaciones`, `/plataforma/admin/tickets-*`, `/plataforma/perfiles/tecnico/*`, `/plataforma/perfiles/gestor-area/*` |
 | **Alexis** | Conocimiento y mejora continua | `conocimiento`, `reportes` | `/plataforma/conocimiento*`, `/plataforma/dashboard` |
-| **Nain** | Activos, CMDB, proveedores y consola de cambios | `activos`, `cmdb`, `proveedores`, `perfiles/gestor-cambios` | `/plataforma/activos/*`, `/plataforma/gestor-activos/*`, `/plataforma/admin/activos-config/*`, `/plataforma/gestor-cambios/*`, `/plataforma/proveedores` |
-| **Junior** | IAM, organizacion y auditoria | `identidades`, `organizacion`, `perfiles/auditor` | `/plataforma/admin/usuarios`, `/plataforma/admin/perfiles`, `/plataforma/admin/departamentos*`, `/plataforma/admin/tecnicos`, `/plataforma/auditor/*` |
+| **Nain** | Activos, CMDB, proveedores y consola de cambios | `activos`, `cmdb`, `proveedores`, `perfiles/gestor-cambios` | `/plataforma/activos/*`, `/plataforma/gestor-activos/*`, `/plataforma/admin/activos-config/*`, `/plataforma/perfiles/gestor-cambios/*`, `/plataforma/proveedores` |
+| **Junior** | IAM, organizacion y auditoria | `identidades`, `organizacion`, `perfiles/auditor` | `/plataforma/admin/usuarios`, `/plataforma/admin/perfiles`, `/plataforma/admin/departamentos*`, `/plataforma/admin/tecnicos`, `/plataforma/perfiles/auditor/*` |
 
 ### 4.1 Consolas huerfanas: asignacion de territorio
 
@@ -228,3 +242,4 @@ Regla: si hay que cambiar la logica de una consola, se cambia en el **modulo**
 | 2026-10 | `administracion` se parte en `identidades`, `organizacion`, `configuracion` y `plataforma`. |
 | 2026-10 | Nuevo analisis de CMDB: topologia, impacto, reconciliacion Activo <-> CI e historial (`/activos/cmdb/analisis`). |
 | 2026-10 | **Regla inversa**: los 6 modulos de rol se consolidan en `src/modules/perfiles/<rol>/` (un solo modulo `perfiles`); su logica de dominio se reparte a `cambios`, `activos`, `problemas`, `tickets`, `incidentes` y `cmdb`. |
+| 2026-10 | Las rutas de rol se agrupan: `src/app/api/perfiles/<rol>/` y `src/app/plataforma/perfiles/<rol>/`. La API pasa a `/api/perfiles/<rol>/...`; las paginas conservan su URL raiz via `rewrites`. |

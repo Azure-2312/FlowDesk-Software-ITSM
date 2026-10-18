@@ -116,7 +116,7 @@ Convención: **Opción (nivel 1)** → subopciones (nivel 2) con su ruta y estad
 
 ### PERFIL 6 — Auditor (`/auditor/panel`) — 🟢 con 🟡
 
-7 opciones / 30 ítems: Panel de auditoría, Auditoría de tickets (todos, forense, **SoD**, muestreo), Auditoría del sistema (cambios de configuración, seguridad/autenticación, retención, perfiles, recertificación de accesos), Cumplimiento (historial/emergencias, cambios fuera de ventana, problemas/KEDB, SLA), Activos y licencias (inventario, cumplimiento, resultados CMDB, bajas), Reportes y evidencias, Mi cuenta. **🟡 menor:** falta `/api/auditor/evidencia`.
+7 opciones / 30 ítems: Panel de auditoría, Auditoría de tickets (todos, forense, **SoD**, muestreo), Auditoría del sistema (cambios de configuración, seguridad/autenticación, retención, perfiles, recertificación de accesos), Cumplimiento (historial/emergencias, cambios fuera de ventana, problemas/KEDB, SLA), Activos y licencias (inventario, cumplimiento, resultados CMDB, bajas), Reportes y evidencias, Mi cuenta. **🟡 menor:** falta `/api/perfiles/auditor/evidencia`.
 
 ### PERFIL 7 — Aprobador / CAB (`/aprobador/panel`) — 🟢 con 🟡
 
@@ -280,7 +280,7 @@ Formulario de activo/CI, ficha del activo (11 pestañas), importación masiva, i
 | 4 | Solicitante — Conocimiento (3.1) | Falta página de detalle `/conocimiento/[id]` (el voto sí funciona) | 🟡 Parcial |
 | 5 | Solicitante — Mis activos (4.2) | Falta API `/api/activos/mis-activos/aceptar` | 🟡 Parcial |
 | 6 | Gestor de Área — Colaboradores (2.3) | Falta API `/api/area/colaboradores/autorizaciones` | 🟡 Parcial |
-| 7 | Auditor — Reportes/evidencias (6.3) | Falta API `/api/auditor/evidencia` | 🟡 Parcial |
+| 7 | Auditor — Reportes/evidencias (6.3) | Falta API `/api/perfiles/auditor/evidencia` | 🟡 Parcial |
 | 8 | Aprobador — Detalle de RFC (5) | Falta `PresentadorRfcAprobador.tsx` | 🟡 Parcial |
 | 9 | Activos | Falta `src/modules/activos/activosValidaciones.ts` | 🟡 Parcial |
 | 10 | Marco (ITIL 4 / ISO 20000) | Sin gestión financiera de servicios (presupuesto, costeo, facturación) | 🔴 Marco |

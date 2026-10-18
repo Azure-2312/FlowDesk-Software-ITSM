@@ -129,7 +129,7 @@ Módulos: **`servicios`**, **`operacion`**, **`perfiles/supervisor`**, **`perfil
   `VistaEscalamientosSla`, `VistaIncumplimientosSla`, `VistaProductividad`,
   `VistaRecursosEquipo`, `VistaProgramacionCambios`, `VistaAprobacionesTecnicas`,
   `VistaAsignacionProblemas`, `VistaBajasActivos`, `VistaAusenciasEquipo`).
-- **Rutas que maneja:** `src/app/plataforma/supervisor/**` y `src/app/api/supervisor/**`.
+- **Rutas que maneja:** `src/app/plataforma/perfiles/supervisor/**` y `src/app/api/perfiles/supervisor/**`.
 - **Qué hará:** panel de supervisión, incumplimientos y escalamientos de SLA, productividad
   del equipo, recursos/capacidad y las bandejas propias del supervisor.
 - **Ojo (regla inversa):** la aprobación técnica de cambios y la reprogramación viven ahora
@@ -145,7 +145,7 @@ Módulos: **`servicios`**, **`operacion`**, **`perfiles/supervisor`**, **`perfil
   `VistaCabEmergencia`, `VistaDelegacionesAprobador`, `VistaHistorialAprobador`,
   `VistaModelosCambio`, `VistaProblemasMayores`, `VistaBajasRenovaciones`,
   `VistaReportesAprobador`).
-- **Rutas que maneja:** `src/app/plataforma/aprobador/**` y `src/app/api/aprobador/**`.
+- **Rutas que maneja:** `src/app/plataforma/perfiles/aprobador/**` y `src/app/api/perfiles/aprobador/**`.
 - **Qué hará:** agenda de CAB, comité de emergencia (ECAB), umbrales de monto,
   delegaciones de aprobación, historial de decisiones y segregación de funciones (SoD).
 - **Ojo (regla inversa):** el rol **no tiene `services/`**: toda su lógica ya vive en el
@@ -183,8 +183,8 @@ RUTAS DE src/app QUE DEPENDEN DE TUS MÓDULOS (son cascarones delgados; no meten
 - /api/servicios/** , /api/admin/sla/** , /api/admin/sla/matriz/**
 - /plataforma/operacion/eventos , /plataforma/operacion/resiliencia ,
   /api/operacion/eventos/** , /api/operacion/resiliencia/**
-- /plataforma/supervisor/** , /api/supervisor/**
-- /plataforma/aprobador/** , /api/aprobador/**
+- /plataforma/perfiles/supervisor/** , /api/perfiles/supervisor/**
+- /plataforma/perfiles/aprobador/** , /api/perfiles/aprobador/**
 
 REGLA INVERSA (importante): las consolas de rol NO contienen lógica de dominio.
 - La consola del Supervisor resuelve su alcance (departamentos donde
@@ -282,10 +282,10 @@ Módulos: **`configuracion`**, **`perfiles/tecnico`**, **`perfiles/gestor-area`*
   `licencias`, `mantenimiento`, `mapa`), `problemas/` (`asignados`, `candidatos`,
   `errores-conocidos`, `grupo`, `nuevo`), `sla/` (`objetivos`, `semaforo`),
   `agenda/`, `tareas/`, `catalogo/`, `api/` (6), `services/` (3), `index.ts`.
-- **Rutas que maneja:** `src/app/plataforma/tecnico/**`
+- **Rutas que maneja:** `src/app/plataforma/perfiles/tecnico/**`
   (`/tecnico/panel`, `/tecnico/mesa/*`, `/tecnico/cambios/*`, `/tecnico/activos/*`,
   `/tecnico/problemas/*`, `/tecnico/sla/*`, `/tecnico/agenda`, `/tecnico/tareas`,
-  `/tecnico/catalogo`) y `src/app/api/tecnico/**`.
+  `/tecnico/catalogo`) y `src/app/api/perfiles/tecnico/**`.
 - **Qué hará:** la estación de trabajo del técnico: bandeja/mesa, atención de cambios,
   activos, problemas, semáforo de SLA, agenda, tareas y catálogo.
 - **Ojo (regla inversa):** ya no guarda lógica de dominio. Tomar ticket de la mesa vive en
@@ -301,10 +301,10 @@ Módulos: **`configuracion`**, **`perfiles/tecnico`**, **`perfiles/gestor-area`*
   `views/` (8: `VistaPanelArea`, `VistaAprobacionesNegocio`, `VistaCambiosImpactoArea`,
   `VistaContratosArea`, `VistaDelegacionAprobaciones`, `VistaHistorialDecisiones`,
   `VistaActivosArea`, `VistaReportesArea`).
-- **Rutas que maneja:** `src/app/plataforma/gestor-area/**`
+- **Rutas que maneja:** `src/app/plataforma/perfiles/gestor-area/**`
   (`/gestor-area/panel`, `/gestor-area/aprobaciones/*`, `/gestor-area/cambios/*`,
   `/gestor-area/contratos`, `/gestor-area/activos`, `/gestor-area/reportes`) y
-  `src/app/api/gestor-area/**`.
+  `src/app/api/perfiles/gestor-area/**`.
 - **Qué hará:** consola del área de negocio: panel, aprobaciones de negocio, impacto de
   cambios, contratos, activos del área, delegaciones e historial de decisiones.
 - **Ojo (regla inversa):** `areaService` resuelve el área del usuario
@@ -341,8 +341,8 @@ RUTAS DE src/app QUE DEPENDEN DE TUS MÓDULOS (cascarones delgados, sin lógica)
   /plataforma/admin/conocimiento-config
 - /api/menu/** , /api/admin/categorias/** , /api/admin/configuracion ,
   /api/admin/notificaciones/reglas
-- /plataforma/tecnico/** y /api/tecnico/**
-- /plataforma/gestor-area/** y /api/gestor-area/**
+- /plataforma/perfiles/tecnico/** y /api/perfiles/tecnico/**
+- /plataforma/perfiles/gestor-area/** y /api/perfiles/gestor-area/**
 
 REGLA INVERSA (importante): las consolas de rol NO contienen lógica de dominio.
 - perfiles/tecnico ya no tiene mesaService/cambiosEnteradoService/incidenteMayorService:
@@ -415,8 +415,8 @@ vacíos del sistema.)_
   `VistaConocimientoRevisiones`), `index.ts`.
 - **Rutas que maneja:** `src/app/plataforma/conocimiento` y
   `src/app/plataforma/conocimiento/[id]`,
-  `src/app/plataforma/tecnico/conocimiento/**` (base, mis-articulos, nuevo, revisiones),
-  `src/app/plataforma/supervisor/conocimiento/revisiones`,
+  `src/app/plataforma/perfiles/tecnico/conocimiento/**` (base, mis-articulos, nuevo, revisiones),
+  `src/app/plataforma/perfiles/supervisor/conocimiento/revisiones`,
   `src/app/api/conocimiento/**`, `src/app/api/admin/conocimiento/**`.
 - **Qué hará:** artículos de conocimiento, flujo editorial (borrador → revisión →
   publicación), políticas y categorías de conocimiento, y la revisión desde supervisión.
@@ -451,8 +451,8 @@ MÓDULOS Y CARPETAS QUE TE TOCAN (edítalos completos, son tuyos):
 
 RUTAS DE src/app QUE DEPENDEN DE TUS MÓDULOS (cascarones delgados, sin lógica):
 - /plataforma/conocimiento , /plataforma/conocimiento/[id]
-- /plataforma/tecnico/conocimiento/base , /mis-articulos , /nuevo , /revisiones
-- /plataforma/supervisor/conocimiento/revisiones
+- /plataforma/perfiles/tecnico/conocimiento/base , /mis-articulos , /nuevo , /revisiones
+- /plataforma/perfiles/supervisor/conocimiento/revisiones
 - /api/conocimiento/** , /api/admin/conocimiento/**
 - /plataforma/dashboard , /api/reportes/indicadores
 
@@ -550,8 +550,8 @@ Módulos: **`activos`**, **`cmdb`**, **`perfiles/gestor-cambios`**, **`proveedor
   `VistaPanelGestion`, `VistaEvaluacionRfc`, `VistaAutorizaciones`, `VistaCabAgendaGestion`,
   `VistaProgramacion`, `VistaConflictos`, `VistaEjecucion`, `VistaPir`, `VistaModelosGestion`,
   `VistaReportesCambios`).
-- **Rutas que maneja:** `src/app/plataforma/gestor-cambios/**` y
-  `src/app/api/gestor-cambios/**`.
+- **Rutas que maneja:** `src/app/plataforma/perfiles/gestor-cambios/**` y
+  `src/app/api/perfiles/gestor-cambios/**`.
 - **Qué hará:** consola de evaluación de RFC, autorizaciones, agenda de CAB, programación,
   detección de conflictos, ejecución, revisión post-implementación (PIR) y excepciones.
 - **Ojo (regla inversa):** ya **no tiene `services/`**: toda su lógica vive en
@@ -596,7 +596,7 @@ RUTAS DE src/app QUE DEPENDEN DE TUS MÓDULOS (cascarones delgados, sin lógica)
   /plataforma/admin/activos-config/cmdb-relaciones
 - /api/activos/cmdb/** , /api/gestor-activos/cmdb/** , /api/admin/cmdb/tipos ,
   /api/admin/activos-config/cmdb-relaciones/**
-- /plataforma/gestor-cambios/** , /api/gestor-cambios/**
+- /plataforma/perfiles/gestor-cambios/** , /api/perfiles/gestor-cambios/**
 - /plataforma/proveedores , /api/proveedores/**
 
 REGLA INVERSA (importante): la consola del gestor de cambios NO tiene services/: toda su
@@ -683,7 +683,7 @@ Módulos: **`identidades`**, **`organizacion`**, **`perfiles/auditor`**.
   `src/app/plataforma/admin/departamentos-empresa`,
   `src/app/plataforma/admin/tecnicos`, `src/app/api/departamentos-ti/**`,
   `src/app/api/departamentos-empresa/**`, `src/app/api/tecnicos/**`,
-  `src/app/api/admin/tecnicos/ausencias`, `src/app/api/supervisor/ausencias`,
+  `src/app/api/admin/tecnicos/ausencias`, `src/app/api/perfiles/supervisor/ausencias`,
   `src/app/api/area/colaboradores/**`.
 - **Qué hará:** departamentos (TI y empresa), técnicos, colaboradores y sus autorizaciones,
   y ausencias.
@@ -696,10 +696,10 @@ Módulos: **`identidades`**, **`organizacion`**, **`perfiles/auditor`**.
   `views/` (8: `VistaPanelAuditoria`, `VistaSod`, `VistaCambiosIrregulares`,
   `VistaCmdbResultados`, `VistaBajasDisposicion`, `VistaRecertificacion`,
   `VistaMuestreo`, `VistaInformesAuditoria`).
-- **Rutas que maneja:** `src/app/plataforma/auditor/**` (`/auditor/panel`,
+- **Rutas que maneja:** `src/app/plataforma/perfiles/auditor/**` (`/auditor/panel`,
   `/auditor/cumplimiento/*`, `/auditor/accesos/recertificacion`,
   `/auditor/cmdb/resultados`, `/auditor/activos/bajas`, `/auditor/evidencia`,
-  `/auditor/informes`, `/auditor/muestreo`) y `src/app/api/auditor/**`.
+  `/auditor/informes`, `/auditor/muestreo`) y `src/app/api/perfiles/auditor/**`.
 - **Qué hará:** panel de auditoría, cumplimiento (cambios y SoD), recertificación de
   accesos, evidencia, muestreo, informes y consulta de resultados de CMDB.
 - **Ojo (regla inversa):** los controles de exactitud de la CMDB (CMDB-01..07) se movieron a
@@ -737,8 +737,8 @@ RUTAS DE src/app QUE DEPENDEN DE TUS MÓDULOS (cascarones delgados, sin lógica)
 - /plataforma/admin/departamentos , /plataforma/admin/departamentos-empresa ,
   /plataforma/admin/tecnicos
 - /api/departamentos-ti/** , /api/departamentos-empresa/** , /api/tecnicos/** ,
-  /api/admin/tecnicos/ausencias , /api/supervisor/ausencias , /api/area/colaboradores/**
-- /plataforma/auditor/** y /api/auditor/**
+  /api/admin/tecnicos/ausencias , /api/perfiles/supervisor/ausencias , /api/area/colaboradores/**
+- /plataforma/perfiles/auditor/** y /api/perfiles/auditor/**
 
 REGLA INVERSA (importante): la consola del auditor conserva solo lo propio del rol
 (informes, evidencia, recertificación, SoD, cambios irregulares, muestreo, panel). La
