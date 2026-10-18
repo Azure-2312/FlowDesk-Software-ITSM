@@ -100,7 +100,7 @@ El procedimiento sigue los siguientes pasos rigurosos:
 | Perfil ID | Nombre Oficial | Codigo | Descripcion de Privilegios | Rutas Permitidas |
 |:---|:---|:---|:---|:---|
 | 1 | Administrador | ADMIN | Control maestro del sistema, seguridad, configuracion de catalogos, SLAs, CMDB, KEDB y roles | `/admin/*`, `/tickets/*`, `/cambios/*`, `/problemas/*`, `/activos/*`, `/dashboard` |
-| 2 | Tecnico / Especialista | TECNICO | Atencion y resolucion operativa de tickets asignados, cola de mesa, registro de CIs y ejecucion de cambios | `/tecnico/*`, `/tickets/*`, `/problemas/*`, `/cambios/*`, `/activos/*`, `/dashboard` |
+| 2 | Tecnico / Especialista | TECNICO | Atencion y resolucion operativa de tickets asignados, cola de mesa, registro de CIs y ejecucion de cambios | `/plataforma/perfiles/tecnico/*`, `/tickets/*`, `/problemas/*`, `/cambios/*`, `/activos/*`, `/dashboard` |
 | 3 | Solicitante / Consumidor | SOLICITANTE | Portal de autoservicio, catalogo interactivo de servicios, creacion de incidentes y solicitudes, seguimiento | `/tickets/catalogo`, `/tickets/gestion/crear`, `/tickets/gestion/mios`, `/mi-cuenta` |
 | 4 | Supervisor de Mesa | SUPERVISOR | Supervision de colas de trabajo, aprobacion de cambios RFC/CAB, autorizacion de solicitudes SoD, auditoria | `/tickets/gestion/*`, `/cambios/gestion/cab`, `/reportes/*`, `/dashboard` |
 | 5 | Auditor de Calidad | AUDITOR | Auditoria forense de solo lectura a registros inmutables, historiales de tickets, matriz de trazabilidad y logs | `/admin/auditoria-sistema`, `/admin/seguridad-logs`, `/tickets/gestion/auditoria` |
@@ -7669,14 +7669,14 @@ SELECT r.*,s.codigo_servicio,s.nombre AS servicio_nombre FROM resiliencia_servic
 
 ---
 
-### 5.92 Endpoint: `/api/perfiles/[id]`
-* **Ruta Canonica**: `/api/perfiles/[id]`
+### 5.92 Endpoint: `/api/identidades/perfiles/[id]`
+* **Ruta Canonica**: `/api/identidades/perfiles/[id]`
 * **Metodos HTTP Disponibles**: `PUT`, `DELETE`
 * **Archivo Fuente en Repositorio**: `api/perfiles/[id]/route.ts`
 * **Nivel de Seguridad y Perfil Requerido**: Acceso Exclusivo para el Perfil 1 (Administrador del Sistema)
 
 #### Proposito Operacional y Contexto ITIL v4
-Este controlador atiende las peticiones dirigidas al recurso `/api/perfiles/[id]`.
+Este controlador atiende las peticiones dirigidas al recurso `/api/identidades/perfiles/[id]`.
 Implementa transacciones parametrizadas contra PostgreSQL que garantizan integridad referencial absoluta.
 
 #### Flujo de Procesamiento Interno Paso a Paso
@@ -7727,14 +7727,14 @@ SELECT id_perfil FROM perfiles WHERE LOWER(TRIM(nombre)) = LOWER(TRIM($1)) AND i
 
 ---
 
-### 5.93 Endpoint: `/api/perfiles`
-* **Ruta Canonica**: `/api/perfiles`
+### 5.93 Endpoint: `/api/identidades/perfiles`
+* **Ruta Canonica**: `/api/identidades/perfiles`
 * **Metodos HTTP Disponibles**: `GET`, `POST`
 * **Archivo Fuente en Repositorio**: `api/perfiles/route.ts`
 * **Nivel de Seguridad y Perfil Requerido**: Acceso Exclusivo para el Perfil 1 (Administrador del Sistema)
 
 #### Proposito Operacional y Contexto ITIL v4
-Este controlador atiende las peticiones dirigidas al recurso `/api/perfiles`.
+Este controlador atiende las peticiones dirigidas al recurso `/api/identidades/perfiles`.
 Implementa transacciones parametrizadas contra PostgreSQL que garantizan integridad referencial absoluta.
 
 #### Flujo de Procesamiento Interno Paso a Paso
@@ -9875,7 +9875,7 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 #### Dependencias de Servicios API (Data Fetching)
 Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints:
 * `/api/menu/admin`
-* `/api/perfiles`
+* `/api/identidades/perfiles`
 * `/api/menu/admin/${op.id_opcion_menu}`
 
 #### Flujo de Interaccion del Usuario y Reglas de UX
@@ -9988,9 +9988,9 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 #### Dependencias de Servicios API (Data Fetching)
 Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints:
-* `/api/perfiles?todos=true`
+* `/api/identidades/perfiles?todos=true`
 * `/api/menu/admin`
-* `/api/perfiles/${perfil.id_perfil}`
+* `/api/identidades/perfiles/${perfil.id_perfil}`
 
 #### Flujo de Interaccion del Usuario y Reglas de UX
 1. **Carga Inicial**: Se evalua la sesion activa. Si no cumple con el perfil, el layout redirige o restringe la operacion.
@@ -10715,7 +10715,7 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 #### Dependencias de Servicios API (Data Fetching)
 Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints:
 * `/api/usuarios`
-* `/api/perfiles`
+* `/api/identidades/perfiles`
 * `/api/admin/configuracion?clave=vistas_ticket_perfil`
 * `/api/admin/configuracion?clave=flujo_estados_acciones`
 * `/api/admin/configuracion`
@@ -10763,7 +10763,7 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 #### Dependencias de Servicios API (Data Fetching)
 Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints:
 * `/api/usuarios`
-* `/api/perfiles`
+* `/api/identidades/perfiles`
 * `/api/usuarios/${formulario.id_usuario}`
 * `/api/usuarios/enviar-credenciales`
 * `/api/usuarios/${usuario.id_usuario}`
@@ -11298,13 +11298,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.55 Vista: `/tecnico/activos/conteos`
-* **Ruta de Acceso Web**: `/tecnico/activos/conteos`
-* **Archivo Fuente**: `src/app/(app)/tecnico/activos/conteos/page.tsx`
+### 6.55 Vista: `/plataforma/perfiles/tecnico/activos/conteos`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/activos/conteos`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/activos/conteos/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/activos/conteos`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/activos/conteos`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11333,13 +11333,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.56 Vista: `/tecnico/activos/inventario`
-* **Ruta de Acceso Web**: `/tecnico/activos/inventario`
-* **Archivo Fuente**: `src/app/(app)/tecnico/activos/inventario/page.tsx`
+### 6.56 Vista: `/plataforma/perfiles/tecnico/activos/inventario`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/activos/inventario`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/activos/inventario/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/activos/inventario`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/activos/inventario`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11372,13 +11372,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.57 Vista: `/tecnico/activos/licencias`
-* **Ruta de Acceso Web**: `/tecnico/activos/licencias`
-* **Archivo Fuente**: `src/app/(app)/tecnico/activos/licencias/page.tsx`
+### 6.57 Vista: `/plataforma/perfiles/tecnico/activos/licencias`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/activos/licencias`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/activos/licencias/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/activos/licencias`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/activos/licencias`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11402,13 +11402,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.58 Vista: `/tecnico/activos/mantenimiento`
-* **Ruta de Acceso Web**: `/tecnico/activos/mantenimiento`
-* **Archivo Fuente**: `src/app/(app)/tecnico/activos/mantenimiento/page.tsx`
+### 6.58 Vista: `/plataforma/perfiles/tecnico/activos/mantenimiento`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/activos/mantenimiento`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/activos/mantenimiento/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/activos/mantenimiento`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/activos/mantenimiento`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11432,13 +11432,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.59 Vista: `/tecnico/activos/mapa`
-* **Ruta de Acceso Web**: `/tecnico/activos/mapa`
-* **Archivo Fuente**: `src/app/(app)/tecnico/activos/mapa/page.tsx`
+### 6.59 Vista: `/plataforma/perfiles/tecnico/activos/mapa`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/activos/mapa`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/activos/mapa/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/activos/mapa`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/activos/mapa`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11462,13 +11462,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.60 Vista: `/tecnico/agenda`
-* **Ruta de Acceso Web**: `/tecnico/agenda`
-* **Archivo Fuente**: `src/app/(app)/tecnico/agenda/page.tsx`
+### 6.60 Vista: `/plataforma/perfiles/tecnico/agenda`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/agenda`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/agenda/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/agenda`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/agenda`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11505,13 +11505,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.61 Vista: `/tecnico/cambios/calendario`
-* **Ruta de Acceso Web**: `/tecnico/cambios/calendario`
-* **Archivo Fuente**: `src/app/(app)/tecnico/cambios/calendario/page.tsx`
+### 6.61 Vista: `/plataforma/perfiles/tecnico/cambios/calendario`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/cambios/calendario`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/cambios/calendario/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/cambios/calendario`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/cambios/calendario`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11540,13 +11540,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.62 Vista: `/tecnico/cambios/historial`
-* **Ruta de Acceso Web**: `/tecnico/cambios/historial`
-* **Archivo Fuente**: `src/app/(app)/tecnico/cambios/historial/page.tsx`
+### 6.62 Vista: `/plataforma/perfiles/tecnico/cambios/historial`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/cambios/historial`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/cambios/historial/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/cambios/historial`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/cambios/historial`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11575,13 +11575,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.63 Vista: `/tecnico/cambios/impacto`
-* **Ruta de Acceso Web**: `/tecnico/cambios/impacto`
-* **Archivo Fuente**: `src/app/(app)/tecnico/cambios/impacto/page.tsx`
+### 6.63 Vista: `/plataforma/perfiles/tecnico/cambios/impacto`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/cambios/impacto`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/cambios/impacto/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/cambios/impacto`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/cambios/impacto`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11612,13 +11612,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.64 Vista: `/tecnico/cambios/implementacion`
-* **Ruta de Acceso Web**: `/tecnico/cambios/implementacion`
-* **Archivo Fuente**: `src/app/(app)/tecnico/cambios/implementacion/page.tsx`
+### 6.64 Vista: `/plataforma/perfiles/tecnico/cambios/implementacion`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/cambios/implementacion`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/cambios/implementacion/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/cambios/implementacion`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/cambios/implementacion`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11653,13 +11653,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.65 Vista: `/tecnico/cambios/mis-cambios`
-* **Ruta de Acceso Web**: `/tecnico/cambios/mis-cambios`
-* **Archivo Fuente**: `src/app/(app)/tecnico/cambios/mis-cambios/page.tsx`
+### 6.65 Vista: `/plataforma/perfiles/tecnico/cambios/mis-cambios`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/cambios/mis-cambios`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/cambios/mis-cambios/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/cambios/mis-cambios`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/cambios/mis-cambios`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11691,13 +11691,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.66 Vista: `/tecnico/cambios/nuevo`
-* **Ruta de Acceso Web**: `/tecnico/cambios/nuevo`
-* **Archivo Fuente**: `src/app/(app)/tecnico/cambios/nuevo/page.tsx`
+### 6.66 Vista: `/plataforma/perfiles/tecnico/cambios/nuevo`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/cambios/nuevo`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/cambios/nuevo/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/cambios/nuevo`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/cambios/nuevo`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11716,13 +11716,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.67 Vista: `/tecnico/catalogo`
-* **Ruta de Acceso Web**: `/tecnico/catalogo`
-* **Archivo Fuente**: `src/app/(app)/tecnico/catalogo/page.tsx`
+### 6.67 Vista: `/plataforma/perfiles/tecnico/catalogo`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/catalogo`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/catalogo/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/catalogo`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/catalogo`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11754,13 +11754,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.68 Vista: `/tecnico/conocimiento/base`
-* **Ruta de Acceso Web**: `/tecnico/conocimiento/base`
-* **Archivo Fuente**: `src/app/(app)/tecnico/conocimiento/base/page.tsx`
+### 6.68 Vista: `/plataforma/perfiles/tecnico/conocimiento/base`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/conocimiento/base`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/conocimiento/base/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/conocimiento/base`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/conocimiento/base`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11792,13 +11792,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.69 Vista: `/tecnico/conocimiento/mis-articulos`
-* **Ruta de Acceso Web**: `/tecnico/conocimiento/mis-articulos`
-* **Archivo Fuente**: `src/app/(app)/tecnico/conocimiento/mis-articulos/page.tsx`
+### 6.69 Vista: `/plataforma/perfiles/tecnico/conocimiento/mis-articulos`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/conocimiento/mis-articulos`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/conocimiento/mis-articulos/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/conocimiento/mis-articulos`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/conocimiento/mis-articulos`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11828,13 +11828,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.70 Vista: `/tecnico/conocimiento/nuevo`
-* **Ruta de Acceso Web**: `/tecnico/conocimiento/nuevo`
-* **Archivo Fuente**: `src/app/(app)/tecnico/conocimiento/nuevo/page.tsx`
+### 6.70 Vista: `/plataforma/perfiles/tecnico/conocimiento/nuevo`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/conocimiento/nuevo`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/conocimiento/nuevo/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/conocimiento/nuevo`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/conocimiento/nuevo`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11867,13 +11867,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.71 Vista: `/tecnico/conocimiento/revisiones`
-* **Ruta de Acceso Web**: `/tecnico/conocimiento/revisiones`
-* **Archivo Fuente**: `src/app/(app)/tecnico/conocimiento/revisiones/page.tsx`
+### 6.71 Vista: `/plataforma/perfiles/tecnico/conocimiento/revisiones`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/conocimiento/revisiones`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/conocimiento/revisiones/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/conocimiento/revisiones`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/conocimiento/revisiones`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11903,13 +11903,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.72 Vista: `/tecnico/desempeno`
-* **Ruta de Acceso Web**: `/tecnico/desempeno`
-* **Archivo Fuente**: `src/app/(app)/tecnico/desempeno/page.tsx`
+### 6.72 Vista: `/plataforma/perfiles/tecnico/desempeno`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/desempeno`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/desempeno/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/desempeno`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/desempeno`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11928,13 +11928,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.73 Vista: `/tecnico/mesa/area`
-* **Ruta de Acceso Web**: `/tecnico/mesa/area`
-* **Archivo Fuente**: `src/app/(app)/tecnico/mesa/area/page.tsx`
+### 6.73 Vista: `/plataforma/perfiles/tecnico/mesa/area`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/mesa/area`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/mesa/area/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/mesa/area`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/mesa/area`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -11967,13 +11967,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.74 Vista: `/tecnico/mesa/asignados`
-* **Ruta de Acceso Web**: `/tecnico/mesa/asignados`
-* **Archivo Fuente**: `src/app/(app)/tecnico/mesa/asignados/page.tsx`
+### 6.74 Vista: `/plataforma/perfiles/tecnico/mesa/asignados`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/mesa/asignados`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/mesa/asignados/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/mesa/asignados`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/mesa/asignados`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12008,13 +12008,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.75 Vista: `/tecnico/mesa/buscar`
-* **Ruta de Acceso Web**: `/tecnico/mesa/buscar`
-* **Archivo Fuente**: `src/app/(app)/tecnico/mesa/buscar/page.tsx`
+### 6.75 Vista: `/plataforma/perfiles/tecnico/mesa/buscar`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/mesa/buscar`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/mesa/buscar/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/mesa/buscar`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/mesa/buscar`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12033,13 +12033,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.76 Vista: `/tecnico/mesa/historial`
-* **Ruta de Acceso Web**: `/tecnico/mesa/historial`
-* **Archivo Fuente**: `src/app/(app)/tecnico/mesa/historial/page.tsx`
+### 6.76 Vista: `/plataforma/perfiles/tecnico/mesa/historial`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/mesa/historial`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/mesa/historial/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/mesa/historial`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/mesa/historial`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12072,13 +12072,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.77 Vista: `/tecnico/mesa/pendientes`
-* **Ruta de Acceso Web**: `/tecnico/mesa/pendientes`
-* **Archivo Fuente**: `src/app/(app)/tecnico/mesa/pendientes/page.tsx`
+### 6.77 Vista: `/plataforma/perfiles/tecnico/mesa/pendientes`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/mesa/pendientes`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/mesa/pendientes/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/mesa/pendientes`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/mesa/pendientes`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12115,13 +12115,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.78 Vista: `/tecnico/mesa/registrar`
-* **Ruta de Acceso Web**: `/tecnico/mesa/registrar`
-* **Archivo Fuente**: `src/app/(app)/tecnico/mesa/registrar/page.tsx`
+### 6.78 Vista: `/plataforma/perfiles/tecnico/mesa/registrar`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/mesa/registrar`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/mesa/registrar/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/mesa/registrar`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/mesa/registrar`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12140,13 +12140,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.79 Vista: `/tecnico`
-* **Ruta de Acceso Web**: `/tecnico`
-* **Archivo Fuente**: `src/app/(app)/tecnico/page.tsx`
+### 6.79 Vista: `/plataforma/perfiles/tecnico`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12165,13 +12165,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.80 Vista: `/tecnico/panel`
-* **Ruta de Acceso Web**: `/tecnico/panel`
-* **Archivo Fuente**: `src/app/(app)/tecnico/panel/page.tsx`
+### 6.80 Vista: `/plataforma/perfiles/tecnico/panel`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/panel`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/panel/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/panel`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/panel`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12208,13 +12208,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.81 Vista: `/tecnico/problemas/asignados`
-* **Ruta de Acceso Web**: `/tecnico/problemas/asignados`
-* **Archivo Fuente**: `src/app/(app)/tecnico/problemas/asignados/page.tsx`
+### 6.81 Vista: `/plataforma/perfiles/tecnico/problemas/asignados`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/problemas/asignados`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/problemas/asignados/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/problemas/asignados`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/problemas/asignados`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12244,13 +12244,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.82 Vista: `/tecnico/problemas/candidatos`
-* **Ruta de Acceso Web**: `/tecnico/problemas/candidatos`
-* **Archivo Fuente**: `src/app/(app)/tecnico/problemas/candidatos/page.tsx`
+### 6.82 Vista: `/plataforma/perfiles/tecnico/problemas/candidatos`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/problemas/candidatos`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/problemas/candidatos/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/problemas/candidatos`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/problemas/candidatos`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12279,13 +12279,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.83 Vista: `/tecnico/problemas/errores-conocidos`
-* **Ruta de Acceso Web**: `/tecnico/problemas/errores-conocidos`
-* **Archivo Fuente**: `src/app/(app)/tecnico/problemas/errores-conocidos/page.tsx`
+### 6.83 Vista: `/plataforma/perfiles/tecnico/problemas/errores-conocidos`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/problemas/errores-conocidos`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/problemas/errores-conocidos/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/problemas/errores-conocidos`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/problemas/errores-conocidos`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12317,13 +12317,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.84 Vista: `/tecnico/problemas/grupo`
-* **Ruta de Acceso Web**: `/tecnico/problemas/grupo`
-* **Archivo Fuente**: `src/app/(app)/tecnico/problemas/grupo/page.tsx`
+### 6.84 Vista: `/plataforma/perfiles/tecnico/problemas/grupo`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/problemas/grupo`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/problemas/grupo/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/problemas/grupo`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/problemas/grupo`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12353,13 +12353,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.85 Vista: `/tecnico/problemas/nuevo`
-* **Ruta de Acceso Web**: `/tecnico/problemas/nuevo`
-* **Archivo Fuente**: `src/app/(app)/tecnico/problemas/nuevo/page.tsx`
+### 6.85 Vista: `/plataforma/perfiles/tecnico/problemas/nuevo`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/problemas/nuevo`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/problemas/nuevo/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/problemas/nuevo`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/problemas/nuevo`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12393,13 +12393,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.86 Vista: `/tecnico/sla/objetivos`
-* **Ruta de Acceso Web**: `/tecnico/sla/objetivos`
-* **Archivo Fuente**: `src/app/(app)/tecnico/sla/objetivos/page.tsx`
+### 6.86 Vista: `/plataforma/perfiles/tecnico/sla/objetivos`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/sla/objetivos`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/sla/objetivos/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/sla/objetivos`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/sla/objetivos`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12424,13 +12424,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.87 Vista: `/tecnico/sla/semaforo`
-* **Ruta de Acceso Web**: `/tecnico/sla/semaforo`
-* **Archivo Fuente**: `src/app/(app)/tecnico/sla/semaforo/page.tsx`
+### 6.87 Vista: `/plataforma/perfiles/tecnico/sla/semaforo`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/sla/semaforo`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/sla/semaforo/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/sla/semaforo`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/sla/semaforo`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 
@@ -12461,13 +12461,13 @@ Para mantener sincronizada la interfaz, esta vista se comunica con los endpoints
 
 ---
 
-### 6.88 Vista: `/tecnico/tareas`
-* **Ruta de Acceso Web**: `/tecnico/tareas`
-* **Archivo Fuente**: `src/app/(app)/tecnico/tareas/page.tsx`
+### 6.88 Vista: `/plataforma/perfiles/tecnico/tareas`
+* **Ruta de Acceso Web**: `/plataforma/perfiles/tecnico/tareas`
+* **Archivo Fuente**: `src/app/(app)/plataforma/perfiles/tecnico/tareas/page.tsx`
 * **Perfil de Usuario con Acceso**: Perfil 2 (Especialista Tecnico)
 
 #### Historia de Usuario y Valor para el Negocio
-* **Como**: Usuario operando con el rol autorizado en `/tecnico/tareas`.
+* **Como**: Usuario operando con el rol autorizado en `/plataforma/perfiles/tecnico/tareas`.
 * **Quiero**: Visualizar, gestionar o interactuar con los datos y acciones de este modulo.
 * **Para**: Cumplir con los objetivos de servicio establecidos en las politicas de la organizacion.
 

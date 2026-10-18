@@ -168,19 +168,27 @@ La constante transversal de aprobaciones por monto
 (`UMBRAL_MONTO_APROBACION`) vive en `src/shared/lib/parametros.ts` para no acoplar
 `cambios` con `activos`.
 
-**Rutas de `src/app`.** Por orden, las rutas de rol tambien se agrupan:
+**Rutas de `src/app`.** Por orden, las rutas de rol tambien se agrupan, y **sin
+alias**: la URL de cada consola es la de su carpeta fisica.
 
-- API: `src/app/api/perfiles/<rol>/**` -> URL `/api/perfiles/<rol>/...`
-  (convive con `src/app/api/perfiles/route.ts`, que es el endpoint de **identidades**).
-- Paginas: `src/app/plataforma/perfiles/<rol>/**` -> URL `/plataforma/perfiles/<rol>/...`.
-- Las URL raiz `/tecnico/...`, `/supervisor/...`, `/gestor-area/...`, `/aprobador/...`,
-  `/auditor/...` y `/gestor-cambios/...` se conservan con `rewrites` en `next.config.js`
-  (apuntan a `/plataforma/perfiles/<rol>/:path*`), de modo que el menu guardado en
-  `opciones_menu` sigue funcionando sin migracion de datos.
+- **Consolas de rol** (se direccionan **por nombre**):
+  - API: `src/app/api/perfiles/<rol>/**` -> URL `/api/perfiles/<rol>/...`
+  - Paginas: `src/app/plataforma/perfiles/<rol>/**` -> URL `/plataforma/perfiles/<rol>/...`
+- **Ficha del perfil** (entidad RBAC: `perfiles` / `usuario_perfiles`), con su
+  modulo dueno **`identidades`** (se direcciona **por id**):
+  - `src/app/api/identidades/perfiles/route.ts` -> `/api/identidades/perfiles`
+  - `src/app/api/identidades/perfiles/[id]/route.ts` -> `/api/identidades/perfiles/<id>`
 
-Las rutas de API de los roles **cambiaron de URL** a `/api/perfiles/<rol>/...`; las
-paginas conservan su URL publica raiz pero su carpeta interna es
-`src/app/plataforma/perfiles/<rol>/`.
+Asi `perfiles` significa siempre **consola de rol** (por nombre) y la ficha del
+perfil vive bajo `identidades` (por id): ya no comparten prefijo y no hay ambiguedad.
+
+`next.config.js` **no** define rewrites de rol. Los alias `/tecnico/*`,
+`/supervisor/*`, `/gestor-area/*`, `/aprobador/*`, `/auditor/*` y
+`/gestor-cambios/*` se eliminaron. El menu de la base (`opciones_menu.url_menu`)
+se actualizo a las rutas nuevas con la migracion
+`db/migrations/20261018_menu_urls_perfiles.sql` (148 filas). Esa migracion solo
+toca URLs: los `id_perfil` de `perfiles` y las filas de `usuario_perfiles` no
+cambian, por lo que cada usuario conserva su perfil.
 
 ---
 
@@ -207,9 +215,9 @@ modulos correspondientes. Se asignan a sus duenos:
 | Carpeta de rutas (`src/app/plataforma/...`) | Dueno | Vistas que monta |
 | :--- | :--- | :--- |
 | `/gestor-activos/*` | **Nain** | `@/modules/activos/views/*`, `@/modules/cmdb/views/*` |
-| `/gestor-cambios/*` | **Nain** | `@/modules/perfiles/gestor-cambios/*` |
+| `/plataforma/perfiles/gestor-cambios/*` | **Nain** | `@/modules/perfiles/gestor-cambios/*` |
 | `/gestor-problemas/*` | **Nucleo** | `@/modules/problemas/views/*` |
-| `/supervisor/*`, `/gestor-area/*`, `/tecnico/*`, `/aprobador/*`, `/auditor/*` | segun tabla sec. 4 | `@/modules/perfiles/<rol>/views/*` |
+| `/plataforma/perfiles/supervisor/*`, `/plataforma/perfiles/gestor-area/*`, `/plataforma/perfiles/tecnico/*`, `/plataforma/perfiles/aprobador/*`, `/plataforma/perfiles/auditor/*` | segun tabla sec. 4 | `@/modules/perfiles/<rol>/views/*` |
 
 Regla: si hay que cambiar la logica de una consola, se cambia en el **modulo**
 (nunca en la ruta). La ruta solo se toca para cambiar el montaje.
@@ -242,4 +250,4 @@ Regla: si hay que cambiar la logica de una consola, se cambia en el **modulo**
 | 2026-10 | `administracion` se parte en `identidades`, `organizacion`, `configuracion` y `plataforma`. |
 | 2026-10 | Nuevo analisis de CMDB: topologia, impacto, reconciliacion Activo <-> CI e historial (`/activos/cmdb/analisis`). |
 | 2026-10 | **Regla inversa**: los 6 modulos de rol se consolidan en `src/modules/perfiles/<rol>/` (un solo modulo `perfiles`); su logica de dominio se reparte a `cambios`, `activos`, `problemas`, `tickets`, `incidentes` y `cmdb`. |
-| 2026-10 | Las rutas de rol se agrupan: `src/app/api/perfiles/<rol>/` y `src/app/plataforma/perfiles/<rol>/`. La API pasa a `/api/perfiles/<rol>/...`; las paginas conservan su URL raiz via `rewrites`. |
+| 2026-10 | Rutas de rol agrupadas y **sin alias**: `src/app/api/perfiles/<rol>/` y `src/app/plataforma/perfiles/<rol>/` (URLs `/api/perfiles/<rol>/...` y `/plataforma/perfiles/<rol>/...`). La ficha del perfil (RBAC) pasa a `/api/identidades/perfiles`. Menu migrado: `opciones_menu.url_menu`, 148 filas (`db/migrations/20261018_menu_urls_perfiles.sql`). |

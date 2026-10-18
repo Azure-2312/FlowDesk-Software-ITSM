@@ -167,51 +167,51 @@
 ---
 
 ## PERFIL 2 — Técnico
-**Inicio:** `/tecnico/panel` · **Nodos de menú:** 44 · **Resultado:** 42 ✅ · 2 🟢 · 0 ⚠️ · 0 ❌
+**Inicio:** `/plataforma/perfiles/tecnico/panel` · **Nodos de menú:** 44 · **Resultado:** 42 ✅ · 2 🟢 · 0 ⚠️ · 0 ❌
 
 | Código | Opción / Pestaña | Ruta | Qué hace | Marco | Estado |
 |---|---|---|---|---|---|
-| **1** | **Mi trabajo** | `/tecnico` | Espacio personal del técnico. | SD, WTM | ✅ |
-| 1.1 | Panel del técnico | `/tecnico/panel` | Qué atender ahora: indicadores, urgentes, agenda y avisos. | SD | ✅ |
-| 1.2 | Mis tareas | `/tecnico/tareas` | Tareas de tickets, problemas, cambios y recordatorios. | SD, WTM | ✅ |
-| 1.3 | Mi agenda y disponibilidad | `/tecnico/agenda` | Calendario y estado Disponible/Ocupado/No disponible. | WTM | ✅ |
-| 1.4 | Mi desempeño | `/tecnico/panel` | Indicadores propios y del grupo. | MR, WTM | 🟢 redirige |
-| **2** | **Mesa de Servicio** | `/tecnico/mesa` | Atención de tickets. | SD, INC, SR | ✅ |
-| 2.1 | Mis tickets asignados | `/tecnico/mesa/asignados` | Cola personal con SLA y acciones rápidas. | INC | ✅ |
-| 2.2 | Bandeja de pendientes | `/tecnico/mesa/pendientes` | Cola sin asignar; tomar atómicamente. | SD | ✅ |
-| 2.3 | Tickets de mi área técnica | `/tecnico/mesa/area` | Consulta del departamento TI y ofrecer ayuda. | SD | ✅ |
-| 2.4 | Registrar ticket para un usuario | `/tecnico/mesa/registrar` | Registro por teléfono/chat/presencial. | INC, SR | ✅ |
-| 2.5 | Búsqueda avanzada | `/tecnico/mesa/asignados` | Búsqueda; redirige a la cola. | SD | 🟢 redirige |
-| 2.6 | Historial de resueltos | `/tecnico/mesa/historial` | Tickets resueltos por el técnico. | INC | ✅ |
-| 2.7 | Incidente mayor (sala de crisis) | `/tecnico/mesa/incidente-mayor` | Línea de tiempo, tareas y comunicados. | INC | ✅ |
-| **3** | **Seguimiento de SLA** | `/tecnico/sla` | Cumplimiento de tiempos. | SLM | ✅ |
-| 3.1 | Semáforo de SLA de mi cola | `/tecnico/sla/semaforo` | Semáforo de la cola. | SLM | ✅ |
-| 3.2 | Objetivos de tiempo vigentes | `/tecnico/sla/objetivos` | Objetivos por prioridad. | SLM | ✅ |
-| **4** | **Gestión de Problemas** | `/tecnico/problemas` | Participación en problemas. | PRB | ✅ |
-| 4.1 | Problemas asignados a mí | `/tecnico/problemas/asignados` | Bandeja de problemas propios. | PRB | ✅ |
-| 4.2 | Problemas de mi grupo | `/tecnico/problemas/grupo` | Problemas del grupo resolutor. | PRB | ✅ |
-| 4.3 | Registrar problema | `/tecnico/problemas/nuevo` | Alta de problema. | PRB | ✅ |
-| 4.4 | Candidatos a problema | `/tecnico/problemas/candidatos` | Candidatos detectados. | PRB | ✅ |
-| 4.5 | Errores conocidos (KEDB) | `/tecnico/problemas/errores-conocidos` | Consulta y aplicación de workarounds. | PRB, KM | ✅ |
-| **5** | **Gestión de Cambios** | `/tecnico/cambios` | Solicitud e implementación. | CHG | ✅ |
-| 5.1 | Mis cambios | `/tecnico/cambios/mis-cambios` | Cambios donde participo. | CHG | ✅ |
-| 5.2 | Registrar solicitud RFC | `/tecnico/cambios/nuevo` | Alta de RFC. | CHG | ✅ |
-| 5.3 | Cambios por implementar | `/tecnico/cambios/implementacion` | Consola Go/No-Go, bitácora y rollback. | CHG | ✅ |
-| 5.4 | Calendario de cambios | `/tecnico/cambios/calendario` | Calendario de cambios. | CHG | ✅ |
-| 5.5 | Cambios que afectan mis servicios | `/tecnico/cambios/impacto` | Impacto y acuse de enterado. | CHG, SCM | ✅ |
-| 5.6 | Historial de cambios | `/tecnico/cambios/historial` | Historial de cambios. | CHG | ✅ |
-| **6** | **Activos y CMDB** | `/tecnico/activos` | Consulta y mantenimiento. | ITAM, SCM | ✅ |
-| 6.1 | Inventario de activos | `/tecnico/activos/inventario` | Inventario (consulta). | ITAM | ✅ |
-| 6.2 | Mapa de topología CMDB | `/tecnico/activos/mapa` | Topología de CI. | SCM | ✅ |
-| 6.3 | Mantenimiento y reparaciones | `/tecnico/activos/mantenimiento` | Mantenimientos. | ITAM | ✅ |
-| 6.4 | Inventario físico en campo | `/tecnico/activos/conteos` | Conteo con escaneo. | ITAM | ✅ |
-| 6.5 | Licencias de software (consulta) | `/tecnico/activos/licencias` | Licencias (consulta). | ITAM, 19770 | ✅ |
-| **7** | **Gestión del Conocimiento** | `/tecnico/conocimiento` | Crear y consumir conocimiento. | KM | ✅ |
-| 7.1 | Base de conocimiento | `/tecnico/conocimiento/base` | Buscar y leer artículos. | KM | ✅ |
-| 7.2 | Mis artículos | `/tecnico/conocimiento/mis-articulos` | Artículos propios. | KM | ✅ |
-| 7.3 | Crear artículo | `/tecnico/conocimiento/nuevo` | Alta de artículo. | KM | ✅ |
-| 7.4 | Revisiones pendientes | `/tecnico/conocimiento/revisiones` | Revisiones asignadas. | KM | ✅ |
-| **8** | Catálogo de servicios (consulta) | `/tecnico/catalogo` | Consulta del catálogo. | CAT | ✅ |
+| **1** | **Mi trabajo** | `/plataforma/perfiles/tecnico` | Espacio personal del técnico. | SD, WTM | ✅ |
+| 1.1 | Panel del técnico | `/plataforma/perfiles/tecnico/panel` | Qué atender ahora: indicadores, urgentes, agenda y avisos. | SD | ✅ |
+| 1.2 | Mis tareas | `/plataforma/perfiles/tecnico/tareas` | Tareas de tickets, problemas, cambios y recordatorios. | SD, WTM | ✅ |
+| 1.3 | Mi agenda y disponibilidad | `/plataforma/perfiles/tecnico/agenda` | Calendario y estado Disponible/Ocupado/No disponible. | WTM | ✅ |
+| 1.4 | Mi desempeño | `/plataforma/perfiles/tecnico/panel` | Indicadores propios y del grupo. | MR, WTM | 🟢 redirige |
+| **2** | **Mesa de Servicio** | `/plataforma/perfiles/tecnico/mesa` | Atención de tickets. | SD, INC, SR | ✅ |
+| 2.1 | Mis tickets asignados | `/plataforma/perfiles/tecnico/mesa/asignados` | Cola personal con SLA y acciones rápidas. | INC | ✅ |
+| 2.2 | Bandeja de pendientes | `/plataforma/perfiles/tecnico/mesa/pendientes` | Cola sin asignar; tomar atómicamente. | SD | ✅ |
+| 2.3 | Tickets de mi área técnica | `/plataforma/perfiles/tecnico/mesa/area` | Consulta del departamento TI y ofrecer ayuda. | SD | ✅ |
+| 2.4 | Registrar ticket para un usuario | `/plataforma/perfiles/tecnico/mesa/registrar` | Registro por teléfono/chat/presencial. | INC, SR | ✅ |
+| 2.5 | Búsqueda avanzada | `/plataforma/perfiles/tecnico/mesa/asignados` | Búsqueda; redirige a la cola. | SD | 🟢 redirige |
+| 2.6 | Historial de resueltos | `/plataforma/perfiles/tecnico/mesa/historial` | Tickets resueltos por el técnico. | INC | ✅ |
+| 2.7 | Incidente mayor (sala de crisis) | `/plataforma/perfiles/tecnico/mesa/incidente-mayor` | Línea de tiempo, tareas y comunicados. | INC | ✅ |
+| **3** | **Seguimiento de SLA** | `/plataforma/perfiles/tecnico/sla` | Cumplimiento de tiempos. | SLM | ✅ |
+| 3.1 | Semáforo de SLA de mi cola | `/plataforma/perfiles/tecnico/sla/semaforo` | Semáforo de la cola. | SLM | ✅ |
+| 3.2 | Objetivos de tiempo vigentes | `/plataforma/perfiles/tecnico/sla/objetivos` | Objetivos por prioridad. | SLM | ✅ |
+| **4** | **Gestión de Problemas** | `/plataforma/perfiles/tecnico/problemas` | Participación en problemas. | PRB | ✅ |
+| 4.1 | Problemas asignados a mí | `/plataforma/perfiles/tecnico/problemas/asignados` | Bandeja de problemas propios. | PRB | ✅ |
+| 4.2 | Problemas de mi grupo | `/plataforma/perfiles/tecnico/problemas/grupo` | Problemas del grupo resolutor. | PRB | ✅ |
+| 4.3 | Registrar problema | `/plataforma/perfiles/tecnico/problemas/nuevo` | Alta de problema. | PRB | ✅ |
+| 4.4 | Candidatos a problema | `/plataforma/perfiles/tecnico/problemas/candidatos` | Candidatos detectados. | PRB | ✅ |
+| 4.5 | Errores conocidos (KEDB) | `/plataforma/perfiles/tecnico/problemas/errores-conocidos` | Consulta y aplicación de workarounds. | PRB, KM | ✅ |
+| **5** | **Gestión de Cambios** | `/plataforma/perfiles/tecnico/cambios` | Solicitud e implementación. | CHG | ✅ |
+| 5.1 | Mis cambios | `/plataforma/perfiles/tecnico/cambios/mis-cambios` | Cambios donde participo. | CHG | ✅ |
+| 5.2 | Registrar solicitud RFC | `/plataforma/perfiles/tecnico/cambios/nuevo` | Alta de RFC. | CHG | ✅ |
+| 5.3 | Cambios por implementar | `/plataforma/perfiles/tecnico/cambios/implementacion` | Consola Go/No-Go, bitácora y rollback. | CHG | ✅ |
+| 5.4 | Calendario de cambios | `/plataforma/perfiles/tecnico/cambios/calendario` | Calendario de cambios. | CHG | ✅ |
+| 5.5 | Cambios que afectan mis servicios | `/plataforma/perfiles/tecnico/cambios/impacto` | Impacto y acuse de enterado. | CHG, SCM | ✅ |
+| 5.6 | Historial de cambios | `/plataforma/perfiles/tecnico/cambios/historial` | Historial de cambios. | CHG | ✅ |
+| **6** | **Activos y CMDB** | `/plataforma/perfiles/tecnico/activos` | Consulta y mantenimiento. | ITAM, SCM | ✅ |
+| 6.1 | Inventario de activos | `/plataforma/perfiles/tecnico/activos/inventario` | Inventario (consulta). | ITAM | ✅ |
+| 6.2 | Mapa de topología CMDB | `/plataforma/perfiles/tecnico/activos/mapa` | Topología de CI. | SCM | ✅ |
+| 6.3 | Mantenimiento y reparaciones | `/plataforma/perfiles/tecnico/activos/mantenimiento` | Mantenimientos. | ITAM | ✅ |
+| 6.4 | Inventario físico en campo | `/plataforma/perfiles/tecnico/activos/conteos` | Conteo con escaneo. | ITAM | ✅ |
+| 6.5 | Licencias de software (consulta) | `/plataforma/perfiles/tecnico/activos/licencias` | Licencias (consulta). | ITAM, 19770 | ✅ |
+| **7** | **Gestión del Conocimiento** | `/plataforma/perfiles/tecnico/conocimiento` | Crear y consumir conocimiento. | KM | ✅ |
+| 7.1 | Base de conocimiento | `/plataforma/perfiles/tecnico/conocimiento/base` | Buscar y leer artículos. | KM | ✅ |
+| 7.2 | Mis artículos | `/plataforma/perfiles/tecnico/conocimiento/mis-articulos` | Artículos propios. | KM | ✅ |
+| 7.3 | Crear artículo | `/plataforma/perfiles/tecnico/conocimiento/nuevo` | Alta de artículo. | KM | ✅ |
+| 7.4 | Revisiones pendientes | `/plataforma/perfiles/tecnico/conocimiento/revisiones` | Revisiones asignadas. | KM | ✅ |
+| **8** | Catálogo de servicios (consulta) | `/plataforma/perfiles/tecnico/catalogo` | Consulta del catálogo. | CAT | ✅ |
 | **9** | **Mi cuenta** | `/mi-cuenta` | Datos y preferencias. | — | ✅ |
 | 9.1 | Mi perfil y seguridad | `/mi-cuenta` | Datos, clave y sesiones. | ISM | ✅ |
 | 9.2 | Preferencias de notificación | `/mi-cuenta/notificaciones` | Eventos × canales. | — | ✅ |
@@ -248,18 +248,18 @@
 ---
 
 ## PERFIL 4 — Supervisor
-**Inicio:** `/supervisor/panel` · **Nodos de menú:** 48 · **Resultado:** 46 ✅ · 2 🟢 · 0 ⚠️ · 0 ❌
+**Inicio:** `/plataforma/perfiles/supervisor/panel` · **Nodos de menú:** 48 · **Resultado:** 46 ✅ · 2 🟢 · 0 ⚠️ · 0 ❌
 
 | Código | Opción / Pestaña | Ruta | Qué hace | Marco | Estado |
 |---|---|---|---|---|---|
-| **1** | Panel de supervisión | `/supervisor/panel` | Indicadores, alertas y accesos rápidos del equipo. | MR, SLM | ✅ |
+| **1** | Panel de supervisión | `/plataforma/perfiles/supervisor/panel` | Indicadores, alertas y accesos rápidos del equipo. | MR, SLM | ✅ |
 | **2** | **Supervisión y despacho** | `/tickets/gestion` | Despacho y monitoreo. | SD, INC | ✅ |
 | 2.1 | Centro de asignación | `/tickets/gestion/asignar` | Asignación de tickets. | SD | ✅ |
 | 2.2 | Monitoreo de técnicos | `/tickets/gestion/tecnicos` | Carga y estado de técnicos. | WTM | ✅ |
-| 2.2.1 | ↳ Ausencias y guardias del equipo | `/supervisor/equipo/ausencias` | Ausencias y guardias. | WTM | ✅ |
+| 2.2.1 | ↳ Ausencias y guardias del equipo | `/plataforma/perfiles/supervisor/equipo/ausencias` | Ausencias y guardias. | WTM | ✅ |
 | 2.3 | Todos los tickets de mi área técnica | `/tickets/gestion/todos` | Vista del área. | INC | ✅ |
-| 2.4 | Escalamientos y riesgos de SLA | `/supervisor/sla/escalamientos` | Riesgos de SLA. | SLM | ✅ |
-| 2.5 | Incidentes mayores | `/supervisor/incidentes-mayores` | Sala de crisis. | INC | ✅ |
+| 2.4 | Escalamientos y riesgos de SLA | `/plataforma/perfiles/supervisor/sla/escalamientos` | Riesgos de SLA. | SLM | ✅ |
+| 2.5 | Incidentes mayores | `/plataforma/perfiles/supervisor/incidentes-mayores` | Sala de crisis. | INC | ✅ |
 | **3** | **Gestión de tickets** | `/tickets/gestion` | Bandejas del equipo. | INC, SR | ✅ |
 | 3.1 | Incidentes | `/tickets/gestion/incidentes` | Redirige a `/incidentes`. | INC | 🟢 redirige |
 | 3.2 | Solicitudes de servicio | `/tickets/gestion/solicitudes` | Redirige a `/solicitudes`. | SR | 🟢 redirige |
@@ -269,31 +269,31 @@
 | 3.6 | Historial de resueltos | `/tickets/gestion/resueltos` | Resueltos. | INC | ✅ |
 | 3.7 | Registrar ticket para un usuario | `/tickets/gestion/crear` | Alta asistida. | INC, SR | ✅ |
 | 3.8 | Auditoría de mi área | `/tickets/gestion/auditoria` | Trazabilidad del área. | ISM | ✅ |
-| **4** | **Seguimiento de SLA** | `/supervisor/sla` | Cumplimiento del grupo. | SLM | ✅ |
-| 4.1 | Semáforo de SLA del grupo | `/supervisor/sla/semaforo` | Semáforo del grupo. | SLM | ✅ |
-| 4.2 | Objetivos de tiempo vigentes | `/tecnico/sla/objetivos` | Objetivos vigentes. | SLM | ✅ |
-| 4.3 | Incumplimientos y causas | `/supervisor/sla/incumplimientos` | Incumplimientos y causas. | SLM, CI | ✅ |
+| **4** | **Seguimiento de SLA** | `/plataforma/perfiles/supervisor/sla` | Cumplimiento del grupo. | SLM | ✅ |
+| 4.1 | Semáforo de SLA del grupo | `/plataforma/perfiles/supervisor/sla/semaforo` | Semáforo del grupo. | SLM | ✅ |
+| 4.2 | Objetivos de tiempo vigentes | `/plataforma/perfiles/tecnico/sla/objetivos` | Objetivos vigentes. | SLM | ✅ |
+| 4.3 | Incumplimientos y causas | `/plataforma/perfiles/supervisor/sla/incumplimientos` | Incumplimientos y causas. | SLM, CI | ✅ |
 | **5** | **Gestión de Problemas** | `/problemas` | Supervisión de problemas. | PRB | ✅ |
 | 5.1 | Registro de problemas | `/problemas` | Registro. | PRB | ✅ |
-| 5.2 | Asignación de problemas | `/supervisor/problemas/asignar` | Asignación. | PRB | ✅ |
+| 5.2 | Asignación de problemas | `/plataforma/perfiles/supervisor/problemas/asignar` | Asignación. | PRB | ✅ |
 | 5.3 | Errores conocidos | `/problemas/kedb` | KEDB. | PRB, KM | ✅ |
 | **6** | **Gestión de Cambios** | `/cambios/gestion` | Cambios del equipo. | CHG | ✅ |
-| 6.1 | Aprobaciones técnicas de RFC | `/supervisor/cambios/aprobaciones` | Aprobación técnica. | CHG | ✅ |
+| 6.1 | Aprobaciones técnicas de RFC | `/plataforma/perfiles/supervisor/cambios/aprobaciones` | Aprobación técnica. | CHG | ✅ |
 | 6.2 | Calendario de cambios | `/cambios/gestion/calendario` | Calendario. | CHG | ✅ |
-| 6.3 | Cambios que afectan a mi equipo | `/supervisor/cambios/impacto` | Impacto. | CHG, SCM | ✅ |
-| 6.4 | Programación de implementaciones del equipo | `/supervisor/cambios/programar` | Programación. | CHG, CAP | ✅ |
+| 6.3 | Cambios que afectan a mi equipo | `/plataforma/perfiles/supervisor/cambios/impacto` | Impacto. | CHG, SCM | ✅ |
+| 6.4 | Programación de implementaciones del equipo | `/plataforma/perfiles/supervisor/cambios/programar` | Programación. | CHG, CAP | ✅ |
 | **7** | **Activos** | `/activos` | Activos del área. | ITAM | ✅ |
 | 7.1 | Inventario (consulta) | `/activos/inventario` | Inventario. | ITAM | ✅ |
-| 7.2 | Aprobación de bajas de mi área | `/supervisor/activos/bajas` | Aprobación de bajas. | ITAM, 27001 | ✅ |
+| 7.2 | Aprobación de bajas de mi área | `/plataforma/perfiles/supervisor/activos/bajas` | Aprobación de bajas. | ITAM, 27001 | ✅ |
 | 7.3 | Licencias (consulta) | `/activos/licencias` | Licencias. | ITAM, 19770 | ✅ |
 | **8** | **Gestión del Conocimiento** | `/conocimiento` | Revisión de conocimiento. | KM | ✅ |
 | 8.1 | Base de conocimiento | `/conocimiento` | Consulta. | KM | ✅ |
-| 8.2 | Revisión y publicación de artículos | `/supervisor/conocimiento/revisiones` | Revisión/publicación. | KM | ✅ |
-| **9** | **Reportes del equipo** | `/supervisor/reportes` | Indicadores del equipo. | MR | ✅ |
+| 8.2 | Revisión y publicación de artículos | `/plataforma/perfiles/supervisor/conocimiento/revisiones` | Revisión/publicación. | KM | ✅ |
+| **9** | **Reportes del equipo** | `/plataforma/perfiles/supervisor/reportes` | Indicadores del equipo. | MR | ✅ |
 | 9.1 | Indicadores operativos y SLA | `/tickets/reportes` | SLA y volumen. | MR, SLM | ✅ |
-| 9.2 | Productividad individual | `/supervisor/reportes/productividad` | Productividad. | MR, WTM | ✅ |
-| **10** | **Mi equipo** | `/supervisor/equipo` | Colaboración del equipo. | WTM | ✅ |
-| 10.1 | Vistas y respuestas compartidas | `/supervisor/equipo/vistas` | Vistas compartidas. | WTM, KM | ✅ |
+| 9.2 | Productividad individual | `/plataforma/perfiles/supervisor/reportes/productividad` | Productividad. | MR, WTM | ✅ |
+| **10** | **Mi equipo** | `/plataforma/perfiles/supervisor/equipo` | Colaboración del equipo. | WTM | ✅ |
+| 10.1 | Vistas y respuestas compartidas | `/plataforma/perfiles/supervisor/equipo/vistas` | Vistas compartidas. | WTM, KM | ✅ |
 | **11** | **Operación de servicios** | `/operacion` | Operación de servicios. | MON, AVL | ✅ |
 | 11.1 | Eventos y alertas | `/operacion/eventos` | Eventos y alertas. | MON | ✅ |
 | 11.2 | Disponibilidad, capacidad y continuidad | `/operacion/resiliencia` | Resiliencia. | AVL, CAP, CONT | ✅ |
@@ -304,11 +304,11 @@
 ---
 
 ## PERFIL 5 — Gestor de Área
-**Inicio:** `/gestor-area/panel` · **Nodos de menú:** 23 · **Resultado:** 23 ✅ · 0 ⚠️ · 0 ❌
+**Inicio:** `/plataforma/perfiles/gestor-area/panel` · **Nodos de menú:** 23 · **Resultado:** 23 ✅ · 0 ⚠️ · 0 ❌
 
 | Código | Opción / Pestaña | Ruta | Qué hace | Marco | Estado |
 |---|---|---|---|---|---|
-| **1** | Panel del área | `/gestor-area/panel` | Aprobaciones, tickets y cambios del área. | MR, SLM | ✅ |
+| **1** | Panel del área | `/plataforma/perfiles/gestor-area/panel` | Aprobaciones, tickets y cambios del área. | MR, SLM | ✅ |
 | **2** | **Mesa de servicio del área** | `/tickets/gestion` | Autoservicio del área. | SD | ✅ |
 | 2.1 | Registrar ticket para el área | `/tickets/gestion/crear` | Alta asistida. | SR | ✅ |
 | 2.2 | Tickets de mi departamento | `/tickets/gestion/departamento` | Tickets del departamento. | INC | ✅ |
@@ -316,18 +316,18 @@
 | 2.3.1 | ↳ Autorizaciones de colaboradores | `/api/area/colaboradores/autorizaciones` | Otorgar/revocar autorizaciones por colaborador. | WTM, ISM | ✅ |
 | **3** | **Aprobaciones** | `/tickets/gestion/aprobaciones` | Aprobaciones de negocio. | SR, CHG, RISK | ✅ |
 | 3.1 | Mis aprobaciones de solicitudes | `/tickets/gestion/aprobaciones` | Aprobación de solicitudes. | SR | ✅ |
-| 3.2 | Aprobación de negocio de cambios | `/gestor-area/cambios/aprobaciones` | Aprobación de negocio. | CHG | ✅ |
-| 3.3 | Historial de mis decisiones | `/gestor-area/aprobaciones/historial` | Historial de decisiones. | CHG | ✅ |
-| 3.4 | Delegación de aprobaciones | `/gestor-area/aprobaciones/delegacion` | Delegación. | CHG, WTM | ✅ |
+| 3.2 | Aprobación de negocio de cambios | `/plataforma/perfiles/gestor-area/cambios/aprobaciones` | Aprobación de negocio. | CHG | ✅ |
+| 3.3 | Historial de mis decisiones | `/plataforma/perfiles/gestor-area/aprobaciones/historial` | Historial de decisiones. | CHG | ✅ |
+| 3.4 | Delegación de aprobaciones | `/plataforma/perfiles/gestor-area/aprobaciones/delegacion` | Delegación. | CHG, WTM | ✅ |
 | **4** | Catálogo de servicios (consulta) | `/tickets/catalogo` | Consulta del catálogo. | CAT | ✅ |
 | **5** | **Cambios que afectan a mi área** | `/cambios/gestion` | Cambios del área. | CHG | ✅ |
 | 5.1 | Calendario de mantenimientos | `/cambios/gestion/calendario` | Calendario. | CHG | ✅ |
-| 5.2 | Cambios con interrupción para mi área | `/gestor-area/cambios/impacto` | Impacto con interrupción. | CHG | ✅ |
+| 5.2 | Cambios con interrupción para mi área | `/plataforma/perfiles/gestor-area/cambios/impacto` | Impacto con interrupción. | CHG | ✅ |
 | 5.3 | Solicitar un cambio de negocio | `/cambios/gestion/crear` | Alta de cambio de negocio. | CHG | ✅ |
-| **6** | **Activos y contratos del área** | `/gestor-area/activos` | Activos y contratos. | ITAM, SUP | ✅ |
-| 6.1 | Activos de mi área | `/gestor-area/activos` | Activos del área. | ITAM | ✅ |
-| 6.2 | Licencias y contratos de mi departamento | `/gestor-area/contratos` | Licencias y contratos. | ITAM, SUP | ✅ |
-| **7** | Reportes del área | `/gestor-area/reportes` | Indicadores del área. | MR | ✅ |
+| **6** | **Activos y contratos del área** | `/plataforma/perfiles/gestor-area/activos` | Activos y contratos. | ITAM, SUP | ✅ |
+| 6.1 | Activos de mi área | `/plataforma/perfiles/gestor-area/activos` | Activos del área. | ITAM | ✅ |
+| 6.2 | Licencias y contratos de mi departamento | `/plataforma/perfiles/gestor-area/contratos` | Licencias y contratos. | ITAM, SUP | ✅ |
+| **7** | Reportes del área | `/plataforma/perfiles/gestor-area/reportes` | Indicadores del área. | MR | ✅ |
 | **8** | Gestión de Conocimiento | `/conocimiento` | Consulta de conocimiento. | KM | ✅ |
 | **9** | **Mi cuenta** | `/mi-cuenta` | Datos y preferencias. | — | ✅ |
 | 9.1 | Mi perfil y seguridad | `/mi-cuenta` | Datos, clave y sesiones. | ISM | ✅ |
@@ -336,36 +336,36 @@
 ---
 
 ## PERFIL 6 — Auditor
-**Inicio:** `/auditor/panel` · **Nodos de menú:** 29 · **Resultado:** 29 ✅ · 0 ⚠️ · 0 ❌
+**Inicio:** `/plataforma/perfiles/auditor/panel` · **Nodos de menú:** 29 · **Resultado:** 29 ✅ · 0 ⚠️ · 0 ❌
 
 | Código | Opción / Pestaña | Ruta | Qué hace | Marco | Estado |
 |---|---|---|---|---|---|
-| **1** | Panel de auditoría | `/auditor/panel` | Hallazgos, riesgos y evidencias. | ISM, MR | ✅ |
+| **1** | Panel de auditoría | `/plataforma/perfiles/auditor/panel` | Hallazgos, riesgos y evidencias. | ISM, MR | ✅ |
 | **2** | **Auditoría de tickets** | `/tickets/gestion` | Auditoría de la operación. | ISM | ✅ |
 | 2.1 | Todos los tickets (solo lectura) | `/tickets/gestion/todos` | Lectura global. | INC | ✅ |
 | 2.2 | Auditoría forense | `/tickets/gestion/auditoria` | Trazabilidad forense. | ISM | ✅ |
-| 2.3 | Segregación de funciones | `/auditor/cumplimiento/sod` | SoD. | ISM, COBIT | ✅ |
-| 2.4 | Muestreo de auditoría | `/auditor/muestreo` | Muestreo. | ISM | ✅ |
-| **3** | **Auditoría del sistema** | `/auditor/sistema` | Control del sistema. | ISM | ✅ |
+| 2.3 | Segregación de funciones | `/plataforma/perfiles/auditor/cumplimiento/sod` | SoD. | ISM, COBIT | ✅ |
+| 2.4 | Muestreo de auditoría | `/plataforma/perfiles/auditor/muestreo` | Muestreo. | ISM | ✅ |
+| **3** | **Auditoría del sistema** | `/plataforma/perfiles/auditor/sistema` | Control del sistema. | ISM | ✅ |
 | 3.1 | Auditoría de cambios de configuración | `/admin/auditoria-sistema` | Cambios de configuración. | SCM, ISM | ✅ |
 | 3.2 | Registros de seguridad y autenticación | `/admin/seguridad-logs` | Logs de seguridad. | ISM, 27001 | ✅ |
 | 3.3 | Retención y mantenimiento de datos | `/admin/mantenimiento-datos` | Retención. | ISM, 27001 | ✅ |
 | 3.4 | Perfiles y permisos (lectura) | `/admin/perfiles` | Lectura de permisos. | ISM | ✅ |
-| 3.5 | Recertificación de accesos | `/auditor/accesos/recertificacion` | Recertificación. | ISM, 27001 | ✅ |
-| **4** | **Cumplimiento de procesos** | `/auditor/cumplimiento` | Cumplimiento ITIL. | CHG, PRB, SLM | ✅ |
+| 3.5 | Recertificación de accesos | `/plataforma/perfiles/auditor/accesos/recertificacion` | Recertificación. | ISM, 27001 | ✅ |
+| **4** | **Cumplimiento de procesos** | `/plataforma/perfiles/auditor/cumplimiento` | Cumplimiento ITIL. | CHG, PRB, SLM | ✅ |
 | 4.1 | Cambios: historial, emergencias y revisiones | `/cambios/gestion/todos` | Historial de cambios. | CHG | ✅ |
-| 4.2 | Cambios sin autorización o fuera de ventana | `/auditor/cumplimiento/cambios` | Cambios irregulares. | CHG, COBIT | ✅ |
+| 4.2 | Cambios sin autorización o fuera de ventana | `/plataforma/perfiles/auditor/cumplimiento/cambios` | Cambios irregulares. | CHG, COBIT | ✅ |
 | 4.3 | Problemas y errores conocidos | `/problemas` | Problemas y KEDB. | PRB | ✅ |
 | 4.4 | Cumplimiento de SLA | `/tickets/reportes` | Cumplimiento de SLA. | SLM | ✅ |
-| **5** | **Activos y licencias** | `/auditor/activos` | Auditoría ITAM. | ITAM | ✅ |
+| **5** | **Activos y licencias** | `/plataforma/perfiles/auditor/activos` | Auditoría ITAM. | ITAM | ✅ |
 | 5.1 | Inventario (lectura) | `/activos/inventario` | Inventario. | ITAM | ✅ |
 | 5.2 | Cumplimiento de licencias | `/activos/licencias` | Cumplimiento de licencias. | ITAM, 19770 | ✅ |
-| 5.3 | Resultados de auditorías de CMDB | `/auditor/cmdb/resultados` | Auditoría de CMDB. | SCM, 19770 | ✅ |
-| 5.4 | Bajas y disposición | `/auditor/activos/bajas` | Bajas y disposición. | ITAM, 27001 | ✅ |
-| **6** | **Reportes y evidencias** | `/auditor/informes` | Informes y evidencias. | MR, COBIT | ✅ |
+| 5.3 | Resultados de auditorías de CMDB | `/plataforma/perfiles/auditor/cmdb/resultados` | Auditoría de CMDB. | SCM, 19770 | ✅ |
+| 5.4 | Bajas y disposición | `/plataforma/perfiles/auditor/activos/bajas` | Bajas y disposición. | ITAM, 27001 | ✅ |
+| **6** | **Reportes y evidencias** | `/plataforma/perfiles/auditor/informes` | Informes y evidencias. | MR, COBIT | ✅ |
 | 6.1 | Indicadores operativos y SLA | `/tickets/reportes` | Indicadores. | MR | ✅ |
 | 6.2 | Tableros (lectura) | `/admin/reportes-disenador` | Tableros. | MR | ✅ |
-| 6.3 | Informes de auditoría | `/auditor/informes` | Informes y evidencias adjuntas. | ISM, COBIT | ✅ |
+| 6.3 | Informes de auditoría | `/plataforma/perfiles/auditor/informes` | Informes y evidencias adjuntas. | ISM, COBIT | ✅ |
 | 6.3.1 | ↳ Evidencias del informe | `/api/perfiles/auditor/evidencia` | Listar y agregar evidencias por informe. | ISM, COBIT | ✅ |
 | **7** | **Mi cuenta** | `/mi-cuenta` | Datos y preferencias. | — | ✅ |
 | 7.1 | Mi perfil y seguridad | `/mi-cuenta` | Datos, clave y sesiones. | ISM | ✅ |
@@ -374,27 +374,27 @@
 ---
 
 ## PERFIL 7 — Aprobador (CAB)
-**Inicio:** `/aprobador/panel` · **Nodos de menú:** 18 · **Resultado:** 18 ✅ · 0 ⚠️ · 0 ❌
+**Inicio:** `/plataforma/perfiles/aprobador/panel` · **Nodos de menú:** 18 · **Resultado:** 18 ✅ · 0 ⚠️ · 0 ❌
 
 | Código | Opción / Pestaña | Ruta | Qué hace | Marco | Estado |
 |---|---|---|---|---|---|
-| **1** | Panel del aprobador | `/aprobador/panel` | Pendientes, riesgo y decisiones. | CHG, RISK | ✅ |
-| **2** | **Aprobaciones pendientes** | `/aprobador/aprobaciones` | Bandeja de aprobaciones. | CHG, SR | ✅ |
-| 2.1 | Aprobaciones de cambios | `/aprobador/cambios` | Autorización de cambios. | CHG | ✅ |
+| **1** | Panel del aprobador | `/plataforma/perfiles/aprobador/panel` | Pendientes, riesgo y decisiones. | CHG, RISK | ✅ |
+| **2** | **Aprobaciones pendientes** | `/plataforma/perfiles/aprobador/aprobaciones` | Bandeja de aprobaciones. | CHG, SR | ✅ |
+| 2.1 | Aprobaciones de cambios | `/plataforma/perfiles/aprobador/cambios` | Autorización de cambios. | CHG | ✅ |
 | 2.2 | Aprobaciones de solicitudes de servicio | `/tickets/gestion/aprobaciones` | Aprobación de solicitudes. | SR | ✅ |
-| 2.3 | Modelos de cambio estándar | `/aprobador/cambios/modelos` | Preautorización de modelos. | CHG | ✅ |
-| 2.4 | Bajas y renovaciones por monto | `/aprobador/activos` | Aprobación por monto. | ITAM, RISK | ✅ |
-| 2.5 | Riesgo aceptado y cierre de problemas mayores | `/aprobador/problemas` | Aceptación de riesgo. | PRB, RISK | ✅ |
+| 2.3 | Modelos de cambio estándar | `/plataforma/perfiles/aprobador/cambios/modelos` | Preautorización de modelos. | CHG | ✅ |
+| 2.4 | Bajas y renovaciones por monto | `/plataforma/perfiles/aprobador/activos` | Aprobación por monto. | ITAM, RISK | ✅ |
+| 2.5 | Riesgo aceptado y cierre de problemas mayores | `/plataforma/perfiles/aprobador/problemas` | Aceptación de riesgo. | PRB, RISK | ✅ |
 | **3** | **Comité asesor de cambios (CAB)** | `/cambios/gestion/cab` | Gobierno del cambio. | CHG, COBIT | ✅ |
 | 3.1 | Dictamen colegiado | `/cambios/gestion/cab` | Dictamen del comité. | CHG | ✅ |
-| 3.2 | Agenda y actas | `/aprobador/cab/agenda` | Convocatoria y actas. | CHG | ✅ |
-| 3.3 | Comité de emergencia (ECAB) | `/aprobador/cab/emergencia` | ECAB. | CHG, COBIT | ✅ |
+| 3.2 | Agenda y actas | `/plataforma/perfiles/aprobador/cab/agenda` | Convocatoria y actas. | CHG | ✅ |
+| 3.3 | Comité de emergencia (ECAB) | `/plataforma/perfiles/aprobador/cab/emergencia` | ECAB. | CHG, COBIT | ✅ |
 | **4** | Calendario de cambios | `/cambios/gestion/calendario` | Calendario. | CHG | ✅ |
 | **5** | Detalle de RFC | `/cambios/gestion/[id]` | Detalle con presentador del Aprobador. | CHG | ✅ |
 | 5.1 | ↳ Presentador del Aprobador | (componente) | Datos, impacto/riesgo, plan, ventana y dictamen (Aprobar/Rechazar). | CHG, RISK | ✅ |
-| **6** | Historial de mis decisiones | `/aprobador/historial` | Historial de dictámenes. | CHG, COBIT | ✅ |
-| **7** | Delegaciones | `/aprobador/delegaciones` | Delegación de voto. | CHG, WTM | ✅ |
-| **8** | Reportes de decisiones | `/aprobador/reportes` | Métricas de decisiones. | MR | ✅ |
+| **6** | Historial de mis decisiones | `/plataforma/perfiles/aprobador/historial` | Historial de dictámenes. | CHG, COBIT | ✅ |
+| **7** | Delegaciones | `/plataforma/perfiles/aprobador/delegaciones` | Delegación de voto. | CHG, WTM | ✅ |
+| **8** | Reportes de decisiones | `/plataforma/perfiles/aprobador/reportes` | Métricas de decisiones. | MR | ✅ |
 | **9** | **Mi cuenta** | `/mi-cuenta` | Datos y preferencias. | — | ✅ |
 | 9.1 | Mi perfil y seguridad | `/mi-cuenta` | Datos, clave y sesiones. | ISM | ✅ |
 | 9.2 | Preferencias de notificación | `/mi-cuenta/notificaciones` | Eventos × canales. | — | ✅ |
@@ -402,32 +402,32 @@
 ---
 
 ## PERFIL 8 — Gestor de Cambios
-**Inicio:** `/gestor-cambios/panel` · **Nodos de menú:** 25 · **Resultado:** 23 ✅ · 2 ⬛ · 0 ⚠️ · 0 ❌
+**Inicio:** `/plataforma/perfiles/gestor-cambios/panel` · **Nodos de menú:** 25 · **Resultado:** 23 ✅ · 2 ⬛ · 0 ⚠️ · 0 ❌
 
 | Código | Opción / Pestaña | Ruta | Qué hace | Marco | Estado |
 |---|---|---|---|---|---|
-| **1** | Panel de gestión de cambios | `/gestor-cambios/panel` | KPIs, RFC, conflictos y PIR. | CHG, MR | ✅ |
+| **1** | Panel de gestión de cambios | `/plataforma/perfiles/gestor-cambios/panel` | KPIs, RFC, conflictos y PIR. | CHG, MR | ✅ |
 | **2** | **Solicitudes de cambio (RFC)** | `/cambios/gestion` | Gestión de RFC. | CHG | ✅ |
 | 2.1 | Registrar solicitud RFC | `/cambios/gestion/crear` | Alta de RFC. | CHG | ✅ |
-| 2.2 | Bandeja de RFC por evaluar | `/gestor-cambios/evaluacion` | Bandeja de evaluación. | CHG | ✅ |
+| 2.2 | Bandeja de RFC por evaluar | `/plataforma/perfiles/gestor-cambios/evaluacion` | Bandeja de evaluación. | CHG | ✅ |
 | 2.3 | Historial consolidado | `/cambios/gestion/todos` | Historial. | CHG | ✅ |
-| **3** | **Evaluación y autorización** | `/gestor-cambios/autorizaciones` | Seguimiento de autorización. | CHG, RISK | ✅ |
-| 3.1 | Seguimiento de etapas de aprobación | `/gestor-cambios/autorizaciones` | Etapas y quórum. | CHG | ✅ |
-| **4** | **Programación e implementación** | `/gestor-cambios/programacion` | Programación y ejecución. | CHG, CAP | ✅ |
+| **3** | **Evaluación y autorización** | `/plataforma/perfiles/gestor-cambios/autorizaciones` | Seguimiento de autorización. | CHG, RISK | ✅ |
+| 3.1 | Seguimiento de etapas de aprobación | `/plataforma/perfiles/gestor-cambios/autorizaciones` | Etapas y quórum. | CHG | ✅ |
+| **4** | **Programación e implementación** | `/plataforma/perfiles/gestor-cambios/programacion` | Programación y ejecución. | CHG, CAP | ✅ |
 | 4.1 | Calendario de ventanas | `/cambios/gestion/calendario` | Ventanas. | CHG | ✅ |
-| 4.2 | Programación de cambios autorizados | `/gestor-cambios/programacion` | Programación. | CHG, CAP | ✅ |
-| 4.3 | Conflictos y capacidad | `/gestor-cambios/conflictos` | Conflictos. | CHG, CAP | ✅ |
-| 4.4 | Seguimiento de ejecución | `/gestor-cambios/ejecucion` | Ejecución. | CHG | ✅ |
+| 4.2 | Programación de cambios autorizados | `/plataforma/perfiles/gestor-cambios/programacion` | Programación. | CHG, CAP | ✅ |
+| 4.3 | Conflictos y capacidad | `/plataforma/perfiles/gestor-cambios/conflictos` | Conflictos. | CHG, CAP | ✅ |
+| 4.4 | Seguimiento de ejecución | `/plataforma/perfiles/gestor-cambios/ejecucion` | Ejecución. | CHG | ✅ |
 | **5** | **Comité asesor de cambios (CAB)** | `/cambios/gestion/cab` | Presidencia del CAB. | CHG, COBIT | ✅ |
 | 5.1 | Dictamen colegiado (presidencia) | `/cambios/gestion/cab` | Dictamen. | CHG | ✅ |
-| 5.2 | Convocatoria, agenda y actas | `/gestor-cambios/cab/agenda` | Convocatoria y actas. | CHG | ✅ |
-| **6** | Revisión post-implementación | `/gestor-cambios/pir` | PIR. | CHG, CI | ✅ |
-| **7** | Modelos de cambio estándar | `/gestor-cambios/modelos` | Modelos preautorizados. | CHG | ✅ |
-| **8** | Reglas de calendario | `/gestor-cambios/calendario-reglas` | Agrupa reglas de calendario. | CHG | ⬛ carpeta |
+| 5.2 | Convocatoria, agenda y actas | `/plataforma/perfiles/gestor-cambios/cab/agenda` | Convocatoria y actas. | CHG | ✅ |
+| **6** | Revisión post-implementación | `/plataforma/perfiles/gestor-cambios/pir` | PIR. | CHG, CI | ✅ |
+| **7** | Modelos de cambio estándar | `/plataforma/perfiles/gestor-cambios/modelos` | Modelos preautorizados. | CHG | ✅ |
+| **8** | Reglas de calendario | `/plataforma/perfiles/gestor-cambios/calendario-reglas` | Agrupa reglas de calendario. | CHG | ⬛ carpeta |
 | 8.1 | Ventanas de mantenimiento | `/admin/procesos/cambios/notificaciones-calendario?vista=ventanas` | Ventanas. | CHG | ✅ |
 | 8.2 | Períodos de congelamiento | `/admin/procesos/cambios/notificaciones-calendario?vista=congelamiento` | Freeze. | CHG | ✅ |
 | 8.3 | Feriados | `/admin/procesos/cambios/notificaciones-calendario?vista=feriados` | Feriados. | CHG | ✅ |
-| **9** | Reportes de cambios | `/gestor-cambios/reportes` | Métricas de cambios. | MR | ✅ |
+| **9** | Reportes de cambios | `/plataforma/perfiles/gestor-cambios/reportes` | Métricas de cambios. | MR | ✅ |
 | **10** | **Mi cuenta** | `/mi-cuenta` | Datos y preferencias. | — | ✅ |
 | 10.1 | Mi perfil y seguridad | `/mi-cuenta` | Datos, clave y sesiones. | ISM | ✅ |
 | 10.2 | Preferencias de notificación | `/mi-cuenta/notificaciones` | Eventos × canales. | — | ✅ |
