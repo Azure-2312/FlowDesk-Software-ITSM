@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GET as obtenerTicket, PATCH as actualizarTicket } from "@/modules/tickets/api/ticketDetalleController";
+import { ticketDetalleGet as obtenerTicket, ticketDetallePatch as actualizarTicket } from "@/modules/tickets";
 import { obtenerIdTipoTicketPorCodigo } from "@/modules/incidentes/incidentesService";
 
 type Contexto = { params: { id: string } };

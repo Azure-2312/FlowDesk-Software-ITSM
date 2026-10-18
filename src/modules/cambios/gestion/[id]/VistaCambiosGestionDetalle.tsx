@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Cambio, SesionUsuario } from "@/types";
-import PresentadorRfcAprobador, { DecisionRfc } from "@/modules/tickets/presentadores/PresentadorRfcAprobador";
+import { PresentadorRfcAprobador, type DecisionRfc } from "@/modules/tickets/ui";
 import { PERFILES } from "@/shared/lib/capacidades";
 
 export default function PaginaDetalleTicketRFC() {
