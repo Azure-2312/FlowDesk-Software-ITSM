@@ -462,6 +462,7 @@
 | 5.4 | Calidad y auditoría de CMDB | `/gestor-activos/cmdb/auditoria` | Calidad. | SCM, 19770 | ✅ |
 | 5.5 | Líneas base | `/gestor-activos/cmdb/lineas-base` | Líneas base. | SCM | ✅ |
 | 5.6 | Inexactitudes reportadas | `/gestor-activos/cmdb/inexactitudes` | Inexactitudes. | SCM | ✅ |
+| 5.7 | Análisis e impacto | `/activos/cmdb/analisis` | Topología, impacto y reconciliación Activo ↔ CI. | SCM | ✅ |
 | **6** | Catálogos de activos | `/gestor-activos/catalogos` | Agrupa catálogos. | ITAM | ⬛ carpeta |
 | 6.1 | Fabricantes y modelos | `/admin/activos-config/tipos-modelos-atributos?vista=fabricantes` | Fabricantes. | ITAM | ✅ |
 | 6.2 | Ubicaciones | `/admin/activos-config/tipos-modelos-atributos?vista=ubicaciones` | Ubicaciones. | ITAM | ✅ |

@@ -354,6 +354,7 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 19021, padre: 19017, orden: 4, nivel: 2, nombre: "Calidad y auditoría de CMDB", url: "/gestor-activos/cmdb/auditoria", desc: "", bloqueado: false, abierto: false },
     { id: 19022, padre: 19017, orden: 5, nivel: 2, nombre: "Líneas base", url: "/gestor-activos/cmdb/lineas-base", desc: "", bloqueado: false, abierto: false },
     { id: 19023, padre: 19017, orden: 6, nivel: 2, nombre: "Inexactitudes reportadas", url: "/gestor-activos/cmdb/inexactitudes", desc: "Tareas generadas por técnicos.", bloqueado: false, abierto: false },
+    { id: 19032, padre: 19017, orden: 7, nivel: 2, nombre: "Análisis e impacto", url: "/activos/cmdb/analisis", desc: "Topología de dependencias, impacto en fallas y reconciliación Activo ↔ CI.", bloqueado: false, abierto: false },
     { id: 19024, padre: null, orden: 6, nivel: 1, nombre: "Catálogos de activos", url: "/gestor-activos/catalogos", desc: "", bloqueado: true, abierto: true },
     { id: 19025, padre: 19024, orden: 1, nivel: 2, nombre: "Fabricantes y modelos", url: "/admin/activos-config/tipos-modelos-atributos?vista=fabricantes", desc: "", bloqueado: false, abierto: false },
     { id: 19026, padre: 19024, orden: 2, nivel: 2, nombre: "Ubicaciones", url: "/admin/activos-config/tipos-modelos-atributos?vista=ubicaciones", desc: "", bloqueado: false, abierto: false },

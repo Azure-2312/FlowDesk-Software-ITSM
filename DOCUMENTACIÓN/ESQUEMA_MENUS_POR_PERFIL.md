@@ -1445,6 +1445,10 @@ Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y 
   - Ruta: `/gestor-activos/cmdb/inexactitudes`
   - Función: Tareas generadas por técnicos.
   - Archivos existentes: `src/app/plataforma/gestor-activos/cmdb/inexactitudes/page.tsx`, `src/app/api/gestor-activos/cmdb/inexactitudes/route.ts`
+- **5.8** Análisis e impacto — `EXISTE`
+  - Ruta: `/activos/cmdb/analisis`
+  - Función: Topología de dependencias (upstream/downstream), análisis de impacto en fallas y cambios, reconciliación Activo ↔ CI e historial de configuración por CI.
+  - Archivos existentes: `src/app/plataforma/activos/cmdb/analisis/page.tsx`, `src/app/api/activos/cmdb/analisis/route.ts`
 
 ### 6 Catálogos de activos  `ADAPTAR`
 - Ruta: `/gestor-activos/catalogos`
