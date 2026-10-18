@@ -28,8 +28,8 @@ visibilidad por perfil".
 6. Propuesta: **una fila por pantalla** + visibilidad N:M + **12 raices por
    modulo**. Resultado: 189 paginas + 36 carpetas, y **ningun perfil pierde ni
    gana pantallas** (solo cambia el nombre y la ubicacion de algunas).
-7. **Ejecutada el 2026-10-18**: el catalogo quedo en **225 opciones** (36
-   carpetas + 189 pantallas) y **359 filas de visibilidad**. Ya no hay 10 menus
+7. **Ejecutada el 2026-10-18**: el catalogo quedo en **227 opciones** (36
+   carpetas + 191 pantallas) y **363 filas de visibilidad**. Ya no hay 10 menus
    paralelos: hay uno solo y cada perfil ve su parte (ver 6).
 
 ---
@@ -255,7 +255,7 @@ Reconstruccion completa, no cirugia fila por fila:
 ### 5.4 Visibilidad
 
 Cada pantalla nueva recibe una fila por cada perfil que hoy la ve (union de los
-perfiles de sus filas actuales): **239 filas** (antes 240; la que sobra es el
+perfiles de sus filas actuales): **241 filas** (antes 240; la que sobra es el
 duplicado interno del Auditor). Lo que cambia es que ahora 51 de esas filas
 cuelgan de una opcion compartida en vez de una copia.
 
@@ -269,8 +269,8 @@ perfil no se dibuja y sus hijos desaparecen con ella. La regla es:
 Eso importa en las raices cuyos hijos son todas carpetas: `Mesa de Servicio`,
 `Activos y CMDB` y `Configuracion` no tienen ninguna pantalla colgando
 directamente, asi que mirar solo a los hijos directos las dejaba sin visibilidad
-y el modulo entero desaparecia del menu. Con la regla de descendientes, las 43
-carpetas aportan **120 filas**. Total: **359 filas** (239 pantallas + 120
+y el modulo entero desaparecia del menu. Con la regla de descendientes, las 36
+carpetas aportan **122 filas**. Total: **363 filas** (241 pantallas + 122
 carpetas).
 
 ### 5.5 Orden y nombres
@@ -312,11 +312,11 @@ Migracion aplicada: `db/migrations/20261019_unificacion_catalogo_menu.sql`.
 
 | Concepto | Antes | Despues |
 | :--- | ---: | ---: |
-| Filas en `opciones_menu` | 451 | **225** |
+| Filas en `opciones_menu` | 451 | **227** |
 | Carpetas (`url_menu = ''`) | 68 | **36** |
-| Pantallas (URL con valor) | 240 | **189** |
-| URLs distintas | 189 | **189** |
-| Filas en `opciones_menu_perfiles` | 308 | **359** (239 pantallas + 120 carpetas) |
+| Pantallas (URL con valor) | 240 | **191** |
+| URLs distintas | 189 | **191** |
+| Filas en `opciones_menu_perfiles` | 308 | **363** (241 pantallas + 122 carpetas) |
 | Opciones sin ningun perfil | 143 | **0** |
 | Enlaces a rutas inexistentes | 0 | **0** |
 
@@ -325,9 +325,9 @@ que falten, 0 que sobren**, en los 10 perfiles.
 
 | Perfil | Pantallas antes | Pantallas despues | URLs distintas |
 | :--- | ---: | ---: | ---: |
-| 1 Administrador | 44 | 44 | 44 |
+| 1 Administrador | 44 | 45 | 45 |
 | 2 Tecnico | 36 | 36 | 36 |
-| 3 Solicitante | 9 | 9 | 9 |
+| 3 Solicitante | 9 | 10 | 10 |
 | 4 Supervisor | 36 | 36 | 36 |
 | 5 Gestor de Area | 18 | 18 | 18 |
 | 6 Auditor | 23 | 22 | 22 |
@@ -337,7 +337,9 @@ que falten, 0 que sobren**, en los 10 perfiles.
 | 10 Gestor de Problemas | 14 | 14 | 14 |
 
 El Auditor baja de 23 a 22 filas porque tenia `/tickets/reportes` dos veces en su
-propio menu. El conjunto de URLs no cambia en ningun perfil.
+propio menu. El Administrador y el Solicitante suben una fila cada uno: son los
+dos paneles de rol agregados en la tercera pasada (6.1). En el resto de perfiles
+el conjunto de URLs no cambia.
 
 Integridad: 0 visibilidades huerfanas, 0 `id_padre` inexistente, 0 URL duplicada
 entre pantallas, 0 carpetas sin visibilidad.
@@ -354,6 +356,30 @@ eliminaron 7 carpetas de un solo hijo, quedando **36 carpetas** y **225
 opciones**. El invariante de URLs se volvio a verificar contra el respaldo: 0
 diferencias en los 10 perfiles. Los ids se renumeraron en orden de arbol
 (21001+), asi que la migracion reproduce el estado exacto al re-aplicarse.
+
+### 6.1 Tercera pasada: paneles de Administrador y Solicitante
+
+Los dos perfiles que no tenian portada (`Mi trabajo` solo existia para los otros
+8) reciben su panel de rol, con el mismo patron que el resto: pagina en
+`/plataforma/perfiles/<rol>/panel`, vista en
+`src/modules/perfiles/<rol>/views/`, API en `/api/perfiles/<rol>/panel` y
+servicio en `src/modules/perfiles/<rol>/services/`.
+
+| Perfil | Opcion | URL | Contenido |
+| :--- | :--- | :--- | :--- |
+| 1 Administrador | Panel de administración | `/plataforma/perfiles/administrador/panel` | Tickets abiertos, SLA vencidos, cambios y problemas activos, usuarios activos, accesos fallidos (7 dias), usuarios sin perfil |
+| 3 Solicitante | Panel del solicitante | `/plataforma/perfiles/solicitante/panel` | Sus tickets abiertos/resueltos/fuera de plazo, ultimos tickets, activos en custodia, guias publicadas |
+
+Las dos opciones cuelgan de `Mi trabajo`; la raiz recibio visibilidad para los
+perfiles 1 y 3. Total: **227 opciones** (36 carpetas + 191 pantallas) y **363
+filas** de visibilidad. El invariante contra el respaldo solo muestra estas dos
+URLs nuevas, una por perfil.
+
+`/dashboard` ahora redirige al Administrador y al Solicitante a su panel (antes
+iban a `/admin/usuarios` y `/tickets`).
+
+Tambien se renombro `Configuración › Cambios › Notificaciones y calendario de
+cambios` a **Notificaciones de cambios**.
 
 Archivos tocados: la migracion, `db/seed.sql` (bloque de menu reescrito con el
 catalogo unico) y `db/schema.sql` (las 6 columnas de menu que solo existian en
