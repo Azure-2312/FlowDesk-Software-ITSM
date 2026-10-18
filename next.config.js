@@ -42,6 +42,10 @@ const nextConfig = {
       { source: "/mi-cuenta/:path*", destination: "/plataforma/mi-cuenta/:path*" },
       { source: "/operacion/:path*", destination: "/plataforma/operacion/:path*" },
       { source: "/proveedores/:path*", destination: "/plataforma/proveedores/:path*" },
+      { source: "/gestor-activos/:path*", destination: "/plataforma/gestor-activos/:path*" },
+      { source: "/gestor-problemas/:path*", destination: "/plataforma/gestor-problemas/:path*" },
+      { source: "/avisos/:path*", destination: "/plataforma/avisos/:path*" },
+      { source: "/conocimiento/:path*", destination: "/plataforma/conocimiento/:path*" },
       // Consolas de rol: sin alias. Se usan las URLs de las carpetas fisicas,
       // es decir /plataforma/perfiles/<rol>/... (ver src/modules/perfiles).
     ];

@@ -23,5 +23,9 @@ export const config = {
     "/activos/:path*",
     "/incidentes/:path*",
     "/solicitudes/:path*",
+    "/gestor-activos/:path*",
+    "/gestor-problemas/:path*",
+    "/avisos/:path*",
+    "/conocimiento/:path*",
   ],
 };

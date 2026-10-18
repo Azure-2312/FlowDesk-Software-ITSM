@@ -38,6 +38,32 @@ async function obtenerOpcionesPlanasPorUsuario(idUsuario: number): Promise<Opcio
 }
 
 /**
+ * Regla de la arquitectura del menu: una carpeta que solo muestra un hijo no
+ * aporta nada, asi que desaparece y el hijo sube un nivel. Se aplica de abajo
+ * hacia arriba, para que el colapso se propague en cascada.
+ *
+ * Se hace sobre el arbol que ve cada perfil, no sobre el catalogo: el catalogo
+ * es uno solo (carpetas por modulo) y la visibilidad N:M decide que parte ve
+ * cada perfil. Si la carpeta se queda sin hijos visibles, tampoco se dibuja.
+ */
+function colapsarCarpetasDeUnHijo(nodos: OpcionMenuArbol[]): OpcionMenuArbol[] {
+  const resultado: OpcionMenuArbol[] = [];
+
+  for (const nodo of nodos) {
+    nodo.hijos = colapsarCarpetasDeUnHijo(nodo.hijos);
+
+    if (!nodo.url_menu && nodo.hijos.length === 0) continue;
+    if (nodo.hijos.length === 1) {
+      resultado.push(nodo.hijos[0]);
+      continue;
+    }
+    resultado.push(nodo);
+  }
+
+  return resultado;
+}
+
+/**
  * Convierte la lista plana (con id_padre) en un árbol de hasta 3 niveles.
  */
 function construirArbol(opciones: OpcionMenuPlana[]): OpcionMenuArbol[] {
@@ -70,7 +96,7 @@ function construirArbol(opciones: OpcionMenuPlana[]): OpcionMenuArbol[] {
     }
   });
 
-  return raiz;
+  return colapsarCarpetasDeUnHijo(raiz);
 }
 
 /**

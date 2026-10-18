@@ -295,6 +295,34 @@ un solo hijo y se vuelve a evaluar. En esta migracion eliminaron 7 carpetas:
 `Auditoria` (bajo Mesa de Servicio y bajo Reportes), `Conocimiento` (bajo
 Configuracion) y `Accesos` (bajo Plataforma).
 
+### 5.5.2 La misma regla al dibujar el menu de cada perfil
+
+El catalogo es uno solo y ya cumple la regla. Pero cada perfil ve solo una parte,
+asi que al dibujar su menu pueden quedar carpetas con **un solo hijo visible**. La
+regla se aplica tambien ahi, en `construirArbol` de `src/shared/lib/menu.ts`
+(`colapsarCarpetasDeUnHijo`), de abajo hacia arriba:
+
+> Si una carpeta visible tiene un solo hijo visible, la carpeta no se dibuja y el
+> hijo ocupa su lugar. Si se queda sin hijos visibles, tampoco se dibuja.
+
+No toca la base, ni las URLs, ni los permisos: es solo la forma de la barra
+lateral. Con el catalogo actual desaparecen 49 carpetas al dibujar:
+
+| Perfil | Carpetas visibles antes | Despues |
+| :--- | ---: | ---: |
+| 1 Administrador | 20 | 14 |
+| 2 Tecnico | 15 | 10 |
+| 3 Solicitante | 7 | 3 |
+| 4 Supervisor | 16 | 13 |
+| 5 Gestor de Area | 14 | 7 |
+| 6 Auditor | 16 | 6 |
+| 7 Aprobador | 11 | 6 |
+| 8 Gestor de Cambios | 8 | 5 |
+| 9 Gestor de Activos | 11 | 7 |
+| 10 Gestor de Problemas | 4 | 2 |
+
+Las pantallas visibles por perfil y la cantidad de raices no cambian.
+
 ### 5.6 Verificacion
 
 1. `SELECT` comparativo por perfil: URLs antes vs despues (debe dar 0
@@ -397,6 +425,20 @@ les dio un nombre descriptivo en vez de un sufijo de rol:
 Se actualizaron tambien los `<h1>` de las cuatro vistas para que coincidan con
 la entrada del menu. Verificado: 0 nombres repetidos dentro de una misma
 carpeta.
+
+### 6.3 Alias de URL que faltaban
+
+La barra lateral usa `url_menu` tal cual. Algunos modulos guardan la URL corta
+(`/gestor-activos/panel`) y `next.config.js` la traduce a la carpeta real
+(`/plataforma/gestor-activos/panel`). Faltaban cuatro traducciones:
+`/gestor-activos`, `/gestor-problemas`, `/avisos` y `/conocimiento`.
+
+Sin ellas, **28 URLs distintas (30 entradas de menu) devolvian 404**: 16 del
+Gestor de Activos, 10 del Gestor de Problemas, 2 del Solicitante (`Avisos de
+servicio` y `Base de conocimiento`) y 1 del Supervisor y del Gestor de Area
+(`Base de conocimiento`). Se agregaron los cuatro alias en `next.config.js` y sus
+patrones en `src/middleware.ts`. Verificado con el servidor de produccion: las
+cuatro URLs pasan de 404 a 307 (redireccion a `/login` sin sesion).
 
 Archivos tocados: la migracion, `db/seed.sql` (bloque de menu reescrito con el
 catalogo unico) y `db/schema.sql` (las 6 columnas de menu que solo existian en
