@@ -169,32 +169,6 @@ export async function listarAprobacionesTecnicas(sesion: Sesion) {
   );
 }
 
-export async function resolverAprobacionTecnica(
-  sesion: Sesion,
-  idCambio: number,
-  decision: string,
-  comentario?: string
-) {
-  const normalizada = String(decision || "").toUpperCase();
-  if (!["APROBAR", "RECHAZAR"].includes(normalizada)) {
-    throw new ErrorDominio("La decisión debe ser APROBAR o RECHAZAR.");
-  }
-  const idEstado = normalizada === "APROBAR" ? 3 : 8;
-  const fila = await queryRow<any>(
-    `UPDATE cambio
-     SET id_estado = $2,
-         campos_adicionales = COALESCE(campos_adicionales, '{}'::jsonb) ||
-           jsonb_build_object('aprobacion_tecnica', jsonb_build_object(
-             'decision', $3, 'comentario', $4, 'fecha', now(), 'usuario', $5)),
-         usuario_modificacion = $5, fecha_modificacion = now()
-     WHERE id_cambio = $1 AND id_estado = 2
-     RETURNING id_cambio, codigo_cambio, id_estado`,
-    [idCambio, idEstado, normalizada, comentario ?? null, sesion.id_usuario]
-  );
-  if (!fila) throw new ErrorDominio("La RFC no existe o ya no está pendiente de aprobación técnica.", 404);
-  return { mensaje: "Decisión registrada.", cambio: fila };
-}
-
 export async function listarCambiosProgramables(sesion: Sesion) {
   return query(
     `SELECT
@@ -210,29 +184,6 @@ export async function listarCambiosProgramables(sesion: Sesion) {
   );
 }
 
-export async function reprogramarCambio(
-  sesion: Sesion,
-  idCambio: number,
-  ventanaInicio: string,
-  ventanaFin: string
-) {
-  const inicio = new Date(ventanaInicio).getTime();
-  const fin = new Date(ventanaFin).getTime();
-  if (!Number.isFinite(inicio) || !Number.isFinite(fin) || fin <= inicio) {
-    throw new ErrorDominio("La ventana debe tener fechas válidas y el fin posterior al inicio.");
-  }
-  const fila = await queryRow<any>(
-    `UPDATE cambio
-     SET ventana_inicio = $2, ventana_fin = $3,
-         usuario_modificacion = $4, fecha_modificacion = now()
-     WHERE id_cambio = $1 AND id_estado IN (3, 4)
-     RETURNING id_cambio, codigo_cambio, ventana_inicio, ventana_fin`,
-    [idCambio, ventanaInicio, ventanaFin, sesion.id_usuario]
-  );
-  if (!fila) throw new ErrorDominio("El cambio no existe o no admite reprogramación.", 404);
-  return { mensaje: "Ventana de cambio actualizada.", cambio: fila };
-}
-
 export async function listarBajasPendientes(sesion: Sesion) {
   return query(
     `SELECT
@@ -246,36 +197,6 @@ export async function listarBajasPendientes(sesion: Sesion) {
      ORDER BY (s.estado = 'PENDIENTE') DESC, s.fecha_solicitud DESC`,
     [sesion.id_usuario]
   );
-}
-
-export async function resolverBaja(
-  sesion: Sesion,
-  idSolicitud: number,
-  decision: string,
-  comentario?: string
-) {
-  const normalizada = String(decision || "").toUpperCase();
-  if (!["APROBAR", "RECHAZAR"].includes(normalizada)) {
-    throw new ErrorDominio("La decisión debe ser APROBAR o RECHAZAR.");
-  }
-  const estado = normalizada === "APROBAR" ? "APROBADA" : "RECHAZADA";
-  const fila = await queryRow<any>(
-    `UPDATE solicitud_baja_activo
-     SET estado = $2, id_usuario_resuelve = $3, comentario_resolucion = $4, fecha_resolucion = now()
-     WHERE id_solicitud = $1 AND estado = 'PENDIENTE'
-     RETURNING id_solicitud, id_activo, estado`,
-    [idSolicitud, estado, sesion.id_usuario, comentario ?? null]
-  );
-  if (!fila) throw new ErrorDominio("La solicitud no existe o ya fue resuelta.", 404);
-
-  if (estado === "APROBADA") {
-    await query(
-      `UPDATE activo SET estado_activo = 'BAJA', fecha_modificacion = now(), usuario_modificacion = $2
-       WHERE id_activo = $1 AND estado_registro = true`,
-      [fila.id_activo, sesion.id_usuario]
-    );
-  }
-  return { mensaje: `Solicitud ${estado.toLowerCase()}.`, solicitud: fila };
 }
 
 export async function listarRecursosEquipo(sesion: Sesion, tipo?: string | null) {

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { sesionConCapacidad } from "@/shared/lib/api-auth";
-import { listarBajasPendientes, resolverBaja } from "@/modules/perfiles/supervisor/services/supervisionService";
+import { listarBajasPendientes } from "@/modules/perfiles/supervisor/services/supervisionService";
+import { resolverBajaArea } from "@/modules/activos";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     if (!body.id_solicitud) throw new ErrorDominio("Falta el identificador de la solicitud.");
-    const data = await resolverBaja(sesion, Number(body.id_solicitud), body.decision, body.comentario);
+    const data = await resolverBajaArea(sesion.id_usuario, Number(body.id_solicitud), body.decision, body.comentario);
     return NextResponse.json(data);
   } catch (err) {
     if (!(err instanceof ErrorDominio)) console.error("Error al resolver baja:", err);

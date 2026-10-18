@@ -2,10 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { sesionConCapacidad } from "@/shared/lib/api-auth";
-import {
-  listarCambiosProgramables,
-  reprogramarCambio,
-} from "@/modules/perfiles/supervisor/services/supervisionService";
+import { listarCambiosProgramables } from "@/modules/perfiles/supervisor/services/supervisionService";
+import { reprogramarCambio } from "@/modules/cambios";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +28,7 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
     if (!body.id_cambio) throw new ErrorDominio("Falta el identificador del cambio.");
     const data = await reprogramarCambio(
-      sesion,
+      sesion.id_usuario,
       Number(body.id_cambio),
       body.ventana_inicio,
       body.ventana_fin
