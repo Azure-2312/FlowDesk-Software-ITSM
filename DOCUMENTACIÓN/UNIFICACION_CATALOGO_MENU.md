@@ -26,10 +26,10 @@ visibilidad por perfil".
 5. El esquema **ya soporta** el modelo objetivo: la PK de
    `opciones_menu_perfiles` es `(id_opcion_menu, id_perfil)`, es decir N:M.
 6. Propuesta: **una fila por pantalla** + visibilidad N:M + **12 raices por
-   modulo**. Resultado: 189 paginas + 43 carpetas, y **ningun perfil pierde ni
+   modulo**. Resultado: 189 paginas + 36 carpetas, y **ningun perfil pierde ni
    gana pantallas** (solo cambia el nombre y la ubicacion de algunas).
-7. **Ejecutada el 2026-10-18**: el catalogo quedo en **232 opciones** (43
-   carpetas + 189 pantallas) y **369 filas de visibilidad**. Ya no hay 10 menus
+7. **Ejecutada el 2026-10-18**: el catalogo quedo en **225 opciones** (36
+   carpetas + 189 pantallas) y **359 filas de visibilidad**. Ya no hay 10 menus
    paralelos: hay uno solo y cada perfil ve su parte (ver 6).
 
 ---
@@ -270,7 +270,7 @@ Eso importa en las raices cuyos hijos son todas carpetas: `Mesa de Servicio`,
 `Activos y CMDB` y `Configuracion` no tienen ninguna pantalla colgando
 directamente, asi que mirar solo a los hijos directos las dejaba sin visibilidad
 y el modulo entero desaparecia del menu. Con la regla de descendientes, las 43
-carpetas aportan **130 filas**. Total: **369 filas** (239 pantallas + 130
+carpetas aportan **120 filas**. Total: **359 filas** (239 pantallas + 120
 carpetas).
 
 ### 5.5 Orden y nombres
@@ -280,6 +280,20 @@ carpetas).
   `descripcion`.
 - `orden` por bloque funcional (bandejas primero, configuracion al final).
 - Se preserva `contador_clave` en las 13 opciones que lo tienen.
+
+### 5.5.1 Carpetas que no aportan
+
+Una carpeta con **un solo hijo** no organiza nada: agrega un clic y un nivel de
+anidamiento para nada. La regla es:
+
+> Si una carpeta tiene un solo hijo, la carpeta se elimina y el hijo sube un
+> nivel, heredando `nivel` y `orden` de la carpeta.
+
+Se aplica en cascada: al subir un hijo, su nueva carpeta padre puede quedar con
+un solo hijo y se vuelve a evaluar. En esta migracion eliminaron 7 carpetas:
+`Aprobaciones`, `Incidentes mayores` y `Avisos` (bajo Mesa de Servicio),
+`Auditoria` (bajo Mesa de Servicio y bajo Reportes), `Conocimiento` (bajo
+Configuracion) y `Accesos` (bajo Plataforma).
 
 ### 5.6 Verificacion
 
@@ -298,11 +312,11 @@ Migracion aplicada: `db/migrations/20261019_unificacion_catalogo_menu.sql`.
 
 | Concepto | Antes | Despues |
 | :--- | ---: | ---: |
-| Filas en `opciones_menu` | 451 | **232** |
-| Carpetas (`url_menu = ''`) | 68 | **43** |
+| Filas en `opciones_menu` | 451 | **225** |
+| Carpetas (`url_menu = ''`) | 68 | **36** |
 | Pantallas (URL con valor) | 240 | **189** |
 | URLs distintas | 189 | **189** |
-| Filas en `opciones_menu_perfiles` | 308 | **369** (239 pantallas + 130 carpetas) |
+| Filas en `opciones_menu_perfiles` | 308 | **359** (239 pantallas + 120 carpetas) |
 | Opciones sin ningun perfil | 143 | **0** |
 | Enlaces a rutas inexistentes | 0 | **0** |
 
@@ -334,6 +348,12 @@ tres raices cuyos hijos son todas carpetas (`Mesa de Servicio`, `Activos y CMDB`
 `Configuracion`): el arbol no las dibujaba y se perdian 3 modulos completos. Se
 corrigio con la regla de descendientes (5.4), que agrego 19 filas. Verificado con
 la consulta recursiva de render: los 10 perfiles ven sus raices.
+
+**Segunda pasada:** se aplico la regla de carpetas sin funcion (5.5.1). Se
+eliminaron 7 carpetas de un solo hijo, quedando **36 carpetas** y **225
+opciones**. El invariante de URLs se volvio a verificar contra el respaldo: 0
+diferencias en los 10 perfiles. Los ids se renumeraron en orden de arbol
+(21001+), asi que la migracion reproduce el estado exacto al re-aplicarse.
 
 Archivos tocados: la migracion, `db/seed.sql` (bloque de menu reescrito con el
 catalogo unico) y `db/schema.sql` (las 6 columnas de menu que solo existian en
