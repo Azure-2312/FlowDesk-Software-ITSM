@@ -31,9 +31,11 @@ export async function listarOpcionesMenuAdmin() {
 export async function crearOpcionMenuAdmin(body: any) {
   const { nombre, url_menu, descripcion, id_padre, orden, perfiles_ids } = body;
 
-  if (!nombre || !nombre.trim() || !url_menu || !url_menu.trim()) {
-    throw new ErrorDominio("El nombre y la URL son obligatorios");
+  // url_menu vacío = carpeta que solo agrupa subopciones (no navega).
+  if (!nombre || !nombre.trim()) {
+    throw new ErrorDominio("El nombre es obligatorio");
   }
+  const urlMenu = typeof url_menu === "string" ? url_menu.trim() : "";
 
   let nivelCalculado = 1;
   const padreId = id_padre ? Number(id_padre) : null;
@@ -60,7 +62,7 @@ export async function crearOpcionMenuAdmin(body: any) {
        RETURNING id_opcion_menu`,
       [
         nombre.trim(),
-        url_menu.trim(),
+        urlMenu,
         descripcion ? descripcion.trim() : null,
         padreId,
         nivelCalculado,

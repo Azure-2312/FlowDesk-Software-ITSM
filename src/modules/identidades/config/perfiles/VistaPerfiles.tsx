@@ -191,7 +191,7 @@ export default function PaginaPerfiles() {
             style={{ accentColor: "#2563eb", cursor: "pointer", width: 16, height: 16 }}
           />
           <span>{nodo.nombre}</span>
-          <span style={{ fontSize: 11, color: "#94a3b8" }}>({nodo.url_menu})</span>
+          <span style={{ fontSize: 11, color: "#94a3b8" }}>({nodo.url_menu || "carpeta"})</span>
         </label>
         {tieneHijos && (
           <div style={{ marginLeft: 8, paddingLeft: 12, borderLeft: "1px solid #e2e8f0" }}>

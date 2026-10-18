@@ -252,14 +252,16 @@ export default function PaginaOpcionesMenu() {
               </div>
 
               <div className="campo">
-                <label>Ruta URL de navegación *</label>
+                <label>Ruta URL de navegación</label>
                 <input
                   className="input-base"
                   value={formulario.url_menu}
                   onChange={(e) => setFormulario({ ...formulario, url_menu: e.target.value })}
-                  placeholder="Ej. /admin/auditoria"
-                  required
+                  placeholder="Ej. /admin/auditoria (vacío = carpeta)"
                 />
+                <small style={{ color: "#64748b", fontSize: 11 }}>
+                  Déjala vacía si es una carpeta que solo agrupa subopciones: no navega.
+                </small>
               </div>
             </div>
 
@@ -422,9 +424,13 @@ export default function PaginaOpcionesMenu() {
                         <strong>{o.nombre}</strong>
                       </td>
                       <td>
-                        <code style={{ fontSize: 12, backgroundColor: "#f1f5f9", padding: "2px 6px", borderRadius: 4, color: "#0f172a" }}>
-                          {o.url_menu}
-                        </code>
+                        {o.url_menu ? (
+                          <code style={{ fontSize: 12, backgroundColor: "#f1f5f9", padding: "2px 6px", borderRadius: 4, color: "#0f172a" }}>
+                            {o.url_menu}
+                          </code>
+                        ) : (
+                          <span style={{ fontSize: 11, color: "#64748b", fontStyle: "italic" }}>carpeta</span>
+                        )}
                       </td>
                       <td style={{ color: "#64748b" }}>{o.nombre_padre || "—"}</td>
                       <td style={{ textAlign: "center" }}>
