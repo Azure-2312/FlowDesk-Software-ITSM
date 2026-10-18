@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { registrarEnteradoCambio } from "@/modules/perfiles/tecnico/services/cambiosEnteradoService";
+import { registrarEnteradoCambio } from "@/modules/cambios";
 
 export async function POST(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;

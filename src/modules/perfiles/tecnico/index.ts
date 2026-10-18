@@ -1,4 +1,3 @@
-export { tomarTicketDeMesa, type UsuarioTecnico } from "./services/mesaService";
 export { obtenerContadoresTecnico, type ContadoresTecnico, type Contador } from "./services/contadoresService";
 export {
   listarRecordatorios,
@@ -7,4 +6,3 @@ export {
   type DatosRecordatorio,
 } from "./services/recordatoriosService";
 export { buscarUsuariosTecnicos } from "./services/usuariosService";
-export { registrarEnteradoCambio } from "./services/cambiosEnteradoService";
