@@ -1,12 +1,12 @@
 import { query } from "@/shared/lib/db";
 
 /**
- * Sala de crisis del técnico: consulta de incidentes mayores declarados por el
- * Supervisor (línea de tiempo, tickets vinculados y comunicados) y registro de
- * nuevos comunicados.
+ * Sala de crisis: consulta de incidentes mayores (línea de tiempo, tickets
+ * vinculados) y registro de comunicados. Lógica de dominio del incidente mayor
+ * movida desde src/modules/perfiles/tecnico para que el rol solo conserve su UI.
  */
 
-export async function listarIncidentesMayores() {
+export async function listarSalaDeCrisis() {
   const incidentes = await query<any>(
     `SELECT m.id_incidente_mayor, m.codigo, m.titulo, m.descripcion, m.severidad, m.estado,
             m.sala_virtual, m.comunicados, m.fecha_declaracion, m.fecha_cierre,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { agregarComunicado, listarIncidentesMayores } from "@/modules/perfiles/tecnico/services/incidenteMayorService";
+import { agregarComunicado, listarSalaDeCrisis } from "@/modules/incidentes";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
 
   try {
-    return NextResponse.json(await listarIncidentesMayores());
+    return NextResponse.json(await listarSalaDeCrisis());
   } catch (error) {
     console.error("Error al listar incidentes mayores:", error);
     return NextResponse.json({ error: "Error al consultar los incidentes mayores" }, { status: 500 });

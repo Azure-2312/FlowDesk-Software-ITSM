@@ -169,3 +169,7 @@ export {
 // --- Aprobación de negocio del Gestor de Área (perfil 5), movida desde
 // src/modules/perfiles/gestor-area. El rol resuelve su alcance y delega. ---
 export { resolverAprobacionNegocio } from "./services/aprobacionNegocioService";
+
+// --- Acuse de "enterado" de un cambio por el Técnico (perfil 2), movido desde
+// src/modules/perfiles/tecnico para que el rol solo conserve su UI. ---
+export { registrarEnteradoCambio } from "./services/cambioEnteradoService";

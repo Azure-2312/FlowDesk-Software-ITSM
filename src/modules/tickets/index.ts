@@ -15,6 +15,10 @@ export { listarCatalogosTickets } from "./services/catalogosService";
 
 export { crearComentarioTicket } from "./services/ticketComentariosService";
 
+// --- Toma de ticket desde la cola del departamento técnico, movida desde
+// src/modules/perfiles/tecnico para que el rol solo conserve su UI. ---
+export { tomarTicketDeMesa, type UsuarioTecnico } from "./services/mesaTomaService";
+
 // =====================================================================
 // Contrato de servidor del modulo tickets.
 //

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { tomarTicketDeMesa } from "@/modules/perfiles/tecnico/services/mesaService";
+import { tomarTicketDeMesa } from "@/modules/tickets";
 
 export async function POST(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
