@@ -46,7 +46,7 @@ export default function PaginaRegistrarProblema() {
         return;
       }
 
-      router.push("/tecnico/problemas/asignados");
+      router.push("/plataforma/perfiles/tecnico/problemas/asignados");
     } catch {
       setError("Error de conexión al registrar el problema.");
     } finally {

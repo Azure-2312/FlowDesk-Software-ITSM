@@ -78,7 +78,7 @@ function ContenidoConfiguracionVistasTickets() {
     try {
       const [resUsuarios, resPerfiles, resVistas, resEstados] = await Promise.all([
         fetch("/api/usuarios").then((r) => r.json()),
-        fetch("/api/perfiles").then((r) => r.json()),
+        fetch("/api/identidades/perfiles").then((r) => r.json()),
         fetch("/api/admin/configuracion?clave=vistas_ticket_perfil").then((r) => r.json()),
         fetch("/api/admin/configuracion?clave=flujo_estados_acciones").then((r) => r.json()),
       ]);

@@ -227,7 +227,7 @@ export default function PaginaInventarioActivos() {
                   </td>
                   <td style={{ padding: "12px 16px", textAlign: "right" }}>
                     <Link
-                      href={`/tecnico/mesa/registrar?activo=${a.codigo_patrimonial}`}
+                      href={`/plataforma/perfiles/tecnico/mesa/registrar?activo=${a.codigo_patrimonial}`}
                       style={{
                         padding: "4px 10px",
                         backgroundColor: "#f8fafc",

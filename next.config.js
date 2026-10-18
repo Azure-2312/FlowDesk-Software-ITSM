@@ -42,14 +42,8 @@ const nextConfig = {
       { source: "/mi-cuenta/:path*", destination: "/plataforma/mi-cuenta/:path*" },
       { source: "/operacion/:path*", destination: "/plataforma/operacion/:path*" },
       { source: "/proveedores/:path*", destination: "/plataforma/proveedores/:path*" },
-      // Consolas de rol: las rutas raiz siguen siendo la URL publica; el
-      // arbol interno vive en /plataforma/perfiles/<rol> (orden del repo).
-      { source: "/tecnico/:path*", destination: "/plataforma/perfiles/tecnico/:path*" },
-      { source: "/supervisor/:path*", destination: "/plataforma/perfiles/supervisor/:path*" },
-      { source: "/gestor-area/:path*", destination: "/plataforma/perfiles/gestor-area/:path*" },
-      { source: "/aprobador/:path*", destination: "/plataforma/perfiles/aprobador/:path*" },
-      { source: "/auditor/:path*", destination: "/plataforma/perfiles/auditor/:path*" },
-      { source: "/gestor-cambios/:path*", destination: "/plataforma/perfiles/gestor-cambios/:path*" },
+      // Consolas de rol: sin alias. Se usan las URLs de las carpetas fisicas,
+      // es decir /plataforma/perfiles/<rol>/... (ver src/modules/perfiles).
     ];
   },
 };

@@ -13,7 +13,7 @@ export default function VistaDashboard(): any {
   // Redireccion inteligente segun perfil activo en la sesion JWT (10 perfiles oficiales ITSM)
   const destinosPorPerfil: Record<number, string> = {
     1: "/admin/usuarios",              // 1. Administrador -> Gestion de identidades y accesos
-    2: "/tecnico/panel",               // 2. Tecnico -> Panel operativo de atencion y SLA
+    2: "/plataforma/perfiles/tecnico/panel",               // 2. Tecnico -> Panel operativo de atencion y SLA
     3: "/tickets",                     // 3. Solicitante -> Portal de tickets y autoservicio
     4: "/tickets/gestion/asignar",     // 4. Supervisor -> Centro de despacho y monitoreo de equipo
     5: "/tickets/gestion/aprobaciones",// 5. Gestor de Area -> Aprobaciones departamentales

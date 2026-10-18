@@ -63,7 +63,7 @@ export default function PaginaProblemasAsignados() {
 
         <div style={{ display: "flex", gap: 10 }}>
           <Link
-            href="/tecnico/problemas/nuevo"
+            href="/plataforma/perfiles/tecnico/problemas/nuevo"
             style={{
               padding: "8px 16px",
               backgroundColor: "#2563eb",
@@ -123,7 +123,7 @@ export default function PaginaProblemasAsignados() {
             Revisa los problemas de tu grupo o analiza candidatos por incidentes recurrentes.
           </p>
           <Link
-            href="/tecnico/problemas/candidatos"
+            href="/plataforma/perfiles/tecnico/problemas/candidatos"
             style={{
               display: "inline-block",
               padding: "8px 16px",
@@ -203,7 +203,7 @@ export default function PaginaProblemasAsignados() {
                   </td>
                   <td style={{ padding: "12px 16px", textAlign: "right" }}>
                     <Link
-                      href={`/tecnico/problemas/errores-conocidos`}
+                      href={`/plataforma/perfiles/tecnico/problemas/errores-conocidos`}
                       style={{
                         padding: "4px 10px",
                         backgroundColor: "#f8fafc",

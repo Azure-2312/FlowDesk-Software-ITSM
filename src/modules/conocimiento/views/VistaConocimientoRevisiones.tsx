@@ -127,7 +127,7 @@ export default function PaginaRevisionesPendientes() {
                   </td>
                   <td style={{ padding: "12px 16px", textAlign: "right" }}>
                     <Link
-                      href="/tecnico/conocimiento/base"
+                      href="/plataforma/perfiles/tecnico/conocimiento/base"
                       style={{
                         padding: "4px 10px",
                         backgroundColor: "#f8fafc",

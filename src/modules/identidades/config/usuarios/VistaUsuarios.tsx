@@ -109,7 +109,7 @@ export default function PaginaUsuarios() {
     setCargando(true);
     const [respUsuarios, respPerfiles] = await Promise.all([
       fetch("/api/usuarios").then((r) => r.json()),
-      fetch("/api/perfiles").then((r) => r.json()),
+      fetch("/api/identidades/perfiles").then((r) => r.json()),
     ]);
     setUsuarios(respUsuarios.usuarios ?? []);
     setDepartamentosEmpresa(respUsuarios.departamentos_empresa ?? []);
