@@ -53,7 +53,13 @@ CREATE TABLE opciones_menu (
     id_padre         INT REFERENCES opciones_menu(id_opcion_menu),
     nivel            SMALLINT NOT NULL DEFAULT 1 CHECK (nivel BETWEEN 1 AND 5),
     orden            SMALLINT NOT NULL DEFAULT 1,
-    estado_registro  BOOLEAN NOT NULL DEFAULT true
+    estado_registro  BOOLEAN NOT NULL DEFAULT true,
+    permiso_requerido   VARCHAR(100),
+    modulo_requerido    VARCHAR(50),
+    condicion_nivel     JSONB,
+    contador_clave      VARCHAR(50),
+    bloqueado           BOOLEAN DEFAULT false,
+    abierto_por_defecto BOOLEAN DEFAULT false
 );
 
 -- Relación muchos-a-muchos: un usuario puede tener varios perfiles a la vez

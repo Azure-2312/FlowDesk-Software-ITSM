@@ -1,6 +1,6 @@
 # Unificacion del catalogo de menu (`opciones_menu`)
 
-**Estado:** propuesta medida sobre la base actual. **No ejecutada.**
+**Estado:** **ejecutada el 2026-10-18.** Medicion tomada antes de migrar.
 **Fecha de medicion:** 2026-10-18.
 **Alcance:** `opciones_menu`, `opciones_menu_perfiles`, `MenuLateral`, admin de menu
 (`/plataforma/admin/menu` y `/plataforma/admin/perfiles`) y `db/seed.sql`.
@@ -26,8 +26,11 @@ visibilidad por perfil".
 5. El esquema **ya soporta** el modelo objetivo: la PK de
    `opciones_menu_perfiles` es `(id_opcion_menu, id_perfil)`, es decir N:M.
 6. Propuesta: **una fila por pantalla** + visibilidad N:M + **12 raices por
-   modulo**. Resultado: 189 paginas + ~40 carpetas, y **ningun perfil pierde ni
+   modulo**. Resultado: 189 paginas + 43 carpetas, y **ningun perfil pierde ni
    gana pantallas** (solo cambia el nombre y la ubicacion de algunas).
+7. **Ejecutada el 2026-10-18**: el catalogo quedo en **232 opciones** (43
+   carpetas + 189 pantallas) y **350 filas de visibilidad**. Ya no hay 10 menus
+   paralelos: hay uno solo y cada perfil ve su parte (ver 6).
 
 ---
 
@@ -252,9 +255,13 @@ Reconstruccion completa, no cirugia fila por fila:
 ### 5.4 Visibilidad
 
 Cada pantalla nueva recibe una fila por cada perfil que hoy la ve (union de los
-perfiles de sus filas actuales). El total de filas de visibilidad **no cambia:
-308**. Lo que cambia es que ahora 51 de esas filas cuelgan de una opcion
-compartida en vez de una copia.
+perfiles de sus filas actuales): **308 filas, igual que antes**. Lo que cambia es
+que ahora 51 de esas filas cuelgan de una opcion compartida en vez de una copia.
+
+Ademas, **cada carpeta necesita su propia fila de visibilidad**: el arbol se
+construye uniendose contra `opciones_menu_perfiles`, asi que una carpeta sin
+perfil no se dibuja y sus hijos desaparecen. Las 43 carpetas aportan **42 filas**
+(una por perfil que ve al menos un hijo). Total: **350 filas**.
 
 ### 5.5 Orden y nombres
 
@@ -275,21 +282,71 @@ compartida en vez de una copia.
 
 ---
 
-## 6. Decisiones pendientes
+## 6. Resultado de la ejecucion (2026-10-18)
 
-| # | Decision | Recomendacion |
-| :--- | :--- | :--- |
-| D1 | Nombres y cantidad de raices (4.1) | Aprobar las 12 |
-| D2 | Consolas de rol dentro de su dominio (4.3) | Si; evita dos carpetas "Cambios" |
-| D3 | Las 4 pantallas de 4.5 | Ayuda y Monitoreo entran; `/incidentes` y `/solicitudes` se retiran del codigo |
-| D4 | Ejecutar la migracion | Despues de D1-D3 |
+Migracion aplicada: `db/migrations/20261019_unificacion_catalogo_menu.sql`.
 
-Hasta que D1-D3 no esten cerradas no se toca la base: el respaldo existe, pero
-reconstruir 189 pantallas dos veces no aporta nada.
+| Concepto | Antes | Despues |
+| :--- | ---: | ---: |
+| Filas en `opciones_menu` | 451 | **232** |
+| Carpetas (`url_menu = ''`) | 68 | **43** |
+| Pantallas (URL con valor) | 240 | **189** |
+| URLs distintas | 189 | **189** |
+| Filas en `opciones_menu_perfiles` | 308 | **350** (308 paginas + 42 carpetas) |
+| Opciones sin ningun perfil | 143 | **0** |
+| Enlaces a rutas inexistentes | 0 | **0** |
+
+Invariante verificado contra el respaldo (`opciones_menu_bak_20261018`): **0 URLs
+que falten, 0 que sobren**, en los 10 perfiles.
+
+| Perfil | Filas antes | Filas despues | URLs distintas |
+| :--- | ---: | ---: | ---: |
+| 1 Administrador | 44 | 44 | 44 |
+| 2 Tecnico | 36 | 36 | 36 |
+| 3 Solicitante | 9 | 9 | 9 |
+| 4 Supervisor | 36 | 36 | 36 |
+| 5 Gestor de Area | 18 | 18 | 18 |
+| 6 Auditor | 23 | 22 | 22 |
+| 7 Aprobador (CAB) | 15 | 15 | 15 |
+| 8 Gestor de Cambios | 19 | 19 | 19 |
+| 9 Gestor de Activos | 26 | 26 | 26 |
+| 10 Gestor de Problemas | 14 | 14 | 14 |
+
+El Auditor baja de 23 a 22 filas porque tenia `/tickets/reportes` dos veces en su
+propio menu. El conjunto de URLs no cambia en ningun perfil.
+
+Integridad: 0 visibilidades huerfanas, 0 `id_padre` inexistente, 0 URL duplicada
+entre pantallas, 0 pantallas cuyo padre no sea visible para el mismo perfil.
+
+Archivos tocados: la migracion, `db/seed.sql` (bloque de menu reescrito con el
+catalogo unico) y `db/schema.sql` (las 6 columnas de menu que solo existian en
+migraciones: `permiso_requerido`, `modulo_requerido`, `condicion_nivel`,
+`contador_clave`, `bloqueado`, `abierto_por_defecto`).
+
+Rollback: `TRUNCATE opciones_menu_perfiles, opciones_menu; INSERT ... SELECT`
+desde las tablas `_bak_20261018`.
 
 ---
 
-## 7. Riesgos
+## 7. Decisiones (cerradas)
+
+| # | Decision | Resolucion |
+| :--- | :--- | :--- |
+| D1 | Nombres y cantidad de raices (4.1) | Aprobadas las 12 |
+| D2 | Consolas de rol dentro de su dominio (4.3) | Repartidas por dominio |
+| D3 | Las 4 pantallas de 4.5 | Fuera del catalogo (eran gen-1; desaparecen con el) |
+| D4 | Ejecutar la migracion | Ejecutada |
+
+Sobre D3: las 4 filas no entran al catalogo. Dos de esas rutas siguen existiendo
+como pagina viva enlazada desde otras pantallas (`Monitoreo de tecnicos` desde el
+panel del supervisor y `Ayuda` desde Configuracion de Conocimiento), asi que no se
+borraron del codigo en esta migracion; `/incidentes` y `/solicitudes` quedan sin
+entrada de menu. Retirar esas paginas del codigo es un cambio aparte, de los
+modulos `tickets`, `incidentes` y `solicitudes`.
+
+---
+
+## 8. Riesgos
 
 | Riesgo | Mitigacion |
 | :--- | :--- |
@@ -301,7 +358,7 @@ reconstruir 189 pantallas dos veces no aporta nada.
 
 ---
 
-## 8. Reproducir la medicion
+## 9. Reproducir la medicion
 
 Con `DATABASE_URL` en `.env.local`:
 
