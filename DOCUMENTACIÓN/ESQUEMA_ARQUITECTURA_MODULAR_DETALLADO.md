@@ -784,7 +784,7 @@ modules/seguridad/
 - `src/app/plataforma/admin/usuarios/page.tsx`
 - `src/app/plataforma/admin/perfiles/page.tsx`
 - `src/app/api/usuarios/**/*.ts`
-- `src/app/api/perfiles/**/*.ts`
+- `src/app/api/identidades/perfiles/**/*.ts`
 - `src/modules/seguridad/*`
 - `src/lib/auth.ts`
 - `src/lib/security.ts`

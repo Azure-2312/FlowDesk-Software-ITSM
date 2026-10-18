@@ -159,7 +159,7 @@ Los nombres de componente son los del árbol de archivos; si alguno no lleva el 
 | 7.3 Licencias de software (SAM) | `/activos/licencias` | `.../activos/licencias/page.tsx` |
 | 7.4 Modelado de clases CI | `/activos/cmdb/tipos` | `.../activos/cmdb/tipos/page.tsx` |
 | 8 Proveedores y Contratos TI | `/proveedores` | `src/app/plataforma/proveedores/*` |
-| Técnico M6.1 a M6.5 | `/tecnico/activos/{inventario,mapa,mantenimiento,conteos,licencias}` | `src/app/plataforma/perfiles/tecnico/activos/*` |
+| Técnico M6.1 a M6.5 | `/plataforma/perfiles/tecnico/activos/{inventario,mapa,mantenimiento,conteos,licencias}` | `src/app/plataforma/perfiles/tecnico/activos/*` |
 | API de operación | `/api/activos/*` | `src/app/api/activos/*` |
 Las secciones 4 y 5 describen lo que esas pantallas deben mostrar; si algo difiere, aplica la pregunta 1 de la sección 15.
 
@@ -1332,7 +1332,7 @@ Fabricantes y modelos: **vacíos** (se cargan por importación).
 - **Framework:** Next.js 14 (App Router); pantallas en `src/app/plataforma/`, API en `src/app/api/`. Sesión con cookie `sesion_tickets` (JWT) y perfil activo conmutable. Menú dinámico desde `/api/menu` + `src/lib/menu.ts`.
 - **Base de datos:** pool `pg` de `src/lib/db.ts`; sin acceso directo desde el cliente.
 - **Validaciones:** `src/lib/validaciones.ts` (DNI, RUC, correos, códigos, etc.) y `AlertaCampo` (solo errores en rojo).
-- **Activos y CMDB:** configuración en `/admin/activos-config/*` (4 pantallas con 27 ventanas), operación en `/activos/{inventario,cmdb,cmdb/tipos,licencias}` y `/proveedores`; el Técnico en `/tecnico/activos/*`. API en `/api/activos/*` y `/api/admin/cmdb/tipos`.
+- **Activos y CMDB:** configuración en `/admin/activos-config/*` (4 pantallas con 27 ventanas), operación en `/activos/{inventario,cmdb,cmdb/tipos,licencias}` y `/proveedores`; el Técnico en `/plataforma/perfiles/tecnico/activos/*`. API en `/api/activos/*` y `/api/admin/cmdb/tipos`.
 - **Selector de CI en Incidentes:** los ítems bajo custodia del usuario; no debe romperse.
 - **SLA:** `src/lib/sla.ts` (calendarios hábiles); los cambios del Prompt 2 reutilizan su tabla de feriados.
 - **Ticket de incidente:** `PanelInfraestructuraCi` muestra el CI afectado: debe leer de la misma estructura de CI/activos que esta configuración extiende.

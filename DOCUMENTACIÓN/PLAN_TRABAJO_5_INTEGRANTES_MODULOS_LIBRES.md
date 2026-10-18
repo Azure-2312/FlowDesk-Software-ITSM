@@ -283,9 +283,9 @@ Módulos: **`configuracion`**, **`perfiles/tecnico`**, **`perfiles/gestor-area`*
   `errores-conocidos`, `grupo`, `nuevo`), `sla/` (`objetivos`, `semaforo`),
   `agenda/`, `tareas/`, `catalogo/`, `api/` (6), `services/` (3), `index.ts`.
 - **Rutas que maneja:** `src/app/plataforma/perfiles/tecnico/**`
-  (`/tecnico/panel`, `/tecnico/mesa/*`, `/tecnico/cambios/*`, `/tecnico/activos/*`,
-  `/tecnico/problemas/*`, `/tecnico/sla/*`, `/tecnico/agenda`, `/tecnico/tareas`,
-  `/tecnico/catalogo`) y `src/app/api/perfiles/tecnico/**`.
+  (`/plataforma/perfiles/tecnico/panel`, `/plataforma/perfiles/tecnico/mesa/*`, `/plataforma/perfiles/tecnico/cambios/*`, `/plataforma/perfiles/tecnico/activos/*`,
+  `/plataforma/perfiles/tecnico/problemas/*`, `/plataforma/perfiles/tecnico/sla/*`, `/plataforma/perfiles/tecnico/agenda`, `/plataforma/perfiles/tecnico/tareas`,
+  `/plataforma/perfiles/tecnico/catalogo`) y `src/app/api/perfiles/tecnico/**`.
 - **Qué hará:** la estación de trabajo del técnico: bandeja/mesa, atención de cambios,
   activos, problemas, semáforo de SLA, agenda, tareas y catálogo.
 - **Ojo (regla inversa):** ya no guarda lógica de dominio. Tomar ticket de la mesa vive en
@@ -302,8 +302,8 @@ Módulos: **`configuracion`**, **`perfiles/tecnico`**, **`perfiles/gestor-area`*
   `VistaContratosArea`, `VistaDelegacionAprobaciones`, `VistaHistorialDecisiones`,
   `VistaActivosArea`, `VistaReportesArea`).
 - **Rutas que maneja:** `src/app/plataforma/perfiles/gestor-area/**`
-  (`/gestor-area/panel`, `/gestor-area/aprobaciones/*`, `/gestor-area/cambios/*`,
-  `/gestor-area/contratos`, `/gestor-area/activos`, `/gestor-area/reportes`) y
+  (`/plataforma/perfiles/gestor-area/panel`, `/plataforma/perfiles/gestor-area/aprobaciones/*`, `/plataforma/perfiles/gestor-area/cambios/*`,
+  `/plataforma/perfiles/gestor-area/contratos`, `/plataforma/perfiles/gestor-area/activos`, `/plataforma/perfiles/gestor-area/reportes`) y
   `src/app/api/perfiles/gestor-area/**`.
 - **Qué hará:** consola del área de negocio: panel, aprobaciones de negocio, impacto de
   cambios, contratos, activos del área, delegaciones e historial de decisiones.
@@ -669,7 +669,7 @@ Módulos: **`identidades`**, **`organizacion`**, **`perfiles/auditor`**.
   `config/` (2: `usuarios/VistaUsuarios`, `perfiles/VistaPerfiles`), `index.ts`.
 - **Rutas que maneja:** `src/app/plataforma/admin/usuarios`,
   `src/app/plataforma/admin/perfiles`, `src/app/api/usuarios/**`,
-  `src/app/api/perfiles/**` (incl. `desbloquear` y `enviar-credenciales`).
+  `src/app/api/identidades/perfiles/**` (incl. `desbloquear` y `enviar-credenciales`).
 - **Qué hará:** usuarios, perfiles y permisos, credenciales y desbloqueo de cuentas.
 
 ### `src/modules/organizacion/` (22 archivos) — Organización y personas
@@ -696,10 +696,10 @@ Módulos: **`identidades`**, **`organizacion`**, **`perfiles/auditor`**.
   `views/` (8: `VistaPanelAuditoria`, `VistaSod`, `VistaCambiosIrregulares`,
   `VistaCmdbResultados`, `VistaBajasDisposicion`, `VistaRecertificacion`,
   `VistaMuestreo`, `VistaInformesAuditoria`).
-- **Rutas que maneja:** `src/app/plataforma/perfiles/auditor/**` (`/auditor/panel`,
-  `/auditor/cumplimiento/*`, `/auditor/accesos/recertificacion`,
-  `/auditor/cmdb/resultados`, `/auditor/activos/bajas`, `/auditor/evidencia`,
-  `/auditor/informes`, `/auditor/muestreo`) y `src/app/api/perfiles/auditor/**`.
+- **Rutas que maneja:** `src/app/plataforma/perfiles/auditor/**` (`/plataforma/perfiles/auditor/panel`,
+  `/plataforma/perfiles/auditor/cumplimiento/*`, `/plataforma/perfiles/auditor/accesos/recertificacion`,
+  `/plataforma/perfiles/auditor/cmdb/resultados`, `/plataforma/perfiles/auditor/activos/bajas`, `/plataforma/perfiles/auditor/evidencia`,
+  `/plataforma/perfiles/auditor/informes`, `/plataforma/perfiles/auditor/muestreo`) y `src/app/api/perfiles/auditor/**`.
 - **Qué hará:** panel de auditoría, cumplimiento (cambios y SoD), recertificación de
   accesos, evidencia, muestreo, informes y consulta de resultados de CMDB.
 - **Ojo (regla inversa):** los controles de exactitud de la CMDB (CMDB-01..07) se movieron a
@@ -733,7 +733,7 @@ MÓDULOS Y CARPETAS QUE TE TOCAN (edítalos completos, son tuyos):
 
 RUTAS DE src/app QUE DEPENDEN DE TUS MÓDULOS (cascarones delgados, sin lógica):
 - /plataforma/admin/usuarios , /plataforma/admin/perfiles
-- /api/usuarios/** , /api/perfiles/** (incl. [id]/desbloquear, enviar-credenciales)
+- /api/usuarios/** , /api/identidades/perfiles/** (incl. [id]/desbloquear, enviar-credenciales)
 - /plataforma/admin/departamentos , /plataforma/admin/departamentos-empresa ,
   /plataforma/admin/tecnicos
 - /api/departamentos-ti/** , /api/departamentos-empresa/** , /api/tecnicos/** ,

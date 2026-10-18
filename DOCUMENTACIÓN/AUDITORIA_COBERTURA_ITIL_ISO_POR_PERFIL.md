@@ -81,7 +81,7 @@ Convención: **Opción (nivel 1)** → subopciones (nivel 2) con su ruta y estad
 
 > **Total: 25 de 27 pestañas** de configuración implementadas.
 
-### PERFIL 2 — Técnico (`/tecnico/panel`) — 🟢
+### PERFIL 2 — Técnico (`/plataforma/perfiles/tecnico/panel`) — 🟢
 
 | Opción | Subopciones | Estado |
 |---|---|---|
@@ -92,7 +92,7 @@ Convención: **Opción (nivel 1)** → subopciones (nivel 2) con su ruta y estad
 | 5 Gestión de Cambios | Mis cambios, nuevo, implementación, calendario, impacto, historial | 🟢 |
 | 6 Activos y CMDB | Inventario, mapa, mantenimiento, conteos, licencias | 🟢 |
 | 7 Conocimiento | Base, mis artículos, crear, revisiones | 🟢 |
-| 8 Catálogo (consulta) | `/tecnico/catalogo` | 🟢 |
+| 8 Catálogo (consulta) | `/plataforma/perfiles/tecnico/catalogo` | 🟢 |
 | 9 Mi cuenta | Perfil, preferencias | 🟢 |
 
 ### PERFIL 3 — Solicitante (`/tickets`) — 🟢 con 🟡
@@ -106,23 +106,23 @@ Convención: **Opción (nivel 1)** → subopciones (nivel 2) con su ruta y estad
 | 5 Avisos de servicio | `/avisos/mantenimientos` | 🟢 |
 | 6 Mi cuenta | Perfil, preferencias | 🟢 |
 
-### PERFIL 4 — Supervisor (`/supervisor/panel`) — 🟢
+### PERFIL 4 — Supervisor (`/plataforma/perfiles/supervisor/panel`) — 🟢
 
 12 opciones / 56 ítems: Panel de supervisión (indicadores, alertas, accesos rápidos), Supervisión y despacho, Gestión de tickets, SLA (semáforo, objetivos, incumplimientos), Problemas (registro/asignación), Cambios (aprobaciones técnicas, calendario, impacto, programación), Activos (inventario, bajas, licencias), Conocimiento (base, revisión/publicación), Reportes del equipo (productividad), Mi equipo (vistas compartidas), Operación (eventos, resiliencia), Mi cuenta. **Todo implementado.**
 
-### PERFIL 5 — Gestor de Área (`/gestor-area/panel`) — 🟢 con 🟡
+### PERFIL 5 — Gestor de Área (`/plataforma/perfiles/gestor-area/panel`) — 🟢 con 🟡
 
 9 opciones / 29 ítems: Panel del área, Mesa de servicio del área (registrar, departamento, colaboradores), Aprobaciones (solicitudes, cambios de negocio, historial, delegación), Catálogo, Cambios que afectan al área, Activos y contratos del área, Reportes, Conocimiento, Mi cuenta. **🟡 menor:** falta API dedicada `/api/area/colaboradores/autorizaciones`.
 
-### PERFIL 6 — Auditor (`/auditor/panel`) — 🟢 con 🟡
+### PERFIL 6 — Auditor (`/plataforma/perfiles/auditor/panel`) — 🟢 con 🟡
 
 7 opciones / 30 ítems: Panel de auditoría, Auditoría de tickets (todos, forense, **SoD**, muestreo), Auditoría del sistema (cambios de configuración, seguridad/autenticación, retención, perfiles, recertificación de accesos), Cumplimiento (historial/emergencias, cambios fuera de ventana, problemas/KEDB, SLA), Activos y licencias (inventario, cumplimiento, resultados CMDB, bajas), Reportes y evidencias, Mi cuenta. **🟡 menor:** falta `/api/perfiles/auditor/evidencia`.
 
-### PERFIL 7 — Aprobador / CAB (`/aprobador/panel`) — 🟢 con 🟡
+### PERFIL 7 — Aprobador / CAB (`/plataforma/perfiles/aprobador/panel`) — 🟢 con 🟡
 
 9 opciones / 19 ítems: Panel, Aprobaciones pendientes (cambios, solicitudes, modelos estándar, bajas/renovaciones por monto, riesgo aceptado), CAB (dictamen colegiado, agenda/actas, ECAB), Calendario de cambios, Detalle de RFC, Historial, Delegaciones, Reportes, Mi cuenta. **🟡 menor:** no existe `PresentadorRfcAprobador.tsx` (el detalle se apoya en `VistaTicketGobernanza`).
 
-### PERFIL 8 — Gestor de Cambios (`/gestor-cambios/panel`) — 🟢
+### PERFIL 8 — Gestor de Cambios (`/plataforma/perfiles/gestor-cambios/panel`) — 🟢
 
 10 opciones / 27 ítems: Panel, RFC (registrar, bandeja por evaluar, historial, detalle), Evaluación y autorización (etapas, reclasificación/excepciones), Programación e implementación (ventanas, programación, conflictos/capacidad, ejecución), CAB (presidencia, convocatoria/actas), PIR, Modelos de cambio estándar, Reglas de calendario (ventanas, congelamiento, feriados), Reportes, Mi cuenta. **Todo implementado.**
 

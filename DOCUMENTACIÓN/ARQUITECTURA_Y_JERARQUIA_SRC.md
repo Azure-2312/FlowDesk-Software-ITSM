@@ -1553,7 +1553,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.1.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/activos/conteos/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/activos/conteos/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/activos/conteos`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/activos/conteos`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1567,7 +1567,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.1.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/activos/inventario/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/activos/inventario/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/activos/inventario`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/activos/inventario`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1581,7 +1581,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.1.3.1 Archivo: `src/app/plataforma/perfiles/tecnico/activos/licencias/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/activos/licencias/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/activos/licencias`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/activos/licencias`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1595,7 +1595,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.1.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/activos/mantenimiento/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/activos/mantenimiento/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/activos/mantenimiento`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/activos/mantenimiento`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1609,7 +1609,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.1.5.1 Archivo: `src/app/plataforma/perfiles/tecnico/activos/mapa/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/activos/mapa/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/activos/mapa`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/activos/mapa`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1623,7 +1623,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/agenda/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/agenda/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/agenda`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/agenda`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1644,7 +1644,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.3.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/calendario/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/calendario/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/calendario`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/cambios/calendario`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1658,7 +1658,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.3.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/historial/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/historial/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/historial`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/cambios/historial`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1672,7 +1672,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.3.3.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/impacto/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/impacto/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/impacto`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/cambios/impacto`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1686,7 +1686,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.3.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/implementacion/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/implementacion/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/implementacion`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/cambios/implementacion`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1700,7 +1700,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.3.5.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/mis-cambios/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/mis-cambios/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/mis-cambios`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/cambios/mis-cambios`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1714,7 +1714,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.3.6.1 Archivo: `src/app/plataforma/perfiles/tecnico/cambios/nuevo/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/cambios/nuevo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/cambios/nuevo`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/cambios/nuevo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1728,7 +1728,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/catalogo/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/catalogo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/catalogo`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/catalogo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1749,7 +1749,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.5.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/conocimiento/base/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/conocimiento/base/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/conocimiento/base`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/conocimiento/base`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1763,7 +1763,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.5.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/conocimiento/mis-articulos/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/conocimiento/mis-articulos/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/conocimiento/mis-articulos`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/conocimiento/mis-articulos`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1777,7 +1777,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.5.3.1 Archivo: `src/app/plataforma/perfiles/tecnico/conocimiento/nuevo/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/conocimiento/nuevo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/conocimiento/nuevo`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/conocimiento/nuevo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1791,7 +1791,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.5.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/conocimiento/revisiones/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/conocimiento/revisiones/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/conocimiento/revisiones`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/conocimiento/revisiones`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1805,7 +1805,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.6.1 Archivo: `src/app/plataforma/perfiles/tecnico/desempeno/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/desempeno/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/desempeno`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/desempeno`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1826,7 +1826,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.7.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/area/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/area/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/area`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/mesa/area`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1840,7 +1840,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.7.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/asignados/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/asignados/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/asignados`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/mesa/asignados`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1854,7 +1854,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.7.3.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/buscar/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/buscar/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/buscar`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/mesa/buscar`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1868,7 +1868,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.7.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/historial/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/historial/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/historial`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/mesa/historial`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1882,7 +1882,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.7.5.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/pendientes/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/pendientes/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/pendientes`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/mesa/pendientes`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1896,14 +1896,14 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.7.6.1 Archivo: `src/app/plataforma/perfiles/tecnico/mesa/registrar/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/mesa/registrar/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/mesa/registrar`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/mesa/registrar`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
 #### 1.1.1.12.8 Archivo: `src/app/plataforma/perfiles/tecnico/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1917,7 +1917,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.9.1 Archivo: `src/app/plataforma/perfiles/tecnico/panel/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/panel/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/panel`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/panel`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1938,7 +1938,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.10.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/problemas/asignados/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/problemas/asignados/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/problemas/asignados`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/problemas/asignados`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1952,7 +1952,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.10.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/problemas/candidatos/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/problemas/candidatos/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/problemas/candidatos`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/problemas/candidatos`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1966,7 +1966,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.10.3.1 Archivo: `src/app/plataforma/perfiles/tecnico/problemas/errores-conocidos/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/problemas/errores-conocidos/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/problemas/errores-conocidos`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/problemas/errores-conocidos`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1980,7 +1980,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.10.4.1 Archivo: `src/app/plataforma/perfiles/tecnico/problemas/grupo/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/problemas/grupo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/problemas/grupo`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/problemas/grupo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -1994,7 +1994,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.10.5.1 Archivo: `src/app/plataforma/perfiles/tecnico/problemas/nuevo/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/problemas/nuevo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/problemas/nuevo`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/problemas/nuevo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -2015,7 +2015,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.11.1.1 Archivo: `src/app/plataforma/perfiles/tecnico/sla/objetivos/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/sla/objetivos/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/sla/objetivos`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/sla/objetivos`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -2029,7 +2029,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.11.2.1 Archivo: `src/app/plataforma/perfiles/tecnico/sla/semaforo/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/sla/semaforo/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/sla/semaforo`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/sla/semaforo`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -2043,7 +2043,7 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 #### 1.1.1.12.12.1 Archivo: `src/app/plataforma/perfiles/tecnico/tareas/page.tsx`
 * **Ruta de Archivo**: `src/app/plataforma/perfiles/tecnico/tareas/page.tsx`
 * **Tipo de Archivo**: Archivo de Codigo (`.tsx`)
-* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/tecnico/tareas`.
+* **Que es**: Componente de pagina (React Page) correspondiente a la ruta navegable `/plataforma/perfiles/tecnico/tareas`.
 * **Que hace**: Renderiza la interfaz de usuario para esta seccion, gestiona estados reactivos (`useState`), consume APIs mediante `fetch` y aplica las politicas de visualizacion segun el rol activo.
 * **Que contiene**: Maquetacion visual con tablas interactivas, formularios con validaciones reactivas en tiempo real o paneles de indicadores.
 
@@ -3790,31 +3790,31 @@ La jerarquia sigue una numeracion formal multinivel (1, 1.1, 1.1.1, 1.1.1.1, etc
 * **Que hace**: Recibe peticiones HTTP (GET, POST, PATCH, PUT o DELETE), valida la cookie de sesion JWT, evalua el perfil activo, ejecuta consultas SQL parametrizadas en PostgreSQL y responde con JSON estandarizado.
 * **Que contiene**: Funciones asincronas exportadas segun los verbos HTTP soportados, integradas con `src/lib/db.ts` y `src/lib/validaciones.ts`.
 
-### 1.1.2.13 Directorio: `src/app/api/perfiles/`
-* **Ruta Relativa**: `src/app/api/perfiles/`
+### 1.1.2.13 Directorio: `src/app/api/identidades/perfiles/`
+* **Ruta Relativa**: `src/app/api/identidades/perfiles/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `perfiles`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-### 1.1.2.13.1 Directorio: `src/app/api/perfiles/[id]/`
-* **Ruta Relativa**: `src/app/api/perfiles/[id]/`
+### 1.1.2.13.1 Directorio: `src/app/api/identidades/perfiles/[id]/`
+* **Ruta Relativa**: `src/app/api/identidades/perfiles/[id]/`
 * **Tipo de Elemento**: Carpeta de Codigo Fuente (Directorio)
 * **Que es**: Directorio de agrupacion logica: `[id]`.
 * **Que hace**: Organiza componentes, paginas o servicios pertenecientes a este modulo funcional.
 * **Que contiene**: Subcarpetas y archivos de implementacion correspondientes a este dominio.
 
-#### 1.1.2.13.1.1 Archivo: `src/app/api/perfiles/[id]/route.ts`
-* **Ruta de Archivo**: `src/app/api/perfiles/[id]/route.ts`
+#### 1.1.2.13.1.1 Archivo: `src/app/api/identidades/perfiles/[id]/route.ts`
+* **Ruta de Archivo**: `src/app/api/identidades/perfiles/[id]/route.ts`
 * **Tipo de Archivo**: Archivo de Codigo (`.ts`)
-* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/perfiles/[id]`.
+* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/identidades/perfiles/[id]`.
 * **Que hace**: Recibe peticiones HTTP (GET, POST, PATCH, PUT o DELETE), valida la cookie de sesion JWT, evalua el perfil activo, ejecuta consultas SQL parametrizadas en PostgreSQL y responde con JSON estandarizado.
 * **Que contiene**: Funciones asincronas exportadas segun los verbos HTTP soportados, integradas con `src/lib/db.ts` y `src/lib/validaciones.ts`.
 
-#### 1.1.2.13.2 Archivo: `src/app/api/perfiles/route.ts`
-* **Ruta de Archivo**: `src/app/api/perfiles/route.ts`
+#### 1.1.2.13.2 Archivo: `src/app/api/identidades/perfiles/route.ts`
+* **Ruta de Archivo**: `src/app/api/identidades/perfiles/route.ts`
 * **Tipo de Archivo**: Archivo de Codigo (`.ts`)
-* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/perfiles`.
+* **Que es**: Controlador de servicios RESTful (Route Handler) para el endpoint canonico `/api/identidades/perfiles`.
 * **Que hace**: Recibe peticiones HTTP (GET, POST, PATCH, PUT o DELETE), valida la cookie de sesion JWT, evalua el perfil activo, ejecuta consultas SQL parametrizadas en PostgreSQL y responde con JSON estandarizado.
 * **Que contiene**: Funciones asincronas exportadas segun los verbos HTTP soportados, integradas con `src/lib/db.ts` y `src/lib/validaciones.ts`.
 

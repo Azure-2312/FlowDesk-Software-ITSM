@@ -56,51 +56,51 @@
 
 ---
 
-## 2. PERFIL 2 — Técnico (`/tecnico/panel`)
+## 2. PERFIL 2 — Técnico (`/plataforma/perfiles/tecnico/panel`)
 
 | # | Opción / Subopción | Ruta | Estado | ITIL 4 | Norma |
 |---|---|---|---|---|---|
-| **1** | **Mi trabajo** | `/tecnico/*` | ✅ | WTM, SLM | 20000 |
-| 1.1 | Panel del técnico | `/tecnico/panel` | ✅ | SD | 20000 |
-| 1.2 | Mis tareas | `/tecnico/tareas` | ✅ | SD | 20000 |
-| 1.3 | Mi agenda y disponibilidad | `/tecnico/agenda` | ✅ | WTM | 20000 |
-| 1.4 | Mi desempeño | `/tecnico/desempeno` | ✅ | MR, WTM | 20000 |
-| **2** | **Mesa de Servicio** | `/tecnico/mesa` | ✅ | SD, INC, SR | 20000 |
-| 2.1 | Mis tickets asignados | `/tecnico/mesa/asignados` | ✅ | INC | 20000 |
-| 2.2 | Bandeja de pendientes | `/tecnico/mesa/pendientes` | ✅ | SD | 20000 |
-| 2.3 | Tickets de mi área técnica | `/tecnico/mesa/area` | ✅ | SD | 20000 |
-| 2.4 | Registrar ticket para un usuario | `/tecnico/mesa/registrar` | ✅ | INC, SR | 20000 |
-| 2.5 | Búsqueda avanzada | `/tecnico/mesa/buscar` | ✅ | SD | 20000 |
-| 2.6 | Historial de resueltos | `/tecnico/mesa/historial` | ✅ | INC | 20000 |
-| 2.7 | Incidente mayor (sala de crisis) | `/tecnico/mesa/incidente-mayor` | ✅ | INC | 20000 |
-| **3** | **Seguimiento de SLA** | `/tecnico/sla` | ✅ | SLM | 20000 |
-| 3.1 | Semáforo de SLA de mi cola | `/tecnico/sla/semaforo` | ✅ | SLM | 20000 |
-| 3.2 | Objetivos de tiempo vigentes | `/tecnico/sla/objetivos` | ✅ | SLM | 20000 |
-| **4** | **Gestión de Problemas** | `/tecnico/problemas` | ✅ | PRB | 20000 |
-| 4.1 | Problemas asignados a mí | `/tecnico/problemas/asignados` | ✅ | PRB | 20000 |
-| 4.2 | Problemas de mi grupo | `/tecnico/problemas/grupo` | ✅ | PRB | 20000 |
-| 4.3 | Registrar problema | `/tecnico/problemas/nuevo` | ✅ | PRB | 20000 |
-| 4.4 | Candidatos a problema | `/tecnico/problemas/candidatos` | ✅ | PRB | 20000 |
-| 4.5 | Errores conocidos (KEDB) | `/tecnico/problemas/errores-conocidos` | ✅ | PRB, KM | 20000 |
-| **5** | **Gestión de Cambios** | `/tecnico/cambios` | ✅ | CHG | 20000 |
-| 5.1 | Mis cambios | `/tecnico/cambios/mis-cambios` | ✅ | CHG | 20000 |
-| 5.2 | Registrar solicitud RFC | `/tecnico/cambios/nuevo` | ✅ | CHG | 20000 |
-| 5.3 | Cambios por implementar | `/tecnico/cambios/implementacion` | ✅ | CHG | 20000 |
-| 5.4 | Calendario de cambios | `/tecnico/cambios/calendario` | ✅ | CHG | 20000 |
-| 5.5 | Cambios que afectan mis servicios | `/tecnico/cambios/impacto` | ✅ | CHG, SCM | 20000 |
-| 5.6 | Historial de cambios | `/tecnico/cambios/historial` | ✅ | CHG | 20000 |
-| **6** | **Activos y CMDB** | `/tecnico/activos` | ✅ | ITAM, SCM | 19770 |
-| 6.1 | Inventario de activos | `/tecnico/activos/inventario` | ✅ | ITAM | 19770 |
-| 6.2 | Mapa de topología CMDB | `/tecnico/activos/mapa` | ✅ | SCM | 19770 |
-| 6.3 | Mantenimiento y reparaciones | `/tecnico/activos/mantenimiento` | ✅ | ITAM | 19770 |
-| 6.4 | Inventario físico en campo | `/tecnico/activos/conteos` | ✅ | ITAM | 19770 |
-| 6.5 | Licencias de software (consulta) | `/tecnico/activos/licencias` | ✅ | ITAM | 19770 |
-| **7** | **Gestión del Conocimiento** | `/tecnico/conocimiento` | ✅ | KM | 20000 |
-| 7.1 | Base de conocimiento | `/tecnico/conocimiento/base` | ✅ | KM | 20000 |
-| 7.2 | Mis artículos | `/tecnico/conocimiento/mis-articulos` | ✅ | KM | 20000 |
-| 7.3 | Crear artículo | `/tecnico/conocimiento/nuevo` | ✅ | KM | 20000 |
-| 7.4 | Revisiones pendientes | `/tecnico/conocimiento/revisiones` | ✅ | KM | 20000 |
-| **8** | Catálogo de servicios (consulta) | `/tecnico/catalogo` | ✅ | CAT | 20000 |
+| **1** | **Mi trabajo** | `/plataforma/perfiles/tecnico/*` | ✅ | WTM, SLM | 20000 |
+| 1.1 | Panel del técnico | `/plataforma/perfiles/tecnico/panel` | ✅ | SD | 20000 |
+| 1.2 | Mis tareas | `/plataforma/perfiles/tecnico/tareas` | ✅ | SD | 20000 |
+| 1.3 | Mi agenda y disponibilidad | `/plataforma/perfiles/tecnico/agenda` | ✅ | WTM | 20000 |
+| 1.4 | Mi desempeño | `/plataforma/perfiles/tecnico/desempeno` | ✅ | MR, WTM | 20000 |
+| **2** | **Mesa de Servicio** | `/plataforma/perfiles/tecnico/mesa` | ✅ | SD, INC, SR | 20000 |
+| 2.1 | Mis tickets asignados | `/plataforma/perfiles/tecnico/mesa/asignados` | ✅ | INC | 20000 |
+| 2.2 | Bandeja de pendientes | `/plataforma/perfiles/tecnico/mesa/pendientes` | ✅ | SD | 20000 |
+| 2.3 | Tickets de mi área técnica | `/plataforma/perfiles/tecnico/mesa/area` | ✅ | SD | 20000 |
+| 2.4 | Registrar ticket para un usuario | `/plataforma/perfiles/tecnico/mesa/registrar` | ✅ | INC, SR | 20000 |
+| 2.5 | Búsqueda avanzada | `/plataforma/perfiles/tecnico/mesa/buscar` | ✅ | SD | 20000 |
+| 2.6 | Historial de resueltos | `/plataforma/perfiles/tecnico/mesa/historial` | ✅ | INC | 20000 |
+| 2.7 | Incidente mayor (sala de crisis) | `/plataforma/perfiles/tecnico/mesa/incidente-mayor` | ✅ | INC | 20000 |
+| **3** | **Seguimiento de SLA** | `/plataforma/perfiles/tecnico/sla` | ✅ | SLM | 20000 |
+| 3.1 | Semáforo de SLA de mi cola | `/plataforma/perfiles/tecnico/sla/semaforo` | ✅ | SLM | 20000 |
+| 3.2 | Objetivos de tiempo vigentes | `/plataforma/perfiles/tecnico/sla/objetivos` | ✅ | SLM | 20000 |
+| **4** | **Gestión de Problemas** | `/plataforma/perfiles/tecnico/problemas` | ✅ | PRB | 20000 |
+| 4.1 | Problemas asignados a mí | `/plataforma/perfiles/tecnico/problemas/asignados` | ✅ | PRB | 20000 |
+| 4.2 | Problemas de mi grupo | `/plataforma/perfiles/tecnico/problemas/grupo` | ✅ | PRB | 20000 |
+| 4.3 | Registrar problema | `/plataforma/perfiles/tecnico/problemas/nuevo` | ✅ | PRB | 20000 |
+| 4.4 | Candidatos a problema | `/plataforma/perfiles/tecnico/problemas/candidatos` | ✅ | PRB | 20000 |
+| 4.5 | Errores conocidos (KEDB) | `/plataforma/perfiles/tecnico/problemas/errores-conocidos` | ✅ | PRB, KM | 20000 |
+| **5** | **Gestión de Cambios** | `/plataforma/perfiles/tecnico/cambios` | ✅ | CHG | 20000 |
+| 5.1 | Mis cambios | `/plataforma/perfiles/tecnico/cambios/mis-cambios` | ✅ | CHG | 20000 |
+| 5.2 | Registrar solicitud RFC | `/plataforma/perfiles/tecnico/cambios/nuevo` | ✅ | CHG | 20000 |
+| 5.3 | Cambios por implementar | `/plataforma/perfiles/tecnico/cambios/implementacion` | ✅ | CHG | 20000 |
+| 5.4 | Calendario de cambios | `/plataforma/perfiles/tecnico/cambios/calendario` | ✅ | CHG | 20000 |
+| 5.5 | Cambios que afectan mis servicios | `/plataforma/perfiles/tecnico/cambios/impacto` | ✅ | CHG, SCM | 20000 |
+| 5.6 | Historial de cambios | `/plataforma/perfiles/tecnico/cambios/historial` | ✅ | CHG | 20000 |
+| **6** | **Activos y CMDB** | `/plataforma/perfiles/tecnico/activos` | ✅ | ITAM, SCM | 19770 |
+| 6.1 | Inventario de activos | `/plataforma/perfiles/tecnico/activos/inventario` | ✅ | ITAM | 19770 |
+| 6.2 | Mapa de topología CMDB | `/plataforma/perfiles/tecnico/activos/mapa` | ✅ | SCM | 19770 |
+| 6.3 | Mantenimiento y reparaciones | `/plataforma/perfiles/tecnico/activos/mantenimiento` | ✅ | ITAM | 19770 |
+| 6.4 | Inventario físico en campo | `/plataforma/perfiles/tecnico/activos/conteos` | ✅ | ITAM | 19770 |
+| 6.5 | Licencias de software (consulta) | `/plataforma/perfiles/tecnico/activos/licencias` | ✅ | ITAM | 19770 |
+| **7** | **Gestión del Conocimiento** | `/plataforma/perfiles/tecnico/conocimiento` | ✅ | KM | 20000 |
+| 7.1 | Base de conocimiento | `/plataforma/perfiles/tecnico/conocimiento/base` | ✅ | KM | 20000 |
+| 7.2 | Mis artículos | `/plataforma/perfiles/tecnico/conocimiento/mis-articulos` | ✅ | KM | 20000 |
+| 7.3 | Crear artículo | `/plataforma/perfiles/tecnico/conocimiento/nuevo` | ✅ | KM | 20000 |
+| 7.4 | Revisiones pendientes | `/plataforma/perfiles/tecnico/conocimiento/revisiones` | ✅ | KM | 20000 |
+| **8** | Catálogo de servicios (consulta) | `/plataforma/perfiles/tecnico/catalogo` | ✅ | CAT | 20000 |
 | **9** | **Mi cuenta** | `/mi-cuenta` | ✅ | — | — |
 | 9.1 | Mi perfil y seguridad | `/mi-cuenta` | ✅ | ISM | 27001 |
 | 9.2 | Preferencias de notificación | `/mi-cuenta/notificaciones` | ✅ | — | — |
@@ -136,7 +136,7 @@
 
 ---
 
-## 4. PERFIL 4 — Supervisor (`/supervisor/panel`)
+## 4. PERFIL 4 — Supervisor (`/plataforma/perfiles/supervisor/panel`)
 
 | # | Opción | Subopciones | Estado | ITIL 4 | Norma |
 |---|---|---|---|---|---|
@@ -157,32 +157,32 @@
 
 ---
 
-## 5. PERFIL 5 — Gestor de Área (`/gestor-area/panel`)
+## 5. PERFIL 5 — Gestor de Área (`/plataforma/perfiles/gestor-area/panel`)
 
 | # | Opción / Subopción | Ruta | Estado | ITIL 4 | Norma | Qué falta / incompleto |
 |---|---|---|---|---|---|---|
-| **1** | **Panel del área** | `/gestor-area/panel` | ✅ | MR, SLM | 20000 | — |
-| 1.1 | Aprobaciones pendientes y vencidas | `/gestor-area/panel` | ✅ | CHG, SR | 20000 | — |
-| 1.2 | Tickets del área por estado y SLA | `/gestor-area/panel` | ✅ | SLM | 20000 | — |
-| 1.3 | Cambios próximos que afectan al área | `/gestor-area/panel` | ✅ | CHG | 20000 | — |
+| **1** | **Panel del área** | `/plataforma/perfiles/gestor-area/panel` | ✅ | MR, SLM | 20000 | — |
+| 1.1 | Aprobaciones pendientes y vencidas | `/plataforma/perfiles/gestor-area/panel` | ✅ | CHG, SR | 20000 | — |
+| 1.2 | Tickets del área por estado y SLA | `/plataforma/perfiles/gestor-area/panel` | ✅ | SLM | 20000 | — |
+| 1.3 | Cambios próximos que afectan al área | `/plataforma/perfiles/gestor-area/panel` | ✅ | CHG | 20000 | — |
 | **2** | **Mesa de servicio del área** | — | ⚠️ | SD | 20000 | — |
 | 2.1 | Registrar ticket para el área | `/tickets/gestion/crear` | ✅ | SR | 20000 | — |
 | 2.2 | Tickets de mi departamento | `/tickets/gestion/departamento` | ✅ | INC | 20000 | — |
 | 2.3 | Colaboradores de mi área | `/tickets/gestion/colaboradores` | ⚠️ | WTM | 20000 | Falta API `/api/area/colaboradores/autorizaciones` |
 | **3** | **Aprobaciones** | — | ✅ | CHG, SR, RISK | 20000 | — |
 | 3.1 | Mis aprobaciones de solicitudes | `/tickets/gestion/aprobaciones` | ✅ | SR | 20000 | — |
-| 3.2 | Aprobación de negocio de cambios | `/gestor-area/cambios/aprobaciones` | ✅ | CHG | 20000 | — |
-| 3.3 | Historial de mis decisiones | `/gestor-area/aprobaciones/historial` | ✅ | CHG | 20000 | — |
-| 3.4 | Delegación de aprobaciones | `/gestor-area/aprobaciones/delegacion` | ✅ | CHG, WTM | 20000 | — |
+| 3.2 | Aprobación de negocio de cambios | `/plataforma/perfiles/gestor-area/cambios/aprobaciones` | ✅ | CHG | 20000 | — |
+| 3.3 | Historial de mis decisiones | `/plataforma/perfiles/gestor-area/aprobaciones/historial` | ✅ | CHG | 20000 | — |
+| 3.4 | Delegación de aprobaciones | `/plataforma/perfiles/gestor-area/aprobaciones/delegacion` | ✅ | CHG, WTM | 20000 | — |
 | **4** | Catálogo de servicios (consulta) | `/tickets/catalogo` | ✅ | CAT | 20000 | — |
 | **5** | **Cambios que afectan a mi área** | `/cambios/gestion` | ✅ | CHG | 20000 | — |
 | 5.1 | Calendario de mantenimientos | `/cambios/gestion/calendario` | ✅ | CHG | 20000 | — |
-| 5.2 | Cambios con interrupción para mi área | `/gestor-area/cambios/impacto` | ✅ | CHG | 20000 | — |
+| 5.2 | Cambios con interrupción para mi área | `/plataforma/perfiles/gestor-area/cambios/impacto` | ✅ | CHG | 20000 | — |
 | 5.3 | Solicitar un cambio de negocio | `/cambios/gestion/crear` | ✅ | CHG | 20000 | — |
 | **6** | **Activos y contratos del área** | — | ✅ | ITAM, SUP | 19770 | — |
-| 6.1 | Activos de mi área | `/gestor-area/activos` | ✅ | ITAM | 19770 | — |
-| 6.2 | Licencias y contratos de mi departamento | `/gestor-area/contratos` | ✅ | ITAM, SUP | 19770 | — |
-| **7** | Reportes del área | `/gestor-area/reportes` | ✅ | MR | 20000 | — |
+| 6.1 | Activos de mi área | `/plataforma/perfiles/gestor-area/activos` | ✅ | ITAM | 19770 | — |
+| 6.2 | Licencias y contratos de mi departamento | `/plataforma/perfiles/gestor-area/contratos` | ✅ | ITAM, SUP | 19770 | — |
+| **7** | Reportes del área | `/plataforma/perfiles/gestor-area/reportes` | ✅ | MR | 20000 | — |
 | **8** | Gestión de Conocimiento | `/conocimiento` | ✅ | KM | 20000 | — |
 | **9** | **Mi cuenta** | `/mi-cuenta` | ✅ | — | — | — |
 | 9.1 | Mi perfil y seguridad | `/mi-cuenta` | ✅ | ISM | 27001 | — |
@@ -192,36 +192,36 @@
 
 ---
 
-## 6. PERFIL 6 — Auditor (`/auditor/panel`)
+## 6. PERFIL 6 — Auditor (`/plataforma/perfiles/auditor/panel`)
 
 | # | Opción / Subopción | Ruta | Estado | ITIL 4 | Norma | Qué falta / incompleto |
 |---|---|---|---|---|---|---|
-| **1** | Panel de auditoría | `/auditor/panel` | ✅ | ISM, MR | 27001, COBIT | — |
+| **1** | Panel de auditoría | `/plataforma/perfiles/auditor/panel` | ✅ | ISM, MR | 27001, COBIT | — |
 | **2** | **Auditoría de tickets** | — | ✅ | ISM | 27001 | — |
 | 2.1 | Todos los tickets (solo lectura) | `/tickets/gestion/todos` | ✅ | INC | 20000 | — |
 | 2.2 | Auditoría forense | `/tickets/gestion/auditoria` | ✅ | ISM | 27001 | — |
-| 2.3 | Segregación de funciones (SoD) | `/auditor/cumplimiento/sod` | ✅ | ISM | 27001, COBIT | — |
-| 2.4 | Muestreo de auditoría | `/auditor/muestreo` | ✅ | ISM | 27001 | — |
+| 2.3 | Segregación de funciones (SoD) | `/plataforma/perfiles/auditor/cumplimiento/sod` | ✅ | ISM | 27001, COBIT | — |
+| 2.4 | Muestreo de auditoría | `/plataforma/perfiles/auditor/muestreo` | ✅ | ISM | 27001 | — |
 | **3** | **Auditoría del sistema** | — | ✅ | ISM | 27001 | — |
 | 3.1 | Auditoría de cambios de configuración | `/admin/auditoria-sistema` | ✅ | SCM | 27001 | — |
 | 3.2 | Registros de seguridad y autenticación | `/admin/seguridad-logs` | ✅ | ISM | 27001 | — |
 | 3.3 | Retención y mantenimiento de datos | `/admin/mantenimiento-datos` | ✅ | ISM | 27001 | — |
 | 3.4 | Perfiles y permisos (lectura) | `/admin/perfiles` | ✅ | ISM | 27001 | — |
-| 3.5 | Recertificación de accesos | `/auditor/accesos/recertificacion` | ✅ | ISM | 27001 | — |
+| 3.5 | Recertificación de accesos | `/plataforma/perfiles/auditor/accesos/recertificacion` | ✅ | ISM | 27001 | — |
 | **4** | **Cumplimiento de procesos** | — | ✅ | CHG, PRB, SLM | COBIT | — |
 | 4.1 | Cambios: historial, emergencias y revisiones | `/cambios/gestion/todos` | ✅ | CHG | 20000 | — |
-| 4.2 | Cambios sin autorización o fuera de ventana | `/auditor/cumplimiento/cambios` | ✅ | CHG | COBIT | — |
+| 4.2 | Cambios sin autorización o fuera de ventana | `/plataforma/perfiles/auditor/cumplimiento/cambios` | ✅ | CHG | COBIT | — |
 | 4.3 | Problemas y errores conocidos | `/problemas` | ✅ | PRB | 20000 | — |
 | 4.4 | Cumplimiento de SLA | `/tickets/reportes` | ✅ | SLM | 20000 | — |
 | **5** | **Activos y licencias** | — | ✅ | ITAM | 19770 | — |
 | 5.1 | Inventario (lectura) | `/activos/inventario` | ✅ | ITAM | 19770 | — |
 | 5.2 | Cumplimiento de licencias | `/activos/licencias` | ✅ | ITAM | 19770 | — |
-| 5.3 | Resultados de auditorías de CMDB | `/auditor/cmdb/resultados` | ✅ | SCM | 19770 | — |
-| 5.4 | Bajas y disposición | `/auditor/activos/bajas` | ✅ | ITAM | 27001 | — |
+| 5.3 | Resultados de auditorías de CMDB | `/plataforma/perfiles/auditor/cmdb/resultados` | ✅ | SCM | 19770 | — |
+| 5.4 | Bajas y disposición | `/plataforma/perfiles/auditor/activos/bajas` | ✅ | ITAM | 27001 | — |
 | **6** | **Reportes y evidencias** | — | ⚠️ | MR | COBIT | — |
 | 6.1 | Indicadores operativos y SLA | `/tickets/reportes` | ✅ | MR | 20000 | — |
 | 6.2 | Tableros (lectura) | `/admin/reportes-disenador` | ✅ | MR | COBIT | — |
-| 6.3 | Informes de auditoría | `/auditor/informes` | ⚠️ | ISM | COBIT | Falta API `/api/perfiles/auditor/evidencia` |
+| 6.3 | Informes de auditoría | `/plataforma/perfiles/auditor/informes` | ⚠️ | ISM | COBIT | Falta API `/api/perfiles/auditor/evidencia` |
 | **7** | **Mi cuenta** | `/mi-cuenta` | ✅ | — | — | — |
 | 7.1 | Mi perfil y seguridad | `/mi-cuenta` | ✅ | ISM | 27001 | — |
 | 7.2 | Preferencias de notificación | `/mi-cuenta/notificaciones` | ✅ | — | — | — |
@@ -230,26 +230,26 @@
 
 ---
 
-## 7. PERFIL 7 — Aprobador / CAB (`/aprobador/panel`)
+## 7. PERFIL 7 — Aprobador / CAB (`/plataforma/perfiles/aprobador/panel`)
 
 | # | Opción / Subopción | Ruta | Estado | ITIL 4 | Norma | Qué falta / incompleto |
 |---|---|---|---|---|---|---|
-| **1** | Panel del aprobador | `/aprobador/panel` | ✅ | CHG, RISK | COBIT | — |
+| **1** | Panel del aprobador | `/plataforma/perfiles/aprobador/panel` | ✅ | CHG, RISK | COBIT | — |
 | **2** | **Aprobaciones pendientes** | — | ✅ | CHG, RISK | 20000, COBIT | — |
-| 2.1 | Aprobaciones de cambios | `/aprobador/cambios` | ✅ | CHG | 20000 | — |
+| 2.1 | Aprobaciones de cambios | `/plataforma/perfiles/aprobador/cambios` | ✅ | CHG | 20000 | — |
 | 2.2 | Aprobaciones de solicitudes de servicio | `/tickets/gestion/aprobaciones` | ✅ | SR | 20000 | — |
-| 2.3 | Modelos de cambio estándar | `/aprobador/cambios/modelos` | ✅ | CHG | 20000 | — |
-| 2.4 | Bajas y renovaciones por monto | `/aprobador/activos` | ✅ | ITAM | 19770 | — |
-| 2.5 | Riesgo aceptado y cierre de problemas mayores | `/aprobador/problemas` | ✅ | PRB, RISK | COBIT | — |
+| 2.3 | Modelos de cambio estándar | `/plataforma/perfiles/aprobador/cambios/modelos` | ✅ | CHG | 20000 | — |
+| 2.4 | Bajas y renovaciones por monto | `/plataforma/perfiles/aprobador/activos` | ✅ | ITAM | 19770 | — |
+| 2.5 | Riesgo aceptado y cierre de problemas mayores | `/plataforma/perfiles/aprobador/problemas` | ✅ | PRB, RISK | COBIT | — |
 | **3** | **Comité asesor de cambios (CAB)** | — | ✅ | CHG | COBIT (BAI06) | — |
 | 3.1 | Dictamen colegiado | `/cambios/gestion/cab` | ✅ | CHG | COBIT | — |
-| 3.2 | Agenda y actas | `/aprobador/cab/agenda` | ✅ | CHG | COBIT | — |
-| 3.3 | Comité de emergencia (ECAB) | `/aprobador/cab/emergencia` | ✅ | CHG | COBIT | — |
+| 3.2 | Agenda y actas | `/plataforma/perfiles/aprobador/cab/agenda` | ✅ | CHG | COBIT | — |
+| 3.3 | Comité de emergencia (ECAB) | `/plataforma/perfiles/aprobador/cab/emergencia` | ✅ | CHG | COBIT | — |
 | **4** | Calendario de cambios | `/cambios/gestion/calendario` | ✅ | CHG | 20000 | — |
 | **5** | Detalle de RFC | `/cambios/gestion/[id]` | ⚠️ | CHG | 20000 | Falta `PresentadorRfcAprobador.tsx` (se usa `VistaTicketGobernanza`) |
-| **6** | Historial de mis decisiones | `/aprobador/historial` | ✅ | CHG | COBIT | — |
-| **7** | Delegaciones | `/aprobador/delegaciones` | ✅ | CHG, WTM | 20000 | — |
-| **8** | Reportes de decisiones | `/aprobador/reportes` | ✅ | MR | COBIT | — |
+| **6** | Historial de mis decisiones | `/plataforma/perfiles/aprobador/historial` | ✅ | CHG | COBIT | — |
+| **7** | Delegaciones | `/plataforma/perfiles/aprobador/delegaciones` | ✅ | CHG, WTM | 20000 | — |
+| **8** | Reportes de decisiones | `/plataforma/perfiles/aprobador/reportes` | ✅ | MR | COBIT | — |
 | **9** | **Mi cuenta** | `/mi-cuenta` | ✅ | — | — | — |
 | 9.1 | Mi perfil y seguridad | `/mi-cuenta` | ✅ | ISM | 27001 | — |
 | 9.2 | Preferencias de notificación | `/mi-cuenta/notificaciones` | ✅ | — | — | — |
@@ -258,7 +258,7 @@
 
 ---
 
-## 8. PERFIL 8 — Gestor de Cambios (`/gestor-cambios/panel`)
+## 8. PERFIL 8 — Gestor de Cambios (`/plataforma/perfiles/gestor-cambios/panel`)
 
 | # | Opción | Subopciones | Estado | ITIL 4 | Norma |
 |---|---|---|---|---|---|
