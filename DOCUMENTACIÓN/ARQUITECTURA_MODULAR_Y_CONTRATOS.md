@@ -190,6 +190,19 @@ se actualizo a las rutas nuevas con la migracion
 toca URLs: los `id_perfil` de `perfiles` y las filas de `usuario_perfiles` no
 cambian, por lo que cada usuario conserva su perfil.
 
+Ademas, la migracion `db/migrations/20261018_eliminar_menu_legacy.sql` elimino 9
+filas del catalogo de menu antiguo (ids `530`, `531`, `532`, `533`, `570`, `541`,
+`571`, `573`, `710`). Eran filas sin perfil asignado (invisibles en el sidebar,
+pero visibles como ruido en `/plataforma/admin/menu`) cuyas URLs no correspondian
+a ninguna pagina: la migracion `20261010_saneamiento_colisiones_urls_menu.sql` las
+habia reapuntado a rutas por rol (`/supervisor/departamentos-ti`,
+`/tecnicos/monitoreo`, `/auditor/auditoria-integral`, ...) que nunca se
+construyeron. Su funcion ya esta cubierta por las opciones por perfil
+(`531` -> `11028 /admin/departamentos`, `532` -> `11029 /admin/tecnicos`,
+`541` -> `11043`/`16009 /admin/seguridad-logs`, `571` -> `11042`/`16008
+/admin/auditoria-sistema`, `710` -> `20002`/`14023 /problemas`). Su definicion
+tambien se retiro de `db/seed.sql` para que un entorno nuevo no las recree.
+
 ---
 
 ## 4. Propiedad de carpetas por integrante
@@ -251,3 +264,4 @@ Regla: si hay que cambiar la logica de una consola, se cambia en el **modulo**
 | 2026-10 | Nuevo analisis de CMDB: topologia, impacto, reconciliacion Activo <-> CI e historial (`/activos/cmdb/analisis`). |
 | 2026-10 | **Regla inversa**: los 6 modulos de rol se consolidan en `src/modules/perfiles/<rol>/` (un solo modulo `perfiles`); su logica de dominio se reparte a `cambios`, `activos`, `problemas`, `tickets`, `incidentes` y `cmdb`. |
 | 2026-10 | Rutas de rol agrupadas y **sin alias**: `src/app/api/perfiles/<rol>/` y `src/app/plataforma/perfiles/<rol>/` (URLs `/api/perfiles/<rol>/...` y `/plataforma/perfiles/<rol>/...`). La ficha del perfil (RBAC) pasa a `/api/identidades/perfiles`. Menu migrado: `opciones_menu.url_menu`, 148 filas (`db/migrations/20261018_menu_urls_perfiles.sql`). |
+| 2026-10 | **Limpieza del menu heredado**: se eliminan 9 filas del catalogo antiguo con URLs sin pagina (`530`, `531`, `532`, `533`, `570`, `541`, `571`, `573`, `710`), ya cubiertas por las opciones por perfil. Migracion `db/migrations/20261018_eliminar_menu_legacy.sql` + limpieza de `db/seed.sql`. |
