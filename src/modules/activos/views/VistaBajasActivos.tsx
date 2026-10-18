@@ -113,7 +113,7 @@ export default function VistaBajasActivos() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Bajas y disposición</h1>
+        <h1>Gestión de bajas</h1>
         <p>Resuelve solicitudes de baja y registra el borrado seguro, el acta y el destino final del activo.</p>
       </div>
 

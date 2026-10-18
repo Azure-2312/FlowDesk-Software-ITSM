@@ -48,7 +48,7 @@ export default function VistaHistorialDecisiones() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Historial de mis decisiones</h1>
+        <h1>Historial de aprobaciones de mi área</h1>
         <p>Registro de las aprobaciones, observaciones y rechazos que he emitido sobre RFC.</p>
       </div>
 
