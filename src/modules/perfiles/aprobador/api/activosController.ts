@@ -7,7 +7,7 @@ import {
   resolverBaja,
   listarRenovaciones,
   resolverRenovacion,
-} from "@/modules/perfiles/aprobador/services/montoService";
+} from "@/modules/activos";
 
 export const dynamic = "force-dynamic";
 

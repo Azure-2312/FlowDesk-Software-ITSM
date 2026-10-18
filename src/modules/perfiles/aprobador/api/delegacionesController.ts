@@ -7,7 +7,7 @@ import {
   listarPosiblesDelegados,
   crearDelegacion,
   eliminarDelegacion,
-} from "@/modules/perfiles/aprobador/services/aprobacionesService";
+} from "@/modules/cambios";
 
 export const dynamic = "force-dynamic";
 
