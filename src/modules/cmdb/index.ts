@@ -54,3 +54,7 @@ export {
   obtenerReconciliacion,
   obtenerHistorialCi,
 } from "./services/cmdbAnalisisService";
+
+// Auditoría de exactitud de la CMDB (controles CMDB-01..07), movida desde
+// src/modules/perfiles/auditor para que el rol solo conserve su UI.
+export { obtenerResultadosCmdb } from "./services/cmdbAuditoriaResultadosService";

@@ -56,3 +56,7 @@ export {
 // --- Resolución de bajas por el Supervisor (perfil 4), movida desde
 // src/modules/perfiles/supervisor para que el rol solo conserve su UI. ---
 export { resolverBajaArea } from "./services/supervisionBajasService";
+
+// --- Disposición de activos dados de baja (lectura), movida desde
+// src/modules/perfiles/auditor para que el rol solo conserve su UI. ---
+export { listarBajasDisposicion } from "./services/bajasDisposicionService";
