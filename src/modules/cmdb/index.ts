@@ -46,3 +46,11 @@ export {
   publicarConfiguracionCmdbRelaciones,
   descartarBorradorCmdbRelaciones,
 } from "./services/cmdbRelacionesConfiguracionService";
+
+// Analisis avanzado: topologia, impacto, reconciliacion e historial.
+export {
+  obtenerTopologia,
+  analizarImpacto,
+  obtenerReconciliacion,
+  obtenerHistorialCi,
+} from "./services/cmdbAnalisisService";
