@@ -9,12 +9,12 @@ import { query, queryRow } from "@/shared/lib/db";
 export async function obtenerPanelSolicitante(idUsuario: number) {
   const kpis = await queryRow<any>(
     `SELECT
-       COUNT(*) FILTER (WHERE et.es_terminal = false)::int AS abiertos,
-       COUNT(*) FILTER (WHERE et.es_terminal = false AND t.id_estado = 4)::int AS en_espera,
-       COUNT(*) FILTER (WHERE et.es_terminal = true AND t.fecha_cierre >= now() - interval '30 days')::int AS resueltos_30d,
-       COUNT(*) FILTER (WHERE et.es_terminal = false AND t.fecha_limite_sla IS NOT NULL AND t.fecha_limite_sla < now())::int AS vencidos
+       COUNT(*) FILTER (WHERE t.id_estado IN (1, 2, 3, 4))::int AS abiertos,
+       COUNT(*) FILTER (WHERE t.id_estado = 4)::int AS en_espera,
+       COUNT(*) FILTER (WHERE t.id_estado IN (5, 6)
+         AND COALESCE(t.fecha_resolucion, t.fecha_cierre) >= now() - interval '30 days')::int AS resueltos_30d,
+       COUNT(*) FILTER (WHERE t.id_estado IN (1, 2, 3, 4) AND t.fecha_limite_sla IS NOT NULL AND t.fecha_limite_sla < now())::int AS vencidos
      FROM ticket t
-     LEFT JOIN estado_ticket et ON et.id_estado = t.id_estado
      WHERE t.estado_registro = true AND t.id_usuario_solicitante = $1`,
     [idUsuario]
   );

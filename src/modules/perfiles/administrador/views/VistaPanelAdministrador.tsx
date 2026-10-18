@@ -66,7 +66,7 @@ export default function VistaPanelAdministrador() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14, marginBottom: 24 }}>
         <Kpi titulo="Tickets abiertos" valor={data.kpis.tickets_abiertos} />
         <Kpi titulo="SLA vencidos" valor={data.kpis.sla_vencidos} color={data.kpis.sla_vencidos > 0 ? "#b91c1c" : undefined} />
-        <Kpi titulo="Cambios activos" valor={data.kpis.cambios_activos} />
+        <Kpi titulo="Cambios en curso" valor={data.kpis.cambios_activos} />
         <Kpi titulo="Problemas" valor={data.kpis.problemas_abiertos} />
         <Kpi titulo="Usuarios activos" valor={data.kpis.usuarios_activos} />
         <Kpi titulo="Accesos fallidos (7d)" valor={data.kpis.accesos_fallidos} color={data.kpis.accesos_fallidos > 0 ? "#b45309" : undefined} />
