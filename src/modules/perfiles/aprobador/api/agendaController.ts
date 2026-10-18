@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { sesionConCapacidad } from "@/shared/lib/api-auth";
-import { listarReuniones, listarCambiosParaAgenda, crearReunion, actualizarReunion } from "@/modules/perfiles/aprobador/services/cabService";
+import { listarReuniones, listarCambiosParaAgenda, crearReunion, actualizarReunion } from "@/modules/cambios";
 
 export const dynamic = "force-dynamic";
 
@@ -35,13 +35,13 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const { sesion, error } = sesionConCapacidad(CAPACIDADES.CAMBIOS_VER);
+  const { error } = sesionConCapacidad(CAPACIDADES.CAMBIOS_VER);
   if (error) return error;
 
   try {
     const body = await req.json();
     if (!body.id_reunion) throw new ErrorDominio("Falta el identificador de la reunión.");
-    return NextResponse.json(await actualizarReunion(sesion.id_usuario, Number(body.id_reunion), body));
+    return NextResponse.json(await actualizarReunion(Number(body.id_reunion), body));
   } catch (err) {
     if (!(err instanceof ErrorDominio)) console.error("Error al actualizar la reunión del CAB:", err);
     const { error: mensaje, status } = respuestaError(err, "Error al actualizar la reunión");

@@ -1,13 +1,12 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { UMBRAL_MONTO_APROBACION as UMBRAL_MONTO } from "@/shared/lib/parametros";
 
 /**
- * Servicio del portal del Aprobador (perfil 7 / CAB). Alcance: lo que debe
- * decidir y el historial de sus decisiones.
+ * Decisiones del Aprobador (perfil 7 / CAB): cambios (RFC/ECAB), delegaciones
+ * y panel/historial de decisiones. Lógica de dominio movida desde el portal del
+ * Aprobador (`src/modules/perfiles/aprobador`) para que el rol solo conserve su UI.
  */
-
-/** Monto a partir del cual el Aprobador debe autorizar bajas y renovaciones. */
-export const UMBRAL_MONTO = 2000;
 
 const ESTADO_CAMBIO_CASE = `CASE c.id_estado
   WHEN 1 THEN 'Registrado' WHEN 2 THEN 'Evaluación CAB' WHEN 3 THEN 'Aprobado'

@@ -43,3 +43,12 @@ export {
   publicarConfiguracionCiclosVidaTransiciones,
   descartarBorradorCiclosVidaTransiciones,
 } from "./services/ciclosVidaTransicionesConfiguracionService";
+
+// --- Aprobaciones por monto (bajas y renovaciones), movidas desde
+// src/modules/perfiles/aprobador para que el rol solo conserve su UI. ---
+export {
+  listarBajasPorMonto,
+  resolverBaja,
+  listarRenovaciones,
+  resolverRenovacion,
+} from "./services/aprobacionesMontoService";

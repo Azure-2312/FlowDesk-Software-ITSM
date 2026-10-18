@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { sesionConCapacidad } from "@/shared/lib/api-auth";
-import { listarEmergencias, resolverEmergencia } from "@/modules/perfiles/aprobador/services/cabService";
+import { listarEmergencias, resolverEmergencia } from "@/modules/cambios";
 
 export const dynamic = "force-dynamic";
 

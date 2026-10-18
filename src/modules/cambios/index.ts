@@ -138,3 +138,23 @@ export {
   detectarConflictos,
   validarProgramacion,
 } from "./services/conflictosService";
+
+// --- Decisiones del Aprobador (perfil 7 / CAB), movidas desde
+// src/modules/perfiles/aprobador para que el rol solo conserve su UI. ---
+export {
+  obtenerPanelAprobador,
+  listarCambiosPendientes,
+  resolverCambio,
+  listarModelosCambio,
+  listarHistorialDecisiones,
+  listarDelegaciones,
+  listarPosiblesDelegados,
+  crearDelegacion,
+  eliminarDelegacion,
+  obtenerReportesDecisiones,
+} from "./services/aprobacionesService";
+
+export {
+  listarEmergencias,
+  resolverEmergencia,
+} from "./services/ecabService";
