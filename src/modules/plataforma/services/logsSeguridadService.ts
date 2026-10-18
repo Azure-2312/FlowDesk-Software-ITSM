@@ -1,5 +1,5 @@
 import { query } from "@/shared/lib/db";
-import type { LogAccesoItem } from "@/modules/seguridad/logsTypes";
+import type { LogAccesoItem } from "@/modules/seguridad";
 
 export interface FiltrosLogsSeguridad {
   buscar?: string | null;
