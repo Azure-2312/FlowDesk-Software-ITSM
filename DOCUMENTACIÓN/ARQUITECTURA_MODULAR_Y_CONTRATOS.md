@@ -86,33 +86,42 @@ alias del propio modulo.
 
 ## 3. Mapa de modulos y contratos
 
-23 modulos bajo `src/modules/`:
+**18 modulos** bajo `src/modules/`: **7 de nucleo** (con cruces, los trabaja el
+responsable del nucleo), **10 libres** (sin cruces, repartidos entre el equipo) y **1
+modulo de consolas de rol** (`perfiles`).
+
+### Nucleo (con cruces; propiedad del responsable del nucleo)
 
 | Modulo | Dominio de negocio | Contrato |
 | :--- | :--- | :--- |
 | `tickets` | Nucleo ITSM: tickets, catalogos, comentarios | `index.ts` (servidor) + `ui.ts` (cliente) |
-| `incidentes` | Gestion de incidentes | `index.ts` |
+| `incidentes` | Gestion de incidentes e incidentes mayores | `index.ts` |
 | `solicitudes` | Gestion de solicitudes de servicio | `index.ts` |
-| `cambios` | Habilitacion del cambio (RFC) | `index.ts` |
+| `cambios` | Habilitacion del cambio (RFC), CAB/ECAB, aprobaciones | `index.ts` |
 | `problemas` | Gestion de problemas / KEDB | `index.ts` |
-| `conocimiento` | Base de conocimiento | `index.ts` |
-| `aprobador` | Bandeja del CAB / aprobador | `index.ts` |
-| `gestor-cambios` | Panel del gestor de cambios | `index.ts` |
-| `gestor-area` | Panel del gestor de area | `index.ts` |
-| `tecnico` | Consola del tecnico | `index.ts` |
-| `supervisor` | Supervision, SLA/OLA, escalamientos | `index.ts` |
-| `activos` | ITAM: inventario, licencias, contratos | `index.ts` |
-| `cmdb` | SACM: CIs, relaciones, calidad de CMDB, analisis | `index.ts` |
+| `seguridad` | Autenticacion, sesiones, RBAC | `index.ts` |
+| `plataforma` | Salud, mantenimiento de datos, logs, auditoria, reportes | `index.ts` |
+
+### Consolas de rol (UI por perfil)
+
+| Modulo | Dominio de negocio | Contrato |
+| :--- | :--- | :--- |
+| `perfiles` | Consolas de los perfiles/roles (`tecnico`, `supervisor`, `gestor-area`, `aprobador`, `auditor`, `gestor-cambios`) | subcarpetas por rol (cada una con su `api/`, `services/`, `views/`) |
+
+### Libres (sin cruces; repartidos entre el equipo)
+
+| Modulo | Dominio de negocio | Contrato |
+| :--- | :--- | :--- |
+| `servicios` | Catalogo de servicios y SLA | `index.ts` |
+| `operacion` | Operacion de servicios, eventos y resiliencia | `index.ts` |
+| `activos` | ITAM: inventario, licencias, contratos, bajas/aprobaciones | `index.ts` |
+| `cmdb` | SACM: CIs, relaciones, calidad de CMDB, analisis, auditoria | `index.ts` |
 | `proveedores` | Proveedores y contratos | `index.ts` |
 | `identidades` | Usuarios, perfiles y credenciales | `index.ts` |
 | `organizacion` | Departamentos, tecnicos, colaboradores, ausencias | `index.ts` |
 | `configuracion` | Menu, categorias, formularios/flujos, parametros | `index.ts` |
-| `plataforma` | Salud, mantenimiento de datos, logs, auditoria, reportes | `index.ts` |
+| `conocimiento` | Base de conocimiento | `index.ts` |
 | `reportes` | Reportes gerenciales y BI | `index.ts` |
-| `auditor` | Auditoria forense y consultas de solo lectura | `index.ts` |
-| `seguridad` | Autenticacion, sesiones, RBAC | `index.ts` |
-| `servicios` | Catalogo de servicios | `index.ts` |
-| `operacion` | Operacion de servicios / workflow | `index.ts` |
 
 ### 3.1 Nota sobre la CMDB (Opcion B)
 
@@ -128,6 +137,37 @@ elemento_configuracion.id_activo  ->  activo.id_activo
 - `activos` (ITAM) consulta las tablas CMDB por SQL para sus KPIs; no importa
   codigo del modulo `cmdb`.
 
+### 3.2 Regla inversa: las consolas de rol viven en `perfiles`
+
+Los antiguos modulos de rol (`tecnico`, `supervisor`, `gestor-area`, `aprobador`,
+`auditor`, `gestor-cambios`) **dejan de ser modulos de primer nivel**. Ahora:
+
+1. **La logica de dominio** que vivia dentro de una consola de rol se mueve a su
+   modulo de dominio (el rol solo conserva su UI y su alcance). Ejemplos:
+   - El portal del **Gestor de Cambios** delego su logica a `cambios`.
+   - El portal del **Aprobador** reparte su logica entre `cambios`, `activos` y
+     `problemas` (bajas/renovaciones por monto y cierre de problemas mayores).
+   - La consola del **Supervisor** delega aprobacion tecnica y reprogramacion a
+     `cambios`, y la resolucion de bajas a `activos`.
+   - La consola del **Tecnico** delega la toma de ticket a `tickets`, el acuse de
+     cambio a `cambios` y la sala de crisis a `incidentes`.
+   - La consola del **Auditor** delega la auditoria de CMDB a `cmdb` y la
+     disposicion de bajas a `activos`.
+2. Las **consolas** se consolidan en **un solo modulo** `src/modules/perfiles/`,
+   con una subcarpeta por perfil (`perfiles/<rol>/`). Cada consola conserva solo
+   su `views/`, sus `api/` y la logica que **de verdad es de rol** (alcance por
+   area/departamento, tableros, recordatorios personales, recursos de equipo,
+   informes de auditoria, etc.).
+
+Consecuencia: el modulo `perfiles` **no** debe contener reglas de dominio ni
+importar rutas profundas de otros modulos; consume los contratos
+`@/modules/<dominio>`. Si una consola necesita cambiar logica de dominio, se pide
+al dueno de ese modulo de dominio (los del nucleo o los libres asignados).
+
+La constante transversal de aprobaciones por monto
+(`UMBRAL_MONTO_APROBACION`) vive en `src/shared/lib/parametros.ts` para no acoplar
+`cambios` con `activos`.
+
 ---
 
 ## 4. Propiedad de carpetas por integrante
@@ -137,11 +177,12 @@ cambios cruzados se piden por Pull Request.
 
 | Integrante | Dominio | Modulos (`src/modules/...`) | Rutas (`src/app/...`) |
 | :--- | :--- | :--- | :--- |
-| **Miguel** (Tech Lead) | Nucleo ITSM + seguridad | `tickets`, `incidentes`, `solicitudes`, `aprobador`, `seguridad`, `operacion`, `servicios` | `/tickets`, `/incidentes`, `/solicitudes`, `/login`, `/mi-cuenta` |
-| **Lourdes (Lu)** | Frontend / design system / catalogo | `shared/components`, `gestor-area`, `tecnico` | `/plataforma/tecnico`, `/plataforma/gestor-area` |
-| **Alexis** | Problemas + conocimiento | `problemas`, `conocimiento` | `/problemas`, `/gestor-problemas/*` |
-| **Nain** | Cambios + activos/CMDB | `cambios`, `gestor-cambios`, `activos`, `cmdb`, `proveedores` | `/cambios`, `/activos`, `/gestor-activos/*`, `/gestor-cambios` |
-| **Junior** | Administracion, BI y auditoria | `identidades`, `organizacion`, `configuracion`, `plataforma`, `reportes`, `auditor`, `supervisor` | `/admin/*`, `/auditor/*`, `/reportes`, `/supervisor` |
+| **Nucleo** (responsable del nucleo) | Nucleo ITSM con cruces + seguridad | `tickets`, `incidentes`, `solicitudes`, `cambios`, `problemas`, `seguridad`, `plataforma` | `/tickets`, `/incidentes`, `/solicitudes`, `/cambios`, `/problemas`, `/login`, `/mi-cuenta`, `/plataforma/admin/*` del nucleo |
+| **Miguel** (Tech Lead) | Servicios, operacion, SLA y aprobaciones | `servicios`, `operacion`, `perfiles/supervisor`, `perfiles/aprobador` (+ `shared/lib`) | `/plataforma/admin/servicios/*`, `/plataforma/operacion/*`, `/plataforma/supervisor/*`, `/plataforma/aprobador/*` |
+| **Lourdes (Lu)** | Configuracion, consola tecnica y consola de area | `configuracion`, `perfiles/tecnico`, `perfiles/gestor-area` (+ `shared/components`) | `/plataforma/admin/menu`, `/plataforma/admin/notificaciones`, `/plataforma/admin/tickets-*`, `/plataforma/tecnico/*`, `/plataforma/gestor-area/*` |
+| **Alexis** | Conocimiento y mejora continua | `conocimiento`, `reportes` | `/plataforma/conocimiento*`, `/plataforma/dashboard` |
+| **Nain** | Activos, CMDB, proveedores y consola de cambios | `activos`, `cmdb`, `proveedores`, `perfiles/gestor-cambios` | `/plataforma/activos/*`, `/plataforma/gestor-activos/*`, `/plataforma/admin/activos-config/*`, `/plataforma/gestor-cambios/*`, `/plataforma/proveedores` |
+| **Junior** | IAM, organizacion y auditoria | `identidades`, `organizacion`, `perfiles/auditor` | `/plataforma/admin/usuarios`, `/plataforma/admin/perfiles`, `/plataforma/admin/departamentos*`, `/plataforma/admin/tecnicos`, `/plataforma/auditor/*` |
 
 ### 4.1 Consolas huerfanas: asignacion de territorio
 
@@ -152,8 +193,9 @@ modulos correspondientes. Se asignan a sus duenos:
 | Carpeta de rutas (`src/app/plataforma/...`) | Dueno | Vistas que monta |
 | :--- | :--- | :--- |
 | `/gestor-activos/*` | **Nain** | `@/modules/activos/views/*`, `@/modules/cmdb/views/*` |
-| `/gestor-cambios/*` | **Nain** | `@/modules/gestor-cambios/*` |
-| `/gestor-problemas/*` | **Alexis** | `@/modules/problemas/views/*` |
+| `/gestor-cambios/*` | **Nain** | `@/modules/perfiles/gestor-cambios/*` |
+| `/gestor-problemas/*` | **Nucleo** | `@/modules/problemas/views/*` |
+| `/supervisor/*`, `/gestor-area/*`, `/tecnico/*`, `/aprobador/*`, `/auditor/*` | segun tabla sec. 4 | `@/modules/perfiles/<rol>/views/*` |
 
 Regla: si hay que cambiar la logica de una consola, se cambia en el **modulo**
 (nunca en la ruta). La ruta solo se toca para cambiar el montaje.
@@ -185,3 +227,4 @@ Regla: si hay que cambiar la logica de una consola, se cambia en el **modulo**
 | 2026-10 | CMDB extraida de `activos` a su propio modulo `cmdb` (Opcion B); se elimina el modulo vacio `analitica`. |
 | 2026-10 | `administracion` se parte en `identidades`, `organizacion`, `configuracion` y `plataforma`. |
 | 2026-10 | Nuevo analisis de CMDB: topologia, impacto, reconciliacion Activo <-> CI e historial (`/activos/cmdb/analisis`). |
+| 2026-10 | **Regla inversa**: los 6 modulos de rol se consolidan en `src/modules/perfiles/<rol>/` (un solo modulo `perfiles`); su logica de dominio se reparte a `cambios`, `activos`, `problemas`, `tickets`, `incidentes` y `cmdb`. |
