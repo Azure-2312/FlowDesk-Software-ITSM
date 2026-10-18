@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET, PUT } from "@/modules/administracion/api/admin/configuracionController";
+export { GET, PUT } from "@/modules/configuracion/api/admin/configuracionController";

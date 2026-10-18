@@ -1,4 +1,4 @@
-import VistaSaludSistema from "@/modules/administracion/config/salud/VistaSaludSistema";
+import VistaSaludSistema from "@/modules/plataforma/config/salud/VistaSaludSistema";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

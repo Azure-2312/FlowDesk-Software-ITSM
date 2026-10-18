@@ -1,1 +1,1 @@
-export { GET, POST } from "@/modules/administracion/api/departamentoEmpresaController";
+export { GET, POST } from "@/modules/organizacion/api/departamentoEmpresaController";

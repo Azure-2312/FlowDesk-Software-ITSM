@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { POST } from "@/modules/administracion/api/admin/mantenimientoDatosController";
+export { POST } from "@/modules/plataforma/api/admin/mantenimientoDatosController";

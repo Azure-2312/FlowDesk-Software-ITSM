@@ -1,4 +1,4 @@
-import VistaTicketsVistas from "@/modules/administracion/config/tickets-vistas/VistaTicketsVistas";
+import VistaTicketsVistas from "@/modules/configuracion/config/tickets-vistas/VistaTicketsVistas";
 
 export default function PaginaAdminTicketsVistas() {
   return <VistaTicketsVistas />;
