@@ -55,7 +55,7 @@ export default function VistaTecnicoMesaIncidenteMayor() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/tecnico/incidente-mayor?_t=${Date.now()}`, { cache: "no-store" });
+      const res = await fetch(`/api/perfiles/tecnico/incidente-mayor?_t=${Date.now()}`, { cache: "no-store" });
       const data = await res.json();
       if (!res.ok || data.error) {
         setError(data.error || "No se pudieron obtener los incidentes mayores.");
@@ -81,7 +81,7 @@ export default function VistaTecnicoMesaIncidenteMayor() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/tecnico/incidente-mayor", {
+      const res = await fetch("/api/perfiles/tecnico/incidente-mayor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_incidente_mayor: id, comunicado: texto }),

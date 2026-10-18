@@ -35,7 +35,7 @@ export default function PaginaMisTareas() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/tecnico/recordatorios?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/tecnico/recordatorios?_t=${Date.now()}`);
       const data = await res.json();
       const recs: any[] = data.recordatorios || [];
 
@@ -66,7 +66,7 @@ export default function PaginaMisTareas() {
 
   async function toggleCompletada(id: string | number, estadoActual: boolean) {
     try {
-      await fetch("/api/tecnico/recordatorios", {
+      await fetch("/api/perfiles/tecnico/recordatorios", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_recordatorio: id, completado: !estadoActual }),
@@ -83,7 +83,7 @@ export default function PaginaMisTareas() {
 
     setGuardando(true);
     try {
-      const res = await fetch("/api/tecnico/recordatorios", {
+      const res = await fetch("/api/perfiles/tecnico/recordatorios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

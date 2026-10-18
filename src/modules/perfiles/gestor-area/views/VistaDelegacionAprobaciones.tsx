@@ -36,7 +36,7 @@ export default function VistaDelegacionAprobaciones() {
     setError(null);
     try {
       const [resD, resC] = await Promise.all([
-        fetch(`/api/gestor-area/aprobaciones/delegacion?_t=${Date.now()}`).then((r) => r.json()),
+        fetch(`/api/perfiles/gestor-area/aprobaciones/delegacion?_t=${Date.now()}`).then((r) => r.json()),
         fetch(`/api/area/colaboradores?_t=${Date.now()}`).then((r) => r.json()),
       ]);
       setItems(Array.isArray(resD) ? resD : []);
@@ -56,7 +56,7 @@ export default function VistaDelegacionAprobaciones() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-area/aprobaciones/delegacion", {
+      const res = await fetch("/api/perfiles/gestor-area/aprobaciones/delegacion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_usuario_delegado: Number(idDelegado), fecha_desde: desde, fecha_hasta: hasta, motivo }),
@@ -79,7 +79,7 @@ export default function VistaDelegacionAprobaciones() {
     if (!window.confirm("¿Eliminar esta delegación?")) return;
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-area/aprobaciones/delegacion?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/perfiles/gestor-area/aprobaciones/delegacion?id=${id}`, { method: "DELETE" });
       const json = await res.json();
       if (!res.ok) setError(json.error ?? "No se pudo eliminar.");
       else await cargar();

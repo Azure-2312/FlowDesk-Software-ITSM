@@ -52,7 +52,7 @@ export default function VistaAutorizaciones() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-cambios/autorizaciones?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/gestor-cambios/autorizaciones?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setCambios(Array.isArray(json?.cambios) ? json.cambios : []);
@@ -72,7 +72,7 @@ export default function VistaAutorizaciones() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-cambios/autorizaciones", {
+      const res = await fetch("/api/perfiles/gestor-cambios/autorizaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cambio: idCambio, tipo }),

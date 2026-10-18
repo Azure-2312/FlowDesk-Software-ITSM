@@ -33,7 +33,7 @@ export default function VistaEjecucion() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-cambios/ejecucion?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/gestor-cambios/ejecucion?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json?.enEjecucion) ? json.enEjecucion : []);
       else setError(json.error ?? "No se pudo cargar la ejecución.");
@@ -51,7 +51,7 @@ export default function VistaEjecucion() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-cambios/ejecucion", {
+      const res = await fetch("/api/perfiles/gestor-cambios/ejecucion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cambio: idCambio, ...cuerpo }),

@@ -38,7 +38,7 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
     if (tieneContadores && nivel === 1) {
       async function cargarContadores() {
         try {
-          const res = await fetch("/api/tecnico/contadores", { cache: "no-store" });
+          const res = await fetch("/api/perfiles/tecnico/contadores", { cache: "no-store" });
           if (res.ok) {
             const data = await res.json();
             setContadores(data);

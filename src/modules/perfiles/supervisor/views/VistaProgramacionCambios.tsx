@@ -33,7 +33,7 @@ export default function VistaProgramacionCambios() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/supervisor/cambios/programar?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/supervisor/cambios/programar?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar los cambios.");
@@ -52,7 +52,7 @@ export default function VistaProgramacionCambios() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/supervisor/cambios/programar", {
+      const res = await fetch("/api/perfiles/supervisor/cambios/programar", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cambio: edicion.id, ventana_inicio: edicion.inicio, ventana_fin: edicion.fin }),

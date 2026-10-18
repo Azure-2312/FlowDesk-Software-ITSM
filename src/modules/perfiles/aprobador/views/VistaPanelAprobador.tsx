@@ -38,7 +38,7 @@ export default function VistaPanelAprobador() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/aprobador/panel?_t=${Date.now()}`);
+        const res = await fetch(`/api/perfiles/aprobador/panel?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudo cargar el panel.");
@@ -77,10 +77,10 @@ export default function VistaPanelAprobador() {
               <div style={{ color: "#6b7280", marginTop: 4 }}>
                 {fechaHora(data.proximaReunion.fecha_reunion)} · {data.proximaReunion.tipo}
               </div>
-              <Link href="/plataforma/aprobador/cab/agenda" className="boton-secundario" style={{ display: "inline-block", marginTop: 10, textDecoration: "none" }}>Ver agenda</Link>
+              <Link href="/plataforma/perfiles/aprobador/cab/agenda" className="boton-secundario" style={{ display: "inline-block", marginTop: 10, textDecoration: "none" }}>Ver agenda</Link>
             </div>
           ) : (
-            <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>No hay reuniones programadas. <Link href="/plataforma/aprobador/cab/agenda">Programar</Link></p>
+            <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>No hay reuniones programadas. <Link href="/plataforma/perfiles/aprobador/cab/agenda">Programar</Link></p>
           )}
         </div>
 

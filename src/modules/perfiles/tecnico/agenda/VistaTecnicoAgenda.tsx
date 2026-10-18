@@ -28,7 +28,7 @@ export default function PaginaAgendaDisponibilidad() {
     try {
       const [resTickets, resRec] = await Promise.all([
         fetch(`/api/tickets?vista=asignados&_t=${Date.now()}`).then((r) => r.json()).catch(() => ({ tickets: [] })),
-        fetch(`/api/tecnico/recordatorios?_t=${Date.now()}`).then((r) => r.json()).catch(() => ({ recordatorios: [] })),
+        fetch(`/api/perfiles/tecnico/recordatorios?_t=${Date.now()}`).then((r) => r.json()).catch(() => ({ recordatorios: [] })),
       ]);
       setTickets(resTickets.tickets || []);
       setRecordatorios(resRec.recordatorios || []);
@@ -49,7 +49,7 @@ export default function PaginaAgendaDisponibilidad() {
 
     setGuardando(true);
     try {
-      const res = await fetch("/api/tecnico/recordatorios", {
+      const res = await fetch("/api/perfiles/tecnico/recordatorios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

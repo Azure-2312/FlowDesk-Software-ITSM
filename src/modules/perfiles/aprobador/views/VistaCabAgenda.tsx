@@ -51,7 +51,7 @@ export default function VistaCabAgenda() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/aprobador/cab/agenda?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/aprobador/cab/agenda?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setReuniones(Array.isArray(json?.reuniones) ? json.reuniones : []);
@@ -79,7 +79,7 @@ export default function VistaCabAgenda() {
       const agenda = cambios
         .filter((c) => seleccion.includes(c.id_cambio))
         .map((c) => ({ id_cambio: c.id_cambio, codigo_cambio: c.codigo_cambio, titulo: c.titulo }));
-      const res = await fetch("/api/aprobador/cab/agenda", {
+      const res = await fetch("/api/perfiles/aprobador/cab/agenda", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ titulo, fecha_reunion: fecha, tipo, agenda }),
@@ -101,7 +101,7 @@ export default function VistaCabAgenda() {
   async function actualizar(idReunion: number, estado: string, acta?: string) {
     setError(null);
     try {
-      const res = await fetch("/api/aprobador/cab/agenda", {
+      const res = await fetch("/api/perfiles/aprobador/cab/agenda", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_reunion: idReunion, estado, acta }),

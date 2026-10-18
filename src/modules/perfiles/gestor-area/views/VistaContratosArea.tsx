@@ -35,7 +35,7 @@ export default function VistaContratosArea() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/gestor-area/contratos?_t=${Date.now()}`);
+        const res = await fetch(`/api/perfiles/gestor-area/contratos?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setItems(Array.isArray(json) ? json : []);
         else setError(json.error ?? "No se pudieron cargar las licencias.");

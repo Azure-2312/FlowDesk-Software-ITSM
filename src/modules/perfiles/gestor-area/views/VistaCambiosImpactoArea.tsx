@@ -32,7 +32,7 @@ export default function VistaCambiosImpactoArea() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/gestor-area/cambios/impacto?_t=${Date.now()}`);
+        const res = await fetch(`/api/perfiles/gestor-area/cambios/impacto?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setItems(Array.isArray(json) ? json : []);
         else setError(json.error ?? "No se pudieron cargar los cambios.");

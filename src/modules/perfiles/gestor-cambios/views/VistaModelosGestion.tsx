@@ -47,7 +47,7 @@ export default function VistaModelosGestion() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-cambios/modelos?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/gestor-cambios/modelos?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar los modelos.");
@@ -65,7 +65,7 @@ export default function VistaModelosGestion() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-cambios/modelos", {
+      const res = await fetch("/api/perfiles/gestor-cambios/modelos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -90,7 +90,7 @@ export default function VistaModelosGestion() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-cambios/modelos", {
+      const res = await fetch("/api/perfiles/gestor-cambios/modelos", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_modelo: idModelo, estado }),

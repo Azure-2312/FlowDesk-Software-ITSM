@@ -29,7 +29,7 @@ export default function VistaProblemasMayores() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/aprobador/problemas?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/aprobador/problemas?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar los problemas.");
@@ -56,7 +56,7 @@ export default function VistaProblemasMayores() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/aprobador/problemas", {
+      const res = await fetch("/api/perfiles/aprobador/problemas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_problema: idProblema, decision, riesgo_aceptado: riesgo, comentario }),

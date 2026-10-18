@@ -42,7 +42,7 @@ export default function VistaPanelSupervisor() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/supervisor/panel?_t=${Date.now()}`);
+        const res = await fetch(`/api/perfiles/supervisor/panel?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudo cargar el panel.");
@@ -59,9 +59,9 @@ export default function VistaPanelSupervisor() {
   if (!data) return null;
 
   const alertas = [
-    { texto: "Incidentes mayores abiertos", valor: data.alertas.incidentes_mayores, href: "/plataforma/supervisor/incidentes-mayores" },
+    { texto: "Incidentes mayores abiertos", valor: data.alertas.incidentes_mayores, href: "/plataforma/perfiles/supervisor/incidentes-mayores" },
     { texto: "P1/P2 sin asignar", valor: data.alertas.p1p2_sin_asignar, href: "/plataforma/tickets/gestion/asignar" },
-    { texto: "Aprobaciones de RFC pendientes", valor: data.alertas.aprobaciones_pendientes, href: "/plataforma/supervisor/cambios/aprobaciones" },
+    { texto: "Aprobaciones de RFC pendientes", valor: data.alertas.aprobaciones_pendientes, href: "/plataforma/perfiles/supervisor/cambios/aprobaciones" },
     { texto: "Técnicos sobrecargados", valor: data.alertas.tecnicos_sobrecargados, href: "/plataforma/tickets/gestion/tecnicos" },
   ];
 
@@ -98,7 +98,7 @@ export default function VistaPanelSupervisor() {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <Link href="/plataforma/tickets/gestion/asignar" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Centro de asignación</Link>
             <Link href="/plataforma/tickets/gestion/tecnicos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Monitoreo de técnicos</Link>
-            <Link href="/plataforma/supervisor/incidentes-mayores" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Declarar incidente mayor</Link>
+            <Link href="/plataforma/perfiles/supervisor/incidentes-mayores" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Declarar incidente mayor</Link>
           </div>
         </div>
       </div>

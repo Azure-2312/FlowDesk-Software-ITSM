@@ -47,7 +47,7 @@ export default function VistaEvaluacionRfc() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-cambios/evaluacion?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/gestor-cambios/evaluacion?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setItems(Array.isArray(json?.cambios) ? json.cambios : []);
@@ -67,7 +67,7 @@ export default function VistaEvaluacionRfc() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-cambios/evaluacion", {
+      const res = await fetch("/api/perfiles/gestor-cambios/evaluacion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cambio: idCambio, ...cuerpo }),

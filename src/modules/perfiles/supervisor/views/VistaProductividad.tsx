@@ -19,7 +19,7 @@ export default function VistaProductividad() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/supervisor/reportes/productividad?_t=${Date.now()}`);
+        const res = await fetch(`/api/perfiles/supervisor/reportes/productividad?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setItems(Array.isArray(json) ? json : []);
         else setError(json.error ?? "No se pudo cargar la productividad.");

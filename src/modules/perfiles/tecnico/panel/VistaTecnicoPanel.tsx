@@ -20,7 +20,7 @@ export default function PaginaPanelTecnico() {
       const [resAsignados, resPendientes, resRecordatorios, resResueltos] = await Promise.all([
         fetch(`/api/tickets?vista=asignados&_t=${Date.now()}`).then((r) => r.json()),
         fetch(`/api/tickets?vista=bandeja&_t=${Date.now()}`).then((r) => r.json()),
-        fetch(`/api/tecnico/recordatorios?_t=${Date.now()}`).then((r) => r.json()).catch(() => ({ recordatorios: [] })),
+        fetch(`/api/perfiles/tecnico/recordatorios?_t=${Date.now()}`).then((r) => r.json()).catch(() => ({ recordatorios: [] })),
         fetch(`/api/tickets?vista=resueltos&solo_asignados_a_mi=1&_t=${Date.now()}`).then((r) => r.json()).catch(() => ({ tickets: [] })),
       ]);
 

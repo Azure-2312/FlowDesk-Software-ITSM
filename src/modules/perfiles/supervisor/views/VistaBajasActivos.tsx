@@ -26,7 +26,7 @@ export default function VistaBajasActivos() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/supervisor/activos/bajas?_t=${Date.now()}`);
+      const res = await fetch(`/api/perfiles/supervisor/activos/bajas?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar las solicitudes.");
@@ -45,7 +45,7 @@ export default function VistaBajasActivos() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/supervisor/activos/bajas", {
+      const res = await fetch("/api/perfiles/supervisor/activos/bajas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_solicitud: id, decision, comentario }),
