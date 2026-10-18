@@ -1,4 +1,4 @@
-import VistaCmdb from "@/modules/activos/views/VistaCmdb";
+import VistaCmdb from "@/modules/cmdb/views/VistaCmdb";
 
 export default function PaginaCmdb() {
   return <VistaCmdb />;

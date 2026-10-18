@@ -1,4 +1,4 @@
-import VistaCmdbLineasBase from "@/modules/activos/views/VistaCmdbLineasBase";
+import VistaCmdbLineasBase from "@/modules/cmdb/views/VistaCmdbLineasBase";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

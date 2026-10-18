@@ -3,10 +3,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
-import { BarraAccionesComun } from "@/modules/cambios/config/formulario/components/BarraAccionesComun";
-import { ModalPublicacion } from "@/modules/cambios/config/formulario/components/ModalPublicacion";
-import { ModalHistorialVersiones } from "@/modules/cambios/config/formulario/components/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "@/modules/cambios/config/formulario/components/ModalRestaurarFabrica";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
+import { ModalHistorialVersiones } from "@/shared/components/admin/ModalHistorialVersiones";
+import { ModalRestaurarFabrica } from "@/shared/components/admin/ModalRestaurarFabrica";
 
 import { PestanaTiposLicencia } from "./components/PestanaTiposLicencia";
 import { PestanaTiposContrato } from "./components/PestanaTiposContrato";

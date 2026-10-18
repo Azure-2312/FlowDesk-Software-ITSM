@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { crearTipoCi, listarTiposCi } from "@/modules/activos/services/cmdbTiposService";
+import { crearTipoCi, listarTiposCi } from "@/modules/cmdb/services/cmdbTiposService";
 
 export const dynamic = "force-dynamic";
 

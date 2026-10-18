@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { crearRelacionCmdb, eliminarRelacionCmdb } from "@/modules/activos/services/cmdbRelacionesService";
+import { crearRelacionCmdb, eliminarRelacionCmdb } from "@/modules/cmdb/services/cmdbRelacionesService";
 
 export const dynamic = "force-dynamic";
 

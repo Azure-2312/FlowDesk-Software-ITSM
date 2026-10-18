@@ -6,7 +6,7 @@ import {
   obtenerConfiguracionCmdbRelaciones,
   procesarAccionCmdbRelaciones,
   publicarConfiguracionCmdbRelaciones,
-} from "@/modules/activos/services/cmdbRelacionesConfiguracionService";
+} from "@/modules/cmdb/services/cmdbRelacionesConfiguracionService";
 
 export const dynamic = "force-dynamic";
 

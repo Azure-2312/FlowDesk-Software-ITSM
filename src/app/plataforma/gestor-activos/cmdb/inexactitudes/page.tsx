@@ -1,4 +1,4 @@
-import VistaCmdbInexactitudes from "@/modules/activos/views/VistaCmdbInexactitudes";
+import VistaCmdbInexactitudes from "@/modules/cmdb/views/VistaCmdbInexactitudes";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

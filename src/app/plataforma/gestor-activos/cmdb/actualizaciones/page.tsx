@@ -1,4 +1,4 @@
-import VistaCmdbActualizaciones from "@/modules/activos/views/VistaCmdbActualizaciones";
+import VistaCmdbActualizaciones from "@/modules/cmdb/views/VistaCmdbActualizaciones";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

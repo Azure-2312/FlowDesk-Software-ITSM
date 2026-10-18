@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { sesionConCapacidad } from "@/shared/lib/api-auth";
-import { listarAuditoriaCmdb } from "@/modules/activos/services/cmdbGestionService";
+import { listarAuditoriaCmdb } from "@/modules/cmdb/services/cmdbGestionService";
 
 export const dynamic = "force-dynamic";
 
