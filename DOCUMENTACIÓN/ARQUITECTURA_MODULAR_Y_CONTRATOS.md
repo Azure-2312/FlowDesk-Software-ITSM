@@ -203,6 +203,26 @@ construyeron. Su funcion ya esta cubierta por las opciones por perfil
 /admin/auditoria-sistema`, `710` -> `20002`/`14023 /problemas`). Su definicion
 tambien se retiro de `db/seed.sql` para que un entorno nuevo no las recree.
 
+### 3.3 Carpetas y paginas dentro del menu
+
+`opciones_menu.url_menu` distingue los dos tipos de nodo:
+
+| `url_menu` | Tipo | Comportamiento (`MenuLateral.tsx`) |
+| :--- | :--- | :--- |
+| `''` (vacio) | **Carpeta** | El clic despliega / contrae. Nunca navega |
+| con valor | **Pagina** | El clic navega (`<Link href={url_menu}>`) |
+
+Una carpeta podra tener ademas su **pagina resumen** (`hijos` + `url_menu`): cuando
+se implemente, un clic desplegara y el doble clic navegara. Hoy las 101 carpetas
+con subopciones activas tienen `url_menu = ''`
+(`db/migrations/20261018_carpetas_sin_url.sql`), y el alta/edicion del menu permite
+guardar la URL vacia (`configuracion/services/menuAdmin*Service.ts`).
+
+`opciones_menu` es el **catalogo maestro** y `opciones_menu_perfiles` solo guarda
+**visibilidad** (que perfil ve que opcion). Por eso que una opcion no tenga perfil
+asignado no es un defecto: el Administrador decide las asignaciones desde
+`/plataforma/admin/menu`.
+
 ---
 
 ## 4. Propiedad de carpetas por integrante
@@ -265,3 +285,4 @@ Regla: si hay que cambiar la logica de una consola, se cambia en el **modulo**
 | 2026-10 | **Regla inversa**: los 6 modulos de rol se consolidan en `src/modules/perfiles/<rol>/` (un solo modulo `perfiles`); su logica de dominio se reparte a `cambios`, `activos`, `problemas`, `tickets`, `incidentes` y `cmdb`. |
 | 2026-10 | Rutas de rol agrupadas y **sin alias**: `src/app/api/perfiles/<rol>/` y `src/app/plataforma/perfiles/<rol>/` (URLs `/api/perfiles/<rol>/...` y `/plataforma/perfiles/<rol>/...`). La ficha del perfil (RBAC) pasa a `/api/identidades/perfiles`. Menu migrado: `opciones_menu.url_menu`, 148 filas (`db/migrations/20261018_menu_urls_perfiles.sql`). |
 | 2026-10 | **Limpieza del menu heredado**: se eliminan 9 filas del catalogo antiguo con URLs sin pagina (`530`, `531`, `532`, `533`, `570`, `541`, `571`, `573`, `710`), ya cubiertas por las opciones por perfil. Migracion `db/migrations/20261018_eliminar_menu_legacy.sql` + limpieza de `db/seed.sql`. |
+| 2026-10 | **Carpetas sin URL**: `url_menu = ''` identifica una carpeta (no navega) y un valor identifica una pagina; el alta/edicion del menu acepta URL vacia. 101 carpetas vaciadas (`db/migrations/20261018_carpetas_sin_url.sql`). |

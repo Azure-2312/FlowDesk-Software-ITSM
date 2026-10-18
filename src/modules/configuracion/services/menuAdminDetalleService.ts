@@ -4,9 +4,11 @@ import { ErrorDominio } from "@/shared/lib/errores";
 export async function actualizarOpcionMenuAdmin(idOpcion: number, body: any) {
   const { nombre, url_menu, descripcion, id_padre, orden, perfiles_ids } = body;
 
-  if (!nombre || !nombre.trim() || !url_menu || !url_menu.trim()) {
-    throw new ErrorDominio("El nombre y la URL son obligatorios");
+  // url_menu vacío = carpeta que solo agrupa subopciones (no navega).
+  if (!nombre || !nombre.trim()) {
+    throw new ErrorDominio("El nombre es obligatorio");
   }
+  const urlMenu = typeof url_menu === "string" ? url_menu.trim() : "";
 
   const padreId = id_padre ? Number(id_padre) : null;
 
@@ -37,7 +39,7 @@ export async function actualizarOpcionMenuAdmin(idOpcion: number, body: any) {
          WHERE id_opcion_menu = $7`,
       [
         nombre.trim(),
-        url_menu.trim(),
+        urlMenu,
         descripcion ? descripcion.trim() : null,
         padreId,
         nivelCalculado,

@@ -98,9 +98,13 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
         const estaExpandido = expandidos.has(opcion.id_opcion_menu);
         const tieneDescendienteActivo = tieneHijos && algunDescendienteCoincide(opcion, pathname);
 
-        // SOLO una opción hoja recibe el estado activo azul
-        const esHoja = !tieneHijos;
-        const estaActivo = esHoja && (pathname === opcion.url_menu || pathname.startsWith(opcion.url_menu.split("?")[0] + "/"));
+        // Regla de la arquitectura del menú: url_menu vacío = CARPETA (no navega,
+        // solo despliega/contrae); url_menu con valor = PÁGINA (navega).
+        // Por eso SOLO una página con URL recibe el estado activo azul.
+        const navegable = !tieneHijos && Boolean(opcion.url_menu);
+        const estaActivo =
+          navegable &&
+          (pathname === opcion.url_menu || pathname.startsWith(opcion.url_menu.split("?")[0] + "/"));
 
         const badge = opcion.contador_clave ? contadores[opcion.contador_clave] : null;
 
@@ -108,7 +112,9 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
           <li key={opcion.id_opcion_menu} className={tieneHijos ? "menu-nodo-padre" : "menu-nodo-hoja"}>
             <div className="menu-fila">
               {tieneHijos ? (
-                // Carpeta contenedora: despliega / contrae hijos
+                // Carpeta contenedora: despliega / contrae hijos.
+                // Cuando una carpeta tenga url_menu (página resumen de la carpeta),
+                // el clic debería desplegar y el doble clic navegar.
                 <button
                   type="button"
                   className={"menu-item menu-item-carpeta" + (tieneDescendienteActivo ? " menu-carpeta-activa" : "")}
@@ -140,8 +146,8 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
                     </svg>
                   </span>
                 </button>
-              ) : (
-                // Pantalla terminal hoja
+              ) : navegable ? (
+                // Página terminal: navega
                 <Link
                   href={opcion.url_menu}
                   className={"menu-item" + (estaActivo ? " menu-item-activo" : "")}
@@ -172,6 +178,17 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
                     </span>
                   )}
                 </Link>
+              ) : (
+                // Carpeta sin subopciones activas (url_menu vacío): no navega
+                <span
+                  className="menu-item"
+                  style={{ display: "flex", alignItems: "center", gap: 6, cursor: "default" }}
+                  aria-disabled="true"
+                >
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                    {opcion.nombre}
+                  </span>
+                </span>
               )}
             </div>
 
