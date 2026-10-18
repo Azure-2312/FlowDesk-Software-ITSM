@@ -1,5 +1,6 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { resolverAprobacionNegocio as resolverAprobacionNegocioDominio } from "@/modules/cambios";
 
 /**
  * Servicio del portal del Gestor de Área (perfil 5).
@@ -94,38 +95,16 @@ export async function resolverAprobacionNegocio(
   decision: string,
   comentario?: string
 ) {
-  const normalizada = String(decision || "").toUpperCase();
-  if (!["APROBADO", "RECHAZADO", "OBSERVADO"].includes(normalizada)) {
-    throw new ErrorDominio("La decisión debe ser APROBADO, RECHAZADO u OBSERVADO.");
-  }
-  if (!comentario || String(comentario).trim().length < 3) {
-    throw new ErrorDominio("El comentario de la decisión es obligatorio.");
-  }
-
+  // El alcance (el área empresarial del gestor) es del rol; la lógica de cambio
+  // (registro de la decisión y transición de estado) vive en el módulo `cambios`.
   const area = await areaDeUsuario(idUsuario);
-  const alcance = await queryRow<{ existe: boolean }>(
-    `SELECT EXISTS (
-       SELECT 1 FROM cambio c
-       WHERE c.id_cambio = $2 AND c.estado_registro = true AND ${CAMBIOS_DEL_AREA}
-     ) AS existe`,
-    [area.id_departamento_empresa, idCambio]
+  return resolverAprobacionNegocioDominio(
+    idUsuario,
+    idCambio,
+    area.id_departamento_empresa,
+    decision,
+    comentario
   );
-  if (!alcance?.existe) throw new ErrorDominio("El cambio no afecta a tu área.", 404);
-
-  const aprobacion = await queryRow<any>(
-    `INSERT INTO cambio_aprobacion (id_cambio, id_usuario_aprobador, decision, comentario)
-     VALUES ($1, $2, $3, $4)
-     RETURNING id_cambio_aprobacion, id_cambio, decision, fecha_decision`,
-    [idCambio, idUsuario, normalizada, String(comentario).trim()]
-  );
-
-  if (normalizada === "APROBADO") {
-    await query(`UPDATE cambio SET id_estado = 3 WHERE id_cambio = $1 AND id_estado = 2`, [idCambio]);
-  } else if (normalizada === "RECHAZADO") {
-    await query(`UPDATE cambio SET id_estado = 8 WHERE id_cambio = $1 AND id_estado = 2`, [idCambio]);
-  }
-
-  return { mensaje: "Decisión registrada.", aprobacion };
 }
 
 export async function listarHistorialDecisiones(idUsuario: number) {
