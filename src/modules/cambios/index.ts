@@ -100,3 +100,41 @@ export { simularQuorum } from "./services/flujoEvaluacionSimularQuorumService";
 export { validarFlujoCambios } from "./services/flujoEvaluacionValidarFlujoService";
 
 export { simularConflictosCalendario } from "./services/notificacionesCalendarioSimularConflictosService";
+
+// --- Consola del Gestor de Cambios (perfil 8): lógica de dominio movida desde
+// src/modules/perfiles/gestor-cambios para que el rol solo conserve su UI. ---
+export {
+  PLAZO_PIR_DIAS,
+  obtenerPanelGestion,
+  listarEvaluacion,
+  listarEvaluadores,
+  asignarEvaluador,
+  enviarAAutorizacion,
+  listarAutorizaciones,
+  registrarRecordatorio,
+  listarExcepciones,
+  crearExcepcion,
+  listarProgramacion,
+  programarCambio,
+  listarEjecucion,
+  extenderVentana,
+  resolverEjecucion,
+  listarPir,
+  registrarPir,
+  listarModelos,
+  proponerModelo,
+  cambiarEstadoModelo,
+  obtenerReportesCambios,
+} from "./services/cambiosGestionService";
+
+export {
+  listarReuniones,
+  listarCambiosParaAgenda,
+  crearReunion,
+  actualizarReunion,
+} from "./services/cabGestionService";
+
+export {
+  detectarConflictos,
+  validarProgramacion,
+} from "./services/conflictosService";

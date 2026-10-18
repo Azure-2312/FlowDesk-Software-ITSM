@@ -7,7 +7,7 @@ import {
   listarEvaluadores,
   asignarEvaluador,
   enviarAAutorizacion,
-} from "@/modules/perfiles/gestor-cambios/services/cambiosGestionService";
+} from "@/modules/cambios";
 
 export const dynamic = "force-dynamic";
 
