@@ -1,5 +1,6 @@
-import VistaTecnicoCatalogo from "@/modules/perfiles/tecnico/catalogo/VistaTecnicoCatalogo";
+import { redirect } from "next/navigation";
 
-export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoCatalogo />;
+/** Ruta legada del catálogo de consulta del técnico; ahora vive en servicios. */
+export default function PaginaTecnicoCatalogoLegacy() {
+  redirect("/plataforma/servicios/catalogo");
 }

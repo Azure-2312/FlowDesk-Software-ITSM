@@ -137,7 +137,7 @@ async function migrar() {
       { id: 2604, padre: 2600, orden: 4, nivel: 2, nombre: "Revisiones pendientes", url: "/plataforma/perfiles/tecnico/conocimiento/revisiones", desc: "Artículos asignados para aprobación técnica", bloqueado: false, contador: "revisiones_articulos" },
 
       // M8 Catálogo de servicios (consulta)
-      { id: 2700, padre: null, orden: 8, nivel: 1, nombre: "Catálogo de servicios (consulta)", url: "/plataforma/perfiles/tecnico/catalogo", desc: "Consulta de servicios y SLAs comprometidos", bloqueado: false, abierto: false },
+      { id: 2700, padre: null, orden: 8, nivel: 1, nombre: "Catálogo de servicios (consulta)", url: "/plataforma/servicios/catalogo", desc: "Consulta de servicios y SLAs comprometidos", bloqueado: false, abierto: false },
     ];
 
     for (const op of opcionesTecnico) {

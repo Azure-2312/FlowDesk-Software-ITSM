@@ -150,7 +150,7 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
     { id: 12038, padre: 12036, orden: 2, nivel: 2, nombre: "Mis artículos", url: "/plataforma/perfiles/tecnico/conocimiento/mis-articulos", desc: "", bloqueado: false, abierto: false },
     { id: 12039, padre: 12036, orden: 3, nivel: 2, nombre: "Crear artículo", url: "/plataforma/perfiles/tecnico/conocimiento/nuevo", desc: "", bloqueado: false, abierto: false },
     { id: 12040, padre: 12036, orden: 4, nivel: 2, nombre: "Revisiones pendientes", url: "/plataforma/perfiles/tecnico/conocimiento/revisiones", desc: "", bloqueado: false, abierto: false },
-    { id: 12041, padre: null, orden: 8, nivel: 1, nombre: "Catálogo de servicios (consulta)", url: "/plataforma/perfiles/tecnico/catalogo", desc: "", bloqueado: false, abierto: true },
+    { id: 12041, padre: null, orden: 8, nivel: 1, nombre: "Catálogo de servicios (consulta)", url: "/plataforma/servicios/catalogo", desc: "", bloqueado: false, abierto: true },
     { id: 12042, padre: null, orden: 9, nivel: 1, nombre: "Mi cuenta", url: "/mi-cuenta", desc: "Datos personales, cambio de clave y selector de perfil (ya existentes); se amplía con preferencias.", bloqueado: false, abierto: true },
     { id: 12043, padre: 12042, orden: 1, nivel: 2, nombre: "Mi perfil y seguridad", url: "/mi-cuenta", desc: "Ver y editar datos permitidos, cambiar contraseña y ver sesiones.", bloqueado: false, abierto: false },
     { id: 12044, padre: 12042, orden: 2, nivel: 2, nombre: "Preferencias de notificación", url: "/mi-cuenta/notificaciones", desc: "Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.", bloqueado: false, abierto: false },
