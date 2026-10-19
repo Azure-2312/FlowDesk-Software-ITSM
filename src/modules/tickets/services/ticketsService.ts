@@ -1,4 +1,4 @@
-import { query, queryRow } from "@/shared/lib/db";
+import { query, queryRow, transaccion } from "@/shared/lib/db";
 import { Ticket, CrearTicketPayload } from "@/types";
 import { calcularFechaLimiteHorasHabiles } from "@/shared/lib/sla";
 import { validarTexto, validarArchivoAdjunto } from "@/shared/lib/validaciones";
@@ -245,7 +245,7 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
       t.estado_registro,
       (SELECT COUNT(*) FROM comentario_ticket c WHERE c.id_ticket = t.id_ticket AND c.estado_registro = true)::int as comentarios_cantidad,
       (SELECT COUNT(*) FROM adjunto_ticket a WHERE a.id_ticket = t.id_ticket AND a.estado_registro = true)::int as adjuntos_cantidad
-    FROM ticket t
+    FROM vista_ticket t
     INNER JOIN tipo_ticket tt ON tt.id_tipo_ticket = t.id_tipo_ticket
     INNER JOIN categoria_ticket cat ON cat.id_categoria = t.id_categoria
     LEFT JOIN servicio_catalogo s ON s.id_servicio = t.id_servicio
@@ -295,6 +295,8 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
     campos_adicionales,
     archivos,
   } = body;
+
+  const esSolicitud = Number(id_tipo_ticket) === 2;
 
   const vTit = validarTexto(titulo, 5, 150, "El título del ticket", true);
   if (!vTit.valido) throw new ErrorDominio(vTit.mensaje!);
@@ -363,7 +365,7 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
       if (servicio.id_tipo_ticket !== Number(id_tipo_ticket) || servicio.id_categoria !== Number(id_categoria)) {
         throw new ErrorDominio("El servicio no corresponde al tipo y categoría seleccionados.");
       }
-      if (servicio.requiere_aprobacion) {
+      if (esSolicitud && servicio.requiere_aprobacion) {
         estadoAprobacion = "PENDIENTE_APROBACION";
       }
       if (servicio.sla_horas_resolucion && servicio.sla_horas_resolucion > 0) {
@@ -372,13 +374,15 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
       }
       if (servicio.sla_horas_respuesta && servicio.sla_horas_respuesta > 0) horasRespuesta = servicio.sla_horas_respuesta;
 
-      // Obtener el primer paso del workflow del servicio
-      const primerPaso = await queryRow<{ id_paso: number }>(
-        "SELECT id_paso FROM servicio_workflow_paso WHERE id_servicio = $1 AND estado_registro = true ORDER BY orden ASC LIMIT 1",
-        [id_servicio]
-      );
-      if (primerPaso) {
-        idPasoInicial = primerPaso.id_paso;
+      // El workflow por servicio solo aplica a solicitudes.
+      if (esSolicitud) {
+        const primerPaso = await queryRow<{ id_paso: number }>(
+          "SELECT id_paso FROM servicio_workflow_paso WHERE id_servicio = $1 AND estado_registro = true ORDER BY orden ASC LIMIT 1",
+          [id_servicio]
+        );
+        if (primerPaso) {
+          idPasoInicial = primerPaso.id_paso;
+        }
       }
     }
     if (!servicio) {
@@ -443,39 +447,58 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
     : null;
   const idEstadoInicial = idAsignadoInicial ? 2 : 1; // Asignado (2) o Abierto (1)
 
-  const nuevoTicket = await queryRow<Ticket>(
-    `INSERT INTO ticket (
-      codigo_ticket, titulo, descripcion, id_tipo_ticket, id_categoria,
-      id_servicio, id_departamento, id_departamento_empresa, canal_comunicacion, estado_aprobacion,
-      id_paso_actual, id_impacto, id_urgencia, id_prioridad, id_estado,
-      id_usuario_solicitante, id_usuario_asignado, fecha_limite_sla, fecha_limite_respuesta_sla, usuario_creacion, campos_adicionales
-    ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21
-    ) RETURNING *`,
-    [
-      codigoTicket,
-      titulo.trim(),
-      descripcion.trim(),
-      id_tipo_ticket,
-      id_categoria,
-      id_servicio || null,
-      idDeptoFinal,
-      deptoEmpresa?.id_departamento_empresa ?? null,
-      canal_comunicacion || "PORTAL_WEB",
-      estadoAprobacion,
-      idPasoInicial,
-      id_impacto,
-      id_urgencia,
-      prioridad.id_prioridad,
-      idEstadoInicial,
-      idSolicitante,
-      idAsignadoInicial,
-      fechaLimiteSla,
-      fechaLimiteRespuestaSla,
-      sesion.id_usuario,
-      JSON.stringify(campos_adicionales || {}),
-    ]
-  );
+  const nuevoTicket = await transaccion(async (client) => {
+    const insert = await client.query(
+      `INSERT INTO ticket (
+        codigo_ticket, titulo, descripcion, id_tipo_ticket, id_categoria,
+        id_servicio, id_departamento, id_departamento_empresa, canal_comunicacion,
+        id_impacto, id_urgencia, id_prioridad, id_estado,
+        id_usuario_solicitante, id_usuario_asignado, fecha_limite_sla, fecha_limite_respuesta_sla, usuario_creacion, campos_adicionales
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
+      ) RETURNING id_ticket`,
+      [
+        codigoTicket,
+        titulo.trim(),
+        descripcion.trim(),
+        id_tipo_ticket,
+        id_categoria,
+        id_servicio || null,
+        idDeptoFinal,
+        deptoEmpresa?.id_departamento_empresa ?? null,
+        canal_comunicacion || "PORTAL_WEB",
+        id_impacto,
+        id_urgencia,
+        prioridad.id_prioridad,
+        idEstadoInicial,
+        idSolicitante,
+        idAsignadoInicial,
+        fechaLimiteSla,
+        fechaLimiteRespuestaSla,
+        sesion.id_usuario,
+        JSON.stringify(campos_adicionales || {}),
+      ]
+    );
+
+    const idTicket = insert.rows[0].id_ticket;
+
+    // El trigger de la migracion crea la extension 1:1. Aqui solo se
+    // completan los datos exclusivos de solicitud.
+    if (esSolicitud) {
+      await client.query(
+        `UPDATE ticket_solicitud
+         SET estado_aprobacion = $1, id_paso_actual = $2
+         WHERE id_ticket = $3`,
+        [estadoAprobacion, idPasoInicial, idTicket]
+      );
+    }
+
+    const full = await client.query(
+      "SELECT * FROM vista_ticket WHERE id_ticket = $1",
+      [idTicket]
+    );
+    return full.rows[0] as Ticket;
+  });
 
   // 8.1. Guardar archivos adjuntos de evidencias técnicas en adjunto_ticket
   if (nuevoTicket && archivos && Array.isArray(archivos) && archivos.length > 0) {

@@ -211,7 +211,7 @@ export async function crearProblema(body: DatosProblema, sesion: SesionProblema)
       `INSERT INTO problema_incidente (id_problema, id_ticket) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
       [idProblema, id_ticket_origen]
     );
-    await query(`UPDATE ticket SET id_problema = $1 WHERE id_ticket = $2`, [idProblema, id_ticket_origen]);
+    await query(`UPDATE ticket_incidente SET id_problema = $1 WHERE id_ticket = $2`, [idProblema, id_ticket_origen]);
   }
 
   return {
@@ -306,7 +306,7 @@ export async function actualizarProblema(
       `INSERT INTO problema_incidente (id_problema, id_ticket) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
       [idProblema, id_ticket_asociar]
     );
-    await query(`UPDATE ticket SET id_problema = $1 WHERE id_ticket = $2`, [idProblema, id_ticket_asociar]);
+    await query(`UPDATE ticket_incidente SET id_problema = $1 WHERE id_ticket = $2`, [idProblema, id_ticket_asociar]);
   }
 
   const updates: string[] = ["usuario_modificacion = $1", "fecha_modificacion = now()"];

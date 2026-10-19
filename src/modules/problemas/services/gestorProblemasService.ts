@@ -298,7 +298,7 @@ export async function convertirCandidato(idUsuario: number, body: any) {
   );
 
   for (const idTicket of ids) {
-    await query(`UPDATE ticket SET id_problema = $1 WHERE id_ticket = $2`, [nuevo.id_problema, idTicket]);
+    await query(`UPDATE ticket_incidente SET id_problema = $1 WHERE id_ticket = $2`, [nuevo.id_problema, idTicket]);
     await query(
       `INSERT INTO problema_incidente (id_problema, id_ticket) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
       [nuevo.id_problema, idTicket]

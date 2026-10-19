@@ -268,8 +268,6 @@ CREATE TABLE ticket (
     id_departamento               INT REFERENCES departamento_ti(id_departamento),
     id_departamento_empresa       INT REFERENCES departamento_empresa(id_departamento_empresa),
     canal_comunicacion            VARCHAR(30) NOT NULL DEFAULT 'PORTAL_WEB',
-    estado_aprobacion             VARCHAR(30) NOT NULL DEFAULT 'NO_APLICA',
-    id_paso_actual                INT REFERENCES servicio_workflow_paso(id_paso),
     id_impacto                    INT NOT NULL REFERENCES impacto_ticket(id_impacto),
     id_urgencia                   INT NOT NULL REFERENCES urgencia_ticket(id_urgencia),
     id_prioridad                  INT NOT NULL REFERENCES prioridad_ticket(id_prioridad),
@@ -641,4 +639,49 @@ CREATE TABLE configuracion_rfc (
     fecha_modificacion TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 INSERT INTO configuracion_rfc(id_configuracion) VALUES(1) ON CONFLICT(id_configuracion) DO NOTHING;
+
+-- Modelo C: extensiones 1:1 de ticket (ver 20261019_modelo_c_ticket.sql)
+CREATE TABLE ticket_incidente (
+    id_ticket             INT PRIMARY KEY REFERENCES ticket(id_ticket) ON DELETE CASCADE,
+    id_problema           INT REFERENCES problema(id_problema),
+    es_incidente_mayor    BOOLEAN NOT NULL DEFAULT false,
+    causado_por_cambio_id INT REFERENCES cambio(id_cambio)
+);
+
+CREATE TABLE ticket_solicitud (
+    id_ticket         INT PRIMARY KEY REFERENCES ticket(id_ticket) ON DELETE CASCADE,
+    estado_aprobacion VARCHAR(30) NOT NULL DEFAULT 'NO_APLICA',
+    id_paso_actual    INT REFERENCES servicio_workflow_paso(id_paso)
+);
+
+CREATE VIEW vista_ticket AS
+SELECT
+    t.*,
+    ti.id_problema,
+    COALESCE(ti.es_incidente_mayor, false) AS es_incidente_mayor,
+    ti.causado_por_cambio_id,
+    COALESCE(ts.estado_aprobacion, 'NO_APLICA') AS estado_aprobacion,
+    ts.id_paso_actual
+FROM ticket t
+LEFT JOIN ticket_incidente ti ON ti.id_ticket = t.id_ticket
+LEFT JOIN ticket_solicitud ts ON ts.id_ticket = t.id_ticket;
+
+CREATE FUNCTION fn_ticket_subtipo() RETURNS trigger AS $$
+BEGIN
+    IF NEW.id_tipo_ticket = 1 THEN
+        INSERT INTO ticket_incidente (id_ticket) VALUES (NEW.id_ticket)
+        ON CONFLICT (id_ticket) DO NOTHING;
+        DELETE FROM ticket_solicitud WHERE id_ticket = NEW.id_ticket;
+    ELSIF NEW.id_tipo_ticket = 2 THEN
+        INSERT INTO ticket_solicitud (id_ticket) VALUES (NEW.id_ticket)
+        ON CONFLICT (id_ticket) DO NOTHING;
+        DELETE FROM ticket_incidente WHERE id_ticket = NEW.id_ticket;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_ticket_subtipo
+AFTER INSERT OR UPDATE OF id_tipo_ticket ON ticket
+FOR EACH ROW EXECUTE FUNCTION fn_ticket_subtipo();
 
