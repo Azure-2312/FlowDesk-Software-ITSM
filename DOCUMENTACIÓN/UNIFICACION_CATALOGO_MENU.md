@@ -403,8 +403,13 @@ perfiles 1 y 3. Total: **227 opciones** (36 carpetas + 191 pantallas) y **363
 filas** de visibilidad. El invariante contra el respaldo solo muestra estas dos
 URLs nuevas, una por perfil.
 
-`/dashboard` ahora redirige al Administrador y al Solicitante a su panel (antes
-iban a `/admin/usuarios` y `/tickets`).
+`/dashboard` queda como un unico punto de entrada: los 10 perfiles caen en su
+panel principal. Antes solo el Administrador, el Tecnico y el Solicitante iban a
+su panel; los otros siete caian en una pantalla operativa (Supervisor en el
+Centro de asignacion, Gestor de Area en Aprobaciones, Auditor en Auditoria,
+Aprobador en CAB, Gestor de Cambios en el consolidado, Gestor de Activos en
+Inventario y Gestor de Problemas en el registro). Verificado con los 10 perfiles:
+10 de 10 terminan en su panel con estado 200.
 
 Tambien se renombro `Configuración › Cambios › Notificaciones y calendario de
 cambios` a **Notificaciones de cambios**.
@@ -439,6 +444,12 @@ servicio` y `Base de conocimiento`) y 1 del Supervisor y del Gestor de Area
 (`Base de conocimiento`). Se agregaron los cuatro alias en `next.config.js` y sus
 patrones en `src/middleware.ts`. Verificado con el servidor de produccion: las
 cuatro URLs pasan de 404 a 307 (redireccion a `/login` sin sesion).
+
+Ademas se recorrieron las **241 combinaciones perfil + pantalla** del catalogo con
+una sesion valida de cada perfil: ninguna termina en 404 ni en 403. Seis
+redirigen a otra direccion por diseno (`/operacion` a eventos, `/tickets` a mis
+tickets, dos atajos del Tecnico) o por el defecto pendiente de la seccion 8
+(`Incidentes` y `Solicitudes de servicio` del Supervisor).
 
 Archivos tocados: la migracion, `db/seed.sql` (bloque de menu reescrito con el
 catalogo unico) y `db/schema.sql` (las 6 columnas de menu que solo existian en
