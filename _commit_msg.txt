@@ -1,0 +1,15 @@
+feat(mesa): separa Incidentes y Solicitudes con rutas, pantallas y catalogo propios
+
+- Crea los modulos /plataforma/incidentes y /plataforma/solicitudes con sus
+  pantallas: lista general, mios, asignados, bandeja, resueltos, departamento,
+  crear, catalogo, aprobaciones, configuracion y ficha de detalle [id],
+  reutilizando la logica de tickets con tipo fijo.
+- La ficha de cada modulo consume su propia API (apiBase) y valida el tipo:
+  un incidente no abre en solicitudes ni una solicitud en incidentes.
+- Reconstruye el menu de Mesa de Servicio en carpetas Incidentes y Solicitudes,
+  deja las operaciones transversales en "Operacion de la mesa" y conserva SLA
+  como bloque transversal.
+- Mueve la configuracion del formulario a cada modulo (incidentes y
+  solicitudes) y ajusta su visibilidad por perfil.
+- Agrega guardas de pagina por opcion de menu (menuIncluyeUrl/Prefijo) y
+  autoriza al Administrador en el detalle de tickets.

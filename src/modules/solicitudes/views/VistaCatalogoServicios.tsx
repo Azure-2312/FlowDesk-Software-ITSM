@@ -137,13 +137,19 @@ function IconoCategoria({ nombre, codigo }: { nombre: string; codigo?: string })
   );
 }
 
-function ContenidoCatalogo() {
+function ContenidoCatalogo({
+  tipoFijo,
+  rutaCrearBase,
+}: {
+  tipoFijo?: 1 | 2;
+  rutaCrearBase?: string;
+} = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const paramTipo = searchParams.get("tipo");
   const paramCat = searchParams.get("categoria");
 
-  const esSolicitud = paramTipo === "solicitud" || paramTipo === "2";
+  const esSolicitud = tipoFijo ? tipoFijo === 2 : paramTipo === "solicitud" || paramTipo === "2";
   const idTipoFiltro = esSolicitud ? 2 : 1;
 
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -232,7 +238,7 @@ function ContenidoCatalogo() {
   function solicitarServicio(s: ServicioCatalogo) {
     const tipoStr = s.id_tipo_ticket === 1 ? "1" : "2";
     router.push(
-      `/tickets/gestion/crear?tipo=${tipoStr}&servicio=${encodeURIComponent(s.codigo_servicio)}&categoria=${s.id_categoria || ""}&titulo=${encodeURIComponent(s.nombre)}`
+      `${rutaCrearBase ?? "/tickets/gestion/crear"}?tipo=${tipoStr}&servicio=${encodeURIComponent(s.codigo_servicio)}&categoria=${s.id_categoria || ""}&titulo=${encodeURIComponent(s.nombre)}`
     );
   }
 
@@ -543,10 +549,16 @@ function ContenidoCatalogo() {
   );
 }
 
-export default function PaginaCatalogo() {
+export default function PaginaCatalogo({
+  tipoFijo,
+  rutaCrearBase,
+}: {
+  tipoFijo?: 1 | 2;
+  rutaCrearBase?: string;
+} = {}) {
   return (
     <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Cargando catálogo...</div>}>
-      <ContenidoCatalogo />
+      <ContenidoCatalogo tipoFijo={tipoFijo} rutaCrearBase={rutaCrearBase} />
     </Suspense>
   );
 }

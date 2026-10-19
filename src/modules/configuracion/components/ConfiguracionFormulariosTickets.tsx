@@ -234,14 +234,15 @@ function normalizarCampos(campos: CampoFormulario[]): CampoFormulario[] {
   });
 }
 
-function ContenidoConfiguracionFormularios() {
+function ContenidoConfiguracionFormularios({ tipoFijo }: { tipoFijo?: "incidente" | "solicitud" } = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tipoParam = searchParams.get("tipo");
 
   const tipoActual = useMemo(() => {
+    if (tipoFijo) return tipoFijo;
     return tipoParam === "solicitud" ? "solicitud" : "incidente";
-  }, [tipoParam]);
+  }, [tipoParam, tipoFijo]);
 
   // Almacén general de campos por proceso (incidente / solicitud)
   const [camposPorProceso, setCamposPorProceso] = useState<Record<string, CampoFormulario[]>>({
@@ -1752,10 +1753,10 @@ function ContenidoConfiguracionFormularios() {
   );
 }
 
-export default function PaginaConfiguracionFormulariosTickets() {
+export default function PaginaConfiguracionFormulariosTickets({ tipoFijo }: { tipoFijo?: "incidente" | "solicitud" } = {}) {
   return (
     <Suspense fallback={<div className="vista-contenedor"><p>Cargando configuración de formularios de creación...</p></div>}>
-      <ContenidoConfiguracionFormularios />
+      <ContenidoConfiguracionFormularios tipoFijo={tipoFijo} />
     </Suspense>
   );
 }

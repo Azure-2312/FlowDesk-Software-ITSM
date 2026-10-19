@@ -118,3 +118,28 @@ export async function obtenerMenuDelUsuario(
   return construirArbol(planas);
 }
 
+/**
+ * Indica si el arbol de menu del usuario incluye exactamente una pantalla.
+ * Se usa en las paginas de los modulos para autorizar la ruta solicitada.
+ */
+export function menuIncluyeUrl(menu: OpcionMenuArbol[], url: string): boolean {
+  for (const nodo of menu) {
+    if (nodo.url_menu === url) return true;
+    if (nodo.hijos?.length && menuIncluyeUrl(nodo.hijos, url)) return true;
+  }
+  return false;
+}
+
+/**
+ * Indica si el arbol de menu del usuario incluye alguna pantalla bajo un
+ * prefijo (por ejemplo `/plataforma/incidentes`). Se usa en las fichas de
+ * detalle, que no aparecen como opcion propia del menu.
+ */
+export function menuIncluyePrefijo(menu: OpcionMenuArbol[], prefijo: string): boolean {
+  for (const nodo of menu) {
+    if (nodo.url_menu === prefijo || (nodo.url_menu && nodo.url_menu.startsWith(`${prefijo}/`))) return true;
+    if (nodo.hijos?.length && menuIncluyePrefijo(nodo.hijos, prefijo)) return true;
+  }
+  return false;
+}
+

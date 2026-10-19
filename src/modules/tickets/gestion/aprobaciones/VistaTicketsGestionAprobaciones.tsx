@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Ticket } from "@/types";
 import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
 
-export default function PaginaAprobaciones() {
+export default function PaginaAprobaciones({ apiBase = "/api/tickets" }: { apiBase?: string } = {}) {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +20,7 @@ export default function PaginaAprobaciones() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch("/api/tickets?vista=aprobaciones");
+      const res = await fetch(`${apiBase}?vista=aprobaciones`);
       const datos = await res.json();
       setTickets(datos.tickets || []);
       if (datos.id_usuario_actual) {
@@ -41,7 +41,7 @@ export default function PaginaAprobaciones() {
     if (!confirm("¿Confirmas la aprobación formal de este requerimiento?")) return;
     setProcesandoId(idTicket);
     try {
-      const res = await fetch(`/api/tickets/${idTicket}`, {
+      const res = await fetch(`${apiBase}/${idTicket}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -77,7 +77,7 @@ export default function PaginaAprobaciones() {
 
     setProcesandoId(ticketRechazandoId);
     try {
-      const res = await fetch(`/api/tickets/${ticketRechazandoId}`, {
+      const res = await fetch(`${apiBase}/${ticketRechazandoId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -354,6 +354,7 @@ export default function PaginaAprobaciones() {
       {ticketSeleccionadoId !== null && (
         <ModalDetalleTicket
           idTicket={ticketSeleccionadoId}
+          apiBase={apiBase}
           onCerrar={() => setTicketSeleccionadoId(null)}
           onActualizado={cargarAprobaciones}
         />

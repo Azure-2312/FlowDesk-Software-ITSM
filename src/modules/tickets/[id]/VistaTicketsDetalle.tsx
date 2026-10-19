@@ -24,7 +24,17 @@ const NIVELES_PRIORIDAD_MAP: Record<number, { nombre: string; color: string; bg:
   5: { nombre: "Prioridad Estándar", color: "#475569", bg: "#f1f5f9" },
 };
 
-export default function PaginaDetalleTicket() {
+export default function PaginaDetalleTicket({
+  apiBase = "/api/tickets",
+  tipoEsperado,
+  rutaLista = "/tickets/gestion/mios",
+  etiquetaVolver = "Volver a Mis tickets",
+}: {
+  apiBase?: string;
+  tipoEsperado?: 1 | 2;
+  rutaLista?: string;
+  etiquetaVolver?: string;
+} = {}) {
   const params = useParams();
   const router = useRouter();
   const idTicket = params.id as string;
@@ -75,7 +85,7 @@ export default function PaginaDetalleTicket() {
     setError(null);
     try {
       const [resTicket, resUser, resConfig, resCat] = await Promise.all([
-        fetch(`/api/tickets/${idTicket}`).then((r) => r.json()),
+        fetch(`${apiBase}/${idTicket}`).then((r) => r.json()),
         fetch("/api/mi-cuenta").then((r) => r.json()),
         fetch("/api/admin/configuracion?clave=formularios_solicitante_config").then((r) => r.json()),
         fetch("/api/tickets/catalogos").then((r) => r.json()).catch(() => null),
@@ -83,6 +93,11 @@ export default function PaginaDetalleTicket() {
 
       if (resTicket.error) {
         setError(resTicket.error);
+        return;
+      }
+
+      if (tipoEsperado && Number(resTicket.ticket?.id_tipo_ticket) !== tipoEsperado) {
+        setError("El codigo solicitado no corresponde a este modulo.");
         return;
       }
 
@@ -121,7 +136,7 @@ export default function PaginaDetalleTicket() {
     setEjecutandoAccion(true);
     setErrorOperativo(null);
     try {
-      const res = await fetch(`/api/tickets/${idTicket}`, {
+      const res = await fetch(`${apiBase}/${idTicket}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -178,7 +193,7 @@ export default function PaginaDetalleTicket() {
     setErrorMensaje(null);
 
     try {
-      const res = await fetch(`/api/tickets/${idTicket}/comentarios`, {
+      const res = await fetch(`${apiBase}/${idTicket}/comentarios`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -195,7 +210,7 @@ export default function PaginaDetalleTicket() {
 
       setNuevoMensaje("");
       // Recargar comentarios
-      const resActualizado = await fetch(`/api/tickets/${idTicket}`);
+      const resActualizado = await fetch(`${apiBase}/${idTicket}`);
       const dataActualizada = await resActualizado.json();
       if (dataActualizada.comentarios) {
         setComentarios(dataActualizada.comentarios);
@@ -216,7 +231,7 @@ export default function PaginaDetalleTicket() {
 
     setGuardandoCsat(true);
     try {
-      const res = await fetch(`/api/tickets/${idTicket}`, {
+      const res = await fetch(`${apiBase}/${idTicket}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -261,9 +276,9 @@ export default function PaginaDetalleTicket() {
           <button
             type="button"
             className="boton-primario"
-            onClick={() => router.push("/tickets/gestion/mios")}
+            onClick={() => router.push(rutaLista)}
           >
-            Volver a Mis tickets
+            {etiquetaVolver}
           </button>
         </div>
       </div>
@@ -295,7 +310,7 @@ export default function PaginaDetalleTicket() {
       <div style={{ marginBottom: 16 }}>
         <button
           type="button"
-          onClick={() => router.push("/tickets/gestion/mios")}
+          onClick={() => router.push(rutaLista)}
           className="boton-texto"
           style={{
             display: "inline-flex",
@@ -311,7 +326,7 @@ export default function PaginaDetalleTicket() {
             border: "none",
           }}
         >
-          Volver a Mis tickets
+          {etiquetaVolver}
         </button>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
