@@ -1,8 +1,6 @@
-import VistaProductividad from "@/modules/perfiles/supervisor/views/VistaProductividad";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
+import { redirect } from "next/navigation";
 
-export default function PaginaProductividad() {
-  exigirCapacidadPagina(CAPACIDADES.REPORTES_VER);
-  return <VistaProductividad />;
+/** Ruta legada de productividad; ahora vive en el modulo reportes. */
+export default function PaginaProductividadLegacy() {
+  redirect("/plataforma/reportes/productividad");
 }

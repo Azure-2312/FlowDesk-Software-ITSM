@@ -83,7 +83,7 @@ export default function PaginaAdministracion() {
         {
           titulo: "Diseñador de Dashboards Globales",
           descripcion: "Configuración de gráficos de rendimiento gerenciales (gráficos de pastel de tickets, barras de SLA, tendencias MTTR).",
-          href: "/admin/reportes-disenador",
+          href: "/plataforma/reportes/tableros",
         },
         {
           titulo: "Mantenimiento y Purga de Datos",

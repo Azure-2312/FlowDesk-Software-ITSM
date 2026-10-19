@@ -77,7 +77,7 @@ export default function VistaPanelAuditoria() {
             <Link href="/plataforma/perfiles/auditor/cumplimiento/sod" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Segregación de funciones</Link>
             <Link href="/plataforma/perfiles/auditor/cumplimiento/cambios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Cambios sin autorización</Link>
             <Link href="/plataforma/perfiles/auditor/cmdb/resultados" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Resultados de CMDB</Link>
-            <Link href="/plataforma/perfiles/auditor/informes" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Informes de auditoría</Link>
+            <Link href="/plataforma/reportes/auditoria" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Informes de auditoría</Link>
           </div>
         </div>
 

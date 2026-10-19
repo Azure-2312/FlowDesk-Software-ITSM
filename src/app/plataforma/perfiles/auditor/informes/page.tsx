@@ -1,8 +1,6 @@
-import VistaInformesAuditoria from "@/modules/perfiles/auditor/views/VistaInformesAuditoria";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
+import { redirect } from "next/navigation";
 
-export default function PaginaInformesAuditoria() {
-  exigirCapacidadPagina(CAPACIDADES.REPORTES_VER);
-  return <VistaInformesAuditoria />;
+/** Ruta legada de informes de auditoria; ahora vive en el modulo reportes. */
+export default function PaginaInformesAuditoriaLegacy() {
+  redirect("/plataforma/reportes/auditoria");
 }

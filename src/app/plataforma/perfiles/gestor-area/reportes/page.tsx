@@ -1,8 +1,6 @@
-import VistaReportesArea from "@/modules/perfiles/gestor-area/views/VistaReportesArea";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
+import { redirect } from "next/navigation";
 
-export default function PaginaReportesArea() {
-  exigirCapacidadPagina(CAPACIDADES.REPORTES_VER);
-  return <VistaReportesArea />;
+/** Ruta legada de reportes del area; ahora vive en el modulo reportes. */
+export default function PaginaReportesAreaLegacy() {
+  redirect("/plataforma/reportes/area");
 }

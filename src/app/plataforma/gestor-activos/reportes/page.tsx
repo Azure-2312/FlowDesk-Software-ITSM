@@ -1,8 +1,6 @@
-import VistaReportesActivos from "@/modules/activos/views/VistaReportesActivos";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
+import { redirect } from "next/navigation";
 
-export default function PaginaReportesActivos() {
-  exigirCapacidadPagina(CAPACIDADES.ACTIVOS_VER);
-  return <VistaReportesActivos />;
+/** Ruta legada de reportes de activos; ahora vive en el modulo reportes. */
+export default function PaginaReportesActivosLegacy() {
+  redirect("/plataforma/reportes/activos");
 }

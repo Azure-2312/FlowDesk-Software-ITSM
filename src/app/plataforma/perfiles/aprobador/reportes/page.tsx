@@ -1,8 +1,6 @@
-import VistaReportesAprobador from "@/modules/perfiles/aprobador/views/VistaReportesAprobador";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
+import { redirect } from "next/navigation";
 
-export default function PaginaReportesAprobador() {
-  exigirCapacidadPagina(CAPACIDADES.REPORTES_VER);
-  return <VistaReportesAprobador />;
+/** Ruta legada de reportes de decisiones; ahora vive en el modulo reportes. */
+export default function PaginaReportesAprobadorLegacy() {
+  redirect("/plataforma/reportes/decisiones");
 }

@@ -1,8 +1,6 @@
-import VistaReportesProblemas from "@/modules/problemas/views/VistaReportesProblemas";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
+import { redirect } from "next/navigation";
 
-export default function PaginaReportesProblemas() {
-  exigirCapacidadPagina(CAPACIDADES.PROBLEMAS_VER);
-  return <VistaReportesProblemas />;
+/** Ruta legada de reportes de problemas; ahora vive en el modulo reportes. */
+export default function PaginaReportesProblemasLegacy() {
+  redirect("/plataforma/reportes/problemas");
 }
