@@ -105,7 +105,7 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
 
   const idPerfil = sesion.perfilActivo?.id_perfil;
   let autorizado = false;
-  if ([4, 6].includes(idPerfil || 0)) {
+  if ([1, 4, 6].includes(idPerfil || 0)) {
     autorizado = true;
   } else if (idPerfil === 3) {
     autorizado = ticket.id_usuario_solicitante === sesion.id_usuario;

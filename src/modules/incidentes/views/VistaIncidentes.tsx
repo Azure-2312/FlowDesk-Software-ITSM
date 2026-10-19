@@ -8,6 +8,7 @@ export default function VistaIncidentes() {
       vista="todos"
       tipoInicial="1"
       tipoFijo="1"
+      rutaDetalleBase="/plataforma/incidentes"
       titulo="Incidentes"
       descripcion="Registra y gestiona interrupciones o degradaciones no planificadas de los servicios de TI."
     />

@@ -11,9 +11,11 @@ interface Props {
   descripcion: string;
   tipoInicial?: string; // "1" = Incidente, "2" = Solicitud, etc.
   tipoFijo?: "1" | "2";
+  /** Ruta base de la ficha completa del modulo (ej. /plataforma/incidentes). */
+  rutaDetalleBase?: string;
 }
 
-export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, tipoFijo }: Props) {
+export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, tipoFijo, rutaDetalleBase }: Props) {
   const router = useRouter();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [catalogos, setCatalogos] = useState<CatalogosTickets | null>(null);
@@ -443,7 +445,9 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
                         type="button"
                         className="boton-mini"
                         onClick={() => {
-                          if (t.tipo_codigo === "PROBLEMA") {
+                          if (rutaDetalleBase) {
+                            router.push(`${rutaDetalleBase}/${t.id_ticket}`);
+                          } else if (t.tipo_codigo === "PROBLEMA") {
                             router.push("/problemas");
                           } else if (t.tipo_codigo === "CAMBIO" || t.tipo_codigo?.startsWith("CAMBIO") || t.tipo_nombre?.includes("RFC") || t.codigo_ticket?.startsWith("RFC")) {
                             router.push("/cambios/gestion/todos");
