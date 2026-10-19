@@ -159,7 +159,7 @@ export default function PaginaReportes() {
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
-            href="/admin/reportes-disenador"
+            href="/plataforma/reportes/tableros"
             className="boton-secundario"
             style={{ textDecoration: "none", fontSize: 13, padding: "8px 12px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >

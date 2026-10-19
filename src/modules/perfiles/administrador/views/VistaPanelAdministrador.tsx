@@ -81,7 +81,7 @@ export default function VistaPanelAdministrador() {
             <Link href="/plataforma/admin/menu" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Estructura del menú</Link>
             <Link href="/plataforma/admin/salud-sistema" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Salud del sistema</Link>
             <Link href="/plataforma/admin/seguridad-logs" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Registros de seguridad</Link>
-            <Link href="/plataforma/tickets/reportes" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Indicadores operativos y SLA</Link>
+            <Link href="/plataforma/reportes/operativos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Indicadores operativos y SLA</Link>
           </div>
         </div>
 

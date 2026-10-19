@@ -1,5 +1,6 @@
-import VistaReportesDisenador from "@/modules/plataforma/config/reportes-disenador/VistaReportesDisenador";
+import { redirect } from "next/navigation";
 
-export default function PaginaAdminReportesDisenador() {
-  return <VistaReportesDisenador />;
+/** Ruta legada del disenador de tableros; ahora vive en el modulo reportes. */
+export default function PaginaAdminReportesDisenadorLegacy() {
+  redirect("/plataforma/reportes/tableros");
 }

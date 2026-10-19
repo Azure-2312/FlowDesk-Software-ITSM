@@ -1,10 +1,9 @@
-refactor(servicios): mueve los catalogos de servicios al modulo servicios
+refactor(reportes): centraliza todos los reportes en el modulo reportes
 
-- Mueve VistaCatalogoServicios (solicitante) a src/modules/servicios/catalogo
-  y VistaTecnicoCatalogo a src/modules/servicios/catalogo-tecnico.
-- Publica el contrato de UI en src/modules/servicios/ui.ts.
-- Agrega /plataforma/servicios/catalogo para la consulta del tecnico y deja
-  /plataforma/perfiles/tecnico/catalogo como redireccion legada.
-- Actualiza el menu (opcion 21164) y el alias /servicios en next.config.js.
-- Los catalogos filtrados de incidentes y solicitudes conservan sus rutas y
-  ahora consumen las vistas desde el modulo servicios.
+- Mueve las nueve pantallas de reportes (operativos, auditoria,
+  productividad, activos, cambios, decisiones, problemas, area y tableros)
+  a src/modules/reportes/views y publica el contrato en ui.ts.
+- Expone rutas completas /plataforma/reportes/* con guarda de menu y deja
+  las rutas anteriores como redirecciones.
+- Actualiza el menu (21175-21183), el seed y el alias /reportes.
+- Actualiza los enlaces de los paneles y del disenador de tableros.

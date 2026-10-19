@@ -87,7 +87,7 @@ export default function PaginaDisenadorReportesDashboards() {
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <Link
-            href="/tickets/reportes"
+            href="/plataforma/reportes/operativos"
             className="boton-secundario"
             style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center" }}
           >

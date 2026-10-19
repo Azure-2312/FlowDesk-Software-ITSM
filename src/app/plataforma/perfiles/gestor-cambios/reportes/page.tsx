@@ -1,8 +1,6 @@
-import VistaReportesCambios from "@/modules/perfiles/gestor-cambios/views/VistaReportesCambios";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
+import { redirect } from "next/navigation";
 
-export default function PaginaReportesCambios() {
-  exigirCapacidadPagina(CAPACIDADES.CAMBIOS_VER);
-  return <VistaReportesCambios />;
+/** Ruta legada de reportes de cambios; ahora vive en el modulo reportes. */
+export default function PaginaReportesCambiosLegacy() {
+  redirect("/plataforma/reportes/cambios");
 }
