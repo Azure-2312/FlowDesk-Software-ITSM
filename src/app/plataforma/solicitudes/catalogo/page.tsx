@@ -1,5 +1,5 @@
 import { exigirMenuPagina } from "@/shared/lib/page-auth";
-import VistaCatalogoServicios from "@/modules/solicitudes/views/VistaCatalogoServicios";
+import { VistaCatalogoServicios } from "@/modules/servicios/ui";
 
 export default async function PaginaSolicitudesCatalogo() {
   await exigirMenuPagina("/plataforma/solicitudes/catalogo");
