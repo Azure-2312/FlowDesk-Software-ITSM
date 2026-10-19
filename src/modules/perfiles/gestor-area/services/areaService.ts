@@ -38,7 +38,7 @@ export async function obtenerPanelArea(idUsuario: number) {
        COUNT(*) FILTER (WHERE t.estado_aprobacion = 'PENDIENTE_APROBACION')::int AS aprobaciones_pendientes,
        COUNT(*) FILTER (WHERE et.es_terminal = false AND t.fecha_limite_sla < now())::int AS vencidos,
        ROUND(AVG(t.calificacion_csat)::numeric, 2) AS csat_promedio
-     FROM ticket t
+     FROM vista_ticket t
      LEFT JOIN estado_ticket et ON et.id_estado = t.id_estado
      WHERE t.estado_registro = true AND t.id_departamento_empresa = $1`,
     [area.id_departamento_empresa]
@@ -249,7 +249,7 @@ export async function obtenerReportesArea(idUsuario: number) {
        COUNT(*) FILTER (WHERE t.sla_cumplido = true)::int AS sla_cumplidos,
        COUNT(*) FILTER (WHERE t.calificacion_csat IS NOT NULL)::int AS evaluados,
        ROUND(AVG(t.calificacion_csat)::numeric, 2) AS csat_promedio
-     FROM ticket t
+     FROM vista_ticket t
      WHERE t.estado_registro = true AND t.id_departamento_empresa = $1`,
     [area.id_departamento_empresa]
   );
