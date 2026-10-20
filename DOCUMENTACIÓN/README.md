@@ -10,7 +10,7 @@ Documentación técnica, funcional y de gobierno del sistema **FlowDesk ITSM**, 
 
 | # | Documento | Para qué sirve | Contenido principal |
 | :-: | :--- | :--- | :--- |
-| 1 | [ARQUITECTURA_Y_CODIGO.md](ARQUITECTURA_Y_CODIGO.md) | Entender cómo está construido el sistema. | Stack, principios, 18 módulos, contratos, rutas, guardas, RBAC, modelo C, API/UI, fases, calidad y deuda técnica. |
+| 1 | [ARQUITECTURA_Y_CODIGO.md](ARQUITECTURA_Y_CODIGO.md) | Entender cómo está construido el sistema. | Stack, principios, 17 módulos, contratos, rutas, guardas, RBAC, modelo C, API/UI, fases, calidad y deuda técnica. |
 | 2 | [MENUS_Y_PERFILES.md](MENUS_Y_PERFILES.md) | Entender qué ve y qué puede hacer cada perfil. | 10 perfiles, SoD, catálogo único `opciones_menu`, árbol actual por perfil, rutas, cobertura ITIL/ISO/COBIT y roadmap. |
 | 3 | [REQUERIMIENTOS.md](REQUERIMIENTOS.md) | Saber qué debe hacer el sistema. | RF-01 a RF-44, RNF, RN-01 a RN-41 y criterios de aceptación. |
 | 4 | [HISTORIAS_DE_USUARIO.md](HISTORIAS_DE_USUARIO.md) | Trabajar el backlog y validar escenarios. | Épicas, HU generales y detalle de Administrador y Solicitante en Gherkin. |
@@ -50,9 +50,9 @@ Documentación técnica, funcional y de gobierno del sistema **FlowDesk ITSM**, 
 | Indicador | Valor |
 | :--- | ---: |
 | Perfiles oficiales | 10 |
-| Módulos de dominio | 18 |
-| Opciones de menú activas | 233 |
-| Filas de visibilidad | 396 |
+| Módulos de dominio | 17 |
+| Opciones de menú activas | 227 |
+| Filas de visibilidad | 388 |
 | Route handlers | 207 |
 | Páginas bajo `src/app/plataforma` | 227 |
 | Tablas base en `public` | 126 |

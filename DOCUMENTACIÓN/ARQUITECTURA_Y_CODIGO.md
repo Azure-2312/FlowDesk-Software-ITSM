@@ -77,18 +77,18 @@ No se commitean `.env`, `.env.local`, credenciales ni `node_modules`.
 
 | Métrica | Valor al 2026-10-20 | Fuente |
 | :--- | ---: | :--- |
-| Módulos de dominio | 18 | `src/modules/` |
-| Archivos dentro de módulos | 658 | Conteo recursivo |
-| Archivos TypeScript/TSX en `src` | 1.215 | Conteo recursivo |
+| Módulos de dominio | 17 | `src/modules/` |
+| Archivos dentro de módulos | 657 | Conteo recursivo |
+| Archivos TypeScript/TSX en `src` | 1.214 | Conteo recursivo |
 | Route handlers en `src/app/api` | 207 | `route.ts` |
 | Controladores `*Controller.ts` | 205 | `src/modules/**/api` |
 | Páginas bajo `src/app/plataforma` | 227 | `page.tsx` |
 | Páginas totales bajo `src/app` | 229 | `page.tsx` |
 | Tablas base en `public` | 126 | `information_schema.tables` |
 | Vistas en `public` | 1 (`vista_ticket`) | `information_schema.views` |
-| Migraciones SQL | 37 | `db/migrations/` |
-| Opciones de menú activas | 233 | `opciones_menu` |
-| Filas de visibilidad activas | 396 | `opciones_menu_perfiles` |
+| Migraciones SQL | 38 | `db/migrations/` |
+| Opciones de menú activas | 227 | `opciones_menu` |
+| Filas de visibilidad activas | 388 | `opciones_menu_perfiles` |
 | Raíces del menú | 12 | `id_padre IS NULL` |
 | Perfiles | 10 | `perfiles` |
 
@@ -162,28 +162,27 @@ Reglas:
 El grafo debe ser acíclico. Si aparece un ciclo, se resuelve por dato, evento o servicio compartido; no por importación cruzada.
 
 ---
-## 4. Mapa de los 18 módulos
+## 4. Mapa de los 17 módulos
 
 | # | Módulo | Archivos | Contrato | Dominio | Dueño |
 | --: | :--- | --: | :--- | :--- | :--- |
-| 1 | `tickets` | 48 | `index.ts` + `ui.ts` | Núcleo ITSM: ticket base, comentarios, colas, detalle. | Miguel |
+| 1 | `tickets` | 52 | `index.ts` + `ui.ts` | Núcleo ITSM, configuración de formularios y vistas de ticket. | Miguel |
 | 2 | `incidentes` | 12 | `index.ts` | Incidentes, mayores y sala de crisis. | Miguel |
 | 3 | `solicitudes` | 6 | `index.ts` | Solicitudes de servicio y su ciclo. | Miguel |
 | 4 | `cambios` | 96 | `index.ts` | RFC, CAB/ECAB, evaluación, calendario, PIR, plantillas. | Nain |
 | 5 | `problemas` | 85 | `index.ts` | Problemas, RCA, KEDB y configuración del proceso. | Alexis |
 | 6 | `seguridad` | 24 | `index.ts` | Login, JWT, sesiones, captcha y recuperación. | Miguel |
-| 7 | `plataforma` | 18 | `index.ts` | Salud, mantenimiento, logs y auditoría de sistema. | Miguel |
+| 7 | `plataforma` | 29 | `index.ts` | Salud, mantenimiento, logs, auditoría, menú, notificaciones y parámetros. | Miguel |
 | 8 | `perfiles` | 135 | Subcarpetas por rol | Consolas de rol: solo UI y alcance del perfil. | Compartido por subcarpeta |
-| 9 | `servicios` | 19 | `index.ts` + `ui.ts` | Catálogo, SLA, matriz de prioridad y workflow. | Miguel |
+| 9 | `servicios` | 26 | `index.ts` + `ui.ts` | Catálogo, categorías, SLA, matriz de prioridad y workflow. | Miguel |
 | 10 | `operacion` | 10 | `index.ts` | Eventos operativos y resiliencia. | Miguel |
 | 11 | `activos` | 80 | `index.ts` | ITAM/SAM: inventario, licencias, contratos y bajas. | Nain |
 | 12 | `cmdb` | 31 | `index.ts` | SACM: CIs, relaciones, líneas base, exactitud y análisis. | Nain |
 | 13 | `proveedores` | 6 | `index.ts` | Proveedores y contratos. | Nain |
 | 14 | `identidades` | 15 | `index.ts` | Usuarios, perfiles RBAC y credenciales. | Junior |
 | 15 | `organizacion` | 22 | `index.ts` | Departamentos, técnicos, colaboradores y ausencias. | Junior |
-| 16 | `configuracion` | 24 | `index.ts` | Menú, categorías, formularios/vistas y parámetros. | Lourdes |
-| 17 | `conocimiento` | 13 | `index.ts` | Base de conocimiento y flujo editorial. | Alexis |
-| 18 | `reportes` | 14 | `index.ts` + `ui.ts` | 9 reportes centralizados e indicadores. | Alexis |
+| 16 | `conocimiento` | 14 | `index.ts` | Base de conocimiento, configuración editorial y flujo editorial. | Alexis |
+| 17 | `reportes` | 14 | `index.ts` + `ui.ts` | 9 reportes centralizados e indicadores. | Alexis |
 
 Los conteos dimensionan la superficie; no reparten carga ni autorizan a editar módulos ajenos.
 
@@ -212,7 +211,7 @@ Las consolas viven en `src/modules/perfiles/<rol>/`. No son módulos de dominio:
 
 | Consola | Ruta canónica | Dominio delegado |
 | :--- | :--- | :--- |
-| `administrador` | `/plataforma/perfiles/administrador/panel` | `identidades`, `plataforma`, `configuracion` |
+| `administrador` | `/plataforma/perfiles/administrador/panel` | `identidades`, `plataforma`, `organizacion`, `tickets`, `servicios`, `conocimiento` |
 | `supervisor` | `/plataforma/perfiles/supervisor/*` | `cambios`, `activos`, `problemas`, `tickets`, `reportes` |
 | `aprobador` | `/plataforma/perfiles/aprobador/*` | `cambios`, `activos`, `problemas` |
 | `tecnico` | `/plataforma/perfiles/tecnico/*` | `tickets`, `cambios`, `incidentes`, `problemas`, `activos`, `cmdb`, `servicios` |
@@ -258,7 +257,7 @@ Consecuencias:
 | `/plataforma/conocimiento/**` | `conocimiento` | `/api/conocimiento` |
 | `/plataforma/reportes/**` | `reportes` | `/api/reportes/indicadores` |
 | `/plataforma/operacion/**` | `operacion` | `/api/operacion` |
-| `/plataforma/admin/**` | `configuracion`, `identidades`, `organizacion`, `plataforma` | `/api/admin/**`, `/api/usuarios`, `/api/identidades/perfiles` |
+| `/plataforma/admin/**` | `plataforma`, `identidades`, `organizacion`, `servicios`, `tickets`, `conocimiento` | `/api/admin/**`, `/api/usuarios`, `/api/identidades/perfiles` |
 | `/plataforma/perfiles/<rol>/**` | `perfiles/<rol>` | `/api/perfiles/<rol>` |
 | `/plataforma/mi-cuenta/**` | `seguridad` | `/api/mi-cuenta` |
 | `/plataforma/avisos/mantenimientos` | `plataforma` | `/api/avisos` |
@@ -278,13 +277,13 @@ La Fase 2 separó la Mesa de Servicio en dos frentes con rutas propias, menú pr
 | Resueltos | `/plataforma/incidentes/resueltos` | `/plataforma/solicitudes/resueltos` |
 | Crear | `/plataforma/incidentes/crear` | `/plataforma/solicitudes/crear` |
 | Catálogo | `/plataforma/incidentes/catalogo` | `/plataforma/solicitudes/catalogo` |
-| Configuración | `/plataforma/incidentes/configuracion` | `/plataforma/solicitudes/configuracion` |
+| Configuración del formulario | `/plataforma/incidentes/configuracion` | `/plataforma/solicitudes/configuracion` |
 | Específica | `/plataforma/incidentes/mayores` | `/plataforma/solicitudes/aprobaciones` |
 | Detalle | `/plataforma/incidentes/[id]` | `/plataforma/solicitudes/[id]` |
 
 Ambas fichas de detalle montan `VistaTicketsDetalle` con `apiBase` distinto y `tipoEsperado` 1 o 2. No son una segunda pantalla de tickets: reutilizan el detalle del núcleo.
 
-El menú las representa como dos carpetas dentro de **Mesa de Servicio**: `Incidentes` y `Solicitudes`. Su configuración vive en **Configuración → Mesa de Servicio → Incidentes/Solicitudes**, con el formulario y el flujo en un cuarto nivel. Las páginas usan `exigirMenuPagina`; las fichas de detalle usan `exigirMenuPagina` con `{ prefijo: true }`.
+El menú las representa como dos carpetas dentro de **Mesa de Servicio**: `Incidentes` y `Solicitudes`. La configuración del formulario y el flujo vive dentro de cada carpeta, en tercer nivel; ya no existe la raíz Configuración. Las páginas usan `exigirMenuPagina`; las fichas de detalle usan `exigirMenuPagina` con `{ prefijo: true }`.
 
 ### 5.3. Fase 3: catálogos centralizados en servicios
 
@@ -397,14 +396,14 @@ Mientras no exista una tabla `perfil_capacidades`, `CAPACIDADES_POR_PERFIL` act�
 
 | ID | Nombre en BD | Nombre editorial | Filas de menú | Enfoque |
 | --: | :--- | :--- | ---: | :--- |
-| 1 | `Administrador` | Administrador | 69 | Gobierno y configuración de la plataforma. |
+| 1 | `Administrador` | Administrador | 66 | Gobierno y configuración de la plataforma. |
 | 2 | `Tecnico` | Técnico | 57 | Resolución N1/N2/N3, activos en campo y conocimiento. |
 | 3 | `Solicitante` | Solicitante | 21 | Solo sus tickets, activos en custodia y conocimiento publicado. |
 | 4 | `Supervisor` | Supervisor | 56 | Coordinación de mesa, SLA, calidad y aprobación técnica. |
 | 5 | `Gestor de Area` | Gestor de Área | 37 | Validación de solicitudes y cambios de su área. |
-| 6 | `Auditor` | Auditor | 45 | Lectura global y cumplimiento; no escribe. |
+| 6 | `Auditor` | Auditor | 44 | Lectura global y cumplimiento; no escribe. |
 | 7 | `Aprobador` | Aprobador | 27 | CAB/ECAB, riesgo y decisiones por monto. |
-| 8 | `Gestor de Cambios` | Gestor de Cambios | 27 | Coordinación del ciclo RFC. |
+| 8 | `Gestor de Cambios` | Gestor de Cambios | 25 | Coordinación del ciclo RFC. |
 | 9 | `Gestor de Activos y Configuracion` | Gestor de Activos y Configuración | 37 | HAM, SAM, CMDB, contratos y proveedores. |
 | 10 | `Gestor de Problemas` | Gestor de Problemas | 18 | Problemas, RCA, KEDB y RFC derivadas. |
 
@@ -659,16 +658,16 @@ Persisten 100 controladores con JWT manual, 2 comparaciones de ID de perfil, cas
 
 | Indicador | Valor |
 | :--- | ---: |
-| Opciones activas | 233 |
-| Carpetas | 38 |
+| Opciones activas | 227 |
+| Carpetas | 32 |
 | Pantallas | 195 |
 | URLs de pantalla distintas | 195 |
 | Raíces | 12 |
-| Filas de visibilidad | 396 |
+| Filas de visibilidad | 388 |
 | Asignaciones pantalla-perfil | 260 |
-| Asignaciones carpeta-perfil | 136 |
-| Carpetas colapsadas por el sidebar | 50 |
-| Entradas de primer nivel visibles | 69 |
+| Asignaciones carpeta-perfil | 128 |
+| Carpetas colapsadas por el sidebar | 45 |
+| Entradas de primer nivel visibles | 68 |
 
 ### 9.3. Las 12 raíces
 
@@ -679,12 +678,12 @@ Persisten 100 controladores con JWT manual, 2 comparaciones de ID de perfil, cas
 | 3 | Cambios | RFC, calendario, CAB, aprobaciones, PIR e historial. |
 | 4 | Problemas | Registro, análisis, KEDB, candidatos, mayores y RFC derivadas. |
 | 5 | Activos y CMDB | Inventario, licencias, CMDB, mantenimiento, proveedores y catálogos. |
-| 6 | Conocimiento | Base, artículos, creación, revisión y publicación. |
+| 6 | Conocimiento | Base, artículos, creación, revisión, publicación y configuración editorial. |
 | 7 | Catálogo de Servicios | Catálogo de consulta y configuración de servicios/SLA. |
 | 8 | Operación | Eventos, alertas, disponibilidad, capacidad y continuidad. |
 | 9 | Reportes | Los 9 reportes corporativos. |
-| 10 | Configuración | Formularios, flujos, organización, identidades, menú y notificaciones. |
-| 11 | Plataforma | Auditoría, seguridad, retención, salud y cumplimiento. |
+| 10 | Organización | Departamentos, grupos resolutores, supervisores y técnicos. |
+| 11 | Plataforma | Identidades, menú, notificaciones, auditoría, seguridad, retención, salud y cumplimiento. |
 | 12 | Mi cuenta | Perfil, seguridad y preferencias de notificación. |
 
 ### 9.4. Construcción del árbol
@@ -708,6 +707,7 @@ Esto permite que la visibilidad del menú sea la política de acceso de las pág
 | Fase 3 | Catálogos movidos a `servicios`. | `20261021_fase3_catalogo_servicios.sql` | Las rutas de catálogo montan `servicios/ui`; incidentes/solicitudes filtran por tipo. |
 | Fase 4 | 9 reportes centralizados en `reportes`. | `20261022_fase4_modulo_reportes.sql` | Rutas legadas redirigen; no se duplican reportes. |
 | Ajuste de menú | Configuración de Mesa de Servicio en cuatro niveles. | `20261020_configuracion_mesa_servicio_niveles.sql` | 233 opciones y 396 visibilidades; las pantallas operativas no se mueven. |
+| Distribución de configuración | Se eliminó la raíz Configuración y sus pantallas quedaron en los módulos dueños. | `20261020_distribuir_configuracion_en_modulos.sql` | 227 opciones y 388 visibilidades; sin carpetas por perfil. |
 
 ---
 ## 11. Calidad, migraciones y despliegue
@@ -776,7 +776,7 @@ Ninguna de las cuatro ramas queda atrás. Si una falla al compilar tras el merge
 5. No editar migraciones aplicadas.
 6. No borrar datos históricos por conveniencia.
 
-La secuencia actual tiene 37 migraciones. La última por fecha es `20261022_fase4_modulo_reportes.sql`; el ajuste de menú se agregó en `20261020_configuracion_mesa_servicio_niveles.sql`.
+La secuencia actual tiene 38 migraciones. La última reorganización de menú es `20261020_distribuir_configuracion_en_modulos.sql`; por fecha, la migración más reciente del catálogo es `20261022_fase4_modulo_reportes.sql`.
 
 ### 11.5. Despliegue
 
@@ -853,14 +853,14 @@ No hay suite automatizada de pruebas en `package.json`; el gate es tipado, build
 SELECT table_name FROM information_schema.tables
 WHERE table_schema = 'public' AND table_type = 'BASE TABLE';
 
--- 233 opciones, 38 carpetas, 195 páginas, 12 raíces
+-- 227 opciones, 32 carpetas, 195 páginas, 12 raíces
 SELECT COUNT(*) AS total,
        COUNT(*) FILTER (WHERE url_menu = '') AS carpetas,
        COUNT(*) FILTER (WHERE url_menu <> '') AS paginas,
        COUNT(*) FILTER (WHERE id_padre IS NULL) AS raices
 FROM opciones_menu WHERE estado_registro = true;
 
--- 396 visibilidades
+-- 388 visibilidades
 SELECT COUNT(*) FROM opciones_menu_perfiles WHERE estado_registro = true;
 ```
 
@@ -879,7 +879,7 @@ SELECT COUNT(*) FROM opciones_menu_perfiles WHERE estado_registro = true;
 | `src/middleware.ts` y `next.config.js` | Protección por cookie, cabeceras y alias. |
 | `db/migrations/20261019_modelo_c_ticket.sql` | Modelo C, vista y trigger. |
 | `db/migrations/20261020_fase2_modulos_incidentes_solicitudes.sql` | Catálogo base de Incidentes y Solicitudes. |
-| `db/migrations/20261020_configuracion_mesa_servicio_niveles.sql` | Reorganización de la configuración y conteos vigentes 233/396. |
+| `db/migrations/20261020_distribuir_configuracion_en_modulos.sql` | Distribución de la configuración y conteos vigentes 227/388. |
 | `db/migrations/20261021_fase3_catalogo_servicios.sql` | Catálogo en `servicios`. |
 | `db/migrations/20261022_fase4_modulo_reportes.sql` | 9 rutas de reportes. |
 | Base PostgreSQL viva | 126 tablas, 1 vista, 10 perfiles, menú y visibilidad. |

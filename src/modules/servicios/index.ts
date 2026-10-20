@@ -25,3 +25,17 @@ export {
   type ConfigMatrizSla,
   type CeldaMatriz,
 } from "./services/matrizSlaService";
+
+export {
+  listarCategorias,
+  crearCategoria,
+  type CategoriaConStats,
+  type FiltrosCategorias,
+  type ContextoAuditoriaCategoria,
+} from "./services/categoriaService";
+
+export {
+  obtenerCategoriaDetalle,
+  actualizarCategoria,
+  eliminarCategoria,
+} from "./services/categoriaDetalleService";

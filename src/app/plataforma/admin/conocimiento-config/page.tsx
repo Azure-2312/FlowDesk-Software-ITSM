@@ -1,4 +1,4 @@
-import VistaConocimientoConfig from "@/modules/configuracion/config/conocimiento/VistaConocimientoConfig";
+import VistaConocimientoConfig from "@/modules/conocimiento/config/VistaConocimientoConfig";
 
 export default function PaginaAdminConocimientoConfig() {
   return <VistaConocimientoConfig />;

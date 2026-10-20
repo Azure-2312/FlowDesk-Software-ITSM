@@ -1,1 +1,1 @@
-export { GET, PUT, POST } from "@/modules/configuracion/api/admin/reglasController";
+export { GET, PUT, POST } from "@/modules/plataforma/api/admin/reglasController";

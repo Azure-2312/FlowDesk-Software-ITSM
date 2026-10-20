@@ -9,7 +9,7 @@ import {
   obtenerCategoriaDetalle,
   actualizarCategoria,
   eliminarCategoria,
-} from "@/modules/configuracion/services/categoriaDetalleService";
+} from "@/modules/servicios/services/categoriaDetalleService";
 
 export async function GET(
   req: NextRequest,

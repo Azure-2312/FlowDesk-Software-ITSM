@@ -6,7 +6,7 @@ import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import {
   actualizarOpcionMenuAdmin,
   alternarEstadoOpcionMenuAdmin,
-} from "@/modules/configuracion/services/menuAdminDetalleService";
+} from "@/modules/plataforma/services/menuAdminDetalleService";
 
 function obtenerSesionActual() {
   const token = cookies().get(COOKIE_SESION)?.value;

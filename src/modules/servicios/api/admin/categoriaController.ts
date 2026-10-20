@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { listarCategorias, crearCategoria } from "@/modules/configuracion/services/categoriaService";
+import { listarCategorias, crearCategoria } from "@/modules/servicios/services/categoriaService";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;

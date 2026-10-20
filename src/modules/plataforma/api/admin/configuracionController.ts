@@ -5,7 +5,7 @@ import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import {
   obtenerConfiguraciones,
   guardarConfiguracion,
-} from "@/modules/configuracion/services/configuracionSistemaService";
+} from "@/modules/plataforma/services/configuracionSistemaService";
 
 export const dynamic = "force-dynamic";
 

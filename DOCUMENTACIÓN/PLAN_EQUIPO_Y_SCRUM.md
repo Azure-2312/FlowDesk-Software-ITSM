@@ -68,27 +68,26 @@ src/
 
 Principios no negociables: `src/app` no contiene lógica; la lógica vive en `src/modules/<modulo>/`; `shared` nunca importa módulos; cada módulo expone contrato público; las consolas de rol delegan el dominio.
 
-### 2.2. Los 18 módulos actuales
+### 2.2. Los 17 módulos actuales
 | # | Módulo | Archivos* | Contrato | Dominio | Dueño |
 | --: | :--- | --: | :--- | :--- | :--- |
-| 1 | `tickets` | 48 | `index.ts` + `ui.ts` | Núcleo ITSM congelado: ticket base, comentarios, colas, detalle. | Miguel |
+| 1 | `tickets` | 52 | `index.ts` + `ui.ts` | Núcleo ITSM congelado y configuración de formularios/vistas de ticket. | Miguel |
 | 2 | `incidentes` | 12 | `index.ts` | Incidentes, mayores y sala de crisis. | Miguel |
 | 3 | `solicitudes` | 6 | `index.ts` | Solicitudes de servicio y su ciclo. | Miguel |
 | 4 | `cambios` | 96 | `index.ts` | RFC, CAB/ECAB, evaluación, calendario, PIR, plantillas. | Nain |
 | 5 | `problemas` | 85 | `index.ts` | Problemas, RCA, KEDB, configuración del proceso. | Alexis |
 | 6 | `seguridad` | 24 | `index.ts` | Login, JWT, sesiones, captcha, recuperación. | Miguel |
-| 7 | `plataforma` | 18 | `index.ts` | Salud, mantenimiento, logs, auditoría de sistema. | Miguel |
+| 7 | `plataforma` | 29 | `index.ts` | Salud, mantenimiento, logs, auditoría, menú, notificaciones y parámetros. | Miguel |
 | 8 | `perfiles` | 135 | Subcarpetas por rol | Consolas de rol: solo UI y alcance del perfil. | Compartido por subcarpeta |
-| 9 | `servicios` | 19 | `index.ts` + `ui.ts` | Catálogo, SLA, matriz de prioridad, workflow. | Miguel |
+| 9 | `servicios` | 26 | `index.ts` + `ui.ts` | Catálogo, categorías, SLA, matriz de prioridad y workflow. | Miguel |
 | 10 | `operacion` | 10 | `index.ts` | Eventos operativos y resiliencia. | Miguel |
 | 11 | `activos` | 80 | `index.ts` | ITAM/SAM: inventario, licencias, contratos, bajas. | Nain |
 | 12 | `cmdb` | 31 | `index.ts` | SACM: CIs, relaciones, líneas base, exactitud, análisis. | Nain |
 | 13 | `proveedores` | 6 | `index.ts` | Proveedores y contratos. | Nain |
 | 14 | `identidades` | 15 | `index.ts` | Usuarios, perfiles RBAC, credenciales. | Junior |
 | 15 | `organizacion` | 22 | `index.ts` | Departamentos, técnicos, colaboradores, ausencias. | Junior |
-| 16 | `configuracion` | 24 | `index.ts` | Menú, categorías, formularios/vistas, parámetros. | Lourdes |
-| 17 | `conocimiento` | 13 | `index.ts` | Base de conocimiento y flujo editorial. | Alexis |
-| 18 | `reportes` | 14 | `index.ts` + `ui.ts` | 9 reportes centralizados e indicadores. | Alexis |
+| 16 | `conocimiento` | 14 | `index.ts` | Base de conocimiento, configuración editorial y flujo editorial. | Alexis |
+| 17 | `reportes` | 14 | `index.ts` + `ui.ts` | 9 reportes centralizados e indicadores. | Alexis |
 \* Conteo referencial al 2026-10-19; dimensiona, no reparte carga.
 
 ### 2.3. Contratos públicos
@@ -136,7 +135,7 @@ El contrato de `tickets` incluye `listarTickets`, `crearTicket`, `obtenerDetalle
 4. Las rutas de rol no tienen alias: se usa `/plataforma/perfiles/<rol>/*`.
 5. La ficha RBAC vive en `identidades` (`/admin/perfiles`, `/api/identidades/perfiles`), no en `perfiles`.
 6. `cmdb` es módulo independiente; se une a `activos` por dato (`elemento_configuracion.id_activo`), no por código.
-7. Son **18 módulos**; no se agregan sin decisión de arquitectura.
+7. Son **17 módulos**; no se agregan sin decisión de arquitectura.
 
 ---
 
@@ -145,7 +144,7 @@ El contrato de `tickets` incluye `listarTickets`, `crearTicket`, `obtenerDetalle
 | Integrante | Rol Scrum | Rol técnico | Dominio principal | Rama de trabajo |
 | :--- | :--- | :--- | :--- | :--- |
 | **Miguel** | Scrum Master + Tech Lead | Arquitecto y desarrollador del núcleo | `tickets`, `incidentes`, `solicitudes`, `seguridad`, `plataforma`, `servicios`, `operacion`; `shared/lib` | `feature/miguel-nucleo-servicios-sla` |
-| **Lourdes (Lu)** | Product Owner | Líder de frontend y experiencia | `configuracion`, `perfiles/tecnico`, `perfiles/gestor-area`; `shared/components` | `feature/lourdes-config-tecnico` |
+| **Lourdes (Lu)** | Product Owner | Líder de frontend y experiencia | Configuración de plataforma en `plataforma`, `tickets`, `servicios` y `conocimiento`; `perfiles/tecnico`, `perfiles/gestor-area`; `shared/components` | `feature/lourdes-config-tecnico` |
 | **Alexis** | Developer | Conocimiento, problemas y BI | `problemas`, `conocimiento`, `reportes` | `feature/alexis-problemas-conocimiento` |
 | **Nain** | Developer | Cambio, ITAM y CMDB | `cambios`, `activos`, `cmdb`, `proveedores`, `perfiles/gestor-cambios` | `feature/nain-cambios-activos-cmdb` |
 | **Junior** | Developer | IAM, organización y auditoría | `identidades`, `organizacion`, `perfiles/auditor` | `feature/junior-identidades-organizacion-auditor` |
@@ -181,7 +180,7 @@ La tabla 2.2 ya fija dueño, dominio y contrato. Las reglas específicas se resu
 ### 4.2. Consolas de rol (`src/modules/perfiles/`)
 | Consola | Dueño | Ruta | Dominio delegado |
 | :--- | :--- | :--- | :--- |
-| `perfiles/administrador` | Miguel | `/plataforma/perfiles/administrador/panel` | `identidades`, `plataforma`, `configuracion` |
+| `perfiles/administrador` | Miguel | `/plataforma/perfiles/administrador/panel` | `identidades`, `plataforma`, `organizacion`, `tickets`, `servicios`, `conocimiento` |
 | `perfiles/supervisor` | Miguel | `/plataforma/perfiles/supervisor/*` | `cambios`, `activos`, `problemas`, `tickets`, `reportes` |
 | `perfiles/aprobador` | Miguel | `/plataforma/perfiles/aprobador/*` | `cambios`, `activos`, `problemas`, `reportes` |
 | `perfiles/tecnico` | Lourdes | `/plataforma/perfiles/tecnico/*` | `tickets`, `cambios`, `incidentes`, `problemas`, `activos`, `cmdb`, `servicios` |
@@ -197,8 +196,8 @@ Los perfiles **Gestor de Activos** y **Gestor de Problemas** no viven en `src/mo
 **Miguel — núcleo, servicios, operación y consolas de supervisión**  
 Módulos: `tickets`, `incidentes`, `solicitudes`, `seguridad`, `plataforma`, `servicios`, `operacion`, `perfiles/supervisor`, `perfiles/aprobador`, `perfiles/administrador`; `shared/lib`. Rutas: `/plataforma/tickets/**`, `/incidentes/**`, `/solicitudes/**`, `/servicios/catalogo`, `/admin/servicios/**`, `/operacion/**`, `/perfiles/supervisor/**`, `/perfiles/aprobador/**`, `/perfiles/administrador/panel`. APIs: `/api/tickets`, `/api/incidentes`, `/api/solicitudes`, `/api/servicios`, `/api/admin/sla`, `/api/operacion`, `/api/perfiles/supervisor`, `/api/perfiles/aprobador`. Entregables: contrato de `tickets`, SLA/OLA, catálogo, operación y estabilidad de `shared/lib`.
 
-**Lourdes — configuración, consolas técnica/área/solicitante y UI compartida**  
-Módulos: `configuracion`, `perfiles/tecnico`, `perfiles/gestor-area`, `perfiles/solicitante`; `shared/components`. Rutas: `/plataforma/admin/menu`, `/notificaciones`, `/tickets-formularios`, `/tickets-vistas`, `/conocimiento-config`, `/admin/procesos/incidentes`, `/admin/procesos/solicitudes`, `/perfiles/tecnico/**`, `/perfiles/gestor-area/**`, `/perfiles/solicitante/panel`. APIs: `/api/menu`, `/api/admin/categorias`, `/api/admin/configuracion`, `/api/admin/notificaciones/reglas`, `/api/perfiles/tecnico`, `/api/perfiles/gestor-area`. Regla: el catálogo se consume desde `servicios/ui`; no se reimplementa.
+**Lourdes — configuración de plataforma, consolas técnica/área/solicitante y UI compartida**  
+Módulos: configuración en `plataforma`, `tickets`, `servicios` y `conocimiento`; `perfiles/tecnico`, `perfiles/gestor-area`, `perfiles/solicitante`; `shared/components`. Rutas: `/plataforma/admin/menu`, `/plataforma/admin/notificaciones`, `/plataforma/admin/tickets-formularios`, `/plataforma/admin/tickets-vistas`, `/plataforma/admin/conocimiento-config`, `/plataforma/admin/procesos/incidentes`, `/plataforma/admin/procesos/solicitudes`, `/plataforma/perfiles/tecnico/**`, `/plataforma/perfiles/gestor-area/**`, `/plataforma/perfiles/solicitante/panel`. APIs: `/api/menu`, `/api/admin/categorias`, `/api/admin/configuracion`, `/api/admin/notificaciones/reglas`, `/api/perfiles/tecnico`, `/api/perfiles/gestor-area`. Regla: el catálogo se consume desde `servicios/ui`; no se reimplementa.
 
 **Alexis — problemas, conocimiento y reportes**  
 Módulos: `problemas`, `conocimiento`, `reportes`. Rutas: `/plataforma/problemas/**`, `/gestor-problemas/**`, `/admin/procesos/problemas/**`, `/conocimiento/**`, `/admin/conocimiento-config`, `/reportes/**`, `/dashboard`. APIs: `/api/problemas`, `/api/conocimiento`, `/api/admin/conocimiento`, `/api/reportes/indicadores`. Regla: KPIs con SQL propio o servicios de indicadores; no imports profundos de `tickets`, `cambios` o `activos`. Los 9 reportes no se duplican.
@@ -292,7 +291,6 @@ WHERE o.activo = true AND p.id_opcion IS NULL;
 | `activos` | `shared`, `organizacion` (por contrato) | `cmdb` por código (usar dato) |
 | `cmdb` | `shared`, `activos` (por dato) | `perfiles` |
 | `reportes` | `shared`; SQL de lectura acotado | Rutas profundas de dominios |
-| `configuracion` | `shared`, `servicios/ui` | `tickets` por ruta profunda |
 | `identidades` | `shared`, `seguridad` | `perfiles` |
 | `organizacion` | `shared` | `identidades` por ruta profunda |
 | `proveedores` | `shared` | `activos` por ruta profunda |
@@ -431,7 +429,7 @@ Sprints de **una semana** para integración frecuente y propagación a las 4 ram
 | `reportes` | KPIs, filtros, exportación y tableros por perfil. | Reporte exporta y coincide con la fuente. |
 | `activos` / `cmdb` | ITAM, licencias, bajas, topología e impacto. | Activo/CI vinculado; impacto visible. |
 | `identidades` / `organizacion` | Ciclo de cuenta, recertificación, turnos y capacidad. | Baja lógica; recertificación evidenciada. |
-| `configuracion` | Versionado/publicación de formularios y reglas. | Publicar no rompe tickets existentes. |
+| `plataforma` / `tickets` | Versionado/publicación de formularios y reglas. | Publicar no rompe tickets existentes. |
 ### 7.5. Sprint 7 — Cierre
 1. Regresión completa de rutas por perfil.
 2. Migraciones en base limpia y base existente.
@@ -670,7 +668,7 @@ Entrega: control/cláusula ISO, rutas, datos, verificación y riesgos.
 | `reportes` | 9 rutas activas, legadas redirigen, KPIs consistentes. |
 | `activos` / `cmdb` | Inventario, licencias, bajas, topología e impacto. |
 | `identidades` / `organizacion` | Usuarios, perfiles, departamentos, técnicos y baja lógica. |
-| `configuracion` | Menú, formularios, vistas y reglas sin romper tickets existentes. |
+| `plataforma` / `tickets` | Menú, formularios, vistas, notificaciones y reglas sin romper tickets existentes. |
 ### 10.4. Checklist y smoke
 ```text
 [ ] npx tsc --noEmit
