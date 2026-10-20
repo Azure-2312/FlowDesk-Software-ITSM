@@ -1,53 +1,94 @@
-# Indice Maestro de Documentacion Tecnica - FlowDesk Software ITSM
+# Índice Maestro de Documentación — FlowDesk ITSM
 
-En este directorio se compila la documentacion tecnica, arquitectonica, funcional y de buenas practicas del sistema **FlowDesk Software ITSM**, desarrollado bajo los estandares de **ITIL v4**, **ISO/IEC 20000-1:2018** e **ISO/IEC 27001:2022**.
+Documentación técnica, funcional y de gobierno del sistema **FlowDesk ITSM**, alineada con **ITIL 4**, **ISO/IEC 20000-1:2018**, **ISO/IEC 27001:2022**, **ISO/IEC 19770-1** y **COBIT 2019**.
 
----
-
-## 1. Documento Maestro de Arquitectura y Codigo (Referencia Principal)
-
-* **[DOCUMENTACION_COMPLETA_ARQUITECTURA_Y_CODIGO.md](DOCUMENTACION_COMPLETA_ARQUITECTURA_Y_CODIGO.md)**
-  * **Descripcion**: Manual tecnico exhaustivo del software (mas de 14,000 lineas).
-  * **Contenido**:
-    * Cap. 1: Vision general, Cadena de Valor del Servicio y 4 Dimensiones de ITIL v4.
-    * Cap. 2: Arquitectura tecnologica, Next.js 14 App Router, connection pooling PostgreSQL y seguridad stateless.
-    * Cap. 3: Modelo de seguridad, control de acceso RBAC, 5 perfiles del sistema y conmutacion de perfil activo.
-    * Cap. 4: Diccionario completo de base de datos con las 77 tablas relacionales y restricciones.
-    * Cap. 5: Catalogo exhaustivo de las 119 rutas API (`src/app/api/`) con contratos de entrada, consultas SQL y respuestas JSON.
-    * Cap. 6: Desglose analitico de las 108 paginas de la aplicacion (`src/app/(app)/`) con estados reactivos y consumo de APIs.
-    * Cap. 7: Bibliotecas internas (`src/lib/`) y componentes React reutilizables (`src/components/`).
-    * Cap. 8: Modelos de dominio y tipos TypeScript centralizados (`src/types/index.ts`).
-    * Cap. 9: Arquitectura de validaciones puras y directivas de UX (cero emojis, cero alertas verdes, bordes rojos de error).
-    * Cap. 10: Matriz maestra de privilegios RBAC entidad por entidad.
-    * Cap. 11: Compendio de reglas de negocio obligatorias (RN-01 a RN-14).
-    * Cap. 12: Manual de instalacion, configuracion de entorno `.env.local`, resolucion de fallas y despliegue a produccion.
-    * Cap. 13: Guia de contexto para agentes de Inteligencia Artificial y desarrolladores.
+> **Vigencia:** 2026-10-19. La documentación se consolidó en ocho documentos canónicos; los documentos anteriores se retiraron y su histórico permanece en Git.
 
 ---
 
-## 2. Especificaciones de Ingenieria de Requerimientos
+## 1. Documentos canónicos
 
-* **[reglas_de_negocio.md](reglas_de_negocio.md)**: Catalogo formal de reglas de negocio del sistema agrupadas por dominios operativos.
-* **[requerimientos_funcionales.md](requerimientos_funcionales.md)**: Especificacion modular de requerimientos funcionales del Service Desk.
-* **[requerimientos_no_funcionales.md](requerimientos_no_funcionales.md)**: Criterios de calidad, seguridad, rendimiento, responsividad y accesibilidad.
-* **[historias_de_usuario.md](historias_de_usuario.md)**: Epicas, historias de usuario atomicas y criterios de aceptacion BDD Gherkin.
-* **[matriz_trazabilidad_funciones_hu_rf_rn.md](matriz_trazabilidad_funciones_hu_rf_rn.md)**: Matriz de trazabilidad bidireccional entre requerimientos, historias y funciones.
-
----
-
-## 3. Gestion del Catalogo y Navegacion
-
-* **[catalogo_maestro_jerarquia_menu_por_perfil_itsm.md](catalogo_maestro_jerarquia_menu_por_perfil_itsm.md)**: Jerarquia completa de opciones de menu sincronizada con la base de datos para cada perfil.
-* **[carga_servicios_catalogo_30.md](carga_servicios_catalogo_30.md)**: Especificacion tecnica y guion de carga de los servicios corporativos del catalogo de autoservicio.
+| # | Documento | Para qué sirve | Contenido principal |
+| :-: | :--- | :--- | :--- |
+| 1 | [ARQUITECTURA_Y_CODIGO.md](ARQUITECTURA_Y_CODIGO.md) | Entender cómo está construido el sistema. | Stack, principios, 18 módulos, contratos, rutas, guardas, RBAC, modelo C, API/UI, fases, calidad y deuda técnica. |
+| 2 | [MENUS_Y_PERFILES.md](MENUS_Y_PERFILES.md) | Entender qué ve y qué puede hacer cada perfil. | 10 perfiles, SoD, catálogo único `opciones_menu`, árbol actual por perfil, rutas, cobertura ITIL/ISO/COBIT y roadmap. |
+| 3 | [REQUERIMIENTOS.md](REQUERIMIENTOS.md) | Saber qué debe hacer el sistema. | RF-01 a RF-44, RNF, RN-01 a RN-41 y criterios de aceptación. |
+| 4 | [HISTORIAS_DE_USUARIO.md](HISTORIAS_DE_USUARIO.md) | Trabajar el backlog y validar escenarios. | Épicas, HU generales y detalle de Administrador y Solicitante en Gherkin. |
+| 5 | [TRAZABILIDAD.md](TRAZABILIDAD.md) | Auditar cobertura y cambios. | Matriz funcionalidad ↔ HU ↔ RF ↔ RN ↔ estado de implementación. |
+| 6 | [PLAN_EQUIPO_Y_SCRUM.md](PLAN_EQUIPO_Y_SCRUM.md) | Coordinar al equipo y el proceso. | Roles, propiedad de módulos, reglas de dependencia, Git, sprints, DoR/DoD y plantillas. |
+| 7 | [PROMPTS_CONFIGURACION_ADMIN.md](PROMPTS_CONFIGURACION_ADMIN.md) | Implementar pantallas de configuración. | Reglas comunes de UI/validación/versionado y especificaciones de Problemas, Cambios y Activos/CMDB. |
+| 8 | [CATALOGO_SERVICIOS_DATOS.md](CATALOGO_SERVICIOS_DATOS.md) | Cargar el catálogo de servicios. | 30 servicios de referencia (14 de solicitud y 16 de incidente) y JSON de carga. |
 
 ---
 
-## 4. Arquitectura Modular, Jerarquia de Carpetas y Organizacion del Equipo Scrum
+## 2. Ruta de lectura recomendada
 
-* **[PROPUESTAS_ARQUITECTURA_Y_ESTRUCTURA.md](PROPUESTAS_ARQUITECTURA_Y_ESTRUCTURA.md)**: Evaluacion arquitectonica y definicion de la Arquitectura Modular Orientada al Dominio (`src/modules/`, `src/shared/` y `src/app/plataforma/`).
-* **[ARQUITECTURA_Y_JERARQUIA_SRC.md](ARQUITECTURA_Y_JERARQUIA_SRC.md)**: Arbol jerarquico numerado de todas las carpetas y archivos dentro de `src/` con su respectiva explicacion funcional.
-* **[DISTRIBUCION_EQUIPO_Y_METODOLOGIA_SCRUM.md](DISTRIBUCION_EQUIPO_Y_METODOLOGIA_SCRUM.md)**: Plan maestro de division de responsabilidades desde cero entre los 5 integrantes (Miguel, Lourdes, Alexis, Nain y Junior), asignacion de Historias de Usuario (`HU-01` a `HU-44`), Requerimientos (`RF-01` a `RF-44`, `RNF-01` a `RNF-06`), Reglas de Negocio (`RN-01` a `RN-41`), aislamiento de ramas en Git, metodologia Scrum, actas de Daily Standup y prompts para asistentes de IA.
-* **[ESQUEMA_MENUS_POR_PERFIL.md](ESQUEMA_MENUS_POR_PERFIL.md)**: Esquema maestro de menus, opciones y subopciones por perfil (10 perfiles oficiales ITSM).
-* **[MATRIZ_BRECHA_ACTUAL_VS_PROPUESTA_POR_PERFIL.md](MATRIZ_BRECHA_ACTUAL_VS_PROPUESTA_POR_PERFIL.md)**: Matriz comparativa exhaustiva de brecha (Software Actual vs. Propuesta de Menus por Perfil) con porcentajes de completitud (% Hecho), diagnostico de pendientes y catalogacion de componentes fuera de la propuesta.
+### Para incorporarse al proyecto
 
+1. [README raíz](../README.md) — inicio rápido y estado.
+2. [ARQUITECTURA_Y_CODIGO.md](ARQUITECTURA_Y_CODIGO.md) — cómo está organizado el código.
+3. [MENUS_Y_PERFILES.md](MENUS_Y_PERFILES.md) — qué ve cada perfil.
+4. [PLAN_EQUIPO_Y_SCRUM.md](PLAN_EQUIPO_Y_SCRUM.md) — cómo se trabaja y se entrega.
 
+### Para implementar o revisar funcionalidad
+
+1. [REQUERIMIENTOS.md](REQUERIMIENTOS.md) — qué se pide.
+2. [HISTORIAS_DE_USUARIO.md](HISTORIAS_DE_USUARIO.md) — cómo se acepta.
+3. [TRAZABILIDAD.md](TRAZABILIDAD.md) — qué falta y qué se afecta.
+4. [ARQUITECTURA_Y_CODIGO.md](ARQUITECTURA_Y_CODIGO.md) — dónde va y qué contrato usa.
+
+### Para configuración administrativa
+
+1. [MENUS_Y_PERFILES.md](MENUS_Y_PERFILES.md) — menú y visibilidad.
+2. [PROMPTS_CONFIGURACION_ADMIN.md](PROMPTS_CONFIGURACION_ADMIN.md) — pantallas y validaciones.
+3. [CATALOGO_SERVICIOS_DATOS.md](CATALOGO_SERVICIOS_DATOS.md) — datos de catálogo.
+
+---
+
+## 3. Estado del sistema al 2026-10-19
+
+| Indicador | Valor |
+| :--- | ---: |
+| Perfiles oficiales | 10 |
+| Módulos de dominio | 18 |
+| Opciones de menú activas | 231 |
+| Filas de visibilidad | 394 |
+| Route handlers | 207 |
+| Páginas bajo `src/app/plataforma` | 227 |
+| Tablas base en `public` | 126 |
+| Vistas | 1 (`vista_ticket`) |
+
+Hitos cerrados:
+
+- **Fase 1:** modelo C de tickets (`ticket` + `ticket_incidente` + `ticket_solicitud` + `vista_ticket`).
+- **Fase 2:** módulos Incidentes y Solicitudes separados, con menú y fichas propias.
+- **Fase 3:** catálogos centralizados en `servicios`.
+- **Fase 4:** nueve reportes centralizados en `reportes`.
+
+---
+
+## 4. Reglas de mantenimiento documental
+
+1. Un tema tiene un solo documento canónico; no se crean copias por perfil ni por fase.
+2. Los cambios de arquitectura, rutas, menú, perfiles o reglas se actualizan en el mismo commit que el código.
+3. Las migraciones históricas no se reescriben: el estado final se documenta en las migraciones nuevas y en `db/seed.sql`.
+4. Toda ruta nueva debe indicar su guarda (capacidad o menú) y su alias de compatibilidad si existe.
+5. Antes de cerrar una entrega: `npx tsc --noEmit`, `npm run build` y revisión de enlaces internos.
+6. Los documentos retirados no se restauran; se consulta el historial Git si hace falta trazabilidad.
+
+---
+
+## 5. Fuentes de verdad
+
+| Tema | Fuente |
+| :--- | :--- |
+| Código y contratos | `src/modules/`, `src/shared/`, `src/app/` |
+| Base de datos | `db/schema.sql`, `db/migrations/`, base PostgreSQL viva |
+| Menú | `opciones_menu` y `opciones_menu_perfiles`; `src/shared/lib/menu.ts` |
+| Seguridad | `src/shared/lib/auth.ts`, `capacidades.ts`, `api-auth.ts`, `page-auth.ts` |
+| Rutas y alias | `src/app/`, `next.config.js` |
+| Calidad | `npx tsc --noEmit`, `npm run build`, smoke por perfil |
+
+---
+
+*Índice maestro de la documentación de FlowDesk ITSM. Si un documento contradice el código o la base viva, prevalece el código/base y el documento debe corregirse en la misma entrega.*

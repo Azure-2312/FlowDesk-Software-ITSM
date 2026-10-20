@@ -4,7 +4,7 @@ import type { PoolClient } from "pg";
 /**
  * Siembra idempotente del menú lateral de los 10 perfiles del sistema.
  *
- * Fuente: DOCUMENTACIÓN/ESQUEMA_MENUS_POR_PERFIL.md
+ * Fuente: DOCUMENTACIÓN/MENUS_Y_PERFILES.md
  * Patrón: igual que migrar_menu_tecnico.ts (upsert por id_opcion_menu + asignación por perfil).
  *
  * Arquitectura modular: las rutas listadas son las delgadas de `src/app`; la lógica vive en
@@ -386,7 +386,7 @@ const MENUS_POR_PERFIL: Record<number, OpcionSemilla[]> = {
 };
 
 async function migrar() {
-  console.log("Iniciando siembra del menú de los 10 perfiles (ESQUEMA_MENUS_POR_PERFIL.md)...");
+  console.log("Iniciando siembra del menú de los 10 perfiles (MENUS_Y_PERFILES.md)...");
 
   await transaccion(async (client: PoolClient) => {
     // 1. Columnas extendidas de opciones_menu (idempotente).

@@ -11,8 +11,8 @@ for (const line of env.split('\n')) {
 
 const pool = new Pool({ connectionString: dbUrl });
 
-// Leer carga_servicios_catalogo_30.md
-const doc = fs.readFileSync('DOCUMENTACIÓN/carga_servicios_catalogo_30.md', 'utf8');
+// Leer el catálogo canónico de servicios
+const doc = fs.readFileSync('DOCUMENTACIÓN/CATALOGO_SERVICIOS_DATOS.md', 'utf8');
 const jsonMatch = doc.match(/```json\s*([\s\S]*?)\s*```/);
 if (!jsonMatch) {
   console.error('No se encontró el bloque JSON en el markdown');

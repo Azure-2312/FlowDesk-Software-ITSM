@@ -1,4 +1,8 @@
-# CARGA DE SERVICIOS AL CATÁLOGO — 30 servicios (14 solicitudes y 16 incidentes)
+# Catálogo de Servicios — Datos de Carga (30 servicios)
+
+> **Versión:** 2.0 · **Fecha:** 2026-10-19 · **Estado:** vigente como conjunto de datos de referencia.
+> **Alcance:** 14 servicios de solicitud y 16 de incidente, con su distribución por categoría y el JSON listo para insertar.
+> **Nota:** el catálogo se administra desde `/plataforma/admin/servicios`; los servicios activos se consultan en `/plataforma/incidentes/catalogo`, `/plataforma/solicitudes/catalogo` y `/plataforma/servicios/catalogo`.
 
 > **Objetivo:** insertar en la base de datos 30 servicios nuevos del catálogo, ya agrupados en las categorías que existen en el sistema, usando los mismos campos del formulario **"Crear Nuevo Servicio en el Catálogo (Formulario Oficial)"**.
 > **Stack:** Next.js + PostgreSQL en Supabase. Tienes acceso completo al código y a la base de datos.
@@ -7,7 +11,7 @@
 
 ## 1. Instrucciones para la IA
 
-1. **Localiza** la tabla (o tablas) de servicios del catálogo y la de categorías funcionales, y el código del formulario "Crear Nuevo Servicio" (`/admin/servicios?vista=crear`) para conocer los nombres reales de columnas y las reglas de validación.
+1. **Localiza** la tabla (o tablas) de servicios del catálogo y la de categorías funcionales, y el código del formulario "Crear Nuevo Servicio" (`/plataforma/admin/servicios?vista=crear`) para conocer los nombres reales de columnas y las reglas de validación.
 2. **Mapea** cada campo de la sección 4 a la columna correspondiente:
 
 | Campo del JSON | Campo del formulario |
