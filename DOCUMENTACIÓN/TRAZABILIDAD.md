@@ -1,4 +1,8 @@
-# Matriz Maestra de Trazabilidad Integral de Funcionalidades, Historias de Usuario, Requerimientos Funcionales, Reglas de Negocio y Estado de Implementacion
+# Matriz de Trazabilidad — FlowDesk ITSM
+
+> **Versión:** 3.0 · **Fecha:** 2026-10-19 · **Estado:** vigente como matriz de referencia.
+> **Alcance:** relación entre funcionalidades, historias de usuario, requerimientos funcionales, reglas de negocio y estado de implementación.
+> **Fuentes:** `REQUERIMIENTOS.md` (RF, RNF y RN) e `HISTORIAS_DE_USUARIO.md` (HU). Las rutas y estados se actualizaron al cierre de la Fase 4.
 
 ## Informacion del Documento y Marco Metodologico
 
@@ -6,11 +10,11 @@
 - **Asignatura:** Programacion Aplicada III / Ingenieria de Software
 - **Estandares y Marcos de Referencia:** ITIL v4, ISO/IEC 20000-1 (Gestion de Servicios de TI), ISO/IEC 27001 (Seguridad de la Informacion).
 - **Estructura Documental Relacionada:**
-  - [reglas_de_negocio.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/reglas_de_negocio.md) (RN-01 a RN-41)
-  - [requerimientos_funcionales.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/requerimientos_funcionales.md) (RF-01 a RF-44)
-  - [historias_de_usuario.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/historias_de_usuario.md) (HU-01 a HU-44)
-  - [perfiles_permisos_y_rutas.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/perfiles_permisos_y_rutas.md) (9 Perfiles Oficiales y 34 Rutas del Sistema)
-- **Roles Oficiales de la Organizacion (9):**
+  - [REQUERIMIENTOS.md](REQUERIMIENTOS.md) (RF-01 a RF-44, RNF y RN-01 a RN-41)
+  - [HISTORIAS_DE_USUARIO.md](HISTORIAS_DE_USUARIO.md) (HU-01 a HU-44 y detalles por perfil)
+  - [MENUS_Y_PERFILES.md](MENUS_Y_PERFILES.md) (10 perfiles oficiales, menú y rutas)
+  - [ARQUITECTURA_Y_CODIGO.md](ARQUITECTURA_Y_CODIGO.md) (módulos, contratos y seguridad)
+- **Roles Oficiales de la Organizacion (10):**
   1. Solicitante
   2. Tecnico
   3. Supervisor
@@ -20,6 +24,7 @@
   7. Aprobador CAB *(Comite Asesor de Cambios)*
   8. Gestor de Cambios *(Change Enablement Leader)*
   9. Gestor de Activos y Configuracion *(SACM / CMDB)*
+  10. Gestor de Problemas *(Problem Management / KEDB)*
 - **Taxonomia de Clasificacion de la Columna "Estado de Implementacion en el Software":**
   1. **Implementado y Operativo:** La funcionalidad se encuentra codificada, conectada a la base de datos y completamente operativa en la plataforma actual, cumpliendo sus requerimientos y criterios de aceptacion.
   2. **Implementado pero Requiere Mejora:** La funcionalidad esta presente en el codigo fuente o interfaz, pero requiere optimizaciones, blindaje de validaciones backend, renderizado dinamico o persistencia de datos para satisfacer al 100% los criterios de aceptacion formales.
@@ -193,7 +198,7 @@
 | **XXI** | **ADMINISTRACION Y MANTENIMIENTO DEL SISTEMA** | | | | | |
 | 139 | Registro y alta institucional de nuevos usuarios con correo corporativo y cargo | [HU-04] Administracion Integral de Colaboradores | [RF-06] Administracion de Personal y Perfiles de Acceso | [RN-05] Delimitacion de Responsabilidades por Puesto, [RN-08] Unicidad de Identidad Corporativa | ITIL v4 (Access Management). Otorga identidad oficial a los trabajadores para operar dentro de los sistemas autorizados de la empresa. | **Implementado y Operativo** (Formulario /usuarios/nuevo crea usuarios en la base de datos). |
 | 140 | Actualizacion de datos institucionales y suspension preventiva de acceso a usuarios | [HU-04] Administracion Integral de Colaboradores | [RF-06] Administracion de Personal y Perfiles de Acceso | [RN-05] Delimitacion de Responsabilidades por Puesto | Procedimiento de seguridad (ISO 27001). Desactiva de forma inmediata el acceso a colaboradores desvinculados o en proceso disciplinario. | **Implementado y Operativo** (Edicion de datos y conmutador de estado activo/inactivo en /usuarios/[id]). |
-| 141 | Asignacion y revocacion selectiva de los 9 perfiles oficiales de responsabilidad | [HU-05] Configuracion de Perfiles de Responsabilidad | [RF-06] Administracion de Personal y Perfiles de Acceso | [RN-05] Delimitacion de Responsabilidades por Puesto, [RN-07] Restriccion de Atribuciones y Privilegios | Gestion de privilegios RBAC. Permite conferir facultades de aprobacion CAB, gestion de cambios o supervision segun el cargo del trabajador. | **Implementado y Operativo** (Gestion de perfiles 1 al 9 en /usuarios/[id]/perfiles y tabla usuario_perfiles). |
+| 141 | Asignacion y revocacion selectiva de los 10 perfiles oficiales de responsabilidad | [HU-05] Configuracion de Perfiles de Responsabilidad | [RF-06] Administracion de Personal y Perfiles de Acceso | [RN-05] Delimitacion de Responsabilidades por Puesto, [RN-07] Restriccion de Atribuciones y Privilegios | Gestion de privilegios RBAC. Permite conferir facultades de aprobacion CAB, gestion de cambios, problemas o supervision segun el cargo del trabajador. | **Implementado y Operativo** (Gestion de perfiles 1 al 10 en /usuarios/[id]/perfiles y tabla usuario_perfiles). |
 | 142 | Mantenimiento de departamentos tecnicos de soporte (creacion, edicion, estado) | [HU-12] Administracion de Departamentos Tecnicos | [RF-13] Estructura Departamental | [RN-14] Responsabilidad Jerarquica y Coordinacion de Equipos | Modela la estructura organica de TI (Mesa N1, Soporte en Sitio N2, Redes, Sistemas N3, Ciberseguridad) en la plataforma. | **Implementado y Operativo** (Gestion completa de departamentos en /departamentos). |
 | 143 | Designacion formal de supervisores y jefaturas de areas tecnicas | [HU-12] Administracion de Departamentos Tecnicos | [RF-13] Estructura Departamental | [RN-14] Responsabilidad Jerarquica y Coordinacion de Equipos | Establece las lineas de mando responsables de velar por el cumplimiento de los acuerdos de servicio y la calidad de la atencion. | **Implementado y Operativo** (Asignacion de jefe_departamento_id en ficha del departamento). |
 | 144 | Enrolamiento de especialistas tecnicos con nivel de soporte escalonado (N1, N2, N3) y limite de capacidad operativa (WIP) | [HU-13] Gestion de Especialistas Tecnicos | [RF-14] Registro de Especialistas y Limites de Capacidad | [RN-15] Asignacion Escalonada por Nivel de Complejidad, [RN-16] Limite de Capacidad y Control de Saturacion | Estandarizacion de la atencion escalonada e ITIL v4. Asocia al especialista con su departamento, califica su jerarquia tecnica (Nivel 1 Triaje, Nivel 2 Campo, Nivel 3 Ingenieria) y fija su cuota maxima de tickets simultaneos para prevenir sobrecarga. | **Implementado y Operativo** (Ruta /admin/tecnicos, endpoint /api/tecnicos y tabla tecnico_detalle parametrizan nivel 1..3, capacidad maxima y estado operativo). |
@@ -221,7 +226,6 @@ A continuacion se presenta la distribucion cuantitativa actualizada de las **147
 ```
 
 ### Hallazgos Principales:
-1. **Plataforma Integral Operativa (97.28%):** El 89.80% de las funciones estan plenamente operativas y conectadas a PostgreSQL (Autenticacion, RBAC de 9 perfiles, Modulos independientes de Incidentes y Solicitudes, Catalogo de Servicios con formularios dinamicos y escalamiento por grupo, Gestion de Problemas y KEDB, Habilitacion del Cambio con RFC dinamica, votacion CAB y calendario, Gestion de Activos ITAM con modelos, depreciacion, transiciones y bitacora de custodia, Gestion de Licencias SAM, Topologia CMDB, Motor de Reglas de Notificacion, Ciclo Editorial KCS con versionado y retiro, Purga y Mantenimiento de Datos y Bitacoras de Auditoria ISO 27001).
+1. **Plataforma Integral Operativa (97.28%):** El 89.80% de las funciones estan plenamente operativas y conectadas a PostgreSQL (Autenticacion, RBAC de 10 perfiles, Modulos independientes de Incidentes y Solicitudes, Catalogo de Servicios con formularios dinamicos y escalamiento por grupo, Gestion de Problemas y KEDB, Habilitacion del Cambio con RFC dinamica, votacion CAB y calendario, Gestion de Activos ITAM con modelos, depreciacion, transiciones y bitacora de custodia, Gestion de Licencias SAM, Topologia CMDB, Motor de Reglas de Notificacion, Ciclo Editorial KCS con versionado y retiro, Purga y Mantenimiento de Datos y Bitacoras de Auditoria ISO 27001).
 2. **Modulos de Cambios, Activos y Problemas Conectados:** Las rutas y vistas de Gestion de Cambios, Activos y Problemas han superado la fase preliminar y operan de forma integral con sus respectivas APIs transaccionales, migraciones de base de datos activas y reglas de negocio auditables.
 3. **Puntos Residuales de Roadmap (2.72%):** Unicamente restan capacidades auxiliares externas (e.g. integracion con servidores de mensajeria de terceros como SMS/Slack/Teams y ejecucion programada de demonios cron fuera del proceso web).
-

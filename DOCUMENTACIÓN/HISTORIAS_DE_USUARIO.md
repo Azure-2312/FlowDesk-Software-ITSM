@@ -1,4 +1,14 @@
-# Catalogo de Historias de Usuario del Sistema de Tickets
+# Historias de Usuario — FlowDesk ITSM
+
+> **Versión:** 3.0 · **Fecha:** 2026-10-19 · **Estado:** vigente.
+> **Alcance:** catálogo de épicas e historias de usuario del sistema, con el detalle de los perfiles Administrador y Solicitante. Los criterios de aceptación se mantienen en formato BDD/Gherkin.
+> **Relación:** los RF, RNF y RN viven en `REQUERIMIENTOS.md`; la matriz de trazabilidad en `TRAZABILIDAD.md`.
+
+Este documento reemplaza a `historias_de_usuario.md`, `HISTORIAS_USUARIO_ADMINISTRADOR.md` e `HISTORIAS_USUARIO_SOLICITANTE.md`. El catálogo general (Parte I) es la línea base; los detalles por perfil (Partes II y III) amplían criterios y escenarios.
+
+---
+
+## Parte I — Catálogo general de épicas e historias
 
 ## Informacion del Documento y Marco Metodologico
 
@@ -10,7 +20,7 @@
   - Cada historia es atomica pero engloba una capacidad operativa coherente (evitando la fragmentacion innecesaria en botones individuales).
   - Los titulos de las historias no contienen la conjuncion "y", garantizando la unidad del artefacto agil.
   - Cubre la totalidad de las funciones implementadas en el software actual y define las historias de evolucion planificadas en el Roadmap del producto ITSM.
-- **Roles Oficiales del Sistema (9):**
+- **Roles Oficiales del Sistema (10):**
   - **Solicitante:** Trabajador o cliente que reporta incidentes, solicita servicios del catalogo y evalua atenciones.
   - **Tecnico:** Especialista operativo que ejecuta las atenciones, sustenta soluciones y registra RFCs tecnicas.
   - **Supervisor:** Lider que coordina al equipo, equilibra cargas de trabajo (WIP) y monitorea acuerdos SLA.
@@ -20,6 +30,7 @@
   - **Aprobador (CAB):** Autoridad de Cambio que evalua colegiadamente el riesgo e impacto de las solicitudes de cambio RFC.
   - **Gestor de Cambios:** Change Manager que planifica el calendario de cambios, ventanas de mantenimiento, freeze y revisiones PIR.
   - **Gestor de Activos y Configuracion:** Custodio tecnologico del inventario de hardware (HAM), topologia CMDB y licencias (SAM).
+  - **Gestor de Problemas:** Responsable de la gestion de problemas, el analisis de causa raiz, la KEDB y los workarounds; prioriza problemas, coordina su cierre y alimenta el cambio y el conocimiento.
   - **Usuarios:** Termino universal empleado cuando la historia de usuario aplica a la totalidad de perfiles del sistema.
 - **Terminologia Estandarizada:** Se utiliza exclusivamente el termino "usuario" o "usuarios".
 
@@ -940,3 +951,492 @@ Entonces el sistema despliega el registro historico en modo estricto de solo lec
 | RN-18       | RF-41       | EPI-09  | HU-40     | Gestion de Problemas Operativos      | Resolucion de causa raiz     |
 +-------------+-------------+---------+-----------+--------------------------------------+------------------------------+
 ```
+
+
+---
+
+## Parte II — Detalle del perfil Administrador
+
+Sistema de Gestión de Tickets e Incidentes ITIL v4 / ISO 20000
+
+---
+
+## Historia de Usuario HU-ADM-01: Gestión Integral de Usuarios y Asignación de Roles
+
+**Como:** Administrador general del sistema.  
+**Deseo:** Crear, editar y administrar las cuentas de usuario institucionales con asignación múltiple de perfiles, dependencias y niveles de prioridad.  
+**Para:** Garantizar un control centralizado de identidades y asegurar que cada colaborador disponga del nivel de servicio y permisos adecuados en la plataforma.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Registro exitoso de nuevo usuario con múltiples roles
+- **Dado que** el administrador ingresa al módulo de Gestión de Usuarios y selecciona "Nuevo Usuario".
+- **Cuando** completa los datos de identidad (DNI, nombres, apellidos, teléfono, correo personal), selecciona su departamento y asigna los perfiles de "Técnico" y "Solicitante".
+- **Entonces** el sistema valida la unicidad del documento y correo, registra la cuenta en la base de datos y presenta una ventana de resumen con las credenciales generadas.
+
+#### Escenario 2: Asignación de nivel de prioridad VIP / Ejecutiva
+- **Dado que** el administrador edita los datos de un usuario perteneciente a la alta dirección o gerencia.
+- **Cuando** modifica el selector de prioridad de "Nivel 5: Estándar" a "Nivel 1: Prioridad VIP".
+- **Entonces** el sistema persiste la jerarquía del usuario, provocando que todos los tickets que este usuario reporte en el futuro se etiqueten como prioritarios para el cálculo de tiempos SLA.
+
+#### Escenario 3: Bloqueo y desactivación de cuenta de usuario
+- **Dado que** un colaborador cesa sus labores o requiere suspensión preventiva de acceso.
+- **Cuando** el administrador pulsa la acción de desactivar usuario en la tabla y confirma la operación.
+- **Entonces** el sistema efectúa un borrado lógico (`estado_registro = false`), invalidando de inmediato cualquier sesión activa del colaborador e impidiendo futuros inicios de sesión.
+
+---
+
+## Historia de Usuario HU-ADM-02: Generación y Despacho Automatizado de Credenciales
+
+**Como:** Administrador de la plataforma de TI.  
+**Deseo:** Generar correos corporativos estandarizados, contraseñas seguras y despacharlos al correo personal del usuario mediante servicio SMTP.  
+**Para:** Agilizar el aprovisionamiento de cuentas de nuevos colaboradores manteniendo altos estándares de seguridad informática.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Generación automática de correo institucional y contraseña estándar
+- **Dado que** el administrador ingresa los nombres y apellidos de un nuevo colaborador en el formulario de alta.
+- **Cuando** el sistema procesa los campos de texto en tiempo real.
+- **Entonces** genera automáticamente la sugerencia de correo corporativo institucional (por ejemplo, `inicial_nombre + apellido_paterno @organizacion.com`) y una clave aleatoria compleja de 8 o más caracteres con mayúsculas, minúsculas y números.
+
+#### Escenario 2: Envío de credenciales vía correo electrónico SMTP
+- **Dado que** se ha completado el registro de un nuevo usuario con correo personal verificado.
+- **Cuando** el administrador hace clic en el botón "Enviar credenciales por correo".
+- **Entonces** el servidor despacha un correo electrónico seguro con la bienvenida institucional, el usuario asignado, la contraseña temporal y el enlace directo de inicio de sesión.
+
+#### Escenario 3: Copiado rápido de credenciales al portapapeles
+- **Dado que** el administrador visualiza el panel de confirmación de creación de usuario.
+- **Cuando** pulsa los botones de acción "Copiar correo" o "Copiar clave".
+- **Entonces** el sistema copia la cadena correspondiente al portapapeles del sistema operativo y despliega un indicador visual confirmando el copiado.
+
+---
+
+## Historia de Usuario HU-ADM-03: Administración de Perfiles y Matriz Jerárquica de Permisos
+
+**Como:** Administrador de seguridad del sistema.  
+**Deseo:** Definir perfiles operativos y asignar permisos granulares sobre el árbol jerárquico del menú de navegación.  
+**Para:** Garantizar el principio de menor privilegio (PoLP) y cumplimiento de directivas de segregación de funciones (SoD).
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Creación y parametrización de un nuevo perfil
+- **Dado que** el administrador accede a la sección de "Perfiles y Permisos".
+- **Cuando** hace clic en "Crear Perfil", ingresa un nombre formal (por ejemplo, "Auditor de Mesa") y una descripción funcional del rol.
+- **Entonces** el sistema habilita el árbol interactivo de opciones de menú para configurar los accesos exclusivos que tendrá dicho perfil.
+
+#### Escenario 2: Propagación jerárquica de selección en el árbol de permisos
+- **Dado que** el administrador está asignando permisos en un perfil dentro del árbol de 3 niveles.
+- **Cuando** marca una opción hoja (nivel 3, por ejemplo, "Tickets Pendientes").
+- **Entonces** el sistema marca automáticamente todos los módulos padre y carpetas contenedoras ascendentes (nivel 2 y nivel 1) para asegurar la navegabilidad de la ruta.
+
+#### Escenario 3: Desmarcación en cascada de ramas subordinadas
+- **Dado que** una carpeta contenedora de menú tiene varias opciones hijas seleccionadas.
+- **Cuando** el administrador desmarca la casilla del módulo padre de nivel superior.
+- **Entonces** el sistema desmarca automáticamente todas las pantallas descendientes asociadas a dicha rama, impidiendo la asignación parcial o inconsistente de permisos.
+
+---
+
+## Historia de Usuario HU-ADM-04: Gestión del Catálogo de Servicios de Incidentes
+
+**Como:** Administrador del catálogo de servicios de TI.  
+**Deseo:** Administrar el catálogo de servicios orientados a Incidentes, definiendo sus categorías, criticidad y acuerdos de nivel de servicio (SLA).  
+**Para:** Proporcionar a la Mesa de Ayuda un marco formal para clasificar y restaurar de forma priorizada fallas e interrupciones del servicio.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Filtrado y consulta exclusiva de servicios de tipo Incidente
+- **Dado que** el administrador ingresa al módulo de Servicios del Catálogo.
+- **Cuando** selecciona la vista o filtro de "Incidentes" (`tipo = 1`).
+- **Entonces** la tabla despliega exclusivamente los servicios diseñados para resolver caídas y averías (código con prefijo `SRV-INC`), omitiendo solicitudes de adquisición o aprovisionamiento.
+
+#### Escenario 2: Asignación de grupo técnico resolutor inicial
+- **Dado que** el administrador edita un servicio de incidente (por ejemplo, "Falla en Enlace de Fibra Óptica").
+- **Cuando** selecciona en el selector de departamento resolutor el grupo "Redes y Telecomunicaciones".
+- **Entonces** el sistema almacena dicha relación, garantizando que los incidentes de este servicio se enruten directamente al equipo técnico especializado correspondiente.
+
+#### Escenario 3: Actualización de tiempos de primera respuesta y resolución
+- **Dado que** la organización renegocia los acuerdos de soporte técnico para incidentes críticos.
+- **Cuando** el administrador ajusta el tiempo de primera respuesta a 30 minutos y resolución a 2 horas en la ficha del servicio.
+- **Entonces** el catálogo actualiza los parámetros en la base de datos y recalcula automáticamente los límites de vencimiento para los nuevos tickets que se aperturen bajo este servicio.
+
+---
+
+## Historia de Usuario HU-ADM-05: Gestión del Catálogo de Servicios de Solicitudes
+
+**Como:** Administrador de servicios corporativos.  
+**Deseo:** Configurar los servicios orientados a Solicitudes de Servicio (peticiones de equipamiento, software, accesos y cambios menores).  
+**Para:** Estandarizar la oferta de requerimientos informáticos hacia los colaboradores y definir las reglas de entrega y validación correspondientes.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Configuración de acuerdos de entrega (SLA/OLA) para solicitudes
+- **Dado que** el administrador selecciona un servicio del catálogo clasificado como "Solicitud de Servicio" (`tipo = 2`).
+- **Cuando** define el tiempo de entrega prometido (por ejemplo, 24 horas hábiles) y su horario de cobertura (8x5 o 24x7).
+- **Entonces** el sistema registra el acuerdo de servicio y lo publica en el catálogo oficial para conocimiento transparente de los usuarios solicitantes.
+
+#### Escenario 2: Activación de compuertas de aprobación obligatorias
+- **Dado que** un servicio de solicitud implica asignación presupuestal o riesgo de seguridad (por ejemplo, "Asignación de Laptop de Alta Gama").
+- **Cuando** el administrador activa la casilla "Requiere Aprobación Jerárquica Obligatoria".
+- **Entonces** el sistema configura el servicio para que ningún técnico pueda despacharlo sin contar previamente con el visto bueno del jefe de área o supervisor correspondiente.
+
+#### Escenario 3: Deshabilitación controlada de un servicio con justificación formal
+- **Dado que** un servicio de solicitud entra en obsolescencia o mantenimiento temporal.
+- **Cuando** el administrador pulsa "Deshabilitar Servicio", ingresa la justificación institucional requerida y confirma.
+- **Entonces** el servicio se oculta del portal de autoservicio de los solicitantes, quedando archivado en el catálogo administrativo con trazabilidad de auditoría.
+
+---
+
+## Historia de Usuario HU-ADM-06: Registro Oficial de Nuevos Servicios en el Catálogo
+
+**Como:** Administrador del sistema ITIL v4.  
+**Deseo:** Utilizar un formulario oficial unificado para dar de alta nuevos servicios en el catálogo institucional.  
+**Para:** Garantizar que todo servicio nuevo cumpla con los estándares de nomenclatura, clasificación, costos y acuerdos de servicio definidos por la organización.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Generación automática de código oficial ITIL
+- **Dado que** el administrador abre la vista de creación de servicio.
+- **Cuando** selecciona la naturaleza del servicio ("Incidente" o "Solicitud") y la categoría técnica ("Ciberseguridad", "Redes", "Sistemas", etc.).
+- **Entonces** el sistema genera en tiempo real el código estandarizado del servicio (por ejemplo, `SRV-INC-SEC-005` o `SRV-SOL-ACC-012`) en formato de solo lectura.
+
+#### Escenario 2: Validación estricta de parámetros mínimos requeridos
+- **Dado que** el administrador intenta guardar el nuevo servicio sin ingresar la descripción del entregable o con tiempos SLA en cero.
+- **Cuando** hace clic en el botón "Registrar Servicio" al pie del formulario.
+- **Entonces** el sistema interrumpe el registro, focaliza el campo con error y emite un mensaje indicando que todos los parámetros operativos son mandatorios.
+
+#### Escenario 3: Redirección automática y publicación en el catálogo
+- **Dado que** todos los campos del formulario cumplen las validaciones de negocio.
+- **Cuando** el administrador confirma el registro del nuevo servicio.
+- **Entonces** el sistema guarda el servicio en la base de datos, muestra una alerta de confirmación exitosa y redirige al listado filtrado por la categoría correspondiente.
+
+---
+
+## Historia de Usuario HU-ADM-07: Configuración de Formularios Dinámicos para Incidentes
+
+**Como:** Administrador de procesos de la Mesa de Ayuda.  
+**Deseo:** Parametrizar los campos adicionales del formulario de incidentes y regular su visibilidad según la prioridad del usuario solicitante.  
+**Para:** Capturar información técnica pertinente en el reporte de fallas sin sobrecargar al usuario con preguntas innecesarias.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Adición de campos personalizados al formulario de incidentes
+- **Dado que** el administrador ingresa a la pestaña "Incidentes" en el Diseñador de Formularios.
+- **Cuando** agrega un campo de tipo lista denominado "Sede o Ubicación de la Falla" con opciones delimitadas por comas.
+- **Entonces** el campo se incorpora a la lista activa del formulario y se refleja inmediatamente en el panel de vista previa interactiva.
+
+#### Escenario 2: Regla de visibilidad por nivel de prioridad del solicitante
+- **Dado que** el administrador configura el campo "Registrar en nombre de otro usuario".
+- **Cuando** define como prioridad mínima visible el "Nivel 3: Prioridad Preferente".
+- **Entonces** el sistema asegura que dicho campo solo sea visible para usuarios con prioridad VIP, Ejecutiva o Preferente, ocultándose para colaboradores de perfil estándar.
+
+#### Escenario 3: Marcado de obligatoriedad y persistencia en base de datos
+- **Dado que** el administrador activa la casilla "Obligatorio" en un campo específico y hace clic en "Guardar Configuración".
+- **Cuando** la API procesa la petición de actualización.
+- **Entonces** el esquema JSON de configuración se guarda en la tabla de parámetros y el portal de autoservicio exigirá obligatoriamente dicho campo al reportar un incidente.
+
+---
+
+## Historia de Usuario HU-ADM-08: Configuración de Formularios para Solicitudes de Servicio
+
+**Como:** Administrador de catálogo y autoservicio.  
+**Deseo:** Personalizar los campos requeridos en el formulario de solicitudes de servicio, incluyendo datos presupuestales, modalidades de acceso y justificaciones.  
+**Para:** Obtener todos los recaudos necesarios antes de evaluar la factibilidad técnica y económica de la petición.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Configuración de campos de centro de costos y modalidad de uso
+- **Dado que** el administrador selecciona la pestaña "Solicitudes de Servicio" en el diseñador de formularios.
+- **Cuando** habilita los campos "Centro de Costos / Aprobación Presupuestal" y "Modalidad de Uso (Temporal / Definitivo)".
+- **Entonces** el sistema actualiza el esquema dinámico de solicitudes y valida que dichos campos se rendericen cuando el usuario solicite un recurso de TI.
+
+#### Escenario 2: Simulación interactiva de formulario y vista de expediente
+- **Dado que** el administrador está modificando los campos de solicitud de servicio.
+- **Cuando** conmuta el selector de vista previa entre "Modo Formulario" y "Modo Ticket / Expediente".
+- **Entonces** la plataforma renderiza en tiempo real cómo visualizará el solicitante el formulario de entrada y cómo visualizará el técnico la información recibida en el ticket.
+
+#### Escenario 3: Inclusión de mensajes de ayuda y texto de marcador de posición (placeholder)
+- **Dado que** un campo requiere instrucciones específicas para evitar errores del usuario.
+- **Cuando** el administrador ingresa un texto de ayuda en el configurador del campo.
+- **Entonces** el sistema asocia dicha guía contextual al campo, mostrándola debajo de la etiqueta en el portal del solicitante.
+
+---
+
+## Historia de Usuario HU-ADM-09: Diseñador de Flujos de Trabajo y Compuertas de Aprobación
+
+**Como:** Administrador de procesos ITIL.  
+**Deseo:** Diseñar los pasos operativos de atención, roles ejecutores y compuertas de aprobación jerárquica (Gateways SoD) de cada servicio.  
+**Para:** Automatizar el ciclo de vida del ticket, asegurar la debida autorización antes de despachar cambios y controlar la pausa del SLA durante revisiones externas.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Creación secuencial de pasos operativos con rol ejecutor
+- **Dado que** el administrador abre el diseñador de workflow de un servicio específico.
+- **Cuando** hace clic en "Agregar Paso Operativo", define el código, el nombre del paso (por ejemplo, "Diagnóstico L1") y selecciona el rol ejecutor ("Mesa de Ayuda N1").
+- **Entonces** el sistema añade el paso con su numeración correlativa y vincula la responsabilidad operativa a ese perfil específico.
+
+#### Escenario 2: Configuración de compuerta de aprobación jerárquica (Gateway SoD)
+- **Dado que** un paso del flujo requiere validación por parte de una jefatura antes de continuar la atención.
+- **Cuando** el administrador marca la casilla "Es Compuerta de Aprobación Jerárquica" y asigna el rol "Jefe de Área / Supervisor".
+- **Entonces** el sistema transforma el paso en una compuerta formal, impidiendo el avance a fases posteriores hasta que un usuario con dicho rol registre su aprobación formal.
+
+#### Escenario 3: Regla de pausa automática del temporizador de SLA
+- **Dado que** un paso depende de terceros o requiere una aprobación que no consume tiempo técnico directo.
+- **Cuando** el administrador activa la casilla "Pausar temporizador de SLA en este paso".
+- **Entonces** el motor de SLA congelará automáticamente el conteo regresivo del cronómetro mientras el ticket permanezca en dicho paso, reactivándolo una vez emitida la resolución.
+
+
+---
+
+## Parte III — Detalle del perfil Solicitante
+
+Sistema de Gestión de Tickets e Incidentes ITIL v4 / ISO 20000
+
+---
+
+## Historia de Usuario HU-01: Alternancia de Perfil Operativo
+
+**Como:** Usuario institucional con múltiples roles asignados en el sistema.  
+**Deseo:** Alternar mi perfil activo hacia el rol de Solicitante desde la cabecera del portal.  
+**Para:** Gestionar mis solicitudes personales de servicio técnico sin requerir cerrar sesión ni abrir ventanas privadas.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Cambio exitoso de perfil operativo
+- **Dado que** el usuario ha iniciado sesión con credenciales válidas y cuenta con perfiles de Técnico y Solicitante asignados.
+- **Cuando** despliega el selector de roles en la cabecera y selecciona la opción "Solicitante".
+- **Entonces** el sistema actualiza la sesión activa en el servidor y redirige automáticamente al usuario a su bandeja personal (`/tickets/gestion/mios`), ocultando las opciones y herramientas administrativas del perfil previo.
+
+#### Escenario 2: Persistencia del perfil durante la navegación
+- **Dado que** el usuario seleccionó exitosamente el perfil de Solicitante.
+- **Cuando** recarga la página o navega a través de las opciones del menú lateral.
+- **Entonces** el sistema conserva la cookie de sesión con el perfil de Solicitante y restringe el acceso a rutas operativas o de configuración global.
+
+#### Escenario 3: Interfaz estática para usuarios con rol único
+- **Dado que** un colaborador cuenta únicamente con el perfil de Solicitante asignado en la base de datos.
+- **Cuando** visualiza la cabecera superior del sistema.
+- **Entonces** el selector de perfil se muestra en modo informativo sin menú desplegable ni flechas de alternancia, indicando de forma fija "Solicitante".
+
+---
+
+## Historia de Usuario HU-02: Exploración del Catálogo de Servicios
+
+**Como:** Solicitante de soporte institucional.  
+**Deseo:** Explorar el catálogo oficial de servicios categorizado por tipo de requerimiento e insumo técnico.  
+**Para:** Identificar rápidamente la solución tecnológica que requiero y conocer los acuerdos de nivel de servicio (SLA) comprometidos.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Diferenciación entre Incidentes y Solicitudes de Servicio
+- **Dado que** el solicitante ingresa al módulo de Catálogo de Servicios.
+- **Cuando** alterna entre las pestañas "Incidentes" y "Solicitudes de Servicio".
+- **Entonces** el sistema filtra los ítems disponibles, mostrando para incidentes aquellos destinados a reportar fallas e interrupciones, y para solicitudes aquellos destinados a peticiones de equipamiento, software o accesos.
+
+#### Escenario 2: Visualización transparente de tiempos SLA
+- **Dado que** el usuario navega por las tarjetas de servicio en el catálogo.
+- **Cuando** examina un servicio específico (por ejemplo, "Configuración de Red VPN").
+- **Entonces** el sistema exhibe el tiempo estimado de primera respuesta, el tiempo máximo de resolución oficial y la descripción funcional del entregable.
+
+#### Escenario 3: Inicio guiado de ticket desde el catálogo
+- **Dado que** el solicitante localiza el servicio requerido en la cuadrícula de categorías.
+- **Cuando** hace clic en el botón de acción del servicio seleccionado.
+- **Entonces** el sistema lo redirige al formulario de creación preseleccionando automáticamente el tipo de ticket, la categoría y el servicio correspondiente.
+
+---
+
+## Historia de Usuario HU-03: Creación y Clasificación de Tickets
+
+**Como:** Solicitante del portal de autoservicio.  
+**Deseo:** Completar y enviar un formulario estructurado para reportar una incidencia o solicitar un servicio.  
+**Para:** Que el equipo de soporte reciba la información precisa y pueda iniciar la atención de acuerdo con los niveles de servicio establecidos.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Deducción automática de prioridad según Impacto y Urgencia
+- **Dado que** el solicitante se encuentra en el formulario oficial de creación de tickets.
+- **Cuando** selecciona un nivel de Impacto (por ejemplo, "Alto") y un nivel de Urgencia (por ejemplo, "Alto").
+- **Entonces** el sistema calcula en tiempo real la prioridad resultante ("P1 - Crítica") y actualiza la insignia de plazo de resolución asociado según la matriz ITIL.
+
+#### Escenario 2: Validación de completitud en campos requeridos
+- **Dado que** el solicitante intenta enviar el formulario sin completar el título o detallar la descripción del problema.
+- **Cuando** presiona el botón "Registrar Ticket".
+- **Entonces** el sistema bloquea el envío, resalta los campos faltantes en color de alerta y muestra mensajes de validación indicando la longitud mínima obligatoria.
+
+#### Escenario 3: Captura de campos contextuales para Solicitudes de Servicio
+- **Dado que** el solicitante selecciona la modalidad "Solicitud de Servicio".
+- **Cuando** se despliega el formulario especializado.
+- **Entonces** el sistema habilita de forma obligatoria los campos de "Justificación del Requerimiento" y "Fecha Límite Deseada", validando que dicha fecha no sea anterior a la fecha actual.
+
+---
+
+## Historia de Usuario HU-04: Carga y Validación de Archivos Adjuntos
+
+**Como:** Solicitante de soporte técnico.  
+**Deseo:** Adjuntar archivos, capturas de pantalla y documentos probatorios al crear un ticket.  
+**Para:** Proporcionar evidencia tangible de fallas técnicas o documentación formal de autorización a los especialistas de TI.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Carga exitosa de evidencias fotográficas o documentales
+- **Dado que** el usuario redacta una solicitud o reporte de incidente.
+- **Cuando** selecciona archivos en formatos permitidos (PNG, JPG, PDF, DOCX, XLSX) con un peso menor o igual a 5 MB por archivo.
+- **Entonces** el sistema carga los archivos localmente, genera una vista previa con nombre y tamaño en kilobytes, y los lista en la bandeja de adjuntos pendientes de envío.
+
+#### Escenario 2: Bloqueo y advertencia ante extensiones no seguras
+- **Dado que** el usuario intenta subir un archivo con extensión potencialmente peligrosa (.exe, .bat, .sh, .cmd, .js).
+- **Cuando** procesa la selección en el cuadro de diálogo de archivos.
+- **Entonces** el sistema rechaza el archivo de inmediato, omite su incorporación y presenta un mensaje indicando que el tipo de archivo no está permitido por directivas de seguridad.
+
+#### Escenario 3: Retiro de archivos adjuntos antes del envío
+- **Dado que** el usuario cargó un archivo por error en el formulario.
+- **Cuando** presiona el botón de eliminar asociado a dicho archivo en la lista previa.
+- **Entonces** el archivo se remueve de la memoria del formulario sin dejar rastros en el registro previo al envío formal.
+
+---
+
+## Historia de Usuario HU-05: Seguimiento y Filtrado en la Bandeja "Mis Tickets"
+
+**Como:** Solicitante recurrente de la organización.  
+**Deseo:** Consultar mi historial de tickets con métricas resumidas y herramientas de búsqueda avanzada.  
+**Para:** Conocer el estado de avance de mis solicitudes abiertas y consultar el historial de requerimientos concluidos.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Segmentación rápida por estado mediante tarjetas métricas
+- **Dado que** el solicitante accede a la vista de "Mis Tickets".
+- **Cuando** pulsa sobre las tarjetas superiores ("En Proceso", "Finalizados" o "Total Registrados").
+- **Entonces** la tabla inferior filtra dinámicamente el listado, mostrando exclusivamente los tickets que coincidan con la fase del ciclo de vida seleccionada.
+
+#### Escenario 2: Búsqueda reactiva por múltiples atributos
+- **Dado que** el solicitante cuenta con múltiples tickets registrados en su historial.
+- **Cuando** escribe un término en el campo de búsqueda (código de ticket, nombre de servicio o palabras clave del título).
+- **Entonces** la tabla filtra instantáneamente las filas coincidentes sin recargar la página completa.
+
+#### Escenario 3: Filtrado combinado mediante panel desplegable
+- **Dado que** el usuario abre el panel de filtros mediante el botón "Filtrar".
+- **Cuando** selecciona simultáneamente filtros de tipo ("Solicitud de Servicio"), prioridad ("P2 - Alta") y estado ("En Atención").
+- **Entonces** la lista muestra únicamente los registros que cumplen todas las condiciones, mostrando un indicador numérico con la cantidad de filtros activos aplicados.
+
+---
+
+## Historia de Usuario HU-06: Consulta Detallada y Progreso del Ticket
+
+**Como:** Solicitante del servicio.  
+**Deseo:** Abrir el detalle completo de un ticket específico y observar su evolución en una interfaz simplificada.  
+**Para:** Comprender en qué etapa de atención se encuentra mi requerimiento sin interpretar tecnicismos de soporte.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Línea de tiempo visual simplificada (Stepper de 4 etapas)
+- **Dado que** el solicitante ingresa a la vista detallada de uno de sus tickets.
+- **Cuando** visualiza el componente de seguimiento en la parte superior.
+- **Entonces** el sistema presenta un stepper con 4 fases de negocio claras: "Registrado", "Asignado", "En Proceso" y "Resuelto/Cerrado", marcando con color activo la etapa correspondiente al estado interno ITIL del ticket.
+
+#### Escenario 2: Información de contacto del especialista y tiempo comprometido
+- **Dado que** el ticket ha sido asignado a un técnico de soporte.
+- **Cuando** el usuario revisa la tarjeta de información general.
+- **Entonces** el sistema muestra el nombre del especialista a cargo, la fecha de registro y la fecha límite de entrega según el SLA convenido.
+
+#### Escenario 3: Descarga de evidencias y visualización del requerimiento
+- **Dado que** el ticket contiene archivos adjuntos originales.
+- **Cuando** el solicitante hace clic en el enlace "Descargar" de cualquiera de los adjuntos.
+- **Entonces** el navegador inicia la descarga del archivo con su nombre original e integridad intacta.
+
+---
+
+## Historia de Usuario HU-07: Comunicación Bidireccional con Soporte Técnico
+
+**Como:** Solicitante con un ticket en atención.  
+**Deseo:** Enviar y recibir mensajes públicos a través de un canal de conversación dentro del ticket.  
+**Para:** Coordinar detalles de la solución, aclarar dudas y responder consultas del técnico asignado.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Envío de mensaje al equipo de soporte
+- **Dado que** el ticket se encuentra en estado de atención o espera.
+- **Cuando** el solicitante redacta un mensaje en el campo de chat público y presiona "Enviar".
+- **Entonces** el comentario se almacena en la bitácora del ticket con autoría del solicitante, fecha y hora exacta, quedando visible para el técnico responsable.
+
+#### Escenario 2: Restricción de acceso a notas técnicas internas
+- **Dado que** el equipo técnico o supervisor registra notas de trabajo privadas (internas) para coordinación de TI.
+- **Cuando** el solicitante consulta el historial de mensajes de su ticket.
+- **Entonces** el sistema omite estrictamente la visualización de notas internas, garantizando que el usuario solo visualice mensajes marcados como públicos.
+
+#### Escenario 3: Validación contra envíos en blanco
+- **Dado que** el solicitante presiona el botón de envío sin haber redactado texto en la caja de comentarios.
+- **Cuando** el sistema evalúa la acción.
+- **Entonces** el botón permanece inactivo o el sistema previene el envío, evitando la inserción de registros vacíos en la base de datos.
+
+---
+
+## Historia de Usuario HU-08: Confirmación de Conformidad y Cierre de Servicio
+
+**Como:** Solicitante que ha recibido atención técnica en su requerimiento.  
+**Deseo:** Confirmar formalmente la conformidad del servicio una vez que el especialista marca el ticket como resuelto.  
+**Para:** Validar que la solución entregada es satisfactoria y permitir el cierre administrativo definitivo del ticket.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Cierre voluntario tras validación exitosa
+- **Dado que** el especialista resolvió la incidencia y registró la solución técnica aplicada en el ticket.
+- **Cuando** el solicitante verifica que la solución funciona y hace clic en "Confirmar Conformidad y Cerrar Ticket".
+- **Entonces** el sistema actualiza el estado del ticket a "Cerrado", sella la fecha de cierre formal y habilita el módulo de calificación de servicio.
+
+#### Escenario 2: Visualización de la solución documentada
+- **Dado que** el ticket ha cambiado a estado "Resuelto".
+- **Cuando** el usuario ingresa a la vista del ticket.
+- **Entonces** se presenta un panel destacado que describe en lenguaje claro la solución aplicada por el especialista para que el usuario conozca las acciones realizadas.
+
+#### Escenario 3: Restricción de cierre anticipado
+- **Dado que** el ticket se encuentra en estado "Abierto", "Asignado" o "En Atención".
+- **Cuando** el solicitante visualiza las acciones disponibles en la pantalla.
+- **Entonces** el botón de confirmación de conformidad permanece oculto, impidiendo el cierre de tickets que aún no han sido solucionados.
+
+---
+
+## Historia de Usuario HU-09: Reapertura Justificada de Tickets
+
+**Como:** Solicitante cuyo problema reportado no quedó resuelto de manera efectiva.  
+**Deseo:** Solicitar la reapertura de un ticket resuelto dentro del plazo de garantía de 48 horas.  
+**Para:** Que el equipo de soporte retome la atención sin necesidad de generar un nuevo ticket desde cero.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Reapertura dentro de la ventana de garantía
+- **Dado que** un ticket se encuentra en estado "Resuelto" y no han transcurrido más de 48 horas desde la fecha de resolución registrada.
+- **Cuando** el usuario activa la opción "La falla persiste (Reabrir)", ingresa una explicación detallada de más de 8 caracteres y confirma la acción.
+- **Entonces** el sistema cambia el estado del ticket a reapertura/atención, notifica al técnico y registra el motivo formal en el historial de auditoría.
+
+#### Escenario 2: Validación de justificación obligatoria
+- **Dado que** el solicitante hace clic en solicitar reapertura pero deja el campo de motivo vacío o con texto menor a 8 caracteres.
+- **Cuando** presiona "Enviar Solicitud de Reapertura".
+- **Entonces** el sistema bloquea la transacción y muestra un mensaje de alerta solicitando explicar con suficiente detalle la persistencia de la falla.
+
+#### Escenario 3: Cierre de ventana de reapertura superadas las 48 horas
+- **Dado que** han transcurrido más de 48 horas calendario desde la fecha de resolución del ticket.
+- **Cuando** el solicitante revisa las acciones disponibles en el ticket resuelto.
+- **Entonces** el botón de reapertura se encuentra deshabilitado y se muestra un mensaje informativo indicando "Ventana de reapertura (48h) concluida", instruyendo a registrar un nuevo requerimiento en caso de nueva incidencia.
+
+---
+
+## Historia de Usuario HU-10: Calificación de Calidad del Servicio (Encuesta CSAT)
+
+**Como:** Solicitante que concluyó un trámite o soporte técnico.  
+**Deseo:** Evaluar la calidad de atención recibida mediante una escala de estrellas y un comentario voluntario.  
+**Para:** Retroalimentar a la dirección de TI sobre el desempeño del soporte y contribuir a la mejora continua del servicio.
+
+### Criterios de Aceptación:
+
+#### Escenario 1: Registro satisfactorio de calificación de servicio
+- **Dado que** el ticket ha alcanzado el estado "Resuelto" o "Cerrado" y no ha sido calificado previamente.
+- **Cuando** el usuario selecciona una puntuación entre 1 y 5 estrellas, redacta una opinión voluntaria y presiona "Enviar Calificación".
+- **Entonces** el sistema almacena el puntaje y retroalimentación en la base de datos, asociándolos a las métricas del técnico y actualizando la interfaz a un resumen de agradecimiento.
+
+#### Escenario 2: Bloqueo de encuestas duplicadas (inmutabilidad de la calificación)
+- **Dado que** el usuario ya envió la calificación de satisfacción para un ticket en particular.
+- **Cuando** regresa posteriormente a la vista de dicho ticket.
+- **Entonces** el componente interactivo de estrellas se deshabilita y se exhibe en modo de solo lectura la puntuación previamente registrada, impidiendo modificaciones posteriores.
+
+#### Escenario 3: Obligatoriedad de puntaje numérico mínimo
+- **Dado que** el usuario intenta pulsar "Enviar Calificación" sin haber seleccionado ninguna estrella (puntuación cero).
+- **Cuando** se ejecuta la acción en la tarjeta CSAT.
+- **Entonces** el sistema impide el registro y señala visualmente que debe seleccionar al menos una estrella para validar su evaluación.
