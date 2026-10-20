@@ -64,7 +64,7 @@ function colapsarCarpetasDeUnHijo(nodos: OpcionMenuArbol[]): OpcionMenuArbol[] {
 }
 
 /**
- * Convierte la lista plana (con id_padre) en un árbol de hasta 3 niveles.
+ * Convierte la lista plana (con id_padre) en un árbol de profundidad variable.
  */
 function construirArbol(opciones: OpcionMenuPlana[]): OpcionMenuArbol[] {
   const mapa = new Map<number, OpcionMenuArbol>();
@@ -101,7 +101,7 @@ function construirArbol(opciones: OpcionMenuPlana[]): OpcionMenuArbol[] {
 
 /**
  * Función principal: obtiene el árbol jerárquico de menú filtrado por el perfil activo del usuario
- * respetando la taxonomía oficial de 3 niveles de ITIL v4 e ISO 27001.
+ * respetando la taxonomía del catálogo (tres niveles como norma y cuatro en la configuración de la mesa).
  */
 export async function obtenerMenuDelUsuario(
   idUsuario: number,

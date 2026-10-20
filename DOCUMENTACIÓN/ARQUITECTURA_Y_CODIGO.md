@@ -2,11 +2,11 @@
 
 **Proyecto:** FlowDesk ITSM — Sistema de Gestión de Tickets y Servicios de TI  
 **Versión:** 1.0 (documento canónico)  
-**Fecha de corte:** 2026-10-19  
+**Fecha de corte:** 2026-10-20  
 **Ámbito:** arquitectura modular, contratos, rutas, seguridad, modelo de datos, patrones de implementación, fases, calidad y despliegue.  
 **Sustituye a:** `ARQUITECTURA_MODULAR_Y_CONTRATOS.md`, `ESQUEMA_ARQUITECTURA_MODULAR_DETALLADO.md`, `PROPUESTAS_ARQUITECTURA_Y_ESTRUCTURA.md`, `ARQUITECTURA_Y_JERARQUIA_SRC.md` y `DOCUMENTACION_COMPLETA_ARQUITECTURA_Y_CODIGO.md`.
 
-> Este documento describe el repositorio real al 2026-10-19, no una propuesta. Los documentos sustituidos se conservan como histórico y no deben usarse para conteos, rutas ni contratos. Para menú y perfiles, el documento canónico complementario es `MENUS_Y_PERFILES.md`; para propiedad de módulos y Scrum, `PLAN_EQUIPO_Y_SCRUM.md`.
+> Este documento describe el repositorio real al 2026-10-20, no una propuesta. Los documentos sustituidos se conservan como histórico y no deben usarse para conteos, rutas ni contratos. Para menú y perfiles, el documento canónico complementario es `MENUS_Y_PERFILES.md`; para propiedad de módulos y Scrum, `PLAN_EQUIPO_Y_SCRUM.md`.
 
 ---
 ## 1. Propósito y cómo leer este documento
@@ -75,7 +75,7 @@ No se commitean `.env`, `.env.local`, credenciales ni `node_modules`.
 
 ### 2.4. Métricas del repositorio
 
-| Métrica | Valor al 2026-10-19 | Fuente |
+| Métrica | Valor al 2026-10-20 | Fuente |
 | :--- | ---: | :--- |
 | Módulos de dominio | 18 | `src/modules/` |
 | Archivos dentro de módulos | 658 | Conteo recursivo |
@@ -86,9 +86,9 @@ No se commitean `.env`, `.env.local`, credenciales ni `node_modules`.
 | Páginas totales bajo `src/app` | 229 | `page.tsx` |
 | Tablas base en `public` | 126 | `information_schema.tables` |
 | Vistas en `public` | 1 (`vista_ticket`) | `information_schema.views` |
-| Migraciones SQL | 36 | `db/migrations/` |
-| Opciones de menú activas | 231 | `opciones_menu` |
-| Filas de visibilidad activas | 394 | `opciones_menu_perfiles` |
+| Migraciones SQL | 37 | `db/migrations/` |
+| Opciones de menú activas | 233 | `opciones_menu` |
+| Filas de visibilidad activas | 396 | `opciones_menu_perfiles` |
 | Raíces del menú | 12 | `id_padre IS NULL` |
 | Perfiles | 10 | `perfiles` |
 
@@ -284,7 +284,7 @@ La Fase 2 separó la Mesa de Servicio en dos frentes con rutas propias, menú pr
 
 Ambas fichas de detalle montan `VistaTicketsDetalle` con `apiBase` distinto y `tipoEsperado` 1 o 2. No son una segunda pantalla de tickets: reutilizan el detalle del núcleo.
 
-El menú las representa como dos carpetas dentro de **Mesa de Servicio**: `Incidentes` y `Solicitudes`. Las páginas usan `exigirMenuPagina`; las fichas de detalle usan `exigirMenuPagina` con `{ prefijo: true }`.
+El menú las representa como dos carpetas dentro de **Mesa de Servicio**: `Incidentes` y `Solicitudes`. Su configuración vive en **Configuración → Mesa de Servicio → Incidentes/Solicitudes**, con el formulario y el flujo en un cuarto nivel. Las páginas usan `exigirMenuPagina`; las fichas de detalle usan `exigirMenuPagina` con `{ prefijo: true }`.
 
 ### 5.3. Fase 3: catálogos centralizados en servicios
 
@@ -659,15 +659,15 @@ Persisten 100 controladores con JWT manual, 2 comparaciones de ID de perfil, cas
 
 | Indicador | Valor |
 | :--- | ---: |
-| Opciones activas | 231 |
-| Carpetas | 36 |
+| Opciones activas | 233 |
+| Carpetas | 38 |
 | Pantallas | 195 |
 | URLs de pantalla distintas | 195 |
 | Raíces | 12 |
-| Filas de visibilidad | 394 |
+| Filas de visibilidad | 396 |
 | Asignaciones pantalla-perfil | 260 |
-| Asignaciones carpeta-perfil | 134 |
-| Carpetas colapsadas por el sidebar | 48 |
+| Asignaciones carpeta-perfil | 136 |
+| Carpetas colapsadas por el sidebar | 50 |
 | Entradas de primer nivel visibles | 69 |
 
 ### 9.3. Las 12 raíces
@@ -707,6 +707,7 @@ Esto permite que la visibilidad del menú sea la política de acceso de las pág
 | Fase 2 | Separación de Incidentes y Solicitudes. | `20261020_fase2_modulos_incidentes_solicitudes.sql` | Rutas, menú, fichas y catálogo propios; 231 opciones y 394 visibilidades. |
 | Fase 3 | Catálogos movidos a `servicios`. | `20261021_fase3_catalogo_servicios.sql` | Las rutas de catálogo montan `servicios/ui`; incidentes/solicitudes filtran por tipo. |
 | Fase 4 | 9 reportes centralizados en `reportes`. | `20261022_fase4_modulo_reportes.sql` | Rutas legadas redirigen; no se duplican reportes. |
+| Ajuste de menú | Configuración de Mesa de Servicio en cuatro niveles. | `20261020_configuracion_mesa_servicio_niveles.sql` | 233 opciones y 396 visibilidades; las pantallas operativas no se mueven. |
 
 ---
 ## 11. Calidad, migraciones y despliegue
@@ -775,7 +776,7 @@ Ninguna de las cuatro ramas queda atrás. Si una falla al compilar tras el merge
 5. No editar migraciones aplicadas.
 6. No borrar datos históricos por conveniencia.
 
-La secuencia actual tiene 36 migraciones y termina en `20261022_fase4_modulo_reportes.sql`.
+La secuencia actual tiene 37 migraciones. La última por fecha es `20261022_fase4_modulo_reportes.sql`; el ajuste de menú se agregó en `20261020_configuracion_mesa_servicio_niveles.sql`.
 
 ### 11.5. Despliegue
 
@@ -852,14 +853,14 @@ No hay suite automatizada de pruebas en `package.json`; el gate es tipado, build
 SELECT table_name FROM information_schema.tables
 WHERE table_schema = 'public' AND table_type = 'BASE TABLE';
 
--- 231 opciones, 36 carpetas, 195 páginas, 12 raíces
+-- 233 opciones, 38 carpetas, 195 páginas, 12 raíces
 SELECT COUNT(*) AS total,
        COUNT(*) FILTER (WHERE url_menu = '') AS carpetas,
        COUNT(*) FILTER (WHERE url_menu <> '') AS paginas,
        COUNT(*) FILTER (WHERE id_padre IS NULL) AS raices
 FROM opciones_menu WHERE estado_registro = true;
 
--- 394 visibilidades
+-- 396 visibilidades
 SELECT COUNT(*) FROM opciones_menu_perfiles WHERE estado_registro = true;
 ```
 
@@ -877,7 +878,8 @@ SELECT COUNT(*) FROM opciones_menu_perfiles WHERE estado_registro = true;
 | `src/shared/lib/{capacidades,api-auth,page-auth,menu,auth}.ts` | Perfiles, capacidades, guardas, menú y JWT. |
 | `src/middleware.ts` y `next.config.js` | Protección por cookie, cabeceras y alias. |
 | `db/migrations/20261019_modelo_c_ticket.sql` | Modelo C, vista y trigger. |
-| `db/migrations/20261020_fase2_modulos_incidentes_solicitudes.sql` | Menú de Fase 2 y conteos 231/394. |
+| `db/migrations/20261020_fase2_modulos_incidentes_solicitudes.sql` | Catálogo base de Incidentes y Solicitudes. |
+| `db/migrations/20261020_configuracion_mesa_servicio_niveles.sql` | Reorganización de la configuración y conteos vigentes 233/396. |
 | `db/migrations/20261021_fase3_catalogo_servicios.sql` | Catálogo en `servicios`. |
 | `db/migrations/20261022_fase4_modulo_reportes.sql` | 9 rutas de reportes. |
 | Base PostgreSQL viva | 126 tablas, 1 vista, 10 perfiles, menú y visibilidad. |

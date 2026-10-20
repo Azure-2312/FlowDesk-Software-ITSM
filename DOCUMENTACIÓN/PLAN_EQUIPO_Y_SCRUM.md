@@ -36,7 +36,7 @@ Si hay contradicción: **arquitectura > este plan > documento funcional**. Se re
 | Documento canónico | Contenido | Estado y referencia |
 | :--- | :--- | :--- |
 | `ARQUITECTURA_Y_CODIGO.md` | Módulos, contratos, rutas y capas. | Vigente (v1.0, 2026-10-19); sustituye a `DOCUMENTACION_COMPLETA_ARQUITECTURA_Y_CODIGO.md` y `ARQUITECTURA_MODULAR_Y_CONTRATOS.md`. |
-| `MENUS_Y_PERFILES.md` | Menú, perfiles, `opciones_menu`. | Vigente (2026-10-19); sustituye a `ESQUEMA_MENUS_POR_PERFIL.md`. |
+| `MENUS_Y_PERFILES.md` | Menú, perfiles, `opciones_menu`. | Vigente (2026-10-20); sustituye a `ESQUEMA_MENUS_POR_PERFIL.md`. |
 | `REQUERIMIENTOS.md` | RF, RNF y RN. | `requerimientos_funcionales.md`, `requerimientos_no_funcionales.md`, `reglas_de_negocio.md` |
 | `HISTORIAS_DE_USUARIO.md` | HU y criterios de aceptación. | `historias_de_usuario.md` |
 | `TRAZABILIDAD.md` | Matriz bidireccional y evidencia. | `matriz_trazabilidad_funciones_hu_rf_rn.md` |

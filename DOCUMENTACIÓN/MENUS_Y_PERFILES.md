@@ -1,9 +1,9 @@
 # Menús, perfiles y cobertura — FlowDesk ITSM
 
 > **Documento canónico de navegación, roles y cobertura funcional.**
-> **Vigencia:** 2026-10-19.
+> **Vigencia:** 2026-10-20.
 > **Alcance:** los 10 perfiles oficiales, el catálogo único `opciones_menu`, la visibilidad N:M `opciones_menu_perfiles`, el árbol visible del sidebar y la cobertura frente a ITIL 4, ISO/IEC 20000-1, ISO/IEC 27001, ISO/IEC 19770-1 y COBIT 2019.
-> **Fuente autoritativa del árbol:** la captura generada desde la base el 2026-10-19 e incluida en la sección 5, con el colapso de carpetas de un solo hijo.
+> **Fuente autoritativa del árbol:** la captura generada desde la base el 2026-10-20 e incluida en la sección 5, con el colapso de carpetas de un solo hijo.
 > **Regla de precedencia:** si una matriz histórica contradice el árbol actual, **prevalece el árbol de la sección 5**. Las diferencias se señalan expresamente.
 
 Este documento sustituye funcionalmente a los siguientes documentos, retirados en la consolidación del 2026-10-19. Su contenido útil se conserva aquí y el histórico completo permanece en Git:
@@ -22,18 +22,18 @@ Este documento sustituye funcionalmente a los siguientes documentos, retirados e
 
 ## 0. Resumen ejecutivo
 
-| Indicador | Valor al 2026-10-19 |
+| Indicador | Valor al 2026-10-20 |
 | :--- | ---: |
 | Perfiles oficiales | **10** |
-| Opciones activas en `opciones_menu` | **231** |
-| Carpetas (`url_menu = ''`) | **36** |
+| Opciones activas en `opciones_menu` | **233** |
+| Carpetas (`url_menu = ''`) | **38** |
 | Pantallas (`url_menu` con valor) | **195** |
 | URLs de pantalla distintas | **195** |
 | Raíces del catálogo | **12** |
-| Filas activas en `opciones_menu_perfiles` | **394** |
+| Filas activas en `opciones_menu_perfiles` | **396** |
 | Asignaciones pantalla-perfil | **260** |
-| Asignaciones carpeta-perfil | **134** |
-| Carpetas que el sidebar colapsa al dibujar | **48** |
+| Asignaciones carpeta-perfil | **136** |
+| Carpetas que el sidebar colapsa al dibujar | **50** |
 | Entradas de primer nivel visibles en los 10 perfiles | **69** |
 | Rutas de reportes unificadas | **9** |
 
@@ -66,7 +66,8 @@ No es un inventario línea a línea de cada pestaña interna. La matriz exhausti
 | Fuente | Uso en este documento | Precedencia |
 | :--- | :--- | :--- |
 | Captura de la base (sección 5) | Árbol visible por perfil, con colapso de carpetas de un solo hijo. | **Máxima para el árbol.** |
-| `db/migrations/20261020_fase2_modulos_incidentes_solicitudes.sql` | Catálogo vigente: 231 opciones y 394 visibilidades. | Alta para estructura y conteos. |
+| `db/migrations/20261020_configuracion_mesa_servicio_niveles.sql` | Reorganización vigente de la configuración: 233 opciones y 396 visibilidades. | Máxima para estructura y conteos. |
+| `db/migrations/20261020_fase2_modulos_incidentes_solicitudes.sql` | Catálogo base de Incidentes y Solicitudes: 231 opciones y 394 visibilidades. | Alta para antecedentes. |
 | `db/migrations/20261019_unificacion_catalogo_menu.sql` | Modelo de catálogo único y migración inicial. | Alta para el modelo. |
 | `db/migrations/20261021_fase3_catalogo_servicios.sql` | Catálogo de consulta del técnico en `servicios`. | Alta para rutas. |
 | `db/migrations/20261022_fase4_modulo_reportes.sql` | Centralización de los 9 reportes. | Alta para rutas. |
@@ -148,13 +149,13 @@ Leyenda: **Config.** = configura; **Opera** = ejecuta el flujo; **Propios** = so
 
 ### 3.1 Lectura de los totales
 
-Las **394 visibilidades** se descomponen en **260 asignaciones de pantalla + 134 asignaciones de carpeta**. Las 195 pantallas no se repiten en el catálogo; lo que se repite es su asignación a varios perfiles. El sidebar oculta **48 carpetas** por la regla de un solo hijo visible, de ahí que el primer nivel visible (**69 entradas** en los 10 perfiles) sea menor que el conjunto de raíces y carpetas.
+Las **396 visibilidades** se descomponen en **260 asignaciones de pantalla + 136 asignaciones de carpeta**. Las 195 pantallas no se repiten en el catálogo; lo que se repite es su asignación a varios perfiles. El sidebar oculta **50 carpetas** por la regla de un solo hijo visible, de ahí que el primer nivel visible (**69 entradas** en los 10 perfiles) sea menor que el conjunto de raíces y carpetas.
 
 ### 3.2 Detalle por perfil
 
 | # | Perfil | Entrada canónica | Pantallas | Filas totales | Carpetas visibles | Colapsadas | 1.er nivel visible |
 | :---: | :--- | :--- | ---: | ---: | ---: | ---: | ---: |
-| 1 | Administrador | `/plataforma/perfiles/administrador/panel` | 47 | 69 | 17 | 5 | 11 |
+| 1 | Administrador | `/plataforma/perfiles/administrador/panel` | 47 | 71 | 17 | 7 | 11 |
 | 2 | Técnico | `/plataforma/perfiles/tecnico/panel` | 40 | 57 | 12 | 5 | 8 |
 | 3 | Solicitante | `/plataforma/perfiles/solicitante/panel` | 12 | 21 | 4 | 5 | 5 |
 | 4 | Supervisor | `/plataforma/perfiles/supervisor/panel` | 38 | 56 | 15 | 3 | 9 |
@@ -164,7 +165,7 @@ Las **394 visibilidades** se descomponen en **260 asignaciones de pantalla + 134
 | 8 | Gestor de Cambios | `/plataforma/perfiles/gestor-cambios/panel` | 19 | 27 | 5 | 3 | 5 |
 | 9 | Gestor de Activos | `/plataforma/gestor-activos/panel` | 26 | 37 | 7 | 4 | 4 |
 | 10 | Gestor de Problemas | `/plataforma/gestor-problemas/panel` | 14 | 18 | 2 | 2 | 4 |
-| — | **Total** | — | **260** | **394** | **86** | **48** | **69** |
+| — | **Total** | — | **260** | **396** | **86** | **50** | **69** |
 
 **Notas:**
 
@@ -201,7 +202,7 @@ Las **394 visibilidades** se descomponen en **260 asignaciones de pantalla + 134
 3. **Visibilidad N:M.** La única fuente de “quién ve qué” es `opciones_menu_perfiles`. No se crean copias de la misma pantalla por perfil.
 4. **Nombre neutro.** El nombre no cambia según el perfil; el matiz de alcance va en `descripcion`.
 5. **Carpeta visible si un descendiente es visible.** No basta con mirar hijos directos: una raíz cuyos hijos son todas carpetas debe seguir apareciendo si algún nieto es visible.
-6. **Colapso de un solo hijo.** Si una carpeta visible tiene un solo hijo visible, la carpeta no se dibuja y el hijo sube un nivel. Se aplica en cascada, de abajo hacia arriba. Si se queda sin hijos visibles, tampoco se dibuja.
+6. **Colapso de un solo hijo.** Si una carpeta visible tiene un solo hijo visible, la carpeta no se dibuja y el hijo sube un nivel. Se aplica en cascada, de abajo hacia arriba y con cualquier profundidad, incluidas las ramas de cuatro niveles de Configuración → Mesa de Servicio. Si se queda sin hijos visibles, tampoco se dibuja.
 7. **Doce raíces, no doce entradas por perfil.** El catálogo tiene 12 raíces; el primer nivel visible depende de la visibilidad y del colapso.
 8. **El menú autoriza.** `exigirMenuPagina` bloquea páginas que no están en el menú del usuario; los detalles que no son opción propia se autorizan por prefijo (`menuIncluyePrefijo`).
 9. **Inicio único y administración.** `/dashboard` redirige al panel del perfil activo; el Administrador gestiona estructura, nombres, orden, visibilidad y bloqueo en `/plataforma/admin/menu` (alias público `/admin/menu`).
@@ -214,23 +215,20 @@ Las **394 visibilidades** se descomponen en **260 asignaciones de pantalla + 134
 - La indentación representa la jerarquía **después del colapso**.
 - Los nombres se conservan tal como están en la base; no se corrigen tildes ni mayúsculas para no alterar la huella del catálogo.
 - Si una página aparece en el primer nivel, puede ser una raíz real o el hijo único de una raíz colapsada. El árbol no distingue ambos casos visualmente; la sección 4.1 y las observaciones lo aclaran.
+- La configuración de la Mesa de Servicio usa cuatro niveles (`Configuración → Mesa de Servicio → Incidentes/Solicitudes → formulario o flujo`). El resto del catálogo mantiene tres niveles como norma. El colapso puede reducir la profundidad visible.
 
 ---
 
 ## 5. Árbol actual por perfil
 
-> **Fuente:** captura generada desde la base el 2026-10-19. Se reproduce el árbol visible con el colapso de carpetas de un solo hijo. No se agregan, quitan ni renombran opciones.
+> **Fuente:** captura generada desde la base el 2026-10-20. Se reproduce el árbol visible con el colapso de carpetas de un solo hijo, después de la reorganización de Configuración → Mesa de Servicio.
 
 ### PERFIL 1 — Administrador
 
 - Panel de administración — `/plataforma/perfiles/administrador/panel`
 - Mesa de Servicio
-  - Incidentes
-    - Todos los incidentes — `/plataforma/incidentes`
-    - Configuracion del formulario de incidentes — `/plataforma/incidentes/configuracion`
-  - Solicitudes
-    - Todas las solicitudes — `/plataforma/solicitudes`
-    - Configuracion del formulario de solicitudes — `/plataforma/solicitudes/configuracion`
+  - Todos los incidentes — `/plataforma/incidentes`
+  - Todas las solicitudes — `/plataforma/solicitudes`
   - Operacion de la mesa
     - Todos los tickets — `/plataforma/tickets/gestion/todos`
     - Auditoria de tickets — `/plataforma/tickets/gestion/auditoria`
@@ -255,8 +253,12 @@ Las **394 visibilidades** se descomponen en **260 asignaciones de pantalla + 134
   - Tableros — `/plataforma/reportes/tableros`
 - Configuración
   - Mesa de Servicio
-    - Flujo de atención y aprobaciones — `/admin/tickets-vistas?seccion=estados&tipo=solicitud`
-    - Flujo de estados y acciones — `/admin/tickets-vistas?seccion=estados&tipo=incidente`
+    - Incidentes
+      - Configuración del formulario — `/plataforma/incidentes/configuracion`
+      - Flujo de estados y acciones — `/admin/tickets-vistas?seccion=estados&tipo=incidente`
+    - Solicitudes
+      - Configuración del formulario — `/plataforma/solicitudes/configuracion`
+      - Flujo de atención y aprobaciones — `/admin/tickets-vistas?seccion=estados&tipo=solicitud`
   - Cambios
     - Configuración de formulario — `/admin/procesos/cambios/formulario`
     - Flujo de evaluación, autorización y revisión posterior — `/admin/procesos/cambios/flujo-evaluacion`
@@ -728,6 +730,7 @@ Además, `next.config.js` mantiene reescrituras públicas para que `/admin`, `/t
 | Fase 2 (2026-10-19) | Separación de Incidentes y Solicitudes; operación de mesa y SLA transversales; configuración de formularios por módulo; reconstrucción del catálogo. | **231 opciones (36 carpetas + 195 pantallas) y 394 visibilidades.** |
 | Fase 3 (2026-10-19) | Catálogos de servicios al módulo `servicios`. | `/plataforma/servicios/catalogo`; redirección de la ruta del técnico. |
 | Fase 4 (2026-10-19) | Reportes centralizados en `reportes`. | 9 rutas `/plataforma/reportes/*`; redirecciones de las rutas antiguas. |
+| Ajuste de menú (2026-10-20) | Configuración de Mesa de Servicio en cuatro niveles: Incidentes y Solicitudes, cada uno con formulario y flujo. | **233 opciones (38 carpetas + 195 pantallas) y 396 visibilidades.** |
 
 ### 7.4 Decisiones cerradas
 
@@ -745,6 +748,7 @@ Además, `next.config.js` mantiene reescrituras públicas para que `/admin`, `/t
 | D10 | Alcance del Aprobador. | **No recibe Incidentes**; solo “Mis solicitudes” y sus circuitos de cambio/riesgo/bajas. |
 | D11 | Catálogo del solicitante. | Se expone por tipo: incidentes y solicitudes. La consulta del técnico es lectura. |
 | D12 | Reportes. | Todos viven en `reportes`; las consolas y el admin solo enlazan. |
+| D13 | Configuración de la Mesa de Servicio. | Cuatro niveles: `Configuración → Mesa de Servicio → Incidentes/Solicitudes → formulario o flujo`. Las pantallas operativas permanecen en la Mesa de Servicio. |
 
 ### 7.5 Invariantes de aceptación
 
@@ -968,7 +972,7 @@ GROUP BY id_perfil
 ORDER BY id_perfil;
 ```
 
-**Valores esperados al 2026-10-19:** 36 carpetas, 195 pantallas, 231 total, 394 visibilidades, 0 duplicados, 0 huérfanas, 0 carpetas sin visibilidad. El detalle por perfil debe coincidir con la tabla 3.2.
+**Valores esperados al 2026-10-20:** 38 carpetas, 195 pantallas, 233 total, 396 visibilidades, 0 duplicados, 0 huérfanas, 0 carpetas sin visibilidad. El detalle por perfil debe coincidir con la tabla 3.2.
 
 ### 10.3 Verificación de render
 
@@ -991,7 +995,7 @@ El **Administrador de plataforma** mantiene catálogo, nombres, orden y visibili
 
 ## Anexo A. Fuentes usadas
 
-**Autoritativas:** captura del árbol visible generada desde la base el 2026-10-19 (no versionada); migraciones `20261019_unificacion_catalogo_menu.sql`, `20261019_modelo_c_ticket.sql`, `20261020_fase2_modulos_incidentes_solicitudes.sql`, `20261021_fase3_catalogo_servicios.sql` y `20261022_fase4_modulo_reportes.sql`; `db/seed.sql`; `src/shared/lib/menu.ts`, `src/shared/lib/page-auth.ts` y `next.config.js`.
+**Autoritativas:** captura del árbol visible generada desde la base el 2026-10-20 (no versionada); migraciones `20261019_unificacion_catalogo_menu.sql`, `20261019_modelo_c_ticket.sql`, `20261020_fase2_modulos_incidentes_solicitudes.sql`, `20261020_configuracion_mesa_servicio_niveles.sql`, `20261021_fase3_catalogo_servicios.sql` y `20261022_fase4_modulo_reportes.sql`; `db/seed.sql`; `src/shared/lib/menu.ts`, `src/shared/lib/page-auth.ts` y `next.config.js`.
 
 **Históricas, sintetizadas y retiradas:** `ESQUEMA_MENUS_POR_PERFIL.md`, `catalogo_maestro_jerarquia_menu_por_perfil_itsm.md`, `AUDITORIA_COBERTURA_ITIL_ISO_POR_PERFIL.md`, `MATRIZ_BRECHA_ACTUAL_VS_PROPUESTA_POR_PERFIL.md`, `MATRIZ_ESTADO_MENUS_POR_PERFIL_ITIL.md`, `MATRIZ_EXHAUSTIVA_MENUS_Y_PESTANAS_POR_PERFIL.md` y `UNIFICACION_CATALOGO_MENU.md`; `prompt_1_config_gestion_de_problemas.md` (hoy en `PROMPTS_CONFIGURACION_ADMIN.md`).
 
