@@ -1025,9 +1025,9 @@ Sistema de Gestión de Tickets e Incidentes ITIL v4 / ISO 20000
 - **Entonces** el sistema habilita el árbol interactivo de opciones de menú para configurar los accesos exclusivos que tendrá dicho perfil.
 
 #### Escenario 2: Propagación jerárquica de selección en el árbol de permisos
-- **Dado que** el administrador está asignando permisos en un perfil dentro del árbol de 3 niveles.
-- **Cuando** marca una opción hoja (nivel 3, por ejemplo, "Tickets Pendientes").
-- **Entonces** el sistema marca automáticamente todos los módulos padre y carpetas contenedoras ascendentes (nivel 2 y nivel 1) para asegurar la navegabilidad de la ruta.
+- **Dado que** el administrador está asignando permisos en un perfil dentro del árbol de menú.
+- **Cuando** marca una opción hoja (por ejemplo, nivel 3 "Tickets Pendientes" o nivel 4 "Configuración del formulario").
+- **Entonces** el sistema marca automáticamente todos los módulos padre y carpetas contenedoras ascendentes para asegurar la navegabilidad de la ruta.
 
 #### Escenario 3: Desmarcación en cascada de ramas subordinadas
 - **Dado que** una carpeta contenedora de menú tiene varias opciones hijas seleccionadas.

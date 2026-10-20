@@ -2,7 +2,7 @@
 
 Documentación técnica, funcional y de gobierno del sistema **FlowDesk ITSM**, alineada con **ITIL 4**, **ISO/IEC 20000-1:2018**, **ISO/IEC 27001:2022**, **ISO/IEC 19770-1** y **COBIT 2019**.
 
-> **Vigencia:** 2026-10-19. La documentación se consolidó en ocho documentos canónicos; los documentos anteriores se retiraron y su histórico permanece en Git.
+> **Vigencia:** 2026-10-20. La documentación se consolidó en ocho documentos canónicos; los documentos anteriores se retiraron y su histórico permanece en Git.
 
 ---
 
@@ -45,14 +45,14 @@ Documentación técnica, funcional y de gobierno del sistema **FlowDesk ITSM**, 
 
 ---
 
-## 3. Estado del sistema al 2026-10-19
+## 3. Estado del sistema al 2026-10-20
 
 | Indicador | Valor |
 | :--- | ---: |
 | Perfiles oficiales | 10 |
 | Módulos de dominio | 18 |
-| Opciones de menú activas | 231 |
-| Filas de visibilidad | 394 |
+| Opciones de menú activas | 233 |
+| Filas de visibilidad | 396 |
 | Route handlers | 207 |
 | Páginas bajo `src/app/plataforma` | 227 |
 | Tablas base en `public` | 126 |

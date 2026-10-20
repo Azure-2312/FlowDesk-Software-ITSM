@@ -12,8 +12,8 @@ Construida con **Next.js 14 (App Router)**, **TypeScript 5 en modo estricto**, *
 | :--- | ---: |
 | Perfiles oficiales | 10 |
 | Módulos de dominio | 18 |
-| Opciones de menú activas | 231 |
-| Filas de visibilidad del menú | 394 |
+| Opciones de menú activas | 233 |
+| Filas de visibilidad del menú | 396 |
 | Route handlers en `src/app/api` | 207 |
 | Páginas bajo `src/app/plataforma` | 227 |
 | Tablas base en `public` | 126 (incluye 4 respaldos del menú) |
