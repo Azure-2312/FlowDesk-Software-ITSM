@@ -6,7 +6,7 @@ import {
   listarReglasNotificacion,
   actualizarReglaNotificacion,
   crearReglaNotificacion,
-} from "@/modules/configuracion/services/reglasNotificacionService";
+} from "@/modules/plataforma/services/reglasNotificacionService";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;

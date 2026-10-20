@@ -6,7 +6,7 @@ import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import {
   listarOpcionesMenuAdmin,
   crearOpcionMenuAdmin,
-} from "@/modules/configuracion/services/menuAdminService";
+} from "@/modules/plataforma/services/menuAdminService";
 
 export const dynamic = "force-dynamic";
 

@@ -1,7 +1,7 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/shared/lib/validaciones";
-import type { ContextoAuditoriaCategoria } from "@/modules/configuracion/services/categoriaService";
+import type { ContextoAuditoriaCategoria } from "@/modules/servicios/services/categoriaService";
 
 export async function obtenerCategoriaDetalle(idCategoria: number) {
   const categoria = await queryRow(

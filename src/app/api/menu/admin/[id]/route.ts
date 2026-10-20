@@ -1,1 +1,1 @@
-export { PUT, DELETE } from "@/modules/configuracion/api/menuAdminDetalleController";
+export { PUT, DELETE } from "@/modules/plataforma/api/menuAdminDetalleController";

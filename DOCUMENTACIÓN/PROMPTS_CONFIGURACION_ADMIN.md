@@ -6,12 +6,14 @@
 
 Este documento reemplaza a `prompt_1_config_gestion_de_problemas.md`, `prompt_2_config_gestion_de_cambios.md` y `prompt_3_config_activos_y_cmdb.md`. Se eliminó la repetición de los apartados comunes 0 a 3C.
 
+> **Nota de vigencia (2026-10-20):** la raíz `Configuración` fue eliminada. Las pantallas de este documento viven ahora en `Problemas`, `Cambios`, `Activos y CMDB`, `Conocimiento`, `Organización` y `Plataforma`, dentro de su módulo dueño. La numeración `1.x` y el árbol de la sección 2.1 se conservan como referencia histórica; las URLs no cambiaron.
+
 ---
 
 ## Parte I — Reglas comunes y Gestión de Problemas
 
-> **Rama del menú que se implementa:** `1 Configuración > 1.3 Configuración de procesos > 1.3.3 Gestión de problemas`
-> **Procesos relacionados en este documento:** Parte II = Gestión de cambios (1.3.4) · Parte III = Activos y CMDB (1.5).
+> **Rama del menú que se implementa:** `Problemas > Configuración de formulario / Flujo de investigación / Relaciones`; las Partes II y III conservan sus ramas en `Cambios` y `Activos y CMDB`.
+> **Procesos relacionados en este documento:** Parte II = Gestión de cambios · Parte III = Activos y CMDB.
 > **Idioma de la interfaz:** español. **Código, tablas y endpoints:** nombres en español snake_case salvo convención técnica.
 > **Stack real del proyecto:** Next.js 14 con App Router (frontend + backend) y PostgreSQL (alojado en Supabase y accedido con el pool `pg` de `src/shared/lib/db.ts`). Tienes acceso completo al código, la base de datos, el frontend y el backend.
 > **Versión del documento:** 2.0 (actualizada a la arquitectura FlowDesk: numeración y rutas reales, reglas de navegación sin duplicar el menú, sistema de íconos y validaciones en todos los campos).
@@ -158,7 +160,7 @@ Las secciones 4 y 5 de este documento describen lo que esas pantallas deben most
 Aplica a cada pantalla y pestaña de este documento. **No se repite abajo**; solo se indican los botones y reglas *adicionales* de cada pestaña.
 
 ### 3.1 Estructura visual
-1. **Breadcrumb:** `Configuración > Configuración de procesos > Gestión de problemas > <pantalla> > <pestaña>`.
+1. **Breadcrumb:** `<raíz del módulo> > <pantalla> > <pestaña>`; por ejemplo, `Problemas > Configuración de formulario > <pestaña>`.
 2. **Encabezado:** título, descripción de una línea (qué configura y qué efecto tiene), y un **indicador de estado de la configuración**:
    - `Publicada vN` (verde) = no hay cambios pendientes.
    - `Borrador con cambios sin publicar` (ámbar) = hay diferencias respecto a la versión publicada.

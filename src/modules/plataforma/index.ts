@@ -1,7 +1,7 @@
 // =====================================================================
 // Modulo Plataforma
 // Salud del sistema, mantenimiento de datos, logs, auditoria de
-// sistema y disenador de reportes.
+// sistema, menu, notificaciones y disenador de reportes.
 //
 // Contrato publico: importar SOLO desde "@/modules/plataforma".
 // =====================================================================
@@ -26,3 +26,26 @@ export {
   guardarWidgetsDashboard,
   type ContextoAuditoriaReportes,
 } from "./services/reportesDisenadorService";
+
+export {
+  obtenerConfiguraciones,
+  guardarConfiguracion,
+  type ContextoAuditoriaConfiguracion,
+} from "./services/configuracionSistemaService";
+
+export {
+  listarReglasNotificacion,
+  actualizarReglaNotificacion,
+  crearReglaNotificacion,
+  type ContextoAuditoriaNotificacion,
+} from "./services/reglasNotificacionService";
+
+export {
+  listarOpcionesMenuAdmin,
+  crearOpcionMenuAdmin,
+} from "./services/menuAdminService";
+
+export {
+  actualizarOpcionMenuAdmin,
+  alternarEstadoOpcionMenuAdmin,
+} from "./services/menuAdminDetalleService";
