@@ -1,7 +1,8 @@
 import { query, queryRow, transaccion } from "@/shared/lib/db";
 import { Ticket, CrearTicketPayload } from "@/types";
-import { calcularFechaLimiteHorasHabiles } from "@/shared/lib/sla";
+import { calcularFechaLimiteHorasHabiles, calcularFechaLimiteHorasHabilesAsync } from "@/shared/lib/sla";
 import { validarTexto, validarArchivoAdjunto } from "@/shared/lib/validaciones";
+import { validarCargaTecnico } from "./tecnicoCargaService";
 import { ErrorDominio } from "@/shared/lib/errores";
 
 // Matriz de Prioridad ITIL 4: Impacto (1..3) x Urgencia (1..3)
@@ -100,6 +101,11 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
   } else if (vista === "aprobaciones") {
     // Mostrar decisiones que requieren una respuesta, no todas las solicitudes.
     condiciones.push(`t.estado_aprobacion = 'PENDIENTE_APROBACION'`);
+    if (idPerfil === 5) {
+      // Delimitación departamental estricta de aprobaciones (RN-33)
+      condiciones.push(`t.id_departamento_empresa = (SELECT id_departamento_empresa FROM usuario WHERE id_usuario = ${paramIdx++})`);
+      params.push(idUsuario);
+    }
   } else if (vista === "departamento") {
     // Tickets del departamento
     if (idDepartamento) {
@@ -310,7 +316,7 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
 
   if (Array.isArray(archivos)) {
     for (const a of archivos) {
-      const vArch = validarArchivoAdjunto(a.nombre || "", a.tamano || 0, 5);
+      const vArch = validarArchivoAdjunto(a.nombre || "", a.tamano || 0, 5, a.base64);
       if (!vArch.valido) throw new ErrorDominio(vArch.mensaje!);
     }
   }
@@ -428,8 +434,8 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
   const codigoTicket = `${tipo.prefijo_codigo}-${anioActual}-${siguienteCorrelativo}`;
 
   // 7. Calcular fecha límite SLA en horas hábiles (ITIL 4 / ISO 20000: L-V 08:00 a 18:00)
-  const fechaLimiteSla = calcularFechaLimiteHorasHabiles(horasResolucion);
-  const fechaLimiteRespuestaSla = calcularFechaLimiteHorasHabiles(horasRespuesta);
+  const fechaLimiteSla = await calcularFechaLimiteHorasHabilesAsync(horasResolucion);
+  const fechaLimiteRespuestaSla = await calcularFechaLimiteHorasHabilesAsync(horasRespuesta);
 
   // 8. Determinar solicitante real si se registra a nombre de otro por personal autorizado
   const idPerfilActual = sesion.perfilActivo?.id_perfil || 0;
@@ -445,6 +451,9 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
   const idAsignadoInicial = (body.autoasignar_tecnico && [1, 2, 4].includes(idPerfilActual))
     ? sesion.id_usuario
     : null;
+  if (idAsignadoInicial) {
+    await validarCargaTecnico(idAsignadoInicial);
+  }
   const idEstadoInicial = idAsignadoInicial ? 2 : 1; // Asignado (2) o Abierto (1)
 
   const nuevoTicket = await transaccion(async (client) => {
