@@ -585,3 +585,184 @@ export async function guardarPoliticasKcs(body: any, contexto: ContextoConocimie
 
   return { mensaje: "Políticas de gobierno KCS actualizadas y auditadas.", politicas: nuevasPoliticas };
 }
+
+
+/* ------------------------------------------------------------------ */
+/* Extensiones KCS v6: Versionado, Feedback, Vinculacion y Metricas   */
+/* ------------------------------------------------------------------ */
+
+export async function listarVersionesArticulo(idArticulo: number) {
+  return query(
+    `SELECT v.id_version, v.numero_version, v.titulo, v.contenido_markdown, v.motivo_cambio, 
+            v.id_autor, CONCAT(u.nombres, ' ', u.apellido_paterno) as autor_nombre, v.fecha_creacion
+     FROM articulo_conocimiento_version v
+     LEFT JOIN usuario u ON v.id_autor = u.id_usuario
+     WHERE v.id_articulo = $1
+     ORDER BY v.id_version DESC`,
+    [idArticulo]
+  );
+}
+
+export async function crearVersionArticulo(
+  idArticulo: number,
+  numeroVersion: string,
+  titulo: string,
+  contenido: string,
+  motivo: string,
+  idUsuario: number
+) {
+  return query(
+    `INSERT INTO articulo_conocimiento_version (id_articulo, numero_version, titulo, contenido_markdown, motivo_cambio, id_autor)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING *`,
+    [idArticulo, numeroVersion, titulo, contenido, motivo || "Actualización de contenido", idUsuario]
+  );
+}
+
+export async function registrarFeedbackArticulo(
+  idArticulo: number,
+  esPositivo: boolean,
+  motivoNegativo: string | null,
+  comentario: string | null,
+  contexto: ContextoConocimiento
+) {
+  if (esPositivo) {
+    await query(
+      "UPDATE articulo_conocimiento SET utilidad_positiva = utilidad_positiva + 1 WHERE id_articulo = $1",
+      [idArticulo]
+    );
+  } else {
+    await query(
+      "UPDATE articulo_conocimiento SET utilidad_negativa = utilidad_negativa + 1 WHERE id_articulo = $1",
+      [idArticulo]
+    );
+  }
+
+  const feedback = await queryRow(
+    `INSERT INTO articulo_conocimiento_feedback (id_articulo, id_usuario, es_positivo, motivo_negativo, comentario, ip)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING *`,
+    [idArticulo, contexto.idUsuario || null, esPositivo, motivoNegativo || null, comentario || null, contexto.ip || "127.0.0.1"]
+  );
+
+  return { mensaje: "Calificación registrada exitosamente.", feedback };
+}
+
+export async function vincularArticuloTicket(
+  idArticulo: number,
+  idTicket: number,
+  resolvioTicket: boolean,
+  contexto: ContextoConocimiento
+) {
+  const row = await queryRow(
+    `INSERT INTO articulo_conocimiento_vinculo_ticket (id_articulo, id_ticket, id_tecnico, resolvio_ticket)
+     VALUES ($1, $2, $3, $4)
+     ON CONFLICT (id_articulo, id_ticket) DO UPDATE SET
+       resolvio_ticket = EXCLUDED.resolvio_ticket,
+       id_tecnico = EXCLUDED.id_tecnico,
+       fecha_vinculo = now()
+     RETURNING *`,
+    [idArticulo, idTicket, contexto.idUsuario, resolvioTicket]
+  );
+
+  await query(
+    "UPDATE articulo_conocimiento SET veces_utilizado_en_tickets = veces_utilizado_en_tickets + 1 WHERE id_articulo = $1",
+    [idArticulo]
+  );
+
+  return { mensaje: "Artículo vinculado al ticket en sesión de soporte (Solve Loop).", vinculo: row };
+}
+
+export async function listarArticulosVinculadosTicket(idTicket: number) {
+  return query(
+    `SELECT v.id_vinculo, v.id_articulo, a.codigo_articulo, a.titulo, a.tipo_plantilla, 
+            v.resolvio_ticket, v.fecha_vinculo, CONCAT(u.nombres, ' ', u.apellido_paterno) as tecnico_nombre
+     FROM articulo_conocimiento_vinculo_ticket v
+     JOIN articulo_conocimiento a ON v.id_articulo = a.id_articulo
+     JOIN usuario u ON v.id_tecnico = u.id_usuario
+     WHERE v.id_ticket = $1
+     ORDER BY v.fecha_vinculo DESC`,
+    [idTicket]
+  );
+}
+
+export async function registrarBusquedaLog(
+  termino: string,
+  resultados: number,
+  idArticuloClicado: number | null,
+  deflexion: boolean,
+  contexto: ContextoConocimiento,
+  origen: string = "PORTAL"
+) {
+  return queryRow(
+    `INSERT INTO busqueda_conocimiento_log (termino_busqueda, resultados_encontrados, id_articulo_clicado, deflexion_exitosa, id_usuario, id_perfil, origen)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     RETURNING *`,
+    [termino.trim(), resultados, idArticuloClicado || null, deflexion, contexto.idUsuario || null, contexto.idPerfil || null, origen]
+  );
+}
+
+export async function marcarDeflexionExitosa(idLog: number, idArticulo: number, contexto: ContextoConocimiento) {
+  return query(
+    `UPDATE busqueda_conocimiento_log 
+     SET deflexion_exitosa = true, id_articulo_clicado = $1 
+     WHERE id_log = $2`,
+    [idArticulo, idLog]
+  );
+}
+
+export async function listarPlantillasKcs() {
+  return query(
+    "SELECT id_plantilla, codigo, nombre, descripcion, icono, estructura_markdown, campos_obligatorios, activo FROM articulo_plantilla WHERE activo = true ORDER BY id_plantilla ASC"
+  );
+}
+
+export async function obtenerMetricasKcsDashboard() {
+  const totalArticulosRow = await queryRow<{ c: string }>(
+    "SELECT COUNT(*) as c FROM articulo_conocimiento WHERE estado_registro = true AND estado_editorial = 'PUBLICADO'"
+  );
+  const totalRevisionesRow = await queryRow<{ c: string }>(
+    "SELECT COUNT(*) as c FROM articulo_conocimiento WHERE estado_registro = true AND estado_editorial = 'EN_REVISION'"
+  );
+  const totalBusquedasRow = await queryRow<{ c: string }>(
+    "SELECT COUNT(*) as c FROM busqueda_conocimiento_log"
+  );
+  const totalDeflexionesRow = await queryRow<{ c: string }>(
+    "SELECT COUNT(*) as c FROM busqueda_conocimiento_log WHERE deflexion_exitosa = true"
+  );
+  const totalReusosRow = await queryRow<{ c: string }>(
+    "SELECT COUNT(*) as c FROM articulo_conocimiento_vinculo_ticket"
+  );
+
+  const totalBusquedas = parseInt(totalBusquedasRow?.c || "0", 10);
+  const totalDeflexiones = parseInt(totalDeflexionesRow?.c || "0", 10);
+  const tasaDeflexion = totalBusquedas > 0 ? Math.round((totalDeflexiones / totalBusquedas) * 100) : 0;
+
+  const topArticulos = await query(
+    `SELECT id_articulo, codigo_articulo, titulo, visitas, utilidad_positiva, utilidad_negativa, veces_utilizado_en_tickets
+     FROM articulo_conocimiento 
+     WHERE estado_registro = true AND estado_editorial = 'PUBLICADO'
+     ORDER BY veces_utilizado_en_tickets DESC, utilidad_positiva DESC 
+     LIMIT 5`
+  );
+
+  const gapsBusqueda = await query(
+    `SELECT termino_busqueda, COUNT(*) as repeticiones, MAX(fecha) as ultima_fecha
+     FROM busqueda_conocimiento_log
+     WHERE resultados_encontrados = 0
+     GROUP BY termino_busqueda
+     ORDER BY repeticiones DESC
+     LIMIT 5`
+  );
+
+  return {
+    totalArticulos: parseInt(totalArticulosRow?.c || "0", 10),
+    articulosEnRevision: parseInt(totalRevisionesRow?.c || "0", 10),
+    totalBusquedas,
+    totalDeflexiones,
+    tasaDeflexionPct: tasaDeflexion,
+    totalReusoTickets: parseInt(totalReusosRow?.c || "0", 10),
+    topArticulos,
+    gapsBusqueda,
+  };
+}
