@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "../formulario/components/BarraAccionesComun";
-import { ModalPublicacion } from "../formulario/components/ModalPublicacion";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "../formulario/components/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "../formulario/components/ModalRestaurarFabrica";
 
@@ -231,7 +231,7 @@ export default function RelacionesProblemasPage() {
   // Exportar configuración a JSON
   function handleExportar() {
     const configSnapshot = {
-      modulo: "1.3.4.3 Relación con incidentes, errores conocidos y conocimiento",
+      modulo: "Relación con incidentes, errores conocidos y conocimiento",
       version_esquema: "1.0",
       fecha_exportacion: new Date().toISOString(),
       datos: {
@@ -286,25 +286,27 @@ export default function RelacionesProblemasPage() {
   }
 
   const tabs: Array<{ id: TabId; label: string }> = [
-    { id: "umbral", label: "1.3.4.3.1 Creación por umbral" },
-    { id: "incidentes", label: "1.3.4.3.2 Incidentes vinculados" },
-    { id: "kedb", label: "1.3.4.3.3 Errores conocidos (KEDB)" },
-    { id: "rfc", label: "1.3.4.3.4 Cambios (RFC)" },
-    { id: "conocimiento", label: "1.3.4.3.5 Conocimiento" },
-    { id: "cmdb", label: "1.3.4.3.6 CI y servicios (CMDB)" }
+    { id: "umbral", label: "Creación por umbral" },
+    { id: "incidentes", label: "Incidentes vinculados" },
+    { id: "kedb", label: "Errores conocidos (KEDB)" },
+    { id: "rfc", label: "Cambios (RFC)" },
+    { id: "conocimiento", label: "Conocimiento" },
+    { id: "cmdb", label: "CI y servicios (CMDB)" }
   ];
 
   return (
     <div style={{ padding: "20px 28px 100px 28px", minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh" }}>
       {/* 1. BREADCRUMB */}
       <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/admin" style={{ color: "#2563eb", textDecoration: "none" }}>Configuración</Link>
+        <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
+          Problemas
+        </Link>
         {" / "}
-        <Link href="/admin/procesos" style={{ color: "#2563eb", textDecoration: "none" }}>Configuración de procesos</Link>
+        <Link href="/plataforma/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
+          Configuración
+        </Link>
         {" / "}
-        <Link href="/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>Gestión de problemas</Link>
-        {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>1.3.4.3 Relación con incidentes, errores conocidos y conocimiento</span>
+        <span style={{ color: "#0f172a", fontWeight: 600 }}>Relación con incidentes, errores conocidos y conocimiento</span>
       </nav>
 
       {/* 2. ENCABEZADO */}
@@ -320,7 +322,7 @@ export default function RelacionesProblemasPage() {
       }}>
         <div>
           <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-            1.3.4.3 Relación con Incidentes, Errores Conocidos y Conocimiento
+            Relación con Incidentes, Errores Conocidos y Conocimiento
           </h1>
           <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
             Integra y coordina el ciclo de vida de problemas con la mesa de incidentes, base de errores conocidos (KEDB), solicitudes de cambio (RFC), artículos de conocimiento y elementos de configuración de la CMDB (ITIL 4: <em>Think and work holistically</em>).

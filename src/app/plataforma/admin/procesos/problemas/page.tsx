@@ -1,5 +1,5 @@
-import VistaHubProblemas from "@/modules/problemas/config/hub/VistaHubProblemas";
+import { redirect } from "next/navigation";
 
 export default function PaginaAdminProblemasHub() {
-  return <VistaHubProblemas />;
+  redirect("/plataforma/admin/procesos/problemas/formulario");
 }
