@@ -15,6 +15,11 @@ export { listarCatalogosTickets } from "./services/catalogosService";
 
 export { crearComentarioTicket } from "./services/ticketComentariosService";
 
+export {
+  validarCargaTecnico,
+  MAXIMO_TICKETS_ACTIVOS_POR_TECNICO,
+} from "./services/tecnicoCargaService";
+
 // --- Toma de ticket desde la cola del departamento técnico, movida desde
 // src/modules/perfiles/tecnico para que el rol solo conserve su UI. ---
 export { tomarTicketDeMesa, type UsuarioTecnico } from "./services/mesaTomaService";

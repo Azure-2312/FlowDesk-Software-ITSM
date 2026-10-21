@@ -308,15 +308,19 @@ export const EXTENSIONES_PELIGROSAS = [
 export function validarArchivoAdjunto(
   nombreArchivo: string,
   tamanoBytes: number,
-  maxMegabytes: number = 5
+  maxMegabytes: number = 5,
+  datosBase64?: string | null
 ): ResultadoValidacion {
-  const ext = "." + nombreArchivo.split(".").pop()?.toLowerCase();
+  const partes = nombreArchivo.split(".");
+  const ext = partes.length > 1 ? "." + partes.pop()?.toLowerCase() : "";
+
   if (EXTENSIONES_PELIGROSAS.includes(ext)) {
     return {
       valido: false,
-      mensaje: `El archivo "${nombreArchivo}" tiene una extensión no permitida por políticas de seguridad (${ext}).`,
+      mensaje: `El archivo "${nombreArchivo}" tiene una extensión no permitida por políticas de ciberseguridad (${ext}).`,
     };
   }
+
   const maxBytes = maxMegabytes * 1024 * 1024;
   if (tamanoBytes > maxBytes) {
     return {
@@ -324,6 +328,107 @@ export function validarArchivoAdjunto(
       mensaje: `El archivo "${nombreArchivo}" supera el límite de ${maxMegabytes} MB permitidos.`,
     };
   }
+
+  // Verificación profunda por firmas binarias (Magic Bytes - RN-27)
+  if (datosBase64 && typeof datosBase64 === "string" && typeof Buffer !== "undefined") {
+    try {
+      // Extraer datos base64 eliminando eventuales prefijos Data URL
+      const dataLimpia = datosBase64.includes(",")
+        ? datosBase64.split(",")[1]
+        : datosBase64;
+      const buffer = Buffer.from(dataLimpia, "base64");
+
+      if (buffer.length < 4) {
+        return {
+          valido: false,
+          mensaje: `El archivo "${nombreArchivo}" está vacío o corrupto.`,
+        };
+      }
+
+      // 1. Detección de binarios ejecutables o scripts maliciosos disfrazados (Malware Prevention)
+      // Firma MZ (PE Windows: .exe, .dll, .sys)
+      if (buffer[0] === 0x4d && buffer[1] === 0x5a) {
+        return {
+          valido: false,
+          mensaje: `Violación de Seguridad (RN-27): Se detectó una firma de ejecutable binario Windows (MZ) en "${nombreArchivo}". Archivo bloqueado.`,
+        };
+      }
+
+      // Firma ELF (Binarios Linux: 0x7F 'E' 'L' 'F')
+      if (buffer[0] === 0x7f && buffer[1] === 0x45 && buffer[2] === 0x4c && buffer[3] === 0x46) {
+        return {
+          valido: false,
+          mensaje: `Violación de Seguridad (RN-27): Se detectó una firma de binario ejecutable ELF en "${nombreArchivo}". Archivo bloqueado.`,
+        };
+      }
+
+      // Firma Java Bytecode (0xCA 0xFE 0xBA 0xBE)
+      if (buffer[0] === 0xca && buffer[1] === 0xfe && buffer[2] === 0xba && buffer[3] === 0xbe) {
+        return {
+          valido: false,
+          mensaje: `Violación de Seguridad (RN-27): Se detectó bytecode ejecutable Java en "${nombreArchivo}". Archivo bloqueado.`,
+        };
+      }
+
+      // Firma Shebang (Scripts bash / shell / python: '#!')
+      if (buffer[0] === 0x23 && buffer[1] === 0x21) {
+        return {
+          valido: false,
+          mensaje: `Violación de Seguridad (RN-27): Se detectó un script ejecutable en "${nombreArchivo}". Archivo bloqueado.`,
+        };
+      }
+
+      // 2. Validación de correspondencia entre extensión declarada y firma interna de bytes
+      if (ext === ".pdf") {
+        // Firma PDF: %PDF (0x25 0x50 0x44 0x46)
+        const esPdf = buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46;
+        if (!esPdf) {
+          return {
+            valido: false,
+            mensaje: `Violación de Seguridad (RN-27): El archivo "${nombreArchivo}" no posee la firma válida de un documento PDF legítimo (%PDF).`,
+          };
+        }
+      } else if (ext === ".png") {
+        // Firma PNG: 0x89 0x50 0x4E 0x47 0x0D 0x0A 0x1A 0x0A
+        const esPng =
+          buffer[0] === 0x89 &&
+          buffer[1] === 0x50 &&
+          buffer[2] === 0x4e &&
+          buffer[3] === 0x47;
+        if (!esPng) {
+          return {
+            valido: false,
+            mensaje: `Violación de Seguridad (RN-27): El archivo "${nombreArchivo}" no posee la firma válida de una imagen PNG legítima.`,
+          };
+        }
+      } else if (ext === ".jpg" || ext === ".jpeg") {
+        // Firma JPEG: 0xFF 0xD8 0xFF
+        const esJpg = buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+        if (!esJpg) {
+          return {
+            valido: false,
+            mensaje: `Violación de Seguridad (RN-27): El archivo "${nombreArchivo}" no posee la firma válida de una imagen JPEG/JPG legítima.`,
+          };
+        }
+      } else if (ext === ".webp") {
+        // Firma WEBP: RIFF....WEBP
+        const esRiff = buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46;
+        const esWebp = buffer.length >= 12 && buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50;
+        if (!esRiff || !esWebp) {
+          return {
+            valido: false,
+            mensaje: `Violación de Seguridad (RN-27): El archivo "${nombreArchivo}" no posee la firma válida de una imagen WEBP legítima.`,
+          };
+        }
+      }
+    } catch {
+      return {
+        valido: false,
+        mensaje: `Error al verificar la estructura binaria del archivo "${nombreArchivo}".`,
+      };
+    }
+  }
+
   return { valido: true };
 }
 

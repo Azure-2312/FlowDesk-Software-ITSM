@@ -1,6 +1,7 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { validarCargaTecnico } from "./tecnicoCargaService";
 import { Ticket, ComentarioTicket, ActualizarTicketPayload, TicketAprobacion, AdjuntoTicket } from "@/types";
 
 export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
@@ -404,6 +405,9 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
   }
 
   if (body.id_usuario_asignado !== undefined && body.id_usuario_asignado !== actual.id_usuario_asignado) {
+    if (body.id_usuario_asignado !== null) {
+      await validarCargaTecnico(Number(body.id_usuario_asignado), idTicket);
+    }
     if (esTecnico) {
       if (actual.id_usuario_asignado !== null || body.id_usuario_asignado !== sesion.id_usuario) {
         throw new ErrorDominio(

@@ -1,5 +1,6 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { validarCargaTecnico } from "./tecnicoCargaService";
 
 export interface UsuarioTecnico {
   idUsuario: number;
@@ -22,6 +23,9 @@ export async function tomarTicketDeMesa(idTicket: number, usuario: UsuarioTecnic
   if (!tecnico) {
     throw new ErrorDominio("No tienes un departamento técnico asignado.", 403);
   }
+
+  // Validación de saturación de capacidad del técnico (RN-16)
+  await validarCargaTecnico(usuario.idUsuario, idTicket);
 
   const ticketTomado = await queryRow<{
     id_ticket: number;
