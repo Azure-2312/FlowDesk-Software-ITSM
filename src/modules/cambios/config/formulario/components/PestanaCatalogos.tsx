@@ -22,12 +22,12 @@ const CATALOGOS_CAMBIOS = [
   { id: "categorias_cambio", nombre: "Categorías de cambio", desc: "Clasificación jerárquica en 2 niveles" },
   { id: "origenes", nombre: "Orígenes", desc: "Procedencia formal del requerimiento de cambio" },
   { id: "entornos", nombre: "Entornos", desc: "Ambientes tecnológicos y ponderación de criticidad" },
-  { id: "resultados_implementacion", nombre: "Resultados de implementación", desc: "Dictamen técnico tras ejecutar la ventana (🔒)" },
+  { id: "resultados_implementacion", nombre: "Resultados de implementación", desc: "Dictamen técnico tras ejecutar la ventana ([Bloqueado])" },
   { id: "codigos_cierre", nombre: "Códigos de cierre", desc: "Estado de culminación formal y efectos en KPI" },
   { id: "motivos_rechazo", nombre: "Motivos de rechazo", desc: "Causales de denegación por evaluador o CAB" },
   { id: "motivos_aplazamiento", nombre: "Motivos de aplazamiento", desc: "Causales de reprogramación de ventana" },
   { id: "causas_fallo", nombre: "Causas de fallo", desc: "Factores raíz ante fallo o ejecución de rollback" },
-  { id: "tipos_dependencia", nombre: "Tipos de dependencia", desc: "Relaciones de bloqueo o concurrencia (🔒)" },
+  { id: "tipos_dependencia", nombre: "Tipos de dependencia", desc: "Relaciones de bloqueo o concurrencia ([Bloqueado])" },
   { id: "medios_emergencia", nombre: "Medios de autorización de emergencia", desc: "Canales de dictamen verbal o inmediato para ECAB" },
 ];
 
@@ -356,7 +356,7 @@ export const PestanaCatalogos: React.FC = () => {
                         {it.nombre}
                         {it.es_sistema && (
                           <span title="Valor base del sistema protegido" style={{ marginLeft: 6, fontSize: 11 }}>
-                            🔒
+                            [Bloqueado]
                           </span>
                         )}
                       </td>

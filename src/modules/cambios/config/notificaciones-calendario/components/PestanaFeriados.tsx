@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, Sun, Download, Upload, AlertCircle, X, Check } from "./Iconos";
+import { Plus, Edit2, Trash2, Sun, Download, Upload, AlertCircle, X, Check } from "@/shared/components/ui/Iconos";
 
 interface PestanaFeriadosProps {
   config: any;

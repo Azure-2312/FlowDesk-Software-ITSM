@@ -204,7 +204,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                         {c.etiqueta}
                       </span>
                       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                        {c.bloqueado && <span title="Campo normativo bloqueado" style={{ fontSize: 11 }}>🔒</span>}
+                        {c.bloqueado && <span title="Campo normativo bloqueado" style={{ fontSize: 11 }}>[Bloqueado]</span>}
                         <span style={{ fontSize: 10, color: c.visible ? "#16a34a" : "#dc2626" }}>
                           {c.visible ? "✓" : "Oculto"}
                         </span>
@@ -345,7 +345,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                               </span>
                               {campo.bloqueado && (
                                 <span title="Campo normativo bloqueado; no puede ocultarse" style={{ fontSize: 11 }}>
-                                  🔒
+                                  [Bloqueado]
                                 </span>
                               )}
                             </div>
@@ -519,7 +519,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                   </select>
                   {campoActivo.bloqueado && (
                     <span style={{ fontSize: 10.5, color: "#d97706", display: "block", marginTop: 4 }}>
-                      🔒 Campo requerido por norma ITIL v4 e ISO/IEC 20000.
+                      [Bloqueado] Campo requerido por norma ITIL v4 e ISO/IEC 20000.
                     </span>
                   )}
                 </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Copy, Trash2, Calendar, Clock, Eye, AlertCircle, X, Check } from "./Iconos";
+import { Plus, Edit2, Copy, Trash2, Calendar, Clock, Eye, AlertCircle, X, Check } from "@/shared/components/ui/Iconos";
 
 interface PestanaVentanasMantenimientoProps {
   config: any;

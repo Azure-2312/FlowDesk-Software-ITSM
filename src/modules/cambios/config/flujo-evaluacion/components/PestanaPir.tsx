@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, ArrowUp, ArrowDown, Eye, CheckCircle2, Clock, HelpCircle, FileText } from "./Iconos";
+import { Plus, Edit2, Trash2, ArrowUp, ArrowDown, Eye, CheckCircle2, Clock, HelpCircle, FileText } from "@/shared/components/ui/Iconos";
 
 interface PreguntaPir {
   id: string;

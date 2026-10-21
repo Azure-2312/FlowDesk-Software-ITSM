@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle2, AlertTriangle, Database, Archive, Eye, ShieldCheck, RefreshCw } from "./Iconos";
+import { CheckCircle2, AlertTriangle, Database, Archive, Eye, ShieldCheck, RefreshCw } from "@/shared/components/ui/Iconos";
 
 interface ImplementacionCierreConfig {
   resultado_bitacora?: {

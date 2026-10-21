@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, Shield, Play, Lock, CheckCircle2, AlertTriangle, Users, Clock } from "./Iconos";
+import { Plus, Edit2, Trash2, Shield, Play, Lock, CheckCircle2, AlertTriangle, Users, Clock } from "@/shared/components/ui/Iconos";
 
 interface EtapaConfig {
   id: string;

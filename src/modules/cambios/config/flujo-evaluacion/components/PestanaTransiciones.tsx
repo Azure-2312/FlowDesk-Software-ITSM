@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, Eye, ShieldCheck, CheckCircle2, AlertTriangle, ArrowRight, Grid, Network, ListFilter } from "./Iconos";
+import { Plus, Edit2, Trash2, Eye, ShieldCheck, CheckCircle2, AlertTriangle, ArrowRight, Grid, Network, ListFilter } from "@/shared/components/ui/Iconos";
 
 interface TransicionConfig {
   id: string;

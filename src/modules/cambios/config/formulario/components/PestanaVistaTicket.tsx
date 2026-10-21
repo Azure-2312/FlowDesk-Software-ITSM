@@ -137,7 +137,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                   </span>
                   {c.fijo && (
                     <span style={{ fontSize: 10.5, color: "#d97706", display: "block", marginTop: 2 }}>
-                      🔒 Elemento fijo obligatorio
+                      [Bloqueado] Elemento fijo obligatorio
                     </span>
                   )}
                 </div>
@@ -192,7 +192,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                       {p.nombre}
                       {p.fijo && (
                         <span title="Pestaña no puede ocultarse" style={{ marginLeft: 6, fontSize: 11 }}>
-                          🔒
+                          [Bloqueado]
                         </span>
                       )}
                     </td>
