@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, ArrowUp, ArrowDown, Lock, CheckCircle2, AlertCircle } from "./Iconos";
+import { Plus, Edit2, Trash2, ArrowUp, ArrowDown, Lock, CheckCircle2, AlertCircle } from "@/shared/components/ui/Iconos";
 
 interface EstadoConfig {
   id: string;

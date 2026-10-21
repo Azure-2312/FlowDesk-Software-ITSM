@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Eye, Calendar, Clock, Sliders, CheckCircle2, X } from "./Iconos";
+import { Eye, Calendar, Clock, Sliders, CheckCircle2, X } from "@/shared/components/ui/Iconos";
 
 interface PestanaPresentacionCalendarioProps {
   config: any;

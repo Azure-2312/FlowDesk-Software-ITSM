@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Copy, Trash2, Snowflake, Download, Upload, AlertTriangle, AlertCircle, X, Check } from "./Iconos";
+import { Plus, Edit2, Copy, Trash2, Snowflake, Download, Upload, AlertTriangle, AlertCircle, X, Check } from "@/shared/components/ui/Iconos";
 
 interface PestanaPeriodosCongelamientoProps {
   config: any;

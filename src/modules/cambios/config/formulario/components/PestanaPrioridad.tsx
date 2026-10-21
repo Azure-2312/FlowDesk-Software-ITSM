@@ -140,7 +140,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
           </div>
 
           <Link
-            href="/admin/servicios/sla"
+            href="/plataforma/admin/servicios/sla"
             className="boton-secundario"
             style={{ fontSize: 12, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
           >

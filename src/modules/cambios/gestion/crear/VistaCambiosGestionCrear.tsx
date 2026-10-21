@@ -242,7 +242,7 @@ export default function PaginaCrearRFC() {
 
       setMensajeExito(`Cambio ${data.codigo_cambio} registrado formalmente.`);
       setTimeout(() => {
-        router.push("/cambios/gestion/todos");
+        router.push("/plataforma/cambios/gestion/todos");
       }, 1500);
     } catch {
       setError("Error de conexión al guardar el cambio.");
@@ -268,7 +268,7 @@ export default function PaginaCrearRFC() {
             Alineación ITIL v4 y Norma ISO/IEC 20000: Justificación técnica, CI afectado, planes de implementación y rollback.
           </p>
         </div>
-        <Link href="/cambios/gestion/todos" className="boton-mini" style={{ textDecoration: "none" }}>
+        <Link href="/plataforma/cambios/gestion/todos" className="boton-mini" style={{ textDecoration: "none" }}>
           Volver al Historial
         </Link>
       </div>
@@ -632,7 +632,7 @@ export default function PaginaCrearRFC() {
         )}
 
         <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
-          <Link href="/cambios/gestion/todos" className="boton-mini" style={{ textDecoration: "none", padding: "8px 16px" }}>
+          <Link href="/plataforma/cambios/gestion/todos" className="boton-mini" style={{ textDecoration: "none", padding: "8px 16px" }}>
             Cancelar
           </Link>
           <button

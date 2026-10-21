@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, CheckSquare, Layers, CheckCircle2, AlertTriangle, ArrowRight } from "./Iconos";
+import { Plus, Edit2, Trash2, CheckSquare, Layers, CheckCircle2, AlertTriangle, ArrowRight } from "@/shared/components/ui/Iconos";
 
 interface TareaCatalogo {
   id: string;

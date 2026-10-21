@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Play, AlertTriangle, AlertCircle, CheckCircle2, Clock, Sliders, X, Check } from "./Iconos";
+import { Play, AlertTriangle, AlertCircle, CheckCircle2, Clock, Sliders, X, Check } from "@/shared/components/ui/Iconos";
 
 interface PestanaConflictosCapacidadProps {
   config: any;

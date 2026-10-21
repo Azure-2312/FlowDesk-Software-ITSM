@@ -661,7 +661,7 @@ export const PestanaTiposCambio: React.FC<PestanaTiposCambioProps> = ({
                           {req.label}
                           {req.bloqueado_normativo && (
                             <span style={{ marginLeft: 6, fontSize: 10, color: "#64748b", fontWeight: 700 }}>
-                              [Normativo 🔒]
+                              [Normativo [Bloqueado]]
                             </span>
                           )}
                         </td>

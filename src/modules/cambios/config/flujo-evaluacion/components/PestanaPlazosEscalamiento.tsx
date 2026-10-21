@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, Clock, Play, AlertCircle, ShieldAlert, CheckCircle2, ArrowRight } from "./Iconos";
+import { Plus, Edit2, Trash2, Clock, Play, AlertCircle, ShieldAlert, CheckCircle2, ArrowRight } from "@/shared/components/ui/Iconos";
 
 interface PlazoPrioridad {
   prioridad_id: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, Users, Play, ShieldAlert, CheckCircle2, Clock, Calendar, FileText } from "./Iconos";
+import { Plus, Edit2, Trash2, Users, Play, ShieldAlert, CheckCircle2, Clock, Calendar, FileText } from "@/shared/components/ui/Iconos";
 
 interface MiembroComite {
   id_usuario: number;

@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "../formulario/components/BarraAccionesComun";
-import { ModalPublicacion } from "../formulario/components/ModalPublicacion";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "../formulario/components/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "../formulario/components/ModalRestaurarFabrica";
 
@@ -17,22 +17,22 @@ type TabId = "tipos" | "matriz_autoridad" | "modelos_estandar" | "reglas_clasifi
 const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion: string }> = {
   tipos: {
     numero: "1.3.3.2.1",
-    titulo: "1.3.3.2.1 Tipos de cambio",
+    titulo: "Tipos de cambio",
     descripcion: "Definición de tipos (Estándar, Normal, Emergencia), requisitos de campos y parámetros de ventana."
   },
   matriz_autoridad: {
     numero: "1.3.3.2.2",
-    titulo: "1.3.3.2.2 Matriz de autoridad",
+    titulo: "Matriz de autoridad",
     descripcion: "Asignación jerárquica de etapas de aprobación según riesgo, criticidad y condiciones técnicas."
   },
   modelos_estandar: {
     numero: "1.3.3.2.3",
-    titulo: "1.3.3.2.3 Modelos de cambio estándar",
+    titulo: "Modelos de cambio estándar",
     descripcion: "Catálogo de procedimientos rutinarios preautorizados con elegibilidad y control de calidad."
   },
   reglas_clasificacion: {
     numero: "1.3.3.2.4",
-    titulo: "1.3.3.2.4 Reglas de clasificación",
+    titulo: "Reglas de clasificación",
     descripcion: "Reglas automáticas de reclasificación de tipo, elevación de autoridad y bloqueos normativos."
   }
 };
@@ -212,21 +212,21 @@ export default function ConfiguracionTiposRequisitosPage() {
       {/* Navegación y Encabezado del Módulo */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748b", marginBottom: 6 }}>
-          <Link href="/admin/procesos" style={{ color: "#2563eb", textDecoration: "none" }}>
-            Procesos
+          <Link href="/plataforma/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>
+            Cambios
           </Link>
           <span>/</span>
-          <Link href="/admin/procesos/cambios/formulario" style={{ color: "#2563eb", textDecoration: "none" }}>
-            Gestión de Cambios
+          <Link href="/plataforma/admin/procesos/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>
+            Configuración
           </Link>
           <span>/</span>
-          <span style={{ color: "#0f172a", fontWeight: 600 }}>1.3.3.2 Tipos de cambio y requisitos</span>
+          <span style={{ color: "#0f172a", fontWeight: 600 }}>Tipos de cambio y requisitos</span>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
             <h1 style={{ margin: "0 0 4px 0", fontSize: 22, fontWeight: 800, color: "#0f172a" }}>
-              1.3.3.2 Tipos de Cambio y Requisitos
+              Tipos de Cambio y Requisitos
             </h1>
             <p style={{ margin: 0, fontSize: 13, color: "#475569" }}>
               Gobierno de directrices ITIL v4: tipos normativos, matriz de autoridad, catálogo de modelos estándar y reglas de elevación.
@@ -235,7 +235,7 @@ export default function ConfiguracionTiposRequisitosPage() {
 
           <div style={{ display: "flex", gap: 8 }}>
             <Link
-              href="/admin/procesos/cambios/formulario"
+              href="/plataforma/admin/procesos/cambios/formulario"
               style={{
                 padding: "6px 12px",
                 fontSize: 12,
@@ -247,10 +247,10 @@ export default function ConfiguracionTiposRequisitosPage() {
                 textDecoration: "none"
               }}
             >
-              ← Ir a 1.3.3.1 Formulario
+              ← Ir a Formulario
             </Link>
             <Link
-              href="/cambios/gestion/todos"
+              href="/plataforma/cambios/gestion/todos"
               style={{
                 padding: "6px 12px",
                 fontSize: 12,
