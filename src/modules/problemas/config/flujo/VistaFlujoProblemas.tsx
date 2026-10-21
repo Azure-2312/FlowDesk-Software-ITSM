@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "../formulario/components/BarraAccionesComun";
-import { ModalPublicacion } from "../formulario/components/ModalPublicacion";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "../formulario/components/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "../formulario/components/ModalRestaurarFabrica";
 import { PestanaEstados } from "./components/PestanaEstados";
@@ -219,19 +219,15 @@ export default function FlujoProblemasPage() {
     <div style={{ padding: "20px 28px 120px 28px", minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh" }}>
       {/* Breadcrumb reglamentario */}
       <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/admin" style={{ color: "#2563eb", textDecoration: "none" }}>
+        <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
+          Problemas
+        </Link>
+        {" / "}
+        <Link href="/plataforma/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
           Configuración
         </Link>
         {" / "}
-        <Link href="/admin/procesos" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Configuración de procesos
-        </Link>
-        {" / "}
-        <Link href="/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Gestión de problemas
-        </Link>
-        {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>1.3.4.2 Flujo de investigación y seguimiento</span>
+        <span style={{ color: "#0f172a", fontWeight: 600 }}>Flujo de investigación y seguimiento</span>
       </nav>
 
       {/* Encabezado Principal 1.3.4.2 */}
@@ -247,17 +243,7 @@ export default function FlujoProblemasPage() {
       }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{
-              backgroundColor: "#dbeafe",
-              color: "#1e40af",
-              fontSize: 12,
-              fontWeight: 700,
-              padding: "3px 8px",
-              borderRadius: 4,
-              fontFamily: "monospace"
-            }}>
-              1.3.4.2
-            </span>
+            <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Flujo</span>
             <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
               Flujo de Investigación y Seguimiento de Problemas
             </h1>
@@ -318,14 +304,14 @@ export default function FlujoProblemasPage() {
         overflowX: "auto"
       }}>
         {[
-          { id: "estados", label: "1.3.4.2.1 Estados" },
-          { id: "transiciones", label: "1.3.4.2.2 Transiciones y acciones" },
-          { id: "asignacion", label: "1.3.4.2.3 Asignación automática" },
-          { id: "objetivos", label: "1.3.4.2.4 Objetivos de tiempo" },
-          { id: "escalamiento", label: "1.3.4.2.5 Escalamiento" },
-          { id: "reapertura", label: "1.3.4.2.6 Reapertura" },
-          { id: "tareas", label: "1.3.4.2.7 Tareas predefinidas" },
-          { id: "mayores", label: "1.3.4.2.8 Problemas mayores" },
+          { id: "estados", label: "Estados" },
+          { id: "transiciones", label: "Transiciones y acciones" },
+          { id: "asignacion", label: "Asignación automática" },
+          { id: "objetivos", label: "Objetivos de tiempo" },
+          { id: "escalamiento", label: "Escalamiento" },
+          { id: "reapertura", label: "Reapertura" },
+          { id: "tareas", label: "Tareas predefinidas" },
+          { id: "mayores", label: "Problemas mayores" },
         ].map((tab) => {
           const activa = tabActiva === tab.id;
           return (

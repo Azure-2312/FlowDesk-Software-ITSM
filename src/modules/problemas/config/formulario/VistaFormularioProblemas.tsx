@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "./components/BarraAccionesComun";
-import { ModalPublicacion } from "./components/ModalPublicacion";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "./components/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "./components/ModalRestaurarFabrica";
 import { ModalVistaPrevia } from "./components/ModalVistaPrevia";
@@ -344,7 +344,7 @@ export default function ConfiguracionFormularioPage() {
   const handleExportar = () => {
     const dataSnapshot = {
       modulo: "gestion_de_problemas",
-      pantalla: "1.3.3.1 Configuración de formulario",
+      pantalla: "Configuración de formulario",
       ambito: tabActiva,
       version: versionPublicada,
       fecha_exportacion: new Date().toISOString(),
@@ -394,19 +394,15 @@ export default function ConfiguracionFormularioPage() {
     <div style={{ padding: "20px 28px 120px 28px", minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh" }}>
       {/* Breadcrumb reglamentario */}
       <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/admin" style={{ color: "#2563eb", textDecoration: "none" }}>
+        <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
+          Problemas
+        </Link>
+        {" / "}
+        <Link href="/plataforma/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
           Configuración
         </Link>
         {" / "}
-        <Link href="/admin/procesos" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Configuración de procesos
-        </Link>
-        {" / "}
-        <Link href="/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Gestión de problemas
-        </Link>
-        {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>1.3.3.1 Configuración de formulario</span>
+        <span style={{ color: "#0f172a", fontWeight: 600 }}>Formulario</span>
       </nav>
 
       {/* Encabezado Principal de la Pantalla 1.3.3.1 */}
@@ -422,17 +418,7 @@ export default function ConfiguracionFormularioPage() {
       }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{
-              backgroundColor: "#dbeafe",
-              color: "#1e40af",
-              fontSize: 12,
-              fontWeight: 700,
-              padding: "3px 8px",
-              borderRadius: 4,
-              fontFamily: "monospace"
-            }}>
-              1.3.3.1
-            </span>
+            <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Formulario</span>
             <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
               Configuración de Formulario de Problemas
             </h1>
@@ -493,12 +479,12 @@ export default function ConfiguracionFormularioPage() {
         overflowX: "auto"
       }}>
         {[
-          { id: "campos", label: "1.3.3.1.1 Campos" },
-          { id: "campos_personalizados", label: "1.3.3.1.2 Campos personalizados" },
-          { id: "listas_catalogos", label: "1.3.3.1.3 Listas y catálogos" },
-          { id: "matriz_prioridad", label: "1.3.3.1.4 Matriz de prioridad" },
-          { id: "plantillas", label: "1.3.3.1.5 Plantillas de problema" },
-          { id: "vista_ticket", label: "1.3.3.1.6 Vista del ticket" },
+          { id: "campos", label: "Campos" },
+          { id: "campos_personalizados", label: "Campos personalizados" },
+          { id: "listas_catalogos", label: "Listas y catálogos" },
+          { id: "matriz_prioridad", label: "Matriz de prioridad" },
+          { id: "plantillas", label: "Plantillas de problema" },
+          { id: "vista_ticket", label: "Vista del ticket" },
         ].map((tab) => {
           const activa = tabActiva === tab.id;
           return (
