@@ -38,22 +38,21 @@ async function obtenerOpcionesPlanasPorUsuario(idUsuario: number): Promise<Opcio
 }
 
 /**
- * Regla de la arquitectura del menu: una carpeta que solo muestra un hijo no
- * aporta nada, asi que desaparece y el hijo sube un nivel. Se aplica de abajo
- * hacia arriba, para que el colapso se propague en cascada.
+ * Regla de la arquitectura del menu: una subcarpeta intermedia que solo muestra
+ * un hijo se colapsa para simplificar la navegacion hacia arriba.
  *
- * Se hace sobre el arbol que ve cada perfil, no sobre el catalogo: el catalogo
- * es uno solo (carpetas por modulo) y la visibilidad N:M decide que parte ve
- * cada perfil. Si la carpeta se queda sin hijos visibles, tampoco se dibuja.
+ * Sin embargo, las carpetas de nivel raiz (esNivelRaiz = true) se conservan
+ * intactas para preservar la identidad de los dominios funcionales (ITSM / ITIL)
+ * y evitar que pantallas unicas queden como elementos huerfanos sin contexto.
  */
-function colapsarCarpetasDeUnHijo(nodos: OpcionMenuArbol[]): OpcionMenuArbol[] {
+function colapsarCarpetasDeUnHijo(nodos: OpcionMenuArbol[], esNivelRaiz: boolean = false): OpcionMenuArbol[] {
   const resultado: OpcionMenuArbol[] = [];
 
   for (const nodo of nodos) {
-    nodo.hijos = colapsarCarpetasDeUnHijo(nodo.hijos);
+    nodo.hijos = colapsarCarpetasDeUnHijo(nodo.hijos, false);
 
     if (!nodo.url_menu && nodo.hijos.length === 0) continue;
-    if (nodo.hijos.length === 1) {
+    if (!esNivelRaiz && !nodo.url_menu && nodo.hijos.length === 1) {
       resultado.push(nodo.hijos[0]);
       continue;
     }
@@ -96,7 +95,7 @@ function construirArbol(opciones: OpcionMenuPlana[]): OpcionMenuArbol[] {
     }
   });
 
-  return colapsarCarpetasDeUnHijo(raiz);
+  return colapsarCarpetasDeUnHijo(raiz, true);
 }
 
 /**
@@ -142,4 +141,3 @@ export function menuIncluyePrefijo(menu: OpcionMenuArbol[], prefijo: string): bo
   }
   return false;
 }
-
