@@ -202,7 +202,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
 3. **Visibilidad N:M.** La única fuente de “quién ve qué” es `opciones_menu_perfiles`. No se crean copias de la misma pantalla por perfil.
 4. **Nombre neutro.** El nombre no cambia según el perfil; el matiz de alcance va en `descripcion`.
 5. **Carpeta visible si un descendiente es visible.** No basta con mirar hijos directos: una raíz cuyos hijos son todas carpetas debe seguir apareciendo si algún nieto es visible.
-6. **Colapso de un solo hijo.** Si una carpeta visible tiene un solo hijo visible, la carpeta no se dibuja y el hijo sube un nivel. Se aplica en cascada, de abajo hacia arriba y con cualquier profundidad, incluidas las ramas de configuración integradas en un módulo. Si se queda sin hijos visibles, tampoco se dibuja.
+6. **Colapso de carpetas intermedias de un solo hijo.** Si una carpeta visible *intermedia* tiene un solo hijo visible, la carpeta no se dibuja y el hijo sube un nivel para simplificar la navegación. Las 12 raíces de dominio funcional (nivel 1) se preservan intactas (`esNivelRaiz = true`) para mantener la coherencia conceptual de los dominios ITIL/ITSM y evitar pantallas huérfanas sin categoría.
 7. **Doce raíces, no doce entradas por perfil.** El catálogo tiene 12 raíces; el primer nivel visible depende de la visibilidad y del colapso.
 8. **El menú autoriza.** `exigirMenuPagina` bloquea páginas que no están en el menú del usuario; los detalles que no son opción propia se autorizan por prefijo (`menuIncluyePrefijo`).
 9. **Inicio único y administración.** `/dashboard` redirige al panel del perfil activo; el Administrador gestiona estructura, nombres, orden, visibilidad y bloqueo en `/plataforma/admin/menu` (alias público `/admin/menu`).
@@ -221,395 +221,417 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
 
 ## 5. Árbol actual por perfil
 
-> **Fuente:** captura generada desde la base el 2026-10-20. Se reproduce el árbol visible con el colapso de carpetas de un solo hijo, después de distribuir la configuración en los módulos dueños.
+> **Fuente:** captura generada desde la base de datos el 2026-10-21 tras la canonización total de URLs a `/plataforma/...` y la estabilización de raíces de dominio ITIL.
 
-### PERFIL 1 - Administrador
-
-- Panel de administración - `/plataforma/perfiles/administrador/panel`
-- Mesa de Servicio
-  - Incidentes
-    - Todos los incidentes - `/plataforma/incidentes`
-    - Configuración del formulario - `/plataforma/incidentes/configuracion`
-    - Flujo de estados y acciones - `/admin/tickets-vistas?seccion=estados&tipo=incidente`
-  - Solicitudes
-    - Todas las solicitudes - `/plataforma/solicitudes`
-    - Configuración del formulario - `/plataforma/solicitudes/configuracion`
-    - Flujo de atención y aprobaciones - `/admin/tickets-vistas?seccion=estados&tipo=solicitud`
-  - Operacion de la mesa
-    - Todos los tickets - `/plataforma/tickets/gestion/todos`
-    - Auditoria de tickets - `/plataforma/tickets/gestion/auditoria`
-- Cambios
-  - Historial de cambios - `/cambios/gestion/todos`
-  - Configuración de formulario - `/admin/procesos/cambios/formulario`
-  - Flujo de evaluación, autorización y revisión posterior - `/admin/procesos/cambios/flujo-evaluacion`
-  - Tipos de cambio y requisitos - `/admin/procesos/cambios/tipos-requisitos`
-  - Notificaciones de cambios - `/admin/procesos/cambios/notificaciones-calendario`
-- Problemas
-  - Registro de problemas - `/problemas`
-  - Configuración de formulario - `/admin/procesos/problemas/formulario`
-  - Flujo de investigación y seguimiento - `/admin/procesos/problemas/flujo`
-  - Relación con incidentes, errores conocidos y conocimiento - `/admin/procesos/problemas/relaciones`
-- Activos y CMDB
-  - Inventario de activos - `/activos/inventario`
-  - Catálogos
-    - Ciclos de vida y reglas de transición - `/admin/activos-config/ciclos-vida-transiciones`
-    - Licencias y contratos - `/admin/activos-config/licencias-contratos`
-    - Tipos de elementos de configuración y relaciones de CMDB - `/admin/activos-config/cmdb-relaciones`
-    - Tipos, modelos y atributos - `/admin/activos-config/tipos-modelos-atributos`
-- Categorías, responsables y reglas de publicación y revisión - `/admin/conocimiento-config`
-- Catálogo de Servicios
-  - Configuración de categorías - `/admin/servicios?vista=categorias`
-  - Crear servicio - `/admin/servicios?vista=crear`
-  - Objetivos SLA - `/admin/servicios/sla`
-  - Servicios de incidentes - `/admin/servicios?tipo=1`
-  - Servicios de solicitudes - `/admin/servicios?tipo=2`
-- Eventos y resiliencia - `/operacion`
-- Reportes
-  - Indicadores operativos y SLA - `/plataforma/reportes/operativos`
-  - Tableros - `/plataforma/reportes/tableros`
-- Organización
-  - Departamentos empresariales - `/admin/departamentos-empresa`
-  - Departamentos y grupos resolutores de TI - `/admin/departamentos`
-  - Supervisores - `/admin/departamentos?vista=supervisores`
-  - Técnicos y niveles de soporte - `/admin/tecnicos`
-- Plataforma
-  - Auditoría de cambios de configuración - `/admin/auditoria-sistema`
-  - Registros de seguridad y autenticación - `/admin/seguridad-logs`
-  - Retención y mantenimiento de datos - `/admin/mantenimiento-datos`
-  - Salud del sistema - `/admin/salud-sistema`
-  - Identidades
-    - Gestión de usuarios - `/admin/usuarios`
-    - Perfiles y permisos - `/admin/perfiles`
-  - Menú y notificaciones
-    - Configuración de contacto - `/admin/notificaciones?seccion=contacto`
-    - Estructura del menú - `/admin/menu`
-    - Plantillas de correo y otros canales - `/admin/notificaciones?seccion=plantillas`
-- Mi cuenta
-  - Mi perfil y seguridad - `/mi-cuenta`
-  - Preferencias de notificación - `/mi-cuenta/notificaciones`
-
-### PERFIL 2 - Tecnico
+### PERFIL 1 — Administrador
 
 - Mi trabajo
-  - Panel del técnico - `/plataforma/perfiles/tecnico/panel`
-  - Mi agenda y disponibilidad - `/plataforma/perfiles/tecnico/agenda`
-  - Mi desempeño - `/plataforma/perfiles/tecnico/desempeno`
-  - Mis tareas - `/plataforma/perfiles/tecnico/tareas`
+  - Panel de administración — `/plataforma/perfiles/administrador/panel`
 - Mesa de Servicio
   - Incidentes
-    - Incidentes asignados a mi - `/plataforma/incidentes/asignados`
-    - Bandeja de incidentes - `/plataforma/incidentes/bandeja`
-    - Incidentes resueltos - `/plataforma/incidentes/resueltos`
-    - Registrar incidente - `/plataforma/incidentes/crear`
-    - Sala de crisis (incidente mayor) - `/plataforma/perfiles/tecnico/mesa/incidente-mayor`
+    - Todos los incidentes — `/plataforma/incidentes`
+    - Configuración del formulario — `/plataforma/incidentes/configuracion`
+    - Flujo de estados y acciones — `/plataforma/admin/tickets-vistas?seccion=estados&tipo=incidente`
   - Solicitudes
-    - Solicitudes asignadas a mi - `/plataforma/solicitudes/asignados`
-    - Bandeja de solicitudes - `/plataforma/solicitudes/bandeja`
-    - Solicitudes resueltas - `/plataforma/solicitudes/resueltos`
-    - Registrar solicitud - `/plataforma/solicitudes/crear`
+    - Todas las solicitudes — `/plataforma/solicitudes`
+    - Configuración del formulario — `/plataforma/solicitudes/configuracion`
+    - Flujo de atención y aprobaciones — `/plataforma/admin/tickets-vistas?seccion=estados&tipo=solicitud`
   - Operacion de la mesa
-    - Busqueda avanzada de tickets - `/plataforma/perfiles/tecnico/mesa/buscar`
-    - Historial de mis tickets - `/plataforma/tickets/gestion/mios`
-  - SLA
-    - Objetivos de tiempo vigentes - `/plataforma/perfiles/tecnico/sla/objetivos`
-    - Semaforo de SLA de mi cola - `/plataforma/perfiles/tecnico/sla/semaforo`
-- Mis cambios
-  - Calendario de mis cambios - `/plataforma/perfiles/tecnico/cambios/calendario`
-  - Cambios por implementar - `/plataforma/perfiles/tecnico/cambios/implementacion`
-  - Cambios que afectan mis servicios - `/plataforma/perfiles/tecnico/cambios/impacto`
-  - Historial de mis cambios - `/plataforma/perfiles/tecnico/cambios/historial`
-  - Mis cambios - `/plataforma/perfiles/tecnico/cambios/mis-cambios`
-  - Registrar solicitud RFC - `/plataforma/perfiles/tecnico/cambios/nuevo`
+    - Todos los tickets — `/plataforma/tickets/gestion/todos`
+    - Auditoria de tickets — `/plataforma/tickets/gestion/auditoria`
+- Cambios
+  - Historial de cambios — `/plataforma/cambios/gestion/todos`
+  - Configuración de formulario — `/plataforma/admin/procesos/cambios/formulario`
+  - Flujo de evaluación, autorización y revisión posterior — `/plataforma/admin/procesos/cambios/flujo-evaluacion`
+  - Tipos de cambio y requisitos — `/plataforma/admin/procesos/cambios/tipos-requisitos`
+  - Notificaciones de cambios — `/plataforma/admin/procesos/cambios/notificaciones-calendario`
 - Problemas
-  - Candidatos de mi grupo - `/plataforma/perfiles/tecnico/problemas/candidatos`
-  - Consultar KEDB - `/plataforma/perfiles/tecnico/problemas/errores-conocidos`
-  - Problemas asignados a mí - `/plataforma/perfiles/tecnico/problemas/asignados`
-  - Problemas de mi grupo - `/plataforma/perfiles/tecnico/problemas/grupo`
-  - Registrar problema - `/plataforma/perfiles/tecnico/problemas/nuevo`
+  - Registro de problemas — `/plataforma/problemas`
+  - Configuración de formulario — `/plataforma/admin/procesos/problemas/formulario`
+  - Flujo de investigación y seguimiento — `/plataforma/admin/procesos/problemas/flujo`
+  - Relación con incidentes, errores conocidos y conocimiento — `/plataforma/admin/procesos/problemas/relaciones`
+- Activos y CMDB
+  - Inventario de activos — `/plataforma/activos/inventario`
+  - Catálogos
+    - Ciclos de vida y reglas de transición — `/plataforma/admin/activos-config/ciclos-vida-transiciones`
+    - Licencias y contratos — `/plataforma/admin/activos-config/licencias-contratos`
+    - Tipos de elementos de configuración y relaciones de CMDB — `/plataforma/admin/activos-config/cmdb-relaciones`
+    - Tipos, modelos y atributos — `/plataforma/admin/activos-config/tipos-modelos-atributos`
+- Conocimiento
+  - Categorías, responsables y reglas de publicación y revisión — `/plataforma/admin/conocimiento-config`
+- Catálogo de Servicios
+  - Configuración de categorías — `/plataforma/admin/servicios?vista=categorias`
+  - Crear servicio — `/plataforma/admin/servicios?vista=crear`
+  - Objetivos SLA — `/plataforma/admin/servicios/sla`
+  - Servicios de incidentes — `/plataforma/admin/servicios?tipo=1`
+  - Servicios de solicitudes — `/plataforma/admin/servicios?tipo=2`
+- Operación
+  - Eventos y resiliencia — `/plataforma/operacion`
+- Reportes
+  - Indicadores operativos y SLA — `/plataforma/reportes/operativos`
+  - Tableros — `/plataforma/reportes/tableros`
+- Organización
+  - Departamentos empresariales — `/plataforma/admin/departamentos-empresa`
+  - Departamentos y grupos resolutores de TI — `/plataforma/admin/departamentos`
+  - Supervisores — `/plataforma/admin/departamentos?vista=supervisores`
+  - Técnicos y niveles de soporte — `/plataforma/admin/tecnicos`
+- Plataforma
+  - Auditoría de cambios de configuración — `/plataforma/admin/auditoria-sistema`
+  - Registros de seguridad y autenticación — `/plataforma/admin/seguridad-logs`
+  - Retención y mantenimiento de datos — `/plataforma/admin/mantenimiento-datos`
+  - Salud del sistema — `/plataforma/admin/salud-sistema`
+  - Identidades
+    - Gestión de usuarios — `/plataforma/admin/usuarios`
+    - Perfiles y permisos — `/plataforma/admin/perfiles`
+  - Menú y notificaciones
+    - Configuración de contacto — `/plataforma/admin/notificaciones?seccion=contacto`
+    - Estructura del menú — `/plataforma/admin/menu`
+    - Plantillas de correo y otros canales — `/plataforma/admin/notificaciones?seccion=plantillas`
+- Mi cuenta
+  - Mi perfil y seguridad — `/plataforma/mi-cuenta`
+  - Preferencias de notificación — `/plataforma/mi-cuenta/notificaciones`
+
+### PERFIL 2 — Tecnico
+
+- Mi trabajo
+  - Panel del técnico — `/plataforma/perfiles/tecnico/panel`
+  - Mi agenda y disponibilidad — `/plataforma/perfiles/tecnico/agenda`
+  - Mi desempeño — `/plataforma/perfiles/tecnico/desempeno`
+  - Mis tareas — `/plataforma/perfiles/tecnico/tareas`
+- Mesa de Servicio
+  - Incidentes
+    - Incidentes asignados a mi — `/plataforma/incidentes/asignados`
+    - Bandeja de incidentes — `/plataforma/incidentes/bandeja`
+    - Incidentes resueltos — `/plataforma/incidentes/resueltos`
+    - Registrar incidente — `/plataforma/incidentes/crear`
+    - Sala de crisis (incidente mayor) — `/plataforma/perfiles/tecnico/mesa/incidente-mayor`
+  - Solicitudes
+    - Solicitudes asignadas a mi — `/plataforma/solicitudes/asignados`
+    - Bandeja de solicitudes — `/plataforma/solicitudes/bandeja`
+    - Solicitudes resueltas — `/plataforma/solicitudes/resueltos`
+    - Registrar solicitud — `/plataforma/solicitudes/crear`
+  - Operacion de la mesa
+    - Busqueda avanzada de tickets — `/plataforma/perfiles/tecnico/mesa/buscar`
+    - Historial de mis tickets — `/plataforma/tickets/gestion/mios`
+  - SLA
+    - Objetivos de tiempo vigentes — `/plataforma/perfiles/tecnico/sla/objetivos`
+    - Semaforo de SLA de mi cola — `/plataforma/perfiles/tecnico/sla/semaforo`
+- Cambios
+  - Mis cambios
+    - Calendario de mis cambios — `/plataforma/perfiles/tecnico/cambios/calendario`
+    - Cambios por implementar — `/plataforma/perfiles/tecnico/cambios/implementacion`
+    - Cambios que afectan mis servicios — `/plataforma/perfiles/tecnico/cambios/impacto`
+    - Historial de mis cambios — `/plataforma/perfiles/tecnico/cambios/historial`
+    - Mis cambios — `/plataforma/perfiles/tecnico/cambios/mis-cambios`
+    - Registrar solicitud RFC — `/plataforma/perfiles/tecnico/cambios/nuevo`
+- Problemas
+  - Candidatos de mi grupo — `/plataforma/perfiles/tecnico/problemas/candidatos`
+  - Consultar KEDB — `/plataforma/perfiles/tecnico/problemas/errores-conocidos`
+  - Problemas asignados a mí — `/plataforma/perfiles/tecnico/problemas/asignados`
+  - Problemas de mi grupo — `/plataforma/perfiles/tecnico/problemas/grupo`
+  - Registrar problema — `/plataforma/perfiles/tecnico/problemas/nuevo`
 - Activos y CMDB
   - Inventario
-    - Inventario físico en campo - `/plataforma/perfiles/tecnico/activos/conteos`
-    - Inventario técnico - `/plataforma/perfiles/tecnico/activos/inventario`
-  - Mantenimiento y reparaciones - `/plataforma/perfiles/tecnico/activos/mantenimiento`
-  - Consultar licencias - `/plataforma/perfiles/tecnico/activos/licencias`
-  - Mapa de topología CMDB - `/plataforma/perfiles/tecnico/activos/mapa`
+    - Inventario físico en campo — `/plataforma/perfiles/tecnico/activos/conteos`
+    - Inventario técnico — `/plataforma/perfiles/tecnico/activos/inventario`
+  - Mantenimiento y reparaciones — `/plataforma/perfiles/tecnico/activos/mantenimiento`
+  - Consultar licencias — `/plataforma/perfiles/tecnico/activos/licencias`
+  - Mapa de topología CMDB — `/plataforma/perfiles/tecnico/activos/mapa`
 - Conocimiento
-  - Consultar base de conocimiento - `/plataforma/perfiles/tecnico/conocimiento/base`
-  - Crear artículo - `/plataforma/perfiles/tecnico/conocimiento/nuevo`
-  - Mis artículos - `/plataforma/perfiles/tecnico/conocimiento/mis-articulos`
-  - Revisiones pendientes - `/plataforma/perfiles/tecnico/conocimiento/revisiones`
-- Catálogo de servicios - `/plataforma/servicios/catalogo`
+  - Consultar base de conocimiento — `/plataforma/perfiles/tecnico/conocimiento/base`
+  - Crear artículo — `/plataforma/perfiles/tecnico/conocimiento/nuevo`
+  - Mis artículos — `/plataforma/perfiles/tecnico/conocimiento/mis-articulos`
+  - Revisiones pendientes — `/plataforma/perfiles/tecnico/conocimiento/revisiones`
+- Catálogo de Servicios
+  - Catálogo de servicios — `/plataforma/servicios/catalogo`
 - Mi cuenta
-  - Mi perfil y seguridad - `/mi-cuenta`
-  - Preferencias de notificación - `/mi-cuenta/notificaciones`
+  - Mi perfil y seguridad — `/plataforma/mi-cuenta`
+  - Preferencias de notificación — `/plataforma/mi-cuenta/notificaciones`
 
-### PERFIL 3 - Solicitante
+### PERFIL 3 — Solicitante
 
-- Panel del solicitante - `/plataforma/perfiles/solicitante/panel`
+- Mi trabajo
+  - Panel del solicitante — `/plataforma/perfiles/solicitante/panel`
 - Mesa de Servicio
   - Incidentes
-    - Mis incidentes - `/plataforma/incidentes/mios`
-    - Registrar incidente - `/plataforma/incidentes/crear`
-    - Catalogo de incidentes - `/plataforma/incidentes/catalogo`
+    - Mis incidentes — `/plataforma/incidentes/mios`
+    - Registrar incidente — `/plataforma/incidentes/crear`
+    - Catalogo de incidentes — `/plataforma/incidentes/catalogo`
   - Solicitudes
-    - Mis solicitudes - `/plataforma/solicitudes/mios`
-    - Registrar solicitud - `/plataforma/solicitudes/crear`
-    - Catalogo de solicitudes - `/plataforma/solicitudes/catalogo`
-  - Avisos de servicio - `/plataforma/avisos/mantenimientos`
-- Mis activos - `/activos/mis-activos`
-- Base de conocimiento - `/conocimiento`
+    - Mis solicitudes — `/plataforma/solicitudes/mios`
+    - Registrar solicitud — `/plataforma/solicitudes/crear`
+    - Catalogo de solicitudes — `/plataforma/solicitudes/catalogo`
+  - Avisos de servicio — `/plataforma/avisos/mantenimientos`
+- Activos y CMDB
+  - Mis activos — `/plataforma/activos/mis-activos`
+- Conocimiento
+  - Base de conocimiento — `/plataforma/conocimiento`
 - Mi cuenta
-  - Mi perfil y seguridad - `/mi-cuenta`
-  - Preferencias de notificación - `/mi-cuenta/notificaciones`
+  - Mi perfil y seguridad — `/plataforma/mi-cuenta`
+  - Preferencias de notificación — `/plataforma/mi-cuenta/notificaciones`
 
-### PERFIL 4 - Supervisor
+### PERFIL 4 — Supervisor
 
 - Mi trabajo
   - Equipo
-    - Ausencias y guardias del equipo - `/plataforma/perfiles/supervisor/equipo/ausencias`
-    - Vistas y respuestas compartidas - `/plataforma/perfiles/supervisor/equipo/vistas`
-  - Panel de supervisión - `/plataforma/perfiles/supervisor/panel`
+    - Ausencias y guardias del equipo — `/plataforma/perfiles/supervisor/equipo/ausencias`
+    - Vistas y respuestas compartidas — `/plataforma/perfiles/supervisor/equipo/vistas`
+  - Panel de supervisión — `/plataforma/perfiles/supervisor/panel`
 - Mesa de Servicio
   - Incidentes
-    - Todos los incidentes - `/plataforma/incidentes`
-    - Bandeja de incidentes - `/plataforma/incidentes/bandeja`
-    - Incidentes resueltos - `/plataforma/incidentes/resueltos`
-    - Incidentes mayores - `/plataforma/incidentes/mayores`
+    - Todos los incidentes — `/plataforma/incidentes`
+    - Bandeja de incidentes — `/plataforma/incidentes/bandeja`
+    - Incidentes resueltos — `/plataforma/incidentes/resueltos`
+    - Incidentes mayores — `/plataforma/incidentes/mayores`
   - Solicitudes
-    - Todas las solicitudes - `/plataforma/solicitudes`
-    - Bandeja de solicitudes - `/plataforma/solicitudes/bandeja`
-    - Solicitudes resueltas - `/plataforma/solicitudes/resueltos`
+    - Todas las solicitudes — `/plataforma/solicitudes`
+    - Bandeja de solicitudes — `/plataforma/solicitudes/bandeja`
+    - Solicitudes resueltas — `/plataforma/solicitudes/resueltos`
   - Operacion de la mesa
-    - Centro de asignacion - `/plataforma/tickets/gestion/asignar`
-    - Bandeja consolidada de pendientes - `/plataforma/tickets/gestion/bandeja`
-    - Historial consolidado de resueltos - `/plataforma/tickets/gestion/resueltos`
-    - Todos los tickets - `/plataforma/tickets/gestion/todos`
-    - Registrar ticket para un usuario - `/plataforma/tickets/gestion/crear`
-    - Auditoria de tickets - `/plataforma/tickets/gestion/auditoria`
+    - Centro de asignacion — `/plataforma/tickets/gestion/asignar`
+    - Bandeja consolidada de pendientes — `/plataforma/tickets/gestion/bandeja`
+    - Historial consolidado de resueltos — `/plataforma/tickets/gestion/resueltos`
+    - Todos los tickets — `/plataforma/tickets/gestion/todos`
+    - Registrar ticket para un usuario — `/plataforma/tickets/gestion/crear`
+    - Auditoria de tickets — `/plataforma/tickets/gestion/auditoria`
   - SLA
-    - Escalamientos y riesgos de SLA - `/plataforma/perfiles/supervisor/sla/escalamientos`
-    - Incumplimientos y causas - `/plataforma/perfiles/supervisor/sla/incumplimientos`
-    - Objetivos de tiempo vigentes - `/plataforma/perfiles/tecnico/sla/objetivos`
-    - Semaforo de SLA del grupo - `/plataforma/perfiles/supervisor/sla/semaforo`
+    - Escalamientos y riesgos de SLA — `/plataforma/perfiles/supervisor/sla/escalamientos`
+    - Incumplimientos y causas — `/plataforma/perfiles/supervisor/sla/incumplimientos`
+    - Objetivos de tiempo vigentes — `/plataforma/perfiles/tecnico/sla/objetivos`
+    - Semaforo de SLA del grupo — `/plataforma/perfiles/supervisor/sla/semaforo`
 - Cambios
   - Mis cambios
-    - Aprobaciones técnicas de RFC - `/plataforma/perfiles/supervisor/cambios/aprobaciones`
-    - Cambios que afectan a mi equipo - `/plataforma/perfiles/supervisor/cambios/impacto`
-    - Programación de implementaciones del equipo - `/plataforma/perfiles/supervisor/cambios/programar`
-  - Calendario de cambios - `/cambios/gestion/calendario`
+    - Aprobaciones técnicas de RFC — `/plataforma/perfiles/supervisor/cambios/aprobaciones`
+    - Cambios que afectan a mi equipo — `/plataforma/perfiles/supervisor/cambios/impacto`
+    - Programación de implementaciones del equipo — `/plataforma/perfiles/supervisor/cambios/programar`
+  - Calendario de cambios — `/plataforma/cambios/gestion/calendario`
 - Problemas
-  - Asignación de problemas - `/plataforma/perfiles/supervisor/problemas/asignar`
-  - Errores conocidos (KEDB) - `/problemas/kedb`
-  - Registro de problemas - `/problemas`
+  - Asignación de problemas — `/plataforma/perfiles/supervisor/problemas/asignar`
+  - Errores conocidos (KEDB) — `/plataforma/problemas/kedb`
+  - Registro de problemas — `/plataforma/problemas`
 - Activos y CMDB
-  - Inventario de activos - `/activos/inventario`
-  - Aprobación de bajas de mi área - `/plataforma/perfiles/supervisor/activos/bajas`
-  - Licencias de software - `/activos/licencias`
+  - Inventario de activos — `/plataforma/activos/inventario`
+  - Aprobación de bajas de mi área — `/plataforma/perfiles/supervisor/activos/bajas`
+  - Licencias de software — `/plataforma/activos/licencias`
 - Conocimiento
-  - Base de conocimiento - `/conocimiento`
-  - Revisión y publicación de artículos - `/plataforma/perfiles/supervisor/conocimiento/revisiones`
+  - Base de conocimiento — `/plataforma/conocimiento`
+  - Revisión y publicación de artículos — `/plataforma/perfiles/supervisor/conocimiento/revisiones`
 - Operación
-  - Disponibilidad, capacidad y continuidad - `/operacion/resiliencia`
-  - Eventos y alertas - `/operacion/eventos`
+  - Disponibilidad, capacidad y continuidad — `/plataforma/operacion/resiliencia`
+  - Eventos y alertas — `/plataforma/operacion/eventos`
 - Reportes
-  - Indicadores operativos y SLA - `/plataforma/reportes/operativos`
-  - Productividad individual - `/plataforma/reportes/productividad`
+  - Indicadores operativos y SLA — `/plataforma/reportes/operativos`
+  - Productividad individual — `/plataforma/reportes/productividad`
 - Mi cuenta
-  - Mi perfil y seguridad - `/mi-cuenta`
-  - Preferencias de notificación - `/mi-cuenta/notificaciones`
+  - Mi perfil y seguridad — `/plataforma/mi-cuenta`
+  - Preferencias de notificación — `/plataforma/mi-cuenta/notificaciones`
 
-### PERFIL 5 - Gestor de Area
+### PERFIL 5 — Gestor de Area
 
 - Mi trabajo
   - Aprobaciones
-    - Delegación de aprobaciones - `/plataforma/perfiles/gestor-area/aprobaciones/delegacion`
-    - Historial de aprobaciones de mi área - `/plataforma/perfiles/gestor-area/aprobaciones/historial`
-  - Panel del área - `/plataforma/perfiles/gestor-area/panel`
+    - Delegación de aprobaciones — `/plataforma/perfiles/gestor-area/aprobaciones/delegacion`
+    - Historial de aprobaciones de mi área — `/plataforma/perfiles/gestor-area/aprobaciones/historial`
+  - Panel del área — `/plataforma/perfiles/gestor-area/panel`
 - Mesa de Servicio
   - Incidentes
-    - Mis incidentes - `/plataforma/incidentes/mios`
-    - Incidentes de mi departamento - `/plataforma/incidentes/departamento`
+    - Mis incidentes — `/plataforma/incidentes/mios`
+    - Incidentes de mi departamento — `/plataforma/incidentes/departamento`
   - Solicitudes
-    - Mis solicitudes - `/plataforma/solicitudes/mios`
-    - Solicitudes de mi departamento - `/plataforma/solicitudes/departamento`
-    - Catalogo de solicitudes - `/plataforma/solicitudes/catalogo`
-    - Aprobaciones de solicitudes - `/plataforma/solicitudes/aprobaciones`
+    - Mis solicitudes — `/plataforma/solicitudes/mios`
+    - Solicitudes de mi departamento — `/plataforma/solicitudes/departamento`
+    - Catalogo de solicitudes — `/plataforma/solicitudes/catalogo`
+    - Aprobaciones de solicitudes — `/plataforma/solicitudes/aprobaciones`
   - Operacion de la mesa
-    - Colaboradores de mi area - `/plataforma/tickets/gestion/colaboradores`
-    - Tickets de mi departamento - `/plataforma/tickets/gestion/departamento`
-    - Registrar ticket para un usuario - `/plataforma/tickets/gestion/crear`
+    - Colaboradores de mi area — `/plataforma/tickets/gestion/colaboradores`
+    - Tickets de mi departamento — `/plataforma/tickets/gestion/departamento`
+    - Registrar ticket para un usuario — `/plataforma/tickets/gestion/crear`
 - Cambios
-  - Cambios con interrupción para mi área - `/plataforma/perfiles/gestor-area/cambios/impacto`
-  - Calendario de cambios - `/cambios/gestion/calendario`
-  - Solicitar un cambio - `/cambios/gestion/crear`
-  - Aprobación de negocio de cambios - `/plataforma/perfiles/gestor-area/cambios/aprobaciones`
+  - Cambios con interrupción para mi área — `/plataforma/perfiles/gestor-area/cambios/impacto`
+  - Calendario de cambios — `/plataforma/cambios/gestion/calendario`
+  - Solicitar un cambio — `/plataforma/cambios/gestion/crear`
+  - Aprobación de negocio de cambios — `/plataforma/perfiles/gestor-area/cambios/aprobaciones`
 - Activos y CMDB
-  - Activos de mi área - `/plataforma/perfiles/gestor-area/activos`
-  - Licencias y contratos de mi departamento - `/plataforma/perfiles/gestor-area/contratos`
-- Base de conocimiento - `/conocimiento`
-- Reportes del área - `/plataforma/reportes/area`
+  - Activos de mi área — `/plataforma/perfiles/gestor-area/activos`
+  - Licencias y contratos de mi departamento — `/plataforma/perfiles/gestor-area/contratos`
+- Conocimiento
+  - Base de conocimiento — `/plataforma/conocimiento`
+- Reportes
+  - Reportes del área — `/plataforma/reportes/area`
 - Mi cuenta
-  - Mi perfil y seguridad - `/mi-cuenta`
-  - Preferencias de notificación - `/mi-cuenta/notificaciones`
+  - Mi perfil y seguridad — `/plataforma/mi-cuenta`
+  - Preferencias de notificación — `/plataforma/mi-cuenta/notificaciones`
 
-### PERFIL 6 - Auditor
+### PERFIL 6 — Auditor
 
-- Panel de auditoría - `/plataforma/perfiles/auditor/panel`
+- Mi trabajo
+  - Panel de auditoría — `/plataforma/perfiles/auditor/panel`
 - Mesa de Servicio
   - Incidentes
-    - Todos los incidentes - `/plataforma/incidentes`
-    - Incidentes resueltos - `/plataforma/incidentes/resueltos`
+    - Todos los incidentes — `/plataforma/incidentes`
+    - Incidentes resueltos — `/plataforma/incidentes/resueltos`
   - Solicitudes
-    - Todas las solicitudes - `/plataforma/solicitudes`
-    - Solicitudes resueltas - `/plataforma/solicitudes/resueltos`
+    - Todas las solicitudes — `/plataforma/solicitudes`
+    - Solicitudes resueltas — `/plataforma/solicitudes/resueltos`
   - Operacion de la mesa
-    - Historial consolidado de resueltos - `/plataforma/tickets/gestion/resueltos`
-    - Todos los tickets - `/plataforma/tickets/gestion/todos`
-    - Auditoria de tickets - `/plataforma/tickets/gestion/auditoria`
-- Historial de cambios - `/cambios/gestion/todos`
-- Registro de problemas - `/problemas`
+    - Historial consolidado de resueltos — `/plataforma/tickets/gestion/resueltos`
+    - Todos los tickets — `/plataforma/tickets/gestion/todos`
+    - Auditoria de tickets — `/plataforma/tickets/gestion/auditoria`
+- Cambios
+  - Historial de cambios — `/plataforma/cambios/gestion/todos`
+- Problemas
+  - Registro de problemas — `/plataforma/problemas`
 - Activos y CMDB
-  - Inventario de activos - `/activos/inventario`
-  - Consulta de bajas - `/plataforma/perfiles/auditor/activos/bajas`
-  - Licencias de software - `/activos/licencias`
-  - Resultados de auditorías de CMDB - `/plataforma/perfiles/auditor/cmdb/resultados`
+  - Inventario de activos — `/plataforma/activos/inventario`
+  - Consulta de bajas — `/plataforma/perfiles/auditor/activos/bajas`
+  - Licencias de software — `/plataforma/activos/licencias`
+  - Resultados de auditorías de CMDB — `/plataforma/perfiles/auditor/cmdb/resultados`
 - Reportes
-  - Informes de auditoría - `/plataforma/reportes/auditoria`
-  - Indicadores operativos y SLA - `/plataforma/reportes/operativos`
-  - Tableros - `/plataforma/reportes/tableros`
+  - Indicadores operativos y SLA — `/plataforma/reportes/operativos`
+  - Informes de auditoría — `/plataforma/reportes/auditoria`
+  - Tableros — `/plataforma/reportes/tableros`
 - Plataforma
-  - Auditoría de cambios de configuración - `/admin/auditoria-sistema`
   - Cumplimiento
-    - Cambios sin autorización o fuera de ventana - `/plataforma/perfiles/auditor/cumplimiento/cambios`
-    - Muestreo de auditoría - `/plataforma/perfiles/auditor/muestreo`
-    - Segregación de funciones - `/plataforma/perfiles/auditor/cumplimiento/sod`
-  - Registros de seguridad y autenticación - `/admin/seguridad-logs`
-  - Recertificación de accesos - `/plataforma/perfiles/auditor/accesos/recertificacion`
-  - Retención y mantenimiento de datos - `/admin/mantenimiento-datos`
-  - Perfiles y permisos - `/admin/perfiles`
+    - Cambios sin autorización o fuera de ventana — `/plataforma/perfiles/auditor/cumplimiento/cambios`
+    - Muestreo de auditoría — `/plataforma/perfiles/auditor/muestreo`
+    - Segregación de funciones — `/plataforma/perfiles/auditor/cumplimiento/sod`
+  - Auditoría de cambios de configuración — `/plataforma/admin/auditoria-sistema`
+  - Registros de seguridad y autenticación — `/plataforma/admin/seguridad-logs`
+  - Recertificación de accesos — `/plataforma/perfiles/auditor/accesos/recertificacion`
+  - Retención y mantenimiento de datos — `/plataforma/admin/mantenimiento-datos`
+  - Perfiles y permisos — `/plataforma/admin/perfiles`
 - Mi cuenta
-  - Mi perfil y seguridad - `/mi-cuenta`
-  - Preferencias de notificación - `/mi-cuenta/notificaciones`
+  - Mi perfil y seguridad — `/plataforma/mi-cuenta`
+  - Preferencias de notificación — `/plataforma/mi-cuenta/notificaciones`
 
-### PERFIL 7 - Aprobador
+### PERFIL 7 — Aprobador
 
 - Mi trabajo
   - Aprobaciones
-    - Delegaciones - `/plataforma/perfiles/aprobador/delegaciones`
-    - Historial de aprobaciones y dictámenes - `/plataforma/perfiles/aprobador/historial`
-  - Panel del aprobador - `/plataforma/perfiles/aprobador/panel`
-- Mis solicitudes - `/plataforma/solicitudes/mios`
+    - Delegaciones — `/plataforma/perfiles/aprobador/delegaciones`
+    - Historial de aprobaciones y dictámenes — `/plataforma/perfiles/aprobador/historial`
+  - Panel del aprobador — `/plataforma/perfiles/aprobador/panel`
+- Mesa de Servicio
+  - Mis solicitudes — `/plataforma/solicitudes/mios`
 - Cambios
-  - Calendario de cambios - `/cambios/gestion/calendario`
+  - Calendario de cambios — `/plataforma/cambios/gestion/calendario`
   - CAB
-    - Agenda y actas - `/plataforma/perfiles/aprobador/cab/agenda`
-    - Comité de emergencia (ECAB) - `/plataforma/perfiles/aprobador/cab/emergencia`
-    - Dictamen colegiado (CAB) - `/cambios/gestion/cab`
+    - Agenda y actas — `/plataforma/perfiles/aprobador/cab/agenda`
+    - Comité de emergencia (ECAB) — `/plataforma/perfiles/aprobador/cab/emergencia`
+    - Dictamen colegiado (CAB) — `/plataforma/cambios/gestion/cab`
   - Aprobaciones
-    - Aprobaciones de cambios - `/plataforma/perfiles/aprobador/cambios`
-    - Modelos de cambio estándar - `/plataforma/perfiles/aprobador/cambios/modelos`
-- Riesgo aceptado y cierre de problemas mayores - `/plataforma/perfiles/aprobador/problemas`
-- Bajas y renovaciones por monto - `/plataforma/perfiles/aprobador/activos`
-- Reportes de decisiones - `/plataforma/reportes/decisiones`
+    - Aprobaciones de cambios — `/plataforma/perfiles/aprobador/cambios`
+    - Modelos de cambio estándar — `/plataforma/perfiles/aprobador/cambios/modelos`
+- Problemas
+  - Riesgo aceptado y cierre de problemas mayores — `/plataforma/perfiles/aprobador/problemas`
+- Activos y CMDB
+  - Bajas y renovaciones por monto — `/plataforma/perfiles/aprobador/activos`
+- Reportes
+  - Reportes de decisiones — `/plataforma/reportes/decisiones`
 - Mi cuenta
-  - Mi perfil y seguridad - `/mi-cuenta`
-  - Preferencias de notificación - `/mi-cuenta/notificaciones`
+  - Mi perfil y seguridad — `/plataforma/mi-cuenta`
+  - Preferencias de notificación — `/plataforma/mi-cuenta/notificaciones`
 
-### PERFIL 8 - Gestor de Cambios
+### PERFIL 8 — Gestor de Cambios
 
-- Panel de gestión de cambios - `/plataforma/perfiles/gestor-cambios/panel`
+- Mi trabajo
+  - Panel de gestión de cambios — `/plataforma/perfiles/gestor-cambios/panel`
 - Cambios
-  - Calendario de cambios - `/cambios/gestion/calendario`
-  - Historial de cambios - `/cambios/gestion/todos`
+  - Calendario de cambios — `/plataforma/cambios/gestion/calendario`
   - Gestión
-    - Bandeja de RFC por evaluar - `/plataforma/perfiles/gestor-cambios/evaluacion`
-    - Conflictos y capacidad - `/plataforma/perfiles/gestor-cambios/conflictos`
-    - Modelos de cambio estándar - `/plataforma/perfiles/gestor-cambios/modelos`
-    - Programación de cambios autorizados - `/plataforma/perfiles/gestor-cambios/programacion`
-    - Revisión post-implementación - `/plataforma/perfiles/gestor-cambios/pir`
-    - Seguimiento de ejecución - `/plataforma/perfiles/gestor-cambios/ejecucion`
-    - Seguimiento de etapas de aprobación - `/plataforma/perfiles/gestor-cambios/autorizaciones`
-  - Solicitar un cambio - `/cambios/gestion/crear`
+    - Bandeja de RFC por evaluar — `/plataforma/perfiles/gestor-cambios/evaluacion`
+    - Conflictos y capacidad — `/plataforma/perfiles/gestor-cambios/conflictos`
+    - Modelos de cambio estándar — `/plataforma/perfiles/gestor-cambios/modelos`
+    - Programación de cambios autorizados — `/plataforma/perfiles/gestor-cambios/programacion`
+    - Revisión post-implementación — `/plataforma/perfiles/gestor-cambios/pir`
+    - Seguimiento de ejecución — `/plataforma/perfiles/gestor-cambios/ejecucion`
+    - Seguimiento de etapas de aprobación — `/plataforma/perfiles/gestor-cambios/autorizaciones`
+  - Historial de cambios — `/plataforma/cambios/gestion/todos`
   - CAB
-    - Convocatoria, agenda y actas - `/plataforma/perfiles/gestor-cambios/cab/agenda`
-    - Dictamen colegiado (CAB) - `/cambios/gestion/cab`
-  - Feriados - `/admin/procesos/cambios/notificaciones-calendario?vista=feriados`
-  - Períodos de congelamiento - `/admin/procesos/cambios/notificaciones-calendario?vista=congelamiento`
-  - Ventanas de mantenimiento - `/admin/procesos/cambios/notificaciones-calendario?vista=ventanas`
-- Reportes de cambios - `/plataforma/reportes/cambios`
+    - Convocatoria, agenda y actas — `/plataforma/perfiles/gestor-cambios/cab/agenda`
+    - Dictamen colegiado (CAB) — `/plataforma/cambios/gestion/cab`
+  - Solicitar un cambio — `/plataforma/cambios/gestion/crear`
+  - Feriados — `/plataforma/admin/procesos/cambios/notificaciones-calendario?vista=feriados`
+  - Períodos de congelamiento — `/plataforma/admin/procesos/cambios/notificaciones-calendario?vista=congelamiento`
+  - Ventanas de mantenimiento — `/plataforma/admin/procesos/cambios/notificaciones-calendario?vista=ventanas`
+- Reportes
+  - Reportes de cambios — `/plataforma/reportes/cambios`
 - Mi cuenta
-  - Mi perfil y seguridad - `/mi-cuenta`
-  - Preferencias de notificación - `/mi-cuenta/notificaciones`
+  - Mi perfil y seguridad — `/plataforma/mi-cuenta`
+  - Preferencias de notificación — `/plataforma/mi-cuenta/notificaciones`
 
-### PERFIL 9 - Gestor de Activos y Configuracion
+### PERFIL 9 — Gestor de Activos y Configuracion
 
-- Panel de activos y CMDB - `/gestor-activos/panel`
+- Mi trabajo
+  - Panel de activos y CMDB — `/plataforma/gestor-activos/panel`
 - Activos y CMDB
   - Inventario
-    - Asignación, custodia y actas - `/gestor-activos/asignaciones`
-    - Importación masiva - `/gestor-activos/importacion`
-    - Inventario de activos - `/activos/inventario`
-    - Inventario físico (campañas) - `/gestor-activos/inventario-fisico`
-    - Recepción de adquisiciones - `/gestor-activos/recepcion`
-  - Gestión de bajas - `/gestor-activos/bajas`
-  - Mantenimiento y garantías - `/gestor-activos/mantenimiento`
+    - Asignación, custodia y actas — `/plataforma/gestor-activos/asignaciones`
+    - Importación masiva — `/plataforma/gestor-activos/importacion`
+    - Inventario de activos — `/plataforma/activos/inventario`
+    - Inventario físico (campañas) — `/plataforma/gestor-activos/inventario-fisico`
+    - Recepción de adquisiciones — `/plataforma/gestor-activos/recepcion`
+  - Gestión de bajas — `/plataforma/gestor-activos/bajas`
+  - Mantenimiento y garantías — `/plataforma/gestor-activos/mantenimiento`
   - Licencias
-    - Catálogo de software autorizado - `/gestor-activos/licencias/catalogo-software`
-    - Cumplimiento y sobreuso - `/gestor-activos/licencias/cumplimiento`
+    - Catálogo de software autorizado — `/plataforma/gestor-activos/licencias/catalogo-software`
+    - Cumplimiento y sobreuso — `/plataforma/gestor-activos/licencias/cumplimiento`
   - CMDB
-    - Actualizaciones de CMDB desde cambios - `/gestor-activos/cmdb/actualizaciones`
-    - Análisis e impacto - `/activos/cmdb/analisis`
-    - Calidad y auditoría de CMDB - `/gestor-activos/cmdb/auditoria`
-    - Inexactitudes reportadas - `/gestor-activos/cmdb/inexactitudes`
-    - Líneas base - `/gestor-activos/cmdb/lineas-base`
-    - Mapa de topología - `/activos/cmdb`
-    - Modelado de clases CI - `/activos/cmdb/tipos`
+    - Actualizaciones de CMDB desde cambios — `/plataforma/gestor-activos/cmdb/actualizaciones`
+    - Análisis e impacto — `/plataforma/activos/cmdb/analisis`
+    - Calidad y auditoría de CMDB — `/plataforma/gestor-activos/cmdb/auditoria`
+    - Inexactitudes reportadas — `/plataforma/gestor-activos/cmdb/inexactitudes`
+    - Líneas base — `/plataforma/gestor-activos/cmdb/lineas-base`
+    - Mapa de topología — `/plataforma/activos/cmdb`
+    - Modelado de clases CI — `/plataforma/activos/cmdb/tipos`
   - Proveedores y contratos
-    - Contratos y cobertura - `/gestor-activos/contratos`
-    - Proveedores - `/proveedores`
-    - Renovaciones y vencimientos - `/gestor-activos/renovaciones`
+    - Contratos y cobertura — `/plataforma/gestor-activos/contratos`
+    - Proveedores — `/plataforma/proveedores`
+    - Renovaciones y vencimientos — `/plataforma/gestor-activos/renovaciones`
   - Catálogos
-    - Fabricantes y modelos - `/admin/activos-config/tipos-modelos-atributos?vista=fabricantes`
-    - Listas auxiliares - `/admin/activos-config/tipos-modelos-atributos?vista=catalogos`
-    - Ubicaciones - `/admin/activos-config/tipos-modelos-atributos?vista=ubicaciones`
-- Reportes de activos - `/plataforma/reportes/activos`
+    - Fabricantes y modelos — `/plataforma/admin/activos-config/tipos-modelos-atributos?vista=fabricantes`
+    - Listas auxiliares — `/plataforma/admin/activos-config/tipos-modelos-atributos?vista=catalogos`
+    - Ubicaciones — `/plataforma/admin/activos-config/tipos-modelos-atributos?vista=ubicaciones`
+- Reportes
+  - Reportes de activos — `/plataforma/reportes/activos`
 - Mi cuenta
-  - Mi perfil y seguridad - `/mi-cuenta`
-  - Preferencias de notificación - `/mi-cuenta/notificaciones`
+  - Mi perfil y seguridad — `/plataforma/mi-cuenta`
+  - Preferencias de notificación — `/plataforma/mi-cuenta/notificaciones`
 
-### PERFIL 10 - Gestor de Problemas
+### PERFIL 10 — Gestor de Problemas
 
-- Panel de gestión de problemas - `/gestor-problemas/panel`
+- Mi trabajo
+  - Panel de gestión de problemas — `/plataforma/gestor-problemas/panel`
 - Problemas
-  - Análisis de causa raíz - `/gestor-problemas/analisis`
-  - Bandeja y asignación - `/gestor-problemas/asignacion`
-  - Candidatos a problema - `/gestor-problemas/candidatos`
-  - Conocimiento derivado - `/gestor-problemas/conocimiento`
-  - Errores conocidos (KEDB) - `/problemas/kedb`
-  - Incidentes recurrentes - `/gestor-problemas/recurrentes`
-  - Objetivos de tiempo - `/gestor-problemas/objetivos`
-  - Problemas mayores y revisión - `/gestor-problemas/mayores`
-  - Registro de problemas - `/problemas`
-  - Solicitudes de cambio derivadas - `/gestor-problemas/cambios`
-- Reportes de problemas - `/plataforma/reportes/problemas`
+  - Análisis de causa raíz — `/plataforma/gestor-problemas/analisis`
+  - Bandeja y asignación — `/plataforma/gestor-problemas/asignacion`
+  - Candidatos a problema — `/plataforma/gestor-problemas/candidatos`
+  - Conocimiento derivado — `/plataforma/gestor-problemas/conocimiento`
+  - Errores conocidos (KEDB) — `/plataforma/problemas/kedb`
+  - Incidentes recurrentes — `/plataforma/gestor-problemas/recurrentes`
+  - Objetivos de tiempo — `/plataforma/gestor-problemas/objetivos`
+  - Problemas mayores y revisión — `/plataforma/gestor-problemas/mayores`
+  - Registro de problemas — `/plataforma/problemas`
+  - Solicitudes de cambio derivadas — `/plataforma/gestor-problemas/cambios`
+- Reportes
+  - Reportes de problemas — `/plataforma/reportes/problemas`
 - Mi cuenta
-  - Mi perfil y seguridad - `/mi-cuenta`
-  - Preferencias de notificación - `/mi-cuenta/notificaciones`
+  - Mi perfil y seguridad — `/plataforma/mi-cuenta`
+  - Preferencias de notificación — `/plataforma/mi-cuenta/notificaciones`
+
 
 ### 5.1 Observaciones del árbol
 
-1. **Perfil 1 (Administrador):** "Panel de administración", "Historial de cambios", "Registro de problemas", "Categorías, responsables y reglas de publicación y revisión" y "Eventos y resiliencia" aparecen en el primer nivel porque sus carpetas padre se colapsaron. La última es la configuración de Conocimiento: la raíz Conocimiento solo tiene ese hijo visible para el Administrador.
-2. **Perfil 2 (Técnico):** mantiene "Catálogo de servicios" como página suelta, ya en `/plataforma/servicios/catalogo`. No tiene raíz de Reportes; su medición personal vive en "Mi desempeño".
-3. **Perfil 3 (Solicitante):** no tiene Reportes, Cambios, Problemas ni configuración. Su catálogo se divide por tipo en `/plataforma/incidentes/catalogo` y `/plataforma/solicitudes/catalogo`.
-4. **Perfil 4 (Supervisor):** conserva la operación transversal de la mesa y el SLA; no administra identidades ni configuración global.
-5. **Perfil 5 (Gestor de Área):** tiene "Aprobaciones de solicitudes" y "Aprobación de negocio de cambios"; no recibe incidentes de otras áreas ni operación técnica.
-6. **Perfil 6 (Auditor):** el acceso es de lectura. "Perfiles y permisos" aparece dentro de **Plataforma** porque la carpeta Identidades se colapsó; ya no existe la raíz Configuración.
-7. **Perfil 7 (Aprobador):** **no recibe Incidentes**. Solo tiene "Mis solicitudes", además de cambios, CAB, riesgo/cierre de problemas mayores, bajas/renovaciones y reportes de decisiones. Esta es la decisión de Fase 2.
-8. **Perfil 8 (Gestor de Cambios):** la duplicación anterior de "Cambios" quedó resuelta. Feriados, congelamientos y ventanas de mantenimiento ahora cuelgan de la raíz **Cambios**, junto al calendario y la gestión.
-9. **Perfil 9 (Gestor de Activos):** no tiene Cambios ni Problemas; su alcance es activos, CMDB, licencias, contratos, proveedores y catálogos.
-10. **Perfil 10 (Gestor de Problemas):** solo Problemas y su reporte, más Mi cuenta. No opera la mesa ni configura el sistema.
-
-La raíz **Configuración** ya no existe en el catálogo. Sus pantallas se distribuyeron en **Mesa de Servicio → Incidentes/Solicitudes**, **Cambios**, **Problemas**, **Conocimiento**, **Organización** y **Plataforma**.
+1. **Perfil 1 (Administrador):** Conserva sus raíces de dominio (`Mi trabajo`, `Mesa de Servicio`, `Cambios`, `Problemas`, `Activos y CMDB`, `Conocimiento`, `Catálogo de Servicios`, `Operación`, `Reportes`, `Organización`, `Plataforma`, `Mi cuenta`). Todas las rutas reflejan su ubicación canónica `/plataforma/...` sin alias ambiguos.
+2. **Perfil 2 (Técnico):** Agrupa sus herramientas operativas en `Mi trabajo`, `Mesa de Servicio` (Incidentes y Solicitudes), `Cambios`, `Problemas`, `Activos y CMDB`, `Conocimiento`, `Catálogo de Servicios` y `Mi cuenta`.
+3. **Perfil 3 (Solicitante):** Estructura clara y limpia centrada en el usuario final: `Mi trabajo` (panel y seguimiento), `Mesa de Servicio` (catálogos y registro asistido), `Activos y CMDB` (mis activos custodiados), `Conocimiento` (base de consulta pública) y `Mi cuenta`.
+4. **Perfil 4 (Supervisor):** Conserva la operación transversal de la mesa, el control de SLA, la productividad individual y la gestión de incidentes mayores y resiliencia.
+5. **Perfil 5 (Gestor de Área):** Enfoque departamental: gestión de solicitudes del área, aprobaciones de negocio y de compras, y reportes analíticos del área.
+6. **Perfil 6 (Auditor):** Lectura e inspección integral sin capacidad de mutación operativa: pistas de auditoría de tickets, tableros, seguridad, salud de plataforma y cumplimiento SoD.
+7. **Perfil 7 (Aprobador):** Segregación SoD estricta (no recibe incidentes operativos): gestión de solicitudes pendientes de firma, evaluación colegiada en CAB, dictamen de problemas mayores, aprobación de bajas patrimoniales y reportes de decisiones.
+8. **Perfil 8 (Gestor de Cambios):** Consola especializada de gobernanza: flujo de evaluación, autorización, ejecución, revisión post-implementación (PIR), secretaría del CAB, ventanas de mantenimiento y congelamientos.
+9. **Perfil 9 (Gestor de Activos y Configuración):** Gestión del ciclo de vida de hardware/software, CMDB, topología, auditoría de configuración, contratos, garantías y catálogo de software autorizado.
+10. **Perfil 10 (Gestor de Problemas):** Gestión integral del ciclo de vida de problemas: candidatos, incidentes recurrentes, RCA, errores conocidos (KEDB), conocimiento derivado y RFCs correctivos.
 
 ---
 
