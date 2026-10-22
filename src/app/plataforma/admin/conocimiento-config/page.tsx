@@ -1,5 +1,5 @@
-import VistaConocimientoConfig from "@/modules/conocimiento/config/VistaConocimientoConfig";
+import { redirect } from "next/navigation";
 
 export default function PaginaAdminConocimientoConfig() {
-  return <VistaConocimientoConfig />;
+  redirect("/plataforma/admin/conocimiento-config/articulos");
 }

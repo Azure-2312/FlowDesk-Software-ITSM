@@ -1,5 +1,5 @@
-import VistaCmdbRelaciones from "@/modules/cmdb/config/cmdb-relaciones/VistaCmdbRelaciones";
+import { redirect } from "next/navigation";
 
-export default function PaginaAdminActivosCmdbRelaciones() {
-  return <VistaCmdbRelaciones />;
+export default function PaginaAdminActivosCmdbRelacionesLegacy() {
+  redirect("/plataforma/admin/cmdb-config/relaciones");
 }

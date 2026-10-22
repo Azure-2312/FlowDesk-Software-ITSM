@@ -1,4 +1,4 @@
-import VistaModelosGestion from "@/modules/perfiles/gestor-cambios/views/VistaModelosGestion";
+import VistaModelosGestion from "@/modules/cambios/views/gestion/VistaModelosGestion";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

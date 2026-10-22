@@ -1,4 +1,4 @@
-import VistaConflictos from "@/modules/perfiles/gestor-cambios/views/VistaConflictos";
+import VistaConflictos from "@/modules/cambios/views/gestion/VistaConflictos";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

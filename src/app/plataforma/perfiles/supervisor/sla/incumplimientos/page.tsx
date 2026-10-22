@@ -1,4 +1,4 @@
-import VistaIncumplimientosSla from "@/modules/perfiles/supervisor/views/VistaIncumplimientosSla";
+import VistaIncumplimientosSla from "@/modules/servicios/views/supervisor/VistaIncumplimientosSla";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

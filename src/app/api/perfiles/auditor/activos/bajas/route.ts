@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET } from "@/modules/perfiles/auditor/api/bajasController";
+export { GET } from "@/modules/activos/api/auditorBajasController";

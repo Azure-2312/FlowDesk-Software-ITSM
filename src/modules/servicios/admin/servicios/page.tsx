@@ -146,12 +146,18 @@ function IconoCategoria({ nombre, codigo }: { nombre: string; codigo?: string })
   );
 }
 
-function VistaCatalogoServicios() {
+export function VistaCatalogoServicios({
+  tipoForzado,
+  vistaForzada,
+}: {
+  tipoForzado?: number;
+  vistaForzada?: ModoVista;
+} = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tipoParam = searchParams.get("tipo");
   const vistaParam = searchParams.get("vista");
-  const tipoActual = tipoParam === "2" ? 2 : 1;
+  const tipoActual = tipoForzado !== undefined ? tipoForzado : (tipoParam === "2" ? 2 : 1);
 
   const [servicios, setServicios] = useState<ServicioCatalogo[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -168,12 +174,14 @@ function VistaCatalogoServicios() {
   const [busquedaAsignar, setBusquedaAsignar] = useState<string>("");
 
   // Modo de vista: sin modales flotantes
-  const [vista, setVista] = useState<ModoVista>(vistaParam === "crear" ? "nuevo" : "tabla");
+  const [vista, setVista] = useState<ModoVista>(vistaForzada || (vistaParam === "crear" ? "nuevo" : "tabla"));
   const [servicioSeleccionado, setServicioSeleccionado] = useState<ServicioCatalogo | null>(null);
   const [guardando, setGuardando] = useState(false);
 
   useEffect(() => {
-    if (vistaParam === "crear") {
+    if (vistaForzada) {
+      setVista(vistaForzada);
+    } else if (vistaParam === "crear") {
       setVista("nuevo");
       setCategoriaSeleccionada(null);
     } else {
@@ -184,7 +192,7 @@ function VistaCatalogoServicios() {
       setServiciosSeleccionadosParaAsignar([]);
       setBusquedaAsignar("");
     }
-  }, [vistaParam, tipoParam]);
+  }, [vistaParam, tipoParam, vistaForzada]);
 
   // Formulario de edición de servicio
   const [formNombre, setFormNombre] = useState("");

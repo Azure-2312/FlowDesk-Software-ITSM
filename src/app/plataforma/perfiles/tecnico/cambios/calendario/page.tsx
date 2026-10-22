@@ -1,4 +1,4 @@
-import VistaTecnicoCambiosCalendario from "@/modules/perfiles/tecnico/cambios/calendario/VistaTecnicoCambiosCalendario";
+import VistaTecnicoCambiosCalendario from "@/modules/cambios/views/tecnico/VistaTecnicoCambiosCalendario";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoCambiosCalendario />;

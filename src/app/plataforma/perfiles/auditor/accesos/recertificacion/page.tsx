@@ -1,4 +1,4 @@
-import VistaRecertificacion from "@/modules/perfiles/auditor/views/VistaRecertificacion";
+import VistaRecertificacion from "@/modules/identidades/views/auditor/VistaRecertificacion";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

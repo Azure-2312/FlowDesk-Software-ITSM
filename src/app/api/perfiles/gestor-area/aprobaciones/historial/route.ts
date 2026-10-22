@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET } from "@/modules/perfiles/gestor-area/api/historialController";
+export { GET } from "@/modules/solicitudes/api/gestorAreaHistorialController";

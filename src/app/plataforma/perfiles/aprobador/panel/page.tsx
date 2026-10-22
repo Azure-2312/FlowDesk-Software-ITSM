@@ -1,4 +1,4 @@
-import VistaPanelAprobador from "@/modules/perfiles/aprobador/views/VistaPanelAprobador";
+import VistaPanelAprobador from "@/modules/operacion/paneles/aprobador/VistaPanelAprobador";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

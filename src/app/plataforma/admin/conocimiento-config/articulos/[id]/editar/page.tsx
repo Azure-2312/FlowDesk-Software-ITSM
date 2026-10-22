@@ -105,7 +105,7 @@ export default function PaginaEditarArticuloConocimiento() {
 
       setMensajeExito("Artículo actualizado exitosamente. Se ha generado una nueva versión en la trazabilidad.");
       setTimeout(() => {
-        router.push("/plataforma/admin/conocimiento-config");
+        router.push("/plataforma/admin/conocimiento-config/articulos");
       }, 1500);
     } catch (err: any) {
       setError(err.message || "Ocurrió un error inesperado al guardar los cambios.");
@@ -133,7 +133,7 @@ export default function PaginaEditarArticuloConocimiento() {
             Administración
           </Link>
           <span>/</span>
-          <Link href="/plataforma/admin/conocimiento-config" className="hover:text-blue-600 transition-colors">
+          <Link href="/plataforma/admin/conocimiento-config/articulos" className="hover:text-blue-600 transition-colors">
             Base de Conocimiento
           </Link>
           <span>/</span>
@@ -157,7 +157,7 @@ export default function PaginaEditarArticuloConocimiento() {
               Ver Historial
             </Link>
             <Link
-              href="/plataforma/admin/conocimiento-config"
+              href="/plataforma/admin/conocimiento-config/articulos"
               className="px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg transition-colors"
             >
               Volver a la Lista
@@ -317,7 +317,7 @@ export default function PaginaEditarArticuloConocimiento() {
 
         <div className="flex items-center justify-end gap-3 pt-2">
           <Link
-            href="/plataforma/admin/conocimiento-config"
+            href="/plataforma/admin/conocimiento-config/articulos"
             className="px-4 py-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg transition-colors"
           >
             Cancelar

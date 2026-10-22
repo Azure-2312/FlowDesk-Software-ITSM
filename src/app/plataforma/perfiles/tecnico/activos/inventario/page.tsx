@@ -1,4 +1,4 @@
-import VistaTecnicoActivosInventario from "@/modules/perfiles/tecnico/activos/inventario/VistaTecnicoActivosInventario";
+import VistaTecnicoActivosInventario from "@/modules/activos/views/tecnico/VistaTecnicoActivosInventario";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoActivosInventario />;

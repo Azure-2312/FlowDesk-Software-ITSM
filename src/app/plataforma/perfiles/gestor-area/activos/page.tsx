@@ -1,4 +1,4 @@
-import VistaActivosArea from "@/modules/perfiles/gestor-area/views/VistaActivosArea";
+import VistaActivosArea from "@/modules/activos/views/VistaActivosArea";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

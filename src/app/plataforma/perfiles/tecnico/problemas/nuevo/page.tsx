@@ -1,4 +1,4 @@
-import VistaTecnicoProblemasNuevo from "@/modules/perfiles/tecnico/problemas/nuevo/VistaTecnicoProblemasNuevo";
+import VistaTecnicoProblemasNuevo from "@/modules/problemas/views/tecnico/VistaTecnicoProblemasNuevo";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoProblemasNuevo />;

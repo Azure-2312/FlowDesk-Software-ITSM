@@ -1,4 +1,4 @@
-import VistaPanelArea from "@/modules/perfiles/gestor-area/views/VistaPanelArea";
+import VistaPanelArea from "@/modules/operacion/paneles/gestor-area/VistaPanelArea";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

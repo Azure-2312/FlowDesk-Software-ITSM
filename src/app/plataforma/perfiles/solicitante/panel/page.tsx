@@ -1,4 +1,4 @@
-import VistaPanelSolicitante from "@/modules/perfiles/solicitante/views/VistaPanelSolicitante";
+import VistaPanelSolicitante from "@/modules/operacion/paneles/solicitante/VistaPanelSolicitante";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

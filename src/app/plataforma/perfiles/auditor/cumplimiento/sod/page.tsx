@@ -1,4 +1,4 @@
-import VistaSod from "@/modules/perfiles/auditor/views/VistaSod";
+import VistaSod from "@/modules/seguridad/views/auditor/VistaSod";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

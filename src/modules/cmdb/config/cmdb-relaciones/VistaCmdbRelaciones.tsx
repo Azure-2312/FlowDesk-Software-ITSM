@@ -158,7 +158,7 @@ export default function CmdbRelacionesConfigPage() {
       setErrorCarga(null);
 
       const res = await fetch(
-        `/api/admin/activos-config/cmdb-relaciones/configuracion?pestana=${tabActiva}`
+        `/api/admin/cmdb-config/relaciones/configuracion?pestana=${tabActiva}`
       );
       const data = await res.json();
 
@@ -216,7 +216,7 @@ export default function CmdbRelacionesConfigPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/activos-config/cmdb-relaciones/configuracion", {
+      const res = await fetch("/api/admin/cmdb-config/relaciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -245,7 +245,7 @@ export default function CmdbRelacionesConfigPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/activos-config/cmdb-relaciones/configuracion", {
+      const res = await fetch("/api/admin/cmdb-config/relaciones/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -274,7 +274,7 @@ export default function CmdbRelacionesConfigPage() {
     if (!confirm("Se perderán todos los cambios del borrador sin publicar. ¿Desea continuar?")) return;
     try {
       const res = await fetch(
-        `/api/admin/activos-config/cmdb-relaciones/configuracion?pestana=${tabActiva}`,
+        `/api/admin/cmdb-config/relaciones/configuracion?pestana=${tabActiva}`,
         { method: "DELETE" }
       );
       if (res.ok) {
@@ -290,7 +290,7 @@ export default function CmdbRelacionesConfigPage() {
   // Restaurar valores de fábrica
   const handleRestaurarFabrica = async () => {
     try {
-      const res = await fetch("/api/admin/activos-config/cmdb-relaciones/configuracion", {
+      const res = await fetch("/api/admin/cmdb-config/relaciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -314,7 +314,7 @@ export default function CmdbRelacionesConfigPage() {
   // Restaurar versión específica desde modal de historial
   const handleRestaurarVersionComoBorrador = async (version: any) => {
     try {
-      const res = await fetch("/api/admin/activos-config/cmdb-relaciones/configuracion", {
+      const res = await fetch("/api/admin/cmdb-config/relaciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -1,4 +1,4 @@
-import VistaAusenciasEquipo from "@/modules/perfiles/supervisor/views/VistaAusenciasEquipo";
+import VistaAusenciasEquipo from "@/modules/organizacion/views/supervisor/VistaAusenciasEquipo";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

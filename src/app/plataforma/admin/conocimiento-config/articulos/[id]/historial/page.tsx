@@ -117,7 +117,7 @@ export default function PaginaHistorialArticuloDetallado() {
           {error || "El artículo solicitado no existe o fue retirado."}
         </div>
         <Link
-          href="/plataforma/admin/conocimiento-config"
+          href="/plataforma/admin/conocimiento-config/articulos"
           className="inline-flex px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-medium hover:bg-slate-700"
         >
           Volver a la Gestión de Conocimiento
@@ -135,7 +135,7 @@ export default function PaginaHistorialArticuloDetallado() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
-            <Link href="/plataforma/admin/conocimiento-config" className="hover:text-blue-600 transition-colors">
+            <Link href="/plataforma/admin/conocimiento-config/articulos" className="hover:text-blue-600 transition-colors">
               Gestión de Conocimiento
             </Link>
             <span>/</span>
@@ -159,7 +159,7 @@ export default function PaginaHistorialArticuloDetallado() {
             Editar Artículo
           </Link>
           <Link
-            href="/plataforma/admin/conocimiento-config"
+            href="/plataforma/admin/conocimiento-config/articulos"
             className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-lg transition-colors"
           >
             Volver

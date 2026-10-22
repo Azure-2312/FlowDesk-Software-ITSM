@@ -101,10 +101,25 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
         // Regla de la arquitectura del menú: url_menu vacío = CARPETA (no navega,
         // solo despliega/contrae); url_menu con valor = PÁGINA (navega).
         // Por eso SOLO una página con URL recibe el estado activo azul.
+        // Se prioriza coincidencia exacta para evitar que dos hermanos con subrutas
+        // se iluminen al mismo tiempo (ej: artículos vs categorías).
         const navegable = !tieneHijos && Boolean(opcion.url_menu);
+        const urlBase = opcion.url_menu ? opcion.url_menu.split("?")[0] : "";
+        const coincideExacto = opcion.url_menu === pathname;
+        const hayHermanoConCoincidenciaMasEspecifica = opciones.some((otra) => {
+          if (otra.id_opcion_menu === opcion.id_opcion_menu || !otra.url_menu) return false;
+          const otraBase = otra.url_menu.split("?")[0];
+          if (otra.url_menu === pathname || otraBase === pathname) return true;
+          return otraBase.length > urlBase.length && pathname.startsWith(otraBase + "/");
+        });
+
         const estaActivo =
           navegable &&
-          (pathname === opcion.url_menu || pathname.startsWith(opcion.url_menu.split("?")[0] + "/"));
+          (coincideExacto ||
+            (!hayHermanoConCoincidenciaMasEspecifica &&
+              urlBase !== "" &&
+              urlBase !== "/plataforma" &&
+              pathname.startsWith(urlBase + "/")));
 
         const badge = opcion.contador_clave ? contadores[opcion.contador_clave] : null;
 

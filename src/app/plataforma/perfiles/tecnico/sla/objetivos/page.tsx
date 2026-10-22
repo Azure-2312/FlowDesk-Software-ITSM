@@ -1,4 +1,4 @@
-import VistaTecnicoSlaObjetivos from "@/modules/perfiles/tecnico/sla/objetivos/VistaTecnicoSlaObjetivos";
+import VistaTecnicoSlaObjetivos from "@/modules/servicios/views/tecnico/VistaTecnicoSlaObjetivos";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoSlaObjetivos />;

@@ -53,21 +53,27 @@ const MEDIOS_PREDETERMINADOS: MedioContacto[] = [
   },
 ];
 
-function ContenidoConfiguracionNotificaciones() {
+function ContenidoConfiguracionNotificaciones({
+  seccionForzada,
+}: {
+  seccionForzada?: "plantillas" | "contacto";
+}) {
   const searchParams = useSearchParams();
   const seccionParam = searchParams.get("seccion");
 
   const [pestana, setPestana] = useState<"plantillas" | "contacto">(
-    seccionParam === "contacto" || seccionParam === "canales" ? "contacto" : "plantillas"
+    seccionForzada || (seccionParam === "contacto" || seccionParam === "canales" ? "contacto" : "plantillas")
   );
 
   useEffect(() => {
-    if (seccionParam === "contacto" || seccionParam === "canales") {
+    if (seccionForzada) {
+      setPestana(seccionForzada);
+    } else if (seccionParam === "contacto" || seccionParam === "canales") {
       setPestana("contacto");
     } else if (seccionParam === "plantillas") {
       setPestana("plantillas");
     }
-  }, [seccionParam]);
+  }, [seccionParam, seccionForzada]);
 
   const [plantillaSeleccionada, setPlantillaSeleccionada] = useState<
     "ticket_creado" | "ticket_resuelto" | "cambio_cab" | "recuperacion_clave" | "credenciales_nuevas"
@@ -828,10 +834,14 @@ function ContenidoConfiguracionNotificaciones() {
   );
 }
 
-export default function PaginaConfiguracionNotificaciones() {
+export default function PaginaConfiguracionNotificaciones({
+  seccionForzada,
+}: {
+  seccionForzada?: "plantillas" | "contacto";
+} = {}) {
   return (
     <Suspense fallback={<div className="vista-contenedor"><p>Cargando configuración de notificaciones y contacto...</p></div>}>
-      <ContenidoConfiguracionNotificaciones />
+      <ContenidoConfiguracionNotificaciones seccionForzada={seccionForzada} />
     </Suspense>
   );
 }

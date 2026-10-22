@@ -1,1 +1,1 @@
-export { GET, POST } from "@/modules/perfiles/tecnico/api/incidenteMayorController";
+export { GET, POST } from "@/modules/tickets/api/tecnicoIncidenteMayorController";
