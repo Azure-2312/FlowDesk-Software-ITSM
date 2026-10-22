@@ -153,6 +153,8 @@ export default function GobiernoConocimiento() {
 
   async function guardarPoliticasKCS() {
     setGuardandoPoliticas(true);
+    setError("");
+    setOk("");
     try {
       const r = await fetch("/api/admin/conocimiento/politicas", {
         method: "PUT",
@@ -161,13 +163,13 @@ export default function GobiernoConocimiento() {
       });
       const d = await r.json();
       if (!r.ok) {
-        alert(d.error || "No se pudieron guardar las políticas KCS");
+        setError(d.error || "No se pudieron guardar las políticas KCS");
         return;
       }
       setOk("Políticas de gobernanza KCS actualizadas y auditadas exitosamente.");
       setTimeout(() => setOk(""), 4000);
     } catch {
-      alert("Error de conexión al guardar políticas");
+      setError("Error de conexión al guardar políticas");
     } finally {
       setGuardandoPoliticas(false);
     }
