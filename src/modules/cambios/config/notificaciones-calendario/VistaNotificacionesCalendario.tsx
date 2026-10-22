@@ -320,8 +320,9 @@ export default function NotificacionesCalendarioPage() {
   ];
 
   return (
-    <div style={{ paddingBottom: 24, minHeight: "100vh", background: "#f8fafc", display: "flex", flexDirection: "column" }}>
-      {/* 3.1.1 Breadcrumb */}
+    <div style={{ minHeight: "100vh", background: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {/* 3.1.1 Breadcrumb */}
       <nav style={{ padding: "12px 24px", fontSize: 13, color: "#64748b", borderBottom: "1px solid #e2e8f0", background: "#ffffff" }}>
         <Link href="/plataforma/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>Cambios</Link>
         {" > "}
@@ -471,6 +472,7 @@ export default function NotificacionesCalendarioPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* Barra de Acciones Común Pattern 3.1 */}
       <BarraAccionesComun

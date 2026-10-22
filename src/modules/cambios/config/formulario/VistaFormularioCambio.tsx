@@ -327,8 +327,9 @@ export default function ConfiguracionFormularioCambiosPage() {
   const pestanaActualInfo = PESTANAS_INFO[tabActiva];
 
   return (
-    <div className="vista-contenedor" style={{ paddingBottom: 24, display: "flex", flexDirection: "column", minHeight: "100%" }}>
-      {/* 1. Breadcrumb (Sección 3.1) */}
+    <div style={{ minWidth: 1200, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
+        {/* 1. Breadcrumb (Sección 3.1) */}
       <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
         <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Cambios</Link>
         <span>›</span>
@@ -512,6 +513,7 @@ export default function ConfiguracionFormularioCambiosPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* 3. Barra de Acciones Fija al Pie (Sección 3.1) */}
       <BarraAccionesComun

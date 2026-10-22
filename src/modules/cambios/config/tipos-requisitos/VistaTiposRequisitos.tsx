@@ -208,8 +208,9 @@ export default function ConfiguracionTiposRequisitosPage() {
   };
 
   return (
-    <div style={{ minWidth: 1000, maxWidth: 1400, margin: "0 auto", padding: "20px 24px 24px", display: "flex", flexDirection: "column", minHeight: "100%" }}>
-      {/* Navegación y Encabezado del Módulo */}
+    <div style={{ backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ minWidth: 1000, maxWidth: 1400, margin: "0 auto", padding: "20px 24px 32px 24px", flex: 1, width: "100%", boxSizing: "border-box" }}>
+        {/* Navegación y Encabezado del Módulo */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748b", marginBottom: 6 }}>
           <Link href="/plataforma/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>
@@ -358,6 +359,7 @@ export default function ConfiguracionTiposRequisitosPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* Barra de Acciones Común (Pattern 3.1) */}
       <BarraAccionesComun

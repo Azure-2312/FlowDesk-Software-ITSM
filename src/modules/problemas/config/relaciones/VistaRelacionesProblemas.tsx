@@ -295,8 +295,9 @@ export default function RelacionesProblemasPage() {
   ];
 
   return (
-    <div style={{ padding: "20px 28px 24px 28px", minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* 1. BREADCRUMB */}
+    <div style={{ minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
+        {/* 1. BREADCRUMB */}
       <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
         <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
           Problemas
@@ -484,6 +485,7 @@ export default function RelacionesProblemasPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* 5. BARRA DE ACCIONES FIJA INFERIOR (PATRÓN COMÚN) */}
       <BarraAccionesComun

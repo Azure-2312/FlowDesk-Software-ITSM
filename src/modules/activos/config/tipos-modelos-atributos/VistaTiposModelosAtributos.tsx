@@ -452,8 +452,9 @@ export default function TiposModelosAtributosPage() {
   const estaBloqueado = !!bloqueadoPorOtro;
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col pb-6">
-      {/* Toast informativo */}
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {/* Toast informativo */}
       {toastMensaje && (
         <div className="fixed top-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl text-sm font-medium border border-slate-700 animate-in fade-in duration-200">
           {toastMensaje}
@@ -639,6 +640,7 @@ export default function TiposModelosAtributosPage() {
           </div>
         )}
       </main>
+      </div>
 
       {/* 5. Barra de acciones fija al pie (Patrón 3.1) */}
       <BarraAccionesComun
