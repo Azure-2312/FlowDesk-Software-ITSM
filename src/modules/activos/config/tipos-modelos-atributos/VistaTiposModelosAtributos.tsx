@@ -7,6 +7,7 @@ import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun
 import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "@/shared/components/admin/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "@/shared/components/admin/ModalRestaurarFabrica";
+import { ModalVistaPrevia } from "@/shared/components/admin/ModalVistaPrevia";
 
 import { PestanaClasesTipos } from "./components/PestanaClasesTipos";
 import { PestanaFabricantesModelos } from "./components/PestanaFabricantesModelos";
@@ -93,10 +94,64 @@ const PESTANAS: PestanaMetadata[] = [
   }
 ];
 
+const TAB_POR_SLUG: Record<string, TabId> = {
+  "clases-tipos": "clases_tipos",
+  "fabricantes": "fabricantes_modelos",
+  "atributos": "atributos",
+  "formulario": "formulario_activo",
+  "codigo-etiquetas": "codigo_etiquetas",
+  "ubicaciones": "ubicaciones",
+  "catalogos": "catalogos_auxiliares",
+  "ficha-listado": "ficha_listado",
+  "importacion": "importacion_inventario",
+};
+
+const SLUG_POR_TAB: Record<TabId, string> = {
+  clases_tipos: "clases-tipos",
+  fabricantes_modelos: "fabricantes",
+  atributos: "atributos",
+  formulario_activo: "formulario",
+  codigo_etiquetas: "codigo-etiquetas",
+  ubicaciones: "ubicaciones",
+  catalogos_auxiliares: "catalogos",
+  ficha_listado: "ficha-listado",
+  importacion_inventario: "importacion",
+};
+
 export default function TiposModelosAtributosPage() {
   const [tabActiva, setTabActiva] = useState<TabId>("clases_tipos");
+  const [vistaExclusiva, setVistaExclusiva] = useState<string | null>(null);
   const [cargando, setCargando] = useState<boolean>(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
+
+  // Control de enlaces profundos (?vista=)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const vistaParam = params.get("vista");
+      if (vistaParam && TAB_POR_SLUG[vistaParam]) {
+        setTabActiva(TAB_POR_SLUG[vistaParam]);
+        // Si viene desde un ítem de menú específico (Gestor de Activos), se detecta la vista exclusiva
+        if (["fabricantes", "catalogos", "ubicaciones"].includes(vistaParam)) {
+          setVistaExclusiva(vistaParam);
+        }
+      }
+    }
+  }, []);
+
+  const cambiarTab = (nuevaTab: TabId) => {
+    setTabActiva(nuevaTab);
+    const slug = SLUG_POR_TAB[nuevaTab];
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (slug) {
+        url.searchParams.set("vista", slug);
+      } else {
+        url.searchParams.delete("vista");
+      }
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
 
   // Estados de control de versiones y autoría
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
@@ -116,6 +171,7 @@ export default function TiposModelosAtributosPage() {
   const [diffsCalculados, setDiffsCalculados] = useState<any[]>([]);
 
   // Modales
+  const [modalVistaPreviaAbierto, setModalVistaPreviaAbierto] = useState<boolean>(false);
   const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
   const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
   const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
@@ -470,29 +526,31 @@ export default function TiposModelosAtributosPage() {
         </div>
       )}
 
-      {/* 3. Barra de pestañas horizontales (9 pestañas) */}
-      <div className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <nav className="flex space-x-1 overflow-x-auto py-2 scrollbar-none" aria-label="Pestañas de configuración">
-            {PESTANAS.map((tab) => {
-              const activa = tabActiva === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setTabActiva(tab.id)}
-                  className={`px-3 py-2 text-xs font-semibold rounded-lg whitespace-nowrap transition-all ${
-                    activa
-                      ? "bg-indigo-600 text-white shadow-sm"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  }`}
-                >
-                  {tab.titulo}
-                </button>
-              );
-            })}
-          </nav>
+      {/* 3. Barra de pestañas horizontales (9 pestañas) - Solo visible si no es una vista profunda exclusiva del Gestor de Activos */}
+      {!vistaExclusiva && (
+        <div className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-20">
+          <div className="max-w-7xl mx-auto px-6">
+            <nav className="flex space-x-1 overflow-x-auto py-2 scrollbar-none" aria-label="Pestañas de configuración">
+              {PESTANAS.map((tab) => {
+                const activa = tabActiva === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => cambiarTab(tab.id)}
+                    className={`px-3 py-2 text-xs font-semibold rounded-lg whitespace-nowrap transition-all ${
+                      activa
+                        ? "bg-indigo-600 text-white shadow-sm"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                    }`}
+                  >
+                    {tab.titulo}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 4. Cuerpo de la pantalla con el componente activo */}
       <main className="max-w-7xl mx-auto w-full px-6 py-6 flex-1">
@@ -594,7 +652,7 @@ export default function TiposModelosAtributosPage() {
         puedePublicar={puedePublicar}
         puedeEditar={puedeEditar}
         onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => mostrarToast("Vista previa activa en el lienzo actual.")}
+        onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
         onAbrirPublicar={handleAbrirPublicar}
         onDescartar={handleDescartarBorrador}
         onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
@@ -604,6 +662,13 @@ export default function TiposModelosAtributosPage() {
       />
 
       {/* Modales del Patrón 3.1 */}
+      <ModalVistaPrevia
+        abierto={modalVistaPreviaAbierto}
+        modulo="activos"
+        tituloModulo="Activos y CMDB (HAM/SAM)"
+        onCerrar={() => setModalVistaPreviaAbierto(false)}
+      />
+
       <ModalPublicacion
         abierto={modalPublicarAbierto}
         versionActual={versionPublicada}

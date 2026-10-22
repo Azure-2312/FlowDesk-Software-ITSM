@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { X } from "@/shared/components/ui/Iconos";
 
 export interface MotivoBaja {
   id: string;
@@ -434,9 +436,7 @@ export function PestanaBajaDisposicion({ datos, onChange, bloqueado }: Props) {
               <h3 className="text-sm font-bold text-slate-800">
                 Vista previa: Acta Oficial de Baja y Disposición Patrimonial
               </h3>
-              <button onClick={() => setModalVistaPreviaActa(false)} className="text-slate-400 hover:text-slate-600 font-bold">
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalVistaPreviaActa(false)} />
             </div>
 
             <div className="p-6 space-y-4 text-xs font-serif bg-slate-50/50">

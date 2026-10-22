@@ -428,7 +428,7 @@ function ListaReconciliacion({
       </h4>
       <p style={{ margin: "0 0 10px 0", fontSize: 12, color: "#64748b" }}>{descripcion}</p>
       {!items || items.length === 0 ? (
-        <div style={{ padding: 12, textAlign: "center", color: "#16a34a", fontSize: 12.5 }}>✓ Sin pendientes.</div>
+        <div style={{ padding: 12, textAlign: "center", color: "#16a34a", fontSize: 12.5 }}>Sin pendientes.</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 300, overflowY: "auto" }}>
           {items.map((it, i) => (

@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, X } from "@/shared/components/ui/Iconos";
 
 export type DireccionImpacto = "destino_a_origen" | "origen_a_destino" | "bidireccional" | "ninguna";
 export type CardinalidadRelacion = "1:1" | "1:N" | "N:1" | "N:N";
@@ -290,18 +292,7 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
                         <span className="text-slate-400">No</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          abrirEditarTipo(tipo);
-                        }}
-                        className="text-indigo-600 hover:text-indigo-900 font-semibold"
-                      >
-                        Editar
-                      </button>
-                    </td>
+                    <td className="px-4 py-2 text-right"><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar tipo de relación" ariaLabel="Editar tipo de relación" disabled={bloqueado} onClick={(e) => { e.stopPropagation(); abrirEditarTipo(tipo); }} /></td>
                   </tr>
                 );
               })}

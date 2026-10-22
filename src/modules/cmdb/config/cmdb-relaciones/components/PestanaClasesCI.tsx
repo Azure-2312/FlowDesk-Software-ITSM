@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, X } from "@/shared/components/ui/Iconos";
 
 export interface ClaseCIItem {
   id: string;
@@ -260,15 +262,7 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
                   <td className="px-4 py-3 text-center capitalize text-slate-600">
                     {clase.frecuencia_auditoria || "trimestral"}
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      type="button"
-                      onClick={() => abrirEditar(clase)}
-                      className="text-indigo-600 hover:text-indigo-900 font-semibold"
-                    >
-                      Editar
-                    </button>
-                  </td>
+                  <td className="px-4 py-2 text-right"><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar clase de CI" ariaLabel="Editar clase de CI" disabled={bloqueado} onClick={() => abrirEditar(clase)} /></td>
                 </tr>
               ))}
             </tbody>
@@ -462,13 +456,7 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
                       className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded text-xs"
                     >
                       {rel}
-                      <button
-                        type="button"
-                        onClick={() => quitarRelacionMinima(idx)}
-                        className="text-indigo-400 hover:text-indigo-700 font-bold"
-                      >
-                        quitar
-                      </button>
+                      <BotonIcono variante="peligro" icono={<X size={10} />} titulo="Quitar relación mínima" ariaLabel="Quitar relación mínima" style={{ width: 18, height: 18, minWidth: 18 }} onClick={() => quitarRelacionMinima(idx)} />
                     </span>
                   ))}
                 </div>

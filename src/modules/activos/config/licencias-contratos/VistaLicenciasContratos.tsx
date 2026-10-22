@@ -7,6 +7,7 @@ import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun
 import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "@/shared/components/admin/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "@/shared/components/admin/ModalRestaurarFabrica";
+import { ModalVistaPrevia } from "@/shared/components/admin/ModalVistaPrevia";
 
 import { PestanaTiposLicencia } from "./components/PestanaTiposLicencia";
 import { PestanaTiposContrato } from "./components/PestanaTiposContrato";
@@ -69,10 +70,53 @@ const PESTANAS: PestanaMetadata[] = [
   }
 ];
 
+const TAB_POR_SLUG: Record<string, TabId> = {
+  "tipos-licencia": "tipos_licencia_metricas",
+  "tipos-contrato": "tipos_contrato_proveedores",
+  "formulario": "formulario_licencia_contrato",
+  "cumplimiento": "cumplimiento_sobreuso",
+  "alertas": "alertas_vencimiento_garantia",
+  "renovacion": "renovacion",
+};
+
+const SLUG_POR_TAB: Record<TabId, string> = {
+  tipos_licencia_metricas: "tipos-licencia",
+  tipos_contrato_proveedores: "tipos-contrato",
+  formulario_licencia_contrato: "formulario",
+  cumplimiento_sobreuso: "cumplimiento",
+  alertas_vencimiento_garantia: "alertas",
+  renovacion: "renovacion",
+};
+
 export default function LicenciasContratosConfigPage() {
   const [tabActiva, setTabActiva] = useState<TabId>("tipos_licencia_metricas");
   const [cargando, setCargando] = useState<boolean>(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
+
+  // Control de enlaces profundos (?vista=)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const vistaParam = params.get("vista");
+      if (vistaParam && TAB_POR_SLUG[vistaParam]) {
+        setTabActiva(TAB_POR_SLUG[vistaParam]);
+      }
+    }
+  }, []);
+
+  const cambiarTab = (nuevaTab: TabId) => {
+    setTabActiva(nuevaTab);
+    const slug = SLUG_POR_TAB[nuevaTab];
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (slug) {
+        url.searchParams.set("vista", slug);
+      } else {
+        url.searchParams.delete("vista");
+      }
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
 
   // Estados de control de versiones y autoría
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
@@ -92,6 +136,7 @@ export default function LicenciasContratosConfigPage() {
   const [diffsCalculados, setDiffsCalculados] = useState<any[]>([]);
 
   // Modales
+  const [modalVistaPreviaAbierto, setModalVistaPreviaAbierto] = useState<boolean>(false);
   const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
   const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
   const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
@@ -408,7 +453,7 @@ export default function LicenciasContratosConfigPage() {
               return (
                 <button
                   key={pestana.id}
-                  onClick={() => setTabActiva(pestana.id)}
+                  onClick={() => cambiarTab(pestana.id)}
                   className={`py-2.5 px-3.5 text-xs font-semibold whitespace-nowrap border-b-2 transition-colors ${
                     activa
                       ? "border-indigo-600 text-indigo-600 bg-indigo-50/50"
@@ -519,7 +564,7 @@ export default function LicenciasContratosConfigPage() {
         puedePublicar={puedePublicar}
         puedeEditar={puedeEditar}
         onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => mostrarToast("Vista previa activa en el lienzo actual.")}
+        onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
         onAbrirPublicar={() => setModalPublicarAbierto(true)}
         onDescartar={handleDescartarBorrador}
         onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
@@ -529,6 +574,13 @@ export default function LicenciasContratosConfigPage() {
       />
 
       {/* Modales del Patrón 3.1 */}
+      <ModalVistaPrevia
+        abierto={modalVistaPreviaAbierto}
+        modulo="activos"
+        tituloModulo="Licencias y Contratos (SAM)"
+        onCerrar={() => setModalVistaPreviaAbierto(false)}
+      />
+
       <ModalPublicacion
         abierto={modalPublicarAbierto}
         versionActual={versionPublicada}

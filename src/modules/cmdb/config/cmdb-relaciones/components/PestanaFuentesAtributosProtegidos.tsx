@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Trash2, X } from "@/shared/components/ui/Iconos";
 
 export type PoliticaEdicion = "solo_rfc" | "excepcion_con_motivo" | "libre";
 
@@ -214,16 +216,7 @@ export function PestanaFuentesAtributosProtegidos({ datos, onChange, bloqueado }
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      type="button"
-                      disabled={bloqueado}
-                      onClick={() => eliminarAtributo(item.id)}
-                      className="text-rose-600 hover:text-rose-800 font-semibold disabled:opacity-50"
-                    >
-                      Quitar
-                    </button>
-                  </td>
+                  <td className="px-4 py-2 text-right"><BotonIcono variante="peligro" icono={<Trash2 size={13} />} titulo="Quitar atributo protegido" ariaLabel="Quitar atributo protegido" disabled={bloqueado} onClick={() => eliminarAtributo(item.id)} /></td>
                 </tr>
               ))}
             </tbody>

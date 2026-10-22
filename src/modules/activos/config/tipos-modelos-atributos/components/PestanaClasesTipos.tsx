@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Ban, Play } from "@/shared/components/ui/Iconos";
+import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 interface TipoHijo {
   id: string;
@@ -48,6 +51,7 @@ export function PestanaClasesTipos({ datos, onChange, bloqueado }: Props) {
   const [busqueda, setBusqueda] = useState("");
   const [nuevoTipoNombre, setNuevoTipoNombre] = useState("");
   const [nuevoTipoCodigo, setNuevoTipoCodigo] = useState("");
+  const [errorTipo, setErrorTipo] = useState<string | null>(null);
 
   const claseActiva = clases.find((c) => c.id === claseSeleccionadaId) || clases[0];
 
@@ -60,8 +64,24 @@ export function PestanaClasesTipos({ datos, onChange, bloqueado }: Props) {
   };
 
   const agregarTipo = () => {
-    if (!nuevoTipoNombre.trim() || !nuevoTipoCodigo.trim() || bloqueado || !claseActiva) return;
+    setErrorTipo(null);
+    if (!nuevoTipoNombre.trim()) {
+      setErrorTipo("Ingresa el nombre del nuevo tipo (entre 3 y 60 caracteres).");
+      return;
+    }
+    if (!nuevoTipoCodigo.trim() || nuevoTipoCodigo.trim().length < 2) {
+      setErrorTipo("El código debe tener entre 2 y 10 caracteres alfanuméricos.");
+      return;
+    }
+    if (bloqueado || !claseActiva) return;
     const nuevoId = nuevoTipoCodigo.toLowerCase().replace(/[^a-z0-9_]/g, "_");
+    const yaExiste = (claseActiva.tipos || []).some(
+      (t) => t.id === nuevoId || t.codigo.toUpperCase() === nuevoTipoCodigo.trim().toUpperCase()
+    );
+    if (yaExiste) {
+      setErrorTipo("Ya existe un tipo registrado con ese código.");
+      return;
+    }
     const nuevoTipo: TipoHijo = {
       id: nuevoId,
       codigo: nuevoTipoCodigo.trim().toUpperCase(),
@@ -402,15 +422,14 @@ export function PestanaClasesTipos({ datos, onChange, bloqueado }: Props) {
                         </span>
                       </td>
                       <td style={{ padding: "8px 12px", textAlign: "right" }}>
-                        <button
-                          type="button"
-                          className="boton-mini"
+                        <BotonIcono
+                          variante={t.activo ? "peligro" : "normal"}
+                          icono={t.activo ? <Ban size={14} /> : <Play size={14} />}
+                          titulo={t.activo ? "Desactivar tipo" : "Activar tipo"}
+                          ariaLabel={t.activo ? "Desactivar tipo" : "Activar tipo"}
                           disabled={bloqueado}
                           onClick={() => toggleEstadoTipo(t.id)}
-                          style={{ fontSize: 11 }}
-                        >
-                          {t.activo ? "Desactivar" : "Activar"}
-                        </button>
+                        />
                       </td>
                     </tr>
                   ))}
@@ -427,41 +446,44 @@ export function PestanaClasesTipos({ datos, onChange, bloqueado }: Props) {
 
             {/* Formulario rápido para agregar tipo */}
             {!bloqueado && (
-              <div style={{ display: "flex", gap: 10, alignItems: "flex-end", backgroundColor: "#f8fafc", padding: 12, borderRadius: 6 }}>
-                <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: "#475569", display: "block", marginBottom: 2 }}>
-                    Nuevo Tipo
-                  </label>
-                  <input
-                    type="text"
-                    className="input-base"
-                    placeholder="Ej. Tablet Corporativa"
-                    value={nuevoTipoNombre}
-                    onChange={(e) => setNuevoTipoNombre(e.target.value)}
-                    style={{ fontSize: 12, width: "100%" }}
-                  />
+              <div style={{ backgroundColor: "#f8fafc", padding: 12, borderRadius: 6 }}>
+                <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: "#475569", display: "block", marginBottom: 2 }}>
+                      Nuevo Tipo
+                    </label>
+                    <input
+                      type="text"
+                      className="input-base"
+                      placeholder="Ej. Tablet Corporativa"
+                      value={nuevoTipoNombre}
+                      onChange={(e) => setNuevoTipoNombre(e.target.value)}
+                      style={{ fontSize: 12, width: "100%" }}
+                    />
+                  </div>
+                  <div style={{ width: 120 }}>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: "#475569", display: "block", marginBottom: 2 }}>
+                      Código
+                    </label>
+                    <input
+                      type="text"
+                      className="input-base"
+                      placeholder="TAB"
+                      value={nuevoTipoCodigo}
+                      onChange={(e) => setNuevoTipoCodigo(e.target.value.toUpperCase())}
+                      style={{ fontSize: 12, width: "100%" }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="boton-principal"
+                    onClick={agregarTipo}
+                    style={{ fontSize: 12, padding: "8px 16px" }}
+                  >
+                    Agregar Tipo
+                  </button>
                 </div>
-                <div style={{ width: 120 }}>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: "#475569", display: "block", marginBottom: 2 }}>
-                    Código
-                  </label>
-                  <input
-                    type="text"
-                    className="input-base"
-                    placeholder="TAB"
-                    value={nuevoTipoCodigo}
-                    onChange={(e) => setNuevoTipoCodigo(e.target.value.toUpperCase())}
-                    style={{ fontSize: 12, width: "100%" }}
-                  />
-                </div>
-                <button
-                  type="button"
-                  className="boton-principal"
-                  onClick={agregarTipo}
-                  style={{ fontSize: 12, padding: "8px 16px" }}
-                >
-                  Agregar Tipo
-                </button>
+                {errorTipo && <AlertaCampo error={errorTipo} />}
               </div>
             )}
           </div>

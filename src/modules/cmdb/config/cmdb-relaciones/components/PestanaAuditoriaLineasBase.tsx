@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { X } from "@/shared/components/ui/Iconos";
 
 export interface PlantillaAuditoriaItem {
   id: string;
@@ -266,13 +268,7 @@ export function PestanaAuditoriaLineasBase({ datos, onChange, bloqueado }: Props
               <h3 className="text-lg font-bold text-slate-800">
                 Resultado de la Campaña de Auditoría de CMDB
               </h3>
-              <button
-                type="button"
-                onClick={() => setModalAuditoria(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold text-xs"
-              >
-                Cerrar
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalAuditoria(false)} />
             </div>
 
             <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-md text-xs text-emerald-800">

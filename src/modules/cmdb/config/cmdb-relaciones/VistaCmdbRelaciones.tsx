@@ -7,6 +7,7 @@ import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun
 import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "@/shared/components/admin/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "@/shared/components/admin/ModalRestaurarFabrica";
+import { ModalVistaPrevia } from "@/shared/components/admin/ModalVistaPrevia";
 
 import { PestanaClasesCI } from "./components/PestanaClasesCI";
 import { PestanaTiposRelacion } from "./components/PestanaTiposRelacion";
@@ -69,10 +70,53 @@ const PESTANAS: PestanaMetadata[] = [
   }
 ];
 
+const TAB_POR_SLUG: Record<string, TabId> = {
+  "clases-ci": "clases_ci",
+  "relaciones": "tipos_relacion",
+  "criticidad": "criticidad_entornos",
+  "integridad": "reglas_integridad",
+  "fuentes": "fuentes_atributos_protegidos",
+  "lineas-base": "auditoria_lineas_base",
+};
+
+const SLUG_POR_TAB: Record<TabId, string> = {
+  clases_ci: "clases-ci",
+  tipos_relacion: "relaciones",
+  criticidad_entornos: "criticidad",
+  reglas_integridad: "integridad",
+  fuentes_atributos_protegidos: "fuentes",
+  auditoria_lineas_base: "lineas-base",
+};
+
 export default function CmdbRelacionesConfigPage() {
   const [tabActiva, setTabActiva] = useState<TabId>("clases_ci");
   const [cargando, setCargando] = useState<boolean>(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
+
+  // Control de enlaces profundos (?vista=)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const vistaParam = params.get("vista");
+      if (vistaParam && TAB_POR_SLUG[vistaParam]) {
+        setTabActiva(TAB_POR_SLUG[vistaParam]);
+      }
+    }
+  }, []);
+
+  const cambiarTab = (nuevaTab: TabId) => {
+    setTabActiva(nuevaTab);
+    const slug = SLUG_POR_TAB[nuevaTab];
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (slug) {
+        url.searchParams.set("vista", slug);
+      } else {
+        url.searchParams.delete("vista");
+      }
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
 
   // Estados de control de versiones y autoría
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
@@ -92,6 +136,7 @@ export default function CmdbRelacionesConfigPage() {
   const [diffsCalculados, setDiffsCalculados] = useState<any[]>([]);
 
   // Modales
+  const [modalVistaPreviaAbierto, setModalVistaPreviaAbierto] = useState<boolean>(false);
   const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
   const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
   const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
@@ -411,7 +456,7 @@ export default function CmdbRelacionesConfigPage() {
               return (
                 <button
                   key={pestana.id}
-                  onClick={() => setTabActiva(pestana.id)}
+                  onClick={() => cambiarTab(pestana.id)}
                   className={`py-2.5 px-3.5 text-xs font-semibold whitespace-nowrap border-b-2 transition-colors ${
                     activa
                       ? "border-indigo-600 text-indigo-600 bg-indigo-50/50"
@@ -522,7 +567,7 @@ export default function CmdbRelacionesConfigPage() {
         puedePublicar={puedePublicar}
         puedeEditar={puedeEditar}
         onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => mostrarToast("Vista previa activa en el lienzo actual.")}
+        onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
         onAbrirPublicar={() => setModalPublicarAbierto(true)}
         onDescartar={handleDescartarBorrador}
         onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
@@ -532,6 +577,13 @@ export default function CmdbRelacionesConfigPage() {
       />
 
       {/* Modales del Patrón 3.1 */}
+      <ModalVistaPrevia
+        abierto={modalVistaPreviaAbierto}
+        modulo="cmdb"
+        tituloModulo="Gestión de la Configuración (CMDB)"
+        onCerrar={() => setModalVistaPreviaAbierto(false)}
+      />
+
       <ModalPublicacion
         abierto={modalPublicarAbierto}
         versionActual={versionPublicada}
