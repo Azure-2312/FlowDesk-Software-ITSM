@@ -205,43 +205,69 @@ export default function VistaConfigCategorias() {
   });
 
   return (
-    <div className="space-y-5">
-      {/* 1. Fila de Encabezado: Título a la izquierda, botones Actualizar y Nuevo pegados a la derecha (solo iconos) */}
-      <div className="flex items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+    <div className="vista-contenedor">
+      {/* 1. Encabezado: Título a la izquierda y botones Actualizar / Nuevo a la derecha (solo iconos) */}
+      <div
+        className="cabecera-pagina"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginBottom: 14,
+          gap: 16,
+          flexWrap: "wrap",
+        }}
+      >
         <div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">
-            Taxonomía y Categorías de Conocimiento
-          </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+          <h1>Taxonomía y Categorías de Conocimiento</h1>
+          <p
+            className="subtitulo"
+            style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}
+          >
             Gestión de la estructura jerárquica de artículos de soporte, autoayuda y procedimientos técnicos.
           </p>
         </div>
 
-        {/* Botones pegados a la derecha del título: sin nombre, solo símbolos */}
-        <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Botones pegados a la derecha del espacio del título: solo iconos, sin palabras */}
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {/* Botón Actualizar (Solo Icono) */}
           <button
             type="button"
             onClick={cargarCategorias}
             disabled={cargando}
-            title="Actualizar catálogo de categorías"
+            title="Actualizar catálogo"
             aria-label="Actualizar catálogo"
-            className="p-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors border border-slate-300 dark:border-slate-700 disabled:opacity-50"
+            className="boton-accion-icono"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 6,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid #cbd5e1",
+              backgroundColor: "#ffffff",
+              cursor: cargando ? "wait" : "pointer",
+            }}
           >
             <svg
-              className={`w-5 h-5 ${cargando ? "animate-spin text-blue-600" : ""}`}
-              fill="none"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
-              stroke="currentColor"
+              fill="none"
+              stroke="#475569"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={cargando ? "animate-spin" : ""}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
+              <polyline points="23 4 23 10 17 10" />
+              <polyline points="1 20 1 14 7 14" />
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
             </svg>
           </button>
 
+          {/* Botón Nueva Categoría (Solo Icono +) */}
           <button
             type="button"
             onClick={() => {
@@ -252,67 +278,129 @@ export default function VistaConfigCategorias() {
             }}
             title="Nueva Categoría"
             aria-label="Nueva Categoría"
-            className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm transition-colors border border-blue-700 flex items-center justify-center"
+            className="boton-primario"
+            style={{
+              width: 36,
+              height: 36,
+              padding: 0,
+              borderRadius: 6,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#2563eb",
+              border: "1px solid #1d4ed8",
+              cursor: "pointer",
+            }}
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
           </button>
         </div>
       </div>
 
       {/* 2. Buscador ubicado debajo del subtítulo */}
-      <div className="relative max-w-md">
+      <div style={{ marginBottom: 16, maxWidth: 360, position: "relative" }}>
         <input
           type="text"
+          className="input-base"
+          placeholder="Buscar por código, nombre o descripción..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          placeholder="Buscar por código, nombre o descripción..."
-          className="w-full px-4 py-2 pl-10 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white"
+          style={{
+            paddingLeft: 34,
+            fontSize: 13,
+            width: "100%",
+            height: 38,
+            borderRadius: 6,
+            border: "1px solid #cbd5e1",
+          }}
         />
         <svg
-          className="w-4 h-4 text-slate-400 absolute left-3 top-3"
-          fill="none"
+          width="15"
+          height="15"
           viewBox="0 0 24 24"
-          stroke="currentColor"
+          fill="none"
+          stroke="#94a3b8"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ position: "absolute", left: 10, top: 12, pointerEvents: "none" }}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
       </div>
 
-      {/* Alertas */}
+      {/* Banners de Notificación / Alertas */}
       {ok && (
-        <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg text-emerald-800 dark:text-emerald-300 text-sm">
+        <p
+          role="status"
+          className="mensaje-exito"
+          style={{
+            padding: "8px 12px",
+            backgroundColor: "#f0fdf4",
+            border: "1px solid #bbf7d0",
+            color: "#166534",
+            borderRadius: 6,
+            marginBottom: 16,
+            fontSize: 13,
+          }}
+        >
           {ok}
-        </div>
+        </p>
       )}
 
       {error && (
-        <div className="p-3 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 rounded-lg text-rose-800 dark:text-rose-300 text-sm">
+        <p
+          role="alert"
+          className="mensaje-error"
+          style={{
+            padding: "8px 12px",
+            backgroundColor: "#fef2f2",
+            border: "1px solid #fecaca",
+            color: "#991b1b",
+            borderRadius: 6,
+            marginBottom: 16,
+            fontSize: 13,
+          }}
+        >
           {error}
-        </div>
+        </p>
       )}
 
-      {/* 3. Tabla de categorías con columna de opciones */}
+      {/* 3. Tabla con sus opciones por fila (todas con iconos, sin palabras) */}
       {cargando ? (
-        <div className="py-12 text-center text-sm text-slate-500">Cargando categorías...</div>
+        <div className="contenedor-tabla" style={{ padding: 32, textAlign: "center", color: "#64748b" }}>
+          Cargando categorías de conocimiento...
+        </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-800">
+        <div className="contenedor-tabla">
+          <table className="tabla-datos">
+            <thead>
               <tr>
-                <th className="py-3 px-4">Código</th>
-                <th className="py-3 px-4">Nombre de Categoría</th>
-                <th className="py-3 px-4">Descripción</th>
-                <th className="py-3 px-4 text-center">Artículos Activos</th>
-                <th className="py-3 px-4 text-center">Estado</th>
-                <th className="py-3 px-4 text-center" style={{ width: 220 }}>Acciones</th>
+                <th style={{ width: 85 }}>Código</th>
+                <th>Nombre de Categoría</th>
+                <th>Descripción</th>
+                <th style={{ textAlign: "center", width: 130 }}>Artículos Activos</th>
+                <th style={{ textAlign: "center", width: 95 }}>Estado</th>
+                <th style={{ textAlign: "center", width: 130 }}>Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody>
               {categoriasFiltradas.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-500">
+                  <td colSpan={6} style={{ padding: 32, textAlign: "center", color: "#64748b" }}>
                     {busqueda.trim()
                       ? "No se encontraron categorías que coincidan con la búsqueda."
                       : "No existen categorías registradas."}
@@ -320,59 +408,135 @@ export default function VistaConfigCategorias() {
                 </tr>
               ) : (
                 categoriasFiltradas.map((cat) => (
-                  <tr key={cat.id_categoria} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                    <td className="py-3 px-4 font-mono font-medium text-blue-600 dark:text-blue-400">
+                  <tr key={cat.id_categoria}>
+                    <td style={{ fontWeight: 700, fontFamily: "monospace", fontSize: 12, color: "#2563eb" }}>
                       {cat.codigo_corto || `CAT-${cat.id_categoria}`}
                     </td>
-                    <td className="py-3 px-4 font-medium text-slate-900 dark:text-white">
-                      {cat.nombre}
+                    <td>
+                      <strong style={{ fontSize: 13, color: "#0f172a" }}>{cat.nombre}</strong>
                     </td>
-                    <td className="py-3 px-4 text-slate-600 dark:text-slate-400 max-w-xs truncate">
+                    <td style={{ fontSize: 12.5, color: "#475569" }}>
                       {cat.descripcion || "-"}
                     </td>
-                    <td className="py-3 px-4 text-center font-medium text-slate-800 dark:text-slate-200">
+                    <td style={{ textAlign: "center", fontSize: 12.5, fontWeight: 600, color: "#1e293b" }}>
                       {cat.total_articulos}
                     </td>
-                    <td className="py-3 px-4 text-center">
-                      <span
-                        className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${
-                          cat.estado_registro
-                            ? "bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300"
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
-                        }`}
-                      >
+                    <td style={{ textAlign: "center" }}>
+                      <span className={`badge-itil ${cat.estado_registro ? "badge-activo" : "badge-inactivo"}`}>
                         {cat.estado_registro ? "Activa" : "Inactiva"}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-center">
-                      <div className="flex items-center justify-center gap-1.5">
+                    <td style={{ textAlign: "center" }}>
+                      <div style={{ display: "inline-flex", gap: 6, justifyContent: "center", alignItems: "center" }}>
+                        {/* Botón Editar - Solo Icono Lápiz */}
                         <button
                           type="button"
+                          className="boton-accion-icono"
                           onClick={() => abrirEdicion(cat)}
-                          className="px-2.5 py-1 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md transition-colors"
                           title="Editar categoría"
+                          aria-label="Editar categoría"
+                          style={{
+                            width: 30,
+                            height: 30,
+                            color: "#2563eb",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
                         >
-                          Editar
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
                         </button>
+
+                        {/* Botón Desactivar / Activar - Solo Icono */}
                         <button
                           type="button"
+                          className="boton-accion-icono"
                           onClick={() => cambiarEstado(cat)}
-                          className={`px-2.5 py-1 text-xs font-medium rounded-md border transition-colors ${
-                            cat.estado_registro
-                              ? "text-amber-700 bg-amber-50 hover:bg-amber-100 border-amber-200"
-                              : "text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border-emerald-200"
-                          }`}
                           title={cat.estado_registro ? "Desactivar categoría" : "Activar categoría"}
+                          aria-label={cat.estado_registro ? "Desactivar categoría" : "Activar categoría"}
+                          style={{
+                            width: 30,
+                            height: 30,
+                            color: cat.estado_registro ? "#b45309" : "#16a34a",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
                         >
-                          {cat.estado_registro ? "Desactivar" : "Activar"}
+                          {cat.estado_registro ? (
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="10" y1="15" x2="10" y2="9" />
+                              <line x1="14" y1="15" x2="14" y2="9" />
+                            </svg>
+                          ) : (
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                              <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                          )}
                         </button>
+
+                        {/* Botón Eliminar - Solo Icono Papelera */}
                         <button
                           type="button"
+                          className="boton-accion-icono boton-accion-peligro"
                           onClick={() => setCategoriaEliminar(cat)}
-                          className="px-2.5 py-1 text-xs font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-md transition-colors"
                           title="Eliminar categoría"
+                          aria-label="Eliminar categoría"
+                          style={{
+                            width: 30,
+                            height: 30,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
                         >
-                          Eliminar
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
+                          </svg>
                         </button>
                       </div>
                     </td>
@@ -386,14 +550,18 @@ export default function VistaConfigCategorias() {
 
       {/* Modal: Crear Nueva Categoría */}
       {mostrarModalNuevo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-xl max-w-md w-full border border-slate-200 dark:border-slate-800 p-6 shadow-xl space-y-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-              Crear Categoría de Conocimiento
-            </h3>
-            <form onSubmit={guardarNuevaCategoria} className="space-y-4">
+        <div className="modal-overlay" onClick={() => setMostrarModalNuevo(false)}>
+          <div
+            className="modal-contenido"
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: 480, padding: 24, backgroundColor: "#ffffff", borderRadius: 10 }}
+          >
+            <h2 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 12px", color: "#0f172a" }}>
+              Nueva Categoría de Conocimiento
+            </h2>
+            <form onSubmit={guardarNuevaCategoria} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
                   Nombre de la Categoría
                 </label>
                 <input
@@ -402,13 +570,14 @@ export default function VistaConfigCategorias() {
                   value={nuevoNombre}
                   onChange={(e) => setNuevoNombre(e.target.value)}
                   placeholder="Ej: Conectividad y Redes Remotas"
-                  className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white"
+                  className="input-base"
+                  style={{ width: "100%", fontSize: 13 }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                  Código Corto (opcional)
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
+                  Código Corto (Identificador opcional)
                 </label>
                 <input
                   type="text"
@@ -416,12 +585,13 @@ export default function VistaConfigCategorias() {
                   onChange={(e) => setNuevoCodigoCorto(e.target.value.toUpperCase())}
                   placeholder="Ej: RED"
                   maxLength={10}
-                  className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-slate-900 dark:text-white"
+                  className="input-base"
+                  style={{ width: "100%", fontSize: 13, fontFamily: "monospace" }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
                   Descripción
                 </label>
                 <textarea
@@ -429,22 +599,25 @@ export default function VistaConfigCategorias() {
                   onChange={(e) => setNuevaDescripcion(e.target.value)}
                   rows={3}
                   placeholder="Detalle el alcance y temática de esta categoría..."
-                  className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white"
+                  className="input-base"
+                  style={{ width: "100%", fontSize: 12.5 }}
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-2">
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 8 }}>
                 <button
                   type="button"
                   onClick={() => setMostrarModalNuevo(false)}
-                  className="px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                  className="boton-secundario"
+                  style={{ fontSize: 13, padding: "7px 14px" }}
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={guardandoNuevo}
-                  className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors disabled:opacity-50"
+                  className="boton-primario"
+                  style={{ fontSize: 13, padding: "7px 16px" }}
                 >
                   {guardandoNuevo ? "Guardando..." : "Crear Categoría"}
                 </button>
@@ -456,14 +629,18 @@ export default function VistaConfigCategorias() {
 
       {/* Modal: Editar Categoría */}
       {categoriaEditando && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-xl max-w-md w-full border border-slate-200 dark:border-slate-800 p-6 shadow-xl space-y-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+        <div className="modal-overlay" onClick={() => setCategoriaEditando(null)}>
+          <div
+            className="modal-contenido"
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: 480, padding: 24, backgroundColor: "#ffffff", borderRadius: 10 }}
+          >
+            <h2 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 12px", color: "#0f172a" }}>
               Editar Categoría de Conocimiento
-            </h3>
-            <form onSubmit={guardarEdicion} className="space-y-4">
+            </h2>
+            <form onSubmit={guardarEdicion} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
                   Nombre de la Categoría
                 </label>
                 <input
@@ -471,12 +648,13 @@ export default function VistaConfigCategorias() {
                   required
                   value={editNombre}
                   onChange={(e) => setEditNombre(e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white"
+                  className="input-base"
+                  style={{ width: "100%", fontSize: 13 }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
                   Código Corto
                 </label>
                 <input
@@ -484,46 +662,49 @@ export default function VistaConfigCategorias() {
                   value={editCodigoCorto}
                   onChange={(e) => setEditCodigoCorto(e.target.value.toUpperCase())}
                   maxLength={10}
-                  className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-slate-900 dark:text-white"
+                  className="input-base"
+                  style={{ width: "100%", fontSize: 13, fontFamily: "monospace" }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
                   Descripción
                 </label>
                 <textarea
                   value={editDescripcion}
                   onChange={(e) => setEditDescripcion(e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white"
+                  className="input-base"
+                  style={{ width: "100%", fontSize: 12.5 }}
                 />
               </div>
 
-              <div className="pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-800 dark:text-slate-200">
+              <div style={{ marginTop: 4 }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, cursor: "pointer", color: "#334155" }}>
                   <input
                     type="checkbox"
                     checked={editEstado}
                     onChange={(e) => setEditEstado(e.target.checked)}
-                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                   />
                   <span>Categoría activa y disponible en el catálogo</span>
                 </label>
               </div>
 
-              <div className="flex justify-end gap-3 pt-2">
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 8 }}>
                 <button
                   type="button"
                   onClick={() => setCategoriaEditando(null)}
-                  className="px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                  className="boton-secundario"
+                  style={{ fontSize: 13, padding: "7px 14px" }}
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={guardandoEdit}
-                  className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors disabled:opacity-50"
+                  className="boton-primario"
+                  style={{ fontSize: 13, padding: "7px 16px" }}
                 >
                   {guardandoEdit ? "Guardando..." : "Guardar Cambios"}
                 </button>
@@ -535,27 +716,42 @@ export default function VistaConfigCategorias() {
 
       {/* Diálogo de Confirmación: Eliminar Categoría */}
       {categoriaEliminar && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-xl max-w-md w-full border border-slate-200 dark:border-slate-800 p-6 shadow-xl space-y-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+        <div className="modal-overlay" onClick={() => setCategoriaEliminar(null)}>
+          <div
+            className="modal-contenido"
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: 460, padding: 24, backgroundColor: "#ffffff", borderRadius: 10 }}
+          >
+            <h2 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 10px", color: "#991b1b" }}>
               Confirmar Eliminación de Categoría
-            </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              ¿Está seguro de que desea eliminar la categoría{" "}
-              <strong className="text-slate-900 dark:text-white">
+            </h2>
+            <p style={{ fontSize: 13, color: "#475569", margin: "0 0 12px", lineHeight: 1.45 }}>
+              ¿Está seguro de que desea eliminar permanentemente la categoría{" "}
+              <strong style={{ color: "#0f172a" }}>
                 [{categoriaEliminar.codigo_corto || `CAT-${categoriaEliminar.id_categoria}`}] {categoriaEliminar.nombre}
               </strong>?
             </p>
             {categoriaEliminar.total_articulos > 0 && (
-              <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg text-amber-800 dark:text-amber-300 text-xs">
-                Atención: Esta categoría tiene {categoriaEliminar.total_articulos} artículo(s) asociado(s). El sistema no permitirá la eliminación física si existen dependencias activas; en su lugar, se sugiere desactivarla.
+              <div
+                style={{
+                  padding: "10px 12px",
+                  backgroundColor: "#fffbeb",
+                  border: "1px solid #fde68a",
+                  borderRadius: 6,
+                  color: "#92400e",
+                  fontSize: 12,
+                  marginBottom: 14,
+                }}
+              >
+                Advertencia: Esta categoría contiene {categoriaEliminar.total_articulos} artículo(s) asociado(s). La base de datos no permitirá eliminarla si existen dependencias activas; en su lugar, le recomendamos desactivarla.
               </div>
             )}
-            <div className="flex justify-end gap-3 pt-2">
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <button
                 type="button"
                 onClick={() => setCategoriaEliminar(null)}
-                className="px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                className="boton-secundario"
+                style={{ fontSize: 13, padding: "7px 14px" }}
               >
                 Cancelar
               </button>
@@ -563,7 +759,8 @@ export default function VistaConfigCategorias() {
                 type="button"
                 onClick={confirmarEliminar}
                 disabled={eliminando}
-                className="px-4 py-2 text-sm bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-lg shadow-sm transition-colors disabled:opacity-50"
+                className="boton-primario"
+                style={{ backgroundColor: "#dc2626", borderColor: "#b91c1c", fontSize: 13, padding: "7px 16px" }}
               >
                 {eliminando ? "Eliminando..." : "Confirmar Eliminación"}
               </button>

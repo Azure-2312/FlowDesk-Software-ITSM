@@ -452,55 +452,78 @@ export default function GobiernoConocimiento() {
                         {new Date(a.fecha_creacion).toLocaleDateString()}
                       </td>
                       <td style={{ textAlign: "center" }}>
-                        <div style={{ display: "flex", gap: 5, justifyContent: "center", alignItems: "center" }}>
+                        <div style={{ display: "inline-flex", gap: 6, justifyContent: "center", alignItems: "center" }}>
                           {a.estado_editorial === "BORRADOR" && (
                             <button
                               type="button"
-                              className="boton-mini"
+                              className="boton-accion-icono"
                               onClick={() => accionTransicion(a.id_articulo, "ENVIAR_A_REVISION")}
                               title="Enviar a revisión de supervisor"
-                              style={{ backgroundColor: "#fef3c7", color: "#92400e", borderColor: "#fde68a" }}
+                              aria-label="Enviar a revisión"
+                              style={{ width: 30, height: 30, color: "#d97706", borderColor: "#fde68a", backgroundColor: "#fffbeb" }}
                             >
-                              Revisar
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 14 14" />
+                              </svg>
                             </button>
                           )}
                           {a.estado_editorial === "EN_REVISION" && (
                             <button
                               type="button"
-                              className="boton-mini"
+                              className="boton-accion-icono"
                               onClick={() => accionTransicion(a.id_articulo, "APROBAR")}
                               title="Aprobar y publicar en autoservicio"
-                              style={{ backgroundColor: "#10b981", color: "#ffffff", borderColor: "#059669" }}
+                              aria-label="Publicar artículo"
+                              style={{ width: 30, height: 30, color: "#059669", borderColor: "#a7f3d0", backgroundColor: "#ecfdf5" }}
                             >
-                              Publicar
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                              </svg>
                             </button>
                           )}
                           {a.estado_editorial === "PUBLICADO" && (
                             <button
                               type="button"
-                              className="boton-mini"
+                              className="boton-accion-icono boton-accion-peligro"
                               onClick={() => setIdRetirar(a.id_articulo)}
                               title="Retirar por obsolescencia"
-                              style={{ backgroundColor: "#fee2e2", color: "#991b1b", borderColor: "#fca5a5" }}
+                              aria-label="Retirar artículo"
+                              style={{ width: 30, height: 30 }}
                             >
-                              Retirar
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                              </svg>
                             </button>
                           )}
                           <Link
                             href={`/plataforma/admin/conocimiento-config/articulos/${a.id_articulo}/editar`}
-                            className="boton-mini"
-                            style={{ textDecoration: "none", display: "inline-flex", alignItems: "center" }}
+                            className="boton-accion-icono"
+                            style={{ width: 30, height: 30, color: "#2563eb", textDecoration: "none" }}
                             title="Editar artículo"
+                            aria-label="Editar artículo"
                           >
-                            Editar
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
                           </Link>
                           <Link
                             href={`/plataforma/admin/conocimiento-config/articulos/${a.id_articulo}/historial`}
-                            className="boton-mini"
-                            style={{ textDecoration: "none", display: "inline-flex", alignItems: "center" }}
+                            className="boton-accion-icono"
+                            style={{ width: 30, height: 30, color: "#475569", textDecoration: "none" }}
                             title="Ver reporte detallado de trazabilidad"
+                            aria-label="Ver historial y auditoría"
                           >
-                            Historial
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                              <polyline points="14 2 14 8 20 8" />
+                              <line x1="16" y1="13" x2="8" y2="13" />
+                              <line x1="16" y1="17" x2="8" y2="17" />
+                              <polyline points="10 9 9 9 8 9" />
+                            </svg>
                           </Link>
                         </div>
                       </td>
