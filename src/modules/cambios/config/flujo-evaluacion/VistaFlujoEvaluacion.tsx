@@ -295,8 +295,9 @@ export default function FlujoEvaluacionPage() {
   const deshabilitadoEdicion = !puedeEditar || !!bloqueadoPorOtro;
 
   return (
-    <div style={{ padding: "24px 32px 24px 32px", maxWidth: "1600px", margin: "0 auto", color: "#1e293b", display: "flex", flexDirection: "column", minHeight: "100%" }}>
-      {/* Migas de pan y encabezado */}
+    <div style={{ backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ padding: "24px 32px 32px 32px", flex: 1, maxWidth: "1600px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+        {/* Migas de pan y encabezado */}
       <div style={{ marginBottom: "16px" }}>
         <div style={{ fontSize: "0.85rem", color: "#64748b", marginBottom: "6px" }}>
           <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>
@@ -488,6 +489,7 @@ export default function FlujoEvaluacionPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* Barra de Acciones Común Pattern 3.1 */}
       <BarraAccionesComun

@@ -391,8 +391,9 @@ export default function ConfiguracionFormularioPage() {
   };
 
   return (
-    <div style={{ padding: "20px 28px 24px 28px", minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* Breadcrumb reglamentario */}
+    <div style={{ minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
+        {/* Breadcrumb reglamentario */}
       <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
         <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
           Problemas
@@ -677,6 +678,7 @@ export default function ConfiguracionFormularioPage() {
             )}
           </div>
         )}
+      </div>
 
       {/* Barra de Acciones Común Fija al Pie (Sección 3.1) */}
       <BarraAccionesComun

@@ -384,8 +384,9 @@ export default function LicenciasContratosConfigPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col pb-6">
-      {/* Toast flotante */}
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {/* Toast flotante */}
       {toastMensaje && (
         <div className="fixed top-4 right-4 z-50 bg-slate-800 text-white px-4 py-2 rounded-md shadow-lg text-sm transition-opacity">
           {toastMensaje}
@@ -551,6 +552,7 @@ export default function LicenciasContratosConfigPage() {
           </div>
         )}
       </main>
+      </div>
 
       {/* Barra de Acciones Común Flotante (Patrón 3.1) */}
       <BarraAccionesComun
