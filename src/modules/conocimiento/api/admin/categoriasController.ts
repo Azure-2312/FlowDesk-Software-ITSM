@@ -5,6 +5,7 @@ import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import {
   actualizarCategoriaConocimiento,
   crearCategoriaConocimiento,
+  eliminarCategoriaConocimiento,
   listarCategoriasConocimiento,
 } from "@/modules/conocimiento/services/conocimientoService";
 
@@ -72,6 +73,40 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     if (!(error instanceof ErrorDominio)) console.error("Error al actualizar categoría de conocimiento:", error);
     const { error: mensaje, status } = respuestaError(error, "Error al actualizar categoría");
+    return NextResponse.json({ error: mensaje }, { status });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const token = req.cookies.get(COOKIE_SESION)?.value;
+  const sesion = token ? verificarTokenSesion(token) : null;
+  if (!sesion || !sesionTieneCapacidad(sesion, CAPACIDADES.CONOCIMIENTO_CONFIGURAR)) {
+    return NextResponse.json({ error: "Solo Administración puede eliminar categorías." }, { status: 403 });
+  }
+
+  try {
+    const url = new URL(req.url);
+    const idParam = url.searchParams.get("id");
+    let idCategoria = idParam ? Number(idParam) : null;
+    if (!idCategoria) {
+      const body = await req.json().catch(() => ({}));
+      idCategoria = body.id_categoria ? Number(body.id_categoria) : null;
+    }
+    if (!idCategoria || isNaN(idCategoria)) {
+      return NextResponse.json({ error: "ID de categoría inválido o no especificado" }, { status: 400 });
+    }
+
+    const categoria = await eliminarCategoriaConocimiento(idCategoria, {
+      idUsuario: sesion.id_usuario,
+      nombres: sesion.nombres,
+      idPerfil: sesion.perfilActivo?.id_perfil || 0,
+      ip: req.headers.get("x-forwarded-for") || "127.0.0.1",
+    });
+
+    return NextResponse.json({ mensaje: "Categoría eliminada satisfactoriamente.", categoria });
+  } catch (error) {
+    if (!(error instanceof ErrorDominio)) console.error("Error al eliminar categoría de conocimiento:", error);
+    const { error: mensaje, status } = respuestaError(error, "Error al eliminar categoría");
     return NextResponse.json({ error: mensaje }, { status });
   }
 }
