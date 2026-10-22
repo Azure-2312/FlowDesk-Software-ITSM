@@ -208,7 +208,7 @@ export default function ConfiguracionTiposRequisitosPage() {
   };
 
   return (
-    <div style={{ paddingBottom: 90, minWidth: 1000, maxWidth: 1400, margin: "0 auto", padding: "20px 24px 100px" }}>
+    <div style={{ minWidth: 1000, maxWidth: 1400, margin: "0 auto", padding: "20px 24px 24px", display: "flex", flexDirection: "column", minHeight: "100%" }}>
       {/* Navegación y Encabezado del Módulo */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748b", marginBottom: 6 }}>

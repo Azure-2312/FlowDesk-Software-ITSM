@@ -295,7 +295,7 @@ export default function FlujoEvaluacionPage() {
   const deshabilitadoEdicion = !puedeEditar || !!bloqueadoPorOtro;
 
   return (
-    <div style={{ padding: "24px 32px 100px 32px", maxWidth: "1600px", margin: "0 auto", color: "#1e293b" }}>
+    <div style={{ padding: "24px 32px 24px 32px", maxWidth: "1600px", margin: "0 auto", color: "#1e293b", display: "flex", flexDirection: "column", minHeight: "100%" }}>
       {/* Migas de pan y encabezado */}
       <div style={{ marginBottom: "16px" }}>
         <div style={{ fontSize: "0.85rem", color: "#64748b", marginBottom: "6px" }}>

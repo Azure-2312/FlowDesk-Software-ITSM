@@ -412,7 +412,7 @@ export default function CiclosVidaTransicionesPage() {
   const estaBloqueado = !!bloqueadoPorOtro;
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col pb-24">
+    <div className="min-h-screen bg-slate-100 flex flex-col pb-6">
       {/* Toast informativo */}
       {toastMensaje && (
         <div className="fixed top-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl text-sm font-medium border border-slate-700 animate-in fade-in duration-200">
