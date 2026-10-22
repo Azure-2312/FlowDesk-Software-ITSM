@@ -219,15 +219,7 @@ export default function GobiernoConocimiento() {
             Supervise el ciclo editorial de artículos técnicos, audite la trazabilidad y configure las políticas de redacción y compuertas de publicación del autoservicio.
           </p>
         </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <Link
-            href="/plataforma/admin/conocimiento-config/categorias"
-            className="boton-secundario"
-            style={{ textDecoration: "none", fontSize: 13, padding: "8px 12px" }}
-          >
-            Configuración Categorías
-          </Link>
-        </div>
+        
       </div>
 
       {/* Navegación por Pestañas */}

@@ -616,7 +616,7 @@ export async function obtenerPoliticasKcs() {
   const politicas = fila?.valor || POLITICAS_KCS_DEFECTO;
 
   const perfiles = await query(
-    "SELECT id_perfil, nombre, codigo FROM perfiles WHERE estado_registro = true ORDER BY id_perfil ASC"
+    "SELECT id_perfil, nombre, descripcion, LOWER(REPLACE(nombre, ' ', '_')) AS codigo FROM perfiles WHERE estado_registro = true ORDER BY id_perfil ASC"
   );
 
   return { politicas, perfiles };
