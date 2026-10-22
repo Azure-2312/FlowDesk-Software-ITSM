@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, Ban, Play, Check, X } from "@/shared/components/ui/Iconos";
 
 export type TipoEstadoActivo =
   | "planificado"
@@ -440,19 +442,19 @@ export function PestanaCiclosEstados({ datos, onChange, bloqueado }: Props) {
                         )}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        {item.cuenta_inventario ? <span className="text-emerald-600 font-bold">✓</span> : <span className="text-slate-300">-</span>}
+                        {item.cuenta_inventario ? <span className="text-emerald-600 inline-flex items-center"><Check size={12} /></span> : <span className="text-slate-300">-</span>}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        {item.asignable ? <span className="text-indigo-600 font-bold">✓</span> : <span className="text-slate-300">-</span>}
+                        {item.asignable ? <span className="text-indigo-600 inline-flex items-center"><Check size={12} /></span> : <span className="text-slate-300">-</span>}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        {item.ci_activo ? <span className="text-blue-600 font-bold">✓</span> : <span className="text-slate-300">-</span>}
+                        {item.ci_activo ? <span className="text-blue-600 inline-flex items-center"><Check size={12} /></span> : <span className="text-slate-300">-</span>}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        {item.permite_incidentes ? <span className="text-emerald-600 font-bold">✓</span> : <span className="text-slate-300">-</span>}
+                        {item.permite_incidentes ? <span className="text-emerald-600 inline-flex items-center"><Check size={12} /></span> : <span className="text-slate-300">-</span>}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        {item.permite_rfc ? <span className="text-purple-600 font-bold">✓</span> : <span className="text-slate-300">-</span>}
+                        {item.permite_rfc ? <span className="text-purple-600 inline-flex items-center"><Check size={12} /></span> : <span className="text-slate-300">-</span>}
                       </td>
                       <td className="py-2.5 px-3 text-right space-x-2">
                         <button
@@ -492,12 +494,7 @@ export function PestanaCiclosEstados({ datos, onChange, bloqueado }: Props) {
               <h3 className="text-sm font-bold text-slate-800">
                 {modalEstado.esNuevo ? "Nuevo estado del ciclo" : `Editar estado: ${formEstado.nombre}`}
               </h3>
-              <button
-                onClick={() => setModalEstado({ abierto: false, esNuevo: true })}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalEstado({ abierto: false, esNuevo: true })} />
             </div>
 
             <div className="p-5 space-y-4 text-xs max-h-[75vh] overflow-y-auto">
@@ -675,12 +672,7 @@ export function PestanaCiclosEstados({ datos, onChange, bloqueado }: Props) {
               <h3 className="text-sm font-bold text-slate-800">
                 {modalCiclo.esNuevo ? "Nuevo ciclo de vida" : "Editar ciclo de vida"}
               </h3>
-              <button
-                onClick={() => setModalCiclo({ abierto: false, esNuevo: true })}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalCiclo({ abierto: false, esNuevo: true })} />
             </div>
 
             <div className="p-5 space-y-3 text-xs">

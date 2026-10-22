@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { X } from "@/shared/components/ui/Iconos";
 
 export interface TransicionRegla {
   id: string;
@@ -498,12 +500,7 @@ export function PestanaTransicionesReglas({ datos, onChange, bloqueado }: Props)
               <h3 className="text-sm font-bold text-slate-800">
                 {modalEdicion.esNuevo ? "Nueva regla de transición de estado" : `Editar regla: ${formTransicion.nombre}`}
               </h3>
-              <button
-                onClick={() => setModalEdicion({ abierto: false, esNuevo: true })}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalEdicion({ abierto: false, esNuevo: true })} />
             </div>
 
             <div className="p-5 space-y-4 text-xs max-h-[75vh] overflow-y-auto">

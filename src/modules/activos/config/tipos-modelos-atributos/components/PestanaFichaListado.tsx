@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { ArrowUp, ArrowDown, Check, X } from "@/shared/components/ui/Iconos";
 
 export interface ElementoCabecera {
   id: string;
@@ -289,14 +291,14 @@ export function PestanaFichaListado({ datos, onChange, bloqueado }: Props) {
                       disabled={idx === 0 || bloqueado}
                       className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                     >
-                      ▲
+                      <ArrowUp size={10} />
                     </button>
                     <button
                       onClick={() => moverCabecera(idx, "abajo")}
                       disabled={idx === cabecera.length - 1 || bloqueado}
                       className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                     >
-                      ▼
+                      <ArrowDown size={10} />
                     </button>
                   </div>
                   <span className="w-6 font-mono text-slate-400 font-bold">{item.orden}</span>
@@ -364,14 +366,14 @@ export function PestanaFichaListado({ datos, onChange, bloqueado }: Props) {
                           disabled={idx === 0 || bloqueado}
                           className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                         >
-                          ▲
+                          <ArrowUp size={10} />
                         </button>
                         <button
                           onClick={() => moverPestana(idx, "abajo")}
                           disabled={idx === pestanas.length - 1 || bloqueado}
                           className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                         >
-                          ▼
+                          <ArrowDown size={10} />
                         </button>
                       </div>
                     </td>
@@ -450,14 +452,14 @@ export function PestanaFichaListado({ datos, onChange, bloqueado }: Props) {
                       disabled={idx === 0 || bloqueado}
                       className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                     >
-                      ▲
+                      <ArrowUp size={10} />
                     </button>
                     <button
                       onClick={() => moverPanelLateral(idx, "abajo")}
                       disabled={idx === panelLateral.length - 1 || bloqueado}
                       className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                     >
-                      ▼
+                      <ArrowDown size={10} />
                     </button>
                   </div>
                   <span className="w-6 font-mono text-slate-400 font-bold">{item.orden}</span>
@@ -510,7 +512,7 @@ export function PestanaFichaListado({ datos, onChange, bloqueado }: Props) {
                     }`}
                   >
                     <span>{col.label}</span>
-                    <span className="font-bold">{activa ? "✓" : "+"}</span>
+                    <span className="font-bold">{activa ? <Check size={12} /> : "+"}</span>
                   </button>
                 );
               })}
@@ -590,12 +592,7 @@ export function PestanaFichaListado({ datos, onChange, bloqueado }: Props) {
               <h3 className="text-sm font-bold text-slate-800">
                 Vista previa de la ficha del activo (Simulación de layout)
               </h3>
-              <button
-                onClick={() => setModalVistaPrevia(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar vista previa" ariaLabel="Cerrar vista previa" onClick={() => setModalVistaPrevia(false)} />
             </div>
 
             <div className="p-5 space-y-4">

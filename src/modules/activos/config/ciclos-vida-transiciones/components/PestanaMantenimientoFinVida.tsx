@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { X } from "@/shared/components/ui/Iconos";
 
 export interface TipoMantenimiento {
   id: string;
@@ -373,9 +375,7 @@ export function PestanaMantenimientoFinVida({ datos, onChange, bloqueado }: Prop
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
             <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
               <h3 className="text-sm font-bold text-slate-800">Nuevo plan de mantenimiento preventivo</h3>
-              <button onClick={() => setModalPlan(false)} className="text-slate-400 hover:text-slate-600 font-bold">
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalPlan(false)} />
             </div>
 
             <div className="p-5 space-y-3 text-xs">
@@ -459,9 +459,7 @@ export function PestanaMantenimientoFinVida({ datos, onChange, bloqueado }: Prop
               <h3 className="text-sm font-bold text-slate-800">
                 Simulación de Mantenimientos Preventivos — Próximos 12 meses
               </h3>
-              <button onClick={() => setModalSimulacion12Meses(false)} className="text-slate-400 hover:text-slate-600 font-bold">
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalSimulacion12Meses(false)} />
             </div>
 
             <div className="p-5 space-y-3 text-xs">

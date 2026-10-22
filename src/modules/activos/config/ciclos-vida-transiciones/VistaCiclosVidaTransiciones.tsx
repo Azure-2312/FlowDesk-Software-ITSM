@@ -7,6 +7,7 @@ import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun
 import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "@/shared/components/admin/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "@/shared/components/admin/ModalRestaurarFabrica";
+import { ModalVistaPrevia } from "@/shared/components/admin/ModalVistaPrevia";
 
 import { PestanaCiclosEstados } from "./components/PestanaCiclosEstados";
 import { PestanaTransicionesReglas } from "./components/PestanaTransicionesReglas";
@@ -69,10 +70,53 @@ const PESTANAS: PestanaMetadata[] = [
   }
 ];
 
+const TAB_POR_SLUG: Record<string, TabId> = {
+  "ciclos-estados": "ciclos_estados",
+  "transiciones": "transiciones_reglas",
+  "custodia": "asignacion_custodia",
+  "recepcion": "adquisicion_recepcion",
+  "mantenimiento": "mantenimiento_fin_vida",
+  "baja": "baja_disposicion",
+};
+
+const SLUG_POR_TAB: Record<TabId, string> = {
+  ciclos_estados: "ciclos-estados",
+  transiciones_reglas: "transiciones",
+  asignacion_custodia: "custodia",
+  adquisicion_recepcion: "recepcion",
+  mantenimiento_fin_vida: "mantenimiento",
+  baja_disposicion: "baja",
+};
+
 export default function CiclosVidaTransicionesPage() {
   const [tabActiva, setTabActiva] = useState<TabId>("ciclos_estados");
   const [cargando, setCargando] = useState<boolean>(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
+
+  // Control de enlaces profundos (?vista=)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const vistaParam = params.get("vista");
+      if (vistaParam && TAB_POR_SLUG[vistaParam]) {
+        setTabActiva(TAB_POR_SLUG[vistaParam]);
+      }
+    }
+  }, []);
+
+  const cambiarTab = (nuevaTab: TabId) => {
+    setTabActiva(nuevaTab);
+    const slug = SLUG_POR_TAB[nuevaTab];
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (slug) {
+        url.searchParams.set("vista", slug);
+      } else {
+        url.searchParams.delete("vista");
+      }
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
 
   // Estados de control de versiones y autoría
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
@@ -92,6 +136,7 @@ export default function CiclosVidaTransicionesPage() {
   const [diffsCalculados, setDiffsCalculados] = useState<any[]>([]);
 
   // Modales
+  const [modalVistaPreviaAbierto, setModalVistaPreviaAbierto] = useState<boolean>(false);
   const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
   const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
   const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
@@ -450,7 +495,7 @@ export default function CiclosVidaTransicionesPage() {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setTabActiva(tab.id)}
+                  onClick={() => cambiarTab(tab.id)}
                   className={`px-3 py-2 text-xs font-semibold rounded-lg whitespace-nowrap transition-all ${
                     activa
                       ? "bg-indigo-600 text-white shadow-sm"
@@ -544,7 +589,7 @@ export default function CiclosVidaTransicionesPage() {
         puedePublicar={puedePublicar}
         puedeEditar={puedeEditar}
         onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => mostrarToast("Vista previa activa en el lienzo actual.")}
+        onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
         onAbrirPublicar={() => setModalPublicarAbierto(true)}
         onDescartar={handleDescartarBorrador}
         onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
@@ -554,6 +599,13 @@ export default function CiclosVidaTransicionesPage() {
       />
 
       {/* Modales del Patrón 3.1 */}
+      <ModalVistaPrevia
+        abierto={modalVistaPreviaAbierto}
+        modulo="activos"
+        tituloModulo="Ciclos de Vida y Reglas de Transición"
+        onCerrar={() => setModalVistaPreviaAbierto(false)}
+      />
+
       <ModalPublicacion
         abierto={modalPublicarAbierto}
         versionActual={versionPublicada}

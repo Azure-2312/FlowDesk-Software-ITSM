@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Trash2 } from "@/shared/components/ui/Iconos";
+import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 interface AtributoTecnico {
   id: number;
@@ -49,14 +52,32 @@ export function PestanaAtributosTipo({ datos, onChange, bloqueado }: Props) {
   const [nuevoSensible, setNuevoSensible] = useState(false);
   const [nuevoProtegido, setNuevoProtegido] = useState(false);
   const [nuevoIncidentes, setNuevoIncidentes] = useState(false);
+  const [errorAtributo, setErrorAtributo] = useState<string | null>(null);
 
   const agregarAtributo = () => {
-    if (!nuevoEtiqueta.trim() || !nuevoCodigo.trim() || bloqueado) return;
+    setErrorAtributo(null);
+    if (!nuevoEtiqueta.trim()) {
+      setErrorAtributo("Ingresa la etiqueta visible del atributo (ej. Dirección IP).");
+      return;
+    }
+    if (!nuevoCodigo.trim()) {
+      setErrorAtributo("Ingresa el código interno técnico (snake_case).");
+      return;
+    }
+    const codNormalizado = nuevoCodigo.trim().toLowerCase().replace(/[^a-z0-9_]/g, "_");
+    const yaExiste = atributos.some(
+      (a) => a.codigo === codNormalizado && (nuevoClase === "TODOS" || a.clase_id === nuevoClase)
+    );
+    if (yaExiste) {
+      setErrorAtributo("Ya existe un atributo con ese código para esta clase.");
+      return;
+    }
+    if (bloqueado) return;
     const nuevoId = (atributos.length > 0 ? Math.max(...atributos.map((a) => a.id)) : 0) + 1;
     const nuevoAttr: AtributoTecnico = {
       id: nuevoId,
       clase_id: nuevoClase,
-      codigo: nuevoCodigo.trim().toLowerCase().replace(/[^a-z0-9_]/g, "_"),
+      codigo: codNormalizado,
       etiqueta: nuevoEtiqueta.trim(),
       tipo_dato: nuevoTipoDato,
       obligatorio: nuevoObligatorio,
@@ -200,15 +221,14 @@ export function PestanaAtributosTipo({ datos, onChange, bloqueado }: Props) {
                   />
                 </td>
                 <td style={{ padding: "8px 10px", textAlign: "right" }}>
-                  <button
-                    type="button"
-                    className="boton-mini"
+                  <BotonIcono
+                    variante="peligro"
+                    icono={<Trash2 size={14} />}
+                    titulo="Eliminar atributo"
+                    ariaLabel="Eliminar atributo"
                     disabled={bloqueado}
                     onClick={() => eliminarAtributo(a.id)}
-                    style={{ fontSize: 11, color: "#ef4444" }}
-                  >
-                    Eliminar
-                  </button>
+                  />
                 </td>
               </tr>
             ))}
@@ -330,11 +350,13 @@ export function PestanaAtributosTipo({ datos, onChange, bloqueado }: Props) {
             </label>
           </div>
 
+          {errorAtributo && <AlertaCampo error={errorAtributo} />}
+
           <button
             type="button"
             className="boton-principal"
             onClick={agregarAtributo}
-            style={{ fontSize: 12, padding: "8px 18px" }}
+            style={{ fontSize: 12, padding: "8px 18px", marginTop: 8 }}
           >
             Guardar Atributo
           </button>

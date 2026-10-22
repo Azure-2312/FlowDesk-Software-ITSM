@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, Trash2, X } from "@/shared/components/ui/Iconos";
 
 export interface RangoAprobacionMonto {
   desde: number;
@@ -319,16 +321,7 @@ export function PestanaRenovacion({ datos, onChange, bloqueado }: Props) {
                     <td className="px-3 py-2 font-mono">${r.desde.toLocaleString()}</td>
                     <td className="px-3 py-2 font-mono">${r.hasta.toLocaleString()}</td>
                     <td className="px-3 py-2 font-medium text-indigo-700">{r.perfil_aprobador}</td>
-                    <td className="px-3 py-2 text-right">
-                      <button
-                        type="button"
-                        disabled={bloqueado}
-                        onClick={() => eliminarRango(idx)}
-                        className="text-rose-600 hover:text-rose-800 font-semibold disabled:opacity-50"
-                      >
-                        Quitar
-                      </button>
-                    </td>
+                    <td className="px-3 py-2 text-right"><BotonIcono variante="peligro" icono={<Trash2 size={13} />} titulo="Quitar rango" ariaLabel="Quitar rango" disabled={bloqueado} onClick={() => eliminarRango(idx)} /></td>
                   </tr>
                 ))}
               </tbody>
@@ -393,18 +386,7 @@ export function PestanaRenovacion({ datos, onChange, bloqueado }: Props) {
                     {m.accion_asociada === "liberar" && "Liberar asignaciones y devolver cupos"}
                     {(!m.accion_asociada || m.accion_asociada === "ninguna") && "Solo registro administrativo"}
                   </td>
-                  <td className="px-3 py-2 text-right">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFormMotivo({ ...m });
-                        setModalMotivo({ abierto: true, esNuevo: false });
-                      }}
-                      className="text-indigo-600 hover:text-indigo-800 font-semibold"
-                    >
-                      Editar
-                    </button>
-                  </td>
+                  <td className="px-3 py-2 text-right"><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar motivo" ariaLabel="Editar motivo" disabled={bloqueado} onClick={() => { setFormMotivo({ ...m }); setModalMotivo({ abierto: true, esNuevo: false }); }} /></td>
                 </tr>
               ))}
             </tbody>

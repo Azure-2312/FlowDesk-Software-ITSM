@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Ban, Play } from "@/shared/components/ui/Iconos";
+import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 interface Fabricante {
   id: number;
@@ -45,6 +48,7 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
   const [nuevoFabNombre, setNuevoFabNombre] = useState("");
   const [nuevoFabWeb, setNuevoFabWeb] = useState("");
   const [nuevoFabContacto, setNuevoFabContacto] = useState("");
+  const [errorFab, setErrorFab] = useState<string | null>(null);
 
   // Formulario rápido nuevo modelo
   const [nuevoModFabId, setNuevoModFabId] = useState<number>(fabricantes[0]?.id || 1);
@@ -53,9 +57,19 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
   const [nuevoModParte, setNuevoModParte] = useState("");
   const [nuevoModGarantia, setNuevoModGarantia] = useState<number>(36);
   const [nuevoModVida, setNuevoModVida] = useState<number>(48);
+  const [errorMod, setErrorMod] = useState<string | null>(null);
 
   const agregarFabricante = () => {
-    if (!nuevoFabNombre.trim() || bloqueado) return;
+    setErrorFab(null);
+    if (!nuevoFabNombre.trim()) {
+      setErrorFab("Ingresa el nombre del fabricante (mínimo 2 caracteres).");
+      return;
+    }
+    if (nuevoFabWeb.trim() && !nuevoFabWeb.trim().startsWith("http")) {
+      setErrorFab("El sitio web debe comenzar con https:// o http://");
+      return;
+    }
+    if (bloqueado) return;
     const nuevoId = (fabricantes.length > 0 ? Math.max(...fabricantes.map((f) => f.id)) : 0) + 1;
     const nuevoFab: Fabricante = {
       id: nuevoId,
@@ -80,7 +94,16 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
   };
 
   const agregarModelo = () => {
-    if (!nuevoModNombre.trim() || bloqueado) return;
+    setErrorMod(null);
+    if (!nuevoModNombre.trim()) {
+      setErrorMod("Ingresa el nombre del modelo homologado.");
+      return;
+    }
+    if (!nuevoModParte.trim()) {
+      setErrorMod("Ingresa el número de parte (P/N) del fabricante.");
+      return;
+    }
+    if (bloqueado) return;
     const nuevoId = (modelos.length > 0 ? Math.max(...modelos.map((m) => m.id)) : 0) + 1;
     const nuevoMod: Modelo = {
       id: nuevoId,
@@ -183,15 +206,14 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
                           </span>
                         </td>
                         <td style={{ padding: "8px 12px", textAlign: "right" }}>
-                          <button
-                            type="button"
-                            className="boton-mini"
+                          <BotonIcono
+                            variante={f.activo ? "peligro" : "normal"}
+                            icono={f.activo ? <Ban size={14} /> : <Play size={14} />}
+                            titulo={f.activo ? "Desactivar fabricante" : "Activar fabricante"}
+                            ariaLabel={f.activo ? "Desactivar fabricante" : "Activar fabricante"}
                             disabled={bloqueado}
                             onClick={() => toggleEstadoFabricante(f.id)}
-                            style={{ fontSize: 11 }}
-                          >
-                            {f.activo ? "Desactivar" : "Activar"}
-                          </button>
+                          />
                         </td>
                       </tr>
                     );
@@ -255,6 +277,7 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
                   Guardar Fabricante
                 </button>
               </div>
+              {errorFab && <AlertaCampo error={errorFab} />}
             </div>
           )}
         </div>
@@ -308,15 +331,14 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
                         </span>
                       </td>
                       <td style={{ padding: "8px 12px", textAlign: "right" }}>
-                        <button
-                          type="button"
-                          className="boton-mini"
+                        <BotonIcono
+                          variante={m.activo ? "peligro" : "normal"}
+                          icono={m.activo ? <Ban size={14} /> : <Play size={14} />}
+                          titulo={m.activo ? "Desactivar modelo" : "Activar modelo"}
+                          ariaLabel={m.activo ? "Desactivar modelo" : "Activar modelo"}
                           disabled={bloqueado}
                           onClick={() => toggleEstadoModelo(m.id)}
-                          style={{ fontSize: 11 }}
-                        >
-                          {m.activo ? "Desactivar" : "Activar"}
-                        </button>
+                        />
                       </td>
                     </tr>
                   );
@@ -413,6 +435,7 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
                   Guardar Modelo
                 </button>
               </div>
+              {errorMod && <AlertaCampo error={errorMod} />}
             </div>
           )}
         </div>

@@ -1,41 +1,111 @@
 # PROMPT 3 de 3 — Configuración del administrador: ACTIVOS Y CMDB
 
-> **Rama del menú que se implementa:** `1 Configuración > 1.5 Activos y configuración`
-> **Prompts hermanos:** Prompt 1 = Gestión de problemas (1.3.3) · Prompt 2 = Gestión de cambios (1.3.4).
-> **Idioma de la interfaz:** español. **Código, tablas y endpoints:** nombres en español snake_case salvo convención técnica.
-> **Stack real del proyecto:** Next.js 14 con App Router (frontend + backend) y PostgreSQL (alojado en Supabase y accedido con el pool `pg` de `src/lib/db.ts`). Tienes acceso completo al código, la base de datos, el frontend y el backend.
-> **Versión del documento:** 2.0 (actualizada a la arquitectura FlowDesk: numeración y rutas reales, reglas de navegación sin duplicar el menú, sistema de íconos y validaciones en todos los campos).
+> **Pantallas que se implementan (menú del Administrador, raíz `Activos y CMDB`, carpeta `Catálogos`):** `Tipos, modelos y atributos` (`/plataforma/admin/activos-config/tipos-modelos-atributos`) · `Ciclos de vida y reglas de transición` (`/plataforma/admin/activos-config/ciclos-vida-transiciones`) · `Licencias y contratos` (`/plataforma/admin/activos-config/licencias-contratos`) · `Tipos de elementos de configuración y relaciones de CMDB` (`/plataforma/admin/activos-config/cmdb-relaciones`).
+> **Módulos dueños y únicos perímetros de trabajo (ver sección 0A):** `src/modules/activos` (pantallas 1.5.1, 1.5.2 y 1.5.3; ITAM/SAM) y `src/modules/cmdb` (pantalla 1.5.4; gestión de la configuración). Ambos son de Nain y son **módulos distintos que no se importan entre sí**. **Prompts hermanos (se entregan por separado):** Prompt 1 = Problemas (módulo `problemas`) · Prompt 2 = Cambios (módulo `cambios`).
+> **Idioma de la interfaz:** español. **Código, tablas y endpoints:** nombres en español `snake_case` salvo convención técnica.
+> **Stack real del proyecto:** Next.js 14.2 (App Router), React 18, TypeScript 5.5 y PostgreSQL en Supabase accedido con el pool `pg` de `@/shared/lib/db`. Arquitectura **vertical slice**: toda la lógica de un dominio vive en `src/modules/<modulo>/`; `src/app` solo contiene cascarones delgados.
+> **Documentos normativos (se adjuntan junto con este prompt):** `ARQUITECTURA_Y_CODIGO.md` (diseño técnico, contratos, guardas, modelo de datos) y `MENUS_Y_PERFILES.md` (árbol de menú, perfiles y SoD). Precedencia: el **código y la base vigentes** mandan sobre conteos y nombres; esos dos documentos mandan sobre diseño técnico y menú; este prompt manda sobre el contenido funcional de las pantallas.
+> **Versión del documento:** 3.0 (adaptada a la arquitectura modular vigente al 2026-10-21; el contenido funcional de la v2.0 se conserva).
+
+### Qué cambió respecto de la v2.0 (solo estructura; el contenido funcional no cambia)
+| v2.0 (arquitectura anterior) | v3.0 (arquitectura vigente) |
+|---|---|
+| Menú numerado `1 Configuración > 1.5 Activos y configuración` y `7 Activos y CMDB` | La raíz **Configuración ya no existe**. Las cuatro pantallas viven bajo `Activos y CMDB › Catálogos` del menú del Administrador. Las referencias `1.x.x` y `7.x` se sustituyen por **nombre y ruta** (sección 2.1). |
+| Rutas `/admin/...`, `/activos/...`, `/tecnico/...` | Rutas canónicas `/plataforma/...` (los alias sin `/plataforma` son reescrituras de `next.config.js`, no destinos). |
+| Código en `src/lib`, `src/components`, `src/modules/admin` | `src/modules/activos` y `src/modules/cmdb` (dominio), `src/shared` (infraestructura) y cascarones en `src/app`. |
+| Cookie `sesion_tickets`, JWT manual | Cookie `sesion`; guardas compartidas `sesionConCapacidad` / `exigirCapacidadPagina` y capacidades `dominio:acción`. |
+| Permisos `config.activos.*`, `activos.*`, `cmdb.*` | Capacidades `activos:config:*`, `activos:*`, `licencias:*`, `contratos:*`, `cmdb:config:*`, `cmdb:*` (sección 10). |
+| **"Un solo registro maestro"**: activo y CI como dos vistas de una sola tabla | **Opción B vigente:** son **dos tablas con un puente por datos** (`elemento_configuracion.id_activo → activo.id_activo`); `activos` y `cmdb` se leen por SQL acotado, **sin importarse**. No se crea una tercera tabla ni se duplican atributos (regla 11). |
+| El Gestor de Activos solo veía la configuración como lector | El Gestor de Activos (perfil 9) ve **Fabricantes y modelos, Listas auxiliares y Ubicaciones como ítems de menú** con `?vista=` (sección 2.1): la pantalla debe soportar esos enlaces profundos sin repetir el menú (3A.1). |
+| Se reutilizaba el componente de configuración de los Prompts 1 y 2 y se tocaban otras pantallas | Cada módulo trabaja solo en su carpeta: no se importa nada de `problemas` ni `cambios`; lo común se pide como promoción a `shared` (SA-11). **Este prompt solo toca `activos` y `cmdb`**; lo que requiere otros módulos se entrega como solicitud (sección 17). |
 
 ---
 
 ## 0. Instrucciones para la IA que implementará esto
 
-**Rol:** eres un arquitecto/desarrollador senior de software ITSM. Vas a construir el área de configuración del *administrador* para Gestión de Activos de TI (HAM/SAM) y Gestión de la Configuración (CMDB) de un sistema ITSM que ya tiene Incidentes y Solicitudes de servicio.
+**Rol:** eres un arquitecto/desarrollador senior de software ITSM. Vas a construir el área de configuración del *administrador* para Gestión de Activos de TI (HAM/SAM) y Gestión de la Configuración (CMDB) de un sistema ITSM que ya tiene Incidentes, Solicitudes de servicio, Problemas y Cambios.
 
 **Importante:** los activos **no son tickets**. Son registros de inventario con ciclo de vida. Lo que sí es ticket es, por ejemplo, la *solicitud de adquisición* (una solicitud de servicio) y los incidentes, problemas y cambios que se vinculan al activo.
 
 **Reglas obligatorias:**
 
-1. Implementa **exactamente** lo descrito. Si algo no está especificado, **no lo inventes**: antes de escribir código, devuelve una lista numerada de "Preguntas abiertas" (ver sección 15) y espera respuesta.
-2. **No cambies la numeración ni los nombres del menú.** En este prompt no hay renombres.
+1. Implementa **exactamente** lo descrito. Si algo no está especificado, **no lo inventes**: antes de escribir código, devuelve el informe de la Etapa 0 con las "Preguntas abiertas" (sección 15) y espera respuesta.
+2. **No cambies la estructura ni los nombres del menú.** No se crean, mueven ni renombran opciones de `opciones_menu` / `opciones_menu_perfiles` (pertenecen al módulo `plataforma`). Las cuatro pantallas ya existen en el menú del Administrador.
 3. **Nada hardcodeado:** todo lo "configurable" se guarda en base de datos y se lee en tiempo de ejecución. Los valores de fábrica (sección 11) se cargan como datos semilla.
-4. Todas las pantallas siguen el **patrón común de la sección 3** (borrador, publicación, versionado, auditoría, permisos). Si los Prompts 1 o 2 ya se implementaron, **reutiliza el mismo componente de pantalla de configuración**.
-5. **Reutiliza lo que ya existe; no crees duplicados** (sección 12): la estructura de datos que hoy alimenta el selector "Elemento CMDB" del formulario de Incidentes (**es la base que se extiende, no se reemplaza ni se duplica**), el editor de formulario y el **creador de campos** (se extienden a las entidades `activo`, `licencia` y `contrato`), la matriz de prioridad, el catálogo de servicios, los departamentos, los perfiles, el sistema de notificaciones y, si ya existen, el constructor de reglas y el motor de estados de los Prompts 1 y 2.
-6. Para cada pantalla entrega, en este orden: (a) modelo de datos, (b) API, (c) interfaz, (d) validaciones, (e) permisos, (f) auditoría, (g) pruebas.
-7. Trabaja por etapas y detente al final de cada una para validación: **Etapa 0** = reconocimiento del código y la base de datos (sección 15, **obligatoria antes de escribir código**), **Etapa A** = 1.5.1, **Etapa B** = 1.5.2, **Etapa C** = 1.5.3, **Etapa D** = 1.5.4. *Dependencias entre etapas:* el formulario de activo (Etapa A) necesita un ciclo de vida mínimo para el estado inicial (carga el ciclo de fábrica ya en la Etapa A) y muestra la sección CMDB con relaciones en modo provisional hasta la Etapa D.
-8. **Si falta un dato en la base de datos, agrégalo** (sección 13), con migraciones SQL versionadas e idempotentes, autorización en cada Route Handler (cookie `sesion_tickets`, JWT y perfil activo, como el resto de `src/app/api/`) y consultas parametrizadas con `src/lib/db.ts`. **La migración de datos existentes no debe romper Incidentes** (el selector "Elemento CMDB" debe seguir funcionando igual).
-9. Sigue las convenciones ya presentes en el repositorio (carpetas, estilo de API, componentes de UI, manejo de errores, tareas programadas).
-10. **Integridad:** las reglas críticas (transiciones permitidas, campos obligatorios por transición, unicidad de serie/código/hostname, un solo custodio vigente, integridad de relaciones, atributos protegidos, cumplimiento de licencias) **se validan en el backend o en la base de datos**, no solo en la interfaz.
-11. **Un solo registro maestro por elemento:** "activo" y "CI" son dos *vistas* del mismo registro (un activo inventariable puede ser CI; un servicio o aplicación puede ser CI sin ser un activo con costo). No crees dos tablas que dupliquen el mismo elemento.
-12. **Datos sensibles** (claves de licencia, contraseñas de equipos si existieran, números de contrato confidenciales): cifrados en reposo (por ejemplo `pgcrypto` o Supabase Vault), enmascarados en la interfaz, visibles solo a perfiles autorizados, y cada revelación queda auditada.
-13. Fechas como `timestamptz` en UTC, mostradas en la zona horaria del sistema (parámetro configurable; si no existe, créalo).
-
-**Reglas adicionales de esta versión (arquitectura FlowDesk, interfaz y validaciones):**
-
-14. Las pantallas de configuración de este prompt **ya existen** (ver 2.3). **No las reconstruyas desde cero**: audítalas contra este documento, corrige diferencias, completa lo que falta y conserva datos y contratos de API existentes.
-15. Respeta la arquitectura: pantallas en `src/app/plataforma/...` (las rutas URL no llevan `plataforma`), Route Handlers en `src/app/api/...`, validadores en `src/lib/validaciones.ts`, dominio en `src/modules/...` y componentes compartidos en `src/shared/...`. **El código nuevo va en `modules`/`shared`**.
+4. Todas las pantallas siguen el **patrón común de la sección 3** (borrador, publicación, versionado, auditoría, permisos). Constrúyelo **una vez dentro de cada módulo** (`configuracion/compartido/`); si `src/shared/components` ya lo publica, úsalo. **No importes componentes de `problemas` ni `cambios`** ni de un módulo al otro; la promoción a `shared` se pide en SA-11.
+5. **Reutiliza lo que ya existe; no crees duplicados** (sección 12): las tablas `activo` y `elemento_configuracion` (y la estructura que hoy alimenta el selector "Elemento CMDB" del formulario de Incidentes, **que se extiende, no se reemplaza ni se duplica**), el editor de formulario y el **creador de campos** (módulo `tickets`, se extienden por contrato a `activo`, `licencia` y `contrato`), el catálogo de servicios, los departamentos, los perfiles, el sistema de notificaciones y los patrones de motor de estados de otros módulos. Consúmelos **solo por contrato** (`@/modules/<modulo>` o `@/modules/<modulo>/ui`); no los copies ni los modifiques.
+6. Para cada pantalla entrega, en este orden: (a) modelo de datos, (b) API, (c) interfaz, (d) validaciones, (e) permisos, (f) auditoría, (g) pruebas. **Pruebas:** el proyecto no tiene suite automatizada; entrega las reglas críticas (transiciones, un solo custodio, unicidad, cumplimiento de licencias, integridad de relaciones, atributos protegidos) como funciones puras verificables y un checklist de humo por perfil (panel + 4 pantallas + 1 ficha). No agregues un framework de pruebas sin aprobación (pregunta abierta 6).
+7. Trabaja por etapas y detente al final de cada una para validación: **Etapa 0** = reconocimiento del código y la base de datos (sección 15, **obligatoria antes de escribir código**), **Etapa A** = `tipos-modelos-atributos` (1.5.1, módulo `activos`), **Etapa B** = `ciclos-vida-transiciones` (1.5.2, módulo `activos`), **Etapa C** = `licencias-contratos` (1.5.3, módulo `activos`), **Etapa D** = `cmdb-relaciones` (1.5.4, módulo `cmdb`). Al cerrar cada etapa ejecuta los *quality gates*: `npx tsc --noEmit` sin errores, `npm run build` sin errores, migraciones aplicadas en base limpia y en base existente, y humo de las rutas afectadas. *Dependencias entre etapas:* el formulario de activo (Etapa A) necesita un ciclo de vida mínimo para el estado inicial (carga el ciclo de fábrica ya en la Etapa A) y muestra la sección CMDB con relaciones en modo provisional (lectura por SQL acotado) hasta la Etapa D.
+8. **Si falta un dato en la base de datos y pertenece al módulo en el que trabajas, agrégalo.** Todo cambio de esquema va en `db/migrations/YYYYMMDD_descripcion.sql` (idempotente, fecha igual o posterior a la última migración existente; no se edita una migración aplicada) y se refleja en `db/seed.sql` si hay catálogos o datos maestros. Si el dato pertenece a **otro** módulo (por ejemplo `proveedores`, `ticket_incidente`, `servicio_catalogo`, la tabla de ausencias o un hook de desactivación de usuarios), **no lo agregues**: regístralo como solicitud (sección 17). **La migración de datos existentes no debe romper Incidentes** (el selector "Elemento CMDB" debe seguir funcionando igual; si cambias una tabla que él lee, conserva una vista de compatibilidad con las columnas originales).
+9. Sigue las convenciones del repositorio: tablas y columnas en `snake_case`; baja lógica con `estado_registro boolean`; auditoría por columnas (`usuario_creacion`, `fecha_creacion`, `usuario_modificacion`, `fecha_modificacion`); extensibilidad por `campos_adicionales jsonb`; FK como `id_*`. No se eliminan datos históricos por conveniencia.
+10. **Integridad:** las reglas críticas (transiciones permitidas, campos obligatorios por transición, unicidad de serie/código/hostname, un solo custodio vigente, integridad de relaciones, atributos protegidos, cumplimiento de licencias) **se validan en el servicio del servidor o en la base de datos**, no solo en la interfaz.
+11. **Activo y CI: dos entidades, un puente por datos.** El activo es el registro de inventario (`activo`); el CI es el registro de configuración (`elemento_configuracion`) y puede enlazar a un activo mediante `id_activo` o existir sin él (servicios y aplicaciones lógicas). **No crees una tercera tabla maestra ni dupliques atributos entre ambas**: cada dato tiene un único dueño (el activo lleva custodia, ubicación, costos y ciclo de vida; el CI lleva clase CMDB, criticidad, entorno y relaciones). La sincronización se hace por consulta o servicio, no por copia. `activos` y `cmdb` se consultan entre sí por SQL de lectura acotada; **no se importan**.
+12. **Datos sensibles** (claves de licencia, números de contrato confidenciales, contraseñas de equipos si existieran): cifrados en reposo (por ejemplo `pgcrypto` o Supabase Vault; activar una extensión es decisión de la pregunta abierta 4), enmascarados en la interfaz, visibles solo a perfiles autorizados, y cada revelación queda auditada.
+13. **Fechas y horas:** `timestamptz` en UTC, mostradas en la zona horaria del sistema (parámetro de `plataforma`; si no existe, solicitud SA-6).
+14. Las pantallas de este prompt **ya existen** (ver 2.3). **No las reconstruyas desde cero**: audítalas contra este documento, corrige diferencias, completa lo que falta y conserva datos y contratos de API existentes.
+15. **Arquitectura de código (obligatoria):**
+    - `page.tsx` y `route.ts` en `src/app` son **cascarones**: la página valida con `exigirCapacidadPagina(...)` y monta una vista del módulo; el `route.ts` declara `dynamic = "force-dynamic"`, `revalidate = 0` y reexporta el controlador. Sin SQL, sin reglas de negocio.
+    - Controlador (`src/modules/<activos|cmdb>/**/api/*Controller.ts`): autoriza con `sesionConCapacidad(CAPACIDADES.X)`, valida la forma del request, delega en el servicio y traduce errores con `respuestaError`. **Prohibido** crear guardas propias y **prohibido** verificar el JWT a mano.
+    - Servicio (`.../services/*`): contiene la regla de dominio y el SQL parametrizado (`query` de `@/shared/lib/db`); lanza `ErrorDominio`; no conoce `NextRequest` ni `NextResponse`. El filtrado por perfil (el Solicitante solo ve lo que tiene en custodia; el Gestor de Área, su departamento) se aplica **en el servidor**.
+    - Las vistas cliente reciben datos o contexto; no acceden a la base. Los validadores son funciones puras compartidas por el formulario y el controlador (3C).
 16. Cumple en **todas** las pantallas las secciones **3A** (navegación sin duplicar el menú), **3B** (íconos y botones) y **3C** (validaciones en tiempo real, solo errores).
-17. **Autorización:** cada Route Handler verifica la cookie `sesion_tickets` (JWT) y el **perfil activo**, como el resto de `src/app/api/`; consultas SQL parametrizadas con `query()` / `queryRow()` de `src/lib/db.ts`. El filtrado por perfil (el Solicitante solo ve lo que tiene en custodia; el Gestor de Área, su departamento) se aplica en el servidor.
+17. **Autorización en tres capas:** página (`exigirCapacidadPagina`; en los enlaces `?vista=` que el menú del Gestor de Activos expone se acepta además la pertenencia al menú según la Etapa 0), API (`sesionConCapacidad`) y servicio (alcance y segregación de funciones). El middleware solo comprueba que exista la cookie `sesion`; **no autoriza**.
+18. **Commits y ramas:** trabaja en la rama de tu módulo (según `PLAN_EQUIPO_Y_SCRUM.md`; si no la conoces, pregúntame); commits `tipo(activos|cmdb): descripción` en español, imperativo, sin emojis (`feat`, `fix`, `refactor`, `docs`, `chore`, `test`); no mezcles refactor masivo con funcionalidad.
+
+---
+
+## 0A. Perímetro de los módulos (qué puedes tocar y qué no)
+
+**Regla de oro:** trabajas **dentro de `src/modules/activos`** (Etapas A, B y C) y **dentro de `src/modules/cmdb`** (Etapa D): puedes crear carpetas y archivos, modificarlos y eliminarlos. **No puedes** crear módulos nuevos en `src/modules/`, **dividir `activos` ni `cmdb` en módulos nuevos**, fusionarlos, ni modificar otro módulo.
+
+| Zona | Permiso |
+|---|---|
+| `src/modules/activos/**` (Etapas A–C) y `src/modules/cmdb/**` (Etapa D) | **Total** (crear, modificar, eliminar; incluida la carpeta `configuracion/` y `docs/` en cada uno). |
+| Cascarones: `src/app/plataforma/admin/activos-config/**/page.tsx` y `src/app/api/admin/activos-config/**/route.ts`, `src/app/api/admin/cmdb/**/route.ts` | Solo montar/reexportar lo del módulo correspondiente. Conserva las rutas y los contratos de API existentes. |
+| `db/migrations/` y `db/seed.sql` | Solo tablas y datos de `activos` (`activo*`, `licencia*`, `contrato_ti*`, `activo_config_*`) y de `cmdb` (`elemento_configuracion`, `ci_relacion`, `cmdb_*`, `cmdb_config_*`). |
+| `activos` ↔ `cmdb` | **Sin importaciones entre ellos.** Se consultan por SQL de lectura acotada dentro de un servicio propio (puente `elemento_configuracion.id_activo`). |
+| `src/modules/<otro>/**` (`tickets`, `incidentes`, `solicitudes`, `cambios`, `problemas`, `servicios`, `proveedores`, `organizacion`, `identidades`, `plataforma`, `conocimiento`, `reportes`, `perfiles`, …) | **Prohibido modificar.** Se consumen por contrato (`index.ts` / `ui.ts`) o, si falta algo, por **solicitud** (sección 17). |
+| `src/shared/**`, `src/middleware.ts`, `next.config.js`, `package.json`, tablas `opciones_menu*` | **Prohibido modificar.** Lo que falte se pide en la sección 17. |
+
+**Cómo se consume a otros módulos:** solo `@/modules/<modulo>` o `@/modules/<modulo>/ui`. Prohibido importar `services/`, `api/`, `views/` o `components/` de otro módulo. El grafo de dependencias debe seguir acíclico.
+
+**Cómo se expone lo que otros módulos necesitan** (selector de CI de Incidentes, `PanelInfraestructuraCi`, análisis de impacto de Cambios, marcas de Problemas): agrega a `src/modules/activos/index.ts` o `src/modules/cmdb/index.ts` (servidor) y, solo si hay UI que otro módulo deba montar, crea `ui.ts` (cliente, sin acceso a DB). Cambiar un contrato es cambiar una API interna: documenta el cambio y conserva la compatibilidad de lo que ya consumen otros módulos.
+
+**Solicitudes a otros módulos:** cuando algo requiera tocar un módulo ajeno, no lo implementes: regístralo en `src/modules/<activos|cmdb>/docs/SOLICITUDES_A_OTROS_MODULOS.md` (formato de la sección 17) y continúa con la **degradación definida**.
+
+**Estructura sugerida dentro de cada módulo** (si la Etapa 0 encuentra una equivalente ya existente, úsala; no dupliques):
+
+```
+src/modules/activos/                       src/modules/cmdb/
+├── index.ts                               ├── index.ts
+├── ui.ts   (solo si otro módulo monta UI) ├── ui.ts   (solo si otro módulo monta UI)
+├── configuracion/                         ├── configuracion/
+│   ├── compartido/   (barra, modales,     │   ├── compartido/   (barra, modales, Boton, Iconos,
+│   │                  Boton, Iconos,      │   │                  borrador/publicación/versionado)
+│   │                  borrador/versión)   │   ├── validaciones/
+│   ├── validaciones/                      │   ├── cmdb-relaciones/      # 1.5.4 → components/, services/, api/, types.ts
+│   ├── tipos-modelos-atributos/  # 1.5.1  │   └── motor/        (criticidad efectiva, integridad,
+│   ├── ciclos-vida-transiciones/ # 1.5.2  │                      reconciliación, auditoría, líneas base)
+│   ├── licencias-contratos/      # 1.5.3  └── docs/   (INFORME_ETAPA_0.md, SOLICITUDES_A_OTROS_MODULOS.md)
+│   └── motor/  (códigos, ciclo de vida,
+│                custodia, cumplimiento, alertas, importación)
+└── docs/
+```
+
+**Ejemplo de cascarones** (los únicos archivos que escribes fuera de los módulos):
+
+```tsx
+// src/app/plataforma/admin/activos-config/tipos-modelos-atributos/page.tsx
+export default async function PaginaActivosTiposModelos() {
+  const { sesion } = exigirCapacidadPagina(CAPACIDADES.ACTIVOS_CONFIG_VER);
+  return <VistaTiposModelosAtributos sesion={sesion} />;   // importada desde el módulo activos
+}
+
+// src/app/api/admin/activos-config/cmdb-relaciones/configuracion/route.ts
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export { GET, PUT } from "@/modules/cmdb/configuracion/cmdb-relaciones/api/configuracionController";
+```
 
 ---
 
@@ -70,98 +140,95 @@ El diseño debe respetar:
 
 ---
 
-## 2. Ubicación en el menú y estructura de archivos (arquitectura FlowDesk)
+## 2. Ubicación en el menú y estructura de archivos (arquitectura vigente)
 
-### 2.1 Menú de administrador (referencia; ya se sirve desde `/api/menu` y `src/lib/menu.ts`)
+### 2.1 Menú vigente (referencia; fuente `MENUS_Y_PERFILES.md` §5, **sin numeración**)
+
+El menú es un catálogo único (`opciones_menu` + visibilidad N:M en `opciones_menu_perfiles`) servido por `src/shared/lib/menu.ts`. Una carpeta tiene `url_menu = ''`; una pantalla tiene URL, y la **identidad de una pantalla es su URL completa, query incluida**. Lo que ve el **Administrador** en la raíz `Activos y CMDB`:
 
 ```
-1 Configuración (/admin)
- 1.1 Identidades y accesos
-  1.1.1 Gestión de usuarios (/admin/usuarios)
-  1.1.2 Perfiles y permisos (/admin/perfiles)
-  1.1.3 Estructura del menú (/admin/menu)
- 1.2 Catálogo de servicios y SLAs (/admin/servicios)
-  1.2.1 Servicios de incidentes (/admin/servicios?tipo=1)
-  1.2.2 Servicios de solicitudes (/admin/servicios?tipo=2)
-  1.2.3 Crear servicio (/admin/servicios?vista=crear)
-  1.2.4 Configuración de categorías (componente GestionCategorias; ruta a confirmar en la Etapa 0)
-  1.2.5 Objetivos SLA (/admin/servicios/sla)
- 1.3 Configuración de procesos (/admin/procesos)
-  1.3.1 Incidentes
-   1.3.1.1 Configuración de formulario (/admin/tickets-formularios?tipo=incidente)
-   1.3.1.2 Flujo de estados y acciones (/admin/tickets-vistas?seccion=estados&tipo=incidente)
-  1.3.2 Solicitudes de servicio
-   1.3.2.1 Configuración de formulario (/admin/tickets-formularios?tipo=solicitud)
-   1.3.2.2 Flujo de atención y aprobaciones (/admin/tickets-vistas?seccion=estados&tipo=solicitud)
-  1.3.3 Gestión de problemas (/admin/procesos/problemas)
-   1.3.3.1 Configuración de formulario (/admin/procesos/problemas/formulario)
-   1.3.3.2 Flujo de investigación y seguimiento (/admin/procesos/problemas/flujo)
-   1.3.3.3 Relación con incidentes, errores conocidos y conocimiento (/admin/procesos/problemas/relaciones)
-  1.3.4 Gestión de cambios (/admin/procesos/cambios)
-   1.3.4.1 Configuración de formulario (/admin/procesos/cambios/formulario)
-   1.3.4.2 Tipos de cambio y requisitos (/admin/procesos/cambios/tipos-requisitos)
-   1.3.4.3 Flujo de evaluación, autorización y revisión posterior (/admin/procesos/cambios/flujo-evaluacion)
-   1.3.4.4 Notificaciones y calendario de cambios (/admin/procesos/cambios/notificaciones-calendario)
- 1.4 Organización y soporte (/admin/organizacion)
-  1.4.1 Departamentos empresariales (/admin/departamentos-empresa)
-  1.4.2 Departamentos y grupos resolutores de TI (/admin/departamentos)
-  1.4.3 Técnicos y niveles de soporte (/admin/tecnicos)
-  1.4.4 Supervisores (/admin/departamentos?vista=supervisores)
- 1.5 Activos y configuración (/admin/activos-config/tipos-modelos-atributos)            <-- SE IMPLEMENTA EN ESTE PROMPT
-  1.5.1 Tipos, modelos y atributos de activos (/admin/activos-config/tipos-modelos-atributos)
-  1.5.2 Ciclos de vida y reglas de transición (/admin/activos-config/ciclos-vida-transiciones)
-  1.5.3 Licencias y contratos (/admin/activos-config/licencias-contratos)
-  1.5.4 Tipos de elementos de configuración y relaciones de CMDB (/admin/activos-config/cmdb-relaciones)
- 1.6 Comunicaciones y notificaciones (/admin/comunicaciones)
-  1.6.1 Plantillas de correo y otros canales (/admin/notificaciones?seccion=plantillas)
-  1.6.2 Configuración de contacto (/admin/notificaciones?seccion=contacto)
- 1.7 Gobierno del conocimiento (/admin/conocimiento)
-  1.7.1 Categorías, responsables y reglas de publicación/revisión (/admin/conocimiento-config)
- 1.8 Auditoría, seguridad y retención (/admin/auditoria)
-  1.8.1 Auditoría de cambios (/admin/auditoria-sistema)
-  1.8.2 Registros de seguridad y autenticación (/admin/seguridad-logs)
-  1.8.3 Retención y mantenimiento de datos (/admin/mantenimiento-datos)
-2 Reportes y Analítica
- 2.1 Indicadores operativos y SLA (/tickets/reportes)
- 2.2 Tableros (/admin/reportes-disenador)
+Activos y CMDB  (carpeta, perfil Administrador)
+ ├─ Inventario de activos ............................................ /plataforma/activos/inventario                                         (operativa; no se implementa aquí)
+ └─ Catálogos  (carpeta)
+     ├─ Ciclos de vida y reglas de transición ........................ /plataforma/admin/activos-config/ciclos-vida-transiciones              <-- SE IMPLEMENTA  (1.5.2, módulo activos)
+     ├─ Licencias y contratos ........................................ /plataforma/admin/activos-config/licencias-contratos                   <-- SE IMPLEMENTA  (1.5.3, módulo activos)
+     ├─ Tipos de elementos de configuración y relaciones de CMDB ..... /plataforma/admin/activos-config/cmdb-relaciones                      <-- SE IMPLEMENTA  (1.5.4, módulo cmdb)
+     └─ Tipos, modelos y atributos ................................... /plataforma/admin/activos-config/tipos-modelos-atributos               <-- SE IMPLEMENTA  (1.5.1, módulo activos)
 ```
 
-Cambios respecto de versiones anteriores de este prompt: Gestión de problemas es `1.3.3`, Gestión de cambios es `1.3.4`, aparece `1.2.4 Configuración de categorías` y **Objetivos SLA pasa a ser `1.2.5`**. El ítem `1.5` abre por defecto `1.5.1`.
+**Atención — enlaces profundos del Gestor de Activos y Configuración (perfil 9):** su menú incluye **tres ítems que apuntan a ventanas internas** de la pantalla 1.5.1:
 
-### 2.2 Convención de numeración interna
-- `1.5.1`, `1.5.2`, `1.5.3` y `1.5.4` son **ítems de menú = pantallas** (cada una con su `page.tsx`).
-- Los puntos `1.5.1.1`, `1.5.1.2`, etc. son **ventanas internas** (componentes `Pestana*.tsx`). Cumplen la sección 3A: **ninguna ventana interna repite un ítem del menú**. (Por ejemplo, "Licencias y contratos" es un ítem de menú; dentro de esa pantalla las ventanas son *Tipos de licencia*, *Tipos de contrato*, etc., que no están en el menú.)
+| Ítem de menú del Gestor de Activos | URL (identidad en el catálogo) | Ventana interna |
+|---|---|---|
+| Fabricantes y modelos | `/plataforma/admin/activos-config/tipos-modelos-atributos?vista=fabricantes` | 1.5.1.2 |
+| Listas auxiliares | `/plataforma/admin/activos-config/tipos-modelos-atributos?vista=catalogos` | 1.5.1.7 |
+| Ubicaciones | `/plataforma/admin/activos-config/tipos-modelos-atributos?vista=ubicaciones` | 1.5.1.6 |
 
-| Pantalla (ítem de menú) | Ruta | Ventanas internas (componentes `Pestana*.tsx`) | Modales y cajones |
+Consecuencias obligatorias (cumplen 3A.1): (1) la pantalla acepta `?vista=` con las nueve ventanas (`clases-tipos`, `fabricantes`, `atributos`, `formulario`, `codigo-etiquetas`, `ubicaciones`, `catalogos`, `ficha-listado`, `importacion`) y abre directamente esa ventana; (2) **la barra de ventanas internas omite las ventanas que el menú del perfil activo ya muestra como ítem**: para el Gestor de Activos esas tres ventanas son sus ítems de menú y **no ve otras** (la pantalla se abre en la ventana pedida, sin barra que repita el menú ni ventanas que su menú no le da); para el Administrador, que solo tiene el ítem `Tipos, modelos y atributos`, quedan visibles las nueve; (3) cambiar de ventana no altera el ítem activo del menú; (4) la guarda de página admite al Gestor de Activos por la pertenencia de esa URL a su menú además de la capacidad (la Etapa 0 confirma cómo lo resuelven `exigirMenuPagina` / `exigirCapacidadPagina`).
+
+**Pantallas operativas de este dominio que el Gestor de Activos ve y que este prompt referencia:** `Modelado de clases CI` (`/plataforma/activos/cmdb/tipos`) refleja en solo lectura el modelo de 1.5.4.1; `Cumplimiento y sobreuso` (`/plataforma/gestor-activos/licencias/cumplimiento`) muestra el resultado de las reglas de 1.5.3.4; `Importación masiva` (`/plataforma/gestor-activos/importacion`) y `Inventario físico (campañas)` (`/plataforma/gestor-activos/inventario-fisico`) ejecutan lo configurado en 1.5.1.9. Son del mismo dominio pero **no son parte de esta entrega**.
+
+**Pantallas de otros módulos que este prompt referencia** (se consumen por contrato; **no se modifican**):
+
+| Nombre en el menú | Ruta canónica | Módulo dueño | Qué se toma de ella |
 |---|---|---|---|
-| **1.5.1 Tipos, modelos y atributos de activos** | `/admin/activos-config/tipos-modelos-atributos` | 1.5.1.1 Jerarquía de clases y tipos (`PestanaClasesTipos`) · 1.5.1.2 Fabricantes y modelos (`PestanaFabricantesModelos`) · 1.5.1.3 Atributos por tipo (`PestanaAtributosTipo`) · 1.5.1.4 Configuración de formulario del activo (`PestanaFormularioActivo`, con cajón "Agregar campo") · 1.5.1.5 Código de activo y etiquetas (`PestanaCodigoEtiquetas`) · 1.5.1.6 Ubicaciones (`PestanaUbicaciones`) · 1.5.1.7 Listas y catálogos auxiliares (`PestanaCatalogosAuxiliares`) · 1.5.1.8 Ficha del activo y listado (`PestanaFichaListado`) · 1.5.1.9 Importación masiva e inventario físico (`PestanaImportacionInventario`) | Vista previa, publicación, historial de versiones, restaurar valores de fábrica y barra de acciones comunes (componentes compartidos) |
-| **1.5.2 Ciclos de vida y reglas de transición** | `/admin/activos-config/ciclos-vida-transiciones` | 1.5.2.1 Ciclos de vida y estados (`PestanaCiclosEstados`) · 1.5.2.2 Transiciones y reglas (`PestanaTransicionesReglas`) · 1.5.2.3 Asignación, custodia y devolución (`PestanaAsignacionCustodia`) · 1.5.2.4 Adquisición y recepción (`PestanaAdquisicionRecepcion`) · 1.5.2.5 Mantenimiento y fin de vida (`PestanaMantenimientoFinVida`) · 1.5.2.6 Baja y disposición (`PestanaBajaDisposicion`) | Modales comunes |
-| **1.5.3 Licencias y contratos** | `/admin/activos-config/licencias-contratos` | 1.5.3.1 Tipos de licencia y métricas (`PestanaTiposLicencia`) · 1.5.3.2 Tipos de contrato y proveedores (`PestanaTiposContrato`) · 1.5.3.3 Formulario de licencia y contrato (`PestanaFormularioLicenciaContrato`) · 1.5.3.4 Cumplimiento y sobreuso (`PestanaCumplimientoSobreuso`) · 1.5.3.5 Alertas de vencimiento y garantía (`PestanaAlertasVencimiento`) · 1.5.3.6 Renovación (`PestanaRenovacion`) | Modales comunes |
-| **1.5.4 Tipos de elementos de configuración y relaciones de CMDB** | `/admin/activos-config/cmdb-relaciones` | 1.5.4.1 Clases de CI (`PestanaClasesCI`) · 1.5.4.2 Tipos de relación (`PestanaTiposRelacion`) · 1.5.4.3 Criticidad y entornos (`PestanaCriticidadEntornos`) · 1.5.4.4 Reglas de integridad (`PestanaReglasIntegridad`) · 1.5.4.5 Fuentes de datos y atributos protegidos (`PestanaFuentesAtributosProtegidos`) · 1.5.4.6 Auditoría de CMDB y líneas base (`PestanaAuditoriaLineasBase`) | Modales comunes |
-Los nombres de componente son los del árbol de archivos; si alguno no lleva el prefijo `Pestana`, respeta el nombre existente.
+| Incidentes › Configuración del formulario | `/plataforma/incidentes/configuracion` | `tickets` (+ `incidentes`) | Editor de formularios y creador de campos personalizados; selector "Elemento CMDB". |
+| Catálogo de Servicios › Configuración de categorías / Crear servicio | `/plataforma/admin/servicios?vista=categorias` · `?vista=crear` | `servicios` | Servicios que generan activos o renovaciones; servicios soportados por CI. |
+| Organización › Departamentos empresariales · Departamentos y grupos resolutores de TI · Técnicos | `/plataforma/admin/departamentos-empresa` · `/plataforma/admin/departamentos` · `/plataforma/admin/tecnicos` | `organizacion` | Departamentos, grupos y usuarios; custodios. |
+| Proveedores | `/plataforma/proveedores` | `proveedores` | Registro de proveedores (aquí solo se configuran sus catálogos, ver 8.2). |
+| Plataforma › Identidades › Perfiles y permisos | `/plataforma/admin/perfiles` | `identidades` | Perfiles y capacidades. |
+| Plataforma › Menú y notificaciones › Plantillas de correo y otros canales | `/plataforma/admin/notificaciones?seccion=plantillas` | `plataforma` | Plantillas y canales de las alertas y eventos. |
+| Plataforma › Auditoría de cambios de configuración | `/plataforma/admin/auditoria-sistema` | `plataforma` | Registro de toda acción de configuración. |
+| Plataforma › Retención y mantenimiento de datos | `/plataforma/admin/mantenimiento-datos` | `plataforma` | Retención de bajas y límites de adjuntos. |
+| Cambios › Configuración de formulario / Flujo / Tipos / Notificaciones | `/plataforma/admin/procesos/cambios/*` | `cambios` (Prompt 2) | Atributos protegidos, [Aplicar a la CMDB], líneas base automáticas, mantenimiento preventivo como RFC estándar. |
+| Problemas › Configuración de formulario / Flujo / Relaciones | `/plataforma/admin/procesos/problemas/*` | `problemas` (Prompt 1) | Marcas `Problema abierto` y `Error conocido vigente` en la ficha del CI. |
+| Reportes › Reportes de activos · Tableros | `/plataforma/reportes/activos` · `/plataforma/reportes/tableros` | `reportes` | Consumen las métricas de la sección 11 (no se modifican aquí). |
 
-### 2.3 Estado actual de la implementación (según el árbol de archivos del repositorio)
+### 2.2 Identificadores internos de este documento
+
+El menú ya no está numerado. Los códigos `1.5.1` a `1.5.4` (y sus derivados `1.5.1.1`, …) se conservan **solo como identificadores de este documento** para citar pantallas y ventanas internas; **no son numeración del menú**. Cada pantalla es un ítem de menú con su `page.tsx` (cascarón); las ventanas internas son componentes `Pestana*.tsx` que **no repiten** ningún ítem del menú del perfil activo (sección 3A). (Por ejemplo, "Licencias y contratos" es un ítem de menú; dentro de esa pantalla las ventanas son *Tipos de licencia*, *Tipos de contrato*, etc., que no están en el menú.)
+
+| Pantalla (ítem de menú) · módulo | Ruta canónica | Ventanas internas (componentes `Pestana*.tsx`) | Modales y cajones |
+|---|---|---|---|
+| **1.5.1 Tipos, modelos y atributos de activos** · `activos` | `/plataforma/admin/activos-config/tipos-modelos-atributos` | 1.5.1.1 Jerarquía de clases y tipos (`PestanaClasesTipos`) · 1.5.1.2 Fabricantes y modelos (`PestanaFabricantesModelos`, `?vista=fabricantes`) · 1.5.1.3 Atributos por tipo (`PestanaAtributosTipo`) · 1.5.1.4 Configuración de formulario del activo (`PestanaFormularioActivo`, con cajón "Agregar campo") · 1.5.1.5 Código de activo y etiquetas (`PestanaCodigoEtiquetas`) · 1.5.1.6 Ubicaciones (`PestanaUbicaciones`, `?vista=ubicaciones`) · 1.5.1.7 Listas y catálogos auxiliares (`PestanaCatalogosAuxiliares`, `?vista=catalogos`) · 1.5.1.8 Ficha del activo y listado (`PestanaFichaListado`) · 1.5.1.9 Importación masiva e inventario físico (`PestanaImportacionInventario`) | Vista previa, publicación, historial de versiones, restaurar valores de fábrica y barra de acciones comunes |
+| **1.5.2 Ciclos de vida y reglas de transición** · `activos` | `/plataforma/admin/activos-config/ciclos-vida-transiciones` | 1.5.2.1 Ciclos de vida y estados (`PestanaCiclosEstados`) · 1.5.2.2 Transiciones y reglas (`PestanaTransicionesReglas`) · 1.5.2.3 Asignación, custodia y devolución (`PestanaAsignacionCustodia`) · 1.5.2.4 Adquisición y recepción (`PestanaAdquisicionRecepcion`) · 1.5.2.5 Mantenimiento y fin de vida (`PestanaMantenimientoFinVida`) · 1.5.2.6 Baja y disposición (`PestanaBajaDisposicion`) | Modales comunes |
+| **1.5.3 Licencias y contratos** · `activos` | `/plataforma/admin/activos-config/licencias-contratos` | 1.5.3.1 Tipos de licencia y métricas (`PestanaTiposLicencia`) · 1.5.3.2 Tipos de contrato y proveedores (`PestanaTiposContrato`) · 1.5.3.3 Formulario de licencia y contrato (`PestanaFormularioLicenciaContrato`) · 1.5.3.4 Cumplimiento y sobreuso (`PestanaCumplimientoSobreuso`) · 1.5.3.5 Alertas de vencimiento y garantía (`PestanaAlertasVencimiento`) · 1.5.3.6 Renovación (`PestanaRenovacion`) | Modales comunes |
+| **1.5.4 Tipos de elementos de configuración y relaciones de CMDB** · `cmdb` | `/plataforma/admin/activos-config/cmdb-relaciones` | 1.5.4.1 Clases de CI (`PestanaClasesCI`) · 1.5.4.2 Tipos de relación (`PestanaTiposRelacion`) · 1.5.4.3 Criticidad y entornos (`PestanaCriticidadEntornos`) · 1.5.4.4 Reglas de integridad (`PestanaReglasIntegridad`) · 1.5.4.5 Fuentes de datos y atributos protegidos (`PestanaFuentesAtributosProtegidos`) · 1.5.4.6 Auditoría de CMDB y líneas base (`PestanaAuditoriaLineasBase`) | Modales comunes |
+
+Los nombres de componente son los del árbol de archivos; si alguno no lleva el prefijo `Pestana`, respeta el nombre existente. **Ubicación sugerida del código:** `src/modules/activos/configuracion/<pantalla>/components/` (1.5.1 a 1.5.3) y `src/modules/cmdb/configuracion/cmdb-relaciones/components/` (1.5.4); servicios en `.../services/`; controladores en `.../api/`.
+
+### 2.3 Estado actual de la implementación (punto de partida; verifícalo en la Etapa 0)
+
+El código de estas pantallas nació en `src/app/plataforma/admin/activos-config/*/components/` y la migración hacia `src/modules/` está en curso (`activos` tiene unos 80 archivos; `cmdb`, unos 17): **la Etapa 0 confirma dónde está cada archivo y de qué módulo es cada controlador**.
+
 | Pantalla | Ya existe | Falta o hay que corregir |
 |---|---|---|
-| `/admin/activos-config/page.tsx` | Página padre | Debe redirigir al primer hijo; no repetir los 4 ítems del menú como pestañas. |
-| `1.5.1` | `page.tsx` y las 9 ventanas | Auditar contra la sección 6; validaciones (3C), íconos (3B). |
+| `/plataforma/admin/activos-config/page.tsx` (página padre) | Página del grupo | **No es ítem de menú** (`Catálogos` es una carpeta sin URL). Debe **redirigir** a la primera pantalla hija (`/tipos-modelos-atributos`); no debe repetir los cuatro ítems del menú como pestañas ni botones. |
+| `1.5.1` | `page.tsx` y las 9 ventanas | Auditar contra la sección 6; validaciones (3C), íconos (3B); soportar los `?vista=` de la sección 2.1. |
 | `1.5.2` | `page.tsx` y las 6 ventanas | Auditar contra la sección 7. |
 | `1.5.3` | `page.tsx` y las 6 ventanas | Auditar contra la sección 8. |
 | `1.5.4` | `page.tsx` y las 6 ventanas | Auditar contra la sección 9. |
-| API de configuración | `/api/admin/activos-config/{tipos-modelos-atributos,ciclos-vida-transiciones,licencias-contratos,cmdb-relaciones}/configuracion` y `/api/admin/cmdb/tipos` | Verificar versionado (borrador/publicación) y auditoría. |
-| Modales y barra comunes | Existen en `problemas/formulario` y `cambios/formulario` | Importarlos desde la ubicación compartida (3A.2.6). |
+| API de configuración | `/api/admin/activos-config/{tipos-modelos-atributos,ciclos-vida-transiciones,licencias-contratos,cmdb-relaciones}/configuracion` y `/api/admin/cmdb/tipos` | Verificar versionado (borrador/publicación) y auditoría; **conservar las rutas**; el controlador de `cmdb-relaciones` y de `/api/admin/cmdb/*` pertenece al módulo `cmdb`. |
+| Modales y barra comunes | Existen duplicados en `problemas`, `cambios` y `activos` | Unificar **dentro de cada módulo** (3A.2.6); la promoción a `shared` es la solicitud SA-11. |
 
-### 2.4 Pantallas operativas que consumen esta configuración
-| Menú general | Ruta | Archivos |
+### 2.4 Pantallas operativas que consumen esta configuración (mismos módulos; no son el foco de esta entrega)
+
+| Perfil / zona | Pantalla | Ruta canónica |
 |---|---|---|
-| 7.1 Inventario de activos (HAM) | `/activos/inventario` | `src/app/plataforma/activos/inventario/page.tsx` |
-| 7.2 Mapa de topología CMDB | `/activos/cmdb` | `.../activos/cmdb/page.tsx` |
-| 7.3 Licencias de software (SAM) | `/activos/licencias` | `.../activos/licencias/page.tsx` |
-| 7.4 Modelado de clases CI | `/activos/cmdb/tipos` | `.../activos/cmdb/tipos/page.tsx` |
-| 8 Proveedores y Contratos TI | `/proveedores` | `src/app/plataforma/proveedores/*` |
-| Técnico M6.1 a M6.5 | `/tecnico/activos/{inventario,mapa,mantenimiento,conteos,licencias}` | `src/app/plataforma/tecnico/activos/*` |
-| API de operación | `/api/activos/*` | `src/app/api/activos/*` |
-Las secciones 4 y 5 describen lo que esas pantallas deben mostrar; si algo difiere, aplica la pregunta 1 de la sección 15.
+| Administrador, Supervisor, Auditor, Gestor de Activos | Inventario de activos (HAM) | `/plataforma/activos/inventario` (la ficha es `/plataforma/activos/[código]` o la ruta que defina la Etapa 0, autorizada por prefijo) |
+| Solicitante | Mis activos | `/plataforma/activos/mis-activos` |
+| Gestor de Activos | Mapa de topología · Modelado de clases CI · Análisis e impacto | `/plataforma/activos/cmdb` · `/plataforma/activos/cmdb/tipos` · `/plataforma/activos/cmdb/analisis` |
+| Supervisor, Auditor | Licencias de software (SAM) | `/plataforma/activos/licencias` |
+| Gestor de Activos | Panel · Asignación, custodia y actas · Importación masiva · Inventario físico · Recepción de adquisiciones · Gestión de bajas · Mantenimiento y garantías | `/plataforma/gestor-activos/{panel,asignaciones,importacion,inventario-fisico,recepcion,bajas,mantenimiento}` |
+| Gestor de Activos | Catálogo de software autorizado · Cumplimiento y sobreuso · Contratos y cobertura · Renovaciones | `/plataforma/gestor-activos/licencias/{catalogo-software,cumplimiento}` · `/plataforma/gestor-activos/{contratos,renovaciones}` |
+| Gestor de Activos | Actualizaciones de CMDB desde cambios · Calidad y auditoría · Inexactitudes · Líneas base | `/plataforma/gestor-activos/cmdb/{actualizaciones,auditoria,inexactitudes,lineas-base}` |
+| Gestor de Activos | Proveedores | `/plataforma/proveedores` (módulo `proveedores`) |
+| Técnico | Inventario técnico · Mantenimiento y reparaciones · Inventario físico en campo · Consultar licencias · Mapa de topología | `/plataforma/perfiles/tecnico/activos/{inventario,mantenimiento,conteos,licencias,mapa}` |
+| Supervisor, Gestor de Área, Aprobador, Auditor | Aprobación de bajas · Activos de mi área · Bajas y renovaciones por monto · Consulta de bajas · Resultados de auditorías de CMDB | `/plataforma/perfiles/supervisor/activos/bajas` · `/plataforma/perfiles/gestor-area/activos` · `/plataforma/perfiles/aprobador/activos` · `/plataforma/perfiles/auditor/activos/bajas` · `/plataforma/perfiles/auditor/cmdb/resultados` |
+| Reportes | Reportes de activos | `/plataforma/reportes/activos` (módulo `reportes`) |
+| API de operación | Activos, CMDB, gestor | `/api/activos/*`, `/api/activos/cmdb`, `/api/gestor-activos/*` |
+
+Las secciones 4 y 5 describen lo que esas pantallas deben mostrar; si algo difiere de lo implementado, aplica la pregunta 1 de la sección 15. Las consolas de rol (`perfiles/<rol>`) **no son parte de estos módulos**: solo montan vistas del dominio; no las modifiques, expón el contrato que necesiten.
 
 ---
 
@@ -205,7 +272,7 @@ Cada versión guarda: número, fecha-hora, autor, motivo, snapshot completo (JSO
 - [Ver ⟨FileText⟩] → vista de solo lectura de esa versión.
 - [Comparar con actual ⟨GitCompare⟩] → diff lado a lado.
 - [Restaurar esta versión ⟨RotateCcw⟩] → carga esa versión como borrador (no publica).
-- Las versiones **no se editan ni se borran** (la retención se rige por 1.8.3).
+- Las versiones **no se editan ni se borran** (la retención se rige por *Retención y mantenimiento de datos*).
 
 ### 3.4 Efecto de la configuración sobre tickets existentes
 Regla general (aplicar salvo que la pestaña indique otra cosa):
@@ -214,10 +281,10 @@ Regla general (aplicar salvo que la pestaña indique otra cosa):
 - Los cambios de **flujo** (estados/transiciones) aplican a todos los tickets abiertos; si un estado en uso se desactiva, la publicación se bloquea con el mensaje "El estado X tiene N tickets; reasígnalos a otro estado" y un asistente de migración (selector de estado destino + botón [Migrar y continuar ⟨ArrowRightLeft⟩]).
 - Los valores de listas en uso **no se eliminan**, solo se desactivan.
 
-### 3.5 Auditoría (conecta con 1.8.1)
+### 3.5 Auditoría (conecta con *Auditoría de cambios de configuración*, `/plataforma/admin/auditoria-sistema`)
 Cada guardado de borrador, publicación, restauración, importación y descarte genera un registro: usuario, IP, fecha-hora UTC, pantalla/pestaña, entidad, valor anterior, valor nuevo, motivo (si lo hay), versión resultante. Los registros son de solo lectura.
 
-### 3.6 Permisos (conecta con 1.1.2)
+### 3.6 Permisos (conecta con *Perfiles y permisos*; capacidades `dominio:acción`)
 Por cada pantalla existen tres permisos: `ver`, `editar` (guardar borrador) y `publicar`. Detalle en la sección 10.
 
 ### 3.7 Validaciones generales
@@ -234,8 +301,8 @@ Estas reglas aplican a **todas** las pantallas de este prompt y prevalecen sobre
 
 ### 3A.1 Un ítem de menú = una pantalla (prohibido duplicar el menú dentro de la página)
 1. **Prohibido** repetir ítems del menú lateral como pestañas, botones segmentados, chips o enlaces en la parte superior de una página. *Ejemplo del error que se debe evitar:* entrar a "Catálogo de incidentes" y ver arriba los botones "Catálogo de incidentes | Catálogo de solicitudes" cuando ambos ya son opciones del menú. Para cambiar de pantalla se usa el menú.
-2. Antes de implementar o modificar una pantalla, **compara** sus pestañas internas con el árbol de menú real (`src/lib/menu.ts` y la tabla de menú que alimenta `/api/menu`). Si una pestaña coincide en nombre o función con un ítem de menú, **elimínala** de la página.
-3. El título de la página, el breadcrumb y el ítem activo del menú coinciden siempre. El botón "Volver" solo existe en pantallas que **no** son ítem de menú (detalle o edición, por ejemplo `/admin/servicios/[id]/formulario`).
+2. Antes de implementar o modificar una pantalla, **compara** sus pestañas internas con el árbol de menú real (`src/shared/lib/menu.ts`, las tablas `opciones_menu` y `opciones_menu_perfiles` y el árbol de `MENUS_Y_PERFILES.md` §5). Si una pestaña coincide en nombre o función con un ítem de menú, **elimínala** de la página.
+3. El título de la página, el breadcrumb y el ítem activo del menú coinciden siempre. El botón "Volver" solo existe en pantallas que **no** son ítem de menú (detalle o edición, por ejemplo `/plataforma/admin/servicios/[id]/formulario`).
 
 ### 3A.2 Ventanas internas (permitidas y recomendadas)
 1. Una pantalla **sí** puede tener varias **ventanas internas intercambiables** cuando son secciones o herramientas de esa misma pantalla que **no existen** como ítem de menú (ejemplo: en un formulario configurable, las ventanas "Configuración de campos", "Agregar campo" y "Vista previa").
@@ -243,7 +310,7 @@ Estas reglas aplican a **todas** las pantallas de este prompt y prevalecen sobre
 3. La ventana activa se guarda en el parámetro de consulta `?vista=<codigo>` para poder compartir el enlace y volver con el botón del navegador. **Cambiar de ventana interna no cambia el ítem activo del menú.**
 4. Las acciones puntuales (vista previa, publicar, historial de versiones, restaurar valores de fábrica, confirmaciones) usan **modales o cajones laterales** (`ModalVistaPrevia`, `ModalPublicacion`, `ModalHistorialVersiones`, `ModalRestaurarFabrica`), nunca ventanas internas.
 5. Los **selectores de contexto** (por ejemplo "Formulario: Registro / Edición", "Aplicar a: tipo") son **listas desplegables** que filtran los datos de la ventana; no se presentan como pestañas.
-6. Los componentes comunes de las pantallas de configuración (`BarraAccionesComun`, `ModalPublicacion`, `ModalHistorialVersiones`, `ModalRestaurarFabrica`, `ModalVistaPrevia`) hoy están **duplicados** en `procesos/problemas/formulario/components/` y `procesos/cambios/formulario/components/`. **Unifícalos** en un único lugar compartido (`src/shared/components/ui/` o `src/components/admin/`) y haz que ambos módulos y el de activos los importen.
+6. Los componentes comunes de las pantallas de configuración (`BarraAccionesComun`, `ModalPublicacion`, `ModalHistorialVersiones`, `ModalRestaurarFabrica`, `ModalVistaPrevia`) hoy están **duplicados** (en `problemas`, `cambios` y `activos`). **Dentro de cada módulo en el que trabajas** (`activos` y `cmdb`), unifícalos en **una sola copia** en `src/modules/<modulo>/configuracion/compartido/` y haz que las pantallas del módulo la importen; elimina las copias locales propias. **No edites ni importes los de `problemas`, `cambios` ni los del otro módulo**: la promoción a `src/shared/components/ui/` y la unificación entre módulos se pide al Tech Lead (SA-11). Si `shared` ya los publica, impórtalos desde allí y no crees copia.
 
 ### 3A.3 Estados, accesibilidad y comportamiento
 - Todo listado y toda ventana interna tienen estados de **carga** (esqueleto), **vacío** (mensaje y acción sugerida) y **error** (mensaje y botón "Reintentar").
@@ -267,7 +334,7 @@ Estas reglas aplican a **todas** las pantallas de este prompt y prevalecen sobre
 Junto a cada botón verás `⟨NombreIcono⟩`: es el **nombre del ícono** (nomenclatura Lucide) que debe llevar, por ejemplo `[Guardar borrador ⟨Save⟩]`. El texto entre corchetes es la etiqueta. Si el botón es de fila de tabla, se muestra **solo el ícono** con tooltip; si es botón de barra o formulario, ícono + texto.
 
 ### 3B.3 Implementación
-- Verifica con qué librería están dibujados los íconos actuales. Si el proyecto ya usa `lucide-react`, úsala. Si no, crea **un único módulo compartido** `src/shared/components/ui/Iconos.tsx` (o `src/components/ui/Iconos.tsx`) con los SVG de los nombres de la tabla 3B.4, con el mismo estilo.
+- Verifica con qué librería están dibujados los íconos actuales. Si el proyecto ya usa `lucide-react`, úsala. Si no, revisa si ya existe un módulo compartido de íconos en `src/shared/components/ui/` y úsalo; si no, crea **un único módulo por módulo de dominio** `src/modules/<modulo>/configuracion/compartido/Iconos.tsx` (su promoción a `shared` es la solicitud SA-11) con los SVG de los nombres de la tabla 3B.4, con el mismo estilo.
 - **Unifica** los archivos `Iconos.tsx` locales de `admin/procesos/cambios/flujo-evaluacion/components/` y `admin/procesos/cambios/notificaciones-calendario/components/` en ese módulo y elimina las copias.
 - Crea un componente `BotonIcono` (props: `icono`, `etiqueta`, `variante: 'normal' | 'peligro'`, `onClick`, `disabled`) y un componente `Boton` (props: `variante`, `icono?`, `children`) para que ninguna pantalla dibuje botones con estilos propios.
 
@@ -327,16 +394,16 @@ Junto a cada botón verás `⟨NombreIcono⟩`: es el **nombre del ícono** (nom
 ### 3C.1 Principios
 1. **Todo campo tiene definidos**: tipo de dato, formato, longitud o rango, obligatoriedad y mensaje de error. No existe ningún campo de entrada sin validación (incluidos los de pantallas de configuración, editores, modales y filtros).
 2. **Validación en tiempo real:** el formato, la longitud, el rango y los caracteres se validan **mientras se escribe**. La obligatoriedad se evalúa al **salir del campo** (blur) y al **intentar enviar**; nunca al abrir un formulario vacío.
-3. **Solo se muestran errores.** No hay mensajes, íconos ni bordes de éxito (sin check verde). El error usa el componente `AlertaCampo` (`src/components/ui/AlertaCampo.tsx`: `role="alert"`, texto `#b91c1c`, fondo `#fef2f2`, borde `#fecaca`) y borde rojo en el campo con `aria-invalid="true"` y `aria-describedby`.
+3. **Solo se muestran errores.** No hay mensajes, íconos ni bordes de éxito (sin check verde). El error usa el componente `AlertaCampo` (`src/shared/components/ui/AlertaCampo.tsx`; la Etapa 0 confirma la ruta: `role="alert"`, texto `#b91c1c`, fondo `#fef2f2`, borde `#fecaca`) y borde rojo en el campo con `aria-invalid="true"` y `aria-describedby`.
 4. **Un solo mensaje por campo** (el más específico), breve, en español, que diga qué corregir ("Ingresa 8 dígitos numéricos"), sin tecnicismos.
 5. **Restricción de entrada:** los campos numéricos y de identificación filtran caracteres inválidos al teclear y al pegar (`inputMode`, `maxLength`, máscara) y normalizan el valor (recortar espacios, colapsar espacios múltiples, mayúsculas donde corresponda). Si se pega contenido inválido, se limpia y se muestra el mensaje.
 6. **Campos dependientes:** el valor de un selector controla el validador del campo siguiente. Ejemplo obligatorio: **Tipo de documento = DNI / RUC / Carné de extranjería / Pasaporte** → el campo "Número de documento" cambia de inmediato su `maxLength`, `inputMode`, máscara y validador (V-DNI, V-RUC, V-CE, V-PAS). Al cambiar el selector, el número se revalida; si ya no es válido se marca el error (o se limpia, según la regla del campo).
-7. **Misma lógica en cliente y servidor:** todos los validadores viven en `src/lib/validaciones.ts` (y los específicos de módulo en `src/modules/<dominio>/<modulo>Validaciones.ts`), son funciones puras que devuelven `{ valido: boolean, mensaje?: string }` y se importan tanto en el formulario como en el Route Handler. El servidor responde `400` con `{ campo, mensaje }` y la interfaz lo pinta en el campo correspondiente.
+7. **Misma lógica en cliente y servidor:** los validadores existentes viven en la librería compartida de validaciones (antes `src/lib/validaciones.ts`; la Etapa 0 la ubica) y los que falten o sean específicos de activos o CMDB se crean en `src/modules/<activos|cmdb>/configuracion/validaciones/` (sin tocar `shared`), son funciones puras que devuelven `{ valido: boolean, mensaje?: string }` y se importan tanto en el formulario como en el controlador (`*Controller.ts`). El servidor responde `400` con `{ campo, mensaje }` y la interfaz lo pinta en el campo correspondiente.
 8. **Botón primario:** mientras exista algún error de formato visible, queda deshabilitado (`aria-disabled`) con tooltip "Corrige los campos marcados". Los obligatorios vacíos no lo deshabilitan: al hacer clic se muestran los errores y se enfoca el primero.
 9. **Unicidad (nombre, código, serie, hostname):** validación asíncrona con *debounce* de 400 ms contra el servidor; mientras consulta, el campo muestra un indicador discreto de carga **sin** mensaje; si hay duplicado, error ("Ya existe un registro con ese código").
 10. **Coherencia entre campos:** fecha inicio < fecha fin, SLA primera respuesta < SLA resolución, mínimo ≤ máximo, etc. El error se muestra en el campo que debe corregirse.
-11. **Sanitización:** eliminar etiquetas HTML y caracteres de control del texto simple; el texto enriquecido se sanea con lista blanca; consultas siempre parametrizadas; apoyarse en `src/lib/security.ts`.
-12. **Adjuntos:** tipos y tamaño según 1.8.3 (fábrica: 25 MB por archivo, 10 archivos, ejecutables bloqueados); el error indica el archivo y el motivo.
+11. **Sanitización:** eliminar etiquetas HTML y caracteres de control del texto simple; el texto enriquecido se sanea con lista blanca; consultas siempre parametrizadas; apoyarse en las utilidades de saneamiento existentes (antes `src/lib/security.ts`; la Etapa 0 las ubica).
+12. **Adjuntos:** tipos y tamaño según *Retención y mantenimiento de datos* (fábrica: 25 MB por archivo, 10 archivos, ejecutables bloqueados); el error indica el archivo y el motivo.
 
 ### 3C.2 Catálogo de validadores (ID, tipo de dato, regla exacta y mensaje)
 | ID | Tipo de dato | Regla | Mensaje de error |
@@ -404,8 +471,8 @@ Los activos **no son tickets**: no tienen prioridad ni SLA; tienen **estado de c
 
 ### 4.1 Formulario de activo / CI
 
-**Quién lo usa:** perfil **Gestor de Activos y Configuración** y **Administrador** (permiso `activos.crear`). El perfil **Técnico** puede editar solo los atributos técnicos (`activos.editar_tecnico`).
-**Dónde:** `7 Activos y CMDB > 7.1 Inventario de activos (HAM) > [+ Nuevo activo ⟨Plus⟩]`; también desde la recepción de una solicitud de adquisición (1.5.2.4) y desde la importación masiva (1.5.1.9).
+**Quién lo usa:** perfil **Gestor de Activos y Configuración** (capacidad `activos:crear`). El perfil **Técnico** puede editar solo los atributos técnicos (`activos:editar-tecnico`). El **Administrador** configura pero no registra activos (SoD).
+**Dónde:** `Activos y CMDB › Inventario de activos` (`/plataforma/activos/inventario`) → botón [+ Nuevo activo ⟨Plus⟩]; también desde la `Recepción de adquisiciones` (`/plataforma/gestor-activos/recepcion`, 1.5.2.4) y desde la `Importación masiva` (`/plataforma/gestor-activos/importacion`, 1.5.1.9).
 **Disposición:** una página con **secciones plegables**; a la derecha, panel fijo "Resumen" con código, estado, **porcentaje de completitud** de datos y advertencias de calidad (campos recomendados vacíos).
 
 **Sección A — Identificación**
@@ -428,7 +495,7 @@ Los activos **no son tickets**: no tienen prioridad ni SLA; tienen **estado de c
 |---|---|---|---|---|---|
 | B1 | Tipo de asignación | `tipo_asignacion` | Lista (Personal, Compartido o departamental, Préstamo temporal, A ubicación o servicio) | Sí si estado = Asignado | Catálogo de 1.5.2.3. |
 | B2 | Usuario asignado / custodio | `custodio_id` | Lista con búsqueda de usuarios | Sí si el tipo de asignación es Personal o Préstamo | **Un solo custodio vigente.** Este campo es el que usa el selector "Elemento CMDB" de Incidentes para listar los ítems bajo custodia del usuario. |
-| B3 | Departamento | `departamento_id` | Lista (1.4.1) | Según tipo | Se sugiere el del custodio. |
+| B3 | Departamento | `departamento_id` | Lista (*Departamentos empresariales*) | Según tipo | Se sugiere el del custodio. |
 | B4 | Ubicación | `ubicacion_id` | Selector en árbol (Sede > Edificio > Piso > Oficina…) | Según tipo | Catálogo 1.5.1.6. Muestra la ruta completa. |
 | B5 | Fecha de asignación | `fecha_asignacion` | Fecha | Automática | La fija la transición *Asignar*; editable solo con motivo. |
 | B6 | Centro de costo | `centro_costo_id` | Lista | No | Catálogo 1.5.1.7. |
@@ -468,7 +535,7 @@ Se genera con los atributos definidos en 1.5.1.3. Ejemplos de fábrica: *Hardwar
 | F1 | ¿Es elemento de configuración? | `es_ci` | Casilla | Sí | Valor por defecto según la clase (1.5.4.1). |
 | F2 | Criticidad | `criticidad_id` | Lista | Sí si es CI | Catálogo 1.5.4.3. Se muestra también la **criticidad efectiva** (si la regla de herencia está activa). |
 | F3 | Entorno | `entorno_id` | Lista | Sí si es CI | Producción, Preproducción, Pruebas, Desarrollo, Contingencia. |
-| F4 | Servicios que soporta | `servicios` | Selector múltiple (catálogo 1.2) | Según clase | |
+| F4 | Servicios que soporta | `servicios` | Selector múltiple (Catálogo de Servicios) | Según clase | |
 | F5 | Responsable técnico | `responsable_tecnico_id` | Usuario | Según clase | |
 | F6 | Responsable de negocio | `responsable_negocio_id` | Usuario o departamento | Según clase | |
 | F7 | Relaciones con otros CI | `relaciones` | Subtabla editable (tipo de relación, CI destino, comentario) | Según clase | Solo se ofrecen los tipos de relación permitidos entre las clases (1.5.4.2); se valida que no cree ciclos prohibidos. |
@@ -479,7 +546,7 @@ Se genera con los atributos definidos en 1.5.1.3. Ejemplos de fábrica: *Hardwar
 | # | Etiqueta | Código | Control | Obligatorio | Reglas |
 |---|---|---|---|---|---|
 | G1 | Notas | `notas` | Texto enriquecido | No | |
-| G2 | Adjuntos | `adjuntos` | Arrastrar-y-soltar con **tipo de documento** (Factura, Garantía, Acta de entrega, Manual, Foto, Otro) | No | Límites según 1.8.3 (fábrica 25 MB por archivo). |
+| G2 | Adjuntos | `adjuntos` | Arrastrar-y-soltar con **tipo de documento** (Factura, Garantía, Acta de entrega, Manual, Foto, Otro) | No | Límites según *Retención y mantenimiento de datos* (fábrica 25 MB por archivo). |
 | G3 | Última verificación física | `fecha_ultima_verificacion` | Solo lectura | Automática | La actualizan los conteos de inventario. |
 
 **Campos automáticos (panel lateral):** `id`, `creado_por`, `fecha_creacion`, `modificado_por`, `fecha_modificacion`, `completitud` (%).
@@ -490,7 +557,7 @@ Se genera con los atributos definidos en 1.5.1.3. Ejemplos de fábrica: *Hardwar
 
 ### 4.2 Formulario de licencia (SAM)
 
-**Dónde:** `7.3 Licencias de software (SAM) > [+ Nueva licencia ⟨Plus⟩]`. **Usan:** Gestor de Activos y Configuración, Administrador.
+**Dónde:** `Licencias de software` (`/plataforma/activos/licencias`) y, para el Gestor de Activos, `Catálogo de software autorizado` (`/plataforma/gestor-activos/licencias/catalogo-software`) → botón [+ Nueva licencia ⟨Plus⟩]. **Usan:** Gestor de Activos y Configuración (el Administrador solo consulta).
 
 | Sección | Campos |
 |---|---|
@@ -504,7 +571,7 @@ Se genera con los atributos definidos en 1.5.1.3. Ejemplos de fábrica: *Hardwar
 
 ### 4.3 Formulario de contrato
 
-**Dónde:** `8 Proveedores y Contratos TI > [+ Nuevo contrato ⟨Plus⟩]`. **Usan:** Gestor de Activos y Configuración, Administrador (los Gestores de Área ven los de su departamento).
+**Dónde:** `Contratos y cobertura` (`/plataforma/gestor-activos/contratos`) → botón [+ Nuevo contrato ⟨Plus⟩]; los proveedores se gestionan en `Proveedores` (`/plataforma/proveedores`, módulo `proveedores`). **Usan:** Gestor de Activos y Configuración (el Administrador solo consulta; los Gestores de Área ven los de su departamento).
 
 | Sección | Campos |
 |---|---|
@@ -605,7 +672,7 @@ Se genera con los atributos definidos en 1.5.1.3. Ejemplos de fábrica: *Hardwar
 
 ## 5. ESPECIFICACIÓN DE LA FICHA DEL ACTIVO (lo que ve el usuario)
 
-**Ruta:** `7.1 Inventario de activos (HAM) > (fila) <código del activo>`, y desde cualquier enlace a un activo. Un CI lógico (servicio, aplicación) abre la misma ficha adaptada a su clase.
+**Ruta:** `Activos y CMDB › Inventario de activos` (`/plataforma/activos/inventario`) › (fila) <código del activo> → ficha (ruta canónica que confirma la Etapa 0; se autoriza por prefijo y no es opción de menú), y desde cualquier enlace a un activo. Un CI lógico (servicio, aplicación) abre la misma ficha adaptada a su clase (datos del CI de `cmdb` por SQL acotado).
 **Layout:** cabecera fija + barra de acciones + pestañas + panel lateral.
 
 ### 5.1 Cabecera fija
@@ -619,7 +686,7 @@ Estado y tiempo en el estado actual · Custodio y desde cuándo · Servicios que
 
 ### 5.4 Pestañas
 
-**5.4.1 General** — Identificación, adquisición y finanzas (con el ticket de origen enlazado), ciclo de vida y fechas clave. Campos financieros visibles solo para perfiles con `activos.ver_financiero`.
+**5.4.1 General** — Identificación, adquisición y finanzas (con el ticket de origen enlazado), ciclo de vida y fechas clave. Campos financieros visibles solo para perfiles con `activos:ver-financiero`.
 **5.4.2 Atributos técnicos** — Atributos del tipo agrupados por sección; los sensibles enmascarados; los protegidos (1.5.4.5) con ícono 🔒 y la indicación "Se modifica mediante RFC".
 **5.4.3 Asignación y ubicación** — Asignación actual (custodio, tipo, desde, acta de entrega y su aceptación) + **historial de asignaciones** (custodio, desde, hasta, tipo, motivo, quien asignó, condición al devolver). Ubicación actual y su historial de movimientos.
 **5.4.4 CMDB y relaciones** — Tabla de relaciones (tipo directo e inverso, CI relacionado, clase, criticidad, estado) con [Agregar relación ⟨Plus⟩] y [Quitar ⟨Trash2⟩] (motivo); **mini-mapa** de relaciones a 1 nivel con zoom; bloque **"Impacto"**: servicios que soporta y CI que dependen de este (hasta la profundidad configurada); bloque **"Criticidad efectiva"**.
@@ -629,7 +696,7 @@ Estado y tiempo en el estado actual · Custodio y desde cuándo · Servicios que
 **5.4.8 Documentos** — Adjuntos por tipo de documento, con versión y quién subió.
 **5.4.9 Verificación e inventario** — Historial de conteos físicos (fecha, campaña, resultado: Encontrado / No encontrado / Ubicación distinta / Dañado, verificado por).
 **5.4.10 Comentarios y bitácora** — Línea de tiempo con filtros (*Todo · Comentarios · Cambios de estado · Asignaciones · Sistema*); los comentarios se anulan con motivo, no se borran.
-**5.4.11 Historial / auditoría** — Tabla inmutable de cambios de campo (fecha-hora, usuario, campo, valor anterior y nuevo, comentario, origen: manual / importación / RFC). Solo con `activos.auditoria.ver`.
+**5.4.11 Historial / auditoría** — Tabla inmutable de cambios de campo (fecha-hora, usuario, campo, valor anterior y nuevo, comentario, origen: manual / importación / RFC). Solo con `activos:auditoria:ver`.
 
 ### 5.5 Reglas de visibilidad
 Cada pestaña tiene "visible para clases/tipos" y "visible para perfiles" (1.5.1.8). De fábrica: *Software y licencias* solo para hardware y licencias; *CMDB y relaciones* solo si `es_ci`; *Mantenimiento* solo para clases con mantenimiento; *Financiero* solo para perfiles autorizados.
@@ -704,8 +771,8 @@ Cada pestaña tiene "visible para clases/tipos" y "visible para perfiles" (1.5.1
 | Validaciones | Longitud, rango, expresión regular con mensaje y [Probar expresión ⟨FlaskConical⟩], formato IP/MAC | |
 | Opciones (listas) | Editor: valor, etiqueta, color, orden, activo | Valores en uso solo se desactivan. |
 | Sección de la ficha | Lista | Define su agrupación en la pestaña "Atributos técnicos". |
-| Visible en listado / Filtrable / Buscable | Interruptores | Alimentan `7.1`. |
-| **Sensible** | Interruptor | Cifra en reposo, enmascara en la interfaz, exige permiso `activos.ver_sensible` para revelar y audita cada revelación. |
+| Visible en listado / Filtrable / Buscable | Interruptores | Alimentan `Inventario de activos`. |
+| **Sensible** | Interruptor | Cifra en reposo, enmascara en la interfaz, exige permiso `activos:ver-sensible` para revelar y audita cada revelación. |
 | **Protegido** | Interruptor | Su edición directa depende de 1.5.4.5. |
 | **Aparece en el selector de Incidentes** | Interruptor | Muestra el atributo como dato secundario en el selector "Elemento CMDB". |
 | **Cuenta para completitud** | Interruptor | Entra en el porcentaje de calidad de datos. |
@@ -740,10 +807,10 @@ Cada pestaña tiene "visible para clases/tipos" y "visible para perfiles" (1.5.1
 
 **Etiquetas físicas:**
 - **Símbolo:** código QR · código de barras (Code 128) · ambos.
-- **Contenido del QR:** enlace a la ficha (`/activos/{codigo}`) o solo el código (selector).
+- **Contenido del QR:** enlace a la ficha (ruta canónica de la ficha de activo; la Etapa 0 la confirma) o solo el código (selector).
 - **Plantilla de etiqueta:** tamaño (selector de medidas estándar y personalizado), campos a imprimir (logo, código, nombre, tipo, fecha de ingreso, ubicación), tipografía y orientación; editor visual simple con vista previa.
 - Botones: `[Vista previa de etiqueta ⟨Eye⟩]` · `[Imprimir lote de prueba ⟨FlaskConical⟩]` (genera PDF).
-- Una vez creada, la etiqueta se reimprime desde la ficha o por lote desde `7.1`.
+- Una vez creada, la etiqueta se reimprime desde la ficha o por lote desde `Inventario de activos`.
 
 ### 6.6 Pestaña 1.5.1.6 — Ubicaciones
 
@@ -777,7 +844,7 @@ Atributos comunes: Orden · Código · Nombre · Descripción · Color · Activo
 **Bloque 2 — Pestañas de la ficha:** una fila por pestaña de 5.4 con: orden · nombre (3–30) · visible · **visible para clases/tipos** · **visible para perfiles** · **visible en estados** · **[Configurar campos… ⟨Settings2⟩]** (visible, orden, etiqueta y solo lectura de los campos de la pestaña). *General* e *Historial / auditoría* no se ocultan; *Historial* y el bloque financiero dependen de permisos.
 **Bloque 3 — Panel lateral (5.3):** elementos visibles y orden.
 **Bloque 4 — Acciones:** botones visibles y los que van en el menú [⋯].
-**Bloque 5 — Listado de inventario (`7.1`):** columnas disponibles y por defecto (arrastrar a "Visibles"), orden por defecto, filtros rápidos (estado, clase, tipo, ubicación, custodio, departamento, criticidad, garantía por vencer, sin custodio, sin verificar), densidad, tamaño de página, **vistas guardadas** de fábrica (Todos · Mis activos · En stock · En reparación · Garantía por vencer · Sin custodio · Pendientes de baja) y quién puede crear vistas compartidas.
+**Bloque 5 — Listado de inventario (`Inventario de activos`, `/plataforma/activos/inventario`):** columnas disponibles y por defecto (arrastrar a "Visibles"), orden por defecto, filtros rápidos (estado, clase, tipo, ubicación, custodio, departamento, criticidad, garantía por vencer, sin custodio, sin verificar), densidad, tamaño de página, **vistas guardadas** de fábrica (Todos · Mis activos · En stock · En reparación · Garantía por vencer · Sin custodio · Pendientes de baja) y quién puede crear vistas compartidas.
 **Botones:** `[Vista previa con activo real ⟨Eye⟩]` · `[Vista previa con ejemplo ⟨Eye⟩]` · patrón común.
 
 ### 6.9 Pestaña 1.5.1.9 — Importación masiva e inventario físico
@@ -891,7 +958,7 @@ Atributos comunes: Orden · Código · Nombre · Descripción · Color · Activo
 | Automatizaciones | Lista ordenable (abajo) | |
 | Apariencia del botón | Color, ícono, orden | |
 
-**Automatizaciones disponibles:** registrar custodio y fecha de asignación · cerrar la asignación vigente en el historial · generar acta · solicitar aceptación del custodio · actualizar ubicación · liberar licencias asignadas al activo · marcar los CI relacionados como "afectados" y notificar · desactivar el CI en la CMDB (conservando el historial) · cancelar mantenimientos programados · calcular y guardar fin de garantía y de vida útil · crear incidente (pérdida/robo) · crear tarea de seguimiento · enviar notificación (plantilla 1.6.1) · actualizar la fecha de última verificación.
+**Automatizaciones disponibles:** registrar custodio y fecha de asignación · cerrar la asignación vigente en el historial · generar acta · solicitar aceptación del custodio · actualizar ubicación · liberar licencias asignadas al activo · marcar los CI relacionados como "afectados" y notificar · desactivar el CI en la CMDB (conservando el historial) · cancelar mantenimientos programados · calcular y guardar fin de garantía y de vida útil · crear incidente (pérdida/robo) · crear tarea de seguimiento · enviar notificación (plantilla *Plantillas de correo y otros canales*) · actualizar la fecha de última verificación.
 
 **Reglas de validación (antes de publicar):** todo estado no final tiene salida; todos los estados son alcanzables desde el inicial; desde cualquier estado hay camino a un final; **la transición hacia el estado final de baja exige motivo, fecha y la aprobación configurada**; las transiciones que dejan el activo sin custodio no pueden coexistir con "asignable = No" y custodio obligatorio; no pueden existir dos transiciones idénticas para el mismo perfil y condiciones.
 
@@ -906,7 +973,7 @@ Atributos comunes: Orden · Código · Nombre · Descripción · Color · Activo
 - **Checklist de devolución** configurable (estado físico, accesorios, cargador, borrado o respaldo de datos, retiro de credenciales) con ítems obligatorios y evidencia.
 - **Préstamos:** recordatorios antes del vencimiento (días) y alerta de préstamo vencido a custodio y Supervisor.
 - **Transferencia entre usuarios:** permitida (sí/no), con o sin aprobación y con acta.
-- **Cuando un usuario deja la organización, cambia de departamento o se desactiva:** acción configurable — *Notificar al Gestor de Activos y Configuración con lista de activos pendientes* (por defecto) · *Crear tarea de devolución* · *Bloquear la baja del usuario hasta devolver* (solo advertencia si 1.1 no lo soporta; repórtalo en la Etapa 0).
+- **Cuando un usuario deja la organización, cambia de departamento o se desactiva:** acción configurable — *Notificar al Gestor de Activos y Configuración con lista de activos pendientes* (por defecto) · *Crear tarea de devolución* · *Bloquear la baja del usuario hasta devolver* (solo advertencia si no existe el hook de desactivación de usuarios de `identidades`, solicitud SA-5; repórtalo en la Etapa 0).
 - **Historial de asignaciones inmutable** (siempre activo).
 - **Vínculo con Incidentes:** el selector "Elemento CMDB" del formulario de Incidentes lista los activos cuyo `custodio_id` es el usuario y cuyo estado permite incidentes. Esta pestaña muestra ese comportamiento como dato informativo y permite activar *Incluir también activos compartidos de su departamento* (sí/no).
 
@@ -915,19 +982,19 @@ Atributos comunes: Orden · Código · Nombre · Descripción · Color · Activo
 **Principio:** la adquisición se inicia con una **solicitud de servicio** (ticket) con aprobaciones; la **compra** la ejecuta el área administrativa o de compras fuera del ITSM, y el ticket solo registra los datos de la orden. Al llegar el equipo, TI **crea el activo** y lo vincula al ticket.
 
 **Configuración:**
-- **Servicios de solicitud que generan activos** (tabla): servicio del catálogo (`1.2.2`, ej. "Solicitud de equipo nuevo") · tipo de activo que genera · cantidad por solicitud (fija / campo del formulario) · **mapeo de campos** (campo de la solicitud → campo del activo: justificación, departamento solicitante, custodio previsto, ubicación prevista, especificaciones). Botones `[+ Vincular servicio ⟨Plus⟩]` `[Editar ⟨SquarePen⟩]` `[Quitar ⟨Trash2⟩]`.
+- **Servicios de solicitud que generan activos** (tabla): servicio del catálogo (del Catálogo de Servicios, ej. "Solicitud de equipo nuevo") · tipo de activo que genera · cantidad por solicitud (fija / campo del formulario) · **mapeo de campos** (campo de la solicitud → campo del activo: justificación, departamento solicitante, custodio previsto, ubicación prevista, especificaciones). Botones `[+ Vincular servicio ⟨Plus⟩]` `[Editar ⟨SquarePen⟩]` `[Quitar ⟨Trash2⟩]`.
 - **Registro previo del activo:** al aprobarse la solicitud, ¿crear el activo en estado *Solicitado*? (sí/no, fábrica sí) y quién lo hace (automático / Gestor de Activos y Configuración).
 - **Datos de compra** exigidos al pasar a *Ordenado*: orden de compra *, proveedor *, fecha de pedido *, monto estimado, fecha estimada de entrega (campos configurables).
 - **Recepción:** acción **[Registrar recepción ⟨FilePlus⟩]** con formulario por lote: tabla de unidades (modelo, número de serie, hostname, ubicación, atributos clave) con **ingreso rápido por escaneo** o pegado de listado; la cantidad recibida puede ser menor (recepción parcial) con seguimiento de pendientes. Reglas: número de serie obligatorio según tipo, detección de duplicados, **cálculo automático de garantía** (fecha de recepción + garantía estándar del modelo) y de vida útil, asignación automática de código, impresión de etiquetas por lote, adjuntar guía de remisión y factura.
 - **Estado tras la recepción:** *En stock* (o *Asignado* directamente si la solicitud indica custodio y el servicio lo permite).
 - **Cierre automático del ticket de origen:** al recibir todas las unidades, la solicitud pasa a *Resuelta* con un comentario automático (sí/no).
 - **Ingreso directo sin solicitud:** permitido (sí/no) a los perfiles indicados; exige motivo.
-- **Recepción de software o licencias:** se registra en `7.3` y se asocia a la solicitud de origen.
+- **Recepción de software o licencias:** se registra en `Licencias de software` (`/plataforma/activos/licencias`) y se asocia a la solicitud de origen.
 
 ### 7.5 Pestaña 1.5.2.5 — Mantenimiento y fin de vida
 
 **Tipos de mantenimiento** (catálogo: Preventivo, Correctivo, Calibración o certificación, Actualización): ¿genera ticket? · ¿puede ser RFC estándar?
-**Planes de mantenimiento preventivo** (tabla): Nombre · Aplica a (clase/tipo/modelo/criticidad) · Frecuencia (días/meses/horas de uso) · Tareas (checklist) · Responsable (grupo de 1.4.2) · **Acción al vencer el plazo**: *Crear solicitud de servicio* / *Crear RFC estándar con el modelo* (selector de modelo de cambio del Prompt 2) / *Solo notificar* · Anticipación (días) · Activo. Botones `[+ Nuevo plan ⟨Plus⟩]` `[Editar ⟨SquarePen⟩]` `[Duplicar ⟨Copy⟩]` `[Desactivar ⟨Ban⟩]` `[Simular próximos 12 meses ⟨FlaskConical⟩]`.
+**Planes de mantenimiento preventivo** (tabla): Nombre · Aplica a (clase/tipo/modelo/criticidad) · Frecuencia (días/meses/horas de uso) · Tareas (checklist) · Responsable (grupo de *Departamentos y grupos resolutores de TI*) · **Acción al vencer el plazo**: *Crear solicitud de servicio* / *Crear RFC estándar con el modelo* (selector de modelo de cambio estándar, por contrato de `cambios`, SA-8) / *Solo notificar* · Anticipación (días) · Activo. Botones `[+ Nuevo plan ⟨Plus⟩]` `[Editar ⟨SquarePen⟩]` `[Duplicar ⟨Copy⟩]` `[Desactivar ⟨Ban⟩]` `[Simular próximos 12 meses ⟨FlaskConical⟩]`.
 **Estado durante el mantenimiento:** estado al que pasa (ej. *En reparación*), si se mantiene el custodio, y si se suspenden alertas de garantía.
 **Garantía:** cálculo de fechas (inicio = recepción / compra / puesta en producción) y qué hacer al vencer (notificar, sugerir contrato de mantenimiento, sugerir reemplazo). Las alertas se configuran en 1.5.3.5.
 **Fin de vida útil y obsolescencia:** política con meses de anticipación para alertar (fábrica 6), acción sugerida (*Planificar reemplazo*, *Retirar*), uso de EOL/EOS del modelo, y opción de pasar automáticamente a un estado "Obsoleto" (si el ciclo lo tiene) o solo etiquetar.
@@ -941,7 +1008,7 @@ Atributos comunes: Orden · Código · Nombre · Descripción · Color · Activo
 **Reglas de aprobación:** tabla por motivo, rango de costo y criticidad → etapas (Supervisor / Aprobador / Gestor de Activos y Configuración); el solicitante no aprueba su propia baja.
 **Bloqueos de integridad:** no se puede dar de baja un activo con **RFC abierta o programada, incidentes abiertos, asignación vigente o relaciones activas con CI que dependan de él** (cada bloqueo configurable como *Bloquear* o *Advertir*, y excepción con permiso y motivo).
 **Efectos automáticos:** liberar licencias · cerrar asignación · desactivar el CI en la CMDB conservando historial y relaciones históricas · cancelar mantenimientos · notificar a responsables de servicios dependientes · generar **acta de baja** (plantilla con variables) · registrar valor residual o monto de venta.
-**Retención:** el registro de un activo dado de baja **nunca se elimina físicamente**; se conserva N años (valor en 1.8.3; fábrica 7). Botones: `[Vista previa del acta ⟨Eye⟩]` + patrón común.
+**Retención:** el registro de un activo dado de baja **nunca se elimina físicamente**; se conserva N años (valor en *Retención y mantenimiento de datos*; fábrica 7). Botones: `[Vista previa del acta ⟨Eye⟩]` + patrón común.
 
 
 ### 7.7 Validaciones de la pantalla 1.5.2 (cumple 3C)
@@ -998,7 +1065,7 @@ Atributos comunes: Orden · Código · Nombre · Descripción · Color · Activo
 
 **Tipos de contrato** (de fábrica: Mantenimiento, Soporte, Arrendamiento o leasing, Licenciamiento, Servicios gestionados, Telecomunicaciones o enlaces, Garantía extendida, SLA con proveedor, Otro). Por tipo: ¿tiene monto recurrente? · ¿admite renovación automática? · ¿exige niveles de servicio? · ¿vincula activos/licencias/servicios? · ¿exige aprobación para crearlo? y etapas · preaviso de no renovación por defecto (días) · plantilla de campos obligatorios.
 **Catálogos de proveedores:** categorías de proveedor (Fabricante, Distribuidor, Servicios, Telecom, Consultoría…) · estados del proveedor (Activo, En evaluación, Suspendido, Bloqueado) con efecto (un proveedor Bloqueado no puede seleccionarse en nuevos contratos u órdenes) · criticidad del proveedor · campos de evaluación (opcional: calificación 1–5 y fecha de última evaluación).
-Los registros de proveedores y contratos se gestionan en `8`; aquí solo se configuran sus catálogos y reglas.
+Los registros de proveedores y contratos se gestionan en `Contratos y cobertura` (`/plataforma/gestor-activos/contratos`, módulo `activos`) y en `Proveedores` (`/plataforma/proveedores`, módulo `proveedores`); aquí solo se configuran sus catálogos y reglas.
 **Botones:** `[+ Nuevo tipo ⟨Plus⟩]` `[Editar ⟨SquarePen⟩]` `[Desactivar ⟨Ban⟩]` `[Eliminar ⟨Trash2⟩]` (si no está en uso) `[Importar CSV ⟨FileUp⟩]` + patrón común.
 
 ### 8.3 Pestaña 1.5.3.3 — Configuración de formulario de licencia y contrato
@@ -1035,7 +1102,7 @@ Los registros de proveedores y contratos se gestionan en `8`; aquí solo se conf
 | Préstamo de activo | Devolución prevista | 3, 1, 0 y +1, +7 | Custodio, Supervisor |
 | Revisión de CMDB / conteo | Fecha programada | 14, 3 | Responsable de la campaña |
 
-Por fila se edita: activo (sí/no) · anticipaciones (lista de días, positivos antes y negativos después del vencimiento) · destinatarios (perfiles, roles contextuales —responsable, custodio, Gestor de Área del departamento dueño—, usuarios) · canal y plantilla (1.6.1) · condiciones (monto, criticidad, tipo) · repetición · **escalamiento** si no hay acción en N días · opción de **posponer (snooze)** y quién puede hacerlo.
+Por fila se edita: activo (sí/no) · anticipaciones (lista de días, positivos antes y negativos después del vencimiento) · destinatarios (perfiles, roles contextuales —responsable, custodio, Gestor de Área del departamento dueño—, usuarios) · canal y plantilla (*Plantillas de correo y otros canales*) · condiciones (monto, criticidad, tipo) · repetición · **escalamiento** si no hay acción en N días · opción de **posponer (snooze)** y quién puede hacerlo.
 **Panel "Próximos vencimientos":** vista previa de los 90 días siguientes con la configuración propuesta. Botones: `[Enviar alerta de prueba ⟨FlaskConical⟩]` `[Restaurar valores de fábrica ⟨RotateCcw⟩]` + patrón común.
 
 ### 8.6 Pestaña 1.5.3.6 — Renovación
@@ -1084,7 +1151,7 @@ Por fila se edita: activo (sí/no) · anticipaciones (lista de días, positivos 
 
 **Qué se configura:** qué clases de la jerarquía de 1.5.1.1 son CI y qué exige la CMDB de cada una; creación de clases de CI **lógicas** (no inventariables).
 
-**Tabla de clases** (todas las de 1.5.1.1 más las lógicas): Clase / tipo · ¿Es CI? · ¿Inventariable? · Atributos CMDB obligatorios · Relaciones mínimas · Nº de CI · Activa. Botones: `[+ Clase de CI lógica ⟨Plus⟩]` (crea una clase con `inventariable = No`, p. ej. Servicio de negocio, Servicio de TI, Aplicación, Base de datos, Máquina virtual) · `[Editar ⟨SquarePen⟩]` · `[Desactivar ⟨Ban⟩]` · `[Ver diagrama de clases ⟨Network⟩]` (modelo de solo lectura, el mismo de `7.4`).
+**Tabla de clases** (todas las de 1.5.1.1 más las lógicas): Clase / tipo · ¿Es CI? · ¿Inventariable? · Atributos CMDB obligatorios · Relaciones mínimas · Nº de CI · Activa. Botones: `[+ Clase de CI lógica ⟨Plus⟩]` (crea una clase con `inventariable = No`, p. ej. Servicio de negocio, Servicio de TI, Aplicación, Base de datos, Máquina virtual) · `[Editar ⟨SquarePen⟩]` · `[Desactivar ⟨Ban⟩]` · `[Ver diagrama de clases ⟨Network⟩]` (modelo de solo lectura, el mismo de `Modelado de clases CI` (`/plataforma/activos/cmdb/tipos`)).
 
 **Propiedades de una clase en la CMDB (panel de edición):**
 
@@ -1095,7 +1162,7 @@ Por fila se edita: activo (sí/no) · anticipaciones (lista de días, positivos 
 | **Atributos CMDB obligatorios** | Casillas: Criticidad · Entorno · Responsable técnico · Responsable de negocio · Servicios que soporta · Ubicación | Alimentan el formulario (4.1, sección F) y la completitud. |
 | **Relaciones mínimas** | Lista de reglas (ej. "Toda *Aplicación* debe tener una relación *Se ejecuta en*") | Sirve para detectar CI incompletos (1.5.4.6). |
 | ¿Participa en el análisis de impacto? | Interruptor | |
-| ¿Se muestra en el mapa de topología (`7.2`)? | Interruptor + ícono y color | |
+| ¿Se muestra en el mapa de topología (`Mapa de topología`, `/plataforma/activos/cmdb`)? | Interruptor + ícono y color | |
 | ¿Se ofrece en el selector de Incidentes, Problemas y Cambios? | Tres interruptores | |
 | Auditoría | Frecuencia propia de auditoría (1.5.4.6) | |
 
@@ -1128,7 +1195,7 @@ Por fila se edita: activo (sí/no) · anticipaciones (lista de días, positivos 
 - Profundidad máxima de propagación (1–5; fábrica 2).
 - Dónde se muestra y cuál se usa en otras pantallas (efectiva / propia).
 - `Recalcular ahora` (proceso asíncrono con barra de progreso) y recálculo automático al cambiar relaciones, servicios o criticidades.
-**Entornos:** catálogo (de fábrica: Producción, Preproducción, Pruebas, Desarrollo, Contingencia / recuperación ante desastres) con atributos: *peso de riesgo (0–5)*, *¿es productivo?*, color, activo. **El catálogo de entornos es único y compartido con el Prompt 2 (catálogo "Entornos" de 1.3.4.1.3)**: si ya existe, reutilízalo y agrégale "Contingencia"; si no, créalo aquí con esos atributos.
+**Entornos:** catálogo (de fábrica: Producción, Preproducción, Pruebas, Desarrollo, Contingencia / recuperación ante desastres) con atributos: *peso de riesgo (0–5)*, *¿es productivo?*, color, activo. **El catálogo de entornos es único y su dueño es el módulo `cmdb` (esta ventana)**; el módulo `cambios` lo consume por contrato (`listarEntornos`, solicitud SA-8). Si `cambios` ya creó un catálogo propio, la Etapa 0 lo reporta y se reconcilia en una única fuente (esta), agregándole "Contingencia"; si no, créalo aquí con esos atributos y expónlo en `index.ts` de `cmdb`.
 **Botones:** `[+ Nivel ⟨Plus⟩]` `[Editar ⟨SquarePen⟩]` `[Desactivar ⟨Ban⟩]` `[Reordenar ⟨ArrowUpDown⟩]` `[Restaurar valores de fábrica ⟨RotateCcw⟩]` + patrón común.
 **Reglas:** los pesos deben ser distintos y crecientes; no se elimina un nivel o entorno en uso; los niveles 🔒 pueden renombrarse pero no eliminarse; si cambia la cantidad de niveles de criticidad, el asistente pide mapear los valores existentes.
 
@@ -1160,7 +1227,7 @@ Tabla de reglas con **Activa** y **Severidad** (*Bloquear / Advertir*) por regla
 **Fuentes de datos** (catálogo 🔒): *Manual* · *Importación* · *Cambio (RFC)* · *Integración externa* (reservada para el futuro). Cada modificación registra su fuente.
 **Atributos protegidos** (tabla): Clase/tipo · Atributo o campo (selector) · Entorno al que aplica (ej. solo Producción) · Criticidad mínima · **Política de edición directa**:
 - *Libre* (sin restricción).
-- *Solo mediante RFC* (el cambio solo puede aplicarse con el botón **[Aplicar a la CMDB ⟨CircleCheck⟩]** de una RFC vinculada y cerrada con éxito, Prompt 2).
+- *Solo mediante RFC* (el cambio solo puede aplicarse con el botón **[Aplicar a la CMDB ⟨CircleCheck⟩]** de una RFC vinculada y cerrada con éxito, contrato SA-8 con `cambios`).
 - *Excepción permitida* (el Gestor de Activos y Configuración puede editar directamente con **motivo obligatorio**; queda marcada como "modificación fuera de cambio" y se reporta).
 **Prioridad de fuentes por atributo** (para reconciliación): orden de confianza (ej. Cambio > Importación > Manual).
 **Reglas de reconciliación:** si una importación intenta cambiar un atributo protegido, se omite y se reporta en el informe de la importación.
@@ -1177,7 +1244,7 @@ Tabla de reglas con **Activa** y **Severidad** (*Bloquear / Advertir*) por regla
 
 **B. Líneas base:**
 - **Plantillas de línea base:** nombre · alcance (global / servicio / clase / criticidad) · qué incluye (CI, atributos, relaciones, licencias asociadas) · retención (meses; fábrica 24).
-- **Creación:** *Manual* · *Programada* (frecuencia) · *Automática al autorizar una RFC* con riesgo ≥ X o criticidad ≥ Y sobre los CI afectados (activo en fábrica con riesgo Alto o Crítico, integración con el Prompt 2) · *Automática tras cerrar* la RFC (para comparar).
+- **Creación:** *Manual* · *Programada* (frecuencia) · *Automática al autorizar una RFC* con riesgo ≥ X o criticidad ≥ Y sobre los CI afectados (activo en fábrica con riesgo Alto o Crítico, integración con `cambios`, SA-8) · *Automática tras cerrar* la RFC (para comparar).
 - **Comparación:** `[Comparar con el estado actual ⟨GitCompare⟩]` y `[Comparar dos líneas base ⟨GitCompare⟩]` (diferencias de atributos y relaciones, exportables).
 - **Restauración:** solo informativa (no revierte datos); la reversión real se hace mediante cambios.
 - Botones: `[+ Nueva plantilla ⟨Plus⟩]` `[Editar ⟨SquarePen⟩]` `[Eliminar ⟨Trash2⟩]` (si no tiene líneas base) + patrón común.
@@ -1205,48 +1272,58 @@ Tabla de reglas con **Activa** y **Severidad** (*Bloquear / Advertir*) por regla
 | Plantilla de auditoría: nombre, alcance, frecuencia, responsable | 1.5.4.6 Auditoría y líneas base | Texto / listas | V-NOMBRE80 + V-UNICO; V-MULTI; V-LISTA; V-REF |
 | Muestreo y objetivo de exactitud | 1.5.4.6 | Porcentajes | V-PORC (1–100); V-PORC (50–100) |
 | Plantilla de línea base: nombre, alcance, retención | 1.5.4.6 | Texto / entero | V-NOMBRE80 + V-UNICO; V-MULTI; V-MESES (1–120) |
-| Riesgo mínimo para línea base automática | 1.5.4.6 | Lista | V-LISTA (niveles de riesgo de 1.3.4.1.4) |
+| Riesgo mínimo para línea base automática | 1.5.4.6 | Lista | V-LISTA (niveles de riesgo del cuestionario de riesgo de `Cambios › Configuración de formulario`) |
 
 ---
 
 ## 10. Perfiles y permisos
 
-**Perfiles existentes (1.1.2):** Administrador · Técnico · Solicitante · Supervisor · Gestor de Área · Auditor · Aprobador · Gestor de Cambios · Gestor de Activos y Configuración. (Si ya existe Gestor de Problemas por el Prompt 1, se incluye en la columna GPR.) **No se crean perfiles nuevos en este prompt.**
+**Perfiles existentes (10, catálogo `perfiles`; nombres de BD sin tildes):** 1 Administrador · 2 Tecnico · 3 Solicitante · 4 Supervisor · 5 Gestor de Area · 6 Auditor · 7 Aprobador · 8 Gestor de Cambios · 9 Gestor de Activos y Configuracion · 10 Gestor de Problemas. **No se crean perfiles nuevos en este prompt.**
 
-Por cada pantalla de configuración hay tres permisos: `ver`, `editar` (guardar borrador) y `publicar`. Un usuario con `editar` pero sin `publicar` guarda borradores; otro con `publicar` los revisa y publica.
+**Modelo de autorización vigente:** RBAC por **capacidades** `dominio:acción` declaradas en `src/shared/lib/capacidades.ts`, con el puente `CAPACIDADES_POR_PERFIL` (todavía no existe `perfil_capacidades`). La **visibilidad de pantallas** la fija el menú (`opciones_menu_perfiles`); las páginas se protegen con `exigirCapacidadPagina` o `exigirMenuPagina`, y la API con `sesionConCapacidad`.
 
-**Columnas:** ADM = Administrador · TEC = Técnico · SOL = Solicitante · SUP = Supervisor · GAR = Gestor de Área · AUD = Auditor · APR = Aprobador · GCA = Gestor de Cambios · GAC = Gestor de Activos y Configuración · GPR = Gestor de Problemas (si existe).
+**Capacidades ya declaradas para este dominio** (Etapa 0 las lista todas): el grupo "resto" de `capacidades.ts` incluye familias `activos:*`, `licencias:*` y `cmdb:*`. **Las que falten se piden en la solicitud SA-2** (sección 17): este prompt **no modifica `src/shared`**. Nomenclatura propuesta: guion para acciones compuestas (`activos:ver-financiero`, `activos:solicitar-baja`) y `:` para subdominios (`activos:config:*`, `cmdb:config:*`, `cmdb:auditoria:*`).
 
-| Permiso | ADM | TEC | SOL | SUP | GAR | AUD | APR | GCA | GAC | GPR |
+Por cada pantalla de configuración existen tres niveles: `ver`, `editar` (guardar borrador) y `publicar`. Un usuario con `editar` sin `publicar` guarda borradores; otro con `publicar` los revisa y publica (separación de funciones, `MENUS_Y_PERFILES.md` §2.1). Las transiciones del ciclo de vida pueden restringir más, nunca ampliar, lo que otorgan estas capacidades.
+
+**Frontera de acceso a las pantallas de configuración:** las cuatro pantallas existen **en el menú del Administrador**; la pantalla `Tipos, modelos y atributos` existe además, en tres de sus ventanas (`?vista=fabricantes|catalogos|ubicaciones`), en el menú del **Gestor de Activos y Configuración**, que tiene `activos:config:catalogos:editar` y `:publicar` (solo fabricantes y modelos, ubicaciones y listas auxiliares). Las capacidades `...config:ver` de otros perfiles habilitan únicamente la **lectura de la configuración publicada** (por API o por las consolas operativas), no una pantalla de configuración; dar una pantalla nueva a otro perfil exige que `plataforma` añada la visibilidad en el menú (no es parte de esta entrega).
+
+**Columnas:** ADM = Administrador · TEC = Técnico · SOL = Solicitante · SUP = Supervisor · GAR = Gestor de Área · AUD = Auditor · APR = Aprobador · GCA = Gestor de Cambios · GAC = Gestor de Activos y Configuración · GPR = Gestor de Problemas.
+
+| Capacidad | ADM | TEC | SOL | SUP | GAR | AUD | APR | GCA | GAC | GPR |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `config.activos.{tipos,ciclos,licencias,cmdb}.ver` | ✔ | — | — | ✔ | — | ✔ | — | — | ✔ | — |
-| `config.activos.{tipos,ciclos,licencias,cmdb}.editar` / `.publicar` | ✔ | — | — | — | — | — | — | — | — | — |
-| `config.activos.catalogos.editar` / `.publicar` (solo fabricantes y modelos 1.5.1.2, ubicaciones 1.5.1.6 y listas auxiliares 1.5.1.7) | ✔ | — | — | — | — | — | — | — | ✔ | — |
-| `config.activos.importar_exportar` / `.restaurar_fabrica` | ✔ | — | — | — | — | — | — | — | — | — |
-| `activos.ver` | ✔ (todos) | ✔ (todos, lectura) | ✔ (solo los que tiene en custodia) | ✔ (todos) | ✔ (los de su departamento) | ✔ (todos, lectura) | ✔ (los que debe aprobar) | ✔ (todos, lectura) | ✔ | ✔ (lectura) |
-| `activos.ver_financiero` | ✔ | — | — | ✔ | — | ✔ | ✔ (los que aprueba) | — | ✔ | — |
-| `activos.ver_sensible` (revelar claves) | ✔ | — | — | — | — | — | — | — | ✔ | — |
-| `activos.crear` / `activos.editar` | ✔ | — | — | — | — | — | — | — | ✔ | — |
-| `activos.editar_tecnico` | ✔ | ✔ | — | — | — | — | — | — | ✔ | — |
-| `activos.asignar` / `activos.recibir` | ✔ | — | — | — | — | — | — | — | ✔ | — |
-| `activos.solicitar_baja` | ✔ | ✔ | — | ✔ | — | — | — | — | ✔ | — |
-| `activos.aprobar_transicion` (etapas de aprobación) | — | — | — | ✔ | — | — | ✔ | — | ✔ (etapa técnica) | — |
-| `activos.importar` | ✔ | — | — | — | — | — | — | — | ✔ | — |
-| `activos.conteo` (ejecutar inventario) | ✔ | ✔ | — | — | — | — | — | — | ✔ | — |
-| `activos.auditoria.ver` | ✔ | — | — | ✔ | — | ✔ | — | — | ✔ | — |
-| `licencias.ver` | ✔ | ✔ (sin clave) | — | ✔ | ✔ (su departamento) | ✔ | — | — | ✔ | — |
-| `licencias.editar` / `licencias.asignar` | ✔ | — | — | — | — | — | — | — | ✔ | — |
-| `contratos.ver` | ✔ | — | — | ✔ | ✔ (su departamento) | ✔ | ✔ | — | ✔ | — |
-| `contratos.editar` | ✔ | — | — | — | — | — | — | — | ✔ | — |
-| `contratos.aprobar_renovacion` | — | — | — | ✔ | — | — | ✔ | — | — | — |
-| `cmdb.ver` | ✔ | ✔ | — | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| `cmdb.relaciones.editar` | ✔ | — | — | — | — | — | — | — | ✔ | — |
-| `cmdb.atributos_protegidos.editar` (excepción con motivo) | — | — | — | — | — | — | — | — | ✔ | — |
-| `cmdb.auditoria.ejecutar` | ✔ | — | — | — | — | — | — | — | ✔ | — |
-| `cmdb.auditoria.ver_resultados` | ✔ | — | — | ✔ | — | ✔ | — | ✔ | ✔ | — |
-| `cmdb.lineas_base.crear` / `.comparar` | ✔ | — | — | — | — | — | — | ✔ (comparar) | ✔ | — |
+| `activos:config:ver` (1.5.1 a 1.5.3) / `cmdb:config:ver` (1.5.4) | ✔ | — | — | ✔ | — | ✔ | — | — | ✔ | — |
+| `activos:config:editar` / `:publicar` / `cmdb:config:editar` / `:publicar` | ✔ | — | — | — | — | — | — | — | — | — |
+| `activos:config:catalogos:editar` / `:publicar` (solo fabricantes y modelos 1.5.1.2, ubicaciones 1.5.1.6 y listas auxiliares 1.5.1.7) | ✔ | — | — | — | — | — | — | — | ✔ | — |
+| `activos:config:importar-exportar` / `activos:config:restaurar` (y su equivalente `cmdb:config:*`) | ✔ | — | — | — | — | — | — | — | — | — |
+| `activos:ver` | ✔ (todos) | ✔ (todos, lectura) | ✔ (solo los que tiene en custodia) | ✔ (todos) | ✔ (los de su departamento) | ✔ (todos, lectura) | ✔ (los que debe aprobar) | ✔ (todos, lectura) | ✔ | ✔ (lectura) |
+| `activos:ver-financiero` | ✔ | — | — | ✔ | — | ✔ | ✔ (los que aprueba) | — | ✔ | — |
+| `activos:ver-sensible` (revelar claves) | — | — | — | — | — | — | — | — | ✔ | — |
+| `activos:crear` / `activos:editar` | — | — | — | — | — | — | — | — | ✔ | — |
+| `activos:editar-tecnico` | — | ✔ | — | — | — | — | — | — | ✔ | — |
+| `activos:asignar` / `activos:recibir` | — | — | — | — | — | — | — | — | ✔ | — |
+| `activos:solicitar-baja` | — | ✔ | — | ✔ | — | — | — | — | ✔ | — |
+| `activos:aprobar-transicion` (etapas de aprobación) | — | — | — | ✔ | — | — | ✔ | — | ✔ (etapa técnica) | — |
+| `activos:importar` | — | — | — | — | — | — | — | — | ✔ | — |
+| `activos:conteo` (ejecutar inventario) | — | ✔ | — | — | — | — | — | — | ✔ | — |
+| `activos:auditoria:ver` | ✔ | — | — | ✔ | — | ✔ | — | — | ✔ | — |
+| `licencias:ver` | ✔ | ✔ (sin clave) | — | ✔ | ✔ (su departamento) | ✔ | — | — | ✔ | — |
+| `licencias:editar` / `licencias:asignar` | — | — | — | — | — | — | — | — | ✔ | — |
+| `contratos:ver` | ✔ | — | — | ✔ | ✔ (su departamento) | ✔ | ✔ | — | ✔ | — |
+| `contratos:editar` | — | — | — | — | — | — | — | — | ✔ | — |
+| `contratos:aprobar-renovacion` | — | — | — | ✔ | — | — | ✔ | — | — | — |
+| `cmdb:ver` | ✔ | ✔ | — | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| `cmdb:relaciones:editar` | — | — | — | — | — | — | — | — | ✔ | — |
+| `cmdb:atributos-protegidos:editar` (excepción con motivo) | — | — | — | — | — | — | — | — | ✔ | — |
+| `cmdb:auditoria:ejecutar` | — | — | — | — | — | — | — | — | ✔ | — |
+| `cmdb:auditoria:ver-resultados` | ✔ | — | — | ✔ | — | ✔ | — | ✔ | ✔ | — |
+| `cmdb:lineas-base:crear` / `cmdb:lineas-base:comparar` | ✔ (comparar) | — | — | — | — | — | — | ✔ (comparar) | ✔ | — |
 
-**Notas:** el solicitante de una transición no puede aprobarla (segregación de funciones). El perfil Solicitante solo ve los activos bajo su custodia y puede aceptar actas de entrega. Los perfiles se resuelven con el mecanismo de permisos existente; si no maneja permisos por acción, repórtalo en la Etapa 0.
+**Notas:**
+- **Ajustes frente a la v2.0 por la segregación de funciones vigente** (`MENUS_Y_PERFILES.md` §2.1): el **Administrador configura y consulta, pero no opera** (sin `crear`, `editar`, `asignar`, `recibir`, `importar`, `conteo`, `solicitar-baja`, edición de licencias y contratos, edición de relaciones, ejecución de auditorías ni creación de líneas base) y **no revela claves** (`activos:ver-sensible`). Quien custodia o administra el inventario no autoriza las adquisiciones ni las bajas (esas aprobaciones son del Supervisor y del Aprobador). Si la matriz real del código (`CAPACIDADES_POR_PERFIL`) difiere, repórtalo en la Etapa 0 en lugar de sobrescribirla.
+- **Segregación de funciones en servidor:** el solicitante de una transición no puede aprobarla; una persona no aprueba dos etapas de la misma transición; quien recibe una adquisición no la aprueba.
+- El Auditor es de **solo lectura**: nunca recibe capacidades de escritura. El perfil Solicitante solo ve los activos bajo su custodia y puede aceptar actas de entrega. El Gestor de Área ve los de su departamento. El Gestor de Problemas solo lee activos y CI.
+- Mapeo con lo existente: la Etapa 0 indica qué parte de esta matriz ya está cubierta por las capacidades declaradas y qué entra en SA-2.
 
 ---
 
@@ -1322,142 +1399,178 @@ Fabricantes y modelos: **vacíos** (se cargan por importación).
 
 **Eventos de dominio que se emiten:** `activo.creado`, `activo.estado_cambiado`, `activo.asignado`, `activo.aceptacion_pendiente`, `activo.devuelto`, `activo.transferido`, `activo.baja_solicitada`, `activo.baja_aprobada`, `activo.dado_de_baja`, `activo.perdido_o_robado`, `activo.garantia_por_vencer`, `activo.fin_vida_proximo`, `activo.mantenimiento_proximo`, `activo.prestamo_por_vencer`, `activo.prestamo_vencido`, `activo.no_encontrado`, `licencia.asignada`, `licencia.sobreuso`, `licencia.en_riesgo`, `licencia.por_vencer`, `licencia.vencida`, `software.no_autorizado_detectado`, `contrato.por_vencer`, `contrato.vencido`, `renovacion.iniciada`, `renovacion.completada`, `cmdb.relacion_creada`, `cmdb.relacion_eliminada`, `cmdb.ci_retirado`, `cmdb.atributo_protegido_modificado`, `cmdb.violacion_integridad`, `cmdb.auditoria_completada`, `cmdb.linea_base_creada`, `inventario.campania_iniciada`, `inventario.campania_cerrada`, `importacion.completada`, `configuracion.publicada`.
 
-**Métricas que los datos deben permitir (2.1 y 2.2):** inventario por estado, clase, tipo y ubicación · % de activos asignados y sin custodio · antigüedad de la flota y activos próximos al fin de vida · garantías por vencer · costo total por clase y departamento · activos perdidos o dados de baja por período · cumplimiento de licencias (cumple / en riesgo / sobreuso) y ahorro por licencias sin uso · contratos y licencias por vencer · exactitud y completitud de la CMDB · CI huérfanos · modificaciones fuera de cambio · incidentes por tipo y modelo de activo · resultados de conteos físicos · tiempo promedio de recepción y de devolución.
+**Métricas que los datos deben permitir (`Reportes de activos` y `Tableros`):** inventario por estado, clase, tipo y ubicación · % de activos asignados y sin custodio · antigüedad de la flota y activos próximos al fin de vida · garantías por vencer · costo total por clase y departamento · activos perdidos o dados de baja por período · cumplimiento de licencias (cumple / en riesgo / sobreuso) y ahorro por licencias sin uso · contratos y licencias por vencer · exactitud y completitud de la CMDB · CI huérfanos · modificaciones fuera de cambio · incidentes por tipo y modelo de activo · resultados de conteos físicos · tiempo promedio de recepción y de devolución.
 
 ---
 
 ## 12. Hechos confirmados del sistema existente (no los vuelvas a preguntar)
 
-### 12.0 Hechos de arquitectura (de `ARQUITECTURA_Y_JERARQUIA_SRC.md`)
-- **Framework:** Next.js 14 (App Router); pantallas en `src/app/plataforma/`, API en `src/app/api/`. Sesión con cookie `sesion_tickets` (JWT) y perfil activo conmutable. Menú dinámico desde `/api/menu` + `src/lib/menu.ts`.
-- **Base de datos:** pool `pg` de `src/lib/db.ts`; sin acceso directo desde el cliente.
-- **Validaciones:** `src/lib/validaciones.ts` (DNI, RUC, correos, códigos, etc.) y `AlertaCampo` (solo errores en rojo).
-- **Activos y CMDB:** configuración en `/admin/activos-config/*` (4 pantallas con 27 ventanas), operación en `/activos/{inventario,cmdb,cmdb/tipos,licencias}` y `/proveedores`; el Técnico en `/tecnico/activos/*`. API en `/api/activos/*` y `/api/admin/cmdb/tipos`.
-- **Selector de CI en Incidentes:** los ítems bajo custodia del usuario; no debe romperse.
-- **SLA:** `src/lib/sla.ts` (calendarios hábiles); los cambios del Prompt 2 reutilizan su tabla de feriados.
-- **Ticket de incidente:** `PanelInfraestructuraCi` muestra el CI afectado: debe leer de la misma estructura de CI/activos que esta configuración extiende.
-
+### 12.0 Hechos de arquitectura (de `ARQUITECTURA_Y_CODIGO.md` y `MENUS_Y_PERFILES.md`, vigentes al 2026-10-20/21)
+- **Framework y alcance:** Next.js 14.2 (App Router), React 18, TypeScript 5.5. 17 módulos en `src/modules/`, 207 route handlers en `src/app/api`, 227 páginas bajo `src/app/plataforma`, 126 tablas base y 1 vista (`vista_ticket`), 38 migraciones.
+- **Vertical slice:** cada funcionalidad vive completa en `src/modules/<modulo>/`. `src/app` es delgado (cascarones). Contratos públicos: `index.ts` (servidor) y `ui.ts` (cliente). Prohibidos los imports profundos entre módulos; `shared` es hoja y nunca importa módulos.
+- **Módulos `activos` y `cmdb`:** `activos` (unos 80 archivos) cubre ITAM/SAM: inventario, licencias, contratos y bajas; `cmdb` (unos 17) cubre topología, impacto y reconciliación Activo ↔ CI. **Son módulos distintos, de Nain, y no se importan entre sí** (se consultan por datos: `elemento_configuracion.id_activo → activo`). Rutas: `/plataforma/activos/**`, `/plataforma/gestor-activos/**`, `/plataforma/admin/activos-config/*`; API `/api/activos`, `/api/activos/cmdb`, `/api/gestor-activos`, `/api/admin/cmdb`, `/api/admin/activos-config/*`. `proveedores` es otro módulo (6 archivos) con `/plataforma/proveedores`.
+- **Sesión:** JWT en cookie `sesion` (`httpOnly`, 8 h); pre-sesión de 5 min para elegir perfil. `src/middleware.ts` solo comprueba que la cookie exista.
+- **Guardas:** `src/shared/lib/api-auth.ts` (`sesionConCapacidad`, `autorizarApi`, `obtenerSesionDeRequest`) y `src/shared/lib/page-auth.ts` (`exigirCapacidadPagina`, `exigirMenuPagina`). Errores: `ErrorDominio` y `respuestaError`.
+- **Base de datos:** pool `pg` y `query` parametrizado en `src/shared/lib/db.ts`; sin acceso desde el cliente.
+- **Tablas del dominio ya existentes** (verifica estructura en la Etapa 0): `activo` (inventario; `id_modelo`, custodio, departamento), `licencia_software`, `licencia_asignacion`, `contrato_ti` (con proveedor), `elemento_configuracion` (CI y atributos; `id_activo` → `activo`), `ci_relacion` (`id_ci_origen`, `id_ci_destino`), `cmdb_linea_base` y `cmdb_inexactitud`. Referencias entrantes: `problema.id_ci_afectado`, `cambio.id_ci_afectado`, y la estructura que alimenta el selector "Elemento CMDB" de Incidentes.
+- **Validaciones y componentes de UI transversales:** antes en `src/lib/validaciones.ts`, `src/lib/security.ts` y `src/components/ui/AlertaCampo.tsx`; con la migración están en `src/shared/` o en módulos. **Etapa 0 los ubica.** Si un validador del catálogo 3C no existe, créalo **dentro del módulo** (`configuracion/validaciones/`), no en `shared`.
+- **Selector de CI en Incidentes y `PanelInfraestructuraCi`:** leen los ítems bajo custodia del usuario; **no deben romperse** (criterio 4). Pertenecen a `incidentes`/`tickets`: se protegen conservando tablas, columnas e identificadores o una vista de compatibilidad.
+- **SLA:** el motor de SLA con calendarios hábiles vive en `servicios`/`tickets` (antes `src/lib/sla.ts`); este prompt no lo necesita.
+- **Deuda técnica conocida:** 100 controladores con JWT manual, 113 páginas sin guarda de página, `db/schema.sql` incompleto (la fuente de verdad es la base viva + migraciones + seed). **No amplíes la deuda.**
 
 | Tema | Lo confirmado |
 |---|---|
-| Stack | Next.js 14 (App Router) y PostgreSQL en Supabase (pool `pg` de `src/lib/db.ts`); acceso completo al código, base de datos, frontend y backend. |
 | Selector "Elemento CMDB" en Incidentes | Existe: lista ítems tecnológicos de hardware, software y periféricos **bajo custodia del usuario** (opcional). Por tanto **ya hay una estructura de datos de CI/activos con custodio**. Ubícala en la Etapa 0: es la base que se extiende. |
-| Formulario de Incidentes y creador de campos | Existen; se extienden a las entidades `activo`, `licencia` y `contrato`. |
+| Formulario de Incidentes y creador de campos | Existen (módulo `tickets`); se extienden por contrato a las entidades `activo`, `licencia` y `contrato` (solicitud SA-1 si no están publicados). |
 | Matriz de prioridad | Existe para incidentes (P1–P4). No interviene aquí, salvo la criticidad como dato de apoyo. |
-| Perfiles | Administrador, Técnico, Solicitante, Supervisor, Gestor de Área, Auditor, Aprobador, Gestor de Cambios, Gestor de Activos y Configuración. |
-| Ubicaciones físicas | **No existen datos.** Se crea el catálogo jerárquico (1.5.1.6). |
-| Calendarios y feriados | `src/lib/sla.ts` usa calendarios hábiles y el Prompt 2 reutiliza su tabla de feriados. Este prompt no los necesita. |
-| Menú operativo | `7.1`, `7.2`, `7.3`, `7.4` y `8` aparecen en el menú; su estado de implementación se verifica en la Etapa 0. |
+| Perfiles | Los 10 perfiles existen (incluido Gestor de Problemas). |
+| Ubicaciones físicas | **No existen datos** (verificar). Se crea el catálogo jerárquico (1.5.1.6) dentro de `activos`. |
+| Calendarios y feriados | El motor de SLA usa calendarios hábiles; este prompt no los necesita. |
+| Menú operativo | Las pantallas operativas de 2.4 aparecen en los menús de los perfiles 1, 2, 3, 4, 5, 6, 7 y 9; su estado de implementación se verifica en la Etapa 0. |
 | Adquisición | Es una **solicitud de servicio**; la compra la hace el área administrativa y el ticket solo registra los datos de la orden. |
-| Datos que no existan | Se agregan a la base de datos mediante migraciones (sección 13). |
+| Catálogo de entornos y criticidades | **Dueño: módulo `cmdb`** (ventana 1.5.4.3). El Prompt 2 lo consume por contrato; si `cambios` ya creó uno, la Etapa 0 lo reporta y se reconcilia sin duplicar. |
+| Datos que no existan | Se agregan con migraciones (sección 13) solo en tablas de `activos` o `cmdb`. Los de otros módulos se solicitan (sección 17). |
 
-**Dependencias con otros módulos:**
+**Dependencias con otros módulos** (todas por contrato o solicitud; ninguna implica editar el módulo ajeno):
 
-| Con | Dependencia |
-|---|---|
-| Prompt 1 (Problemas) | Criticidad y clase de CI; marcas `Problema abierto` y `Error conocido` en la ficha; selector de CI. |
-| Prompt 2 (Cambios) | Relaciones y criticidad para el análisis de impacto; atributos protegidos y **[Aplicar a la CMDB ⟨CircleCheck⟩]**; líneas base automáticas; catálogo compartido de entornos; mantenimiento preventivo como RFC estándar. |
-| 1.1.2 | Registrar los permisos de la sección 10. |
-| 1.2 Catálogo de servicios | Servicios soportados por CI; servicios de solicitud que generan activos y renovaciones. |
-| 1.3.1 Incidentes | Selector de CI, `custodio_id`, incidentes de seguridad por pérdida o robo. |
-| 1.4 | Departamentos, grupos, usuarios (desactivación de usuarios con activos asignados). |
-| 1.6 Comunicaciones | Plantillas y canales para alertas y notificaciones. |
-| 1.8 Auditoría y retención | Retención de activos dados de baja, límites de adjuntos, auditoría de configuración. |
-| 2 Reportes | Métricas de la sección 11. |
+| Con (módulo · pantalla) | Dependencia | Detalle en |
+|---|---|---|
+| `cambios` (Prompt 2) | Relaciones y criticidad para el análisis de impacto; atributos protegidos y **[Aplicar a la CMDB ⟨CircleCheck⟩]**; líneas base automáticas; catálogo compartido de entornos; mantenimiento preventivo como RFC estándar. | SA-8 |
+| `problemas` (Prompt 1) | Criticidad y clase de CI; marcas `Problema abierto` y `Error conocido vigente` en la ficha; selector de CI. | SA-7 |
+| `tickets` / `incidentes` · Incidentes | Selector de CI, `custodio_id`, incidentes de seguridad por pérdida o robo, editor de formularios y creador de campos. | SA-1, SA-3 |
+| `identidades` · Perfiles y permisos | Capacidades de la sección 10; hook de desactivación de usuarios con activos asignados. | SA-2, SA-5 |
+| `servicios` / `solicitudes` · Catálogo de Servicios | Servicios soportados por CI; servicios de solicitud que generan activos y renovaciones. | SA-4 |
+| `organizacion` · Departamentos, grupos y usuarios | Departamentos, grupos, usuarios y custodios. | SA-5 |
+| `proveedores` · Proveedores | Catálogos de proveedores (categorías, estados, criticidad, evaluación) y selección de proveedor en contratos y órdenes. | SA-9 |
+| `plataforma` · Notificaciones, Auditoría y Retención | Plantillas y canales de las alertas; registro de cambios de configuración; retención de bajas y límites de adjuntos; zona horaria; jobs. | SA-6 |
+| `reportes` · Reportes de activos | Métricas de la sección 11 (el módulo `reportes` las lee de las tablas de los módulos). | — |
 
 ---
 
 ## 13. Cambios de base de datos requeridos
 
-Principio: **verifica primero si existe (Etapa 0); si no existe, créalo con migración.** No dupliques. **Extiende la estructura que alimenta hoy el selector de Incidentes** y conserva sus identificadores para que ese selector no se rompa.
+Principio: **verifica primero si existe (Etapa 0); si no existe y pertenece al módulo en el que trabajas (`activos` o `cmdb`), créalo con migración.** No dupliques. **Extiende la estructura que alimenta hoy el selector de Incidentes** y conserva sus identificadores para que ese selector no se rompa. No toques tablas de otros módulos.
 
-**13.1 Tablas de configuración del módulo** (diseño libre, convenciones del proyecto): versiones de configuración por pantalla/pestaña (ámbito, versión, estado, snapshot `jsonb`, autor, motivo, fechas) · jerarquía de clases y tipos con propiedades · fabricantes y modelos · definición de atributos (tipo, reglas, sensibles, protegidos) · configuración de formulario por entidad y por clase/tipo · formatos y secuencias de código · plantillas de etiqueta y de documentos (actas) · ubicaciones · catálogos auxiliares · ciclos de vida, estados, transiciones y sus etapas de aprobación · reglas de asignación, adquisición, mantenimiento y baja · tipos de licencia y de contrato, catálogo de software, reglas de cumplimiento y alertas, reglas de renovación · tipos de relación y matriz de clases permitidas · criticidades y entornos · reglas de integridad, atributos protegidos y fuentes · plantillas de auditoría y de líneas base · perfiles de importación y plantillas de campañas de inventario.
+**13.1 Tablas de configuración** (diseño libre, convenciones de la sección 0, regla 9; prefijos sugeridos `activo_config_*` para `activos` y `cmdb_config_*` para `cmdb`):
+- En `activos`: versiones de configuración por pantalla/pestaña (ámbito, versión, estado, snapshot `jsonb`, autor, motivo, fechas) · jerarquía de clases y tipos con propiedades · fabricantes y modelos · definición de atributos (tipo, reglas, sensibles, protegidos) · configuración de formulario por entidad y por clase/tipo · formatos y secuencias de código · plantillas de etiqueta y de documentos (actas) · ubicaciones · catálogos auxiliares · ciclos de vida, estados, transiciones y sus etapas de aprobación · reglas de asignación, adquisición, mantenimiento y baja · tipos de licencia y de contrato, catálogo de software, reglas de cumplimiento y alertas, reglas de renovación · perfiles de importación y plantillas de campañas de inventario.
+- En `cmdb`: versiones de configuración de 1.5.4 · clases de CI y matriz de clases permitidas · tipos de relación · criticidades y entornos · reglas de integridad, atributos protegidos y fuentes · plantillas de auditoría y de líneas base.
+- Bloqueo de edición concurrente (por pantalla/pestaña, expira a los 15 min) en cada módulo.
 
-**13.2 Tablas operativas** (verificar qué existe): registro maestro de CI/activos (activo y CI son vistas del mismo registro) con `atributos` en `jsonb` (índice GIN) y una tabla auxiliar de **valores únicos** (`atributo_id`, `valor`, `ci_id`, con índice único) para los atributos marcados como únicos · valores sensibles cifrados · **historial de asignaciones** (índice único parcial que garantiza **un solo custodio vigente**, p. ej. `WHERE hasta IS NULL`) · actas y aceptaciones · movimientos de ubicación · mantenimientos y planes · licencias y asignaciones · contratos y cobertura (activos, licencias, servicios) · proveedores (verificar si existe en el módulo 8) · renovaciones · **relaciones entre CI** (origen, destino, tipo, vigencia desde–hasta, CHECK origen ≠ destino, único para relaciones vigentes) · líneas base y sus elementos (snapshot) · auditorías de CMDB y hallazgos · campañas de inventario y conteos · importaciones y errores · adjuntos (almacenamiento en Supabase Storage con metadatos) · historial/auditoría de cambios de campo (**solo INSERT**).
+**13.2 Tablas operativas** (verificar qué existe; `activo`, `licencia_software`, `licencia_asignacion`, `contrato_ti`, `elemento_configuracion`, `ci_relacion`, `cmdb_linea_base` y `cmdb_inexactitud` **ya existen**: auditarlas y completarlas, no recrearlas):
+- **Activos y CI son dos tablas con un puente por datos** (`elemento_configuracion.id_activo → activo.id_activo`); no se crea una tabla maestra adicional. En `activo`: `atributos` en `jsonb` (índice GIN) y una tabla auxiliar de **valores únicos** (`atributo_id`, `valor`, `activo_id`, con índice único) para los atributos marcados como únicos · valores sensibles cifrados · **historial de asignaciones** (índice único parcial que garantiza **un solo custodio vigente**, p. ej. `WHERE hasta IS NULL`) · actas y aceptaciones · movimientos de ubicación · mantenimientos y planes · licencias y asignaciones · contratos y cobertura (activos, licencias, servicios) · renovaciones · campañas de inventario y conteos · importaciones y errores · adjuntos (almacenamiento en Supabase Storage con metadatos) · historial/auditoría de cambios de campo (**solo INSERT**).
+- En `cmdb`: **relaciones entre CI** (origen, destino, tipo, vigencia desde–hasta, CHECK origen ≠ destino, único para relaciones vigentes) · líneas base y sus elementos (snapshot) · auditorías de CMDB y hallazgos · inexactitudes reportadas.
+- **Proveedores:** pertenecen al módulo `proveedores`; si no existe la tabla mínima, es **solicitud SA-9**, no se crea aquí (pregunta abierta 3).
 
-**13.3 Seguridad:** permisos de la sección 10 como datos semilla; filtros por perfil aplicados en el servidor (Route Handlers) (el Solicitante solo ve los activos de los que es custodio; el Gestor de Área, los de su departamento); tablas de historial inmutables (sin UPDATE/DELETE); cifrado de datos sensibles y auditoría de revelación.
+**13.3 Seguridad:** las capacidades de la sección 10 se declaran en `src/shared/lib/capacidades.ts` (**solicitud SA-2**, no se edita aquí); filtros por perfil aplicados en el servicio del servidor (el Solicitante solo ve los activos de los que es custodio; el Gestor de Área, los de su departamento); tablas de historial inmutables (sin UPDATE/DELETE: triggers y ausencia de endpoints de edición); cifrado de datos sensibles y auditoría de revelación.
 
 **13.4 Jerarquías:** ubicaciones y clases como árbol (por ejemplo con `ltree` o columna `ruta` materializada con CTE recursivas) para consultas por subárbol.
 
-**13.5 Columnas y estructuras que probablemente falten (verifica y agrega):** `custodio_id`, `estado_id`, `clase_id`, `tipo_id`, `modelo_id`, `ubicacion_id`, `criticidad_id`, `entorno_id`, responsables, fechas de garantía y vida útil, `es_ci`, `fuente_dato`, completitud · criticidad efectiva calculada (columna o vista materializada) · en incidentes: referencia al CI (ya existe) · `centro_costo`, `moneda` (verificar) · zona horaria del sistema (parámetro).
+**13.5 Columnas y estructuras que probablemente falten** (verifica y agrega **solo en tablas de tu módulo**): en `activo`: `custodio_id`, `estado_id`, `clase_id`, `tipo_id`, `modelo_id`, `ubicacion_id`, responsables, fechas de garantía y vida útil, `fuente_dato`, completitud, `centro_costo`, `moneda`. En `elemento_configuracion`: `clase_id`, `criticidad_id`, `entorno_id`, `es_ci`, criticidad efectiva calculada (columna o vista materializada). Columnas de otros módulos (por ejemplo la referencia al CI en incidentes, que ya existe) **no se tocan**. La zona horaria del sistema es parámetro de `plataforma` (SA-6).
 
 **13.6 Rendimiento:** índices en (clase, tipo, estado), custodio, ubicación, número de serie, hostname, IP; búsqueda de texto completo en español y similitud (`pg_trgm`) sobre nombre, código y serie; recorrido de relaciones con CTE recursivas con límite de profundidad.
 
-**13.7 Generación de documentos y etiquetas:** verifica qué librería de PDF y de generación de QR/códigos de barras usa o puede usar el proyecto (actas, etiquetas, informes); si no hay ninguna, propón una (sin instalarla hasta que lo apruebe).
+**13.7 Generación de documentos y etiquetas:** verifica qué librería de PDF y de generación de QR/códigos de barras usa o puede usar el proyecto (actas, etiquetas, informes); si no hay ninguna, propón una (sin instalarla hasta que lo apruebe; agregar dependencias toca `package.json`, que está fuera de tu perímetro: pregunta abierta 2).
 
-**13.8 Tareas programadas** (usa el mecanismo de jobs existente; si no hay, propón —sin implementar sin aprobación— `pg_cron`, Edge Functions de Supabase o cron de Next.js): alertas de vencimiento y garantía · cálculo de cumplimiento de licencias · generación de solicitudes de renovación · mantenimiento preventivo · préstamos por vencer y vencidos · recordatorios de aceptación de actas · recálculo de criticidad efectiva · auditorías y líneas base programadas · recordatorios y cierres de campañas de inventario · verificación de integridad.
+**13.8 Tareas programadas** (usa el mecanismo de jobs existente —la Etapa 0 lo busca; puede estar en `plataforma` u `operacion`—; si no hay, propón —sin implementar sin aprobación— `pg_cron`, Edge Functions de Supabase o cron de Next.js): alertas de vencimiento y garantía · cálculo de cumplimiento de licencias · generación de solicitudes de renovación · mantenimiento preventivo · préstamos por vencer y vencidos · recordatorios de aceptación de actas · recálculo de criticidad efectiva · auditorías y líneas base programadas · recordatorios y cierres de campañas de inventario · verificación de integridad. La lógica vive en `configuracion/motor/` de cada módulo; el disparador, si es de infraestructura, se solicita (SA-6).
 
-**13.9 Migración de datos existentes:** mapea los registros actuales (los que usa el selector de Incidentes) a las nuevas estructuras sin pérdida: clase y tipo por defecto, estado inicial equivalente, custodio conservado. Genera códigos para los que no tengan. Entrega un **informe de migración** (registros migrados, con advertencias de calidad y rechazados) y la prueba de que el selector de Incidentes devuelve el mismo resultado antes y después.
+**13.9 Migración de datos existentes:** mapea los registros actuales (los que usa el selector de Incidentes) a las nuevas estructuras sin pérdida: clase y tipo por defecto, estado inicial equivalente, custodio conservado. Genera códigos para los que no tengan. Entrega un **informe de migración** (registros migrados, con advertencias de calidad y rechazados) y la prueba de que el selector de Incidentes devuelve el mismo resultado antes y después. Si cambias una tabla que el selector lee, deja una **vista de compatibilidad** con las columnas originales.
 
-**13.10 Semillas:** todo lo de la sección 11 mediante migración idempotente.
+**13.10 Semillas:** todo lo de la sección 11 mediante migración idempotente (reejecutarla no duplica registros), reflejada en `db/seed.sql`.
 
 ---
 
 ## 14. Criterios de aceptación
 
-1. El menú muestra `1.5.1` a `1.5.4` con las pestañas numeradas de la sección 2.2, sin cambiar nombres ni numeración.
+1. El menú del Administrador conserva, bajo `Activos y CMDB › Catálogos`, las cuatro pantallas de configuración con las ventanas internas de la sección 2.2; **no se crearon, movieron ni renombraron opciones de menú**.
 2. Todas las pestañas usan el patrón común (borrador, vista previa, publicación con diff y motivo, versionado, restauración, importación/exportación, bloqueo concurrente).
-3. El editor de formulario y el creador de campos son **los mismos componentes** que usan Incidentes, extendidos a `activo`, `licencia` y `contrato`.
-4. **El selector "Elemento CMDB" de Incidentes devuelve exactamente los mismos activos que antes de la migración** para cada usuario y sigue filtrando por custodia.
-5. Existe un **único registro maestro** por elemento; no hay tablas duplicadas de activos y CI.
+3. El editor de formulario y el creador de campos de activo, licencia y contrato **son los mismos componentes que usa Incidentes** cuando `tickets` los publica por contrato (SA-1); si aún no están publicados, existe un adaptador documentado, **sin copias** del editor dentro de `activos`.
+4. **El selector "Elemento CMDB" de Incidentes devuelve exactamente los mismos activos que antes de la migración** para cada usuario y sigue filtrando por custodia (sin editar `incidentes` ni `tickets`).
+5. **No hay una tercera tabla maestra ni atributos duplicados** entre `activo` y `elemento_configuracion`: el puente es `id_activo`; cada dato tiene un único dueño y `activos` y `cmdb` no se importan entre sí.
 6. Crear un tipo nuevo con sus atributos hace que el formulario muestre automáticamente esa sección; los atributos obligatorios, únicos y sensibles se validan en servidor.
-7. Los atributos sensibles se cifran, se enmascaran y cada revelación queda auditada; un perfil sin `activos.ver_sensible` no puede obtenerlos ni por API.
+7. Los atributos sensibles se cifran, se enmascaran y cada revelación queda auditada; un perfil sin `activos:ver-sensible` no puede obtenerlos ni por API.
 8. El código del activo respeta el formato configurado, es único, sin saltos ni reutilización, y los cambios de formato no alteran códigos existentes.
 9. Se pueden crear ubicaciones jerárquicas, mover una con sus activos, e importarlas por CSV; una ubicación con activos no se elimina.
 10. El estado de un activo solo cambia mediante transiciones; las condiciones, campos obligatorios, aprobaciones y automatizaciones se aplican en servidor.
 11. El validador de ciclos de vida bloquea la publicación con estados inalcanzables, sin salida o sin camino a un final.
 12. **Un activo tiene un solo custodio vigente** (garantizado por la base de datos); el historial de asignaciones es inmutable.
 13. La asignación genera el acta, solicita la aceptación al custodio y gestiona recordatorios y escalamiento.
-14. Una solicitud de adquisición de un servicio configurado puede generar el registro previo del activo; la recepción por lote crea los activos con garantía, vida útil, código y etiquetas calculados y vincula el ticket de origen.
+14. Una solicitud de adquisición de un servicio configurado puede generar el registro previo del activo (vía el contrato de `solicitudes`, SA-4); la recepción por lote crea los activos con garantía, vida útil, código y etiquetas calculados y vincula el ticket de origen.
 15. No se puede dar de baja un activo con bloqueos de integridad (RFC abiertas, incidentes abiertos, asignación vigente, relaciones críticas) salvo excepción con permiso y motivo; la baja exige aprobación, borrado seguro (cuando aplica) y acta.
-16. Los registros dados de baja no se eliminan y respetan la retención de 1.8.3.
+16. Los registros dados de baja no se eliminan y respetan la retención de *Retención y mantenimiento de datos*.
 17. La importación masiva exige validación en seco, respeta atributos protegidos y se puede deshacer dentro del plazo configurado.
 18. Las campañas de inventario registran resultados por activo, actualizan la verificación y aplican las acciones automáticas configuradas.
 19. El cálculo de cumplimiento de licencias muestra Cumple / En riesgo / Sobreuso / Vencida; el sobreuso bloquea, pide aprobación o alerta según la configuración.
-20. Las alertas de vencimiento (licencias, contratos, garantías, fin de vida, préstamos) se envían en las anticipaciones configuradas y escalan si no hay acción.
+20. Las alertas de vencimiento (licencias, contratos, garantías, fin de vida, préstamos) se envían en las anticipaciones configuradas y escalan si no hay acción (el envío usa el mecanismo de `plataforma`; si SA-6 no está atendida, se registra el evento y no se envía).
 21. La renovación genera la solicitud de servicio configurada, aplica aprobación por monto y conserva el historial de renovaciones.
 22. Los tipos de relación solo permiten parejas de clases autorizadas; las relaciones duplicadas, los ciclos prohibidos y los CI retirados como extremo se rechazan en servidor.
 23. La criticidad efectiva se calcula según la regla configurada y se actualiza al cambiar relaciones, servicios o criticidades.
-24. Un atributo protegido en un CI de producción solo se modifica mediante RFC (Prompt 2) o por excepción con motivo, que queda marcada como "modificación fuera de cambio".
+24. Un atributo protegido en un CI de producción solo se modifica mediante RFC (Prompt 2, vía contrato SA-8) o por excepción con motivo, que queda marcada como "modificación fuera de cambio".
 25. Las auditorías de CMDB calculan los indicadores, generan hallazgos y se pueden cerrar con aprobación; las líneas base se crean (manual, programada o automática por RFC) y se pueden comparar.
-26. El catálogo de entornos es único y compartido con el Prompt 2.
-27. `7.4 Modelado de clases CI` refleja el modelo de 1.5.4.1 en solo lectura.
-28. Toda acción de configuración queda en `1.8.1 Auditoría de cambios` con usuario, antes/después y motivo; los historiales son inmutables.
-29. Los permisos de la sección 10 se cumplen; `editar` sin `publicar` no habilita Publicar; el Solicitante solo ve sus activos.
+26. El catálogo de entornos es **único, propiedad de `cmdb`**, y el módulo `cambios` lo consume por contrato (SA-8); no hay dos catálogos.
+27. `Modelado de clases CI` (`/plataforma/activos/cmdb/tipos`) refleja el modelo de 1.5.4.1 en solo lectura.
+28. Toda acción de configuración queda en `Plataforma › Auditoría de cambios de configuración` (`/plataforma/admin/auditoria-sistema`) con usuario, antes/después y motivo; los historiales son inmutables.
+29. Las capacidades de la sección 10 están declaradas (SA-2) y se cumplen; `editar` sin `publicar` no habilita Publicar; el Solicitante solo ve sus activos; el Administrador no puede operar inventario ni revelar claves.
 30. El formulario y la ficha reflejan exactamente las secciones 4 y 5 con los valores de fábrica.
-31. Ninguna ventana interna de las pantallas 1.5.x repite un ítem del menú; las ventanas internas existentes están en `?vista=` y no alteran el ítem activo del menú (3A).
+31. Ninguna ventana interna de las pantallas 1.5.x repite un ítem del menú del perfil activo; las ventanas internas están en `?vista=`, no alteran el ítem activo del menú (3A) y los enlaces `?vista=fabricantes|catalogos|ubicaciones` del Gestor de Activos abren la ventana correcta (2.1). La página padre `/plataforma/admin/activos-config` redirige a la primera pantalla hija.
 32. Los botones y las acciones de fila usan los íconos de 3B.4, con tooltip y `aria-label`, y el estilo de botones de la sección 3B.1.
 33. Todos los campos de los formularios y de las pantallas de configuración tienen validación en tiempo real con los validadores de 3C; **no aparece ningún indicador de éxito**; los errores usan `AlertaCampo`.
 34. Cambiar el valor de un selector que gobierna otro campo (por ejemplo tipo de documento) cambia al instante el validador, la máscara y el `maxLength` del campo dependiente.
 35. El servidor repite las mismas validaciones y devuelve `400` con `{ campo, mensaje }`, que la interfaz muestra en el campo.
-36. Los modales y la barra de acciones comunes existen una sola vez y los usan los módulos de problemas, cambios y activos; los `Iconos.tsx` duplicados fueron unificados.
+36. Los modales y la barra de acciones comunes existen **una sola vez dentro de cada módulo** (`activos` y `cmdb`, en `configuracion/compartido/`) y los `Iconos.tsx` duplicados propios fueron eliminados; la promoción a `shared/components` y la unificación con `problemas` y `cambios` se solicita al Tech Lead (SA-11).
+37. **Perímetro:** el diff de la entrega solo toca `src/modules/activos/**` (Etapas A–C), `src/modules/cmdb/**` (Etapa D), los cascarones de `src/app/plataforma/admin/activos-config/**` y `src/app/api/admin/{activos-config,cmdb}/**`, y `db/migrations/` + `db/seed.sql` (tablas de esos dos módulos). No hay ediciones en otros módulos, en `src/shared`, en `middleware.ts`, en `next.config.js`, en `package.json` ni en el menú.
+38. **Contratos:** no hay imports profundos hacia otros módulos ni entre `activos` y `cmdb`; los controladores usan `sesionConCapacidad`; los `page.tsx` usan `exigirCapacidadPagina`; no existe guarda propia ni verificación manual de JWT en código nuevo.
+39. **Calidad:** `npx tsc --noEmit` y `npm run build` sin errores; migraciones idempotentes aplicadas en base limpia y en base existente; seed cargado; humo por perfil (en especial Administrador y Gestor de Activos, con sus enlaces `?vista=`) sin 404/403 no deliberados; el selector de Incidentes verificado antes y después; todas las solicitudes pendientes quedan en `docs/SOLICITUDES_A_OTROS_MODULOS.md` de cada módulo.
 
 ---
 
 ## 15. Etapa 0 — Reconocimiento obligatorio y preguntas abiertas
 
-**Punto de partida de la Etapa 0 (según el árbol de archivos):** el informe debe incluir una **tabla de diferencias** entre este documento y lo ya implementado en `/admin/activos-config/*` y `/activos/*` (2.2 a 2.4): por cada ventana interna indica existe / falta / incompleta, qué validadores (3C) e íconos (3B) le faltan y qué elementos duplican ítems del menú (3A). Verifica además cómo `PanelInfraestructuraCi` y el selector de CI de Incidentes leen los activos.
+**Punto de partida de la Etapa 0:** el informe debe incluir una **tabla de diferencias** entre este documento y lo ya implementado en `/plataforma/admin/activos-config/*` y `src/modules/activos` / `src/modules/cmdb` (2.2 a 2.4): por cada ventana interna indica existe / falta / incompleta, qué validadores (3C) e íconos (3B) le faltan, qué elementos duplican ítems del menú (3A) y **dónde está cada archivo hoy** (¿ya en `src/modules/...` o todavía en `src/app`/`src/lib`/`src/components`?, ¿y de qué módulo es cada controlador?). Verifica además cómo `PanelInfraestructuraCi` y el selector de CI de Incidentes leen los activos.
 
-**Antes de escribir cualquier código**, revisa el repositorio y la base de datos y entrégame un **informe** (sin modificar nada) con:
+**Antes de escribir cualquier código**, revisa el repositorio y la base de datos y entrégame un **informe** (sin modificar nada), guardado en `src/modules/activos/docs/INFORME_ETAPA_0.md` (con un resumen de `cmdb` en `src/modules/cmdb/docs/INFORME_ETAPA_0.md`) y resumido en el chat, con:
 
-1. **Estructura actual de CI/activos:** la tabla o tablas que alimentan el selector "Elemento CMDB" de Incidentes (columnas, relaciones, número de registros, calidad de datos), y el código del selector.
-2. **Componentes reutilizables:** editor de formulario y creador de campos de Incidentes, constructor de reglas, motor de estados/flujo (Prompts 1 y 2 si ya existen), componente de borrador/publicación/versionado, sistema de notificaciones (1.6) y soporte de destinatarios dinámicos y plantillas, jobs programados, componentes de UI (árboles, tablas, modales, arrastrar-y-soltar, diagramas/grafos para el mapa).
-3. **Perfiles y permisos:** cómo se almacenan y verifican en `src/middleware.ts`, `src/lib/menu.ts`, `src/lib/page-auth.ts` y los Route Handlers.
-4. **Tablas existentes** de proveedores, contratos, licencias, departamentos, usuarios, servicios, centros de costo y catálogos de entorno y criticidad (compartidos con los Prompts 1 y 2).
-5. **Estado del módulo operativo:** qué existe de `7.1`, `7.2`, `7.3`, `7.4` y `8`.
-6. **Capacidades técnicas:** librerías de PDF, QR/códigos de barras, almacenamiento de archivos (Supabase Storage), cifrado de datos sensibles disponible, y hooks de desactivación de usuarios.
-7. **Qué de la sección 13 ya existe y qué falta**, con el plan de migraciones y el plan de migración de datos (13.9).
-8. **Riesgos o conflictos** detectados.
+1. **Estructura actual de CI/activos:** las tablas `activo` y `elemento_configuracion` (y la que alimenta el selector "Elemento CMDB" de Incidentes): columnas, relaciones, número de registros, calidad de datos, cómo funciona el puente `id_activo` y el código del selector.
+2. **Estructura de `src/modules/activos` y `src/modules/cmdb`:** carpetas, `index.ts` (qué exporta cada uno), si existe `ui.ts`, controladores y servicios existentes, y dónde cabe `configuracion/` en cada uno.
+3. **Componentes reutilizables y su visibilidad de contrato:** editor de formulario y creador de campos de Incidentes (¿publicados en `@/modules/tickets/ui`?), constructor de reglas, motor de estados/flujo, componente de borrador/publicación/versionado, sistema de notificaciones de `plataforma` (destinatarios dinámicos y plantillas), jobs programados, componentes de UI compartidos (árboles, tablas, modales, arrastrar-y-soltar, diagramas/grafos para el mapa) con su ruta real en `src/shared`.
+4. **Capacidades y perfiles:** lista completa de capacidades `activos:*`, `licencias:*` y `cmdb:*` en `src/shared/lib/capacidades.ts`, cómo `CAPACIDADES_POR_PERFIL` las asigna a los 10 perfiles, qué guardas usan hoy los controladores (`sesionConCapacidad` vs `verificarTokenSesion`), cómo valida `exigirMenuPagina` las URLs con `?vista=` para el Gestor de Activos y la **lista exacta de capacidades que faltan** para la sección 10 (diff propuesto para SA-2).
+5. **Tablas existentes** de proveedores, contratos, licencias, departamentos, usuarios, servicios, centros de costo y catálogos de entorno y criticidad (y si `cambios` ya creó un catálogo de entornos).
+6. **Estado del módulo operativo:** qué existe de las pantallas de 2.4 (inventario, mapa de topología, licencias, modelado de clases, proveedores y consolas del Gestor de Activos).
+7. **Capacidades técnicas:** librerías de PDF, QR/códigos de barras, almacenamiento de archivos (Supabase Storage), cifrado de datos sensibles disponible (`pgcrypto`/Vault) y hooks de desactivación de usuarios.
+8. **Qué de la sección 13 ya existe y qué falta**, con el plan de migraciones (número posterior a la última existente) y el plan de migración de datos (13.9).
+9. **Solicitudes SA-1 a SA-11 (sección 17):** para cada una, si ya está atendida, parcialmente atendida o pendiente, y la **degradación** que aplicarás mientras tanto.
+10. **Riesgos o conflictos** detectados (por ejemplo, imports profundos existentes entre `activos` y `cmdb`, rutas legadas con alias o componentes que dependan de comportamientos que esta spec cambia).
 
 Después **detente y espera mi aprobación** para iniciar la Etapa A.
 
 **Preguntas abiertas que quedan** (responde lo que puedas con el código; pregúntame solo lo que no puedas determinar):
-1. Si las pantallas operativas (`7.1`, `7.2`, `7.3`, `7.4`, `8`) no existen: ¿construyes versiones mínimas, dirigidas por la configuración y fieles a las secciones 4 y 5, al final de cada etapa para poder probarla? **Propuesta por defecto: sí.**
-2. Si no hay librería de PDF ni de QR: ¿apruebo la que propongas?
-3. ¿Existe una tabla de proveedores y contratos en el módulo `8`? Si no, ¿apruebo crear las tablas mínimas descritas en 13.2?
-4. ¿Cómo se desactiva hoy un usuario y existe algún punto de extensión (hook) para avisar de activos pendientes de devolución?
+1. Si las pantallas operativas de 2.4 (inventario, mapa, licencias, modelado de clases CI, proveedores) no existen o están incompletas: ¿construyes versiones mínimas, dirigidas por la configuración y fieles a las secciones 4 y 5, al final de cada etapa para poder probarla? Pertenecen a los mismos módulos, por lo que están dentro del perímetro (excepto `proveedores`). **Propuesta por defecto: sí.**
+2. Si no hay librería de PDF ni de QR: ¿apruebo la que propongas? (la instalación toca `package.json`, fuera de tu perímetro: se aprueba aparte).
+3. ¿Existe una tabla de proveedores y su contrato de lectura en el módulo `proveedores`? Si no, ¿apruebo pedirla (SA-9) o la degradación de solo lectura?
+4. ¿Hay `pgcrypto` o Supabase Vault activos para cifrar datos sensibles? Si no, ¿apruebo habilitar la extensión mediante una migración?
+5. ¿Cómo se desactiva hoy un usuario y existe algún punto de extensión (hook) para avisar de activos pendientes de devolución (SA-5)?
+6. ¿Se aprueba agregar una suite de pruebas mínima (por ejemplo para custodio único, transiciones y cumplimiento) o las pruebas se limitan a funciones puras y checklist de humo?
 
 ---
 
 ## 16. Fuera de alcance de este prompt
-Gestión de problemas → Prompt 1 · Gestión de cambios → Prompt 2 · Descubrimiento automático de activos y agentes de inventario de software · Integración con sistemas contables o ERP (depreciación, activos fijos) · Gestión de compras y órdenes de compra (solo se registran los datos de la orden) · Bandejas, tableros y reportes del módulo · Modificar el SLA por servicio de incidentes y solicitudes.
+Gestión de problemas → Prompt 1 · Gestión de cambios → Prompt 2 · Descubrimiento automático de activos y agentes de inventario de software · Integración con sistemas contables o ERP (depreciación, activos fijos) · Gestión de compras y órdenes de compra (solo se registran los datos de la orden) · Bandejas, consolas de rol, tableros y reportes (`/plataforma/reportes/activos`) · Cualquier cambio en otro módulo (se solicita; sección 17) · Cambios al menú o a la visibilidad por perfil · Modificar el SLA por servicio de incidentes y solicitudes · Migración de capacidades a la tabla `perfil_capacidades`.
+
+---
+
+## 17. Solicitudes a otros módulos (`activos` y `cmdb` no las implementan)
+
+Formato de cada solicitud en `src/modules/<activos|cmdb>/docs/SOLICITUDES_A_OTROS_MODULOS.md`: **id · módulo destino (dueño) · qué se necesita · contrato propuesto · comportamiento mientras no exista**. Los módulos `activos` y `cmdb` entregan su parte (servicio, contrato, componente) y dejan el consumo a cargo del módulo destino.
+
+| Id | Módulo destino (dueño) | Qué se necesita | Contrato propuesto | Mientras no exista (degradación) |
+|---|---|---|---|---|
+| SA-1 | `tickets` (Miguel; núcleo congelado, aprueba el Tech Lead) | Publicar el editor de formularios y el creador de campos personalizados con soporte para las entidades `activo`, `licencia` y `contrato`. | `@/modules/tickets/ui` (componente reutilizable) + servicio de definición de campos. | `activos` define un **adaptador** (`CamposAdaptador`) y no copia el editor; las ventanas 1.5.1.4 y 1.5.3.3 quedan marcadas "pendiente de SA-1" salvo lo ya existente. |
+| SA-2 | `shared` (Tech Lead) | Declarar en `src/shared/lib/capacidades.ts` las capacidades de la sección 10 y actualizar `CAPACIDADES_POR_PERFIL`. | Constantes `CAPACIDADES.ACTIVOS_*`, `LICENCIAS_*`, `CONTRATOS_*`, `CMDB_*`. | **Bloqueante para la Etapa A** (la separación editar/publicar y la SoD son criterios de aceptación): se aprueba junto con la Etapa 0. |
+| SA-3 | `incidentes` / `tickets` (Miguel) | Que el selector "Elemento CMDB" y `PanelInfraestructuraCi` consuman la función de lectura de CI bajo custodia publicada por `activos`/`cmdb`; incidente de seguridad por pérdida o robo. | `@/modules/cmdb` / `@/modules/activos` (`listarCiBajoCustodia(usuario)`, `obtenerCi(id)`); contrato de creación de incidente en `@/modules/incidentes`. | El selector sigue leyendo la estructura actual; se conserva compatibilidad (vista) y no se rompe. La creación automática del incidente de seguridad no se activa. |
+| SA-4 | `servicios` / `solicitudes` (Miguel) | Servicios del catálogo que generan activos (adquisición y renovación) y vínculo servicio ↔ CI soportados; hook al cerrar la solicitud para crear el registro previo del activo. | `@/modules/servicios` (listado de servicios) y evento/servicio de cierre de `@/modules/solicitudes`; en `activos`: `registrarActivoDesdeSolicitud`. | Se guarda el mapeo de 1.5.2.4 y la recepción manual funciona; la generación automática desde la solicitud no se activa. |
+| SA-5 | `organizacion` / `identidades` (Junior / Miguel) | Departamentos, grupos y usuarios; hook de desactivación o cambio de departamento de un usuario con activos asignados. | `@/modules/organizacion` (listados) y `@/modules/identidades` (hook `onUsuarioDesactivado`). | Solo advertencia (lista de activos pendientes visible para el Gestor de Activos); el bloqueo de la baja del usuario queda deshabilitado con aviso. |
+| SA-6 | `plataforma` (Miguel) | Emisión de eventos y plantillas (`activo.*`, `licencia.*`, `contrato.*`, `renovacion.*`, `cmdb.*`); registro en `Auditoría de cambios de configuración`; retención de bajas, límites de adjuntos y zona horaria; disparador de tareas programadas. | Servicios de eventos, auditoría, parámetros y jobs de `@/modules/plataforma`. | Si no hay mecanismo de eventos, cada módulo registra los eventos en una tabla propia (outbox mínimo) y no envía notificaciones; zona horaria del servidor documentada. |
+| SA-7 | `problemas` (Alexis) | Marcas `Problema abierto` y `Error conocido vigente` para mostrar en la ficha del CI. | `@/modules/problemas` (`obtenerMarcasCi(idCi)`). | La ficha no muestra las marcas; la clase y la criticidad se exponen igualmente a `problemas`. |
+| SA-8 | `cambios` (Nain) | Consumir de `cmdb` los atributos protegidos, el catálogo de **entornos** y criticidades, las relaciones para el análisis de impacto y las líneas base automáticas; botón **[Aplicar a la CMDB]**; mantenimiento preventivo como RFC estándar. | `@/modules/cmdb` (`listarEntornos`, `obtenerImpacto`, `aplicarActualizacionCmdb`, `crearLineaBaseDesdeRfc`) y `@/modules/cambios` (`crearRfcEstandar`). | Se guarda la configuración (1.5.2.5, 1.5.4.4 a 1.5.4.6); la aplicación a CMDB y las líneas base automáticas por RFC no se activan; si `cambios` ya creó un catálogo de entornos, la Etapa 0 lo reporta y se reconcilia en una única fuente (`cmdb`). |
+| SA-9 | `proveedores` (Nain) | Catálogos de proveedores (categorías, estados con efecto, criticidad, campos de evaluación) y selección de proveedor en contratos y órdenes; tabla mínima si no existe. | `@/modules/proveedores` (listados y administración de catálogos). | La mitad "proveedores" de 1.5.3.2 queda en solo lectura con el aviso "Requiere el módulo de proveedores"; los tipos de contrato funcionan. |
+| SA-10 | `reportes` (Alexis) | Métricas de la sección 11 en `Reportes de activos`. | Lectura de las tablas y vistas de `activos` y `cmdb`. | Sin cambios: `reportes` lee los datos existentes. |
+| SA-11 | Tech Lead / `shared` | Promover `BarraAccionesComun`, `Modal*`, `Boton`, `BotonIcono` e `Iconos` a `src/shared/components/ui` y unificar con `problemas` y `cambios`. | `@/shared/components/ui`. | Una copia dentro de `activos/configuracion/compartido/` y otra dentro de `cmdb/configuracion/compartido/`. |

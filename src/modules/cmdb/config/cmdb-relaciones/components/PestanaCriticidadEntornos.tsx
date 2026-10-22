@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, X } from "@/shared/components/ui/Iconos";
 
 export interface NivelCriticidadItem {
   codigo: string;
@@ -283,15 +285,7 @@ export function PestanaCriticidadEntornos({ datos, onChange, bloqueado }: Props)
                   <td className="px-4 py-3 text-slate-700 max-w-md">
                     {n.descripcion}
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      type="button"
-                      onClick={() => abrirEditarNivel(n)}
-                      className="text-indigo-600 hover:text-indigo-900 font-semibold"
-                    >
-                      Editar
-                    </button>
-                  </td>
+                  <td className="px-4 py-2 text-right"><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar nivel de criticidad" ariaLabel="Editar nivel de criticidad" disabled={bloqueado} onClick={() => abrirEditarNivel(n)} /></td>
                 </tr>
               ))}
             </tbody>
@@ -345,15 +339,7 @@ export function PestanaCriticidadEntornos({ datos, onChange, bloqueado }: Props)
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      type="button"
-                      onClick={() => abrirEditarEntorno(e)}
-                      className="text-indigo-600 hover:text-indigo-900 font-semibold"
-                    >
-                      Editar
-                    </button>
-                  </td>
+                  <td className="px-4 py-2 text-right"><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar entorno" ariaLabel="Editar entorno" disabled={bloqueado} onClick={() => abrirEditarEntorno(e)} /></td>
                 </tr>
               ))}
             </tbody>

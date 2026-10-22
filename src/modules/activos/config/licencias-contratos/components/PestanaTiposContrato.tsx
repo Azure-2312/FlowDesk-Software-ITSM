@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, Ban, Play, X } from "@/shared/components/ui/Iconos";
 
 export interface TipoContratoItem {
   id: string;
