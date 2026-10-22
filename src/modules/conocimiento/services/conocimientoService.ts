@@ -246,7 +246,7 @@ export async function crearCategoriaConocimiento(body: any, contexto: ContextoCo
 }
 
 export async function actualizarCategoriaConocimiento(body: any, contexto: ContextoConocimiento) {
-  const { id_categoria, nombre, descripcion, estado_registro } = body;
+  const { id_categoria, nombre, descripcion, codigo_corto, estado_registro } = body;
 
   if (!id_categoria) {
     throw new ErrorDominio("ID de categoría requerido.");
@@ -256,16 +256,22 @@ export async function actualizarCategoriaConocimiento(body: any, contexto: Conte
     `UPDATE categoria_ticket SET
         nombre = COALESCE($1, nombre),
         descripcion = COALESCE($2, descripcion),
-        estado_registro = COALESCE($3, estado_registro)
-      WHERE id_categoria = $4
+        codigo_corto = COALESCE($3, codigo_corto),
+        estado_registro = COALESCE($4, estado_registro)
+      WHERE id_categoria = $5
       RETURNING *`,
     [
       nombre?.trim() || null,
       descripcion?.trim() || null,
+      codigo_corto?.trim() ? codigo_corto.trim().toUpperCase() : null,
       estado_registro !== undefined ? Boolean(estado_registro) : null,
       Number(id_categoria),
     ]
   );
+
+  if (!actualizada) {
+    throw new ErrorDominio("Categoría no encontrada para actualizar.", 404);
+  }
 
   await query(
     `INSERT INTO log_auditoria_sistema (
@@ -276,12 +282,61 @@ export async function actualizarCategoriaConocimiento(body: any, contexto: Conte
       "CONOCIMIENTO",
       "ACTUALIZAR_CATEGORIA_CONOCIMIENTO",
       `El usuario ${contexto.nombres} actualizó la categoría de conocimiento #${id_categoria} (${(actualizada as any)?.nombre}).`,
-      JSON.stringify({ id_categoria, nombre, estado_registro }),
+      JSON.stringify({ id_categoria, nombre, codigo_corto, estado_registro }),
       contexto.ip,
     ]
   );
 
   return actualizada;
+}
+
+export async function eliminarCategoriaConocimiento(idCategoria: number, contexto: ContextoConocimiento) {
+  if (!idCategoria) throw new ErrorDominio("ID de categoría requerido.");
+
+  // Validar si tiene artículos asociados
+  const artCount = await queryRow<{ total: number }>(
+    "SELECT COUNT(*)::int AS total FROM articulo_conocimiento WHERE id_categoria = $1 AND estado_registro = true",
+    [idCategoria]
+  );
+  if (artCount && artCount.total > 0) {
+    throw new ErrorDominio(
+      `No se puede eliminar la categoría porque contiene ${artCount.total} artículo(s) de conocimiento activo(s). Puede desactivarla en su lugar.`
+    );
+  }
+
+  // Validar si tiene tickets asociados
+  const ticketCount = await queryRow<{ total: number }>(
+    "SELECT COUNT(*)::int AS total FROM ticket WHERE id_categoria = $1",
+    [idCategoria]
+  );
+  if (ticketCount && ticketCount.total > 0) {
+    throw new ErrorDominio(
+      `No se puede eliminar la categoría porque está asociada a ${ticketCount.total} ticket(s) en el sistema. Puede desactivarla en su lugar.`
+    );
+  }
+
+  const eliminada = await queryRow(
+    "DELETE FROM categoria_ticket WHERE id_categoria = $1 RETURNING *",
+    [idCategoria]
+  );
+
+  if (!eliminada) throw new ErrorDominio("Categoría no encontrada o ya eliminada.", 404);
+
+  await query(
+    `INSERT INTO log_auditoria_sistema (
+        id_usuario, modulo, accion, descripcion, detalles, direccion_ip
+      ) VALUES ($1, $2, $3, $4, $5, $6)`,
+    [
+      contexto.idUsuario,
+      "CONOCIMIENTO",
+      "ELIMINAR_CATEGORIA_CONOCIMIENTO",
+      `El usuario ${contexto.nombres} eliminó definitivamente la categoría de conocimiento #${idCategoria} (${(eliminada as any)?.nombre}).`,
+      JSON.stringify(eliminada),
+      contexto.ip,
+    ]
+  );
+
+  return eliminada;
 }
 
 /* ------------------------------------------------------------------ */
