@@ -536,8 +536,13 @@ export default function ConfiguracionFormularioPage() {
             {tabActiva === "campos" && (
               <PestanaCampos
                 secciones={seccionesFormulario}
-                camposPersonalizadosDisponibles={camposPersonalizados}
-                onActualizarSecciones={(nuevas) => setSeccionesFormulario(nuevas)}
+                onChangeSecciones={(nuevas) => {
+                  setSeccionesFormulario(nuevas);
+                  setHayBorrador(true);
+                }}
+                camposPersonalizados={camposPersonalizados}
+                onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
+                onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
                 puedeEditar={puedeEditar}
               />
             )}

@@ -461,6 +461,7 @@ export default function ConfiguracionFormularioCambiosPage() {
               }}
               camposPersonalizados={camposPersonalizados}
               onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
+              onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
             />
           )}
 
