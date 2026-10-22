@@ -27,8 +27,13 @@ export default function PaginaAdministracion() {
         },
         {
           titulo: "Gobernanza de Conocimientos (KCS)",
-          descripcion: "Estructuración de categorías de autoayuda y configuración del flujo de aprobación técnica de artículos.",
+          descripcion: "Supervisión del ciclo editorial, métricas de deflexión y configuración del flujo de aprobación técnica de artículos.",
           href: "/admin/conocimiento-config",
+        },
+        {
+          titulo: "Configuración de Categorías",
+          descripcion: "Taxonomía de soporte, códigos de clasificación temática y catálogo de categorías de autoayuda.",
+          href: "/admin/conocimiento-config/categorias",
         },
       ],
     },
