@@ -645,9 +645,11 @@ export async function guardarPoliticasKcs(body: any, contexto: ContextoConocimie
   };
 
   await query(
-    `INSERT INTO configuracion_sistema (clave, valor, fecha_modificacion, usuario_modificacion)
-       VALUES ($1, $2, now(), $3)
+    `INSERT INTO configuracion_sistema (clave, categoria, descripcion, valor, fecha_modificacion, usuario_modificacion)
+       VALUES ($1, 'CONOCIMIENTO', 'Políticas de gobierno editorial KCS', $2, now(), $3)
        ON CONFLICT (clave) DO UPDATE SET
+         categoria = EXCLUDED.categoria,
+         descripcion = EXCLUDED.descripcion,
          valor = EXCLUDED.valor,
          fecha_modificacion = now(),
          usuario_modificacion = EXCLUDED.usuario_modificacion`,
