@@ -153,7 +153,7 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
                   className={"menu-item" + (estaActivo ? " menu-item-activo" : "")}
                   style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}
                 >
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                  <span style={{ flex: 1, whiteSpace: "normal", wordBreak: "break-word", lineHeight: 1.35 }}>
                     {opcion.nombre}
                   </span>
                   {badge && badge.total > 0 && (
@@ -185,7 +185,7 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
                   style={{ display: "flex", alignItems: "center", gap: 6, cursor: "default" }}
                   aria-disabled="true"
                 >
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                  <span style={{ flex: 1, whiteSpace: "normal", wordBreak: "break-word", lineHeight: 1.35 }}>
                     {opcion.nombre}
                   </span>
                 </span>

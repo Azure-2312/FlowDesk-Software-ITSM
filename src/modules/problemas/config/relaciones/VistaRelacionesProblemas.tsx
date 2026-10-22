@@ -295,7 +295,7 @@ export default function RelacionesProblemasPage() {
   ];
 
   return (
-    <div style={{ padding: "20px 28px 100px 28px", minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh" }}>
+    <div style={{ padding: "20px 28px 24px 28px", minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       {/* 1. BREADCRUMB */}
       <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
         <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>

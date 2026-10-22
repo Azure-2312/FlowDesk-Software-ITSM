@@ -4,6 +4,7 @@ import Link from "next/link";
 import { verificarTokenSesion, COOKIE_SESION } from "@/modules/seguridad";
 import { obtenerMenuDelUsuario } from "@/shared/lib/menu";
 import MenuLateral from "@/shared/components/layout/MenuLateral";
+import BarraLateral from "@/shared/components/layout/BarraLateral";
 import BotonLogout from "@/shared/components/layout/BotonLogout";
 import SelectorPerfil from "@/shared/components/layout/SelectorPerfil";
 
@@ -29,7 +30,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
 
   return (
     <div className="app-layout">
-      <aside className="barra-lateral">
+      <BarraLateral>
         <div className="barra-lateral-contenido">
           <div className="barra-lateral-cabecera">
             <div className="marca-fila">
@@ -86,7 +87,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
             <BotonLogout compacto={true} />
           </div>
         </div>
-      </aside>
+      </BarraLateral>
 
       <div className="app-area-principal">
         <main className="contenido-principal">{children}</main>

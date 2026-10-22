@@ -215,7 +215,9 @@ textarea.input-base {
 }
 
 .barra-lateral {
-  width: 275px;
+  width: var(--ancho-sidebar, 290px);
+  min-width: 260px;
+  max-width: 500px;
   height: 100vh;
   height: 100dvh;
   background-color: #111827;
@@ -226,6 +228,26 @@ textarea.input-base {
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
+  position: relative;
+  z-index: 60;
+}
+
+.manija-redimension-sidebar {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 70;
+  background-color: transparent;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.manija-redimension-sidebar:hover,
+.manija-redimension-sidebar.arrastrando {
+  background-color: #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
 }
 
 .barra-lateral-contenido {
@@ -572,11 +594,14 @@ textarea.input-base {
 .menu-item {
   display: block;
   flex: 1;
-  padding: 8px 10px;
+  padding: 7px 10px;
   border-radius: 6px;
-  font-size: 13.5px;
+  font-size: 13px;
   color: #e5e7eb;
   transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.35;
 }
 
 .menu-item:hover {
@@ -604,11 +629,14 @@ textarea.input-base {
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 500;
   color: #d1d5db;
-  padding: 8px 10px;
+  padding: 7px 10px;
   border-radius: 6px;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.35;
 }
 
 .menu-item-carpeta:hover {
@@ -623,6 +651,9 @@ textarea.input-base {
 
 .menu-texto-carpeta {
   flex: 1;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.35;
 }
 
 .menu-icono-flecha {
