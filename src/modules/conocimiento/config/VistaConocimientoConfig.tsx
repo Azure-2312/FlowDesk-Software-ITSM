@@ -9,6 +9,7 @@ interface Articulo {
   titulo: string;
   contenido_markdown?: string;
   estado_editorial: string;
+  version?: number;
   visitas: number;
   utilidad_positiva: number;
   utilidad_negativa: number;
@@ -44,7 +45,7 @@ interface PoliticasKCS {
 }
 
 export default function GobiernoConocimiento() {
-  const [pestañaActiva, setPestañaActiva] = useState<"articulos" | "categorias" | "politicas">("articulos");
+  const [pestañaActiva, setPestañaActiva] = useState<"articulos" | "portal_preview" | "politicas">("articulos");
 
   // Estado de Artículos
   const [articulos, setArticulos] = useState<Articulo[]>([]);
@@ -54,31 +55,12 @@ export default function GobiernoConocimiento() {
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
 
-  // Detalle e Historial
-  const [articuloSeleccionado, setArticuloSeleccionado] = useState<any | null>(null);
-  const [historialArticulo, setHistorialArticulo] = useState<any[]>([]);
-  const [cargandoDetalle, setCargandoDetalle] = useState(false);
-
-  // Modal Retirar
+  // Diálogo Retirar
   const [idRetirar, setIdRetirar] = useState<number | null>(null);
   const [motivoRetiro, setMotivoRetiro] = useState("");
 
-  // Modal Nuevo Artículo
-  const [mostrarModalNuevo, setMostrarModalNuevo] = useState(false);
-  const [nuevoTitulo, setNuevoTitulo] = useState("");
-  const [nuevoContenido, setNuevoContenido] = useState("");
-  const [nuevaCategoriaId, setNuevaCategoriaId] = useState<number>(1);
-  const [nuevoEstadoInicial, setNuevoEstadoInicial] = useState<string>("BORRADOR");
-  const [nuevaAudiencia, setNuevaAudiencia] = useState<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-  const [guardandoArticulo, setGuardandoArticulo] = useState(false);
-
   // Estado de Categorías
   const [categorias, setCategorias] = useState<CategoriaConocimiento[]>([]);
-  const [mostrarModalCategoria, setMostrarModalCategoria] = useState(false);
-  const [catNombre, setCatNombre] = useState("");
-  const [catDescripcion, setCatDescripcion] = useState("");
-  const [catCodigo, setCatCodigo] = useState("");
-  const [guardandoCategoria, setGuardandoCategoria] = useState(false);
 
   // Estado de Políticas KCS
   const [perfiles, setPerfiles] = useState<PerfilItem[]>([]);
@@ -90,6 +72,12 @@ export default function GobiernoConocimiento() {
     permitir_calificacion_csat: true,
   });
   const [guardandoPoliticas, setGuardandoPoliticas] = useState(false);
+
+  // Estado de la Vista Previa del Portal de Ayuda
+  const [categoriaSeleccionadaPreview, setCategoriaSeleccionadaPreview] = useState<CategoriaConocimiento | null>(null);
+  const [articuloSeleccionadoPreview, setArticuloSeleccionadoPreview] = useState<Articulo | null>(null);
+  const [busquedaPortalPreview, setBusquedaPortalPreview] = useState("");
+  const [feedbackSimulado, setFeedbackSimulado] = useState<"util" | "no_util" | null>(null);
 
   async function cargarArticulos() {
     setCargando(true);
@@ -158,100 +146,8 @@ export default function GobiernoConocimiento() {
       setIdRetirar(null);
       setMotivoRetiro("");
       await cargarArticulos();
-      if (articuloSeleccionado?.id_articulo === id) {
-        await abrirHistorial(id);
-      }
     } catch {
       setError("Error de conexión al actualizar artículo.");
-    }
-  }
-
-  async function abrirHistorial(id: number) {
-    setCargandoDetalle(true);
-    try {
-      const res = await fetch(`/api/admin/conocimiento/${id}`);
-      const d = await res.json();
-      if (d.articulo) {
-        setArticuloSeleccionado(d.articulo);
-        setHistorialArticulo(d.historial || []);
-      }
-    } catch {
-      setError("Error al cargar historial editorial.");
-    } finally {
-      setCargandoDetalle(false);
-    }
-  }
-
-  async function crearArticulo(e: React.FormEvent) {
-    e.preventDefault();
-    if (!nuevoTitulo.trim() || !nuevoContenido.trim()) {
-      alert("Título y contenido son obligatorios");
-      return;
-    }
-    setGuardandoArticulo(true);
-    try {
-      const r = await fetch("/api/admin/conocimiento", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          titulo: nuevoTitulo.trim(),
-          contenido_markdown: nuevoContenido.trim(),
-          id_categoria: nuevaCategoriaId,
-          estado_editorial: nuevoEstadoInicial,
-          audiencia_perfiles: nuevaAudiencia,
-        }),
-      });
-      const d = await r.json();
-      if (!r.ok) {
-        alert(d.error || "No se pudo registrar el artículo");
-        return;
-      }
-      setOk("Artículo de conocimiento redactado y registrado exitosamente.");
-      setTimeout(() => setOk(""), 4000);
-      setMostrarModalNuevo(false);
-      setNuevoTitulo("");
-      setNuevoContenido("");
-      await cargarArticulos();
-    } catch {
-      alert("Error de conexión al crear artículo");
-    } finally {
-      setGuardandoArticulo(false);
-    }
-  }
-
-  async function crearCategoria(e: React.FormEvent) {
-    e.preventDefault();
-    if (!catNombre.trim()) {
-      alert("El nombre de categoría es obligatorio");
-      return;
-    }
-    setGuardandoCategoria(true);
-    try {
-      const r = await fetch("/api/admin/conocimiento/categorias", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre: catNombre.trim(),
-          descripcion: catDescripcion.trim(),
-          codigo_corto: catCodigo.trim(),
-        }),
-      });
-      const d = await r.json();
-      if (!r.ok) {
-        alert(d.error || "No se pudo registrar la categoría");
-        return;
-      }
-      setOk("Categoría de conocimiento creada satisfactoriamente.");
-      setTimeout(() => setOk(""), 4000);
-      setMostrarModalCategoria(false);
-      setCatNombre("");
-      setCatDescripcion("");
-      setCatCodigo("");
-      await cargarCategorias();
-    } catch {
-      alert("Error de conexión al crear categoría");
-    } finally {
-      setGuardandoCategoria(false);
     }
   }
 
@@ -295,47 +191,42 @@ export default function GobiernoConocimiento() {
   const conteoPublicados = articulos.filter((a) => a.estado_editorial === "PUBLICADO").length;
   const conteoBorradores = articulos.filter((a) => a.estado_editorial === "BORRADOR").length;
 
+  // Filtrado de artículos para la Vista Previa del Portal de Ayuda
+  const articulosPublicados = articulos.filter((a) => a.estado_editorial === "PUBLICADO");
+
+  const articulosPreviewFiltrados = articulosPublicados.filter((a) => {
+    if (categoriaSeleccionadaPreview && a.id_categoria !== categoriaSeleccionadaPreview.id_categoria) {
+      return false;
+    }
+    if (busquedaPortalPreview.trim()) {
+      const term = busquedaPortalPreview.toLowerCase().trim();
+      return (
+        a.titulo.toLowerCase().includes(term) ||
+        (a.contenido_markdown && a.contenido_markdown.toLowerCase().includes(term)) ||
+        (a.categoria && a.categoria.toLowerCase().includes(term))
+      );
+    }
+    return true;
+  });
+
   return (
     <div className="vista-contenedor">
+      {/* Cabecera Principal */}
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "flex-start" }}>
         <div>
           <h1>Gobierno de la Base de Conocimiento (KCS / ITIL v4)</h1>
           <p className="subtitulo">
-            Estructure las categorías de ayuda, configure los perfiles autorizados a redactar y aprobar artículos, y supervise el ciclo editorial completo antes de su publicación general.
+            Supervise el ciclo editorial de artículos técnicos, audite la trazabilidad y configure las políticas de redacción y compuertas de publicación del autoservicio.
           </p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <Link href="/tickets/gestion/ayuda" className="boton-secundario" style={{ textDecoration: "none", fontSize: 13, padding: "8px 12px" }}>
-            Ver Portal de Ayuda
+          <Link
+            href="/plataforma/admin/conocimiento-config/categorias"
+            className="boton-secundario"
+            style={{ textDecoration: "none", fontSize: 13, padding: "8px 12px" }}
+          >
+            Configuración Categorías
           </Link>
-          {pestañaActiva === "articulos" && (
-            <button
-              type="button"
-              className="boton-primario"
-              onClick={() => setMostrarModalNuevo(true)}
-              style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Redactar Artículo
-            </button>
-          )}
-          {pestañaActiva === "categorias" && (
-            <button
-              type="button"
-              className="boton-primario"
-              onClick={() => setMostrarModalCategoria(true)}
-              style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Nueva Categoría
-            </button>
-          )}
         </div>
       </div>
 
@@ -343,7 +234,11 @@ export default function GobiernoConocimiento() {
       <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #cbd5e1", marginBottom: 16 }}>
         <button
           type="button"
-          onClick={() => setPestañaActiva("articulos")}
+          onClick={() => {
+            setPestañaActiva("articulos");
+            setCategoriaSeleccionadaPreview(null);
+            setArticuloSeleccionadoPreview(null);
+          }}
           style={{
             padding: "9px 18px",
             border: "none",
@@ -360,24 +255,33 @@ export default function GobiernoConocimiento() {
 
         <button
           type="button"
-          onClick={() => setPestañaActiva("categorias")}
+          onClick={() => {
+            setPestañaActiva("portal_preview");
+            setCategoriaSeleccionadaPreview(null);
+            setArticuloSeleccionadoPreview(null);
+            setFeedbackSimulado(null);
+          }}
           style={{
             padding: "9px 18px",
             border: "none",
             background: "none",
-            borderBottom: pestañaActiva === "categorias" ? "3px solid #2563eb" : "3px solid transparent",
-            color: pestañaActiva === "categorias" ? "#1e40af" : "#64748b",
-            fontWeight: pestañaActiva === "categorias" ? 700 : 500,
+            borderBottom: pestañaActiva === "portal_preview" ? "3px solid #2563eb" : "3px solid transparent",
+            color: pestañaActiva === "portal_preview" ? "#1e40af" : "#64748b",
+            fontWeight: pestañaActiva === "portal_preview" ? 700 : 500,
             cursor: "pointer",
             fontSize: 13.5,
           }}
         >
-          Categorías de Ayuda ({categorias.length})
+          Vista Previa del Portal de Ayuda ({articulosPublicados.length} publicados)
         </button>
 
         <button
           type="button"
-          onClick={() => setPestañaActiva("politicas")}
+          onClick={() => {
+            setPestañaActiva("politicas");
+            setCategoriaSeleccionadaPreview(null);
+            setArticuloSeleccionadoPreview(null);
+          }}
           style={{
             padding: "9px 18px",
             border: "none",
@@ -396,7 +300,7 @@ export default function GobiernoConocimiento() {
       {error && <p role="alert" className="mensaje-error" style={{ marginBottom: 16 }}>{error}</p>}
       {ok && <p role="status" className="mensaje-exito" style={{ padding: "8px 12px", backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", color: "#166534", borderRadius: 6, marginBottom: 16 }}>{ok}</p>}
 
-      {/* PESTAÑA 1: ARTÍCULOS */}
+      {/* PESTAÑA 1: ARTÍCULOS Y CICLO EDITORIAL */}
       {pestañaActiva === "articulos" && (
         <div>
           {/* Métricas Rápidas */}
@@ -435,7 +339,8 @@ export default function GobiernoConocimiento() {
               <option value="PUBLICADO">Publicado</option>
               <option value="EN_REVISION">En Revisión</option>
               <option value="BORRADOR">Borrador</option>
-              <option value="ARCHIVADO">Retirado / Archivado</option>
+              <option value="RETIRADO">Retirado</option>
+              <option value="ARCHIVADO">Archivado</option>
             </select>
           </div>
 
@@ -480,60 +385,6 @@ export default function GobiernoConocimiento() {
             </div>
           )}
 
-          {/* Trazabilidad Detallada */}
-          {articuloSeleccionado && (
-            <div className="tarjeta-formulario" style={{ marginBottom: 20, border: "1px solid #cbd5e1" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-                <div>
-                  <h2 style={{ fontSize: 16, margin: 0 }}>
-                    [{articuloSeleccionado.codigo_articulo}] {articuloSeleccionado.titulo} (v{articuloSeleccionado.version || 1})
-                  </h2>
-                  <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: 12.5 }}>
-                    Categoría: {articuloSeleccionado.categoria_nombre || "General"} | Autor: {articuloSeleccionado.autor_nombre} | Revisor: {articuloSeleccionado.revisor_nombre || "Pendiente"}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="boton-secundario"
-                  onClick={() => setArticuloSeleccionado(null)}
-                  style={{ fontSize: 12, padding: "4px 10px" }}
-                >
-                  Cerrar Trazabilidad
-                </button>
-              </div>
-
-              <h3 style={{ fontSize: 13, margin: "14px 0 8px", textTransform: "uppercase", color: "#475569" }}>Historial Editorial de Revisiones</h3>
-              {cargandoDetalle ? (
-                <p style={{ fontSize: 12 }}>Cargando trazabilidad...</p>
-              ) : historialArticulo.length === 0 ? (
-                <p style={{ color: "#64748b", fontSize: 12 }}>Sin transiciones registradas.</p>
-              ) : (
-                <table className="tabla-datos" style={{ width: "100%", fontSize: 12 }}>
-                  <thead>
-                    <tr>
-                      <th>Fecha</th>
-                      <th>Estado Previo</th>
-                      <th>Estado Resultante</th>
-                      <th>Comentario / Motivo</th>
-                      <th>Responsable</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {historialArticulo.map((h) => (
-                      <tr key={h.id_historial}>
-                        <td>{new Date(h.fecha).toLocaleString()}</td>
-                        <td>{h.estado_anterior || "INICIAL"}</td>
-                        <td><strong>{h.estado_nuevo}</strong></td>
-                        <td>{h.comentario || "-"}</td>
-                        <td>{h.usuario_nombre || "Sistema"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          )}
-
           {/* Tabla de Artículos */}
           {cargando ? (
             <div className="contenedor-tabla" style={{ padding: 32, textAlign: "center", color: "#64748b" }}>
@@ -553,8 +404,9 @@ export default function GobiernoConocimiento() {
                     <th>Estado Editorial</th>
                     <th>Autor</th>
                     <th>Visitas / Utilidad</th>
+                    <th>Versión</th>
                     <th>Fecha Creación</th>
-                    <th style={{ textAlign: "center", width: 140 }}>Acciones</th>
+                    <th style={{ textAlign: "center", width: 200 }}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -599,11 +451,14 @@ export default function GobiernoConocimiento() {
                       <td style={{ fontSize: 12, color: "#475569" }}>
                         {a.visitas} visitas (+{a.utilidad_positiva} / -{a.utilidad_negativa})
                       </td>
+                      <td style={{ fontSize: 12, fontFamily: "monospace", color: "#2563eb", fontWeight: 600 }}>
+                        v{a.version || 1}
+                      </td>
                       <td style={{ fontSize: 12, color: "#64748b" }}>
                         {new Date(a.fecha_creacion).toLocaleDateString()}
                       </td>
                       <td style={{ textAlign: "center" }}>
-                        <div style={{ display: "flex", gap: 5, justifyContent: "center" }}>
+                        <div style={{ display: "flex", gap: 5, justifyContent: "center", alignItems: "center" }}>
                           {a.estado_editorial === "BORRADOR" && (
                             <button
                               type="button"
@@ -637,14 +492,22 @@ export default function GobiernoConocimiento() {
                               Retirar
                             </button>
                           )}
-                          <button
-                            type="button"
+                          <Link
+                            href={`/plataforma/admin/conocimiento-config/articulos/${a.id_articulo}/editar`}
                             className="boton-mini"
-                            onClick={() => abrirHistorial(a.id_articulo)}
-                            title="Ver trazabilidad"
+                            style={{ textDecoration: "none", display: "inline-flex", alignItems: "center" }}
+                            title="Editar artículo"
+                          >
+                            Editar
+                          </Link>
+                          <Link
+                            href={`/plataforma/admin/conocimiento-config/articulos/${a.id_articulo}/historial`}
+                            className="boton-mini"
+                            style={{ textDecoration: "none", display: "inline-flex", alignItems: "center" }}
+                            title="Ver reporte detallado de trazabilidad"
                           >
                             Historial
-                          </button>
+                          </Link>
                         </div>
                       </td>
                     </tr>
@@ -656,84 +519,246 @@ export default function GobiernoConocimiento() {
         </div>
       )}
 
-      {/* PESTAÑA 2: CATEGORÍAS DE AYUDA */}
-      {pestañaActiva === "categorias" && (
-        <div>
-          <div className="tarjeta-formulario" style={{ marginBottom: 16 }}>
-            <strong style={{ fontSize: 13, color: "#1e293b" }}>Catálogo de Categorías KCS:</strong>
-            <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "#64748b" }}>
-              Organice las categorías temáticas donde se clasifican los manuales, FAQs y procedimientos técnicos del portal corporativo.
+      {/* PESTAÑA 2: VISTA PREVIA DEL PORTAL DE AYUDA (ORGANIZADA POR CATEGORÍAS) */}
+      {pestañaActiva === "portal_preview" && (
+        <div className="space-y-6">
+          <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl">
+            <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300">
+              Modo de Simulación: Portal de Autoservicio
+            </h3>
+            <p className="text-xs text-blue-700 dark:text-blue-400 mt-1">
+              Visualice exactamente cómo los solicitantes y usuarios finales exploran las categorías temáticas y consultan las guías de resolución publicadas.
             </p>
           </div>
 
-          <div className="contenedor-tabla">
-            <table className="tabla-datos">
-              <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Nombre de la Categoría</th>
-                  <th>Descripción</th>
-                  <th>Artículos Vinculados</th>
-                  <th>Estado</th>
-                  <th style={{ textAlign: "center", width: 100 }}>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categorias.map((c) => (
-                  <tr key={c.id_categoria}>
-                    <td style={{ fontWeight: 700, fontFamily: "monospace", fontSize: 12 }}>
-                      {c.codigo_corto || `CAT-${c.id_categoria}`}
-                    </td>
-                    <td>
-                      <strong style={{ fontSize: 13, color: "#0f172a" }}>{c.nombre}</strong>
-                    </td>
-                    <td style={{ fontSize: 12.5, color: "#475569" }}>
-                      {c.descripcion || "Sin descripción"}
-                    </td>
-                    <td style={{ fontSize: 12, fontWeight: 600, color: "#2563eb" }}>
-                      {c.total_articulos} artículos
-                    </td>
-                    <td>
-                      <span className={`badge-itil ${c.estado_registro ? "badge-activo" : "badge-inactivo"}`}>
-                        {c.estado_registro ? "Activa" : "Inactiva"}
-                      </span>
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <button
-                        type="button"
-                        className="boton-mini"
-                        onClick={async () => {
-                          const nuevoEstado = !c.estado_registro;
-                          try {
-                            const res = await fetch("/api/admin/conocimiento/categorias", {
-                              method: "PATCH",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ id_categoria: c.id_categoria, estado_registro: nuevoEstado }),
-                            });
-                            if (res.ok) {
-                              setOk(`Categoría ${nuevoEstado ? "activada" : "desactivada"} exitosamente.`);
-                              setTimeout(() => setOk(""), 4000);
-                              cargarCategorias();
-                            }
-                          } catch {
-                            alert("Error al actualizar estado");
-                          }
-                        }}
-                      >
-                        {c.estado_registro ? "Desactivar" : "Activar"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* Barra de Búsqueda Global de la Simulación */}
+          <div className="max-w-2xl mx-auto">
+            <div className="relative">
+              <input
+                type="text"
+                value={busquedaPortalPreview}
+                onChange={(e) => setBusquedaPortalPreview(e.target.value)}
+                placeholder="Buscar guías, preguntas frecuentes o soluciones técnicas..."
+                className="w-full px-4 py-3 pl-11 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500"
+              />
+              <svg
+                className="w-5 h-5 text-slate-400 absolute left-3.5 top-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
           </div>
+
+          {/* VISTA 1: ARTÍCULO SELECCIONADO EN DETALLE */}
+          {articuloSeleccionadoPreview ? (
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setArticuloSeleccionadoPreview(null);
+                    setFeedbackSimulado(null);
+                  }}
+                  className="inline-flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Volver a {categoriaSeleccionadaPreview ? categoriaSeleccionadaPreview.nombre : "las categorías"}
+                </button>
+                <span className="font-mono text-xs text-slate-500 font-semibold">
+                  {articuloSeleccionadoPreview.codigo_articulo}
+                </span>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300">
+                    {articuloSeleccionadoPreview.categoria || "General"}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    Actualizado: {new Date(articuloSeleccionadoPreview.fecha_creacion).toLocaleDateString()}
+                  </span>
+                </div>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                  {articuloSeleccionadoPreview.titulo}
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Autor: {articuloSeleccionadoPreview.autor} | {articuloSeleccionadoPreview.visitas} lecturas
+                </p>
+              </div>
+
+              <div className="p-5 bg-slate-50 dark:bg-slate-800/40 rounded-xl text-sm text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap font-sans border border-slate-200/60 dark:border-slate-700/60">
+                {articuloSeleccionadoPreview.contenido_markdown || "Contenido no disponible."}
+              </div>
+
+              {/* Simulación de Calificación CSAT / Utilidad */}
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    ¿Le resultó útil esta solución?
+                  </span>
+                  <span className="text-xs text-slate-400 block mt-0.5">
+                    ({articuloSeleccionadoPreview.utilidad_positiva} votos positivos / {articuloSeleccionadoPreview.utilidad_negativa} sugerencias)
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFeedbackSimulado("util")}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${
+                      feedbackSimulado === "util"
+                        ? "bg-emerald-600 text-white border-emerald-600"
+                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    Sí, resolvió mi problema
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFeedbackSimulado("no_util")}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${
+                      feedbackSimulado === "no_util"
+                        ? "bg-rose-600 text-white border-rose-600"
+                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    No, necesito más información
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : categoriaSeleccionadaPreview ? (
+            /* VISTA 2: LISTA DE ARTÍCULOS DENTRO DE LA CATEGORÍA SELECCIONADA */
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setCategoriaSeleccionadaPreview(null)}
+                  className="inline-flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Volver al Catálogo de Categorías
+                </button>
+                <span className="text-xs text-slate-500">
+                  {articulosPreviewFiltrados.length} artículos en esta categoría
+                </span>
+              </div>
+
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-950 flex items-center justify-center font-mono font-bold text-blue-700 dark:text-blue-400 text-xs">
+                    {categoriaSeleccionadaPreview.codigo_corto}
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                      {categoriaSeleccionadaPreview.nombre}
+                    </h2>
+                    <p className="text-xs text-slate-500">
+                      {categoriaSeleccionadaPreview.descripcion || "Guías y procedimientos técnicos clasificados."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {articulosPreviewFiltrados.length === 0 ? (
+                <div className="py-12 text-center text-sm text-slate-500 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                  No se encontraron artículos publicados en esta categoría con el filtro actual.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {articulosPreviewFiltrados.map((art) => (
+                    <div
+                      key={art.id_articulo}
+                      onClick={() => setArticuloSeleccionadoPreview(art)}
+                      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+                          <span className="font-mono font-semibold text-blue-600 dark:text-blue-400">
+                            {art.codigo_articulo}
+                          </span>
+                          <span>v{art.version || 1}</span>
+                        </div>
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white leading-snug mb-2">
+                          {art.titulo}
+                        </h3>
+                        <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-3">
+                          {art.contenido_markdown?.slice(0, 160)}...
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-100 dark:border-slate-800/80 mt-3">
+                        <span>{art.autor}</span>
+                        <span>+{art.utilidad_positiva} votos útiles</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            /* VISTA 3: GRID DE CATEGORÍAS PRIMERO (TAXONOMÍA DE AUTOSERVICIO) */
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                  Explorar por Categoría de Soporte
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Seleccione una categoría para consultar las guías técnicas y respuestas paso a paso.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {categorias
+                  .filter((c) => c.estado_registro)
+                  .map((cat) => {
+                    const cantPublicados = articulosPublicados.filter(
+                      (a) => a.id_categoria === cat.id_categoria
+                    ).length;
+
+                    return (
+                      <div
+                        key={cat.id_categoria}
+                        onClick={() => setCategoriaSeleccionadaPreview(cat)}
+                        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm hover:border-blue-500 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="px-2 py-0.5 text-xs font-mono font-semibold rounded bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-900">
+                              {cat.codigo_corto}
+                            </span>
+                            <span className="text-xs text-slate-400 font-medium">
+                              {cantPublicados} {cantPublicados === 1 ? "artículo" : "artículos"}
+                            </span>
+                          </div>
+                          <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors mb-1.5">
+                            {cat.nombre}
+                          </h3>
+                          <p className="text-xs text-slate-500 line-clamp-2">
+                            {cat.descripcion || "Artículos y documentación clasificada."}
+                          </p>
+                        </div>
+                        <div className="pt-4 text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                          <span>Explorar artículos</span>
+                          <span>→</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       {/* PESTAÑA 3: GOBERNANZA Y POLÍTICAS KCS */}
       {pestañaActiva === "politicas" && (
-        <div style={{ maxWidth: 800 }}>
+        <div style={{ maxWidth: 840 }}>
           <div className="tarjeta-formulario" style={{ marginBottom: 16 }}>
             <h3 style={{ margin: "0 0 6px 0", fontSize: 14, color: "#0f172a" }}>
               Control de Roles y Autorizaciones Editoriales KCS
@@ -812,7 +837,7 @@ export default function GobiernoConocimiento() {
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, cursor: "pointer" }}>
                   <input
-                    type="checkbox"
+                        type="checkbox"
                     checked={politicas.requiere_aprobacion_previa}
                     onChange={(e) => setPoliticas({ ...politicas, requiere_aprobacion_previa: e.target.checked })}
                   />
@@ -847,207 +872,6 @@ export default function GobiernoConocimiento() {
             >
               {guardandoPoliticas ? "Guardando..." : "Guardar Políticas KCS"}
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Modal Redactar Artículo */}
-      {mostrarModalNuevo && (
-        <div className="modal-overlay" onClick={() => setMostrarModalNuevo(false)}>
-          <div
-            className="modal-contenido"
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: 640, backgroundColor: "#ffffff", padding: 24, borderRadius: 8 }}
-          >
-            <h2 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 12px", color: "#0f172a" }}>
-              Redactar Nuevo Artículo de Conocimiento
-            </h2>
-            <form onSubmit={crearArticulo} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
-                  Título del Artículo
-                </label>
-                <input
-                  type="text"
-                  className="input-base"
-                  placeholder="Ej: Guía de configuración de VPN corporativa"
-                  value={nuevoTitulo}
-                  onChange={(e) => setNuevoTitulo(e.target.value)}
-                  required
-                  style={{ width: "100%", fontSize: 13 }}
-                />
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                <div>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
-                    Categoría
-                  </label>
-                  <select
-                    className="input-base"
-                    value={nuevaCategoriaId}
-                    onChange={(e) => setNuevaCategoriaId(Number(e.target.value))}
-                    style={{ width: "100%", fontSize: 13 }}
-                  >
-                    {categorias.map((c) => (
-                      <option key={c.id_categoria} value={c.id_categoria}>
-                        {c.nombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
-                    Estado Inicial
-                  </label>
-                  <select
-                    className="input-base"
-                    value={nuevoEstadoInicial}
-                    onChange={(e) => setNuevoEstadoInicial(e.target.value)}
-                    style={{ width: "100%", fontSize: 13 }}
-                  >
-                    <option value="BORRADOR">Borrador Técnico</option>
-                    <option value="EN_REVISION">Remitir a Revisión</option>
-                    <option value="PUBLICADO">Publicar Directamente</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
-                  Contenido del Procedimiento o Solución (Markdown / Texto)
-                </label>
-                <textarea
-                  className="input-base"
-                  rows={8}
-                  placeholder="Describa paso a paso las instrucciones técnicas, requisitos y solución de contorno..."
-                  value={nuevoContenido}
-                  onChange={(e) => setNuevoContenido(e.target.value)}
-                  required
-                  style={{ width: "100%", fontSize: 12.5, fontFamily: "inherit" }}
-                />
-              </div>
-
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
-                  Audiencia Elegible (Perfiles que podrán consultar este artículo)
-                </label>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 6, maxHeight: 110, overflowY: "auto", border: "1px solid #cbd5e1", padding: 8, borderRadius: 6 }}>
-                  {perfiles.map((p) => {
-                    const sel = nuevaAudiencia.includes(p.id_perfil);
-                    return (
-                      <label key={p.id_perfil} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, cursor: "pointer" }}>
-                        <input
-                          type="checkbox"
-                          checked={sel}
-                          onChange={(e) => {
-                            const arr = e.target.checked
-                              ? [...nuevaAudiencia, p.id_perfil]
-                              : nuevaAudiencia.filter((id) => id !== p.id_perfil);
-                            setNuevaAudiencia(arr);
-                          }}
-                        />
-                        <span>{p.nombre}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 8 }}>
-                <button
-                  type="button"
-                  className="boton-secundario"
-                  onClick={() => setMostrarModalNuevo(false)}
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="boton-primario"
-                  disabled={guardandoArticulo}
-                >
-                  {guardandoArticulo ? "Guardando..." : "Registrar Artículo"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Modal Nueva Categoría */}
-      {mostrarModalCategoria && (
-        <div className="modal-overlay" onClick={() => setMostrarModalCategoria(false)}>
-          <div
-            className="modal-contenido"
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: 460, backgroundColor: "#ffffff", padding: 24, borderRadius: 8 }}
-          >
-            <h2 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 12px", color: "#0f172a" }}>
-              Nueva Categoría de Conocimiento KCS
-            </h2>
-            <form onSubmit={crearCategoria} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
-                  Nombre de la Categoría
-                </label>
-                <input
-                  type="text"
-                  className="input-base"
-                  placeholder="Ej: Conectividad y Redes Remotas"
-                  value={catNombre}
-                  onChange={(e) => setCatNombre(e.target.value)}
-                  required
-                  style={{ width: "100%", fontSize: 13 }}
-                />
-              </div>
-
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
-                  Código Corto (Identificador)
-                </label>
-                <input
-                  type="text"
-                  className="input-base"
-                  placeholder="Ej: RED"
-                  value={catCodigo}
-                  onChange={(e) => setCatCodigo(e.target.value.toUpperCase())}
-                  style={{ width: "100%", fontSize: 13 }}
-                />
-              </div>
-
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#475569", display: "block", marginBottom: 4 }}>
-                  Descripción Informativa
-                </label>
-                <textarea
-                  className="input-base"
-                  rows={3}
-                  placeholder="Objetivo y alcance de los artículos clasificados en esta categoría..."
-                  value={catDescripcion}
-                  onChange={(e) => setCatDescripcion(e.target.value)}
-                  style={{ width: "100%", fontSize: 12.5 }}
-                />
-              </div>
-
-              <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 8 }}>
-                <button
-                  type="button"
-                  className="boton-secundario"
-                  onClick={() => setMostrarModalCategoria(false)}
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="boton-primario"
-                  disabled={guardandoCategoria}
-                >
-                  {guardandoCategoria ? "Guardando..." : "Crear Categoría"}
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

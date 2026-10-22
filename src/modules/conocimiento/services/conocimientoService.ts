@@ -439,8 +439,93 @@ export async function obtenerArticuloAdmin(id: number) {
     [id]
   );
 
-  return { articulo, historial };
+  const versiones = await query(
+    `SELECT v.id_version, v.numero_version, v.titulo, v.contenido_markdown, v.motivo_cambio, 
+            CONCAT(u.nombres, ' ', u.apellido_paterno) as autor_nombre, v.fecha_creacion
+     FROM articulo_conocimiento_version v
+     LEFT JOIN usuario u ON v.id_autor = u.id_usuario
+     WHERE v.id_articulo = $1
+     ORDER BY v.id_version DESC`,
+    [id]
+  );
+
+  const feedbacks = await query(
+    `SELECT f.id_feedback, f.es_positivo, f.motivo_negativo, f.comentario, f.ip, f.fecha,
+            CONCAT(u.nombres, ' ', u.apellido_paterno) as usuario_nombre
+     FROM articulo_conocimiento_feedback f
+     LEFT JOIN usuario u ON f.id_usuario = u.id_usuario
+     WHERE f.id_articulo = $1
+     ORDER BY f.fecha DESC`,
+    [id]
+  );
+
+  const vinculosTickets = await query(
+    `SELECT v.id_vinculo, v.id_ticket, t.codigo_ticket, t.titulo as ticket_titulo,
+            v.resolvio_ticket, v.fecha_vinculo,
+            CONCAT(u.nombres, ' ', u.apellido_paterno) as tecnico_nombre
+     FROM articulo_conocimiento_vinculo_ticket v
+     JOIN ticket t ON v.id_ticket = t.id_ticket
+     JOIN usuario u ON v.id_tecnico = u.id_usuario
+     WHERE v.id_articulo = $1
+     ORDER BY v.fecha_vinculo DESC`,
+    [id]
+  );
+
+  return { articulo, historial, versiones, feedbacks, vinculosTickets };
 }
+
+export async function actualizarArticuloAdmin(id: number, body: any, contexto: ContextoConocimiento) {
+  const { titulo, contenido_markdown, id_categoria, tipo_plantilla, clasificacion_seguridad, estado_editorial } = body;
+  if (!titulo || !contenido_markdown) {
+    throw new ErrorDominio("Título y contenido son obligatorios.");
+  }
+
+  const anterior = await queryRow<any>(
+    "SELECT * FROM articulo_conocimiento WHERE id_articulo = $1 AND estado_registro = true",
+    [id]
+  );
+  if (!anterior) throw new ErrorDominio("Artículo no encontrado.", 404);
+
+  const nuevaVersion = `1.${anterior.version || 1}`;
+
+  await query(
+    `INSERT INTO articulo_conocimiento_version (id_articulo, numero_version, titulo, contenido_markdown, motivo_cambio, id_autor)
+     VALUES ($1, $2, $3, $4, $5, $6)`,
+    [id, nuevaVersion, anterior.titulo, anterior.contenido_markdown, "Modificación administrativa", contexto.idUsuario]
+  );
+
+  const actualizado = await queryRow<any>(
+    `UPDATE articulo_conocimiento SET
+        titulo = $1,
+        contenido_markdown = $2,
+        id_categoria = $3,
+        tipo_plantilla = COALESCE($4, tipo_plantilla),
+        clasificacion_seguridad = COALESCE($5, clasificacion_seguridad),
+        estado_editorial = COALESCE($6, estado_editorial),
+        version = version + 1,
+        fecha_revision = CURRENT_DATE
+     WHERE id_articulo = $7
+     RETURNING *`,
+    [
+      titulo.trim(),
+      contenido_markdown.trim(),
+      id_categoria || anterior.id_categoria,
+      tipo_plantilla || null,
+      clasificacion_seguridad || null,
+      estado_editorial || null,
+      id,
+    ]
+  );
+
+  await query(
+    `INSERT INTO articulo_conocimiento_historial (id_articulo, estado_anterior, estado_nuevo, comentario, id_usuario, fecha)
+     VALUES ($1, $2, $3, $4, $5, now())`,
+    [id, anterior.estado_editorial, actualizado?.estado_editorial, "Edición y actualización de contenido", contexto.idUsuario]
+  );
+
+  return actualizado;
+}
+
 
 export async function actualizarEstadoEditorial(id: number, body: any, contexto: ContextoConocimiento) {
   const { accion, motivo_retiro, comentario, audiencia_perfiles } = body;

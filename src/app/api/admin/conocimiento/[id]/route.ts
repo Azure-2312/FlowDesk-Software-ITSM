@@ -1,1 +1,1 @@
-export { GET, PATCH } from "@/modules/conocimiento/api/admin/conocimientoDetalleController";
+export { GET, PATCH, PUT } from "@/modules/conocimiento/api/admin/conocimientoDetalleController";
