@@ -1,4 +1,4 @@
-import VistaEvaluacionRfc from "@/modules/perfiles/gestor-cambios/views/VistaEvaluacionRfc";
+import VistaEvaluacionRfc from "@/modules/cambios/views/gestion/VistaEvaluacionRfc";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

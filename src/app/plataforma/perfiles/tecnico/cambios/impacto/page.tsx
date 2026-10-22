@@ -1,4 +1,4 @@
-import VistaTecnicoCambiosImpacto from "@/modules/perfiles/tecnico/cambios/impacto/VistaTecnicoCambiosImpacto";
+import VistaTecnicoCambiosImpacto from "@/modules/cambios/views/tecnico/VistaTecnicoCambiosImpacto";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoCambiosImpacto />;

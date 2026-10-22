@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET } from "@/modules/perfiles/gestor-cambios/api/conflictosController";
+export { GET } from "@/modules/cambios/api/gestion/conflictosController";

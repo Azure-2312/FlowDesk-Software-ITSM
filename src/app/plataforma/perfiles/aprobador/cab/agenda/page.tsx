@@ -1,4 +1,4 @@
-import VistaCabAgenda from "@/modules/perfiles/aprobador/views/VistaCabAgenda";
+import VistaCabAgenda from "@/modules/cambios/views/aprobador/VistaCabAgenda";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

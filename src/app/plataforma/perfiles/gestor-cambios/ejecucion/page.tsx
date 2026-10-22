@@ -1,4 +1,4 @@
-import VistaEjecucion from "@/modules/perfiles/gestor-cambios/views/VistaEjecucion";
+import VistaEjecucion from "@/modules/cambios/views/gestion/VistaEjecucion";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

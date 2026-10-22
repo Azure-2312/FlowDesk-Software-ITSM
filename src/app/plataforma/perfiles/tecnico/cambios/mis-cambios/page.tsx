@@ -1,4 +1,4 @@
-import VistaTecnicoCambiosMisCambios from "@/modules/perfiles/tecnico/cambios/mis-cambios/VistaTecnicoCambiosMisCambios";
+import VistaTecnicoCambiosMisCambios from "@/modules/cambios/views/tecnico/VistaTecnicoCambiosMisCambios";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoCambiosMisCambios />;

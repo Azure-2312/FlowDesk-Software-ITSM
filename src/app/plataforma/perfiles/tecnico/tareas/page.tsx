@@ -1,4 +1,4 @@
-import VistaTecnicoTareas from "@/modules/perfiles/tecnico/tareas/VistaTecnicoTareas";
+import VistaTecnicoTareas from "@/modules/operacion/agenda/VistaTecnicoTareas";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoTareas />;

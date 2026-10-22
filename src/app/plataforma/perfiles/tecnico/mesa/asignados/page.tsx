@@ -1,4 +1,4 @@
-import VistaTecnicoMesaAsignados from "@/modules/perfiles/tecnico/mesa/asignados/VistaTecnicoMesaAsignados";
+import VistaTecnicoMesaAsignados from "@/modules/tickets/views/tecnico/VistaTecnicoMesaAsignados";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoMesaAsignados />;

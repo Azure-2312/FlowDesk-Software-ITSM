@@ -1,1 +1,1 @@
-export { GET, POST, PATCH } from "@/modules/perfiles/tecnico/api/recordatoriosController";
+export { GET, POST, PATCH } from "@/modules/operacion/api/recordatoriosController";

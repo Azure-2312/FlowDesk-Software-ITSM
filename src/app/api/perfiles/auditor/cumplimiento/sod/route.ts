@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET } from "@/modules/perfiles/auditor/api/sodController";
+export { GET } from "@/modules/seguridad/api/auditorSodController";

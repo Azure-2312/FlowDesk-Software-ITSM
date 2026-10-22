@@ -1,4 +1,4 @@
-import VistaTecnicoActivosMapa from "@/modules/perfiles/tecnico/activos/mapa/VistaTecnicoActivosMapa";
+import VistaTecnicoActivosMapa from "@/modules/cmdb/views/tecnico/VistaTecnicoActivosMapa";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoActivosMapa />;

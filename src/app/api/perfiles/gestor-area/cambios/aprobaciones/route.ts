@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET, POST } from "@/modules/perfiles/gestor-area/api/aprobacionesController";
+export { GET, POST } from "@/modules/solicitudes/api/gestorAreaAprobacionesController";

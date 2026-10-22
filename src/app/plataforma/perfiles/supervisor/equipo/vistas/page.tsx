@@ -1,4 +1,4 @@
-import VistaRecursosEquipo from "@/modules/perfiles/supervisor/views/VistaRecursosEquipo";
+import VistaRecursosEquipo from "@/modules/organizacion/views/supervisor/VistaRecursosEquipo";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

@@ -1,4 +1,4 @@
-import VistaBajasDisposicion from "@/modules/perfiles/auditor/views/VistaBajasDisposicion";
+import VistaBajasDisposicion from "@/modules/activos/views/VistaBajasDisposicion";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

@@ -118,14 +118,25 @@ const SLUG_POR_TAB: Record<TabId, string> = {
   importacion_inventario: "importacion",
 };
 
-export default function TiposModelosAtributosPage() {
-  const [tabActiva, setTabActiva] = useState<TabId>("clases_tipos");
-  const [vistaExclusiva, setVistaExclusiva] = useState<string | null>(null);
+export default function TiposModelosAtributosPage({
+  vistaInicial,
+}: {
+  vistaInicial?: string;
+} = {}) {
+  const [tabActiva, setTabActiva] = useState<TabId>(
+    vistaInicial && TAB_POR_SLUG[vistaInicial] ? TAB_POR_SLUG[vistaInicial] : "clases_tipos"
+  );
+  const [vistaExclusiva, setVistaExclusiva] = useState<string | null>(vistaInicial || null);
   const [cargando, setCargando] = useState<boolean>(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
   // Control de enlaces profundos (?vista=)
   useEffect(() => {
+    if (vistaInicial && TAB_POR_SLUG[vistaInicial]) {
+      setTabActiva(TAB_POR_SLUG[vistaInicial]);
+      setVistaExclusiva(vistaInicial);
+      return;
+    }
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const vistaParam = params.get("vista");
@@ -137,7 +148,7 @@ export default function TiposModelosAtributosPage() {
         }
       }
     }
-  }, []);
+  }, [vistaInicial]);
 
   const cambiarTab = (nuevaTab: TabId) => {
     setTabActiva(nuevaTab);

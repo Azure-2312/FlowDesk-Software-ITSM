@@ -1,4 +1,4 @@
-import VistaHistorialAprobador from "@/modules/perfiles/aprobador/views/VistaHistorialAprobador";
+import VistaHistorialAprobador from "@/modules/seguridad/views/aprobador/VistaHistorialAprobador";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

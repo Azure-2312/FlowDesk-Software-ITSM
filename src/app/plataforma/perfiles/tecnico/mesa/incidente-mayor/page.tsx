@@ -1,4 +1,4 @@
-import VistaTecnicoMesaIncidenteMayor from "@/modules/perfiles/tecnico/mesa/incidente-mayor/VistaTecnicoMesaIncidenteMayor";
+import VistaTecnicoMesaIncidenteMayor from "@/modules/tickets/views/tecnico/VistaTecnicoMesaIncidenteMayor";
 
 export default function PaginaTecnicoRoute() {
   return <VistaTecnicoMesaIncidenteMayor />;

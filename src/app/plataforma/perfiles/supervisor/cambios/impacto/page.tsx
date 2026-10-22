@@ -1,4 +1,4 @@
-import VistaTecnicoCambiosImpacto from "@/modules/perfiles/tecnico/cambios/impacto/VistaTecnicoCambiosImpacto";
+import VistaTecnicoCambiosImpacto from "@/modules/cambios/views/tecnico/VistaTecnicoCambiosImpacto";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 
