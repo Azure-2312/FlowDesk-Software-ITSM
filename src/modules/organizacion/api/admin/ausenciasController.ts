@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
+import { sesionConCapacidad } from "@/shared/lib/api-auth";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { respuestaError } from "@/shared/lib/errores";
 import {
   listarAusencias,
   crearAusencia,
@@ -10,10 +11,9 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+export async function GET() {
+  const { error } = sesionConCapacidad(CAPACIDADES.ADMIN_TECNICOS);
+  if (error) return error;
 
   try {
     const data = await listarAusencias();
@@ -26,9 +26,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  const { sesion, error } = sesionConCapacidad(CAPACIDADES.ADMIN_TECNICOS);
+  if (error) return error;
 
   try {
     const body = await req.json();
@@ -42,9 +41,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  const { error } = sesionConCapacidad(CAPACIDADES.ADMIN_TECNICOS);
+  if (error) return error;
 
   try {
     const body = await req.json();
@@ -58,9 +56,8 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  const { error } = sesionConCapacidad(CAPACIDADES.ADMIN_TECNICOS);
+  if (error) return error;
 
   try {
     const { searchParams } = new URL(req.url);
