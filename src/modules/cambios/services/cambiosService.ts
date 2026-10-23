@@ -207,6 +207,18 @@ export async function crearCambio(sesion: any, body: any) {
   const fin = new Date(ventana_fin).getTime();
   if (!Number.isFinite(inicio) || !Number.isFinite(fin) || fin <= inicio) throw new ErrorDominio("La ventana de cambio debe tener fechas válidas y su fin debe ser posterior al inicio.");
   if ((fin - inicio) / 3600000 > Number(config?.duracion_maxima_horas || 24)) throw new ErrorDominio(`La ventana supera el máximo configurado de ${config?.duracion_maxima_horas || 24} horas.`);
+
+  // Trazabilidad: validar que el CI afectado exista en la CMDB si se proporciona.
+  if (id_ci_afectado) {
+    const ciExiste = await queryRow<{ id_ci: number }>(
+      "SELECT id_ci FROM elemento_configuracion WHERE id_ci = $1 AND estado_registro = true",
+      [id_ci_afectado]
+    );
+    if (!ciExiste) {
+      throw new ErrorDominio(`El CI afectado (id ${id_ci_afectado}) no existe o no está activo en la CMDB.`, 404);
+    }
+  }
+
   const custom = body.campos_personalizados && typeof body.campos_personalizados === "object" ? body.campos_personalizados : {};
   for (const field of config?.campos_personalizados || []) {
     const value = custom[field.clave];
@@ -283,6 +295,31 @@ export async function crearCambio(sesion: any, body: any) {
     sesion.id_usuario,
     JSON.stringify(custom),
   ]);
+
+  // Trazabilidad: registrar en CMDB que este cambio afecta al CI.
+  if (id_ci_afectado) {
+    try {
+      await query(
+        `INSERT INTO cmdb_actualizacion (
+           tipo_operacion, detalle, estado, fecha_creacion, fecha_aplicacion,
+           id_ci, id_cambio, id_usuario_aplica, estado_registro
+         ) VALUES (
+           'CAMBIO_APLICADO', $1, 'APLICADO', now(), now(),
+           $2, $3, $4, true
+         )`,
+        [
+          `RFC ${codigo_cambio}: ${titulo}`,
+          id_ci_afectado,
+          row?.id_cambio,
+          sesion.id_usuario,
+        ]
+      );
+    } catch (error) {
+      // No fallar la creación del RFC si el registro de trazabilidad falla,
+      // pero se consigna para revisión del administrador.
+      console.error("Trazabilidad CMDB: no se pudo registrar la actualización del CI:", error);
+    }
+  }
 
   return {
     mensaje: "Solicitud de Cambio (RFC) creada exitosamente.",
