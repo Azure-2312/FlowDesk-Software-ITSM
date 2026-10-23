@@ -100,3 +100,76 @@ export { simularQuorum } from "./services/flujoEvaluacionSimularQuorumService";
 export { validarFlujoCambios } from "./services/flujoEvaluacionValidarFlujoService";
 
 export { simularConflictosCalendario } from "./services/notificacionesCalendarioSimularConflictosService";
+
+// --- Consola del Gestor de Cambios (perfil 8): lógica de dominio movida desde
+// src/modules/perfiles/gestor-cambios para que el rol solo conserve su UI. ---
+export {
+  PLAZO_PIR_DIAS,
+  obtenerPanelGestion,
+  listarEvaluacion,
+  listarEvaluadores,
+  asignarEvaluador,
+  enviarAAutorizacion,
+  listarAutorizaciones,
+  registrarRecordatorio,
+  listarExcepciones,
+  crearExcepcion,
+  listarProgramacion,
+  programarCambio,
+  listarEjecucion,
+  extenderVentana,
+  resolverEjecucion,
+  listarPir,
+  registrarPir,
+  listarModelos,
+  proponerModelo,
+  cambiarEstadoModelo,
+  obtenerReportesCambios,
+} from "./services/cambiosGestionService";
+
+export {
+  listarReuniones,
+  listarCambiosParaAgenda,
+  crearReunion,
+  actualizarReunion,
+} from "./services/cabGestionService";
+
+export {
+  detectarConflictos,
+  validarProgramacion,
+} from "./services/conflictosService";
+
+// --- Decisiones del Aprobador (perfil 7 / CAB), movidas desde
+// src/modules/perfiles/aprobador para que el rol solo conserve su UI. ---
+export {
+  obtenerPanelAprobador,
+  listarCambiosPendientes,
+  resolverCambio,
+  listarModelosCambio,
+  listarHistorialDecisiones,
+  listarDelegaciones,
+  listarPosiblesDelegados,
+  crearDelegacion,
+  eliminarDelegacion,
+  obtenerReportesDecisiones,
+} from "./services/aprobacionesService";
+
+export {
+  listarEmergencias,
+  resolverEmergencia,
+} from "./services/ecabService";
+
+// --- Acciones del Supervisor (perfil 4) sobre cambios, movidas desde
+// src/modules/perfiles/supervisor para que el rol solo conserve su UI. ---
+export {
+  resolverAprobacionTecnica,
+  reprogramarCambio,
+} from "./services/supervisionCambiosService";
+
+// --- Aprobación de negocio del Gestor de Área (perfil 5), movida desde
+// src/modules/perfiles/gestor-area. El rol resuelve su alcance y delega. ---
+export { resolverAprobacionNegocio } from "./services/aprobacionNegocioService";
+
+// --- Acuse de "enterado" de un cambio por el Técnico (perfil 2), movido desde
+// src/modules/perfiles/tecnico para que el rol solo conserve su UI. ---
+export { registrarEnteradoCambio } from "./services/cambioEnteradoService";

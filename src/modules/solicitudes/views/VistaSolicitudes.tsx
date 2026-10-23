@@ -1,4 +1,4 @@
-import TablaTickets from "@/modules/tickets/components/TablaTickets";
+import { TablaTickets } from "@/modules/tickets/ui";
 
 export default function VistaSolicitudes() {
   return (
@@ -6,8 +6,9 @@ export default function VistaSolicitudes() {
       vista="todos"
       tipoInicial="2"
       tipoFijo="2"
+      rutaDetalleBase="/plataforma/solicitudes"
       titulo="Solicitudes de Servicio"
-      descripcion="Gestiona peticiones est\u00e1ndar de acceso, equipamiento, software y prestaciones publicadas en el cat\u00e1logo."
+      descripcion="Gestiona peticiones estándar de acceso, equipamiento, software y prestaciones publicadas en el catálogo."
     />
   );
 }

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Ticket } from "@/types";
 import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
 
-export default function PaginaAprobaciones() {
+export default function PaginaAprobaciones({ apiBase = "/api/aprobaciones" }: { apiBase?: string } = {}) {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +20,8 @@ export default function PaginaAprobaciones() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch("/api/tickets?vista=aprobaciones");
+      const urlConsulta = apiBase.includes("aprobaciones") ? apiBase : `${apiBase}?vista=aprobaciones`;
+      const res = await fetch(urlConsulta);
       const datos = await res.json();
       setTickets(datos.tickets || []);
       if (datos.id_usuario_actual) {
@@ -41,15 +42,13 @@ export default function PaginaAprobaciones() {
     if (!confirm("¿Confirmas la aprobación formal de este requerimiento?")) return;
     setProcesandoId(idTicket);
     try {
-      const res = await fetch(`/api/tickets/${idTicket}`, {
-        method: "PATCH",
+      const res = await fetch("/api/aprobaciones", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          id_ticket: idTicket,
           decision_aprobacion: "APROBADO",
           comentario_aprobacion: "Solicitud aprobada formalmente por la Jefatura de Área. Derivada a la Mesa de TI.",
-          id_estado: 2, // Pasa a Asignado / Listo para atención técnica
-          nota_cambio: "Solicitud aprobada formalmente por la Jefatura de Área. Lista para atención técnica.",
-          es_nota_interna: false,
         }),
       });
       const data = await res.json();
@@ -77,16 +76,13 @@ export default function PaginaAprobaciones() {
 
     setProcesandoId(ticketRechazandoId);
     try {
-      const res = await fetch(`/api/tickets/${ticketRechazandoId}`, {
-        method: "PATCH",
+      const res = await fetch("/api/aprobaciones", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          id_ticket: ticketRechazandoId,
           decision_aprobacion: "RECHAZADO",
           comentario_aprobacion: motivoRechazo.trim(),
-          id_estado: 7, // Cancelado / Rechazado
-          motivo_cancelacion: motivoRechazo.trim(),
-          nota_cambio: `Solicitud denegada por la Jefatura de Área. Motivo: ${motivoRechazo.trim()}`,
-          es_nota_interna: false,
         }),
       });
       const data = await res.json();
@@ -354,6 +350,7 @@ export default function PaginaAprobaciones() {
       {ticketSeleccionadoId !== null && (
         <ModalDetalleTicket
           idTicket={ticketSeleccionadoId}
+          apiBase={apiBase}
           onCerrar={() => setTicketSeleccionadoId(null)}
           onActualizado={cargarAprobaciones}
         />

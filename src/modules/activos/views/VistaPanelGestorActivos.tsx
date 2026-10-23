@@ -39,7 +39,7 @@ export default function VistaPanelGestorActivos() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/gestor-activos/panel?_t=${Date.now()}`);
+        const res = await fetch(`/api/activos/panel?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudo cargar el panel.");
@@ -75,10 +75,10 @@ export default function VistaPanelGestorActivos() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/gestor-activos/importacion" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Importación masiva</Link>
-            <Link href="/plataforma/gestor-activos/asignaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Asignaciones y actas</Link>
-            <Link href="/plataforma/gestor-activos/licencias/cumplimiento" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Cumplimiento de licencias</Link>
-            <Link href="/plataforma/gestor-activos/cmdb/auditoria" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Auditoría de CMDB</Link>
+            <Link href="/plataforma/activos/importacion" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Importación masiva</Link>
+            <Link href="/plataforma/activos/asignaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Asignaciones y actas</Link>
+            <Link href="/plataforma/activos/licencias/cumplimiento" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Cumplimiento de licencias</Link>
+            <Link href="/plataforma/cmdb/auditoria" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Auditoría de CMDB</Link>
           </div>
         </div>
 

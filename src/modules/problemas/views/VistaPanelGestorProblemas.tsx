@@ -62,7 +62,7 @@ export default function VistaPanelGestorProblemas() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/gestor-problemas/panel?_t=${Date.now()}`);
+        const res = await fetch(`/api/problemas/gestion/panel?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudo cargar el panel.");
@@ -99,10 +99,10 @@ export default function VistaPanelGestorProblemas() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/gestor-problemas/asignacion" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Bandeja y asignación</Link>
-            <Link href="/plataforma/gestor-problemas/candidatos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Candidatos a problema</Link>
-            <Link href="/plataforma/gestor-problemas/analisis" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Análisis de causa raíz</Link>
-            <Link href="/plataforma/gestor-problemas/mayores" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Problemas mayores</Link>
+            <Link href="/plataforma/problemas/gestion/asignacion" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Bandeja y asignación</Link>
+            <Link href="/plataforma/problemas/gestion/candidatos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Candidatos a problema</Link>
+            <Link href="/plataforma/problemas/gestion/analisis" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Análisis de causa raíz</Link>
+            <Link href="/plataforma/problemas/gestion/mayores" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Problemas mayores</Link>
           </div>
         </div>
 

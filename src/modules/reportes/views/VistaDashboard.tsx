@@ -10,18 +10,21 @@ export default function VistaDashboard(): any {
     redirect("/login");
   }
 
-  // Redireccion inteligente segun perfil activo en la sesion JWT (10 perfiles oficiales ITSM)
+  // Redireccion por perfil segun la documentacion de MENUS_Y_PERFILES.md
+  // Antes se usaban rutas directas heterogeneas (/reportes, /operacion), con lo que unos
+  // perfiles caian en su panel y otros en una pantalla operativa, asi que el
+  // mismo enlace /dashboard daba resultados distintos sin una regla clara.
   const destinosPorPerfil: Record<number, string> = {
-    1: "/admin/usuarios",              // 1. Administrador -> Gestion de identidades y accesos
-    2: "/tecnico/panel",               // 2. Tecnico -> Panel operativo de atencion y SLA
-    3: "/tickets",                     // 3. Solicitante -> Portal de tickets y autoservicio
-    4: "/tickets/gestion/asignar",     // 4. Supervisor -> Centro de despacho y monitoreo de equipo
-    5: "/tickets/gestion/aprobaciones",// 5. Gestor de Area -> Aprobaciones departamentales
-    6: "/tickets/gestion/auditoria",   // 6. Auditor -> Consola de auditoria forense inmutable
-    7: "/cambios/gestion/cab",         // 7. Aprobador -> Panel de dictamen colegiado CAB
-    8: "/cambios/gestion/todos",       // 8. Gestor de Cambios -> Consolidado de RFCs y calendario
-    9: "/activos/inventario",          // 9. Gestor de Activos y CMDB -> Inventario de hardware y software
-    10: "/problemas",                  // 10. Gestor de Problemas -> Registro de problemas y KEDB
+    1: "/plataforma/operacion/paneles/administrador", // 1. Administrador
+    2: "/plataforma/operacion/paneles/tecnico", // 2. Tecnico
+    3: "/plataforma/operacion/paneles/solicitante", // 3. Solicitante
+    4: "/plataforma/operacion/paneles/supervisor", // 4. Supervisor
+    5: "/plataforma/operacion/paneles/gestor-area", // 5. Gestor de Area
+    6: "/plataforma/operacion/paneles/auditor", // 6. Auditor
+    7: "/plataforma/operacion/paneles/aprobador", // 7. Aprobador
+    8: "/plataforma/operacion/paneles/gestor-cambios", // 8. Gestor de Cambios
+    9: "/plataforma/activos/panel", // 9. Gestor de Activos y CMDB
+    10: "/plataforma/problemas/gestion/panel", // 10. Gestor de Problemas
   };
 
   const idPerfil = sesion.perfilActivo?.id_perfil;

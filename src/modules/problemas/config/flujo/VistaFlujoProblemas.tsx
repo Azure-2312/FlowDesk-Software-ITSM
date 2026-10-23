@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "../formulario/components/BarraAccionesComun";
-import { ModalPublicacion } from "../formulario/components/ModalPublicacion";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "../formulario/components/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "../formulario/components/ModalRestaurarFabrica";
 import { PestanaEstados } from "./components/PestanaEstados";
@@ -69,7 +69,7 @@ export default function FlujoProblemasPage() {
       setCargando(true);
       setErrorCarga(null);
 
-      const res = await fetch(`/api/admin/problemas/flujo?pestana=${tabActiva}`);
+      const res = await fetch(`/api/problemas/configuracion/flujo?pestana=${tabActiva}`);
       const data = await res.json();
 
       if (!res.ok || !data.ok) {
@@ -111,7 +111,7 @@ export default function FlujoProblemasPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/problemas/flujo", {
+      const res = await fetch("/api/problemas/configuracion/flujo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -156,7 +156,7 @@ export default function FlujoProblemasPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/problemas/flujo", {
+      const res = await fetch("/api/problemas/configuracion/flujo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -181,7 +181,7 @@ export default function FlujoProblemasPage() {
   const handleDescartarBorrador = async () => {
     if (!confirm("¿Desea descartar el borrador sin publicar?")) return;
     try {
-      const res = await fetch("/api/admin/problemas/flujo", {
+      const res = await fetch("/api/problemas/configuracion/flujo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -201,7 +201,7 @@ export default function FlujoProblemasPage() {
 
   // Restaurar de Fábrica
   const handleRestaurarFabrica = async () => {
-    const res = await fetch("/api/admin/problemas/flujo", {
+    const res = await fetch("/api/problemas/configuracion/flujo", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -216,22 +216,19 @@ export default function FlujoProblemasPage() {
   };
 
   return (
-    <div style={{ padding: "20px 28px 120px 28px", minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh" }}>
-      {/* Breadcrumb reglamentario */}
+    <div style={{ minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
+        {/* Breadcrumb reglamentario */}
       <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/admin" style={{ color: "#2563eb", textDecoration: "none" }}>
+        <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
+          Problemas
+        </Link>
+        {" / "}
+        <Link href="/plataforma/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
           Configuración
         </Link>
         {" / "}
-        <Link href="/admin/procesos" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Configuración de procesos
-        </Link>
-        {" / "}
-        <Link href="/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Gestión de problemas
-        </Link>
-        {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>1.3.4.2 Flujo de investigación y seguimiento</span>
+        <span style={{ color: "#0f172a", fontWeight: 600 }}>Flujo de investigación y seguimiento</span>
       </nav>
 
       {/* Encabezado Principal 1.3.4.2 */}
@@ -247,17 +244,7 @@ export default function FlujoProblemasPage() {
       }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{
-              backgroundColor: "#dbeafe",
-              color: "#1e40af",
-              fontSize: 12,
-              fontWeight: 700,
-              padding: "3px 8px",
-              borderRadius: 4,
-              fontFamily: "monospace"
-            }}>
-              1.3.4.2
-            </span>
+            <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Flujo</span>
             <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
               Flujo de Investigación y Seguimiento de Problemas
             </h1>
@@ -318,14 +305,14 @@ export default function FlujoProblemasPage() {
         overflowX: "auto"
       }}>
         {[
-          { id: "estados", label: "1.3.4.2.1 Estados" },
-          { id: "transiciones", label: "1.3.4.2.2 Transiciones y acciones" },
-          { id: "asignacion", label: "1.3.4.2.3 Asignación automática" },
-          { id: "objetivos", label: "1.3.4.2.4 Objetivos de tiempo" },
-          { id: "escalamiento", label: "1.3.4.2.5 Escalamiento" },
-          { id: "reapertura", label: "1.3.4.2.6 Reapertura" },
-          { id: "tareas", label: "1.3.4.2.7 Tareas predefinidas" },
-          { id: "mayores", label: "1.3.4.2.8 Problemas mayores" },
+          { id: "estados", label: "Estados" },
+          { id: "transiciones", label: "Transiciones y acciones" },
+          { id: "asignacion", label: "Asignación automática" },
+          { id: "objetivos", label: "Objetivos de tiempo" },
+          { id: "escalamiento", label: "Escalamiento" },
+          { id: "reapertura", label: "Reapertura" },
+          { id: "tareas", label: "Tareas predefinidas" },
+          { id: "mayores", label: "Problemas mayores" },
         ].map((tab) => {
           const activa = tabActiva === tab.id;
           return (
@@ -378,7 +365,7 @@ export default function FlujoProblemasPage() {
                 estados={estados}
                 puedeEditar={puedeEditar}
                 onCrearEstado={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/estados", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/estados", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -388,7 +375,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onActualizarEstado={async (id, datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/estados", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/estados", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_estado: id, ...datos }),
@@ -398,7 +385,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onEliminarEstado={async (id) => {
-                  const res = await fetch(`/api/admin/problemas/flujo/estados?id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/flujo/estados?id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -415,7 +402,7 @@ export default function FlujoProblemasPage() {
                 perfiles={perfiles}
                 puedeEditar={puedeEditar}
                 onCrearTransicion={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/transiciones", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/transiciones", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -425,7 +412,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onActualizarTransicion={async (id, datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/transiciones", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/transiciones", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_transicion: id, ...datos }),
@@ -435,7 +422,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onEliminarTransicion={async (id) => {
-                  const res = await fetch(`/api/admin/problemas/flujo/transiciones?id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/flujo/transiciones?id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -451,7 +438,7 @@ export default function FlujoProblemasPage() {
                 departamentos={departamentos}
                 puedeEditar={puedeEditar}
                 onCrearRegla={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/asignacion", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/asignacion", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -461,7 +448,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onActualizarRegla={async (id, datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/asignacion", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/asignacion", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_regla: id, ...datos }),
@@ -471,7 +458,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onEliminarRegla={async (id) => {
-                  const res = await fetch(`/api/admin/problemas/flujo/asignacion?id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/flujo/asignacion?id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -486,7 +473,7 @@ export default function FlujoProblemasPage() {
                 objetivos={objetivosTiempo}
                 puedeEditar={puedeEditar}
                 onActualizarObjetivos={async (nuevos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/objetivos", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/objetivos", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ objetivos: nuevos }),
@@ -503,7 +490,7 @@ export default function FlujoProblemasPage() {
                 reglas={reglasEscalamiento}
                 puedeEditar={puedeEditar}
                 onCrearRegla={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/escalamiento", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/escalamiento", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -513,7 +500,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onActualizarRegla={async (id, datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/escalamiento", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/escalamiento", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_escalamiento: id, ...datos }),
@@ -523,7 +510,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onEliminarRegla={async (id) => {
-                  const res = await fetch(`/api/admin/problemas/flujo/escalamiento?id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/flujo/escalamiento?id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -540,7 +527,7 @@ export default function FlujoProblemasPage() {
                 perfiles={perfiles}
                 puedeEditar={puedeEditar}
                 onActualizarConfig={async (nuevos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/reapertura", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/reapertura", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(nuevos),
@@ -559,7 +546,7 @@ export default function FlujoProblemasPage() {
                 departamentos={departamentos}
                 puedeEditar={puedeEditar}
                 onCrearTarea={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/tareas", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/tareas", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -569,7 +556,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onEliminarTarea={async (id, tipo) => {
-                  const res = await fetch(`/api/admin/problemas/flujo/tareas?id=${id}&tipo=${tipo}`, {
+                  const res = await fetch(`/api/problemas/configuracion/flujo/tareas?id=${id}&tipo=${tipo}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -586,7 +573,7 @@ export default function FlujoProblemasPage() {
                 perfiles={perfiles}
                 puedeEditar={puedeEditar}
                 onActualizarConfig={async (nuevos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/mayores", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/mayores", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(nuevos),
@@ -599,6 +586,7 @@ export default function FlujoProblemasPage() {
             )}
           </div>
         )}
+      </div>
 
       {/* Barra de Acciones Común Fija al Pie (Sección 3.1) */}
       <BarraAccionesComun

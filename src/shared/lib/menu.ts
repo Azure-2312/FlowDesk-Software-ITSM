@@ -38,7 +38,32 @@ async function obtenerOpcionesPlanasPorUsuario(idUsuario: number): Promise<Opcio
 }
 
 /**
- * Convierte la lista plana (con id_padre) en un árbol de hasta 3 niveles.
+ * Regla de la arquitectura del menu: una subcarpeta intermedia que solo muestra
+ * un hijo se colapsa para simplificar la navegacion hacia arriba.
+ *
+ * Sin embargo, las carpetas de nivel raiz (esNivelRaiz = true) se conservan
+ * intactas para preservar la identidad de los dominios funcionales (ITSM / ITIL)
+ * y evitar que pantallas unicas queden como elementos huerfanos sin contexto.
+ */
+function colapsarCarpetasDeUnHijo(nodos: OpcionMenuArbol[], esNivelRaiz: boolean = false): OpcionMenuArbol[] {
+  const resultado: OpcionMenuArbol[] = [];
+
+  for (const nodo of nodos) {
+    nodo.hijos = colapsarCarpetasDeUnHijo(nodo.hijos, false);
+
+    if (!nodo.url_menu && nodo.hijos.length === 0) continue;
+    if (!esNivelRaiz && !nodo.url_menu && nodo.hijos.length === 1) {
+      resultado.push(nodo.hijos[0]);
+      continue;
+    }
+    resultado.push(nodo);
+  }
+
+  return resultado;
+}
+
+/**
+ * Convierte la lista plana (con id_padre) en un árbol de profundidad variable.
  */
 function construirArbol(opciones: OpcionMenuPlana[]): OpcionMenuArbol[] {
   const mapa = new Map<number, OpcionMenuArbol>();
@@ -70,12 +95,12 @@ function construirArbol(opciones: OpcionMenuPlana[]): OpcionMenuArbol[] {
     }
   });
 
-  return raiz;
+  return colapsarCarpetasDeUnHijo(raiz, true);
 }
 
 /**
  * Función principal: obtiene el árbol jerárquico de menú filtrado por el perfil activo del usuario
- * respetando la taxonomía oficial de 3 niveles de ITIL v4 e ISO 27001.
+ * respetando la taxonomía del catálogo (tres niveles como norma y cuatro en la configuración de la mesa).
  */
 export async function obtenerMenuDelUsuario(
   idUsuario: number,
@@ -92,3 +117,27 @@ export async function obtenerMenuDelUsuario(
   return construirArbol(planas);
 }
 
+/**
+ * Indica si el arbol de menu del usuario incluye exactamente una pantalla.
+ * Se usa en las paginas de los modulos para autorizar la ruta solicitada.
+ */
+export function menuIncluyeUrl(menu: OpcionMenuArbol[], url: string): boolean {
+  for (const nodo of menu) {
+    if (nodo.url_menu === url) return true;
+    if (nodo.hijos?.length && menuIncluyeUrl(nodo.hijos, url)) return true;
+  }
+  return false;
+}
+
+/**
+ * Indica si el arbol de menu del usuario incluye alguna pantalla bajo un
+ * prefijo (por ejemplo `/plataforma/incidentes`). Se usa en las fichas de
+ * detalle, que no aparecen como opcion propia del menu.
+ */
+export function menuIncluyePrefijo(menu: OpcionMenuArbol[], prefijo: string): boolean {
+  for (const nodo of menu) {
+    if (nodo.url_menu === prefijo || (nodo.url_menu && nodo.url_menu.startsWith(`${prefijo}/`))) return true;
+    if (nodo.hijos?.length && menuIncluyePrefijo(nodo.hijos, prefijo)) return true;
+  }
+  return false;
+}

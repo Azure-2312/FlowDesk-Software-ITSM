@@ -37,13 +37,20 @@ const nextConfig = {
       { source: "/tickets/:path*", destination: "/plataforma/tickets/:path*" },
       { source: "/incidentes/:path*", destination: "/plataforma/incidentes/:path*" },
       { source: "/solicitudes/:path*", destination: "/plataforma/solicitudes/:path*" },
+      { source: "/servicios/:path*", destination: "/plataforma/servicios/:path*" },
+      { source: "/reportes/:path*", destination: "/plataforma/reportes/:path*" },
       { source: "/cambios/:path*", destination: "/plataforma/cambios/:path*" },
       { source: "/problemas/:path*", destination: "/plataforma/problemas/:path*" },
       { source: "/activos/:path*", destination: "/plataforma/activos/:path*" },
       { source: "/mi-cuenta/:path*", destination: "/plataforma/mi-cuenta/:path*" },
       { source: "/operacion/:path*", destination: "/plataforma/operacion/:path*" },
       { source: "/proveedores/:path*", destination: "/plataforma/proveedores/:path*" },
-      { source: "/tecnico/:path*", destination: "/plataforma/tecnico/:path*" },
+      { source: "/gestor-activos/:path*", destination: "/plataforma/gestor-activos/:path*" },
+      { source: "/gestor-problemas/:path*", destination: "/plataforma/gestor-problemas/:path*" },
+      { source: "/avisos/:path*", destination: "/plataforma/avisos/:path*" },
+      { source: "/conocimiento/:path*", destination: "/plataforma/conocimiento/:path*" },
+      // Consolas de rol: sin alias. Se usan las URLs de las carpetas fisicas,
+      // es decir /plataforma/perfiles/<rol>/... (ver src/modules/perfiles).
     ];
   },
 };

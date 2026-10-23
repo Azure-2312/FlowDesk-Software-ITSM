@@ -1,3 +1,0 @@
-export const dynamic = "force-dynamic";
-
-export { GET, POST } from "@/modules/activos/api/admin/cmdbTiposController";

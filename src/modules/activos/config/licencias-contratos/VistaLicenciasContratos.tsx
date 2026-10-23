@@ -3,10 +3,11 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
-import { BarraAccionesComun } from "@/modules/cambios/config/formulario/components/BarraAccionesComun";
-import { ModalPublicacion } from "@/modules/cambios/config/formulario/components/ModalPublicacion";
-import { ModalHistorialVersiones } from "@/modules/cambios/config/formulario/components/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "@/modules/cambios/config/formulario/components/ModalRestaurarFabrica";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
+import { ModalHistorialVersiones } from "@/shared/components/admin/ModalHistorialVersiones";
+import { ModalRestaurarFabrica } from "@/shared/components/admin/ModalRestaurarFabrica";
+import { ModalVistaPrevia } from "@/shared/components/admin/ModalVistaPrevia";
 
 import { PestanaTiposLicencia } from "./components/PestanaTiposLicencia";
 import { PestanaTiposContrato } from "./components/PestanaTiposContrato";
@@ -34,45 +35,88 @@ const PESTANAS: PestanaMetadata[] = [
   {
     id: "tipos_licencia_metricas",
     numero: "1.5.3.1",
-    titulo: "1.5.3.1 Tipos de licencia y métricas",
+    titulo: "Tipos de licencia y métricas",
     descripcion: "Métricas de consumo SAM (usuario nominal, concurrente, core, dispositivo), vigencia y catálogo de software homologado."
   },
   {
     id: "tipos_contrato_proveedores",
     numero: "1.5.3.2",
-    titulo: "1.5.3.2 Tipos de contrato y proveedores",
+    titulo: "Tipos de contrato y proveedores",
     descripcion: "Modalidades de contratos de TI, preavisos de no renovación, renovación automática y categorización de proveedores homologados."
   },
   {
     id: "formulario_licencia_contrato",
     numero: "1.5.3.3",
-    titulo: "1.5.3.3 Formulario de licencia y contrato",
+    titulo: "Formulario de licencia y contrato",
     descripcion: "Esquema de campos por sección, niveles de obligatoriedad, reglas de integridad y atributos estructurales protegidos."
   },
   {
     id: "cumplimiento_sobreuso",
     numero: "1.5.3.4",
-    titulo: "1.5.3.4 Cumplimiento y sobreuso",
+    titulo: "Cumplimiento y sobreuso",
     descripcion: "Cálculo automático de estados de cumplimiento, umbral de riesgo, bloqueo de sobreasignación y reclamación por baja."
   },
   {
     id: "alertas_vencimiento_garantia",
     numero: "1.5.3.5",
-    titulo: "1.5.3.5 Alertas de vencimiento y garantía",
+    titulo: "Alertas de vencimiento y garantía",
     descripcion: "Cuadrícula de notificaciones preventivas para contratos, software, garantías de hardware y fin de vida útil."
   },
   {
     id: "renovacion",
     numero: "1.5.3.6",
-    titulo: "1.5.3.6 Renovación",
+    titulo: "Renovación",
     descripcion: "Generación automática de solicitudes de renovación antes del vencimiento, aprobaciones financieras por montos y motivos de descarte."
   }
 ];
+
+const TAB_POR_SLUG: Record<string, TabId> = {
+  "tipos-licencia": "tipos_licencia_metricas",
+  "tipos-contrato": "tipos_contrato_proveedores",
+  "formulario": "formulario_licencia_contrato",
+  "cumplimiento": "cumplimiento_sobreuso",
+  "alertas": "alertas_vencimiento_garantia",
+  "renovacion": "renovacion",
+};
+
+const SLUG_POR_TAB: Record<TabId, string> = {
+  tipos_licencia_metricas: "tipos-licencia",
+  tipos_contrato_proveedores: "tipos-contrato",
+  formulario_licencia_contrato: "formulario",
+  cumplimiento_sobreuso: "cumplimiento",
+  alertas_vencimiento_garantia: "alertas",
+  renovacion: "renovacion",
+};
 
 export default function LicenciasContratosConfigPage() {
   const [tabActiva, setTabActiva] = useState<TabId>("tipos_licencia_metricas");
   const [cargando, setCargando] = useState<boolean>(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
+
+  // Control de enlaces profundos (?vista=)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const vistaParam = params.get("vista");
+      if (vistaParam && TAB_POR_SLUG[vistaParam]) {
+        setTabActiva(TAB_POR_SLUG[vistaParam]);
+      }
+    }
+  }, []);
+
+  const cambiarTab = (nuevaTab: TabId) => {
+    setTabActiva(nuevaTab);
+    const slug = SLUG_POR_TAB[nuevaTab];
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (slug) {
+        url.searchParams.set("vista", slug);
+      } else {
+        url.searchParams.delete("vista");
+      }
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
 
   // Estados de control de versiones y autoría
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
@@ -92,6 +136,7 @@ export default function LicenciasContratosConfigPage() {
   const [diffsCalculados, setDiffsCalculados] = useState<any[]>([]);
 
   // Modales
+  const [modalVistaPreviaAbierto, setModalVistaPreviaAbierto] = useState<boolean>(false);
   const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
   const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
   const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
@@ -113,7 +158,7 @@ export default function LicenciasContratosConfigPage() {
       setErrorCarga(null);
 
       const res = await fetch(
-        `/api/admin/activos-config/licencias-contratos/configuracion?pestana=${tabActiva}`
+        `/api/activos/configuracion/licencias-contratos/configuracion?pestana=${tabActiva}`
       );
       const data = await res.json();
 
@@ -171,7 +216,7 @@ export default function LicenciasContratosConfigPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/activos-config/licencias-contratos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -200,7 +245,7 @@ export default function LicenciasContratosConfigPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/activos-config/licencias-contratos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -229,7 +274,7 @@ export default function LicenciasContratosConfigPage() {
     if (!confirm("Se perderán todos los cambios del borrador sin publicar. ¿Desea continuar?")) return;
     try {
       const res = await fetch(
-        `/api/admin/activos-config/licencias-contratos/configuracion?pestana=${tabActiva}`,
+        `/api/activos/configuracion/licencias-contratos/configuracion?pestana=${tabActiva}`,
         { method: "DELETE" }
       );
       if (res.ok) {
@@ -245,7 +290,7 @@ export default function LicenciasContratosConfigPage() {
   // Restaurar valores de fábrica
   const handleRestaurarFabrica = async () => {
     try {
-      const res = await fetch("/api/admin/activos-config/licencias-contratos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -269,7 +314,7 @@ export default function LicenciasContratosConfigPage() {
   // Restaurar versión específica desde modal de historial
   const handleRestaurarVersionComoBorrador = async (version: any) => {
     try {
-      const res = await fetch("/api/admin/activos-config/licencias-contratos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -339,8 +384,9 @@ export default function LicenciasContratosConfigPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-28">
-      {/* Toast flotante */}
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {/* Toast flotante */}
       {toastMensaje && (
         <div className="fixed top-4 right-4 z-50 bg-slate-800 text-white px-4 py-2 rounded-md shadow-lg text-sm transition-opacity">
           {toastMensaje}
@@ -351,15 +397,15 @@ export default function LicenciasContratosConfigPage() {
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="flex items-center space-x-2 text-xs text-slate-500 mb-2">
-            <Link href="/admin" className="hover:text-slate-800">
+            <Link href="/plataforma/operacion/paneles/administrador" className="hover:text-slate-800">
               Administración
             </Link>
             <span>/</span>
-            <Link href="/admin/activos-config/tipos-modelos-atributos" className="hover:text-slate-800">
+            <Link href="/plataforma/activos/configuracion/tipos-modelos-atributos" className="hover:text-slate-800">
               Activos y CMDB
             </Link>
             <span>/</span>
-            <span className="text-slate-800 font-semibold">1.5.3 Licencias y contratos</span>
+            <span className="text-slate-800 font-semibold">Licencias y contratos</span>
           </nav>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
@@ -372,51 +418,50 @@ export default function LicenciasContratosConfigPage() {
               </p>
             </div>
 
-            {/* Accesos directos a las pantallas del Módulo 1.5 */}
+            {/* Accesos directos a las pantallas del Módulo Activos y CMDB */}
             <div className="flex items-center gap-1.5 overflow-x-auto py-1">
               <Link
-                href="/admin/activos-config/tipos-modelos-atributos"
+                href="/plataforma/activos/configuracion/tipos-modelos-atributos"
                 className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
               >
-                1.5.1 Tipos y Modelos
+                Tipos y Modelos
               </Link>
               <Link
-                href="/admin/activos-config/ciclos-vida-transiciones"
+                href="/plataforma/activos/configuracion/ciclos-vida-transiciones"
                 className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
               >
-                1.5.2 Ciclos de Vida
+                Ciclos de Vida
               </Link>
               <span className="px-2.5 py-1 text-xs rounded border border-indigo-300 bg-indigo-50 text-indigo-700 font-semibold">
-                1.5.3 Licencias y Contratos
+                Licencias y Contratos
               </span>
               <span className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
-                1.5.4 Relaciones CMDB
+                Relaciones CMDB
               </span>
               <span className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
-                1.5.5 Integridad CMDB
+                Integridad CMDB
               </span>
               <span className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
-                1.5.6 Auditoría
+                Auditoría
               </span>
             </div>
           </div>
 
-          {/* Barra de Pestañas (1.5.3.1 a 1.5.3.6) */}
+          {/* Barra de Pestañas sin números */}
           <div className="flex space-x-1 border-b border-slate-200 mt-6 overflow-x-auto">
             {PESTANAS.map((pestana) => {
               const activa = tabActiva === pestana.id;
               return (
                 <button
                   key={pestana.id}
-                  onClick={() => setTabActiva(pestana.id)}
-                  className={`py-2.5 px-3.5 text-xs font-semibold whitespace-nowrap border-b-2 transition-colors ${
+                  onClick={() => cambiarTab(pestana.id)}
+                  className={`py-2.5 px-4 text-xs font-semibold whitespace-nowrap border-b-2 transition-colors ${
                     activa
                       ? "border-indigo-600 text-indigo-600 bg-indigo-50/50"
                       : "border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300"
                   }`}
                 >
-                  <span className="font-mono mr-1.5 opacity-75">{pestana.numero}</span>
-                  {pestana.titulo.split(" ").slice(1).join(" ")}
+                  {pestana.titulo}
                 </button>
               );
             })}
@@ -506,6 +551,7 @@ export default function LicenciasContratosConfigPage() {
           </div>
         )}
       </main>
+      </div>
 
       {/* Barra de Acciones Común Flotante (Patrón 3.1) */}
       <BarraAccionesComun
@@ -519,7 +565,7 @@ export default function LicenciasContratosConfigPage() {
         puedePublicar={puedePublicar}
         puedeEditar={puedeEditar}
         onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => mostrarToast("Vista previa activa en el lienzo actual.")}
+        onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
         onAbrirPublicar={() => setModalPublicarAbierto(true)}
         onDescartar={handleDescartarBorrador}
         onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
@@ -529,6 +575,13 @@ export default function LicenciasContratosConfigPage() {
       />
 
       {/* Modales del Patrón 3.1 */}
+      <ModalVistaPrevia
+        abierto={modalVistaPreviaAbierto}
+        modulo="activos"
+        tituloModulo="Licencias y Contratos (SAM)"
+        onCerrar={() => setModalVistaPreviaAbierto(false)}
+      />
+
       <ModalPublicacion
         abierto={modalPublicarAbierto}
         versionActual={versionPublicada}

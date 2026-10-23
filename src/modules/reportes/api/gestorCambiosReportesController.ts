@@ -1,0 +1,20 @@
+import { NextResponse } from "next/server";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
+import { sesionConCapacidad } from "@/shared/lib/api-auth";
+import { obtenerReportesCambios } from "@/modules/cambios";
+
+export const dynamic = "force-dynamic";
+
+export async function GET() {
+  const { error } = sesionConCapacidad(CAPACIDADES.CAMBIOS_VER);
+  if (error) return error;
+
+  try {
+    return NextResponse.json(await obtenerReportesCambios());
+  } catch (err) {
+    if (!(err instanceof ErrorDominio)) console.error("Error al obtener reportes de cambios:", err);
+    const { error: mensaje, status } = respuestaError(err, "Error al consultar los reportes");
+    return NextResponse.json({ error: mensaje }, { status });
+  }
+}

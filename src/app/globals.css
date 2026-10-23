@@ -215,7 +215,9 @@ textarea.input-base {
 }
 
 .barra-lateral {
-  width: 275px;
+  width: var(--ancho-sidebar, 290px);
+  min-width: 260px;
+  max-width: 500px;
   height: 100vh;
   height: 100dvh;
   background-color: #111827;
@@ -226,6 +228,26 @@ textarea.input-base {
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
+  position: relative;
+  z-index: 60;
+}
+
+.manija-redimension-sidebar {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 70;
+  background-color: transparent;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.manija-redimension-sidebar:hover,
+.manija-redimension-sidebar.arrastrando {
+  background-color: #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
 }
 
 .barra-lateral-contenido {
@@ -459,15 +481,17 @@ textarea.input-base {
 
 .contenido-principal {
   flex: 1;
-  padding: 22px 30px;
+  padding: 0;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 900px) {
   .contenido-principal {
-    padding: 16px 18px;
+    padding: 0;
   }
 }
 
@@ -477,6 +501,10 @@ textarea.input-base {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  padding: 20px 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .cabecera-pagina {
@@ -572,11 +600,14 @@ textarea.input-base {
 .menu-item {
   display: block;
   flex: 1;
-  padding: 8px 10px;
+  padding: 7px 10px;
   border-radius: 6px;
-  font-size: 13.5px;
+  font-size: 13px;
   color: #e5e7eb;
   transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.35;
 }
 
 .menu-item:hover {
@@ -604,11 +635,14 @@ textarea.input-base {
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 500;
   color: #d1d5db;
-  padding: 8px 10px;
+  padding: 7px 10px;
   border-radius: 6px;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.35;
 }
 
 .menu-item-carpeta:hover {
@@ -623,6 +657,9 @@ textarea.input-base {
 
 .menu-texto-carpeta {
   flex: 1;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.35;
 }
 
 .menu-icono-flecha {
@@ -765,22 +802,29 @@ textarea.input-base {
 
 /* ---------- Tarjetas / secciones genéricas ---------- */
 
-.tarjeta {
-  background: white;
-  border: 1px solid #e2e5e9;
+.tarjeta,
+.tarjeta-formulario {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 10px;
-  padding: 24px;
+  padding: 22px 24px;
   margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.tarjeta h2 {
+.tarjeta h2,
+.tarjeta-formulario h2 {
   font-size: 16px;
-  margin-bottom: 4px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 0;
+  margin-bottom: 6px;
 }
 
-.tarjeta p.descripcion {
+.tarjeta p.descripcion,
+.tarjeta-formulario p.descripcion {
   font-size: 13px;
-  color: #6b7280;
+  color: #64748b;
   margin-bottom: 16px;
 }
 
@@ -876,6 +920,8 @@ textarea.input-base {
   justify-content: center;
   width: 30px;
   height: 30px;
+  min-width: 30px;
+  min-height: 30px;
   border-radius: 6px;
   border: 1px solid #e2e8f0;
   background-color: #ffffff;
@@ -883,25 +929,55 @@ textarea.input-base {
   cursor: pointer;
   transition: all 0.15s ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  padding: 0;
 }
 
-.boton-accion-icono:hover {
+.boton-accion-icono:hover:not(:disabled) {
   background-color: #f8fafc;
-  color: #1e293b;
+  color: #0f172a;
   border-color: #cbd5e1;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
+.boton-accion-icono:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.boton-accion-primario {
+  border-color: #bfdbfe;
+  color: #2563eb;
+  background-color: #ffffff;
+}
+
+.boton-accion-primario:hover:not(:disabled) {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border-color: #93c5fd;
+}
+
 .boton-accion-peligro {
-  border-color: #fee2e2;
+  border-color: #fecaca;
   color: #dc2626;
   background-color: #ffffff;
 }
 
-.boton-accion-peligro:hover {
+.boton-accion-peligro:hover:not(:disabled) {
   background-color: #fef2f2;
   color: #b91c1c;
   border-color: #fca5a5;
+}
+
+.boton-accion-exito {
+  border-color: #bbf7d0;
+  color: #16a34a;
+  background-color: #ffffff;
+}
+
+.boton-accion-exito:hover:not(:disabled) {
+  background-color: #f0fdf4;
+  color: #15803d;
+  border-color: #86efac;
 }
 
 /* ---------- Formularios de alta / edición ---------- */

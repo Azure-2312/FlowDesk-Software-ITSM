@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Edit2, Send, Eye, Bell, Mail, AlertTriangle, CheckCircle2, X, Check } from "./Iconos";
+import { Edit2, Send, Eye, Bell, Mail, AlertTriangle, CheckCircle2, X, Check } from "@/shared/components/ui/Iconos";
 
 interface PestanaNotificacionesProps {
   config: any;

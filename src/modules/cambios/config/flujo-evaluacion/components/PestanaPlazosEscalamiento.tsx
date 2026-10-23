@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, Clock, Play, AlertCircle, ShieldAlert, CheckCircle2, ArrowRight } from "./Iconos";
+import { Plus, Edit2, Trash2, Clock, Play, AlertCircle, ShieldAlert, CheckCircle2, ArrowRight } from "@/shared/components/ui/Iconos";
 
 interface PlazoPrioridad {
   prioridad_id: string;
@@ -145,7 +145,7 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
   const ejecutarSimulacion = async () => {
     try {
       setSimulando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/simular-escalamiento", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/simular-escalamiento", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...simParams, parametros_custom: snapshot })
@@ -165,7 +165,7 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <h2 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 4px 0" }}>
-            1.3.3.3.5 Plazos Operativos y Reglas de Escalamiento
+            Plazos Operativos y Reglas de Escalamiento
           </h2>
           <p style={{ fontSize: "0.85rem", color: "#64748b", margin: 0 }}>
             Tiempos máximos de respuesta, evaluación y autorización por prioridad, y protocolos de alerta y escalamiento jerárquico.

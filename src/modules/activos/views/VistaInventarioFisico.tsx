@@ -73,7 +73,7 @@ export default function VistaInventarioFisico() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/inventario-fisico?_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/inventario-fisico?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setCampanas(Array.isArray(json?.campanas) ? json.campanas : []);
@@ -102,7 +102,7 @@ export default function VistaInventarioFisico() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/inventario-fisico", {
+      const res = await fetch("/api/activos/inventario-fisico", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, activos: seleccion }),
@@ -125,7 +125,7 @@ export default function VistaInventarioFisico() {
   async function verDetalle(idCampana: number) {
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/inventario-fisico?id_campana=${idCampana}&_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/inventario-fisico?id_campana=${idCampana}&_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setDetalle(json);
       else setError(json.error ?? "No se pudo cargar el detalle.");
@@ -139,7 +139,7 @@ export default function VistaInventarioFisico() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/inventario-fisico", {
+      const res = await fetch("/api/activos/inventario-fisico", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_campana: idCampana }),

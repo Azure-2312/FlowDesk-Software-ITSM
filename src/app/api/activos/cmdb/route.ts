@@ -1,1 +1,1 @@
-export { GET, POST, PATCH } from "@/modules/activos/api/cmdbController";
+export { GET, POST, PATCH } from "@/modules/cmdb/api/cmdbController";

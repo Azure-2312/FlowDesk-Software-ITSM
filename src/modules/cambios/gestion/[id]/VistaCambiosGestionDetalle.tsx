@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Cambio, SesionUsuario } from "@/types";
-import PresentadorRfcAprobador, { DecisionRfc } from "@/modules/tickets/presentadores/PresentadorRfcAprobador";
+import { PresentadorRfcAprobador, type DecisionRfc } from "@/modules/tickets/ui";
 import { PERFILES } from "@/shared/lib/capacidades";
 
 export default function PaginaDetalleTicketRFC() {
@@ -58,7 +58,7 @@ export default function PaginaDetalleTicketRFC() {
     }
     setProcesandoDecision(true);
     try {
-      const res = await fetch("/api/aprobador/cambios", {
+      const res = await fetch("/api/cambios/aprobaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -94,7 +94,7 @@ export default function PaginaDetalleTicketRFC() {
         <div style={{ backgroundColor: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: 20, color: "#991b1b", maxWidth: 500, margin: "0 auto" }}>
           <h3 style={{ margin: "0 0 8px 0", fontSize: 16 }}>Error al abrir la RFC</h3>
           <p style={{ margin: "0 0 16px 0", fontSize: 13 }}>{error || "El ticket solicitado no existe."}</p>
-          <Link href="/cambios/gestion/todos" className="boton-primario" style={{ fontSize: 12, textDecoration: "none" }}>
+          <Link href="/plataforma/cambios/gestion/todos" className="boton-primario" style={{ fontSize: 12, textDecoration: "none" }}>
             Volver al Historial de Cambios
           </Link>
         </div>
@@ -114,9 +114,9 @@ export default function PaginaDetalleTicketRFC() {
     return (
       <div className="vista-contenedor" style={{ paddingBottom: 60 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
-          <Link href="/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
+          <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
           <span>›</span>
-          <Link href="/cambios/gestion/todos" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
+          <Link href="/plataforma/cambios/gestion/todos" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
           <span>›</span>
           <span style={{ color: "#0f172a", fontWeight: 700, fontFamily: "monospace" }}>{cambio.codigo_cambio}</span>
         </div>
@@ -135,9 +135,9 @@ export default function PaginaDetalleTicketRFC() {
     <div className="vista-contenedor" style={{ paddingBottom: 60 }}>
       {/* 1. Breadcrumb */}
       <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
+        <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
         <span>›</span>
-        <Link href="/cambios/gestion/todos" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
+        <Link href="/plataforma/cambios/gestion/todos" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
         <span>›</span>
         <span style={{ color: "#0f172a", fontWeight: 700, fontFamily: "monospace" }}>{cambio.codigo_cambio}</span>
       </div>
@@ -233,14 +233,14 @@ export default function PaginaDetalleTicketRFC() {
           {/* Barra de Acciones del Ticket (Sección 5.2) */}
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <Link
-              href="/cambios/gestion/cab"
+              href="/plataforma/cambios/gestion/cab"
               className="boton-secundario"
               style={{ fontSize: 12, textDecoration: "none" }}
             >
               Comité CAB
             </Link>
             <Link
-              href="/cambios/gestion/calendario"
+              href="/plataforma/cambios/gestion/calendario"
               className="boton-secundario"
               style={{ fontSize: 12, textDecoration: "none" }}
             >

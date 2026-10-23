@@ -70,7 +70,7 @@ export default function PaginaBaseConocimiento() {
 
         <div style={{ display: "flex", gap: 10 }}>
           <Link
-            href="/tecnico/conocimiento/nuevo"
+            href="/plataforma/conocimiento/tecnico/nuevo"
             style={{
               padding: "8px 16px",
               backgroundColor: "#2563eb",
@@ -212,7 +212,7 @@ export default function PaginaBaseConocimiento() {
               >
                 <span>Por {a.autor_nombre || "Especialista"}</span>
                 <Link
-                  href={`/conocimiento/${a.id_articulo}`}
+                  href={`/plataforma/conocimiento/${a.id_articulo}`}
                   onClick={(e) => e.stopPropagation()}
                   style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}
                 >

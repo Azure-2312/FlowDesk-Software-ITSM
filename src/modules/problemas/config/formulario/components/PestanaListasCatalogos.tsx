@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, Trash2 } from "@/shared/components/ui/Iconos";
 
 interface CatalogoItem {
   id: number | string;
@@ -356,50 +358,41 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                         <td className="py-2.5 px-3 text-center font-bold text-slate-800">
                           {item.usos_tickets || 0}
                         </td>
-                        <td className="py-2.5 px-3 text-right space-x-1">
-                          <button
-                            type="button"
-                            onClick={() => abrirModalEditar(item)}
-                            disabled={!puedeEditar}
-                            className="px-2 py-0.5 rounded text-[11px] font-medium text-blue-700 bg-blue-50 hover:bg-blue-100"
-                          >
-                            Editar
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setOrigenFusion(item);
-                              setDestinoFusionId("");
-                              setModalFusion(true);
-                            }}
-                            disabled={!puedeEditar}
-                            className="px-2 py-0.5 rounded text-[11px] font-medium text-amber-800 bg-amber-50 hover:bg-amber-100"
-                            title="Fusionar con otro valor reasignando tickets"
-                          >
-                            Fusionar
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (item.es_sistema) {
-                                alert("Los valores de fábrica del sistema no pueden ser eliminados.");
-                                return;
-                              }
-                              if ((item.usos_tickets || 0) > 0) {
-                                alert(
-                                  `Este valor está en uso por ${item.usos_tickets} tickets. Solo puede desactivarlo o fusionarlo.`
-                                );
-                                return;
-                              }
-                              if (confirm(`¿Eliminar '${item.nombre}' permanentemente?`)) {
-                                onEliminarItem(catalogoActivo, idCampo);
-                              }
-                            }}
-                            disabled={item.es_sistema || (item.usos_tickets || 0) > 0 || !puedeEditar}
-                            className="px-2 py-0.5 rounded text-[11px] font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 disabled:opacity-30 disabled:cursor-not-allowed"
-                          >
-                            Eliminar
-                          </button>
+                        <td className="py-2.5 px-3 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <BotonIcono
+                              variante="normal"
+                              icono={<Edit2 size={13} />}
+                              titulo={`Editar item "${item.nombre}"`}
+                              ariaLabel={`Editar item "${item.nombre}"`}
+                              disabled={!puedeEditar}
+                              onClick={() => abrirModalEditar(item)}
+                            />
+                            {!item.es_sistema && (
+                              <BotonIcono
+                                variante="peligro"
+                                icono={<Trash2 size={13} />}
+                                titulo={`Eliminar item "${item.nombre}"`}
+                                ariaLabel={`Eliminar item "${item.nombre}"`}
+                                disabled={item.es_sistema || (item.usos_tickets || 0) > 0 || !puedeEditar}
+                                onClick={() => {
+                                  if (item.es_sistema) {
+                                    alert("Los valores de fábrica del sistema no pueden ser eliminados.");
+                                    return;
+                                  }
+                                  if ((item.usos_tickets || 0) > 0) {
+                                    alert(
+                                      `Este valor está en uso por ${item.usos_tickets} tickets. Solo puede desactivarlo o fusionarlo.`
+                                    );
+                                    return;
+                                  }
+                                  if (confirm(`¿Eliminar '${item.nombre}' permanentemente?`)) {
+                                    onEliminarItem(catalogoActivo, idCampo);
+                                  }
+                                }}
+                              />
+                            )}
+                          </div>
                         </td>
                       </tr>
                     );

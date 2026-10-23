@@ -32,6 +32,7 @@ interface PestanaCamposProps {
   onChangeSecciones: (nuevasSecciones: SeccionFormulario[]) => void;
   camposPersonalizados: any[];
   onIrACamposPersonalizados: () => void;
+  onVistaPrevia?: () => void;
 }
 
 export const PestanaCampos: React.FC<PestanaCamposProps> = ({
@@ -39,6 +40,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
   onChangeSecciones,
   camposPersonalizados,
   onIrACamposPersonalizados,
+  onVistaPrevia,
 }) => {
   const [campoSeleccionado, setCampoSeleccionado] = useState<{ seccionId: string; codigo: string } | null>(null);
   const [filtroBiblioteca, setFiltroBiblioteca] = useState("");
@@ -119,8 +121,11 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
             type="button"
             className="boton-mini"
             onClick={() => {
-              setSoloObligatorios(!soloObligatorios);
-              setSoloOcultos(false);
+              setSoloObligatorios((prev) => {
+                const next = !prev;
+                if (next) setSoloOcultos(false);
+                return next;
+              });
             }}
             style={{
               backgroundColor: soloObligatorios ? "#eff6ff" : "#ffffff",
@@ -134,8 +139,11 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
             type="button"
             className="boton-mini"
             onClick={() => {
-              setSoloOcultos(!soloOcultos);
-              setSoloOcultos(false);
+              setSoloOcultos((prev) => {
+                const next = !prev;
+                if (next) setSoloObligatorios(false);
+                return next;
+              });
             }}
             style={{
               backgroundColor: soloOcultos ? "#fee2e2" : "#ffffff",
@@ -145,6 +153,21 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
           >
             Solo ocultos
           </button>
+          {onVistaPrevia && (
+            <button
+              type="button"
+              onClick={onVistaPrevia}
+              className="boton-accion-icono"
+              title="Abrir vista previa interactiva"
+              aria-label="Abrir vista previa interactiva"
+              style={{ backgroundColor: "#eff6ff", borderColor: "#bfdbfe", color: "#1d4ed8" }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
 
@@ -204,7 +227,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                         {c.etiqueta}
                       </span>
                       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                        {c.bloqueado && <span title="Campo normativo bloqueado" style={{ fontSize: 11 }}>🔒</span>}
+                        {c.bloqueado && <span title="Campo normativo bloqueado" style={{ fontSize: 11 }}>[Bloqueado]</span>}
                         <span style={{ fontSize: 10, color: c.visible ? "#16a34a" : "#dc2626" }}>
                           {c.visible ? "✓" : "Oculto"}
                         </span>
@@ -264,8 +287,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
             display: "flex",
             flexDirection: "column",
             gap: 14,
-            maxHeight: 740,
-            overflowY: "auto",
+            minHeight: 600,
             paddingRight: 4,
           }}
         >
@@ -277,7 +299,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                 borderRadius: 8,
                 border: "1px solid #e2e8f0",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                overflow: "hidden",
+                overflow: "visible",
               }}
             >
               {/* Cabecera de la Sección */}
@@ -345,7 +367,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                               </span>
                               {campo.bloqueado && (
                                 <span title="Campo normativo bloqueado; no puede ocultarse" style={{ fontSize: 11 }}>
-                                  🔒
+                                  [Bloqueado]
                                 </span>
                               )}
                             </div>
@@ -370,6 +392,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                             <option value="no">Opcional</option>
                           </select>
 
+                          {/* Botón de visibilidad con icono únicamente */}
                           <button
                             type="button"
                             onClick={() => {
@@ -379,35 +402,57 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                               }
                               actualizarCampo(sec.id, campo.codigo, { visible: !campo.visible });
                             }}
+                            className="boton-accion-icono"
                             style={{
-                              border: "none",
-                              background: "none",
-                              cursor: campo.bloqueado ? "not-allowed" : "pointer",
-                              fontSize: 11,
-                              fontWeight: 700,
+                              width: 28,
+                              height: 28,
                               color: campo.visible ? "#16a34a" : "#94a3b8",
+                              borderColor: campo.visible ? "#bbf7d0" : "#e2e8f0",
+                              backgroundColor: campo.visible ? "#f0fdf4" : "#f8fafc",
                             }}
-                            title={campo.visible ? "Ocultar del formulario" : "Hacer visible"}
+                            title={campo.visible ? "Campo visible (clic para ocultar)" : "Campo oculto (clic para mostrar)"}
+                            aria-label={campo.visible ? "Campo visible (clic para ocultar)" : "Campo oculto (clic para mostrar)"}
                           >
-                            {campo.visible ? "Visible" : "Oculto"}
+                            {campo.visible ? (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                              </svg>
+                            ) : (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                <line x1="1" y1="1" x2="23" y2="23" />
+                              </svg>
+                            )}
                           </button>
 
-                          <div style={{ display: "flex", gap: 2 }}>
+                          {/* Botones de reordenamiento con iconos únicamente */}
+                          <div style={{ display: "flex", gap: 3 }}>
                             <button
                               type="button"
                               onClick={() => moverCampo(sec.id, idx, -1)}
                               disabled={idx === 0}
-                              style={{ border: "none", background: "none", cursor: idx === 0 ? "default" : "pointer", color: idx === 0 ? "#cbd5e1" : "#475569", fontSize: 12 }}
+                              className="boton-accion-icono"
+                              style={{ width: 26, height: 26 }}
+                              title="Mover campo hacia arriba"
+                              aria-label="Mover campo hacia arriba"
                             >
-                              ↑
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="18 15 12 9 6 15" />
+                              </svg>
                             </button>
                             <button
                               type="button"
                               onClick={() => moverCampo(sec.id, idx, 1)}
                               disabled={idx === sec.campos.length - 1}
-                              style={{ border: "none", background: "none", cursor: idx === sec.campos.length - 1 ? "default" : "pointer", color: idx === sec.campos.length - 1 ? "#cbd5e1" : "#475569", fontSize: 12 }}
+                              className="boton-accion-icono"
+                              style={{ width: 26, height: 26 }}
+                              title="Mover campo hacia abajo"
+                              aria-label="Mover campo hacia abajo"
                             >
-                              ↓
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="6 9 12 15 18 9" />
+                              </svg>
                             </button>
                           </div>
                         </div>
@@ -429,8 +474,9 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
             display: "flex",
             flexDirection: "column",
             gap: 12,
-            maxHeight: 740,
-            overflowY: "auto",
+            position: "sticky",
+            top: 16,
+            alignSelf: "start",
           }}
         >
           {campoActivo && seccionActiva ? (
@@ -513,13 +559,13 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                     style={{ width: "100%", fontSize: 12 }}
                   >
                     <option value="si">Siempre Obligatorio</option>
-                    <option value="segun_tipo">Según Tipo de Cambio (Matriz 1.3.3.2.1)</option>
+                    <option value="segun_tipo">Según Tipo de Cambio</option>
                     <option value="condicional">Condicional (Reglas dinámicas)</option>
                     <option value="no">Opcional</option>
                   </select>
                   {campoActivo.bloqueado && (
                     <span style={{ fontSize: 10.5, color: "#d97706", display: "block", marginTop: 4 }}>
-                      🔒 Campo requerido por norma ITIL v4 e ISO/IEC 20000.
+                      [Bloqueado] Campo requerido por norma ITIL v4 e ISO/IEC 20000.
                     </span>
                   )}
                 </div>

@@ -1,134 +1,120 @@
-# FlowDesk Software ITSM - Sistema de Gestion de Servicios de TI
+# FlowDesk ITSM — Sistema de Gestión de Servicios de TI
 
-Plataforma empresarial de gestion de servicios de tecnologias de la informacion alineada a las mejores practicas internacionales de **ITIL v4**, **ISO/IEC 20000-1** e **ISO/IEC 27001**.
+Plataforma ITSM alineada con **ITIL 4**, **ISO/IEC 20000-1**, **ISO/IEC 27001**, **ISO/IEC 19770-1** y **COBIT 2019**.
 
-Desarrollada con **Next.js 14 (App Router)**, **TypeScript 5 (Strict Mode)**, **React 18** y **PostgreSQL 15 (Supabase)** utilizando acceso a datos relacional directo con pooling optimizado (`pg`).
-
----
-
-## Documentacion Tecnica Maestra
-
-Toda la documentacion de arquitectura, base de datos, APIs, codigo fuente, reglas de negocio y marcos normativos se encuentra en el directorio [`DOCUMENTACION/`](./DOCUMENTACIÓN/):
-
-* **[Documentacion Completa de Arquitectura y Codigo](./DOCUMENTACIÓN/DOCUMENTACION_COMPLETA_ARQUITECTURA_Y_CODIGO.md)**: Manual tecnico exhaustivo (mas de 14,000 lineas) que detalla las 77 tablas de base de datos, las 119 rutas de backend API, las 108 paginas de la aplicacion, componentes, bibliotecas, seguridad, reglas de negocio y guia para agentes de Inteligencia Artificial.
-* **[Indice Maestro de Documentacion](./DOCUMENTACIÓN/README.md)**: Catalogo de especificaciones de requerimientos, historias de usuario BDD, reglas de negocio y catalogo de servicios.
-* **[Reglas de Negocio](./DOCUMENTACIÓN/reglas_de_negocio.md)**: Compendio de politicas y directivas tecnicas del sistema.
-* **[Requerimientos Funcionales](./DOCUMENTACIÓN/requerimientos_funcionales.md)**: Alcance de capacidades del Service Desk.
-* **[Historias de Usuario](./DOCUMENTACIÓN/historias_de_usuario.md)**: Backlog con criterios BDD Gherkin y matrices de trazabilidad.
+Construida con **Next.js 14 (App Router)**, **TypeScript 5 en modo estricto**, **React 18** y **PostgreSQL 15 (Supabase)** mediante el driver `pg` y un pool de conexiones.
 
 ---
 
-## Modulos y Capacidades Implementadas
+## 1. Estado actual
 
-* **Gestion de Incidentes (Incident Management)**: Ciclo de vida completo, temporizadores de SLA en tiempo real, colas de atencion y presentadores personalizados por rol.
-* **Gestion de Solicitudes de Servicio (Service Request Management)**: Catalogo interactivo de autoservicio con filtrado reactivo por categorias, control de SLAs y flujos de aprobacion.
-* **Gestion de Problemas y KEDB (Problem Management)**: Analisis de causa raiz (RCA), soluciones temporales (Workarounds) y Base de Errores Conocidos.
-* **Habilitacion del Cambio (Change Enablement / RFC)**: Comite Asesor de Cambios (CAB), evaluacion de riesgos, ventanas de congelamiento y segregacion de funciones (SoD).
-* **Gestion de Configuraciones y Activos (CMDB & ITAM)**: Inventario de infraestructura, relaciones de dependencia de CIs, control de licencias y hardware.
-* **Gestion de Niveles de Servicio (SLA/OLA)**: Metas de primera respuesta y resolucion, matriz de Urgencia vs Impacto y semaforos de cumplimiento en tiempo real.
-* **Base de Conocimientos (KCS)**: Repositorio de articulos tecnicos y de autoservicio con gestion de estados y politicas de visibilidad.
-* **Encuestas de Satisfaccion (CSAT)**: Calificacion de 1 a 5 estrellas al resolver tickets con retroalimentacion cualitativa para mejora continua.
-* **Control de Acceso Basado en Roles (RBAC Multi-Perfil)**: Cinco perfiles oficiales (Administrador, Tecnico, Solicitante, Supervisor, Auditor) con conmutacion de perfil en caliente sin reinicio de sesion.
-* **Seguridad Defensiva**: Autenticacion JWT en cookies HTTP-only seguras, desafio Captcha matematico, bloqueo preventivo por fuerza bruta, restriccion de dominio corporativo y recuperacion de contrasena via OTP por correo electronico.
+| Indicador | Valor |
+| :--- | ---: |
+| Perfiles oficiales | 10 |
+| Módulos de dominio | 17 |
+| Opciones de menú activas | 227 |
+| Filas de visibilidad del menú | 388 |
+| Route handlers en `src/app/api` | 207 |
+| Páginas bajo `src/app/plataforma` | 227 |
+| Tablas base en `public` | 126 (incluye 4 respaldos del menú) |
+| Vistas | 1 (`vista_ticket`) |
+
+La separación por módulos está cerrada:
+
+- **Incidentes:** `/plataforma/incidentes/*`
+- **Solicitudes:** `/plataforma/solicitudes/*`
+- **Catálogos de servicios:** `/plataforma/servicios/catalogo`, `/plataforma/incidentes/catalogo` y `/plataforma/solicitudes/catalogo`
+- **Reportes:** `/plataforma/reportes/{operativos,auditoria,productividad,activos,cambios,decisiones,problemas,area,tableros}`
+
+Las rutas anteriores de reportes y del catálogo del técnico se conservan como redirecciones de compatibilidad.
 
 ---
 
-## Requisitos Previos
+## 2. Inicio rápido
 
-* Node.js version 18.18.0 o superior (recomendado Node.js 20 LTS).
-* npm version 9 o superior.
-* Instancia de PostgreSQL 14+ o proyecto activo en Supabase.
-* Git 2.40+.
-
----
-
-## Instalacion y Puesta en Marcha Local
-
-### 1. Clonar el repositorio
-```bash
-git clone https://github.com/Azure-2312/FlowDesk-Software-ITSM.git
-cd FlowDesk-Software-ITSM
-```
-
-### 2. Instalar dependencias
 ```bash
 npm install
-```
-
-### 3. Configurar variables de entorno
-Crear el archivo `.env.local` en la raiz tomando como referencia `.env.example`:
-```env
-# Conexion a PostgreSQL / Supabase
-DATABASE_URL="postgresql://postgres.[tenant]:[password]@[host]:6543/postgres"
-
-# Clave secreta para firma de tokens JWT
-JWT_SECRET="flowdesk-secret-key-2026-itsm"
-
-# Configuracion SMTP para recuperacion de clave (Opcional)
-GMAIL_USER="tu-correo@gmail.com"
-GMAIL_APP_PASSWORD="tu-password-de-aplicacion"
-```
-
-> **Nota de Seguridad**: El archivo `.env.local` se encuentra excluido del control de versiones mediante `.gitignore` para proteger las credenciales institucionales.
-
-### 4. Inicializar base de datos
-Si se inicia desde cero:
-1. Ejecutar `db/schema.sql` en el SQL Editor de PostgreSQL / Supabase.
-2. Ejecutar `db/seed.sql` para cargar catalogos iniciales y usuarios de prueba.
-3. Ejecutar las migraciones pendientes en `db/migrations/` en orden cronologico.
-
-### 5. Verificar compilacion de TypeScript
-```bash
-npx tsc --noEmit
-```
-
-### 6. Iniciar en modo desarrollo
-```bash
+# Crear .env.local con DATABASE_URL y JWT_SECRET (mínimo 32 caracteres)
 npm run dev
 ```
-Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
 
-### 7. Compilar para produccion
+Abrir `http://localhost:3000`.
+
+### Verificación antes de cada entrega
+
 ```bash
+npx tsc --noEmit
 npm run build
-npm run start
 ```
+
+Ambos comandos deben quedar en verde. Los cambios de base de datos se aplican desde `db/migrations/` y se reflejan en `db/seed.sql` cuando corresponda.
 
 ---
 
-## Estructura del Proyecto
+## 3. Arquitectura en una imagen
 
+```text
+src/app/                  Cascarones delgados: page.tsx, layout.tsx, route.ts
+src/modules/<dominio>/    Lógica completa por dominio (servicios, API, vistas, UI)
+  index.ts                Contrato de servidor
+  ui.ts                   Contrato de UI (cuando aplica)
+src/shared/               Infraestructura transversal: db, auth, RBAC, menú, errores
+db/                       schema.sql, seed.sql y migraciones incrementales
 ```
-FlowDesk-Software-ITSM/
-|-- db/                                 # Scripts DDL, seed y migraciones de base de datos
-|   |-- schema.sql
-|   |-- seed.sql
-|   `-- migrations/                     # 15 migraciones SQL incrementales
-|-- DOCUMENTACION/                      # Manuales tecnicos y especificaciones
-|   |-- DOCUMENTACION_COMPLETA_ARQUITECTURA_Y_CODIGO.md  # Manual maestro (+14,000 lineas)
-|   |-- reglas_de_negocio.md
-|   |-- requerimientos_funcionales.md
-|   |-- requerimientos_no_funcionales.md
-|   |-- historias_de_usuario.md
-|   |-- matriz_trazabilidad_funciones_hu_rf_rn.md
-|   |-- catalogo_maestro_jerarquia_menu_por_perfil_itsm.md
-|   `-- carga_servicios_catalogo_30.md
-|-- public/                             # Recursos graficos estaticos
-|-- scripts/                            # Scripts de migracion y mantenimiento
-|-- src/
-|   |-- app/
-|   |   |-- (app)/                      # Rutas autenticadas de la aplicacion (108 paginas)
-|   |   |-- api/                        # Route Handlers RESTful (119 endpoints)
-|   |   |-- login/                      # Portal de autenticacion y recuperacion
-|   |   |-- globals.css                 # Estilos globales corporativos
-|   |   `-- layout.tsx                  # Layout raiz
-|   |-- components/                     # Componentes React reutilizables (28 modulos)
-|   |-- lib/                            # Bibliotecas del servidor (db, auth, validaciones, sla)
-|   |-- middleware.ts                   # Middleware de proteccion de rutas
-|   `-- types/                          # Definiciones TypeScript de dominio
-|-- .env.example
-|-- .gitignore
-|-- package.json
-|-- README.md
-`-- tsconfig.json
-```
+
+Reglas principales:
+
+1. `src/app` no contiene reglas de negocio ni SQL de dominio.
+2. Un módulo solo consume a otro por `@/modules/<modulo>` o `@/modules/<modulo>/ui`.
+3. `src/shared` nunca importa módulos.
+4. `tickets` es el núcleo congelado; Incidentes y Solicitudes lo extienden con el modelo C (`ticket` + `ticket_incidente` + `ticket_solicitud`).
+5. Las guardas de API y de página se reutilizan desde `src/shared/lib`; no se duplican.
+
+El detalle completo está en **[Arquitectura y Código](./DOCUMENTACIÓN/ARQUITECTURA_Y_CODIGO.md)**.
+
+---
+
+## 4. Documentación
+
+Toda la documentación vive en **[`DOCUMENTACIÓN/`](./DOCUMENTACIÓN/)**. El índice maestro es **[`DOCUMENTACIÓN/README.md`](./DOCUMENTACIÓN/README.md)**.
+
+| Documento | Contenido |
+| :--- | :--- |
+| [Arquitectura y Código](./DOCUMENTACIÓN/ARQUITECTURA_Y_CODIGO.md) | Módulos, contratos, rutas, seguridad, modelo de datos, fases y calidad. |
+| [Menús y Perfiles](./DOCUMENTACIÓN/MENUS_Y_PERFILES.md) | 10 perfiles, SoD, catálogo único de menú, árbol por perfil y cobertura. |
+| [Requerimientos](./DOCUMENTACIÓN/REQUERIMIENTOS.md) | RF, RNF y reglas de negocio. |
+| [Historias de Usuario](./DOCUMENTACIÓN/HISTORIAS_DE_USUARIO.md) | Épicas, HU y criterios de aceptación. |
+| [Trazabilidad](./DOCUMENTACIÓN/TRAZABILIDAD.md) | Matriz funcionalidad ↔ HU ↔ RF ↔ RN. |
+| [Plan de Equipo y Scrum](./DOCUMENTACIÓN/PLAN_EQUIPO_Y_SCRUM.md) | Equipo, propiedad de módulos, Git, sprints y calidad. |
+| [Prompts de Configuración](./DOCUMENTACIÓN/PROMPTS_CONFIGURACION_ADMIN.md) | Especificaciones de Problemas, Cambios y Activos/CMDB. |
+| [Catálogo de Servicios](./DOCUMENTACIÓN/CATALOGO_SERVICIOS_DATOS.md) | Datos de los 30 servicios de referencia. |
+
+---
+
+## 5. Perfiles
+
+1. Administrador
+2. Técnico
+3. Solicitante
+4. Supervisor
+5. Gestor de Área
+6. Auditor
+7. Aprobador (CAB)
+8. Gestor de Cambios
+9. Gestor de Activos y Configuración
+10. Gestor de Problemas
+
+La visibilidad de cada perfil se controla con `opciones_menu_perfiles`; la autorización de APIs y páginas se valida con capacidades y guardas centralizadas.
+
+---
+
+## 6. Flujo de trabajo
+
+- Ramas principales: `main`, `feature/alexis-problemas-conocimiento`, `prueba-conexion` y `verify-junior`.
+- Cada cambio debe pasar `npx tsc --noEmit` y `npm run build` antes del commit.
+- Los cambios de menú se aplican por migración y se sincronizan con `db/seed.sql`.
+- Después de cada entrega se actualizan las ramas de integración y se publica en los remotos.
+
+---
+
+**FlowDesk ITSM** — Proyecto académico y operativo de mesa de servicio.

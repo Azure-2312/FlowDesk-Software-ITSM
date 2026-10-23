@@ -146,12 +146,18 @@ function IconoCategoria({ nombre, codigo }: { nombre: string; codigo?: string })
   );
 }
 
-function VistaCatalogoServicios() {
+export function VistaCatalogoServicios({
+  tipoForzado,
+  vistaForzada,
+}: {
+  tipoForzado?: number;
+  vistaForzada?: ModoVista;
+} = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tipoParam = searchParams.get("tipo");
   const vistaParam = searchParams.get("vista");
-  const tipoActual = tipoParam === "2" ? 2 : 1;
+  const tipoActual = tipoForzado !== undefined ? tipoForzado : (tipoParam === "2" ? 2 : 1);
 
   const [servicios, setServicios] = useState<ServicioCatalogo[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -168,12 +174,14 @@ function VistaCatalogoServicios() {
   const [busquedaAsignar, setBusquedaAsignar] = useState<string>("");
 
   // Modo de vista: sin modales flotantes
-  const [vista, setVista] = useState<ModoVista>(vistaParam === "crear" ? "nuevo" : "tabla");
+  const [vista, setVista] = useState<ModoVista>(vistaForzada || (vistaParam === "crear" ? "nuevo" : "tabla"));
   const [servicioSeleccionado, setServicioSeleccionado] = useState<ServicioCatalogo | null>(null);
   const [guardando, setGuardando] = useState(false);
 
   useEffect(() => {
-    if (vistaParam === "crear") {
+    if (vistaForzada) {
+      setVista(vistaForzada);
+    } else if (vistaParam === "crear") {
       setVista("nuevo");
       setCategoriaSeleccionada(null);
     } else {
@@ -184,7 +192,7 @@ function VistaCatalogoServicios() {
       setServiciosSeleccionadosParaAsignar([]);
       setBusquedaAsignar("");
     }
-  }, [vistaParam, tipoParam]);
+  }, [vistaParam, tipoParam, vistaForzada]);
 
   // Formulario de edición de servicio
   const [formNombre, setFormNombre] = useState("");
@@ -398,7 +406,7 @@ function VistaCatalogoServicios() {
 
       setMensajeExito(`Servicio [${datos.servicio?.codigo_servicio}] registrado exitosamente.`);
       if (vistaParam === "crear") {
-        router.push(`/admin/servicios?tipo=${nuevoTipo}`);
+        router.push(`/plataforma/servicios/configuracion?tipo=${nuevoTipo}`);
       } else {
         setVista("tabla");
         await cargarServicios();
@@ -665,7 +673,7 @@ function VistaCatalogoServicios() {
                 type="button"
                 onClick={() => {
                   if (vistaParam === "crear") {
-                    router.push(`/admin/servicios?tipo=${nuevoTipo}`);
+                    router.push(`/plataforma/servicios/configuracion?tipo=${nuevoTipo}`);
                   } else {
                     setVista("tabla");
                   }
@@ -934,7 +942,7 @@ function VistaCatalogoServicios() {
                 style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   if (vistaParam === "crear") {
-                    router.push(`/admin/servicios?tipo=${nuevoTipo}`);
+                    router.push(`/plataforma/servicios/configuracion?tipo=${nuevoTipo}`);
                   } else {
                     setVista("tabla");
                   }
@@ -1681,7 +1689,7 @@ function VistaCatalogoServicios() {
                   </p>
                   <div style={{ display: "flex", justifyContent: "center", gap: 12 }}>
                     <Link
-                      href="/admin/servicios?vista=crear"
+                      href="/plataforma/servicios/configuracion?vista=crear"
                       className="boton-primario"
                       style={{ width: "auto", padding: "8px 20px", fontSize: 13, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
                     >
@@ -2091,7 +2099,7 @@ function VistaCatalogoServicios() {
                   </p>
                   <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
                     <Link
-                      href="/admin/servicios?vista=crear"
+                      href="/plataforma/servicios/configuracion?vista=crear"
                       className="boton-secundario"
                       style={{ width: "auto", padding: "8px 18px", fontSize: 13, textDecoration: "none" }}
                     >
@@ -2169,7 +2177,7 @@ function VistaCatalogoServicios() {
                             <td style={{ textAlign: "right" }}>
                               <div style={{ display: "inline-flex", gap: 5 }}>
                                 <Link
-                                  href={`/admin/servicios/${s.id_servicio}/formulario`}
+                                  href={`/plataforma/servicios/configuracion/${s.id_servicio}/formulario`}
                                   className="boton-accion-icono"
                                   title="Configurar formulario y grupo resolutor"
                                   aria-label="Configurar formulario y grupo resolutor"

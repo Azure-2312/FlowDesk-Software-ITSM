@@ -1,38 +1,105 @@
 # PROMPT 2 de 3 — Configuración del administrador: GESTIÓN DE CAMBIOS (RFC)
 
-> **Rama del menú que se implementa:** `1 Configuración > 1.3 Configuración de procesos > 1.3.4 Gestión de cambios`
-> **Prompts hermanos:** Prompt 1 = Gestión de problemas (1.3.3) · Prompt 3 = Activos y CMDB (1.5), se entrega por separado.
-> **Idioma de la interfaz:** español. **Código, tablas y endpoints:** nombres en español snake_case salvo convención técnica.
-> **Stack real del proyecto:** Next.js 14 con App Router (frontend + backend) y PostgreSQL (alojado en Supabase y accedido con el pool `pg` de `src/lib/db.ts`). Tienes acceso completo al código, la base de datos, el frontend y el backend.
-> **Versión del documento:** 2.0 (actualizada a la arquitectura FlowDesk: numeración y rutas reales, reglas de navegación sin duplicar el menú, sistema de íconos y validaciones en todos los campos).
+> **Pantallas que se implementan (menú del Administrador, raíz `Cambios`):** `Configuración de formulario` (`/plataforma/admin/procesos/cambios/formulario`) · `Tipos de cambio y requisitos` (`/plataforma/admin/procesos/cambios/tipos-requisitos`) · `Flujo de evaluación, autorización y revisión posterior` (`/plataforma/admin/procesos/cambios/flujo-evaluacion`) · `Notificaciones de cambios` (`/plataforma/admin/procesos/cambios/notificaciones-calendario`, que además aloja el calendario: ventanas, congelamientos, feriados y conflictos).
+> **Módulo dueño y único perímetro de trabajo:** `src/modules/cambios` (dueño: Nain; ver sección 0A). **Prompts hermanos (se entregan por separado):** Prompt 1 = Problemas (módulo `problemas`) · Prompt 3 = Activos y CMDB (módulos `activos` y `cmdb`).
+> **Idioma de la interfaz:** español. **Código, tablas y endpoints:** nombres en español `snake_case` salvo convención técnica.
+> **Stack real del proyecto:** Next.js 14.2 (App Router), React 18, TypeScript 5.5 y PostgreSQL en Supabase accedido con el pool `pg` de `@/shared/lib/db`. Arquitectura **vertical slice**: toda la lógica de un dominio vive en `src/modules/<modulo>/`; `src/app` solo contiene cascarones delgados.
+> **Documentos normativos (se adjuntan junto con este prompt):** `ARQUITECTURA_Y_CODIGO.md` (diseño técnico, contratos, guardas, modelo de datos) y `MENUS_Y_PERFILES.md` (árbol de menú, perfiles y SoD). Precedencia: el **código y la base vigentes** mandan sobre conteos y nombres; esos dos documentos mandan sobre diseño técnico y menú; este prompt manda sobre el contenido funcional de las pantallas.
+> **Versión del documento:** 3.0 (adaptada a la arquitectura modular vigente al 2026-10-21; el contenido funcional de la v2.0 se conserva).
+
+### Qué cambió respecto de la v2.0 (solo estructura; el contenido funcional no cambia)
+| v2.0 (arquitectura anterior) | v3.0 (arquitectura vigente) |
+|---|---|
+| Menú numerado `1 Configuración > 1.3 > 1.3.4` | La raíz **Configuración ya no existe**. Las pantallas viven bajo la raíz **Cambios** del menú del Administrador. Las referencias `1.x.x` a otras pantallas se sustituyen por su **nombre y ruta** (sección 2.1). |
+| Rutas `/admin/...`, `/cambios/...`, `/tecnico/...` | Rutas canónicas `/plataforma/...` (los alias sin `/plataforma` son reescrituras de `next.config.js`, no destinos). |
+| Código en `src/lib`, `src/components`, `src/modules/admin` | `src/modules/cambios` (dominio), `src/shared` (infraestructura transversal) y cascarones en `src/app`. |
+| Cookie `sesion_tickets`, JWT manual | Cookie `sesion`; guardas compartidas `sesionConCapacidad` / `exigirCapacidadPagina` y capacidades `dominio:acción`. |
+| Permisos `config.cambios.*`, `cambios.*` | Capacidades `cambios:config:*`, `cambios:*`, `cambios:modelos:*` (sección 10). |
+| Se reutilizaba el componente de configuración del Prompt 1 y se tocaban otras pantallas | Cada módulo trabaja solo en su carpeta: **no se importa nada de `problemas`**; lo común se pide como promoción a `shared` (SC-10). **Este prompt solo toca el módulo `cambios`**; lo que requiere otros módulos se entrega como solicitud (sección 17). |
+| Los feriados, ventanas y congelamientos eran pestañas sin más | El Gestor de Cambios (perfil 8) ve **Feriados, Períodos de congelamiento y Ventanas de mantenimiento como ítems de menú** con `?vista=` (sección 2.1): la pantalla debe soportar esos enlaces profundos sin repetir el menú (3A.1). |
 
 ---
 
 ## 0. Instrucciones para la IA que implementará esto
 
-**Rol:** eres un arquitecto/desarrollador senior de software ITSM. Vas a construir el área de configuración del *administrador* para el proceso de Gestión de Cambios (Change Enablement) de un sistema ITSM que ya tiene Incidentes y Solicitudes de servicio.
+**Rol:** eres un arquitecto/desarrollador senior de software ITSM. Vas a construir el área de configuración del *administrador* para el proceso de Gestión de Cambios (Change Enablement) de FlowDesk, un sistema ITSM que ya tiene Incidentes, Solicitudes de servicio, Problemas, Activos y CMDB.
 
 **Reglas obligatorias:**
 
-1. Implementa **exactamente** lo descrito. Si algo no está especificado, **no lo inventes**: antes de escribir código, devuelve una lista numerada de "Preguntas abiertas" (ver sección 15) y espera respuesta.
-2. **No cambies la numeración ni los nombres del menú**, salvo el renombre indicado en la sección 2.2.
+1. Implementa **exactamente** lo descrito. Si algo no está especificado, **no lo inventes**: antes de escribir código, devuelve el informe de la Etapa 0 con las "Preguntas abiertas" (sección 15) y espera respuesta.
+2. **No cambies la estructura ni los nombres del menú.** No se crean, mueven ni renombran opciones de `opciones_menu` / `opciones_menu_perfiles` (pertenecen al módulo `plataforma`). Las cuatro pantallas ya existen en el menú del Administrador.
 3. **Nada hardcodeado:** todo lo que aquí se llama "configurable" se guarda en base de datos y se lee en tiempo de ejecución. Los valores de fábrica (sección 11) se cargan como datos semilla.
-4. Todas las pantallas siguen el **patrón común de la sección 3** (borrador, publicación, versionado, auditoría, permisos). Si el Prompt 1 (Gestión de problemas) ya se implementó, **reutiliza ese mismo componente de pantalla de configuración**; no lo vuelvas a construir.
-5. **Reutiliza lo que ya existe; no crees duplicados** (ver sección 12): el editor de formulario de Incidentes (1.3.1.1) y su **creador de campos personalizados**, la **matriz impacto × urgencia → prioridad** que usa Incidentes, el catálogo de servicios, los perfiles, la CMDB y, si ya existen por el Prompt 1, el constructor de reglas condicionales, el motor de estados y el componente de borrador/publicación. Ubica cada pieza en el código (Etapa 0), extiéndela para la entidad `cambio` y crea componentes nuevos solo cuando no exista nada reutilizable.
-6. Para cada pantalla entrega, en este orden: (a) modelo de datos, (b) API, (c) interfaz, (d) validaciones, (e) permisos, (f) auditoría, (g) pruebas.
-7. Trabaja por etapas y detente al final de cada una para validación: **Etapa 0** = reconocimiento del código y la base de datos (sección 15, **obligatoria antes de escribir código**), **Etapa A** = 1.3.4.1, **Etapa B** = 1.3.4.2, **Etapa C** = 1.3.4.3, **Etapa D** = 1.3.4.4. *Nota de dependencia:* el formulario (Etapa A) muestra un aviso de conflictos de calendario que se implementa completo en la Etapa D; en la Etapa A deja la interfaz del aviso y un servicio provisional que devuelve "sin conflictos".
-8. **Si falta un dato en la base de datos, agrégalo.** La lista de lo que debe verificarse y, si no existe, crearse está en la sección 13. Todo cambio de esquema va en migraciones SQL versionadas e idempotentes, con autorización en cada Route Handler (cookie `sesion_tickets`, JWT y perfil activo, como el resto de `src/app/api/`) y consultas parametrizadas con `src/lib/db.ts`.
-9. Sigue las convenciones ya presentes en el repositorio (estructura de carpetas, estilo de API, componentes de UI, manejo de errores, tareas programadas).
-10. **Integridad del proceso:** toda regla de negocio crítica (segregación de funciones, quórum y reglas de decisión, períodos de congelamiento, transiciones permitidas, campos obligatorios por transición, bloqueo de ejecución sin autorización) **se valida en el backend o la base de datos**, no solo en la interfaz. La interfaz solo la refleja.
-11. **Fechas y horas:** se guardan como `timestamptz` en UTC y se muestran en la zona horaria del sistema (parámetro configurable; si no existe, créalo, sección 13). Las ventanas recurrentes se interpretan en esa zona horaria.
-
-**Reglas adicionales de esta versión (arquitectura FlowDesk, interfaz y validaciones):**
-
+4. Todas las pantallas siguen el **patrón común de la sección 3** (borrador, publicación, versionado, auditoría, permisos). Construye ese patrón **una sola vez dentro de `cambios`** (`configuracion/compartido/`); si `src/shared/components` ya lo publica, úsalo. **No importes componentes del módulo `problemas`** (prohibido el import cruzado); la promoción a `shared` se pide en SC-10.
+5. **Reutiliza lo que ya existe; no crees duplicados.** Existen (ubícalos en la Etapa 0): el editor de formularios y el **creador de campos personalizados** (módulo `tickets`), la **matriz impacto × urgencia → prioridad** (módulo `servicios`) y `calcularPrioridadITIL` (contrato de `tickets`), el motor de SLA con calendarios hábiles, el catálogo de servicios, los perfiles (`identidades`), departamentos, grupos y técnicos (`organizacion`), la CMDB (`cmdb`) y las tablas del dominio (`cambio`, `cambio_aprobacion`, `cab_reunion`, `periodos_congelamiento`). Consúmelos **solo por contrato** (`@/modules/<modulo>` o `@/modules/<modulo>/ui`); no los copies ni los modifiques.
+6. Para cada pantalla entrega, en este orden: (a) modelo de datos, (b) API, (c) interfaz, (d) validaciones, (e) permisos, (f) auditoría, (g) pruebas. **Pruebas:** el proyecto no tiene suite automatizada; entrega las reglas críticas (SoD, quórum, congelamientos, transiciones, conflictos) como funciones puras verificables y un checklist de humo por perfil (panel + 3 pantallas + 1 detalle). No agregues un framework de pruebas sin aprobación (pregunta abierta 5).
+7. Trabaja por etapas y detente al final de cada una para validación: **Etapa 0** = reconocimiento del código y la base de datos (sección 15, **obligatoria antes de escribir código**), **Etapa A** = `formulario` (1.3.4.1), **Etapa B** = `tipos-requisitos` (1.3.4.2), **Etapa C** = `flujo-evaluacion` (1.3.4.3), **Etapa D** = `notificaciones-calendario` (1.3.4.4). Al cerrar cada etapa ejecuta los *quality gates*: `npx tsc --noEmit` sin errores, `npm run build` sin errores, migraciones aplicadas en base limpia y en base existente, y humo de las rutas afectadas. *Nota de dependencia:* el formulario (Etapa A) muestra un aviso de conflictos de calendario que se implementa completo en la Etapa D; en la Etapa A deja la interfaz del aviso y un servicio provisional que devuelve "sin conflictos".
+8. **Si falta un dato en la base de datos y pertenece al módulo `cambios`, agrégalo.** Todo cambio de esquema va en `db/migrations/YYYYMMDD_descripcion.sql` (idempotente, fecha igual o posterior a la última migración existente; no se edita una migración aplicada) y se refleja en `db/seed.sql` si hay catálogos o datos maestros. Si el dato pertenece a **otro** módulo (por ejemplo columnas de `ticket_incidente`, `servicio_catalogo`, `elemento_configuracion` o la tabla de ausencias), **no lo agregues**: regístralo como solicitud (sección 17).
+9. Sigue las convenciones del repositorio: tablas y columnas en `snake_case`; baja lógica con `estado_registro boolean`; auditoría por columnas (`usuario_creacion`, `fecha_creacion`, `usuario_modificacion`, `fecha_modificacion`); extensibilidad por `campos_adicionales jsonb`; FK como `id_*`. No se eliminan datos históricos por conveniencia.
+10. **Integridad del proceso:** toda regla de negocio crítica (segregación de funciones, quórum y reglas de decisión, períodos de congelamiento, transiciones permitidas, campos obligatorios por transición, bloqueo de ejecución sin autorización) **se valida en el servicio del servidor o la base de datos**, no solo en la interfaz. La interfaz solo la refleja.
+11. **Fechas y horas:** se guardan como `timestamptz` en UTC y se muestran en la zona horaria del sistema (parámetro configurable del módulo `plataforma`; si no existe, solicitud SC-6). Las ventanas recurrentes se interpretan en esa zona horaria.
 12. Las pantallas de este prompt **ya existen** casi por completo (ver 2.3). **No las reconstruyas desde cero**: audítalas contra este documento, corrige diferencias, completa lo que falta y conserva datos y contratos de API existentes.
-13. Respeta la arquitectura: pantallas en `src/app/plataforma/...` (las rutas URL no llevan `plataforma`), Route Handlers en `src/app/api/...`, validadores en `src/lib/validaciones.ts`, dominio en `src/modules/...` y componentes compartidos en `src/shared/...`. **El código nuevo va en `modules`/`shared`**; no se crean más copias locales de componentes.
+13. **Arquitectura de código (obligatoria):**
+    - `page.tsx` y `route.ts` en `src/app` son **cascarones**: la página valida con `exigirCapacidadPagina(...)` y monta una vista del módulo; el `route.ts` declara `dynamic = "force-dynamic"`, `revalidate = 0` y reexporta el controlador. Sin SQL, sin reglas de negocio.
+    - Controlador (`src/modules/cambios/**/api/*Controller.ts`): autoriza con `sesionConCapacidad(CAPACIDADES.X)`, valida la forma del request, delega en el servicio y traduce errores con `respuestaError`. **Prohibido** crear guardas propias (`guardia.ts` o equivalentes) y **prohibido** verificar el JWT a mano.
+    - Servicio (`.../services/*`): contiene la regla de dominio y el SQL parametrizado (`query` de `@/shared/lib/db`); lanza `ErrorDominio`; no conoce `NextRequest` ni `NextResponse`.
+    - Las vistas cliente reciben datos o contexto; no acceden a la base.
+    - Los validadores son funciones puras compartidas por el formulario y el controlador (ver 3C).
 14. Cumple en **todas** las pantallas las secciones **3A** (navegación sin duplicar el menú), **3B** (íconos y botones) y **3C** (validaciones en tiempo real, solo errores).
-15. **Autorización:** cada Route Handler verifica la cookie `sesion_tickets` (JWT) y el **perfil activo**, como el resto de `src/app/api/`; consultas SQL parametrizadas con `query()` / `queryRow()` de `src/lib/db.ts`. Las reglas críticas (segregación de funciones, quórum, congelamientos, transiciones) siguen validándose en el servidor.
-16. **SLA y calendarios:** `src/lib/sla.ts` ya calcula con **calendarios hábiles**. Reutiliza su tabla de feriados y su convención de horas; las pestañas de feriados, ventanas y congelamiento no deben crear estructuras paralelas.
+15. **Autorización en tres capas:** página (`exigirCapacidadPagina`; en los enlaces `?vista=` que el menú del Gestor de Cambios expone, se acepta además la pertenencia al menú según la Etapa 0), API (`sesionConCapacidad`) y servicio (alcance y segregación de funciones). El middleware solo comprueba que exista la cookie `sesion`; **no autoriza**. El servidor no confía en el cliente.
+16. **SLA y calendarios:** el motor de SLA existente ya calcula con **calendarios hábiles**. Reutiliza su tabla de feriados y su convención de horas; las pestañas de feriados, ventanas y congelamiento no deben crear estructuras paralelas (Etapa 0 ubica el motor; antes estaba en `src/lib/sla.ts`).
+17. **Commits y ramas:** trabaja en la rama de tu módulo (según `PLAN_EQUIPO_Y_SCRUM.md`; si no la conoces, pregúntame); commits `tipo(cambios): descripción` en español, imperativo, sin emojis (`feat`, `fix`, `refactor`, `docs`, `chore`, `test`); no mezcles refactor masivo con funcionalidad.
+
+---
+
+## 0A. Perímetro del módulo (qué puedes tocar y qué no)
+
+**Regla de oro:** trabajas **dentro de `src/modules/cambios`**: puedes crear carpetas y archivos, modificarlos y eliminarlos. **No puedes** crear módulos nuevos en `src/modules/`, **dividir `cambios` en dos módulos**, ni modificar otro módulo.
+
+| Zona | Permiso |
+|---|---|
+| `src/modules/cambios/**` | **Total** (crear, modificar, eliminar; incluida la carpeta `configuracion/` y `docs/`). |
+| Cascarones: `src/app/plataforma/admin/procesos/cambios/**/page.tsx` y `src/app/api/admin/cambios/**/route.ts` (y, si la Etapa 0 lo decide, el retiro de `/plataforma/admin/rfc` y `/api/admin/rfc-config`) | Solo montar/reexportar lo del módulo. Conserva las rutas y los contratos de API existentes. |
+| `db/migrations/` y `db/seed.sql` | Solo tablas y datos del módulo (`cambio*`, `cab_*`, `periodos_congelamiento`, `ventana_mantenimiento`, `cambio_config_*`). |
+| `src/modules/<otro>/**` (`tickets`, `incidentes`, `solicitudes`, `problemas`, `servicios`, `cmdb`, `activos`, `organizacion`, `identidades`, `plataforma`, `conocimiento`, `reportes`, `perfiles`, …) | **Prohibido modificar.** Se consumen por contrato (`index.ts` / `ui.ts`) o, si falta algo, por **solicitud** (sección 17). |
+| `src/shared/**`, `src/middleware.ts`, `next.config.js`, `package.json`, tablas `opciones_menu*` | **Prohibido modificar.** Lo que falte se pide en la sección 17. |
+
+**Cómo se consume a otros módulos:** solo `@/modules/<modulo>` o `@/modules/<modulo>/ui`. Prohibido importar `services/`, `api/`, `views/` o `components/` de otro módulo. Para datos de otro dominio se permite SQL de **lectura acotada** dentro de un servicio propio, nunca importar sus repositorios. El grafo de dependencias debe seguir acíclico: si `problemas` necesita algo de `cambios` y viceversa, se resuelve por dato, evento o servicio compartido, no por importación cruzada.
+
+**Cómo se expone lo que otros módulos necesitan:** agrega a `src/modules/cambios/index.ts` (servidor) y, solo si hay UI que otro módulo deba montar (por ejemplo un formulario de RFC prellenado desde un problema, un incidente o un activo), crea `src/modules/cambios/ui.ts` (cliente, sin acceso a DB). Cambiar un contrato es cambiar una API interna: documenta el cambio.
+
+**Solicitudes a otros módulos:** cuando algo requiera tocar un módulo ajeno, no lo implementes: regístralo en `src/modules/cambios/docs/SOLICITUDES_A_OTROS_MODULOS.md` (formato de la sección 17: id, módulo destino, qué se necesita, contrato propuesto, comportamiento mientras no exista) y continúa con la **degradación definida**. Las solicitudes ya conocidas están en la sección 17.
+
+**Estructura sugerida dentro del módulo** (si la Etapa 0 encuentra una equivalente ya existente, úsala; no dupliques):
+
+```
+src/modules/cambios/
+├── index.ts                       # contrato de servidor
+├── ui.ts                          # contrato de UI (solo si otro módulo monta algo, p. ej. formulario de RFC prellenado)
+├── configuracion/                 # carpeta de esta entrega (o la equivalente existente)
+│   ├── compartido/                # BarraAccionesComun, Modal*, Boton, BotonIcono, Iconos, borrador/publicación/versionado/bloqueo
+│   ├── validaciones/              # cambioValidaciones.ts (validadores del catálogo 3C que no existan en shared)
+│   ├── formulario/                # 1.3.4.1 → components/ (Pestana*), services/, api/, types.ts
+│   ├── tipos-requisitos/          # 1.3.4.2
+│   ├── flujo-evaluacion/          # 1.3.4.3
+│   ├── notificaciones-calendario/ # 1.3.4.4
+│   └── motor/                     # riesgo, autoridad, etapas, quórum, conflictos, calendario, jobs
+└── docs/                          # INFORME_ETAPA_0.md y SOLICITUDES_A_OTROS_MODULOS.md
+```
+
+**Ejemplo de cascarones** (los únicos archivos que escribes fuera del módulo):
+
+```tsx
+// src/app/plataforma/admin/procesos/cambios/formulario/page.tsx
+export default async function PaginaCambiosFormulario() {
+  const { sesion } = exigirCapacidadPagina(CAPACIDADES.CAMBIOS_CONFIG_VER);
+  return <VistaCambiosFormulario sesion={sesion} />;   // importada desde el propio módulo cambios
+}
+
+// src/app/api/admin/cambios/formulario/configuracion/route.ts
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export { GET, PUT } from "@/modules/cambios/configuracion/formulario/api/configuracionController";
+```
 
 ---
 
@@ -66,96 +133,99 @@ El diseño debe respetar:
 
 ---
 
-## 2. Ubicación en el menú y estructura de archivos (arquitectura FlowDesk)
+## 2. Ubicación en el menú y estructura de archivos (arquitectura vigente)
 
-### 2.1 Menú de administrador (referencia; ya se sirve desde `/api/menu` y `src/lib/menu.ts`)
+### 2.1 Menú vigente (referencia; fuente `MENUS_Y_PERFILES.md` §5, **sin numeración**)
+
+El menú es un catálogo único (`opciones_menu` + visibilidad N:M en `opciones_menu_perfiles`) servido por `src/shared/lib/menu.ts`. Una carpeta tiene `url_menu = ''`; una pantalla tiene URL, y la **identidad de una pantalla es su URL completa, query incluida**. **Cambios es una raíz del catálogo** (carpeta). Lo que ve el **Administrador**:
 
 ```
-1 Configuración (/admin)
- 1.1 Identidades y accesos
-  1.1.1 Gestión de usuarios (/admin/usuarios)
-  1.1.2 Perfiles y permisos (/admin/perfiles)
-  1.1.3 Estructura del menú (/admin/menu)
- 1.2 Catálogo de servicios y SLAs (/admin/servicios)
-  1.2.1 Servicios de incidentes (/admin/servicios?tipo=1)
-  1.2.2 Servicios de solicitudes (/admin/servicios?tipo=2)
-  1.2.3 Crear servicio (/admin/servicios?vista=crear)
-  1.2.4 Configuración de categorías (componente GestionCategorias; ruta a confirmar en la Etapa 0)
-  1.2.5 Objetivos SLA (/admin/servicios/sla)
- 1.3 Configuración de procesos (/admin/procesos)
-  1.3.1 Incidentes
-   1.3.1.1 Configuración de formulario (/admin/tickets-formularios?tipo=incidente)
-   1.3.1.2 Flujo de estados y acciones (/admin/tickets-vistas?seccion=estados&tipo=incidente)
-  1.3.2 Solicitudes de servicio
-   1.3.2.1 Configuración de formulario (/admin/tickets-formularios?tipo=solicitud)
-   1.3.2.2 Flujo de atención y aprobaciones (/admin/tickets-vistas?seccion=estados&tipo=solicitud)
-  1.3.3 Gestión de problemas (/admin/procesos/problemas)
-   1.3.3.1 Configuración de formulario (/admin/procesos/problemas/formulario)
-   1.3.3.2 Flujo de investigación y seguimiento (/admin/procesos/problemas/flujo)
-   1.3.3.3 Relación con incidentes, errores conocidos y conocimiento (/admin/procesos/problemas/relaciones)
-  1.3.4 Gestión de cambios (/admin/procesos/cambios)            <-- SE IMPLEMENTA EN ESTE PROMPT
-   1.3.4.1 Configuración de formulario (/admin/procesos/cambios/formulario)
-   1.3.4.2 Tipos de cambio y requisitos (/admin/procesos/cambios/tipos-requisitos)
-   1.3.4.3 Flujo de evaluación, autorización y revisión posterior (/admin/procesos/cambios/flujo-evaluacion)
-   1.3.4.4 Notificaciones y calendario de cambios (/admin/procesos/cambios/notificaciones-calendario)
- 1.4 Organización y soporte (/admin/organizacion)
-  1.4.1 Departamentos empresariales (/admin/departamentos-empresa)
-  1.4.2 Departamentos y grupos resolutores de TI (/admin/departamentos)
-  1.4.3 Técnicos y niveles de soporte (/admin/tecnicos)
-  1.4.4 Supervisores (/admin/departamentos?vista=supervisores)
- 1.5 Activos y configuración (/admin/activos-config/tipos-modelos-atributos)
-  1.5.1 Tipos, modelos y atributos de activos (/admin/activos-config/tipos-modelos-atributos)
-  1.5.2 Ciclos de vida y reglas de transición (/admin/activos-config/ciclos-vida-transiciones)
-  1.5.3 Licencias y contratos (/admin/activos-config/licencias-contratos)
-  1.5.4 Tipos de elementos de configuración y relaciones de CMDB (/admin/activos-config/cmdb-relaciones)
- 1.6 Comunicaciones y notificaciones (/admin/comunicaciones)
-  1.6.1 Plantillas de correo y otros canales (/admin/notificaciones?seccion=plantillas)
-  1.6.2 Configuración de contacto (/admin/notificaciones?seccion=contacto)
- 1.7 Gobierno del conocimiento (/admin/conocimiento)
-  1.7.1 Categorías, responsables y reglas de publicación/revisión (/admin/conocimiento-config)
- 1.8 Auditoría, seguridad y retención (/admin/auditoria)
-  1.8.1 Auditoría de cambios (/admin/auditoria-sistema)
-  1.8.2 Registros de seguridad y autenticación (/admin/seguridad-logs)
-  1.8.3 Retención y mantenimiento de datos (/admin/mantenimiento-datos)
-2 Reportes y Analítica
- 2.1 Indicadores operativos y SLA (/tickets/reportes)
- 2.2 Tableros (/admin/reportes-disenador)
+Cambios  (carpeta, perfil Administrador)
+ ├─ Historial de cambios ............................................. /plataforma/cambios/gestion/todos                                 (operativa; no se implementa aquí)
+ ├─ Configuración de formulario ...................................... /plataforma/admin/procesos/cambios/formulario                   <-- SE IMPLEMENTA
+ ├─ Flujo de evaluación, autorización y revisión posterior ........... /plataforma/admin/procesos/cambios/flujo-evaluacion              <-- SE IMPLEMENTA
+ ├─ Tipos de cambio y requisitos ..................................... /plataforma/admin/procesos/cambios/tipos-requisitos             <-- SE IMPLEMENTA
+ └─ Notificaciones de cambios ........................................ /plataforma/admin/procesos/cambios/notificaciones-calendario    <-- SE IMPLEMENTA
 ```
 
-Cambios respecto de versiones anteriores de este prompt: **(a)** Gestión de cambios es ahora `1.3.4` y Gestión de problemas `1.3.3`; **(b)** aparece `1.2.4 Configuración de categorías`, por lo que **Objetivos SLA pasa a ser `1.2.5`**; **(c)** `1.3.4.1` se llama "Configuración de formulario".
+**Atención — enlaces profundos del Gestor de Cambios (perfil 8):** su menú (carpeta `Cambios`) incluye **tres ítems que apuntan a ventanas internas** de la cuarta pantalla:
 
-### 2.2 Convención de numeración interna
-- `1.3.4.1` a `1.3.4.4` son **ítems de menú = pantallas** (cada una con su `page.tsx`).
-- Los puntos `1.3.4.1.1`, `1.3.4.1.2`, etc. son **ventanas internas** de esa pantalla (componentes `Pestana*.tsx`). Cumplen la sección 3A: **ninguna ventana interna repite un ítem del menú**.
+| Ítem de menú del Gestor de Cambios | URL (identidad en el catálogo) |
+|---|---|
+| Feriados | `/plataforma/admin/procesos/cambios/notificaciones-calendario?vista=feriados` |
+| Períodos de congelamiento | `/plataforma/admin/procesos/cambios/notificaciones-calendario?vista=congelamiento` |
+| Ventanas de mantenimiento | `/plataforma/admin/procesos/cambios/notificaciones-calendario?vista=ventanas` |
 
-| Pantalla (ítem de menú) | Ruta | Ventanas internas (componentes `Pestana*.tsx`) | Modales y cajones |
+Consecuencias obligatorias (cumplen 3A.1): (1) la pantalla acepta `?vista=feriados|congelamiento|ventanas|notificaciones|conflictos|presentacion` y abre directamente esa ventana; (2) **la barra de ventanas internas omite las ventanas que el menú del perfil activo ya muestra como ítem** (para el Gestor de Cambios solo quedan visibles `Notificaciones`, `Conflictos y capacidad` y `Presentación del calendario`; para el Administrador, que solo tiene el ítem `Notificaciones de cambios`, quedan las seis); (3) cambiar de ventana no altera el ítem activo del menú; (4) la guarda de página admite al Gestor de Cambios por la pertenencia de esa URL a su menú además de la capacidad (la Etapa 0 confirma cómo lo resuelven `exigirMenuPagina` / `exigirCapacidadPagina`).
+
+**Nombre de la cuarta pantalla:** el catálogo la llama **"Notificaciones de cambios"**. El título de la página, el breadcrumb y el ítem activo deben coincidir con el menú (3A.1.3); este documento conserva "Notificaciones y calendario de cambios" solo como nombre descriptivo. Si el catálogo y la pantalla difieren, se reporta en la Etapa 0 (la corrección del catálogo es del módulo `plataforma`).
+
+**Pantallas de otros módulos que este prompt referencia** (se consumen por contrato; **no se modifican**):
+
+| Nombre en el menú | Ruta canónica | Módulo dueño | Qué se toma de ella |
 |---|---|---|---|
-| **1.3.4.1 Configuración de formulario** | `/admin/procesos/cambios/formulario` | 1.3.4.1.1 Campos (`PestanaCampos`, con cajón "Agregar campo" y panel de propiedades) · 1.3.4.1.2 Campos personalizados (`PestanaCamposPersonalizados`) · 1.3.4.1.3 Listas y catálogos (`PestanaCatalogos`) · 1.3.4.1.4 Cuestionario de riesgo (`PestanaCuestionarioRiesgo`) · 1.3.4.1.5 Prioridad (`PestanaPrioridad`) · 1.3.4.1.6 Plantillas de RFC (`PestanaPlantillas`) · 1.3.4.1.7 Vista del ticket (`PestanaVistaTicket`) | `ModalVistaPrevia` · `ModalPublicacion` · `ModalHistorialVersiones` · `ModalRestaurarFabrica` · `BarraAccionesComun` |
-| **1.3.4.2 Tipos de cambio y requisitos** | `/admin/procesos/cambios/tipos-requisitos` | 1.3.4.2.1 Tipos de cambio (`PestanaTiposCambio`) · 1.3.4.2.2 Matriz de autoridad (`PestanaMatrizAutoridad`) · 1.3.4.2.3 Modelos de cambio estándar (`PestanaModelosEstandar`) · 1.3.4.2.4 Reglas de clasificación (`PestanaReglasClasificacion`) | Modales comunes |
-| **1.3.4.3 Flujo de evaluación, autorización y revisión posterior** | `/admin/procesos/cambios/flujo-evaluacion` | 1.3.4.3.1 Estados (`PestanaEstados`) · 1.3.4.3.2 Transiciones y acciones (`PestanaTransiciones`) · 1.3.4.3.3 Etapas de aprobación (`PestanaEtapasAprobacion`) · 1.3.4.3.4 Comités (`PestanaComites`) · 1.3.4.3.5 Plazos y escalamiento (`PestanaPlazosEscalamiento`) · 1.3.4.3.6 Tareas y checklists (`PestanaTareasChecklists`) · 1.3.4.3.7 Implementación y cierre (`PestanaImplementacionCierre`) · 1.3.4.3.8 Revisión post-implementación (`PestanaPir`) | Modales comunes |
-| **1.3.4.4 Notificaciones y calendario de cambios** | `/admin/procesos/cambios/notificaciones-calendario` | 1.3.4.4.1 Notificaciones (`PestanaNotificaciones`) · 1.3.4.4.2 Ventanas de mantenimiento (`PestanaVentanasMantenimiento`) · 1.3.4.4.3 Períodos de congelamiento (`PestanaPeriodosCongelamiento`) · 1.3.4.4.4 Feriados (`PestanaFeriados`) · 1.3.4.4.5 Conflictos y capacidad (`PestanaConflictosCapacidad`) · 1.3.4.4.6 Presentación del calendario (`PestanaPresentacionCalendario`) | Modales comunes |
+| Incidentes › Configuración del formulario | `/plataforma/incidentes/configuracion` | `tickets` (+ `incidentes`) | Editor de formularios y creador de campos personalizados. |
+| Incidentes › Flujo de estados y acciones | `/plataforma/admin/tickets-vistas?seccion=estados&tipo=incidente` | `tickets` | Motor de estados y transiciones (referencia de diseño). |
+| Catálogo de Servicios › Objetivos SLA | `/plataforma/admin/servicios/sla` | `servicios` | Matriz impacto × urgencia y matriz institucional de tiempos (los plazos de cambios **no** se registran ahí). |
+| Catálogo de Servicios › Configuración de categorías / Crear servicio | `/plataforma/admin/servicios?vista=categorias` · `?vista=crear` | `servicios` | Servicios activos, criticidad y responsable del servicio. |
+| Organización › Departamentos empresariales | `/plataforma/admin/departamentos-empresa` | `organizacion` | Áreas afectadas (a quién se comunica). |
+| Organización › Departamentos y grupos resolutores de TI | `/plataforma/admin/departamentos` | `organizacion` | Grupos implementadores y evaluadores. |
+| Organización › Técnicos y niveles de soporte · Supervisores | `/plataforma/admin/tecnicos` · `/plataforma/admin/departamentos?vista=supervisores` | `organizacion` | Técnicos, niveles, suplentes y ausencias. |
+| Plataforma › Identidades › Perfiles y permisos | `/plataforma/admin/perfiles` | `identidades` | Perfiles y capacidades. |
+| Plataforma › Menú y notificaciones › Plantillas de correo y otros canales / Configuración de contacto | `/plataforma/admin/notificaciones?seccion=plantillas` · `?seccion=contacto` | `plataforma` | Plantillas y canales de los eventos de la sección 9.1. |
+| Plataforma › Auditoría de cambios de configuración | `/plataforma/admin/auditoria-sistema` | `plataforma` | Registro de toda acción de configuración. |
+| Plataforma › Retención y mantenimiento de datos | `/plataforma/admin/mantenimiento-datos` | `plataforma` | Límites de adjuntos y caducidad de borradores. |
+| Conocimiento › Categorías, responsables y reglas de publicación y revisión | `/plataforma/admin/conocimiento-config` | `conocimiento` | Artículos vinculados a RFC y modelos. |
+| Problemas › Configuración de formulario / Flujo / Relaciones | `/plataforma/admin/procesos/problemas/*` | `problemas` (Prompt 1) | Origen = Problema, mapeo de prellenado y estados sincronizados. |
+| Activos y CMDB › Catálogos (tipos de CI y relaciones, ciclos de vida) | `/plataforma/admin/activos-config/cmdb-relaciones` · `/plataforma/admin/activos-config/ciclos-vida-transiciones` | `cmdb` / `activos` (Prompt 3) | Clase y criticidad de CI, relaciones para el análisis de impacto. |
+| Reportes › Reportes de cambios · Decisiones · Tableros | `/plataforma/reportes/cambios` · `/plataforma/reportes/decisiones` · `/plataforma/reportes/tableros` | `reportes` | Consumen las métricas de la sección 11 (no se modifican aquí). |
 
-### 2.3 Estado actual de la implementación (según el árbol de archivos del repositorio)
+### 2.2 Identificadores internos de este documento
+
+El menú ya no está numerado. Los códigos `1.3.4.1` a `1.3.4.4` (y sus derivados `1.3.4.1.1`, …) se conservan **solo como identificadores de este documento** para citar pantallas y ventanas internas; **no son numeración del menú**. Cada pantalla es un ítem de menú con su `page.tsx` (cascarón); las ventanas internas son componentes `Pestana*.tsx` que **no repiten** ningún ítem del menú del perfil activo (sección 3A).
+
+| Pantalla (ítem de menú) | Ruta canónica | Ventanas internas (componentes `Pestana*.tsx`) | Modales y cajones |
+|---|---|---|---|
+| **1.3.4.1 Configuración de formulario** | `/plataforma/admin/procesos/cambios/formulario` | 1.3.4.1.1 Campos (`PestanaCampos`, con cajón "Agregar campo" y panel de propiedades) · 1.3.4.1.2 Campos personalizados (`PestanaCamposPersonalizados`) · 1.3.4.1.3 Listas y catálogos (`PestanaCatalogos`) · 1.3.4.1.4 Cuestionario de riesgo (`PestanaCuestionarioRiesgo`) · 1.3.4.1.5 Prioridad (`PestanaPrioridad`) · 1.3.4.1.6 Plantillas de RFC (`PestanaPlantillas`) · 1.3.4.1.7 Vista del ticket (`PestanaVistaTicket`) | `ModalVistaPrevia` · `ModalPublicacion` · `ModalHistorialVersiones` · `ModalRestaurarFabrica` · `BarraAccionesComun` |
+| **1.3.4.2 Tipos de cambio y requisitos** | `/plataforma/admin/procesos/cambios/tipos-requisitos` | 1.3.4.2.1 Tipos de cambio (`PestanaTiposCambio`) · 1.3.4.2.2 Matriz de autoridad (`PestanaMatrizAutoridad`) · 1.3.4.2.3 Modelos de cambio estándar (`PestanaModelosEstandar`) · 1.3.4.2.4 Reglas de clasificación (`PestanaReglasClasificacion`) | Modales comunes |
+| **1.3.4.3 Flujo de evaluación, autorización y revisión posterior** | `/plataforma/admin/procesos/cambios/flujo-evaluacion` | 1.3.4.3.1 Estados (`PestanaEstados`) · 1.3.4.3.2 Transiciones y acciones (`PestanaTransiciones`) · 1.3.4.3.3 Etapas de aprobación (`PestanaEtapasAprobacion`) · 1.3.4.3.4 Comités (`PestanaComites`) · 1.3.4.3.5 Plazos y escalamiento (`PestanaPlazosEscalamiento`) · 1.3.4.3.6 Tareas y checklists (`PestanaTareasChecklists`) · 1.3.4.3.7 Implementación y cierre (`PestanaImplementacionCierre`) · 1.3.4.3.8 Revisión post-implementación (`PestanaPir`) | Modales comunes |
+| **1.3.4.4 Notificaciones y calendario de cambios** (menú: "Notificaciones de cambios") | `/plataforma/admin/procesos/cambios/notificaciones-calendario` | 1.3.4.4.1 Notificaciones (`PestanaNotificaciones`) · 1.3.4.4.2 Ventanas de mantenimiento (`PestanaVentanasMantenimiento`, `?vista=ventanas`) · 1.3.4.4.3 Períodos de congelamiento (`PestanaPeriodosCongelamiento`, `?vista=congelamiento`) · 1.3.4.4.4 Feriados (`PestanaFeriados`, `?vista=feriados`) · 1.3.4.4.5 Conflictos y capacidad (`PestanaConflictosCapacidad`) · 1.3.4.4.6 Presentación del calendario (`PestanaPresentacionCalendario`) | Modales comunes |
+
+**Ubicación del código de cada pantalla (sugerida):** `src/modules/cambios/configuracion/<formulario|tipos-requisitos|flujo-evaluacion|notificaciones-calendario>/components/` para las `Pestana*.tsx`; servicios en `.../services/`; controladores en `.../api/`; modales y barra comunes en `src/modules/cambios/configuracion/compartido/`.
+
+### 2.3 Estado actual de la implementación (punto de partida; verifícalo en la Etapa 0)
+
+El código de estas pantallas nació en `src/app/plataforma/admin/procesos/cambios/*/components/` y la migración hacia `src/modules/` está en curso (el módulo `cambios` tiene hoy unos 96 archivos): **la Etapa 0 confirma dónde está cada archivo**. Lo que ya existía (según el inventario previo):
+
 | Pantalla | Ya existe | Falta o hay que corregir |
 |---|---|---|
-| `/admin/procesos/cambios/page.tsx` | Página padre del grupo | Verificar que no repita los 4 ítems del menú como pestañas o botones superiores. |
-| `1.3.4.1` formulario | `page.tsx`, `BarraAccionesComun`, los 4 modales y las 7 ventanas `Pestana*`. API: `/api/admin/cambios/{formulario/configuracion,campos-personalizados,catalogos,cuestionario-riesgo,plantillas}` | Mover los modales y la barra a la ubicación compartida (3A.2.6); auditar contra la sección 6; validaciones e íconos. |
-| `1.3.4.2` tipos y requisitos | `page.tsx` y las 4 ventanas. API: `/api/admin/cambios/{tipos-requisitos/configuracion,matriz-autoridad,matriz-autoridad/simular,modelos-estandar,reglas-clasificacion,reglas-clasificacion/simular}` | Auditar contra la sección 7; validaciones e íconos. |
-| `1.3.4.3` flujo | `page.tsx`, 8 ventanas e `Iconos.tsx` local. API: `/api/admin/cambios/flujo-evaluacion/{configuracion,simular-escalamiento,simular-etapas,simular-quorum,validar-flujo}` | **Eliminar `Iconos.tsx` local** y usar el módulo compartido de íconos (3B.3); auditar contra la sección 8. |
-| `1.3.4.4` notificaciones y calendario | `page.tsx`, 6 ventanas e `Iconos.tsx` local. API: `/api/admin/cambios/notificaciones-calendario/{configuracion,congelamiento,congelamiento/csv,feriados,feriados/csv,simular-conflictos}` | **Eliminar `Iconos.tsx` local**; reutilizar la tabla de feriados que ya lee `src/lib/sla.ts` (ver 12.0); auditar contra la sección 9. |
-| Heredado | `/admin/rfc/page.tsx`, `/api/admin/rfc-config`, `src/components/itsm/ConfiguracionRfc.tsx` | Decidir en la Etapa 0 si se **migran y retiran** (recomendado) para que exista una única configuración de RFC. |
+| `/plataforma/admin/procesos/cambios/page.tsx` (página padre) | Página del grupo | **No es ítem de menú** (Cambios es carpeta sin URL). Si existe, que **redirija** a `/formulario`; no debe repetir las cuatro pantallas como pestañas o botones superiores. |
+| `1.3.4.1` formulario | `page.tsx`, `BarraAccionesComun`, los 4 modales y las 7 ventanas `Pestana*`. API: `/api/admin/cambios/{formulario/configuracion,campos-personalizados,catalogos,cuestionario-riesgo,plantillas}` | Llevar los modales y la barra a `configuracion/compartido/` (3A.2.6); auditar contra la sección 6; validaciones e íconos; cascarones. |
+| `1.3.4.2` tipos y requisitos | `page.tsx` y las 4 ventanas. API: `/api/admin/cambios/{tipos-requisitos/configuracion,matriz-autoridad,matriz-autoridad/simular,modelos-estandar,reglas-clasificacion,reglas-clasificacion/simular}` | Auditar contra la sección 7; validaciones e íconos; cascarones. |
+| `1.3.4.3` flujo | `page.tsx`, 8 ventanas e `Iconos.tsx` local. API: `/api/admin/cambios/flujo-evaluacion/{configuracion,simular-escalamiento,simular-etapas,simular-quorum,validar-flujo}` | **Eliminar el `Iconos.tsx` local** y usar el módulo de íconos único (3B.3); auditar contra la sección 8. |
+| `1.3.4.4` notificaciones y calendario | `page.tsx`, 6 ventanas e `Iconos.tsx` local. API: `/api/admin/cambios/notificaciones-calendario/{configuracion,congelamiento,congelamiento/csv,feriados,feriados/csv,simular-conflictos}` | **Eliminar el `Iconos.tsx` local**; soportar los enlaces `?vista=` del Gestor de Cambios (2.1); reutilizar la tabla de feriados que ya lee el motor de SLA (ver 12.0); auditar contra la sección 9. |
+| Heredado | `/plataforma/admin/rfc` (alias `/admin/rfc`), `/api/admin/rfc-config`, `ConfiguracionRfc.tsx` (antes `src/components/itsm/`) | Decidir en la Etapa 0 si se **migran y retiran** (recomendado) para que exista una única configuración de RFC. El retiro del código es del módulo; si existe una opción de menú que apunte a esa ruta, retirarla es solicitud SC-6. |
 
-### 2.4 Pantallas operativas que consumen esta configuración
-| Menú general | Ruta | Archivos |
+### 2.4 Pantallas operativas que consumen esta configuración (mismo módulo; no son el foco de esta entrega)
+
+| Perfil / zona | Pantalla | Ruta canónica |
 |---|---|---|
-| 5.1.1 Registrar solicitud RFC | `/cambios/gestion/crear` | `src/app/plataforma/cambios/gestion/crear/page.tsx` |
-| 5.1.2 Calendario de ventanas | `/cambios/gestion/calendario` | `.../gestion/calendario/page.tsx` |
-| 5.1.3 Historial consolidado | `/cambios/gestion/todos` | `.../gestion/todos/page.tsx` |
-| 5.2.1 Dictamen colegiado CAB | `/cambios/gestion/cab` | `.../gestion/cab/page.tsx` |
-| Ticket de RFC | `/cambios/gestion/[id]` | `.../gestion/[id]/page.tsx` |
-| Técnico M5.1 a M5.6 | `/tecnico/cambios/{mis-cambios,nuevo,implementacion,calendario,impacto,historial}` | `src/app/plataforma/tecnico/cambios/*` |
-| API de operación | `/api/cambios`, `/api/cambios/[id]` | `src/app/api/cambios/*` |
-Las secciones 4 y 5 describen lo que esas pantallas deben mostrar; si algo difiere, aplica la pregunta 1 de la sección 15.
+| Gestor de Cambios, Gestor de Área | Solicitar un cambio (registrar RFC) | `/plataforma/cambios/gestion/crear` |
+| Técnico | Registrar solicitud RFC · Mis cambios · Por implementar · Calendario · Que afectan mis servicios · Historial | `/plataforma/perfiles/tecnico/cambios/{nuevo,mis-cambios,implementacion,calendario,impacto,historial}` |
+| Supervisor, Gestor de Área, Aprobador, Gestor de Cambios, Auditor | Calendario de cambios | `/plataforma/cambios/gestion/calendario` |
+| Administrador, Auditor, Gestor de Cambios | Historial de cambios | `/plataforma/cambios/gestion/todos` |
+| Aprobador, Gestor de Cambios | Dictamen colegiado (CAB) | `/plataforma/cambios/gestion/cab` |
+| Todos (autorizado por prefijo, sin fila propia de menú) | Ticket de RFC | `/plataforma/cambios/gestion/[id]` (presentador `PresentadorRfcAprobador` de `@/modules/tickets/ui`) |
+| Supervisor | Aprobaciones técnicas · Cambios que afectan a mi equipo · Programación de implementaciones | `/plataforma/perfiles/supervisor/cambios/{aprobaciones,impacto,programar}` |
+| Gestor de Área | Aprobación de negocio · Cambios con interrupción para mi área | `/plataforma/perfiles/gestor-area/cambios/{aprobaciones,impacto}` |
+| Aprobador | Aprobaciones de cambios · Modelos de cambio estándar | `/plataforma/perfiles/aprobador/cambios` · `/plataforma/perfiles/aprobador/cambios/modelos` |
+| Gestor de Cambios | Panel · Bandeja de RFC por evaluar · Conflictos y capacidad · Modelos estándar · Programación · PIR · Seguimiento de ejecución y de etapas · Agenda y actas del CAB | `/plataforma/perfiles/gestor-cambios/{panel,evaluacion,conflictos,modelos,programacion,pir,ejecucion,autorizaciones,cab/agenda}` |
+| Auditor | Cambios sin autorización o fuera de ventana | `/plataforma/perfiles/auditor/cumplimiento/cambios` |
+| Gestor de Problemas | Solicitudes de cambio derivadas | `/plataforma/gestor-problemas/cambios` (módulo `problemas`) |
+| Reportes | Reportes de cambios · Decisiones | `/plataforma/reportes/cambios` · `/plataforma/reportes/decisiones` (módulo `reportes`) |
+| API de operación | RFC y detalle | `/api/cambios`, `/api/cambios/[id]` |
+
+Las secciones 4 y 5 describen lo que esas pantallas deben mostrar; si algo difiere de lo implementado, aplica la pregunta 1 de la sección 15. Las consolas de rol (`perfiles/<rol>`) **no son parte de este módulo**: solo montan vistas del dominio; **no las modifiques**, expón el contrato que necesiten.
 
 ---
 
@@ -199,7 +269,7 @@ Cada versión guarda: número, fecha-hora, autor, motivo, snapshot completo (JSO
 - [Ver ⟨FileText⟩] → vista de solo lectura de esa versión.
 - [Comparar con actual ⟨GitCompare⟩] → diff lado a lado.
 - [Restaurar esta versión ⟨RotateCcw⟩] → carga esa versión como borrador (no publica).
-- Las versiones **no se editan ni se borran** (la retención se rige por 1.8.3).
+- Las versiones **no se editan ni se borran** (la retención se rige por *Retención y mantenimiento de datos*).
 
 ### 3.4 Efecto de la configuración sobre tickets existentes
 Regla general (aplicar salvo que la pestaña indique otra cosa):
@@ -208,10 +278,10 @@ Regla general (aplicar salvo que la pestaña indique otra cosa):
 - Los cambios de **flujo** (estados/transiciones) aplican a todos los tickets abiertos; si un estado en uso se desactiva, la publicación se bloquea con el mensaje "El estado X tiene N tickets; reasígnalos a otro estado" y un asistente de migración (selector de estado destino + botón [Migrar y continuar ⟨ArrowRightLeft⟩]).
 - Los valores de listas en uso **no se eliminan**, solo se desactivan.
 
-### 3.5 Auditoría (conecta con 1.8.1)
-Cada guardado de borrador, publicación, restauración, importación y descarte genera un registro: usuario, IP, fecha-hora UTC, pantalla/pestaña, entidad, valor anterior, valor nuevo, motivo (si lo hay), versión resultante. Los registros son de solo lectura.
+### 3.5 Auditoría (conecta con *Auditoría de cambios de configuración*, `/plataforma/admin/auditoria-sistema`)
+Cada guardado de borrador, publicación, restauración, importación y descarte genera un registro: usuario, IP, fecha-hora UTC, pantalla/pestaña, entidad, valor anterior, valor nuevo, motivo (si lo hay), versión resultante. Los registros son de solo lectura. Se escriben mediante el servicio de auditoría de `@/modules/plataforma` (solicitud SC-6); si aún no existe, se guardan en la tabla de auditoría propia del módulo y se exponen para su lectura.
 
-### 3.6 Permisos (conecta con 1.1.2)
+### 3.6 Permisos (conecta con *Perfiles y permisos*; capacidades `dominio:acción`)
 Por cada pantalla existen tres permisos: `ver`, `editar` (guardar borrador) y `publicar`. Detalle en la sección 10.
 
 ### 3.7 Validaciones generales
@@ -228,16 +298,16 @@ Estas reglas aplican a **todas** las pantallas de este prompt y prevalecen sobre
 
 ### 3A.1 Un ítem de menú = una pantalla (prohibido duplicar el menú dentro de la página)
 1. **Prohibido** repetir ítems del menú lateral como pestañas, botones segmentados, chips o enlaces en la parte superior de una página. *Ejemplo del error que se debe evitar:* entrar a "Catálogo de incidentes" y ver arriba los botones "Catálogo de incidentes | Catálogo de solicitudes" cuando ambos ya son opciones del menú. Para cambiar de pantalla se usa el menú.
-2. Antes de implementar o modificar una pantalla, **compara** sus pestañas internas con el árbol de menú real (`src/lib/menu.ts` y la tabla de menú que alimenta `/api/menu`). Si una pestaña coincide en nombre o función con un ítem de menú, **elimínala** de la página.
-3. El título de la página, el breadcrumb y el ítem activo del menú coinciden siempre. El botón "Volver" solo existe en pantallas que **no** son ítem de menú (detalle o edición, por ejemplo `/admin/servicios/[id]/formulario`).
+2. Antes de implementar o modificar una pantalla, **compara** sus pestañas internas con el árbol de menú real (`src/shared/lib/menu.ts`, las tablas `opciones_menu` y `opciones_menu_perfiles` y el árbol de `MENUS_Y_PERFILES.md` §5). Si una pestaña coincide en nombre o función con un ítem de menú, **elimínala** de la página.
+3. El título de la página, el breadcrumb y el ítem activo del menú coinciden siempre. El botón "Volver" solo existe en pantallas que **no** son ítem de menú (detalle o edición, por ejemplo `/plataforma/admin/servicios/[id]/formulario`).
 
 ### 3A.2 Ventanas internas (permitidas y recomendadas)
 1. Una pantalla **sí** puede tener varias **ventanas internas intercambiables** cuando son secciones o herramientas de esa misma pantalla que **no existen** como ítem de menú (ejemplo: en un formulario configurable, las ventanas "Configuración de campos", "Agregar campo" y "Vista previa").
-2. Cada ventana interna es un componente `Pestana*.tsx` dentro de la carpeta `components/` de la página (convención ya usada en el proyecto). La barra de ventanas internas tiene **estilo propio** (subrayado o segmentado pequeño, `role="tablist"`), claramente distinto del menú lateral.
+2. Cada ventana interna es un componente `Pestana*.tsx` dentro de `src/modules/cambios/configuracion/<pantalla>/components/` (convención del proyecto). La barra de ventanas internas tiene **estilo propio** (subrayado o segmentado pequeño, `role="tablist"`), claramente distinto del menú lateral.
 3. La ventana activa se guarda en el parámetro de consulta `?vista=<codigo>` para poder compartir el enlace y volver con el botón del navegador. **Cambiar de ventana interna no cambia el ítem activo del menú.**
 4. Las acciones puntuales (vista previa, publicar, historial de versiones, restaurar valores de fábrica, confirmaciones) usan **modales o cajones laterales** (`ModalVistaPrevia`, `ModalPublicacion`, `ModalHistorialVersiones`, `ModalRestaurarFabrica`), nunca ventanas internas.
 5. Los **selectores de contexto** (por ejemplo "Formulario: Registro / Edición", "Aplicar a: tipo") son **listas desplegables** que filtran los datos de la ventana; no se presentan como pestañas.
-6. Los componentes comunes de las pantallas de configuración (`BarraAccionesComun`, `ModalPublicacion`, `ModalHistorialVersiones`, `ModalRestaurarFabrica`, `ModalVistaPrevia`) hoy están **duplicados** en `procesos/problemas/formulario/components/` y `procesos/cambios/formulario/components/`. **Unifícalos** en un único lugar compartido (`src/shared/components/ui/` o `src/components/admin/`) y haz que ambos módulos y el de activos los importen.
+6. Los componentes comunes de las pantallas de configuración (`BarraAccionesComun`, `ModalPublicacion`, `ModalHistorialVersiones`, `ModalRestaurarFabrica`, `ModalVistaPrevia`) hoy están **duplicados** (en `cambios/formulario/components/` y en `problemas/formulario/components/`). **Dentro de `cambios`**, unifícalos en **una sola copia** en `src/modules/cambios/configuracion/compartido/` y haz que las cuatro pantallas la importen; elimina las copias locales de cambios. **No edites ni importes los de `problemas` ni `activos`**: la promoción a `src/shared/components/ui/` y la unificación entre módulos se pide al Tech Lead (SC-10). Si `shared` ya los publica, impórtalos desde allí y no crees copia.
 
 ### 3A.3 Estados, accesibilidad y comportamiento
 - Todo listado y toda ventana interna tienen estados de **carga** (esqueleto), **vacío** (mensaje y acción sugerida) y **error** (mensaje y botón "Reintentar").
@@ -261,9 +331,9 @@ Estas reglas aplican a **todas** las pantallas de este prompt y prevalecen sobre
 Junto a cada botón verás `⟨NombreIcono⟩`: es el **nombre del ícono** (nomenclatura Lucide) que debe llevar, por ejemplo `[Guardar borrador ⟨Save⟩]`. El texto entre corchetes es la etiqueta. Si el botón es de fila de tabla, se muestra **solo el ícono** con tooltip; si es botón de barra o formulario, ícono + texto.
 
 ### 3B.3 Implementación
-- Verifica con qué librería están dibujados los íconos actuales. Si el proyecto ya usa `lucide-react`, úsala. Si no, crea **un único módulo compartido** `src/shared/components/ui/Iconos.tsx` (o `src/components/ui/Iconos.tsx`) con los SVG de los nombres de la tabla 3B.4, con el mismo estilo.
-- **Unifica** los archivos `Iconos.tsx` locales de `admin/procesos/cambios/flujo-evaluacion/components/` y `admin/procesos/cambios/notificaciones-calendario/components/` en ese módulo y elimina las copias.
-- Crea un componente `BotonIcono` (props: `icono`, `etiqueta`, `variante: 'normal' | 'peligro'`, `onClick`, `disabled`) y un componente `Boton` (props: `variante`, `icono?`, `children`) para que ninguna pantalla dibuje botones con estilos propios.
+- Verifica con qué librería están dibujados los íconos actuales. Si el proyecto ya usa `lucide-react`, úsala. Si ya existe un módulo compartido de íconos en `src/shared/components/ui/` (por ejemplo `Iconos.tsx`), impórtalo. Si no existe ninguno, crea **un único módulo** `src/modules/cambios/configuracion/compartido/Iconos.tsx` con los SVG de los nombres de la tabla 3B.4, con el mismo estilo (su promoción a `shared` se pide en SC-10).
+- **Elimina** los archivos `Iconos.tsx` locales de `flujo-evaluacion` y `notificaciones-calendario` (propios de `cambios`) y usa el módulo único. **No edites** los `Iconos.tsx` de otros módulos: su unificación es la solicitud SC-10.
+- Si `BotonIcono` y `Boton` ya existen en `src/shared/components/ui/`, úsalos. Si no, créalos en `configuracion/compartido/`: `BotonIcono` (props: `icono`, `etiqueta`, `variante: 'normal' | 'peligro'`, `onClick`, `disabled`) y `Boton` (props: `variante`, `icono?`, `children`), para que ninguna pantalla dibuje botones con estilos propios.
 
 ### 3B.4 Catálogo de acciones → ícono
 | Acción | Ícono | Variante |
@@ -321,16 +391,16 @@ Junto a cada botón verás `⟨NombreIcono⟩`: es el **nombre del ícono** (nom
 ### 3C.1 Principios
 1. **Todo campo tiene definidos**: tipo de dato, formato, longitud o rango, obligatoriedad y mensaje de error. No existe ningún campo de entrada sin validación (incluidos los de pantallas de configuración, editores, modales y filtros).
 2. **Validación en tiempo real:** el formato, la longitud, el rango y los caracteres se validan **mientras se escribe**. La obligatoriedad se evalúa al **salir del campo** (blur) y al **intentar enviar**; nunca al abrir un formulario vacío.
-3. **Solo se muestran errores.** No hay mensajes, íconos ni bordes de éxito (sin check verde). El error usa el componente `AlertaCampo` (`src/components/ui/AlertaCampo.tsx`: `role="alert"`, texto `#b91c1c`, fondo `#fef2f2`, borde `#fecaca`) y borde rojo en el campo con `aria-invalid="true"` y `aria-describedby`.
+3. **Solo se muestran errores.** No hay mensajes, íconos ni bordes de éxito (sin check verde). El error usa el componente `AlertaCampo` (`src/shared/components/ui/AlertaCampo.tsx` (la Etapa 0 confirma la ruta): `role="alert"`, texto `#b91c1c`, fondo `#fef2f2`, borde `#fecaca`) y borde rojo en el campo con `aria-invalid="true"` y `aria-describedby`.
 4. **Un solo mensaje por campo** (el más específico), breve, en español, que diga qué corregir ("Ingresa 8 dígitos numéricos"), sin tecnicismos.
 5. **Restricción de entrada:** los campos numéricos y de identificación filtran caracteres inválidos al teclear y al pegar (`inputMode`, `maxLength`, máscara) y normalizan el valor (recortar espacios, colapsar espacios múltiples, mayúsculas donde corresponda). Si se pega contenido inválido, se limpia y se muestra el mensaje.
 6. **Campos dependientes:** el valor de un selector controla el validador del campo siguiente. Ejemplo obligatorio: **Tipo de documento = DNI / RUC / Carné de extranjería / Pasaporte** → el campo "Número de documento" cambia de inmediato su `maxLength`, `inputMode`, máscara y validador (V-DNI, V-RUC, V-CE, V-PAS). Al cambiar el selector, el número se revalida; si ya no es válido se marca el error (o se limpia, según la regla del campo).
-7. **Misma lógica en cliente y servidor:** todos los validadores viven en `src/lib/validaciones.ts` (y los específicos de módulo en `src/modules/<dominio>/<modulo>Validaciones.ts`), son funciones puras que devuelven `{ valido: boolean, mensaje?: string }` y se importan tanto en el formulario como en el Route Handler. El servidor responde `400` con `{ campo, mensaje }` y la interfaz lo pinta en el campo correspondiente.
+7. **Misma lógica en cliente y servidor:** los validadores existentes viven en la librería compartida de validaciones (antes `src/lib/validaciones.ts`; la Etapa 0 la ubica) y los que falten o sean específicos de cambios se crean en `src/modules/cambios/configuracion/validaciones/` (sin tocar `shared`), son funciones puras que devuelven `{ valido: boolean, mensaje?: string }` y se importan tanto en el formulario como en el controlador (`*Controller.ts`). El servidor responde `400` con `{ campo, mensaje }` y la interfaz lo pinta en el campo correspondiente.
 8. **Botón primario:** mientras exista algún error de formato visible, queda deshabilitado (`aria-disabled`) con tooltip "Corrige los campos marcados". Los obligatorios vacíos no lo deshabilitan: al hacer clic se muestran los errores y se enfoca el primero.
 9. **Unicidad (nombre, código, serie, hostname):** validación asíncrona con *debounce* de 400 ms contra el servidor; mientras consulta, el campo muestra un indicador discreto de carga **sin** mensaje; si hay duplicado, error ("Ya existe un registro con ese código").
 10. **Coherencia entre campos:** fecha inicio < fecha fin, SLA primera respuesta < SLA resolución, mínimo ≤ máximo, etc. El error se muestra en el campo que debe corregirse.
-11. **Sanitización:** eliminar etiquetas HTML y caracteres de control del texto simple; el texto enriquecido se sanea con lista blanca; consultas siempre parametrizadas; apoyarse en `src/lib/security.ts`.
-12. **Adjuntos:** tipos y tamaño según 1.8.3 (fábrica: 25 MB por archivo, 10 archivos, ejecutables bloqueados); el error indica el archivo y el motivo.
+11. **Sanitización:** eliminar etiquetas HTML y caracteres de control del texto simple; el texto enriquecido se sanea con lista blanca; consultas siempre parametrizadas; apoyarse en las utilidades de saneamiento existentes (antes `src/lib/security.ts`; la Etapa 0 las ubica).
+12. **Adjuntos:** tipos y tamaño según *Retención y mantenimiento de datos* (fábrica: 25 MB por archivo, 10 archivos, ejecutables bloqueados); el error indica el archivo y el motivo.
 
 ### 3C.2 Catálogo de validadores (ID, tipo de dato, regla exacta y mensaje)
 | ID | Tipo de dato | Regla | Mensaje de error |
@@ -396,8 +466,10 @@ Junto a cada botón verás `⟨NombreIcono⟩`: es el **nombre del ícono** (nom
 
 Esta sección define la **versión de fábrica** del formulario. Las secciones 6 a 9 definen cómo el administrador la modifica.
 
-**Quién lo usa:** perfiles **Técnico**, **Supervisor**, **Gestor de Área** (solo cambios Normales sobre su área), **Gestor de Cambios**, **Gestor de Activos y Configuración**, **Gestor de Problemas** y **Administrador** (permiso `cambios.crear`). El tipo *Emergencia* exige además `cambios.crear_emergencia`. Los perfiles Solicitante, Aprobador y Auditor **no** registran RFC.
-**Dónde:** `5 Gestión de Cambios > 5.1 Operación y Solicitudes RFC > 5.1.1 Registrar solicitud RFC`. También desde otros tickets mediante botones **[Crear RFC desde este problema ⟨FilePlus⟩]**, **[Crear RFC desde este incidente ⟨FilePlus⟩]** y **[Crear RFC desde este activo ⟨FilePlus⟩]**, que abren este formulario con Origen, ticket vinculado, servicio, CI y categoría prellenados (el mapeo desde problemas se define en el Prompt 1, pestaña 1.3.3.3.4).
+**Frontera del módulo:** esta sección y la 5 viven en el mismo módulo (`cambios`), pero todo lo que "se muestra en el incidente / en el CI / en el artículo / en el problema" o se crea en otro dominio (incidente por fallo, problema, borrador de conocimiento, marcas de CMDB) lo ejecuta el **módulo dueño** leyendo la configuración publicada por contrato (SC-4, SC-7, SC-8 y SC-9); este prompt **no edita** esos módulos y cada ventana avisa de forma discreta cuando su efecto en el módulo destino aún no está activo.
+
+**Quién lo usa:** perfiles **Técnico**, **Supervisor**, **Gestor de Área** (solo cambios Normales sobre su área), **Gestor de Cambios**, **Gestor de Activos y Configuración** y **Gestor de Problemas** (capacidad `cambios:crear`). El tipo *Emergencia* exige además `cambios:crear-emergencia`. El **Administrador** configura pero no registra RFC (SoD); los perfiles Solicitante, Aprobador y Auditor **no** registran RFC.
+**Dónde:** `Cambios › Solicitar un cambio` (`/plataforma/cambios/gestion/crear`) para Gestor de Cambios y Gestor de Área; para el Técnico, `Cambios › Registrar solicitud RFC` (`/plataforma/perfiles/tecnico/cambios/nuevo`). También desde otros tickets mediante botones **[Crear RFC desde este problema ⟨FilePlus⟩]**, **[Crear RFC desde este incidente ⟨FilePlus⟩]** y **[Crear RFC desde este activo ⟨FilePlus⟩]**, que abren este formulario con Origen, ticket vinculado, servicio, CI y categoría prellenados (esos botones los montan los módulos `problemas`, `incidentes` y `activos`; solicitudes SC-7, SC-4 y SC-8; `cambios` expone el servicio y, si hace falta, un componente en `ui.ts`; el mapeo desde problemas se define en el Prompt 1, ventana 1.3.3.3.4).
 **Disposición:** una sola página con **secciones plegables**, todas abiertas al inicio. Arriba a la derecha: selector **[Usar plantilla ▾]** (1.3.4.1.6). A la derecha, panel fijo "Resumen y validación" con el tipo, la prioridad, el nivel de riesgo, la autoridad que corresponderá aprobar y el estado de validación del calendario.
 
 ### 4.1 Secciones y campos
@@ -426,10 +498,10 @@ Esta sección define la **versión de fábrica** del formulario. Las secciones 6
 
 | # | Etiqueta | Código | Control | Obligatorio | Reglas |
 |---|---|---|---|---|---|
-| C1 | Servicio(s) afectado(s) | `servicios` | Selector múltiple (catálogo 1.2) | Sí | Solo servicios activos. |
+| C1 | Servicio(s) afectado(s) | `servicios` | Selector múltiple (Catálogo de Servicios) | Sí | Solo servicios activos. |
 | C2 | Activos / CI afectados | `ci_afectados` | Selector múltiple (CMDB) | Sí | Muestra código, nombre, clase, criticidad y entorno. Filtrado por defecto por los servicios elegidos (casilla "Ver todos"). No admite CI en estado *Dado de baja*. Botón **[Analizar impacto ⟨Network⟩]**: lista los CI dependientes según las relaciones de la CMDB (hasta el nivel configurado en 1.3.4.4.5) y permite agregarlos con un clic. |
 | C3 | Entorno | `entorno` | Lista (Producción, Preproducción, Pruebas, Desarrollo) | Sí | Si hay CI de varios entornos, se toma el más crítico. |
-| C4 | Áreas / departamentos afectados | `areas_afectadas` | Selector múltiple (1.4.1) | No | Define a quién se comunica la interrupción y qué Gestor de Área puede ser aprobador. |
+| C4 | Áreas / departamentos afectados | `areas_afectadas` | Selector múltiple (*Departamentos empresariales*) | No | Define a quién se comunica la interrupción y qué Gestor de Área puede ser aprobador. |
 | C5 | Usuarios afectados (estimado) | `usuarios_afectados` | Número entero ≥ 0 | No | Alimenta el cuestionario de riesgo. |
 
 **Sección D — Evaluación inicial**
@@ -462,8 +534,8 @@ Esta sección define la **versión de fábrica** del formulario. Las secciones 6
 | F3 | Plan de rollback | `plan_rollback` | Texto enriquecido + campo `tiempo_rollback` (min/h) | Sí (Normal y Emergencia) | Ayuda: pasos para revertir, punto de no retorno, quién decide revertir. |
 | F4 | Criterios de éxito | `criterios_exito` | Lista de ítems (texto, agregar/quitar) | Según tipo | Se usan en la revisión post-implementación. |
 | F5 | Plan de comunicación | `plan_comunicacion` | Texto + casilla "Notificar a usuarios afectados" | No | La casilla activa el comunicado automático de 1.3.4.4.1. |
-| F6 | Grupo implementador | `grupo_implementador_id` | Lista (1.4.2) | Sí | |
-| F7 | Responsable de la implementación | `implementador_id` | Lista con búsqueda (técnicos del grupo, 1.4.3) | Según tipo (1.3.4.2.1) | Muestra la carga de cambios programados de cada técnico. No puede ser el aprobador de ninguna etapa de esta RFC (segregación). |
+| F6 | Grupo implementador | `grupo_implementador_id` | Lista (*Departamentos y grupos resolutores de TI*) | Sí | |
+| F7 | Responsable de la implementación | `implementador_id` | Lista con búsqueda (técnicos del grupo, *Técnicos y niveles de soporte*) | Según tipo (1.3.4.2.1) | Muestra la carga de cambios programados de cada técnico. No puede ser el aprobador de ninguna etapa de esta RFC (segregación). |
 
 **Sección G — Emergencia** (visible solo si Tipo = Emergencia)
 
@@ -472,27 +544,27 @@ Esta sección define la **versión de fábrica** del formulario. Las secciones 6
 | G1 | Justificación de emergencia | `justificacion_emergencia` | Texto enriquecido | Sí | Mín. 30 caracteres. |
 | G2 | Incidente o problema que la motiva | `ticket_emergencia` | Buscador de tickets | Sí (configurable) | |
 | G3 | Consecuencia si no se actúa de inmediato | `consecuencia_emergencia` | Texto | Sí | |
-| G4 | Registro retroactivo | `retroactivo` | Casilla | No | Visible solo con permiso `cambios.documentar_retroactivo`. Al marcarla aparecen: `fecha_inicio_real`, `fecha_fin_real`, `resultado`, `autorizado_verbalmente_por` (usuario) y `medio_autorizacion` (lista). La RFC se registra directamente como *Implementado* y queda pendiente de autorización retroactiva y de revisión (1.3.4.3). |
+| G4 | Registro retroactivo | `retroactivo` | Casilla | No | Visible solo con permiso `cambios:documentar-retroactivo`. Al marcarla aparecen: `fecha_inicio_real`, `fecha_fin_real`, `resultado`, `autorizado_verbalmente_por` (usuario) y `medio_autorizacion` (lista). La RFC se registra directamente como *Implementado* y queda pendiente de autorización retroactiva y de revisión (1.3.4.3). |
 
 **Sección H — Evidencias**
 
 | # | Etiqueta | Código | Control | Obligatorio | Reglas |
 |---|---|---|---|---|---|
-| H1 | Evidencias (adjuntos) | `adjuntos` | Arrastrar-y-soltar + [Seleccionar archivos ⟨FileUp⟩] | No | Tipos y tamaño máximo según 1.8.3 (valor de fábrica: 25 MB por archivo, 10 archivos; bloquear ejecutables). |
+| H1 | Evidencias (adjuntos) | `adjuntos` | Arrastrar-y-soltar + [Seleccionar archivos ⟨FileUp⟩] | No | Tipos y tamaño máximo según *Retención y mantenimiento de datos* (valor de fábrica: 25 MB por archivo, 10 archivos; bloquear ejecutables). |
 
 **Campos automáticos (panel lateral "Datos del registro"):** `id` (formato `RFC-000001`, secuencia sin saltos), `solicitante_id`, `fecha_solicitud`, `estado` inicial = *Solicitado*, `canal` (manual / desde problema / desde incidente / desde activo / desde plantilla).
 
 ### 4.2 Botones del formulario
 - **[Enviar RFC ⟨Send⟩]** (primario): valida, crea la RFC, muestra "RFC-xxxxxx enviada" y redirige al ticket.
 - **[Enviar y crear otra ⟨FilePlus⟩]**: igual, conservando plantilla y categoría.
-- **[Guardar como borrador ⟨Save⟩]**: guarda sin validar; el borrador solo lo ve su autor en "Mis borradores" y caduca a los 30 días (configurable en 1.8.3).
+- **[Guardar como borrador ⟨Save⟩]**: guarda sin validar; el borrador solo lo ve su autor en "Mis borradores" y caduca a los 30 días (configurable en *Retención y mantenimiento de datos*).
 - **[Revisar calendario ⟨CalendarClock⟩]**: abre el modal descrito en E6.
 - **[Cancelar ⟨X⟩]**: pide confirmación si hay datos.
 
 ### 4.3 Validaciones al enviar (todas también en servidor)
 - Todos los obligatorios completos (según tipo y reglas condicionales); errores listados arriba con enfoque al primero.
 - Fecha de fin posterior a la de inicio; anticipación mínima cumplida (o, si no se cumple, la RFC solo puede enviarse como Emergencia con justificación, si el perfil tiene permiso).
-- Sin **bloqueos de calendario** (congelamiento bloqueante, capacidad excedida, conflicto bloqueante) salvo que el perfil tenga `cambios.excepcion_conflicto` y registre motivo.
+- Sin **bloqueos de calendario** (congelamiento bloqueante, capacidad excedida, conflicto bloqueante) salvo que el perfil tenga `cambios:excepcion-conflicto` y registre motivo.
 - Ningún CI en estado *Dado de baja*.
 - Advertencia no bloqueante de posible duplicado (misma combinación de CI con ventanas solapadas): "Posible duplicado: RFC-xxxxxx" con [Ver ⟨FileText⟩] [Enviar de todos modos ⟨Send⟩].
 - Tipo Estándar: modelo elegido, lista de elegibilidad completa y CI/servicio dentro del alcance del modelo.
@@ -537,7 +609,7 @@ Esta sección define la **versión de fábrica** del formulario. Las secciones 6
 | Justificación de emergencia (`justificacion_emergencia`) | Texto enriquecido | Obligatorio si Tipo = Emergencia; V-RICO(30,3000) | Justifica la emergencia (mín. 30 caracteres). |
 | Ticket que motiva la emergencia (`ticket_emergencia`) | Referencia | Obligatorio si Tipo = Emergencia (configurable); V-REF incidente o problema | Selecciona el incidente o problema que motiva la emergencia. |
 | Consecuencia si no se actúa (`consecuencia_emergencia`) | Texto simple | Obligatorio si Emergencia; V-TEXTO(10,1000) | Describe la consecuencia de no actuar de inmediato. |
-| Registro retroactivo: inicio y fin reales | Fecha y hora | V-FECHAHORA; ≤ ahora; fin > inicio; solo con permiso `cambios.documentar_retroactivo` | Las fechas reales no pueden ser futuras. |
+| Registro retroactivo: inicio y fin reales | Fecha y hora | V-FECHAHORA; ≤ ahora; fin > inicio; solo con permiso `cambios:documentar-retroactivo` | Las fechas reales no pueden ser futuras. |
 | Resultado y medio de autorización | Lista | V-LISTA (resultados y medios de autorización de emergencia) | Selecciona una opción. |
 | Autorizado verbalmente por | Referencia | V-REF usuario activo distinto del solicitante | Selecciona quién autorizó. |
 | Adjuntos (`adjuntos`) | Archivos | V-ARCHIVO (máx. 10 × 25 MB; ejecutables bloqueados) | El archivo {nombre} no es válido: {motivo}. |
@@ -546,14 +618,14 @@ Esta sección define la **versión de fábrica** del formulario. Las secciones 6
 
 ## 5. ESPECIFICACIÓN DEL TICKET DE RFC YA CREADO (lo que ve el usuario)
 
-**Ruta:** `5 Gestión de Cambios > 5.1 Operación y Solicitudes RFC > 5.1.3 Historial consolidado > (fila) RFC-xxxxxx` y desde cualquier enlace a la RFC.
+**Ruta:** `Cambios › Historial de cambios` (`/plataforma/cambios/gestion/todos`) › (fila) RFC-xxxxxx → `/plataforma/cambios/gestion/[id]` (se autoriza por prefijo; no es opción de menú) y desde cualquier enlace a la RFC.
 **Layout:** cabecera fija + barra de acciones + pestañas + panel lateral derecho.
 
 ### 5.1 Cabecera fija
 Siempre visible: **ID**, **título**, **insignia de tipo** (color por tipo), **insignia de estado**, **insignia de prioridad**, **insignia de riesgo** (con puntaje al pasar el cursor), **solicitante**, **ventana programada** (inicio – fin en la zona horaria del sistema, con duración), **etapa de aprobación actual** (ej. "Etapa 2 de 3: CAB"), **indicadores de plazo** (medidores de "Evaluación" y "Autorización" con porcentaje consumido y color verde/ámbar/rojo/en pausa), y **etiquetas** cuando apliquen: `Emergencia`, `Retroactivo`, `Conflicto`, `En congelamiento`, `Fuera de ventana`, `Con condiciones`, `Reprogramado`, `Fallido`, `Revertido`, `Modelo estándar: <nombre>`.
 
 ### 5.2 Barra de acciones
-Los botones se generan **dinámicamente** desde las transiciones de 1.3.4.3.2 válidas para el estado, el tipo y el perfil (ej. [Iniciar evaluación ⟨Play⟩], [Enviar a autorización ⟨Send⟩], [Programar ⟨CalendarClock⟩], [Reprogramar ⟨CalendarClock⟩], [Iniciar implementación ⟨Play⟩], [Registrar resultado ⟨FilePlus⟩], [Iniciar revisión ⟨Play⟩], [Cerrar ⟨X⟩], [Cancelar ⟨X⟩]). Si es el aprobador de la etapa vigente aparecen además **[Aprobar ⟨FlaskConical⟩]**, **[Aprobar con condiciones ⟨FlaskConical⟩]**, **[Rechazar ⟨CircleX⟩]**, **[Solicitar información ⟨CircleHelp⟩]** y **[Delegar ⟨ArrowRightLeft⟩]**. Siempre presentes según permisos: **[Reasignar implementador ⟨ArrowRightLeft⟩]**, **[Editar ⟨SquarePen⟩]**, **[Vincular ticket ⟨Link2⟩]**, **[Añadir tarea ⟨Plus⟩]**, **[Seguir / Dejar de seguir ⟨Bell⟩]** y el menú **[⋯]** con *Imprimir/PDF*, *Copiar enlace*, *Exportar ICS de la ventana*, *Duplicar como nueva RFC*, *Convertir tipo* (solo `cambios.reclasificar_tipo`). Los botones sin permiso o con requisitos pendientes se muestran deshabilitados con tooltip que explica el motivo.
+Los botones se generan **dinámicamente** desde las transiciones de 1.3.4.3.2 válidas para el estado, el tipo y el perfil (ej. [Iniciar evaluación ⟨Play⟩], [Enviar a autorización ⟨Send⟩], [Programar ⟨CalendarClock⟩], [Reprogramar ⟨CalendarClock⟩], [Iniciar implementación ⟨Play⟩], [Registrar resultado ⟨FilePlus⟩], [Iniciar revisión ⟨Play⟩], [Cerrar ⟨X⟩], [Cancelar ⟨X⟩]). Si es el aprobador de la etapa vigente aparecen además **[Aprobar ⟨FlaskConical⟩]**, **[Aprobar con condiciones ⟨FlaskConical⟩]**, **[Rechazar ⟨CircleX⟩]**, **[Solicitar información ⟨CircleHelp⟩]** y **[Delegar ⟨ArrowRightLeft⟩]**. Siempre presentes según permisos: **[Reasignar implementador ⟨ArrowRightLeft⟩]**, **[Editar ⟨SquarePen⟩]**, **[Vincular ticket ⟨Link2⟩]**, **[Añadir tarea ⟨Plus⟩]**, **[Seguir / Dejar de seguir ⟨Bell⟩]** y el menú **[⋯]** con *Imprimir/PDF*, *Copiar enlace*, *Exportar ICS de la ventana*, *Duplicar como nueva RFC*, *Convertir tipo* (solo `cambios:reclasificar-tipo`). Los botones sin permiso o con requisitos pendientes se muestran deshabilitados con tooltip que explica el motivo.
 
 ### 5.3 Panel lateral derecho (resumen)
 Tipo y modelo · Categoría · Servicios (nº y nombres) · CI afectados (nº y criticidad máxima) · Entorno · Prioridad y riesgo · Origen y ticket de origen · Implementador y grupo · Aprobador(es) pendiente(s) y plazo · Reunión de CAB (fecha y hora, si aplica) · Interrupción estimada · Áreas afectadas · Seguidores · Próximo hito (qué y cuándo).
@@ -573,7 +645,7 @@ Todo lo registrado en el formulario (sección 4), agrupado por las mismas seccio
 **5.4.3 Aprobaciones**
 - Tabla por **etapa**: orden, nombre de la etapa, aprobador(es) o comité, regla de decisión, plazo y tiempo restante, estado (Pendiente / En curso / Aprobada / Rechazada / Aprobada con condiciones / Omitida), decisión, decidido por, fecha-hora, comentario, condiciones.
 - Cada fila se expande para ver votos individuales (si la etapa es colegiada), delegaciones y recordatorios enviados.
-- *Bloque CAB/ECAB:* fecha y hora de la reunión, asistentes y quórum, votos (a favor / en contra / abstenciones), dictamen, condiciones y enlace a `5.2.1 Dictamen colegiado CAB`.
+- *Bloque CAB/ECAB:* fecha y hora de la reunión, asistentes y quórum, votos (a favor / en contra / abstenciones), dictamen, condiciones y enlace a `Dictamen colegiado (CAB)` (`/plataforma/cambios/gestion/cab`).
 - *Condiciones pendientes:* lista de condiciones impuestas con responsable y casilla de cumplimiento (deben cumplirse antes de iniciar la implementación).
 - Para el aprobador vigente: botones [Aprobar ⟨FlaskConical⟩] [Aprobar con condiciones ⟨FlaskConical⟩] [Rechazar ⟨CircleX⟩] [Solicitar información ⟨CircleHelp⟩] [Delegar ⟨ArrowRightLeft⟩] con modales según 1.3.4.3.3.
 
@@ -606,7 +678,7 @@ Tabla: código, nombre, clase, criticidad, entorno, servicios que soporta, orige
 Línea de tiempo unificada con filtros *Todo · Comentarios internos · Comentarios públicos · Cambios de estado · Aprobaciones · Sistema*. Editor con menciones `@usuario`, adjuntos y visibilidad (Interno / Visible para el solicitante). Los comentarios no se borran, se **anulan** con motivo.
 
 **5.4.10 Historial / auditoría**
-Tabla inmutable: fecha-hora, usuario, acción, campo, valor anterior, valor nuevo, comentario. Filtros por usuario, acción y fechas. Botón [Exportar CSV ⟨FileDown⟩]. Solo con permiso `cambios.auditoria.ver`.
+Tabla inmutable: fecha-hora, usuario, acción, campo, valor anterior, valor nuevo, comentario. Filtros por usuario, acción y fechas. Botón [Exportar CSV ⟨FileDown⟩]. Solo con permiso `cambios:auditoria:ver`.
 
 ### 5.5 Reglas de visibilidad por estado
 Cada pestaña tiene "visible desde el estado X" y "editable en los estados Y" (1.3.4.1.7). Valores de fábrica: *Evaluación* visible desde *En evaluación*; *Aprobaciones* desde *En autorización*; *Planificación* desde *Autorizado*; *Implementación* desde *Programado*; *Revisión post-implementación* desde *Implementado*; ningún campo de planes editable desde *En ejecución*, y ninguno en estados finales.
@@ -617,7 +689,7 @@ Cada pestaña tiene "visible desde el estado X" y "editable en los estados Y" (1
 
 **Propósito:** que el administrador controle qué se captura al solicitar un cambio, cómo se mide el riesgo y qué se muestra en el ticket, sin tocar código.
 **Pestañas:** 1.3.4.1.1 a 1.3.4.1.7. Todas siguen el patrón de la sección 3.
-**Reutilización obligatoria:** la configuración de formulario de Incidentes (1.3.1.1) ya permite configurar campos y tiene un creador de campos. Esta pantalla **extiende ese mismo editor** para la entidad `cambio` (si el Prompt 1 ya lo extendió para `problema`, usa esa misma extensión). Lo que el editor ya haga no se reimplementa; lo que falte se agrega al componente compartido **sin cambiar el comportamiento actual de Incidentes**.
+**Reutilización obligatoria:** la configuración de formulario de Incidentes (`Incidentes › Configuración del formulario`, módulo `tickets`, núcleo congelado) ya permite configurar campos y tiene un creador de campos. Esta pantalla debe construirse **sobre ese mismo editor, consumido por contrato** (`@/modules/tickets/ui`) para la entidad `cambio`, **no copiándolo ni editando `tickets`**. Lo que ese editor ya haga no se reimplementa. Lo que falte se reparte así: lo propio del patrón de configuración de cambios (borrador/publicación, versionado, bloqueo concurrente, importación/exportación, reglas condicionales de cambios) se implementa en `configuracion/compartido/`; lo que exija **cambiar el editor compartido** se solicita en **SC-1** para que `tickets` lo adopte **sin cambiar el comportamiento actual de Incidentes**. Mientras tanto se aplica la degradación de SC-1 (adaptador, sin copias; no se importa nada de `problemas`).
 
 ---
 
@@ -652,7 +724,7 @@ Cada pestaña tiene "visible desde el estado X" y "editable en los estados Y" (1
 | Solo lectura | Interruptor | Requiere valor por defecto o cálculo. |
 | Valor por defecto | Control del tipo del campo | Variables `{usuario_actual}`, `{fecha_actual}`, `{grupo_del_usuario}`. |
 | Sección, Ancho | Lista; 1/3 · 1/2 · 2/3 · completo | |
-| Visible para perfiles / Editable por perfiles | Selector múltiple (1.1.2) | Vacío = todos. |
+| Visible para perfiles / Editable por perfiles | Selector múltiple (*Perfiles y permisos*) | Vacío = todos. |
 | Validaciones | Longitud, rango, expresión regular con mensaje propio y botón [Probar expresión ⟨FlaskConical⟩] | |
 | Reglas condicionales | Constructor (abajo) | |
 
@@ -746,11 +818,11 @@ Botones: `[+ Nueva pregunta ⟨Plus⟩]` `[Duplicar ⟨Copy⟩]` `[Desactivar �
 
 ### 6.5 Pestaña 1.3.4.1.5 — Prioridad (matriz compartida)
 
-**Hecho confirmado:** el sistema ya tiene la matriz impacto × urgencia → prioridad (P1 Crítica, P2 Alta, P3 Media, P4 Baja), con niveles Alta/Media/Baja, usada al crear incidentes. Ubicación probable: `1.2.5 Objetivos SLA` (`/admin/servicios/sla`, `MatrizPrioridadSla.tsx`, API `/api/admin/sla/matriz`) y cálculo en `src/lib/sla.ts`; confírmala en la Etapa 0. **Prohibido crear una matriz paralela como comportamiento por defecto.**
+**Hecho confirmado:** el sistema ya tiene la matriz impacto × urgencia → prioridad (P1 Crítica, P2 Alta, P3 Media, P4 Baja), con niveles Alta/Media/Baja, usada al crear incidentes. Su edición está en la pantalla `Objetivos SLA` (`/plataforma/admin/servicios/sla`, módulo `servicios`; antes `MatrizPrioridadSla.tsx` y API `/api/admin/sla/matriz`) y el cálculo se consume con `calcularPrioridadITIL` (contrato de `tickets`); confírmalo en la Etapa 0. **Prohibido crear una matriz o un servicio de prioridad paralelos como comportamiento por defecto.**
 
-1. **Matriz vigente** de solo lectura rotulada "Matriz compartida con Incidentes" (y con Problemas si el Prompt 1 está implementado), más tabla de prioridades.
-2. **Enlace `[Editar matriz compartida → ⟨ArrowUpRight⟩]`** a su pantalla de edición actual. Si la matriz está fija en código sin pantalla, repórtalo en la Etapa 0 y propón migrarla a una tabla; no lo implementes sin aprobación.
-3. **Interruptor `Usar matriz propia para cambios`** (apagado por defecto): copia la matriz actual y habilita su edición solo para cambios, con confirmación; al apagarlo vuelve a la compartida.
+1. **Matriz vigente** de solo lectura rotulada "Matriz compartida con Incidentes" (y con Problemas), más tabla de prioridades.
+2. **Enlace `[Editar matriz compartida → ⟨ArrowUpRight⟩]`** a su pantalla de edición actual. Si la matriz está fija en código sin pantalla, repórtalo en la Etapa 0 y propón migrarla a una tabla; no lo implementes sin aprobación (sería una solicitud al módulo `servicios`).
+3. **Interruptor `Usar matriz propia para cambios`** (apagado por defecto; **sujeto a la pregunta abierta 2**: se implementa como tabla de anulación de lectura de celda dentro de `cambios`, sin motor de prioridad paralelo): copia la matriz actual y habilita su edición solo para cambios, con confirmación; al apagarlo vuelve a la compartida.
 4. **Textos de ayuda por nivel** (tooltips) propios de cambios, editables; no alteran niveles ni matriz.
 5. **Opciones:** `Permitir prioridad manual` (perfiles y justificación ≥15 caracteres) · `Recalcular prioridad al cambiar impacto o urgencia` (activo).
 6. **Aclaración ITIL (se muestra en la pantalla):** la **prioridad** (impacto × urgencia) y el **riesgo** (cuestionario) son dimensiones independientes; la autoridad de aprobación se decide por tipo y riesgo (1.3.4.2.2).
@@ -779,7 +851,7 @@ Botones: `[+ Nueva pregunta ⟨Plus⟩]` `[Duplicar ⟨Copy⟩]` `[Desactivar �
 ### 6.7 Pestaña 1.3.4.1.7 — Vista del ticket
 
 **Bloque 1 — Cabecera (hasta 10 elementos):** lista ordenable (sección 5.1); ID, título, tipo, estado y prioridad son fijos.
-**Bloque 2 — Pestañas:** una fila por pestaña de la sección 5.4 con: orden · nombre (3–30) · visible · visible para perfiles · **visible desde el estado** · **editable en los estados** · **[Configurar campos… ⟨Settings2⟩]** (visible, orden, etiqueta y solo lectura de cada campo de esa pestaña). *Solicitud*, *Comentarios y bitácora* e *Historial / auditoría* no pueden ocultarse; *Historial* solo con `cambios.auditoria.ver`.
+**Bloque 2 — Pestañas:** una fila por pestaña de la sección 5.4 con: orden · nombre (3–30) · visible · visible para perfiles · **visible desde el estado** · **editable en los estados** · **[Configurar campos… ⟨Settings2⟩]** (visible, orden, etiqueta y solo lectura de cada campo de esa pestaña). *Solicitud*, *Comentarios y bitácora* e *Historial / auditoría* no pueden ocultarse; *Historial* solo con `cambios:auditoria:ver`.
 **Bloque 3 — Panel lateral (5.3):** elementos visibles y orden.
 **Bloque 4 — Barra de acciones:** arrastrar botones entre "Visibles" y "En menú ⋯". Los botones de transición y de aprobación se gestionan en 1.3.4.3.
 **Botones:** `[Vista previa con RFC real ⟨Eye⟩]` (elige una existente) · `[Vista previa con ejemplo ⟨Eye⟩]` · patrón común.
@@ -823,7 +895,7 @@ Botones: `[+ Nueva pregunta ⟨Plus⟩]` `[Duplicar ⟨Copy⟩]` `[Desactivar �
 
 **Sección 1 — Identidad:** Nombre (renombrable), código (🔒 `estandar`, `normal`, `emergencia`), descripción (aparece como tooltip en el formulario), color, ícono. Los tres tipos **no se pueden eliminar ni desactivar**.
 
-**Sección 2 — Quién puede solicitar:** perfiles (selector múltiple) y casilla "Exigir permiso especial `cambios.crear_emergencia`" (solo Emergencia, no se puede quitar).
+**Sección 2 — Quién puede solicitar:** perfiles (selector múltiple) y casilla "Exigir permiso especial `cambios:crear-emergencia`" (solo Emergencia, no se puede quitar).
 
 **Sección 3 — Tiempos:**
 - **Anticipación mínima** entre la solicitud y el inicio propuesto (horas): Estándar 24 · Normal 72 · Emergencia 0.
@@ -916,7 +988,7 @@ Botones: `[+ Nueva pregunta ⟨Plus⟩]` `[Duplicar ⟨Copy⟩]` `[Desactivar �
 - **Mensaje al usuario** (texto, 5–250) que explica por qué se aplicó.
 
 **Parámetro adicional:** *Riesgo máximo permitido para un modelo estándar* (fábrica: Bajo).
-**Conversión manual de tipo:** perfiles con `cambios.reclasificar_tipo`, motivo obligatorio, reinicia la evaluación y las etapas de aprobación y deja constancia en el historial.
+**Conversión manual de tipo:** perfiles con `cambios:reclasificar-tipo`, motivo obligatorio, reinicia la evaluación y las etapas de aprobación y deja constancia en el historial.
 
 **Reglas de fábrica:**
 1. Estándar con riesgo > Bajo → reclasificar a Normal.
@@ -1000,7 +1072,7 @@ Botones: `[+ Nueva pregunta ⟨Plus⟩]` `[Duplicar ⟨Copy⟩]` `[Desactivar �
 | Automatizaciones | Lista ordenable (abajo) | |
 | Activa | Interruptor | |
 
-**Automatizaciones disponibles:** asignar evaluador/implementador (reglas) · generar etapas de aprobación según la matriz de autoridad · notificar (evento y plantilla de 1.6.1) · crear tareas (paquete) · registrar fecha-hora en un campo · agendar en CAB/ECAB · reservar ventana en el calendario · validar calendario (conflictos) · pausar/reanudar relojes · crear incidente o problema (por fallo) · actualizar la CMDB · invalidar aprobaciones (ver 8.3) · marcar etiqueta · solicitar revisión.
+**Automatizaciones disponibles:** asignar evaluador/implementador (reglas) · generar etapas de aprobación según la matriz de autoridad · notificar (evento y plantilla de *Plantillas de correo y otros canales*) · crear tareas (paquete) · registrar fecha-hora en un campo · agendar en CAB/ECAB · reservar ventana en el calendario · validar calendario (conflictos) · pausar/reanudar relojes · crear incidente o problema (por fallo) · actualizar la CMDB · invalidar aprobaciones (ver 8.3) · marcar etiqueta · solicitar revisión.
 
 **Reglas de validación del flujo (antes de publicar):** todo estado no final tiene una salida; todos los estados son alcanzables **para al menos un tipo**; desde todo estado existe un camino a un estado final **para cada tipo que lo use**; **ninguna transición hacia *En ejecución* puede carecer de las condiciones "todas las etapas aprobadas" y "sin congelamiento vigente" (salvo Emergencia con ECAB)**; toda transición a *Rechazado* y *Cancelado* exige motivo; toda transición a *Cerrado* exige código de cierre.
 
@@ -1021,7 +1093,7 @@ Botones: `[+ Nueva pregunta ⟨Plus⟩]` `[Duplicar ⟨Copy⟩]` `[Desactivar �
 | Reprogramar | Autorizado / Programado → Programado | Todos | Gestor de Cambios, Implementador | Exige motivo de aplazamiento y nueva ventana válida. Si el nuevo inicio difiere más de N horas (8.5) o cambia la ventana, invalida y reinicia las aprobaciones indicadas. |
 | Iniciar implementación | Programado → En ejecución | Todos | Implementador | Exige: Go/No-Go = Go, condiciones de aprobación cumplidas, sin congelamiento vigente, estar dentro de la ventana (± tolerancia de 1.3.4.4.5). Registra inicio real. |
 | Registrar resultado | En ejecución → Implementado | Todos | Implementador | Exige resultado, fin real, bitácora, interrupción real; si resultado = Fallido o Rollback exige causa de fallo y dispara las acciones de 8.7. |
-| Documentar emergencia retroactiva | Solicitado → Implementado | Emergencia | Gestor de Cambios, Supervisor, Técnico con permiso | Solo con `cambios.documentar_retroactivo`; exige los campos de la Sección G; crea etapa de autorización retroactiva. |
+| Documentar emergencia retroactiva | Solicitado → Implementado | Emergencia | Gestor de Cambios, Supervisor, Técnico con permiso | Solo con `cambios:documentar-retroactivo`; exige los campos de la Sección G; crea etapa de autorización retroactiva. |
 | Iniciar revisión | Implementado → En revisión post-implementación | Todos | Gestor de Cambios, Supervisor / Automática | Automática N horas después de *Implementado* (8.8). |
 | Completar revisión y cerrar | En revisión post-implementación → Cerrado | Todos | Revisor | Exige PIR completa (si aplica), código de cierre, CMDB confirmada (8.7). |
 | Cerrar sin revisión | Implementado → Cerrado | Estándar y los que el tipo permita | Gestor de Cambios, Supervisor | Solo si el resultado es exitoso y el tipo no exige PIR. |
@@ -1043,7 +1115,7 @@ Botones: `[+ Nueva pregunta ⟨Plus⟩]` `[Duplicar ⟨Copy⟩]` `[Desactivar �
 - **Omitir la etapa si:** condición opcional (ej. "no hay áreas afectadas").
 - **Modo respecto de la etapa anterior:** secuencial o paralelo (lo decide la matriz de autoridad, aquí se define el valor por defecto).
 
-**Segregación de funciones (interruptores globales, con valor de fábrica activo y no desactivables en producción sin permiso `config.cambios.flujo.publicar` y motivo reforzado):**
+**Segregación de funciones (interruptores globales, con valor de fábrica activo y no desactivables en producción sin permiso `cambios:config:publicar` y motivo reforzado):**
 1. El **solicitante no puede aprobar** su propia RFC.
 2. El **implementador no puede aprobar** la RFC que va a implementar.
 3. Una misma persona **no puede aprobar dos etapas** de la misma RFC (salvo que sea la única elegible y se registre la excepción con motivo y aprobación de un superior).
@@ -1071,9 +1143,9 @@ Dos paneles con la misma estructura: **CAB** y **ECAB**.
 
 **ECAB:** miembros mínimos convocados, **plazo máximo de decisión** por prioridad (horas), canal de convocatoria inmediata (notificación y correo), forma de **registrar decisión verbal** (campos: quién, medio, hora) y **obligación de revisión retroactiva** por el CAB en la siguiente reunión (sí/no, fábrica sí).
 
-**Delegados por ausencia:** al convocar o votar, si un miembro tiene una ausencia vigente (tabla `tecnico_ausencias` si ya existe; si no existe, ver sección 13) o no responde en el plazo, interviene su suplente automáticamente.
+**Delegados por ausencia:** al convocar o votar, si un miembro tiene una ausencia vigente (consultada al módulo `organizacion` por contrato, SC-5; la tabla de ausencias **no se crea aquí**; sin ella esta regla queda deshabilitada con el aviso "Requiere el registro de ausencias") o no responde en el plazo, interviene su suplente automáticamente.
 
-**Datos que alimentan `5.2.1 Dictamen colegiado CAB`:** composición vigente, agenda, votos por miembro, dictamen, condiciones y acta.
+**Datos que alimentan `Dictamen colegiado (CAB)` (`/plataforma/cambios/gestion/cab`):** composición vigente, agenda, votos por miembro, dictamen, condiciones y acta.
 
 **Botones:** `[Probar quórum ⟨FlaskConical⟩]` (simula quién puede votar una RFC dada) + patrón común.
 
@@ -1090,7 +1162,7 @@ Dos paneles con la misma estructura: **CAB** y **ECAB**.
 
 **Parámetros adicionales:** horas de diferencia a partir de las cuales una reprogramación **exige reautorización** (fábrica 24); tolerancia para iniciar la implementación fuera de la hora propuesta (minutos); vigencia de una autorización (ver 7.1, sección 3).
 
-**Cómputo del tiempo:** los calendarios hábiles de `src/lib/sla.ts`. No se crea un calendario laboral nuevo aquí (los feriados de 1.3.4.4.4 solo se usan para el calendario de cambios).
+**Cómputo del tiempo:** los calendarios hábiles del motor de SLA existente (antes `src/lib/sla.ts`). No se crea un calendario laboral nuevo aquí (los feriados de 1.3.4.4.4 solo se usan para el calendario de cambios).
 
 **Reglas de escalamiento** (lista y editor): Objetivo (Primera respuesta / Evaluación / Autorización / Etapa específica) · Prioridades · Umbral (porcentaje de plazo o "vencido +N horas") · Acciones: notificar a (solicitante, evaluador, aprobador pendiente, Gestor de Cambios, Supervisor, grupo, dirección) · reasignar al **suplente** · reasignar al **superior jerárquico** · subir prioridad · etiqueta `En riesgo` / `Vencido` · comentario del sistema · repetir cada N horas hasta M veces · detener cuando cambie el estado. **Nunca existe la acción "aprobar automáticamente" por vencimiento** (no es configurable).
 Botón `[Simular escalamiento ⟨FlaskConical⟩]`.
@@ -1111,7 +1183,7 @@ Botón `[Simular escalamiento ⟨FlaskConical⟩]`.
 **Bloque 1 — Resultado y bitácora:** campos exigidos al registrar resultado según el catálogo (6.3); obligatoriedad de bitácora de ejecución (sí/no); tolerancia de inicio y fin respecto a la ventana; exigir motivo si la ejecución supera la ventana.
 
 **Bloque 2 — Acciones automáticas por resultado** (tabla: resultado → acciones, cada una activable):
-- *Fallido / Rollback ejecutado:* exigir causa de fallo · crear **incidente** vinculado (plantilla, prioridad heredada) · crear **problema** (plantilla del Prompt 1 si existe) cuando la causa de fallo lo sugiere · notificar a Gestor de Cambios, Supervisor y responsables de servicios · etiquetar la RFC y los CI · **suspender el modelo estándar** si aplica (7.3) · forzar PIR obligatoria.
+- *Fallido / Rollback ejecutado:* exigir causa de fallo · crear **incidente** vinculado (plantilla, prioridad heredada) · crear **problema** (plantilla del módulo `problemas` por contrato, SC-7) cuando la causa de fallo lo sugiere · notificar a Gestor de Cambios, Supervisor y responsables de servicios · etiquetar la RFC y los CI · **suspender el modelo estándar** si aplica (7.3) · forzar PIR obligatoria.
 - *Parcial:* exigir descripción de lo pendiente y crear RFC de seguimiento (opcional).
 - *Exitoso:* programar PIR según el tipo.
 
@@ -1168,11 +1240,11 @@ Botón `[Simular escalamiento ⟨FlaskConical⟩]`.
 ## 9. PANTALLA 1.3.4.4 — NOTIFICACIONES Y CALENDARIO DE CAMBIOS
 
 **Propósito:** definir quién se entera de qué y cuándo, y gobernar el calendario de cambios (ventanas, congelamientos, feriados, conflictos y capacidad).
-**Nota:** `src/lib/sla.ts` ya usa calendarios hábiles; verifica en la Etapa 0 qué tabla de feriados lee y reutilízala. La tabla de feriados es la que ya lee el motor de SLA (se reutiliza); solo se crean, si faltan, las tablas de ventanas de mantenimiento y de períodos de congelamiento (`ventanas_mantenimiento`, `periodos_congelamiento`; sección 13). No modifiques el motor de SLA existente.
+**Nota:** el motor de SLA existente ya usa calendarios hábiles; verifica en la Etapa 0 qué tabla de feriados lee y de qué módulo es, y reutilízala. Solo se crean, si faltan, las tablas de ventanas de mantenimiento y de períodos de congelamiento (`ventana_mantenimiento`, `periodos_congelamiento`; sección 13). No modifiques el motor de SLA. **Esta pantalla debe soportar los enlaces `?vista=feriados|congelamiento|ventanas` del menú del Gestor de Cambios y omitir de su barra de ventanas las que ese menú ya muestra (sección 2.1).**
 
 ### 9.1 Pestaña 1.3.4.4.1 — Notificaciones
 
-**Cuadrícula:** una fila por **evento** y las columnas: Evento · Activo · Canal(es) (según los canales de 1.6.1) · Destinatarios · Plantilla (selector de 1.6.1) · Condiciones (tipo, riesgo, prioridad) · Anticipación (si aplica). Botón `[Editar ⟨SquarePen⟩]` por fila, `[Enviar prueba ⟨FlaskConical⟩]` y `[Vista previa ⟨Eye⟩]`.
+**Cuadrícula:** una fila por **evento** y las columnas: Evento · Activo · Canal(es) (según los canales de *Plantillas de correo y otros canales*) · Destinatarios · Plantilla (selector de *Plantillas de correo y otros canales*) · Condiciones (tipo, riesgo, prioridad) · Anticipación (si aplica). Botón `[Editar ⟨SquarePen⟩]` por fila, `[Enviar prueba ⟨FlaskConical⟩]` y `[Vista previa ⟨Eye⟩]`.
 
 **Eventos:** `rfc.solicitada` · `rfc.evaluacion_iniciada` · `rfc.informacion_solicitada` · `rfc.informacion_respondida` · `rfc.enviada_a_autorizacion` · `rfc.etapa_pendiente` (al aprobador) · `rfc.etapa_aprobada` · `rfc.aprobada` · `rfc.aprobada_con_condiciones` · `rfc.rechazada` · `rfc.reenviada` · `cab.convocado` (agenda) · `cab.dictamen_emitido` · `ecab.convocado` · `rfc.programada` · `rfc.reprogramada` · `rfc.recordatorio_previo` (T-48 h, T-24 h, T-1 h; configurables) · `rfc.implementacion_iniciada` · `rfc.resultado_registrado` · `rfc.fallida` · `rfc.rollback_ejecutado` · `rfc.pir_pendiente` · `rfc.cerrada` · `rfc.cancelada` · `rfc.conflicto_detectado` · `rfc.emergencia_registrada` · `rfc.aprobacion_proxima_a_vencer` · `rfc.aprobacion_vencida` · `rfc.autorizacion_caducada` · `modelo_estandar.suspendido` · `congelamiento.proximo` · `ventana.proxima`.
 
@@ -1226,13 +1298,13 @@ Botón `[Simular escalamiento ⟨FlaskConical⟩]`.
 | Feriado / fin de semana | | Según 9.4 |
 | Capacidad | Excede el máximo de cambios simultáneos | Máximos: **global** (fábrica 5), **por servicio crítico** (2), **por CI** (1), **por ventana** (de la ventana), **por día** (10) |
 
-**Otros parámetros:** duración máxima de una RFC (horas) · tolerancia de inicio (minutos) · quién puede conceder **excepción de conflicto** (perfil con `cambios.excepcion_conflicto`; exige motivo y queda en la bitácora y en la pestaña Evaluación).
+**Otros parámetros:** duración máxima de una RFC (horas) · tolerancia de inicio (minutos) · quién puede conceder **excepción de conflicto** (perfil con `cambios:excepcion-conflicto`; exige motivo y queda en la bitácora y en la pestaña Evaluación).
 **Cuándo se ejecuta:** al enviar, al editar fechas/CI, al programar, al iniciar la implementación y en un **proceso programado** (cada hora) que reevalúa las RFC futuras y notifica si aparece un conflicto nuevo.
 **Botón `[Simulador ⟨FlaskConical⟩]`:** elegir fecha, hora, duración, servicio y CI; muestra conflictos y huecos libres. El cálculo de solapamientos se hace con rangos de tiempo en la base de datos (ver 13.5).
 
 ### 9.6 Pestaña 1.3.4.4.6 — Presentación del calendario
 
-**Qué se configura:** cómo se muestra `5.1.2 Calendario de ventanas`.
+**Qué se configura:** cómo se muestra `Calendario de cambios` (`/plataforma/cambios/gestion/calendario`).
 - **Colores:** por tipo de cambio, por estado o por nivel de riesgo (selector de criterio y paleta editable).
 - **Vistas disponibles y por defecto:** Mes · Semana · Día · Agenda (lista) · Línea de tiempo por servicio.
 - **Capas visibles por defecto** (casillas): RFC programadas y en ejecución · ventanas de mantenimiento · períodos de congelamiento · feriados · reuniones de CAB.
@@ -1278,43 +1350,53 @@ Botón `[Simular escalamiento ⟨FlaskConical⟩]`.
 
 ## 10. Perfiles y permisos
 
-**Perfiles existentes (1.1.2):** Administrador · Técnico · Solicitante · Supervisor · Gestor de Área · Auditor · Aprobador · Gestor de Cambios · Gestor de Activos y Configuración. (Si el Prompt 1 ya creó **Gestor de Problemas**, también existe.) **No se crean perfiles nuevos en este prompt.**
+**Perfiles existentes (10, catálogo `perfiles`; nombres de BD sin tildes):** 1 Administrador · 2 Tecnico · 3 Solicitante · 4 Supervisor · 5 Gestor de Area · 6 Auditor · 7 Aprobador · 8 Gestor de Cambios · 9 Gestor de Activos y Configuracion · 10 Gestor de Problemas. **No se crean perfiles nuevos en este prompt.**
 
-Por cada pantalla de configuración hay tres permisos: `ver`, `editar` (guardar borrador) y `publicar`. Un usuario con `editar` sin `publicar` guarda borradores; otro con `publicar` los revisa y publica. Las transiciones y etapas pueden restringir más, nunca ampliar, lo que otorgan estos permisos.
+**Modelo de autorización vigente:** RBAC por **capacidades** `dominio:acción` declaradas en `src/shared/lib/capacidades.ts`, con el puente `CAPACIDADES_POR_PERFIL` (todavía no existe `perfil_capacidades`). La **visibilidad de pantallas** la fija el menú (`opciones_menu_perfiles`); las páginas se protegen con `exigirCapacidadPagina` o `exigirMenuPagina`, y la API con `sesionConCapacidad`.
 
-**Columnas:** ADM = Administrador · TEC = Técnico · SOL = Solicitante · SUP = Supervisor · GAR = Gestor de Área · AUD = Auditor · APR = Aprobador · GCA = Gestor de Cambios · GAC = Gestor de Activos y Configuración · GPR = Gestor de Problemas (si existe).
+**Capacidades ya declaradas para este dominio** (Etapa 0 las lista todas; se conocen): `cambios:ver`, `cambios:aprobar`, `cambios:config:publicar`. El grupo `cambios` tiene 9. **Las que falten se piden en la solicitud SC-2** (sección 17): este prompt **no modifica `src/shared`**. Nomenclatura propuesta: guion para acciones compuestas (`cambios:crear-emergencia`, `cambios:dictaminar-cab`, `cambios:documentar-retroactivo`) y `:` para subdominios (`cambios:config:*`, `cambios:modelos:*`, `cambios:auditoria:ver`).
 
-| Permiso | ADM | TEC | SOL | SUP | GAR | AUD | APR | GCA | GAC | GPR |
+Por cada pantalla de configuración existen tres niveles: `ver`, `editar` (guardar borrador) y `publicar`. Un usuario con `editar` sin `publicar` guarda borradores; otro con `publicar` los revisa y publica (separación de funciones, `MENUS_Y_PERFILES.md` §2.1 punto 9). Las transiciones y etapas pueden restringir más, nunca ampliar, lo que otorgan estas capacidades.
+
+**Frontera de acceso a las pantallas de configuración:** las tres primeras pantallas existen **solo en el menú del Administrador**; la cuarta (`notificaciones-calendario`) existe además, en tres de sus ventanas (`?vista=feriados|congelamiento|ventanas`), en el menú del **Gestor de Cambios**, que tiene `cambios:config:calendario:editar` y `:publicar` (solo ventanas, congelamientos y feriados). Las capacidades `...config:ver` de otros perfiles habilitan únicamente la **lectura de la configuración publicada** (por API o por las consolas operativas), no una pantalla de configuración; dar una pantalla nueva a otro perfil exige que `plataforma` añada la visibilidad en el menú (no es parte de esta entrega).
+
+**Columnas:** ADM = Administrador · TEC = Técnico · SOL = Solicitante · SUP = Supervisor · GAR = Gestor de Área · AUD = Auditor · APR = Aprobador · GCA = Gestor de Cambios · GAC = Gestor de Activos y Configuración · GPR = Gestor de Problemas.
+
+| Capacidad | ADM | TEC | SOL | SUP | GAR | AUD | APR | GCA | GAC | GPR |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `config.cambios.formulario.ver` / `.tipos.ver` / `.flujo.ver` / `.calendario.ver` | ✔ | — | — | ✔ | — | ✔ | — | ✔ | — | — |
-| `config.cambios.formulario.editar` / `.tipos.editar` / `.flujo.editar` | ✔ | — | — | — | — | — | — | — | — | — |
-| `config.cambios.formulario.publicar` / `.tipos.publicar` / `.flujo.publicar` | ✔ | — | — | — | — | — | — | — | — | — |
-| `config.cambios.calendario.editar` / `.publicar` (solo 1.3.4.4.2 a 1.3.4.4.4) | ✔ | — | — | — | — | — | — | ✔ | — | — |
-| `config.cambios.importar_exportar` / `.restaurar_fabrica` | ✔ | — | — | — | — | — | — | — | — | — |
-| `cambios.crear` | ✔ | ✔ | — | ✔ | ✔ (solo Normal) | — | — | ✔ | ✔ | ✔ |
-| `cambios.crear_emergencia` | ✔ | ✔ | — | ✔ | — | — | — | ✔ | — | ✔ |
-| `cambios.ver` | ✔ (todas) | ✔ (su grupo y las que implementa) | — | ✔ (todas) | ✔ (las que afectan su área) | ✔ (todas, solo lectura) | ✔ (las que debe aprobar) | ✔ (todas) | ✔ (las que afectan CI) | ✔ (las vinculadas a problemas) |
-| `cambios.editar` | ✔ | ✔ (propias, en Solicitado y En evaluación; y tareas asignadas) | — | ✔ | — | — | — | ✔ | — | — |
-| `cambios.evaluar` | ✔ | — | — | ✔ | — | — | — | ✔ | ✔ (impacto en CMDB) | — |
-| `cambios.aprobar` (acciones de etapa) | — | — | — | ✔ | ✔ | — | ✔ | ✔ | — | — |
-| `cambios.dictaminar_cab` | — | — | — | ✔ | — | — | ✔ | ✔ | ✔ | — |
-| `cambios.programar` | ✔ | — | — | ✔ | — | — | — | ✔ | — | — |
-| `cambios.implementar` (iniciar y registrar resultado) | ✔ | ✔ | — | ✔ | — | — | — | ✔ | ✔ (cambios de activos) | — |
-| `cambios.revisar_pir` | ✔ | — | — | ✔ | — | — | — | ✔ | — | — |
-| `cambios.cerrar` | ✔ | — | — | ✔ | — | — | — | ✔ | — | — |
-| `cambios.cancelar` | ✔ | — | ✔ (propias, antes de En autorización) | ✔ | — | — | — | ✔ | — | — |
-| `cambios.reclasificar_tipo` | — | — | — | — | — | — | — | ✔ | — | — |
-| `cambios.excepcion_conflicto` | — | — | — | — | — | — | — | ✔ | — | — |
-| `cambios.documentar_retroactivo` | ✔ | ✔ | — | ✔ | — | — | — | ✔ | — | — |
-| `cambios.prioridad_manual` / `cambios.ajustar_riesgo` | — | — | — | ✔ | — | — | — | ✔ | — | — |
-| `cambios.aplicar_cmdb` | — | — | — | — | — | — | — | — | ✔ | — |
-| `cambios.auditoria.ver` | ✔ | — | — | ✔ | — | ✔ | — | ✔ | — | — |
-| `modelos_estandar.ver` | ✔ | ✔ | — | ✔ | — | ✔ | — | ✔ | ✔ | — |
-| `modelos_estandar.editar` | ✔ | — | — | — | — | — | — | ✔ | — | — |
-| `modelos_estandar.aprobar` | — | — | — | — | — | — | ✔ | ✔ | — | — |
-| `calendario_cambios.ver` (5.1.2) | ✔ | ✔ | — | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| `cambios:config:ver` (formulario / tipos / flujo / calendario) | ✔ | — | — | ✔ | — | ✔ | — | ✔ | — | — |
+| `cambios:config:editar` (formulario / tipos / flujo) | ✔ | — | — | — | — | — | — | — | — | — |
+| `cambios:config:publicar` (formulario / tipos / flujo) | ✔ | — | — | — | — | — | — | — | — | — |
+| `cambios:config:calendario:editar` / `:publicar` (solo 1.3.4.4.2 a 1.3.4.4.4) | ✔ | — | — | — | — | — | — | ✔ | — | — |
+| `cambios:config:importar-exportar` / `cambios:config:restaurar` | ✔ | — | — | — | — | — | — | — | — | — |
+| `cambios:crear` | — | ✔ | — | ✔ | ✔ (solo Normal) | — | — | ✔ | ✔ | ✔ |
+| `cambios:crear-emergencia` | — | ✔ | — | ✔ | — | — | — | ✔ | — | ✔ |
+| `cambios:ver` | ✔ (todas) | ✔ (su grupo y las que implementa) | — | ✔ (todas) | ✔ (las que afectan su área) | ✔ (todas, solo lectura) | ✔ (las que debe aprobar) | ✔ (todas) | ✔ (las que afectan CI) | ✔ (las vinculadas a problemas) |
+| `cambios:editar` | — | ✔ (propias, en Solicitado y En evaluación; y tareas asignadas) | — | ✔ | — | — | — | ✔ | — | — |
+| `cambios:evaluar` | — | — | — | ✔ | — | — | — | ✔ | ✔ (impacto en CMDB) | — |
+| `cambios:aprobar` (acciones de etapa) | — | — | — | ✔ | ✔ | — | ✔ | ✔ | — | — |
+| `cambios:dictaminar-cab` | — | — | — | ✔ | — | — | ✔ | ✔ | ✔ | — |
+| `cambios:programar` | — | — | — | ✔ | — | — | — | ✔ | — | — |
+| `cambios:implementar` (iniciar y registrar resultado) | — | ✔ | — | ✔ | — | — | — | ✔ | ✔ (cambios de activos) | — |
+| `cambios:revisar-pir` | — | — | — | ✔ | — | — | — | ✔ | — | — |
+| `cambios:cerrar` | — | — | — | ✔ | — | — | — | ✔ | — | — |
+| `cambios:cancelar` | — | — | ✔ (propias, antes de En autorización) | ✔ | — | — | — | ✔ | — | — |
+| `cambios:reclasificar-tipo` | — | — | — | — | — | — | — | ✔ | — | — |
+| `cambios:excepcion-conflicto` | — | — | — | — | — | — | — | ✔ | — | — |
+| `cambios:documentar-retroactivo` | — | ✔ | — | ✔ | — | — | — | ✔ | — | — |
+| `cambios:prioridad-manual` / `cambios:ajustar-riesgo` | — | — | — | ✔ | — | — | — | ✔ | — | — |
+| `cambios:aplicar-cmdb` | — | — | — | — | — | — | — | — | ✔ | — |
+| `cambios:auditoria:ver` | ✔ | — | — | ✔ | — | ✔ | — | ✔ | — | — |
+| `cambios:modelos:ver` | ✔ | ✔ | — | ✔ | — | ✔ | — | ✔ | ✔ | — |
+| `cambios:modelos:editar` | ✔ | — | — | — | — | — | — | ✔ | — | — |
+| `cambios:modelos:aprobar` | — | — | — | — | — | — | ✔ | ✔ | — | — |
+| `cambios:calendario:ver` (calendario operativo) | ✔ | ✔ | — | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 
-**Notas:** el Administrador **no aprueba ni dictamina** por defecto (segregación de funciones). Pertenecer a un comité (CAB/ECAB) se define en 1.3.4.3.4 y no equivale a un perfil. Los perfiles se resuelven con el mecanismo de permisos ya existente en el proyecto; si ese mecanismo no maneja permisos por acción, repórtalo en la Etapa 0.
+**Notas:**
+- **Ajustes frente a la v2.0 por la segregación de funciones vigente** (`MENUS_Y_PERFILES.md` §2.1): el **Administrador configura y consulta, pero no opera** (sin `crear`, `crear-emergencia`, `editar`, `evaluar`, `programar`, `implementar`, `revisar-pir`, `cerrar`, `cancelar`, `documentar-retroactivo`); **no aprueba ni dictamina** por defecto. El **Gestor de Cambios coordina el ciclo pero no sustituye la decisión colegiada del CAB**: no vota en un comité donde participa (autoexclusión) ni autoaprueba una RFC propia; el **Aprobador se autoexcluye** de cambios donde figure como solicitante, promotor o ejecutor. Si la matriz real del código (`CAPACIDADES_POR_PERFIL`) difiere, repórtalo en la Etapa 0 en lugar de sobrescribirla.
+- El Auditor es de **solo lectura**: nunca recibe capacidades de escritura.
+- Pertenecer a un comité (CAB/ECAB) se define en 1.3.4.3.4 y no equivale a un perfil.
+- Mapeo con lo existente: la Etapa 0 indica qué parte de esta matriz ya está cubierta por las 9 capacidades declaradas y qué entra en SC-2.
 
 ---
 
@@ -1407,89 +1489,98 @@ Por cada pantalla de configuración hay tres permisos: `ver`, `editar` (guardar 
 
 **Eventos de dominio que se emiten:** todos los de la lista de 9.1 más `configuracion.publicada`.
 
-**Métricas que los datos deben permitir (2.1 y 2.2):** % de cambios exitosos, fallidos y revertidos · cambios por tipo, categoría, servicio y riesgo · % de emergencias · cambios sin autorización previa (debe ser 0) · tiempo de ciclo (solicitud → autorizado → implementado → cerrado) · incidentes causados por cambios · cumplimiento de ventana · conflictos detectados y excepciones concedidas · cumplimiento de plazos de aprobación · % de PIR completas a tiempo · tasa de éxito por modelo estándar · reprogramaciones por RFC · backlog por estado.
+**Métricas que los datos deben permitir (`Reportes de cambios`, `Decisiones` y `Tableros`):** % de cambios exitosos, fallidos y revertidos · cambios por tipo, categoría, servicio y riesgo · % de emergencias · cambios sin autorización previa (debe ser 0) · tiempo de ciclo (solicitud → autorizado → implementado → cerrado) · incidentes causados por cambios · cumplimiento de ventana · conflictos detectados y excepciones concedidas · cumplimiento de plazos de aprobación · % de PIR completas a tiempo · tasa de éxito por modelo estándar · reprogramaciones por RFC · backlog por estado.
 
 ---
 
 ## 12. Hechos confirmados del sistema existente (no los vuelvas a preguntar)
 
-### 12.0 Hechos de arquitectura (de `ARQUITECTURA_Y_JERARQUIA_SRC.md`)
-- **Framework:** Next.js 14 (App Router); pantallas en `src/app/plataforma/`, API en `src/app/api/`. Sesión con cookie `sesion_tickets` (JWT) y perfil activo conmutable (`/api/auth/cambiar-perfil`). Menú dinámico desde `/api/menu` + `src/lib/menu.ts`.
-- **Base de datos:** pool `pg` de `src/lib/db.ts`; sin acceso directo desde el cliente.
-- **Validaciones:** `src/lib/validaciones.ts` y `src/components/ui/AlertaCampo.tsx` (solo errores en rojo).
-- **SLA:** `src/lib/sla.ts` (matriz Urgencia × Impacto y **calendarios hábiles**); edición en `1.2.5 Objetivos SLA` (`/admin/servicios/sla`, `MatrizPrioridadSla.tsx`, `/api/admin/sla/matriz`), ubicación probable de la matriz compartida.
-- **Cambios:** pantallas operativas bajo `/cambios/gestion/*`; configuración bajo `/admin/procesos/cambios/*`; componentes `Iconos.tsx` duplicados en `flujo-evaluacion` y `notificaciones-calendario`; modales comunes duplicados con los de problemas.
-- **Heredado:** `/admin/rfc` y `ConfiguracionRfc.tsx` (configuración antigua de RFC).
-- **Ticket de incidente:** presentadores por rol y secciones como `TarjetaAprobacionSod` (segregación de funciones en aprobaciones), `CockpitTemporizadorSla`, `PanelInfraestructuraCi`; reutiliza esos patrones en el ticket de RFC.
-
+### 12.0 Hechos de arquitectura (de `ARQUITECTURA_Y_CODIGO.md` y `MENUS_Y_PERFILES.md`, vigentes al 2026-10-20/21)
+- **Framework y alcance:** Next.js 14.2 (App Router), React 18, TypeScript 5.5. 17 módulos en `src/modules/`, 207 route handlers en `src/app/api`, 227 páginas bajo `src/app/plataforma`, 126 tablas base y 1 vista (`vista_ticket`), 38 migraciones.
+- **Vertical slice:** cada funcionalidad vive completa en `src/modules/<modulo>/`. `src/app` es delgado (cascarones). Contratos públicos: `index.ts` (servidor) y `ui.ts` (cliente). Prohibidos los imports profundos entre módulos; `shared` es hoja y nunca importa módulos.
+- **Módulo `cambios`:** unos 96 archivos; contrato `index.ts` (sin `ui.ts` publicado); dominio "RFC, CAB/ECAB, evaluación, calendario, PIR, plantillas"; dueño Nain. Rutas: operativas `/plataforma/cambios/**`, consolas `/plataforma/perfiles/*/cambios/*`, configuración `/plataforma/admin/procesos/cambios/*`; API `/api/cambios` y `/api/admin/cambios/*`.
+- **Sesión:** JWT en cookie `sesion` (`httpOnly`, 8 h); pre-sesión de 5 min para elegir perfil. `src/middleware.ts` solo comprueba que la cookie exista.
+- **Guardas:** `src/shared/lib/api-auth.ts` (`sesionConCapacidad`, `autorizarApi`, `obtenerSesionDeRequest`) y `src/shared/lib/page-auth.ts` (`exigirCapacidadPagina`, `exigirMenuPagina`). Errores: `ErrorDominio` y `respuestaError`.
+- **Base de datos:** pool `pg` y `query` parametrizado en `src/shared/lib/db.ts`; sin acceso desde el cliente.
+- **Tablas del dominio ya existentes** (verifica estructura en la Etapa 0): `cambio` (con `id_ci_afectado` e `id_problema_origen`), `cambio_aprobacion` (etapas y dictámenes), `cab_reunion` (agenda y actas CAB), `periodos_congelamiento`. Además `ticket_incidente.causado_por_cambio_id` (incidente causado por un cambio), `servicio_catalogo` (con criticidad), `elemento_configuracion` y `ci_relacion` (CMDB), `articulo_conocimiento` y `configuracion_sistema` (parámetros globales clave/valor).
+- **Segregación de funciones:** el patrón `TarjetaAprobacionSod` y las reglas SoD de `MENUS_Y_PERFILES.md` §2 son vinculantes; la validación real vive en el servicio.
+- **Validaciones y componentes de UI transversales:** antes en `src/lib/validaciones.ts`, `src/lib/security.ts` y `src/components/ui/AlertaCampo.tsx`; con la migración están en `src/shared/` o en módulos. **Etapa 0 los ubica.** Si un validador del catálogo 3C no existe, créalo **dentro del módulo** (`configuracion/validaciones/`), no en `shared`.
+- **SLA y matriz de prioridad:** módulo `servicios`; edición en `Objetivos SLA` (`/plataforma/admin/servicios/sla`, antes `MatrizPrioridadSla.tsx` y API `/api/admin/sla/matriz`); cálculo con `calcularPrioridadITIL` (contrato de `tickets`). El motor de SLA con calendarios hábiles se ubica en la Etapa 0 (antes `src/lib/sla.ts`).
+- **Ticket de incidente:** presentadores por rol y secciones (`TarjetaAprobacionSod`, `CockpitTemporizadorSla`, `PanelInfraestructuraCi`, …); el ticket de RFC reutiliza esos patrones por contrato (`PresentadorRfcAprobador` en `@/modules/tickets/ui`).
+- **Heredado:** `/plataforma/admin/rfc`, `/api/admin/rfc-config` y `ConfiguracionRfc.tsx` (configuración antigua de RFC).
+- **Deuda técnica conocida:** 100 controladores con JWT manual, 113 páginas sin guarda de página, `db/schema.sql` incompleto (la fuente de verdad es la base viva + migraciones + seed). **No amplíes la deuda.**
 
 | Tema | Lo confirmado |
 |---|---|
-| Stack | Next.js 14 (App Router) y PostgreSQL en Supabase (pool `pg` de `src/lib/db.ts`); acceso completo al código, base de datos, frontend y backend. |
-| Matriz impacto × urgencia | Existe y se usa al crear incidentes (P1–P4; niveles Alta/Media/Baja). Ubicación probable: `1.2.5 Objetivos SLA` (`/admin/servicios/sla`, `MatrizPrioridadSla.tsx`, API `/api/admin/sla/matriz`) y cálculo en `src/lib/sla.ts`; confírmalo en la Etapa 0. Los cambios la reutilizan. |
-| 1.2.5 Objetivos SLA | Solo tiene la "Matriz Institucional de Tiempos por Prioridad" (primera respuesta y resolución en horas). Los plazos de cambios (8.5) **no** se registran ahí. |
-| Formulario de Incidentes y creador de campos | Existen; se extienden a la entidad `cambio`. |
-| Perfiles | Administrador, Técnico, Solicitante, Supervisor, Gestor de Área, Auditor, Aprobador, Gestor de Cambios, Gestor de Activos y Configuración. (Gestor de Problemas lo crea el Prompt 1.) |
-| Calendarios, feriados, ventanas, congelamientos | `src/lib/sla.ts` ya usa **calendarios hábiles**; verifica qué tablas de horario y feriados lee. Las pestañas `PestanaFeriados`, `PestanaVentanasMantenimiento` y `PestanaPeriodosCongelamiento` ya existen: **reutiliza la tabla de feriados del motor de SLA** y crea solo lo que falte (ventanas y congelamientos). |
-| Turnos y ausencias de técnicos | No existían; el Prompt 1 crea `tecnico_ausencias`. Si no se ha ejecutado, créala según la sección 13. |
-| Menú operativo de cambios | `5.1.1`, `5.1.2`, `5.1.3`, `5.2.1` aparecen en el menú; su estado de implementación se verifica en la Etapa 0. |
-| CMDB | Existe el menú `7 Activos y CMDB`; clases y relaciones se definen en el Prompt 3. Hasta entonces, usa lo que exista y repórtalo. |
-| Datos que no existan | Se agregan a la base de datos mediante migraciones. |
+| Matriz impacto × urgencia | Existe y se usa al crear incidentes (P1–P4; niveles Alta/Media/Baja); vive en `servicios` y se consume con `calcularPrioridadITIL`. Confirma archivo y tabla en la Etapa 0. Los cambios la reutilizan. |
+| Objetivos SLA | Solo tiene la "Matriz Institucional de Tiempos por Prioridad" (primera respuesta y resolución en horas). Los plazos de cambios (8.5) **no** se registran ahí. |
+| Formulario de Incidentes y creador de campos | Existen (módulo `tickets`); se reutilizan para la entidad `cambio` **por contrato** (solicitud SC-1 si no están publicados). |
+| Perfiles | Los 10 perfiles existen (incluido Gestor de Problemas). |
+| Calendarios, feriados, ventanas, congelamientos | El motor de SLA ya usa **calendarios hábiles**; verifica qué tablas de horario y feriados lee y qué módulo es su dueño. `periodos_congelamiento` ya existe en `cambios`. Las pestañas `PestanaFeriados`, `PestanaVentanasMantenimiento` y `PestanaPeriodosCongelamiento` ya existen: **reutiliza la tabla de feriados del motor de SLA** y crea solo lo que falte (ventanas). |
+| Turnos y ausencias de técnicos | El módulo `organizacion` declara "ausencias" en su dominio. Verifica en la Etapa 0 si existe `tecnico_ausencias` o equivalente; si no, solicitud SC-5. |
+| Menú operativo de cambios | Existe en los menús de los perfiles 1, 2, 4, 5, 6, 7 y 8 (sección 2.4); su estado de implementación se verifica en la Etapa 0. |
+| CMDB | Módulo `cmdb` independiente de `activos` (puente `elemento_configuracion.id_activo`). Clases y relaciones se definen en el Prompt 3. Hasta entonces, usa lo que exista y repórtalo. |
+| Datos del módulo que no existan | Se agregan con migraciones (sección 13). Los de otros módulos se solicitan (sección 17). |
 
-**Dependencias con otros módulos:**
+**Dependencias con otros módulos** (todas por contrato o solicitud; ninguna implica editar el módulo ajeno):
 
-| Con | Dependencia |
-|---|---|
-| Prompt 1 (Problemas) | Origen = Problema, mapeo de prellenado de la RFC, estados sincronizados, componente de configuración compartido, constructor de reglas. |
-| Prompt 3 (Activos/CMDB) | Criticidad y clase de CI, relaciones de CMDB para el análisis de impacto, actualización de CMDB al cerrar, estado de CI. |
-| 1.1.2 | Registrar los permisos de la sección 10. |
-| 1.2 Catálogo de servicios | Lista de servicios, criticidad, responsable del servicio (si existe). |
-| 1.3.1 Incidentes | Botón "Crear RFC desde este incidente", incidentes causados por cambios, matriz compartida. |
-| 1.4 | Departamentos (áreas afectadas), grupos, técnicos y niveles, suplentes. |
-| 1.6 Comunicaciones | Plantillas y canales para los eventos de la sección 9.1. |
-| 1.7 Conocimiento | Artículos vinculados a RFC y modelos. |
-| 1.8 Auditoría y retención | Registro de cambios de configuración y límites de adjuntos/borradores. |
-| 2 Reportes | Métricas de la sección 11. |
+| Con (módulo · pantalla) | Dependencia | Detalle en |
+|---|---|---|
+| `problemas` (Prompt 1) | Origen = Problema, mapeo de prellenado de la RFC, estados sincronizados, creación de problema por fallo. | SC-7 |
+| `cmdb` / `activos` (Prompt 3) | Criticidad y clase de CI, relaciones para el análisis de impacto, actualización de la CMDB al cerrar, estado de CI. | SC-8 |
+| `identidades` · Perfiles y permisos | Capacidades de la sección 10. | SC-2 |
+| `servicios` · Catálogo y Objetivos SLA | Lista de servicios, criticidad, responsable del servicio; matriz de prioridad; (opcional) matriz propia. | SC-3 |
+| `tickets` / `incidentes` · Incidentes | Botón "Crear RFC desde este incidente", incidentes causados por cambios, editor de formulario y creador de campos. | SC-1, SC-4 |
+| `organizacion` · Departamentos, grupos, técnicos | Áreas afectadas, grupos, técnicos, niveles, suplentes y ausencias. | SC-5 |
+| `plataforma` · Notificaciones, Auditoría, Retención, parámetros | Plantillas y canales de los eventos de 9.1; registro de cambios de configuración; límites de adjuntos y borradores; zona horaria del sistema; jobs. | SC-6 |
+| `conocimiento` · Conocimiento | Artículos vinculados a RFC y modelos. | SC-9 |
+| Dueño del motor de SLA (`servicios` o `tickets`) | Contrato de feriados y calendario hábil. | SC-11 |
+| `reportes` · Reportes de cambios / Decisiones | Métricas de la sección 11 (el módulo `reportes` las lee de las tablas del módulo). | — |
 
 ---
 
 ## 13. Cambios de base de datos requeridos
 
-Principio: **verifica primero si existe (Etapa 0); si no existe, créalo con migración.** No dupliques.
+Principio: **verifica primero si existe (Etapa 0); si no existe y pertenece al módulo `cambios`, créalo con migración.** No dupliques tablas o columnas existentes ni toques tablas de otros módulos.
 
-**13.1 Tablas de configuración del módulo** (diseño libre, convenciones del proyecto): versiones de configuración por pantalla/pestaña (ámbito, versión, estado, snapshot `jsonb`, autor, motivo, fechas) · catálogos de 6.3 · definición del cuestionario de riesgo (preguntas, opciones, puntajes, fuentes, niveles y umbrales) · tipos de cambio y su matriz de requisitos · reglas de autoridad y de clasificación · modelos de cambio estándar (con versiones y estadísticas) · estados, transiciones y automatizaciones · catálogo de etapas de aprobación · comités (miembros, reglas, reuniones) · plazos y reglas de escalamiento · tareas, paquetes y checklists (Go/No-Go y PIR) · acciones por resultado y parámetros de CMDB/cierre · eventos de notificación y sus destinatarios · parámetros de calendario y de conflictos · plantillas de RFC.
+**13.1 Tablas de configuración del módulo** (prefijo sugerido `cambio_config_*`; convenciones de la sección 0, regla 9): versiones de configuración por pantalla/pestaña (ámbito, versión, estado, snapshot `jsonb`, autor, motivo, fechas) · catálogos de 6.3 · definición del cuestionario de riesgo (preguntas, opciones, puntajes, fuentes, niveles y umbrales) · tipos de cambio y su matriz de requisitos · reglas de autoridad y de clasificación · modelos de cambio estándar (con versiones y estadísticas) · estados, transiciones y automatizaciones · catálogo de etapas de aprobación · comités (miembros, reglas, reuniones) · plazos y reglas de escalamiento · tareas, paquetes y checklists (Go/No-Go y PIR) · acciones por resultado y parámetros de CMDB/cierre · eventos de notificación y sus destinatarios · parámetros de calendario y de conflictos · plantillas de RFC · bloqueo de edición concurrente (por pantalla/pestaña, expira a los 15 min).
 
-**13.2 Tablas operativas de la RFC** (verificar si algo ya existe): `cambios` (secuencia `RFC-000001` sin saltos) · servicios y CI afectados (con origen del vínculo) · respuestas del cuestionario de riesgo (valor, puntaje, fuente) y ajuste manual · etapas de aprobación por RFC (estado, decisión, fecha, comentario, condiciones, delegación) · condiciones pendientes · votos de comité (**solo INSERT**) y actas · reuniones y agendas · tareas · checklist Go/No-Go (respuestas) · bitácora de ejecución · actualizaciones de CMDB planificadas/aplicadas · PIR y acciones de mejora · relaciones con otros tickets · conflictos detectados y excepciones · comentarios · adjuntos · historial/auditoría (**solo INSERT**).
+**13.2 Tablas operativas de la RFC** (ya existen `cambio`, `cambio_aprobacion` y `cab_reunion`; **audítalas y complétalas**, no las recrees): secuencia `RFC-000001` sin saltos · servicios y CI afectados (con origen del vínculo) · respuestas del cuestionario de riesgo (valor, puntaje, fuente) y ajuste manual · etapas de aprobación por RFC (estado, decisión, fecha, comentario, condiciones, delegación) · condiciones pendientes · votos de comité (**solo INSERT**) y actas · reuniones y agendas · tareas · checklist Go/No-Go (respuestas) · bitácora de ejecución · actualizaciones de CMDB planificadas/aplicadas · PIR y acciones de mejora · relaciones con otros tickets · conflictos detectados y excepciones · comentarios · adjuntos · historial/auditoría (**solo INSERT**). Todo lo que ya exista se conserva con sus datos.
 
-**13.3 Seguridad:** permisos de la sección 10 como datos semilla. Las tablas de historial, votos y auditoría no admiten UPDATE ni DELETE (triggers de base de datos y ausencia de endpoints de edición).
+**13.3 Seguridad:** las capacidades de la sección 10 se declaran en `src/shared/lib/capacidades.ts` (**solicitud SC-2**, no se edita aquí). Las tablas de historial, votos y auditoría del módulo no admiten UPDATE ni DELETE (triggers de base de datos y ausencia de endpoints de edición).
 
-**13.4 Tablas de calendario (reutiliza lo existente de `src/lib/sla.ts` y crea solo lo que falte):**
-- Feriados: usa la tabla que ya lee `src/lib/sla.ts`; si no existe, crea `calendario_feriados` (fecha o rango, nombre, tipo, alcance, recurrente anual, activo).
-- `ventanas_mantenimiento` (recurrencia —regla tipo iCal o campos estructurados—, inicio/fin, cruce de medianoche, vigencia, excepciones, alcance, tipos permitidos, capacidad, permite interrupción).
-- `periodos_congelamiento` (inicio, fin o recurrencia anual, alcance, severidad, tipos exentos, aviso anticipado).
-- Parámetro de **zona horaria del sistema** (verifica si ya existe en la configuración; si no, créalo).
+**13.4 Tablas de calendario (reutiliza lo existente y crea solo lo que falte):**
+- Feriados: usa la tabla que ya lee el motor de SLA. Si su dueño es otro módulo, **las escrituras van por contrato** (SC-11) y mientras tanto la ventana es de solo lectura con aviso. Si no existe ninguna, créala en `cambios` (`calendario_feriados`: fecha o rango, nombre, tipo, alcance, recurrente anual, activo) y expón una función de lectura en `index.ts` para que el dueño del motor la adopte (SC-11); no modifiques el motor.
+- `ventana_mantenimiento` (recurrencia —regla tipo iCal o campos estructurados—, inicio/fin, cruce de medianoche, vigencia, excepciones, alcance, tipos permitidos, capacidad, permite interrupción).
+- `periodos_congelamiento` (ya existe; inicio, fin o recurrencia anual, alcance, severidad, tipos exentos, aviso anticipado: completar columnas si faltan).
+- **Zona horaria del sistema:** parámetro de `configuracion_sistema` (módulo `plataforma`); si no existe, SC-6. Mientras tanto usa la zona del servidor y documéntalo.
 
-**13.5 Rangos de tiempo y conflictos:** en `cambios` guarda la ventana propuesta/aprobada/real como columnas `tstzrange` con **índice GiST** para detectar solapamientos con el operador `&&`; considera `btree_gist` si hay combinaciones con igualdad. Los conflictos son advertencias/bloqueos de negocio, **no** restricciones de exclusión de la base de datos.
+**13.5 Rangos de tiempo y conflictos:** en `cambio` guarda la ventana propuesta/aprobada/real como columnas `tstzrange` con **índice GiST** para detectar solapamientos con el operador `&&`; considera `btree_gist` si hay combinaciones con igualdad. Los conflictos son advertencias/bloqueos de negocio, **no** restricciones de exclusión de la base de datos.
 
-**13.6 Columnas que probablemente falten (verifica y agrega):** servicio: criticidad (`es_critico` o nivel) y, opcionalmente, `responsable_servicio_id` · CI: `clase`, `criticidad`, `estado` y relaciones entre CI (coordinar con el Prompt 3) · incidente: referencia a la RFC que lo causó (`causado_por_cambio_id` o tabla puente) · entidad `cambio` en la definición de campos personalizados · `tecnico_ausencias` (si no existe) · bandera de "es incidente de emergencia" si se usa en 1.3.4.4.
+**13.6 Columnas de otros módulos que probablemente falten (verifica y, si faltan, solicítalas; no las agregues):**
+- `servicio_catalogo`: criticidad (parece existir) y, opcionalmente, `responsable_servicio_id` (SC-3).
+- `elemento_configuracion`: `clase`, `criticidad`, `estado` y relaciones entre CI en `ci_relacion` (coordinar con el Prompt 3; SC-8).
+- `ticket_incidente`: `causado_por_cambio_id` **existe**; verificar bandera de "incidente de emergencia" si se usa en 1.3.4.4 (SC-4).
+- Entidad `cambio` en la definición de campos personalizados (módulo `tickets`; SC-1).
+- Ausencias de técnicos (`organizacion`; SC-5).
 
-**13.7 Búsqueda:** índices de texto completo en español (`to_tsvector('spanish', …)` y `pg_trgm`) para detectar RFC similares.
+**13.7 Búsqueda:** índices de texto completo en español (`to_tsvector('spanish', …)` y `pg_trgm`) para detectar RFC similares (sobre tablas del propio módulo).
 
-**13.8 Tareas programadas** (usa el mecanismo de jobs existente; si no hay, propón —sin implementar sin aprobación— `pg_cron`, Edge Functions de Supabase o cron de Next.js): recordatorios previos a la ventana · recordatorios y escalamiento de aprobaciones · caducidad de autorizaciones · generación de agenda de CAB y recordatorios · cierre de votaciones asíncronas · reevaluación periódica de conflictos · comunicados de interrupción · inicio automático de PIR y alerta de PIR vencidas · revisión periódica y suspensión de modelos estándar · cierre automático · aviso de períodos de congelamiento próximos.
+**13.8 Tareas programadas** (usa el mecanismo de jobs existente —la Etapa 0 lo busca; puede estar en `plataforma` u `operacion`—; si no hay, propón —sin implementar sin aprobación— `pg_cron`, Edge Functions de Supabase o cron de Next.js): recordatorios previos a la ventana · recordatorios y escalamiento de aprobaciones · caducidad de autorizaciones · generación de agenda de CAB y recordatorios · cierre de votaciones asíncronas · reevaluación periódica de conflictos · comunicados de interrupción · inicio automático de PIR y alerta de PIR vencidas · revisión periódica y suspensión de modelos estándar · cierre automático · aviso de períodos de congelamiento próximos. La lógica vive en `configuracion/motor/`; el disparador, si es de infraestructura, se solicita (SC-6).
 
-**13.9 Semillas:** todo lo de la sección 11 mediante migración idempotente.
+**13.9 Semillas:** todo lo de la sección 11 mediante migración idempotente (reejecutarla no duplica registros), reflejada en `db/seed.sql`.
 
 ---
 
 ## 14. Criterios de aceptación
 
-1. El menú muestra `1.3.4.1 Configuración de formulario`, `1.3.4.2`, `1.3.4.3` y `1.3.4.4` con las pestañas numeradas de la sección 2.3.
+1. El menú del Administrador conserva, bajo la raíz **Cambios**, las cuatro pantallas de configuración con las ventanas internas de la sección 2.2; **no se crearon, movieron ni renombraron opciones de menú**.
 2. Todas las pestañas usan el patrón común (borrador, vista previa, publicación con diff y motivo, versionado, restauración, importación/exportación, bloqueo concurrente).
-3. El editor de formulario y el creador de campos de cambios son **el mismo componente** que usa Incidentes, extendido; Incidentes sigue funcionando igual.
+3. El editor de formulario y el creador de campos de cambios **son el mismo componente que usa Incidentes** cuando `tickets` lo publica por contrato (SC-1); si aún no está publicado, existe un adaptador documentado, **sin copias** del editor dentro de `cambios`. Incidentes sigue funcionando igual.
 4. Un campo bloqueado (Título, Tipo, Motivo, Descripción, Servicio, CI, Impacto, Urgencia, Fechas, Plan de implementación, Plan de rollback, Grupo implementador) no puede ocultarse; el mínimo normativo de Normal y Emergencia no puede bajarse.
 5. La obligatoriedad "Según tipo de cambio" se resuelve con la matriz de 1.3.4.2.1 y el formulario cambia al elegir otro tipo.
 6. Una RFC de tipo Estándar solo puede registrarse con un modelo aprobado, vigente y aplicable, y con la elegibilidad completa.
-7. Con `Usar matriz propia para cambios` apagado, una RFC con cierto impacto y urgencia recibe **exactamente la misma prioridad** que un incidente con esos valores; no existe una segunda copia de la matriz.
+7. Con `Usar matriz propia para cambios` apagado, una RFC con cierto impacto y urgencia recibe **exactamente la misma prioridad** que un incidente con esos valores (se calcula con el servicio compartido, no con una copia); no existe una segunda copia de la matriz. La matriz propia queda sujeta a la pregunta abierta 2.
 8. El cuestionario de riesgo calcula puntaje y nivel, aplica reglas de elevación, responde automáticamente las preguntas con fuente de sistema y el simulador coincide con el resultado real.
 9. La matriz de autoridad genera las etapas de aprobación correctas por tipo y riesgo; el simulador resuelve aprobadores reales.
 10. Un estándar con riesgo mayor que Bajo se reclasifica a Normal y se informa al usuario.
@@ -1502,50 +1593,76 @@ Principio: **verifica primero si existe (Etapa 0); si no existe, créalo con mig
 17. Un estado con tickets no puede desactivarse sin asistente de migración.
 18. Los conflictos (mismo CI, servicio, relacionados, implementador, fuera de ventana, congelamiento, feriado, capacidad) se detectan al enviar, programar y por proceso periódico, con la severidad configurada; las excepciones requieren permiso y motivo.
 19. Un período de congelamiento con severidad *Bloqueo total* impide programar para todos excepto Emergencia con ECAB.
-20. El comunicado de interrupción se envía a los usuarios de las áreas afectadas en los momentos configurados.
-21. Un resultado Fallido o con Rollback exige causa de fallo, crea el incidente configurado, fuerza la PIR y puede suspender el modelo estándar.
+20. El comunicado de interrupción se envía a los usuarios de las áreas afectadas en los momentos configurados (el envío usa el mecanismo de `plataforma`; si SC-6 no está atendida, se registra el evento y no se envía).
+21. Un resultado Fallido o con Rollback exige causa de fallo, crea el incidente configurado (vía contrato de `incidentes`, SC-4), fuerza la PIR y puede suspender el modelo estándar.
 22. No se puede cerrar una RFC con actualizaciones de CMDB pendientes ni con PIR obligatoria incompleta.
 23. La PIR detecta automáticamente los incidentes creados sobre los CI afectados dentro de la ventana de observación.
 24. Un modelo estándar se suspende automáticamente al superar el umbral de fallos y sus nuevas solicitudes se reclasifican a Normal.
 25. Los plazos de aprobación escalan según la configuración y **nunca** se aprueba automáticamente por vencimiento.
-26. Los feriados usan la misma tabla que lee `src/lib/sla.ts`; las ventanas y los congelamientos existen y no alteran el motor de SLA.
-27. Toda acción de configuración queda en `1.8.1 Auditoría de cambios` con usuario, antes/después y motivo; los historiales de RFC y votos son inmutables.
-28. Los permisos de la sección 10 se cumplen; `editar` sin `publicar` no habilita el botón Publicar; el Administrador no puede aprobar ni dictaminar.
+26. Los feriados usan la misma tabla que lee el motor de SLA; las ventanas y los congelamientos existen y no alteran el motor de SLA.
+27. Toda acción de configuración queda en `Plataforma › Auditoría de cambios de configuración` (`/plataforma/admin/auditoria-sistema`) con usuario, antes/después y motivo; los historiales de RFC y votos son inmutables.
+28. Las capacidades de la sección 10 están declaradas (SC-2) y se cumplen; `cambios:config:editar` sin `cambios:config:publicar` no habilita el botón Publicar; el Administrador no puede aprobar ni dictaminar ni operar RFC.
 29. El formulario y el ticket reflejan exactamente las secciones 4 y 5 con los valores de fábrica.
 30. La zona horaria del sistema se respeta en ventanas recurrentes, recordatorios y calendario.
-31. Ninguna ventana interna de las pantallas 1.3.4.x repite un ítem del menú; las ventanas internas existentes están en `?vista=` y no alteran el ítem activo del menú (3A).
+31. Ninguna ventana interna de las pantallas 1.3.4.x repite un ítem del menú del perfil activo; las ventanas internas están en `?vista=`, no alteran el ítem activo del menú (3A) y la barra omite las que el menú del Gestor de Cambios ya expone (2.1). La página padre `/plataforma/admin/procesos/cambios` redirige a `/formulario`.
 32. Los botones y las acciones de fila usan los íconos de 3B.4, con tooltip y `aria-label`, y el estilo de botones de la sección 3B.1.
 33. Todos los campos de los formularios y de las pantallas de configuración tienen validación en tiempo real con los validadores de 3C; **no aparece ningún indicador de éxito**; los errores usan `AlertaCampo`.
 34. Cambiar el valor de un selector que gobierna otro campo (por ejemplo tipo de documento) cambia al instante el validador, la máscara y el `maxLength` del campo dependiente.
 35. El servidor repite las mismas validaciones y devuelve `400` con `{ campo, mensaje }`, que la interfaz muestra en el campo.
-36. Los modales y la barra de acciones comunes existen una sola vez y los usan los módulos de problemas, cambios y activos; los `Iconos.tsx` duplicados fueron unificados.
+36. Los modales y la barra de acciones comunes existen **una sola vez dentro de `cambios`** (`configuracion/compartido/`) y los `Iconos.tsx` duplicados de `flujo-evaluacion` y `notificaciones-calendario` fueron eliminados; la promoción a `shared/components` y la unificación con `problemas` y `activos` se solicita al Tech Lead (SC-10).
+37. **Perímetro:** el diff de la entrega solo toca `src/modules/cambios/**`, los cascarones de `src/app/plataforma/admin/procesos/cambios/**` y `src/app/api/admin/cambios/**` (y el retiro de `/admin/rfc` si se aprueba), y `db/migrations/` + `db/seed.sql` (tablas del módulo). No hay ediciones en otros módulos, en `src/shared`, en `middleware.ts`, en `next.config.js` ni en el menú.
+38. **Contratos:** no hay imports profundos hacia otros módulos (ni de `problemas`); los controladores usan `sesionConCapacidad`; los `page.tsx` usan `exigirCapacidadPagina`; no existe guarda propia ni verificación manual de JWT en código nuevo.
+39. **Calidad:** `npx tsc --noEmit` y `npm run build` sin errores; migraciones idempotentes aplicadas en base limpia y en base existente; seed cargado; humo por perfil (en especial Administrador y Gestor de Cambios, con sus enlaces `?vista=`) sin 404/403 no deliberados; todas las solicitudes pendientes quedan en `docs/SOLICITUDES_A_OTROS_MODULOS.md`.
 
 ---
 
 ## 15. Etapa 0 — Reconocimiento obligatorio y preguntas abiertas
 
-**Punto de partida de la Etapa 0 (según el árbol de archivos):** el informe debe incluir una **tabla de diferencias** entre este documento y lo ya implementado en `/admin/procesos/cambios/*` (2.2 y 2.3): por cada ventana interna indica existe / falta / incompleta, qué validadores (3C) e íconos (3B) le faltan y qué elementos duplican ítems del menú (3A). Indica además qué calendario y qué feriados usa realmente `src/lib/sla.ts` y si `/admin/rfc` puede retirarse.
+**Punto de partida de la Etapa 0:** el informe debe incluir una **tabla de diferencias** entre este documento y lo ya implementado en `/plataforma/admin/procesos/cambios/*` y `src/modules/cambios` (2.2 y 2.3): por cada ventana interna indica existe / falta / incompleta, qué validadores (3C) e íconos (3B) le faltan, qué elementos duplican ítems del menú (3A) y **dónde está cada archivo hoy** (¿ya en `src/modules/cambios` o todavía en `src/app`/`src/lib`/`src/components`?). Indica además qué calendario y qué feriados usa realmente el motor de SLA (y de qué módulo es), si `/plataforma/admin/rfc` puede retirarse y si el nombre de la cuarta pantalla difiere entre catálogo y página.
 
-**Antes de escribir código**, revisa el repositorio y la base de datos y entrégame un **informe** (sin modificar nada) con:
+**Antes de escribir código**, revisa el repositorio y la base de datos y entrégame un **informe** (sin modificar nada), guardado en `src/modules/cambios/docs/INFORME_ETAPA_0.md` y resumido en el chat, con:
 
-1. **Matriz de prioridad:** dónde está, cómo se consume, si tiene pantalla de edición.
-2. **Motor de SLA:** dónde está y si cuenta horas corridas u hábiles; cómo se pausan y reanudan relojes.
-3. **Componentes reutilizables:** editor de formulario de 1.3.1.1, creador de campos, constructor de reglas, motor de estados de Incidentes, componente de borrador/publicación/versionado (si el Prompt 1 ya lo creó), sistema de notificaciones (1.6) y si admite destinatarios dinámicos y plantillas por evento, jobs programados, componentes de UI (tablas, modales, calendario, arrastrar-y-soltar).
-4. **Perfiles y permisos:** cómo se almacenan y verifican en `src/middleware.ts`, `src/lib/menu.ts`, `src/lib/page-auth.ts` y los Route Handlers.
-5. **Tablas existentes** de servicios, departamentos, grupos, técnicos, niveles, incidentes, CMDB (clases y relaciones), conocimiento y auditoría.
-6. **Estado del módulo operativo de cambios:** qué existe ya de `5.1.1`, el ticket de RFC, `5.1.2`, `5.1.3` y `5.2.1`.
-7. **Qué de la sección 13 ya existe y qué falta**, con el plan de migraciones.
-8. **Riesgos o conflictos** detectados.
+1. **Estructura actual de `src/modules/cambios`:** carpetas, `index.ts` (qué exporta), si existe `ui.ts`, controladores y servicios existentes, y dónde cabe la carpeta `configuracion/` (o la equivalente existente).
+2. **Matriz de prioridad:** dónde está, cómo se consume `calcularPrioridadITIL`, qué contrato permite usarla desde `cambios` y si admite una matriz alternativa por parámetro.
+3. **Motor de SLA:** en qué módulo está, si cuenta horas corridas u hábiles; cómo se pausan y reanudan relojes; qué tabla de feriados lee.
+4. **Componentes reutilizables y su visibilidad de contrato:** editor de formulario y creador de campos de Incidentes (¿publicados en `@/modules/tickets/ui`?), constructor de reglas, motor de estados, sistema de notificaciones de `plataforma` (si admite destinatarios dinámicos y plantillas por evento), jobs programados y componentes de UI compartidos (`AlertaCampo`, `Iconos`, `Boton`, tablas, modales, calendario, arrastrar-y-soltar) con su ruta real en `src/shared`.
+5. **Capacidades y perfiles:** lista completa de capacidades del dominio `cambios` en `src/shared/lib/capacidades.ts`, cómo `CAPACIDADES_POR_PERFIL` asigna el dominio a los 10 perfiles, qué guardas usan hoy los controladores de `cambios` (`sesionConCapacidad` vs `verificarTokenSesion`), cómo valida `exigirMenuPagina` las URLs con `?vista=` para el Gestor de Cambios y la **lista exacta de capacidades que faltan** para la sección 10 (diff propuesto para SC-2).
+6. **Tablas existentes** de servicios, departamentos, grupos, técnicos, niveles, ausencias, incidentes (Modelo C), CMDB (clases y relaciones), conocimiento y auditoría, con las columnas relevantes; y estructura real de `cambio`, `cambio_aprobacion`, `cab_reunion` y `periodos_congelamiento`.
+7. **Estado del módulo operativo de cambios:** qué existe ya de las pantallas de la sección 2.4 (registrar RFC, ticket de RFC, calendario, historial y CAB).
+8. **Qué de la sección 13 ya existe y qué falta**, con el plan de migraciones (número posterior a la última migración existente).
+9. **Solicitudes SC-1 a SC-11 (sección 17):** para cada una, si ya está atendida, parcialmente atendida o pendiente, y la **degradación** que aplicarás mientras tanto.
+10. **Riesgos o conflictos** detectados (por ejemplo, imports profundos existentes en `src/app` hacia vistas del módulo, rutas legadas con alias o componentes que dependan de comportamientos que esta spec cambia).
 
 Después **detente y espera mi aprobación** para iniciar la Etapa A.
 
 **Preguntas abiertas que quedan** (responde lo que puedas con el código; pregúntame solo lo que no puedas determinar):
-1. Si las pantallas operativas (`5.1.1`, ticket de RFC, `5.1.2`, `5.2.1`) no existen: ¿construyes versiones mínimas, dirigidas por la configuración y fieles a las secciones 4 y 5, al final de cada etapa para poder probarla? **Propuesta por defecto: sí.**
-2. Si la matriz impacto × urgencia está fija en código sin pantalla de edición: ¿apruebo migrarla a una tabla con pantalla?
-3. ¿Los servicios del catálogo tienen un campo de criticidad o de responsable? (determina si se crean en 13.6).
-4. ¿La CMDB actual tiene relaciones entre CI utilizables para el análisis de impacto? Si no, el análisis queda deshabilitado con aviso hasta que se ejecute el Prompt 3.
+1. Si las pantallas operativas (registrar RFC, ticket de RFC, calendario, CAB) no existen o están incompletas: ¿construyes versiones mínimas, dirigidas por la configuración y fieles a las secciones 4 y 5, al final de cada etapa para poder probarla? Pertenecen al mismo módulo, por lo que están dentro del perímetro. **Propuesta por defecto: sí.**
+2. **Matriz propia de cambios:** la arquitectura prohíbe un segundo servicio de prioridad y `calcularPrioridadITIL` pertenece al núcleo congelado `tickets`. ¿Se aprueba que `Usar matriz propia para cambios` opere como una **tabla de anulación del propio módulo** (lectura de celda impacto × urgencia, sin motor paralelo) o se pospone hasta que `tickets`/`servicios` acepten una matriz por parámetro? Si la matriz compartida está fija en código sin pantalla de edición, ¿apruebo proponer su migración a tabla al módulo `servicios`?
+3. ¿Los servicios del catálogo tienen un campo de criticidad o de responsable? (determina si se solicita en SC-3.)
+4. ¿La CMDB actual tiene relaciones entre CI utilizables para el análisis de impacto (`ci_relacion`)? Si no, el análisis queda deshabilitado con aviso hasta que se ejecute el Prompt 3.
+5. ¿Se aprueba agregar una suite de pruebas mínima (por ejemplo para SoD, quórum y conflictos) o las pruebas se limitan a funciones puras y checklist de humo?
 
 ---
 
 ## 16. Fuera de alcance de este prompt
-Gestión de problemas → Prompt 1 · Activos y CMDB (clases, relaciones, ciclos de vida) → Prompt 3 · Bandejas, tableros y reportes del módulo · Modificar el SLA por servicio o la matriz de 1.2.5 · Integraciones con herramientas externas de despliegue (CI/CD) o monitoreo · Gestión de proyectos y de liberaciones (release/deployment) más allá del origen "Proyecto".
+Gestión de problemas → Prompt 1 · Activos y CMDB (clases, relaciones, ciclos de vida) → Prompt 3 · Bandejas, consolas de rol (Técnico, Supervisor, Gestor de Área, Aprobador, Gestor de Cambios, Auditor), tableros y reportes (`/plataforma/reportes/cambios`, `/decisiones`) · Cualquier cambio en otro módulo (se solicita; sección 17) · Cambios al menú o a la visibilidad por perfil · Modificar el SLA por servicio o la matriz de `Objetivos SLA` · Integraciones con herramientas externas de despliegue (CI/CD) o monitoreo · Gestión de proyectos y de liberaciones (release/deployment) más allá del origen "Proyecto" · Migración de capacidades a la tabla `perfil_capacidades`.
+
+---
+
+## 17. Solicitudes a otros módulos (el módulo `cambios` no las implementa)
+
+Formato de cada solicitud en `src/modules/cambios/docs/SOLICITUDES_A_OTROS_MODULOS.md`: **id · módulo destino (dueño) · qué se necesita · contrato propuesto · comportamiento mientras no exista**. El módulo `cambios` entrega su parte (servicio, contrato, componente) y deja el consumo a cargo del módulo destino.
+
+| Id | Módulo destino (dueño) | Qué se necesita | Contrato propuesto | Mientras no exista (degradación) |
+|---|---|---|---|---|
+| SC-1 | `tickets` (Miguel; núcleo congelado, aprueba el Tech Lead) | Publicar el editor de formularios y el creador de campos personalizados con soporte para la entidad `cambio` (y `problema`, `activo`). | `@/modules/tickets/ui` (componente reutilizable) + servicio de definición de campos. | `cambios` define un **adaptador** (`CamposAdaptador`) con la interfaz que consumirá el editor y no copia el editor; las ventanas Campos y Campos personalizados quedan marcadas "pendiente de SC-1" salvo lo ya existente. |
+| SC-2 | `shared` (Tech Lead) | Declarar en `src/shared/lib/capacidades.ts` las capacidades de la sección 10 y actualizar `CAPACIDADES_POR_PERFIL`. | Constantes `CAPACIDADES.CAMBIOS_*`. | **Bloqueante para la Etapa A** (la separación editar/publicar y la SoD son criterios de aceptación): se aprueba junto con la Etapa 0. |
+| SC-3 | `servicios` (Miguel) | Criticidad y responsable del servicio si faltan; que la resolución de prioridad acepte una matriz alternativa (si se aprueba la pregunta 2). | `@/modules/servicios` · parámetro opcional en el servicio de prioridad. | Sin responsable de servicio se omite esa regla; la matriz propia queda detrás de la decisión de la pregunta 2. |
+| SC-4 | `incidentes` / `tickets` (Miguel) | Botón "Crear RFC desde este incidente"; creación de un incidente desde una RFC fallida (plantilla y prioridad heredada); bandera de incidente de emergencia si se usa. | Servicios en `@/modules/cambios` (`crearRfcDesdeIncidente`, `obtenerConfiguracionPublicada`) y contrato de creación de incidente en `@/modules/incidentes`. | La configuración se guarda y se expone; el efecto visible en el incidente y la creación automática no se activan hasta que el módulo destino lo monte. |
+| SC-5 | `organizacion` (Junior) | Áreas (departamentos empresariales), grupos, técnicos, niveles, suplentes y ausencias (`tecnico_ausencias` o equivalente) con función de disponibilidad. | `@/modules/organizacion` (`esTecnicoDisponible(idTecnico, fecha)`, listados). | La delegación por ausencia en comités (8.4) queda deshabilitada con el aviso "Requiere el registro de ausencias"; el resto usa listados de lectura acotada. |
+| SC-6 | `plataforma` (Miguel) | Emisión de eventos y plantillas para `cambio.*`; registro en `Auditoría de cambios de configuración`; parámetros (zona horaria del sistema, adjuntos, caducidad de borradores); disparador de tareas programadas; retiro de la opción de menú del RFC heredado si existe. | Servicios de eventos, auditoría, parámetros y jobs de `@/modules/plataforma`. | Si no hay mecanismo de eventos, el módulo registra los eventos en una tabla propia `cambio_config_evento` (outbox mínimo) y no envía notificaciones; zona horaria del servidor documentada. |
+| SC-7 | `problemas` (Alexis) | Origen = Problema: contrato para listar problemas, prellenar la RFC y recibir los cambios de estado; creación de un problema desde un fallo de RFC. | `@/modules/problemas` (`obtenerProblemaParaRfc`, `crearProblemaDesdeCambio`) y eventos de estado de RFC expuestos por `@/modules/cambios`. | Se guarda la configuración; el mapeo y la sincronización automáticos no se activan; el vínculo `cambio.id_problema_origen` se mantiene. |
+| SC-8 | `cmdb` / `activos` (Nain) | Clase, criticidad y estado del CI, relaciones para el análisis de impacto, aplicación de actualizaciones de CMDB al cerrar, botón "Crear RFC desde este activo". | `@/modules/cmdb` (consulta de CI y relaciones) y `@/modules/activos`. | Solo lectura de CI por SQL acotado; análisis de impacto deshabilitado con aviso; las actualizaciones de CMDB quedan planificadas, sin aplicarse. |
+| SC-9 | `conocimiento` (Alexis) | Artículos vinculados a RFC y a modelos estándar. | `@/modules/conocimiento` (búsqueda y vínculo de artículos). | La ventana lista el vínculo guardado sin validar el artículo. |
+| SC-10 | Tech Lead / `shared` | Promover `BarraAccionesComun`, `Modal*`, `Boton`, `BotonIcono` e `Iconos` a `src/shared/components/ui` y unificar con `problemas` y `activos`. | `@/shared/components/ui`. | Una única copia dentro de `cambios/configuracion/compartido/`. |
+| SC-11 | Dueño del motor de SLA (`servicios` o `tickets`, la Etapa 0 lo confirma) | Contrato de feriados y calendario hábil: lectura y, si la tabla es suya, escritura (alta, edición, importación CSV); adopción de la tabla de `cambios` si no existía ninguna. | `@/modules/<dueño>` (`listarFeriados`, `guardarFeriado`) o lectura desde `@/modules/cambios`. | Ventana de feriados en solo lectura con aviso, o tabla propia `calendario_feriados` con función de lectura expuesta (13.4). |

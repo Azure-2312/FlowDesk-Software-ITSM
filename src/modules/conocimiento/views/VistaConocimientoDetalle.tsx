@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface ArticuloDetalle {
   id_articulo: number;
@@ -48,6 +48,7 @@ function construirEtiquetas(articulo: ArticuloDetalle) {
 }
 
 export default function VistaConocimientoDetalle() {
+  const router = useRouter();
   const params = useParams();
   const idArticulo = params?.id as string;
 
@@ -119,12 +120,20 @@ export default function VistaConocimientoDetalle() {
   return (
     <div style={{ padding: "24px 32px", maxWidth: 900, margin: "0 auto" }}>
       <div style={{ marginBottom: 16 }}>
-        <Link
-          href="/conocimiento"
-          style={{ fontSize: 13, color: "#2563eb", textDecoration: "none", fontWeight: 600 }}
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/plataforma/conocimiento");
+            }
+          }}
+          className="boton-secundario"
+          style={{ fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px" }}
         >
           ← Volver a la base de conocimiento
-        </Link>
+        </button>
       </div>
 
       {cargando && (
@@ -150,7 +159,7 @@ export default function VistaConocimientoDetalle() {
             El artículo solicitado no existe o fue retirado de la base de conocimiento.
           </p>
           <Link
-            href="/conocimiento"
+            href="/plataforma/conocimiento"
             style={{
               padding: "8px 16px",
               backgroundColor: "#2563eb",

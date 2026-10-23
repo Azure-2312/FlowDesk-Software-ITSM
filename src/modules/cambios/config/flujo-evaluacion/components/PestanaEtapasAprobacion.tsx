@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, Shield, Play, Lock, CheckCircle2, AlertTriangle, Users, Clock } from "./Iconos";
+import { Plus, Edit2, Trash2, Shield, Play, Lock, CheckCircle2, AlertTriangle, Users, Clock } from "@/shared/components/ui/Iconos";
 
 interface EtapaConfig {
   id: string;
@@ -172,7 +172,7 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
   const handleEjecutarSimulacion = async () => {
     try {
       setSimulando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/simular-etapas", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/simular-etapas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(simParams)
@@ -192,7 +192,7 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <h2 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 4px 0" }}>
-            1.3.3.3.3 Catálogo de Etapas de Aprobación y Reglas de Decisión
+            Catálogo de Etapas de Aprobación y Reglas de Decisión
           </h2>
           <p style={{ fontSize: "0.85rem", color: "#64748b", margin: 0 }}>
             Definición de las etapas de control, reglas de decisión colegiada y segregación obligatoria de funciones (SoD).

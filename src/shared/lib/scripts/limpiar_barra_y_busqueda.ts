@@ -10,7 +10,7 @@ async function limpiar() {
   }
 
   try {
-    const res = await query("DELETE FROM opciones_menu_perfiles WHERE id_opcion_menu IN (SELECT id_opcion_menu FROM opciones_menu WHERE url_menu = '/tecnico/mesa/buscar'); DELETE FROM opciones_menu WHERE url_menu = '/tecnico/mesa/buscar';");
+    const res = await query("DELETE FROM opciones_menu_perfiles WHERE id_opcion_menu IN (SELECT id_opcion_menu FROM opciones_menu WHERE url_menu = '/plataforma/tickets/mesa/buscar'); DELETE FROM opciones_menu WHERE url_menu = '/plataforma/tickets/mesa/buscar';");
     console.log("- Opcion de menu Busqueda avanzada eliminada por url_menu.");
   } catch (e) {
     console.warn("Aviso al eliminar opcion de menu:", e);

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, Sun, Download, Upload, AlertCircle, X, Check } from "./Iconos";
+import { Plus, Edit2, Trash2, Sun, Download, Upload, AlertCircle, X, Check } from "@/shared/components/ui/Iconos";
 
 interface PestanaFeriadosProps {
   config: any;
@@ -93,7 +93,7 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
   };
 
   const exportarCsv = () => {
-    window.open("/api/admin/cambios/notificaciones-calendario/feriados/csv", "_blank");
+    window.open("/api/cambios/configuracion/notificaciones-calendario/feriados/csv", "_blank");
   };
 
   const importarCsv = async () => {
@@ -105,7 +105,7 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
     }
 
     try {
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/feriados/csv", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/feriados/csv", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ csv: csvTexto })

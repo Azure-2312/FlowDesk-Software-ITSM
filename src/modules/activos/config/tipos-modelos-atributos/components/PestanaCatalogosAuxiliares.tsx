@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, Ban, Play, ArrowUp, ArrowDown, X } from "@/shared/components/ui/Iconos";
 
 export interface CondicionFisica {
   id: string;
@@ -366,7 +368,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h3 className="text-base font-bold text-slate-800">
-              1.5.1.7 Listas y catálogos auxiliares de activos
+              Listas y catálogos auxiliares de activos
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               Administración de listas maestras para normalización de datos en ciclo de vida, finanzas y auditoría.
@@ -466,14 +468,14 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                             disabled={idx === 0 || bloqueado}
                             className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                           >
-                            ▲
+                            <ArrowUp size={10} />
                           </button>
                           <button
                             onClick={() => moverElemento("condicion_fisica", idx, "abajo")}
                             disabled={idx === condiciones.length - 1 || bloqueado}
                             className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                           >
-                            ▼
+                            <ArrowDown size={10} />
                           </button>
                         </div>
                       </td>
@@ -507,22 +509,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                           {item.activo ? "Activo" : "Inactivo"}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-right space-x-2">
-                        <button
-                          onClick={() => abrirEdicion("condicion_fisica", item)}
-                          disabled={bloqueado}
-                          className="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => cambiarEstadoActivo("condicion_fisica", item.id, item.activo)}
-                          disabled={bloqueado}
-                          className="text-slate-600 hover:text-slate-800 text-xs"
-                        >
-                          {item.activo ? "Desactivar" : "Activar"}
-                        </button>
-                      </td>
+                      <td className="py-2 px-3 text-right"><div style={{ display: "inline-flex", gap: 4 }}><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar condición" ariaLabel="Editar condición" disabled={bloqueado} onClick={() => abrirEdicion("condicion_fisica", item)} /><BotonIcono variante={item.activo ? "peligro" : "normal"} icono={item.activo ? <Ban size={13} /> : <Play size={13} />} titulo={item.activo ? "Desactivar condición" : "Activar condición"} ariaLabel={item.activo ? "Desactivar condición" : "Activar condición"} disabled={bloqueado} onClick={() => cambiarEstadoActivo("condicion_fisica", item.id, item.activo)} /></div></td>
                     </tr>
                   ))}
                 </tbody>
@@ -576,24 +563,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                           {m.activo ? "Activo" : "Inactivo"}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-right space-x-2">
-                        <button
-                          onClick={() => abrirEdicion("monedas", m)}
-                          disabled={bloqueado}
-                          className="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
-                        >
-                          Editar
-                        </button>
-                        {!m.por_defecto && (
-                          <button
-                            onClick={() => cambiarEstadoActivo("monedas", m.codigo, m.activo)}
-                            disabled={bloqueado}
-                            className="text-slate-600 hover:text-slate-800 text-xs"
-                          >
-                            {m.activo ? "Desactivar" : "Activar"}
-                          </button>
-                        )}
-                      </td>
+                      <td className="py-2 px-3 text-right"><div style={{ display: "inline-flex", gap: 4 }}><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar moneda" ariaLabel="Editar moneda" disabled={bloqueado} onClick={() => abrirEdicion("monedas", m)} />{!m.por_defecto && (<BotonIcono variante={m.activo ? "peligro" : "normal"} icono={m.activo ? <Ban size={13} /> : <Play size={13} />} titulo={m.activo ? "Desactivar moneda" : "Activar moneda"} ariaLabel={m.activo ? "Desactivar moneda" : "Activar moneda"} disabled={bloqueado} onClick={() => cambiarEstadoActivo("monedas", m.codigo, m.activo)} />)}</div></td>
                     </tr>
                   ))}
                 </tbody>
@@ -635,14 +605,14 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                             disabled={idx === 0 || bloqueado}
                             className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                           >
-                            ▲
+                            <ArrowUp size={10} />
                           </button>
                           <button
                             onClick={() => moverElemento("tipos_adquisicion", idx, "abajo")}
                             disabled={idx === tiposAdquisicion.length - 1 || bloqueado}
                             className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                           >
-                            ▼
+                            <ArrowDown size={10} />
                           </button>
                         </div>
                       </td>
@@ -675,22 +645,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                           {item.activo ? "Activo" : "Inactivo"}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-right space-x-2">
-                        <button
-                          onClick={() => abrirEdicion("tipos_adquisicion", item)}
-                          disabled={bloqueado}
-                          className="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => cambiarEstadoActivo("tipos_adquisicion", item.codigo, item.activo)}
-                          disabled={bloqueado}
-                          className="text-slate-600 hover:text-slate-800 text-xs"
-                        >
-                          {item.activo ? "Desactivar" : "Activar"}
-                        </button>
-                      </td>
+                      <td className="py-2 px-3 text-right"><div style={{ display: "inline-flex", gap: 4 }}><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar modalidad" ariaLabel="Editar modalidad" disabled={bloqueado} onClick={() => abrirEdicion("tipos_adquisicion", item)} /><BotonIcono variante={item.activo ? "peligro" : "normal"} icono={item.activo ? <Ban size={13} /> : <Play size={13} />} titulo={item.activo ? "Desactivar modalidad" : "Activar modalidad"} ariaLabel={item.activo ? "Desactivar modalidad" : "Activar modalidad"} disabled={bloqueado} onClick={() => cambiarEstadoActivo("tipos_adquisicion", item.codigo, item.activo)} /></div></td>
                     </tr>
                   ))}
                 </tbody>
@@ -732,14 +687,14 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                             disabled={idx === 0 || bloqueado}
                             className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                           >
-                            ▲
+                            <ArrowUp size={10} />
                           </button>
                           <button
                             onClick={() => moverElemento("tipos_documento", idx, "abajo")}
                             disabled={idx === tiposDocumento.length - 1 || bloqueado}
                             className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
                           >
-                            ▼
+                            <ArrowDown size={10} />
                           </button>
                         </div>
                       </td>
@@ -772,22 +727,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                           {item.activo ? "Activo" : "Inactivo"}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-right space-x-2">
-                        <button
-                          onClick={() => abrirEdicion("tipos_documento", item)}
-                          disabled={bloqueado}
-                          className="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => cambiarEstadoActivo("tipos_documento", item.codigo, item.activo)}
-                          disabled={bloqueado}
-                          className="text-slate-600 hover:text-slate-800 text-xs"
-                        >
-                          {item.activo ? "Desactivar" : "Activar"}
-                        </button>
-                      </td>
+                      <td className="py-2 px-3 text-right"><div style={{ display: "inline-flex", gap: 4 }}><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar documento" ariaLabel="Editar documento" disabled={bloqueado} onClick={() => abrirEdicion("tipos_documento", item)} /><BotonIcono variante={item.activo ? "peligro" : "normal"} icono={item.activo ? <Ban size={13} /> : <Play size={13} />} titulo={item.activo ? "Desactivar documento" : "Activar documento"} ariaLabel={item.activo ? "Desactivar documento" : "Activar documento"} disabled={bloqueado} onClick={() => cambiarEstadoActivo("tipos_documento", item.codigo, item.activo)} /></div></td>
                     </tr>
                   ))}
                 </tbody>
@@ -831,22 +771,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                           {item.activo !== false ? "Activo" : "Inactivo"}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-right space-x-2">
-                        <button
-                          onClick={() => abrirEdicion("centros_costo", item)}
-                          disabled={bloqueado}
-                          className="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => cambiarEstadoActivo("centros_costo", item.codigo, item.activo !== false)}
-                          disabled={bloqueado}
-                          className="text-slate-600 hover:text-slate-800 text-xs"
-                        >
-                          {item.activo !== false ? "Desactivar" : "Activar"}
-                        </button>
-                      </td>
+                      <td className="py-2 px-3 text-right"><div style={{ display: "inline-flex", gap: 4 }}><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar centro de costo" ariaLabel="Editar centro de costo" disabled={bloqueado} onClick={() => abrirEdicion("centros_costo", item)} /><BotonIcono variante={item.activo !== false ? "peligro" : "normal"} icono={item.activo !== false ? <Ban size={13} /> : <Play size={13} />} titulo={item.activo !== false ? "Desactivar centro de costo" : "Activar centro de costo"} ariaLabel={item.activo !== false ? "Desactivar centro de costo" : "Activar centro de costo"} disabled={bloqueado} onClick={() => cambiarEstadoActivo("centros_costo", item.codigo, item.activo !== false)} /></div></td>
                     </tr>
                   ))}
                 </tbody>
@@ -882,20 +807,8 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                   >
                     {item.activo ? "Activa" : "Inactiva"}
                   </span>
-                  <button
-                    onClick={() => abrirEdicion("etiquetas_sugeridas", item)}
-                    disabled={bloqueado}
-                    className="text-indigo-600 hover:text-indigo-800 text-xs font-bold ml-1"
-                  >
-                    ✎
-                  </button>
-                  <button
-                    onClick={() => cambiarEstadoActivo("etiquetas_sugeridas", item.id, item.activo)}
-                    disabled={bloqueado}
-                    className="text-slate-400 hover:text-slate-600 text-xs font-bold"
-                  >
-                    ✕
-                  </button>
+                  <BotonIcono variante="normal" icono={<Edit2 size={11} />} titulo="Editar etiqueta" ariaLabel="Editar etiqueta" disabled={bloqueado} onClick={() => abrirEdicion("etiquetas_sugeridas", item)} style={{ width: 22, height: 22 }} />
+                  <BotonIcono variante="peligro" icono={<X size={11} />} titulo="Desactivar etiqueta" ariaLabel="Desactivar etiqueta" disabled={bloqueado} onClick={() => cambiarEstadoActivo("etiquetas_sugeridas", item.id, item.activo)} style={{ width: 22, height: 22 }} />
                 </div>
               ))}
             </div>
@@ -945,22 +858,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                           {item.activo ? "Activo" : "Inactivo"}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-right space-x-2">
-                        <button
-                          onClick={() => abrirEdicion("motivos_auxiliares", item)}
-                          disabled={bloqueado}
-                          className="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => cambiarEstadoActivo("motivos_auxiliares", item.id, item.activo)}
-                          disabled={bloqueado}
-                          className="text-slate-600 hover:text-slate-800 text-xs"
-                        >
-                          {item.activo ? "Desactivar" : "Activar"}
-                        </button>
-                      </td>
+                      <td className="py-2 px-3 text-right"><div style={{ display: "inline-flex", gap: 4 }}><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar motivo" ariaLabel="Editar motivo" disabled={bloqueado} onClick={() => abrirEdicion("motivos_auxiliares", item)} /><BotonIcono variante={item.activo ? "peligro" : "normal"} icono={item.activo ? <Ban size={13} /> : <Play size={13} />} titulo={item.activo ? "Desactivar motivo" : "Activar motivo"} ariaLabel={item.activo ? "Desactivar motivo" : "Activar motivo"} disabled={bloqueado} onClick={() => cambiarEstadoActivo("motivos_auxiliares", item.id, item.activo)} /></div></td>
                     </tr>
                   ))}
                 </tbody>
@@ -978,12 +876,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
               <h3 className="text-sm font-bold text-slate-800">
                 {modalEdicion.esNuevo ? "Nuevo elemento de catálogo" : "Editar elemento de catálogo"}
               </h3>
-              <button
-                onClick={() => setModalEdicion({ abierto: false, catalogo: "condicion_fisica", esNuevo: true })}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar ventana" ariaLabel="Cerrar ventana" onClick={() => setModalEdicion({ abierto: false, catalogo: "condicion_fisica", esNuevo: true })} />
             </div>
 
             <div className="p-5 space-y-4 text-xs">

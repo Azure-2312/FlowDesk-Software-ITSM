@@ -39,7 +39,7 @@ export default function VistaConocimientoProblemas() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-problemas/conocimiento?_t=${Date.now()}`);
+      const res = await fetch(`/api/problemas/gestion/conocimiento?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setArticulos(Array.isArray(json?.articulos) ? json.articulos : []);
@@ -64,7 +64,7 @@ export default function VistaConocimientoProblemas() {
     setOk(null);
     const candidato = pendientes.find((p) => String(p.id_problema) === form.id_problema);
     try {
-      const res = await fetch("/api/gestor-problemas/conocimiento", {
+      const res = await fetch("/api/problemas/gestion/conocimiento", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

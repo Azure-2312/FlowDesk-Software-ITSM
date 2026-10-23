@@ -42,7 +42,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
     async function cargarMatriz() {
       setCargandoMatriz(true);
       try {
-        const res = await fetch("/api/admin/sla/matriz");
+        const res = await fetch("/api/servicios/sla/matriz");
         const data = await res.json();
         if (data.ok && Array.isArray(data.matriz)) {
           setMatrizInstitucional(data.matriz);
@@ -140,7 +140,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
           </div>
 
           <Link
-            href="/admin/servicios/sla"
+            href="/plataforma/servicios/configuracion/sla"
             className="boton-secundario"
             style={{ fontSize: 12, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
           >

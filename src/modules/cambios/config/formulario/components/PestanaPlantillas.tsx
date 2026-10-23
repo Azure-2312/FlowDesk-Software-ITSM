@@ -41,7 +41,7 @@ export const PestanaPlantillas: React.FC = () => {
   const cargarPlantillas = async () => {
     setCargando(true);
     try {
-      const res = await fetch("/api/admin/cambios/plantillas");
+      const res = await fetch("/api/cambios/configuracion/plantillas");
       const data = await res.json();
       if (data.ok && Array.isArray(data.plantillas)) {
         setPlantillas(data.plantillas);
@@ -86,7 +86,7 @@ export const PestanaPlantillas: React.FC = () => {
 
   const alternarActivo = async (p: PlantillaRFC) => {
     try {
-      const res = await fetch("/api/admin/cambios/plantillas", {
+      const res = await fetch("/api/cambios/configuracion/plantillas", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_plantilla: p.id_plantilla, activo: !p.activo }),
@@ -100,7 +100,7 @@ export const PestanaPlantillas: React.FC = () => {
   const eliminarPlantilla = async (p: PlantillaRFC) => {
     if (!confirm(`¿Desea eliminar la plantilla "${p.nombre}"?`)) return;
     try {
-      const res = await fetch(`/api/admin/cambios/plantillas?id_plantilla=${p.id_plantilla}`, {
+      const res = await fetch(`/api/cambios/configuracion/plantillas?id_plantilla=${p.id_plantilla}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -124,7 +124,7 @@ export const PestanaPlantillas: React.FC = () => {
       setGuardando(true);
       setErrorModal("");
       const esEdicion = !!plantillaActiva.id_plantilla;
-      const res = await fetch("/api/admin/cambios/plantillas", {
+      const res = await fetch("/api/cambios/configuracion/plantillas", {
         method: esEdicion ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(plantillaActiva),

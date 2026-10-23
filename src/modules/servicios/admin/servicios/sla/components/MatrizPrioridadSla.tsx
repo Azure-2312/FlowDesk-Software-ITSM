@@ -63,7 +63,7 @@ export function MatrizPrioridadSla() {
       setCargando(true);
       setError(null);
       try {
-        const res = await fetch("/api/admin/sla/matriz");
+        const res = await fetch("/api/servicios/sla/matriz");
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Error al cargar matriz");
 
@@ -112,7 +112,7 @@ export function MatrizPrioridadSla() {
       setError(null);
       setMensajeExito("");
 
-      const res = await fetch("/api/admin/sla/matriz", {
+      const res = await fetch("/api/servicios/sla/matriz", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

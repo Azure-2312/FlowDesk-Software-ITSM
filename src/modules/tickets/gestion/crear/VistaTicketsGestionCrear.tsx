@@ -69,7 +69,15 @@ function deducirPrioridad(nivelImpacto: number, nivelUrgencia: number): { codigo
   return { codigo: "P4", nombre: "Baja", sla: 72, color: "#2563eb" };
 }
 
-function ContenidoCrearTicket() {
+function ContenidoCrearTicket({
+  tipoFijo,
+  rutaDetalleBase,
+  rutaLista,
+}: {
+  tipoFijo?: 1 | 2;
+  rutaDetalleBase?: string;
+  rutaLista?: string;
+} = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -79,7 +87,7 @@ function ContenidoCrearTicket() {
   const paramTit = searchParams.get("titulo");
 
   // 1. Selector de las dos grandes categorías: 1 = Incidente, 2 = Solicitud
-  const tipoInicial = paramTipo === "solicitud" || paramTipo === "2" ? 2 : 1;
+  const tipoInicial = tipoFijo ?? (paramTipo === "solicitud" || paramTipo === "2" ? 2 : 1);
   const [idTipo, setIdTipo] = useState<number>(tipoInicial);
 
   const [catalogos, setCatalogos] = useState<CatalogosTickets | null>(null);
@@ -145,8 +153,8 @@ function ContenidoCrearTicket() {
         const [resCat, resUser, resConfig, resSla] = await Promise.all([
           fetch("/api/tickets/catalogos").then((r) => r.json()),
           fetch("/api/mi-cuenta").then((r) => r.json()),
-          fetch("/api/admin/configuracion?clave=formularios_solicitante_config").then((r) => r.json()),
-          fetch("/api/admin/sla").then((r) => r.json()),
+          fetch("/api/operacion/configuracion?clave=formularios_solicitante_config").then((r) => r.json()),
+          fetch("/api/servicios/sla").then((r) => r.json()),
         ]);
 
         setCatalogos(resCat);
@@ -232,7 +240,7 @@ function ContenidoCrearTicket() {
     setEnNombreDeOtroValor("");
 
     if (catalogos?.categorias) {
-      const primeraCat = catalogos.categorias.find((c) => c.id_tipo_ticket === nuevoTipo);
+      const primeraCat = catalogos.categorias.find((c) => c.id_tipo_ticket === nuevoTipo && c.estado_registro !== false);
       if (primeraCat) setIdCategoria(primeraCat.id_categoria);
       else setIdCategoria("");
     }
@@ -240,7 +248,13 @@ function ContenidoCrearTicket() {
 
   // Filtrar servicios acordes al tipo seleccionado (Incidente vs Solicitud)
   const serviciosDelTipo = (catalogos?.servicios || []).filter(
-    (s) => s.id_tipo_ticket === idTipo
+    (s) =>
+      s.id_tipo_ticket === idTipo &&
+      s.estado_registro !== false &&
+      (!s.id_categoria ||
+        (catalogos?.categorias || []).some(
+          (c) => c.id_categoria === s.id_categoria && c.estado_registro !== false
+        ))
   );
 
   const servicioSeleccionado = serviciosDelTipo.find((s) => s.id_servicio === idServicio);
@@ -262,7 +276,7 @@ function ContenidoCrearTicket() {
   async function buscarUsuariosEnApi(termino: string) {
     setBuscandoUsuarios(true);
     try {
-      const res = await fetch(`/api/tecnico/usuarios?q=${encodeURIComponent(termino.trim())}`);
+      const res = await fetch(`/api/identidades/tecnicos?q=${encodeURIComponent(termino.trim())}`);
       if (res.ok) {
         const data = await res.json();
         setUsuariosEncontrados(data.usuarios || []);
@@ -549,9 +563,9 @@ function ContenidoCrearTicket() {
       // Redirigir directamente a la página completa del ticket creado
       router.refresh();
       if (datos.ticket?.id_ticket) {
-        router.push(`/tickets/${datos.ticket.id_ticket}`);
+        router.push(rutaDetalleBase ? `${rutaDetalleBase}/${datos.ticket.id_ticket}` : `/plataforma/tickets/${datos.ticket.id_ticket}`);
       } else {
-        router.push("/tickets/gestion/mios");
+        router.push(rutaLista ?? (esIncidente ? "/plataforma/incidentes/mios" : "/plataforma/solicitudes/mios"));
       }
     } catch {
       setError("Error de conexión al enviar el ticket.");
@@ -575,14 +589,17 @@ function ContenidoCrearTicket() {
       {/* Encabezado */}
       <div style={{ marginBottom: 20 }}>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-          Crear Ticket en Mesa de Servicio
+          {tipoFijo === 1 ? "Registrar incidente" : tipoFijo === 2 ? "Registrar solicitud de servicio" : "Crear Ticket en Mesa de Servicio"}
         </h1>
         <p style={{ color: "#64748b", fontSize: 13, marginTop: 4, marginBottom: 0 }}>
-          Selecciona el tipo de proceso para habilitar el formulario oficial correspondiente.
+          {tipoFijo
+            ? "Completa el formulario oficial del modulo correspondiente."
+            : "Selecciona el tipo de proceso para habilitar el formulario oficial correspondiente."}
         </p>
       </div>
 
       {/* 1.1 DOS CATEGORÍAS CON ICONOS GRANDES Y BREVE DEFINICIÓN */}
+      {!tipoFijo && (
       <div
         style={{
           display: "grid",
@@ -701,6 +718,7 @@ function ContenidoCrearTicket() {
           </div>
         </div>
       </div>
+      )}
 
       {/* ========================================================================= */}
       {/* FORMULARIO OFICIAL CORRESPONDIENTE (ESTRUCTURA IDÉNTICA A LA VISTA PREVIA)*/}
@@ -1453,7 +1471,13 @@ function ContenidoCrearTicket() {
             <button
               type="button"
               className="boton-secundario"
-              onClick={() => router.push("/tickets/gestion/mios")}
+              onClick={() => {
+                if (typeof window !== "undefined" && window.history.length > 1) {
+                  router.back();
+                } else {
+                  router.push(rutaLista ?? (esIncidente ? "/plataforma/incidentes/mios" : "/plataforma/solicitudes/mios"));
+                }
+              }}
               style={{ width: "auto", fontSize: 13, padding: "8px 18px" }}
               disabled={guardando}
             >
@@ -1556,10 +1580,18 @@ function ContenidoCrearTicket() {
   );
 }
 
-export default function PaginaCrearTicket() {
+export default function PaginaCrearTicket({
+  tipoFijo,
+  rutaDetalleBase,
+  rutaLista,
+}: {
+  tipoFijo?: 1 | 2;
+  rutaDetalleBase?: string;
+  rutaLista?: string;
+} = {}) {
   return (
     <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Cargando formulario...</div>}>
-      <ContenidoCrearTicket />
+      <ContenidoCrearTicket tipoFijo={tipoFijo} rutaDetalleBase={rutaDetalleBase} rutaLista={rutaLista} />
     </Suspense>
   );
 }

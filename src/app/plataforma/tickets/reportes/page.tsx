@@ -1,5 +1,6 @@
-import VistaTicketsReportes from "@/modules/tickets/reportes/VistaTicketsReportes";
+import { redirect } from "next/navigation";
 
-export default function PaginaTicketsRoute() {
-  return <VistaTicketsReportes />;
+/** Ruta legada de indicadores; ahora vive en el modulo reportes. */
+export default function PaginaTicketsReportesLegacy() {
+  redirect("/plataforma/reportes/operativos");
 }

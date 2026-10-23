@@ -49,7 +49,7 @@ export default function VistaTicketAdministrador({
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <Link
-            href="/admin/tickets-vistas"
+            href="/plataforma/tickets/configuracion/vistas"
             onClick={onCerrarModal}
             className="boton-mini"
             style={{ fontSize: 11.5, textDecoration: "none", padding: "6px 10px" }}
@@ -57,7 +57,7 @@ export default function VistaTicketAdministrador({
             Configurar Vistas
           </Link>
           <Link
-            href="/admin/tickets-formularios"
+            href="/plataforma/tickets/configuracion/formularios"
             onClick={onCerrarModal}
             className="boton-mini"
             style={{ fontSize: 11.5, textDecoration: "none", padding: "6px 10px" }}

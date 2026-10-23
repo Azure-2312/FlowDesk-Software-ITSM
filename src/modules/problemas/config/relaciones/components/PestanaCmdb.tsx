@@ -49,7 +49,7 @@ export function PestanaCmdb({ config, clasesDisponibles, onChange, onMarcarModif
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div>
         <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-          1.3.4.3.6 CI y servicios (CMDB - Service Configuration Management)
+          CI y servicios (CMDB)
         </h2>
         <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
           Define la interacción entre los tickets de problemas y los Elementos de Configuración (CI) de la CMDB, gobernando la herencia de activos, validación de relaciones y alertas de criticidad.

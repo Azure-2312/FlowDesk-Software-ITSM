@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "../formulario/components/BarraAccionesComun";
-import { ModalPublicacion } from "../formulario/components/ModalPublicacion";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "../formulario/components/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "../formulario/components/ModalRestaurarFabrica";
 
@@ -29,42 +29,42 @@ type TabId =
 const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion: string }> = {
   estados: {
     numero: "1.3.3.3.1",
-    titulo: "1.3.3.3.1 Estados",
+    titulo: "Estados",
     descripcion: "Catálogo de estados del ciclo de vida, políticas de edición, relojes SLA y visibilidad en calendario."
   },
   transiciones: {
     numero: "1.3.3.3.2",
-    titulo: "1.3.3.3.2 Transiciones y acciones",
+    titulo: "Transiciones y acciones",
     descripcion: "Flujo de transiciones, perfiles autorizados, precondiciones normativas y automatizaciones."
   },
   etapas_aprobacion: {
     numero: "1.3.3.3.3",
-    titulo: "1.3.3.3.3 Etapas de aprobación",
+    titulo: "Etapas de aprobación",
     descripcion: "Catálogo de etapas de control, reglas de decisión y segregación obligatoria de funciones (SoD)."
   },
   comites: {
     numero: "1.3.3.3.4",
-    titulo: "1.3.3.3.4 Comités (CAB y ECAB)",
+    titulo: "Comités (CAB y ECAB)",
     descripcion: "Gobernanza del Change Advisory Board y Emergency CAB: miembros, quórum, desempate y agendas."
   },
   plazos_escalamiento: {
     numero: "1.3.3.3.5",
-    titulo: "1.3.3.3.5 Plazos y escalamiento",
+    titulo: "Plazos y escalamiento",
     descripcion: "Matriz de tiempos máximos por prioridad, alertas preventivas y escalamiento jerárquico sin autoaprobación."
   },
   tareas_checklists: {
     numero: "1.3.3.3.6",
-    titulo: "1.3.3.3.6 Tareas y checklists",
+    titulo: "Tareas y checklists",
     descripcion: "Catálogo de tareas operativas por fase, paquetes predeterminados y checklist Go/No-Go."
   },
   implementacion_cierre: {
     numero: "1.3.3.3.7",
-    titulo: "1.3.3.3.7 Implementación y cierre",
+    titulo: "Implementación y cierre",
     descripcion: "Acciones automáticas ante fallo o rollback, sincronización con CMDB y políticas de cierre inmutable."
   },
   pir: {
     numero: "1.3.3.3.8",
-    titulo: "1.3.3.3.8 Revisión post-implementación (PIR)",
+    titulo: "Revisión post-implementación (PIR)",
     descripcion: "Cuestionario de 12 preguntas de auditoría, ventana de observación de incidentes y matriz de exigencia."
   }
 };
@@ -106,7 +106,7 @@ export default function FlujoEvaluacionPage() {
       setCargando(true);
       setErrorCarga(null);
 
-      const res = await fetch(`/api/admin/cambios/flujo-evaluacion/configuracion?pestana=${tabActiva}`);
+      const res = await fetch(`/api/cambios/configuracion/flujo-evaluacion/configuracion?pestana=${tabActiva}`);
       if (!res.ok) throw new Error("Error al obtener la configuración del servidor");
       const data = await res.json();
 
@@ -141,7 +141,7 @@ export default function FlujoEvaluacionPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -167,7 +167,7 @@ export default function FlujoEvaluacionPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -197,7 +197,7 @@ export default function FlujoEvaluacionPage() {
     }
     try {
       setCargando(true);
-      const res = await fetch(`/api/admin/cambios/flujo-evaluacion/configuracion?pestana=${tabActiva}`, {
+      const res = await fetch(`/api/cambios/configuracion/flujo-evaluacion/configuracion?pestana=${tabActiva}`, {
         method: "DELETE"
       });
       if (!res.ok) throw new Error("Error al descartar borrador");
@@ -213,7 +213,7 @@ export default function FlujoEvaluacionPage() {
   const handleRestaurarFabrica = async () => {
     try {
       setCargando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -237,7 +237,7 @@ export default function FlujoEvaluacionPage() {
   const handleRestaurarVersion = async (versionId: number) => {
     try {
       setCargando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -295,25 +295,26 @@ export default function FlujoEvaluacionPage() {
   const deshabilitadoEdicion = !puedeEditar || !!bloqueadoPorOtro;
 
   return (
-    <div style={{ padding: "24px 32px 100px 32px", maxWidth: "1600px", margin: "0 auto", color: "#1e293b" }}>
-      {/* Migas de pan y encabezado */}
+    <div style={{ backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ padding: "24px 32px 32px 32px", flex: 1, maxWidth: "1600px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+        {/* Migas de pan y encabezado */}
       <div style={{ marginBottom: "16px" }}>
         <div style={{ fontSize: "0.85rem", color: "#64748b", marginBottom: "6px" }}>
-          <Link href="/admin/procesos" style={{ color: "#64748b", textDecoration: "none" }}>
-            Administración
+          <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>
+            Cambios
           </Link>
           {" / "}
-          <Link href="/admin/procesos/cambios" style={{ color: "#64748b", textDecoration: "none" }}>
-            Gestión de Cambios
+          <Link href="/plataforma/admin/procesos/cambios" style={{ color: "#64748b", textDecoration: "none" }}>
+            Configuración
           </Link>
           {" / "}
-          <span style={{ color: "#1e293b", fontWeight: 600 }}>1.3.3.3 Flujo de Evaluación, Autorización y PIR</span>
+          <span style={{ color: "#1e293b", fontWeight: 600 }}>Flujo de evaluación, autorización y revisión posterior</span>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
           <div>
             <h1 style={{ fontSize: "1.6rem", fontWeight: 800, color: "#0f172a", margin: "0 0 4px 0" }}>
-              1.3.3.3 Flujo de Evaluación, Autorización y Revisión Posterior (PIR)
+              Flujo de Evaluación, Autorización y Revisión Posterior (PIR)
             </h1>
             <p style={{ fontSize: "0.9rem", color: "#475569", margin: 0 }}>
               Ciclo de vida de la RFC (ITIL 4 / COBIT BAI06 / ISO 20000): estados, transiciones, comités CAB/ECAB, tareas y auditoría PIR.
@@ -322,7 +323,7 @@ export default function FlujoEvaluacionPage() {
 
           <div style={{ display: "flex", gap: "8px" }}>
             <Link
-              href="/admin/procesos/cambios/tipos-requisitos"
+              href="/plataforma/cambios/configuracion/tipos-requisitos"
               style={{
                 fontSize: "0.8rem",
                 padding: "6px 12px",
@@ -334,10 +335,10 @@ export default function FlujoEvaluacionPage() {
                 fontWeight: 600
               }}
             >
-              &larr; 1.3.3.2 Tipos y Requisitos
+              ← Tipos y Requisitos
             </Link>
             <Link
-              href="/admin/procesos/cambios/notificaciones-calendario"
+              href="/plataforma/cambios/configuracion/notificaciones-calendario"
               style={{
                 fontSize: "0.8rem",
                 padding: "6px 12px",
@@ -349,7 +350,7 @@ export default function FlujoEvaluacionPage() {
                 fontWeight: 600
               }}
             >
-              1.3.3.4 Notificaciones y Calendario &rarr;
+              Notificaciones y Calendario →
             </Link>
           </div>
         </div>
@@ -488,6 +489,7 @@ export default function FlujoEvaluacionPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* Barra de Acciones Común Pattern 3.1 */}
       <BarraAccionesComun

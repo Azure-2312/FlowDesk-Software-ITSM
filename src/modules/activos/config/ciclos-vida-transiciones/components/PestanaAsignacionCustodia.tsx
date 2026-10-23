@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Trash2, X } from "@/shared/components/ui/Iconos";
 
 export interface TipoAsignacion {
   id: string;
@@ -149,7 +151,7 @@ export function PestanaAsignacionCustodia({ datos, onChange, bloqueado }: Props)
       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            1.5.2.3 Asignación, custodia y devolución
+            Asignación, custodia y devolución
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Gobierna la responsabilidad unipersonal de custodia, aceptación digital, actas y checklist de devolución.
@@ -459,13 +461,7 @@ export function PestanaAsignacionCustodia({ datos, onChange, bloqueado }: Props)
                     />
                     <span className="text-slate-600 font-medium">Obligatorio</span>
                   </label>
-                  <button
-                    onClick={() => eliminarChecklistItem(item.id)}
-                    disabled={bloqueado}
-                    className="text-red-500 hover:text-red-700 font-bold ml-2"
-                  >
-                    ✕
-                  </button>
+                  <BotonIcono variante="peligro" icono={<Trash2 size={13} />} titulo="Eliminar elemento del checklist" ariaLabel="Eliminar elemento del checklist" disabled={bloqueado} onClick={() => eliminarChecklistItem(item.id)} />
                 </div>
               </div>
             ))}

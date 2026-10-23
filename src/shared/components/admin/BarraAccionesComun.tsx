@@ -44,19 +44,25 @@ export const BarraAccionesComun: React.FC<BarraAccionesComunProps> = ({
   return (
     <footer
       style={{
-        position: "fixed",
+        position: "sticky",
         bottom: 0,
         left: 0,
         right: 0,
-        zIndex: 100,
+        zIndex: 40,
         backgroundColor: "#ffffff",
         borderTop: "1px solid #cbd5e1",
-        padding: "10px 24px",
+        borderRadius: 0,
+        margin: 0,
+        padding: "12px 28px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: 12,
         boxShadow: "0 -4px 14px rgba(0, 0, 0, 0.08)",
-        minWidth: 1200,
+        width: "100%",
+        boxSizing: "border-box",
+        marginTop: "auto",
       }}
     >
       {/* 1. Estado de la version y borrador (Izquierda) */}

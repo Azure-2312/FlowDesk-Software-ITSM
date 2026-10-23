@@ -56,7 +56,7 @@ export function PestanaKedb({ config, onChange, onMarcarModificado }: Props) {
   async function ejecutarPrueba() {
     setProbando(true);
     try {
-      const res = await fetch("/api/admin/problemas/relaciones/kedb", {
+      const res = await fetch("/api/problemas/configuracion/relaciones/kedb", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -84,7 +84,7 @@ export function PestanaKedb({ config, onChange, onMarcarModificado }: Props) {
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div>
         <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-          1.3.4.3.3 Errores conocidos (KEDB - Known Error Database)
+          Base de errores conocidos (KEDB)
         </h2>
         <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
           Gobierna los criterios de calidad para catalogar un error conocido, su ciclo de vida, vigencia de workarounds y el motor semántico de sugerencia para la mesa de ayuda.

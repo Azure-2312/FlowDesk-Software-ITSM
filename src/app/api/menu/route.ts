@@ -1,1 +1,1 @@
-export { GET } from "@/modules/administracion/api/menuController";
+export { GET } from "@/modules/plataforma/api/menuController";

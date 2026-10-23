@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
-import { POST as comentarTicket } from "@/modules/tickets/api/ticketComentariosController";
+import { ticketComentariosPost as comentarTicket } from "@/modules/tickets";
 import { validarTipoTicket } from "@/modules/solicitudes/solicitudesService";
 
 type Contexto = { params: { id: string } };

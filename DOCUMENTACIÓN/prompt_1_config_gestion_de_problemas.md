@@ -1,36 +1,101 @@
 # PROMPT 1 de 3 — Configuración del administrador: GESTIÓN DE PROBLEMAS
 
-> **Rama del menú que se implementa:** `1 Configuración > 1.3 Configuración de procesos > 1.3.3 Gestión de problemas`
-> **Prompts hermanos (se entregan por separado):** Prompt 2 = Gestión de cambios (1.3.4) · Prompt 3 = Activos y CMDB (1.5).
-> **Idioma de la interfaz:** español. **Código, tablas y endpoints:** nombres en español snake_case salvo convención técnica.
-> **Stack real del proyecto:** Next.js 14 con App Router (frontend + backend) y PostgreSQL (alojado en Supabase y accedido con el pool `pg` de `src/lib/db.ts`). Tienes acceso completo al código, la base de datos, el frontend y el backend.
-> **Versión del documento:** 2.0 (actualizada a la arquitectura FlowDesk: numeración y rutas reales, reglas de navegación sin duplicar el menú, sistema de íconos y validaciones en todos los campos).
+> **Pantallas que se implementan (menú del Administrador, raíz `Problemas`):** `Configuración de formulario` (`/plataforma/admin/procesos/problemas/formulario`) · `Flujo de investigación y seguimiento` (`/plataforma/admin/procesos/problemas/flujo`) · `Relación con incidentes, errores conocidos y conocimiento` (`/plataforma/admin/procesos/problemas/relaciones`).
+> **Módulo dueño y único perímetro de trabajo:** `src/modules/problemas` (ver sección 0A). **Prompts hermanos (se entregan por separado):** Prompt 2 = Cambios (módulo `cambios`) · Prompt 3 = Activos y CMDB (módulos `activos` y `cmdb`).
+> **Idioma de la interfaz:** español. **Código, tablas y endpoints:** nombres en español `snake_case` salvo convención técnica.
+> **Stack real del proyecto:** Next.js 14.2 (App Router), React 18, TypeScript 5.5 y PostgreSQL en Supabase accedido con el pool `pg` de `@/shared/lib/db`. Arquitectura **vertical slice**: toda la lógica de un dominio vive en `src/modules/<modulo>/`; `src/app` solo contiene cascarones delgados.
+> **Documentos normativos (se adjuntan junto con este prompt):** `ARQUITECTURA_Y_CODIGO.md` (diseño técnico, contratos, guardas, modelo de datos) y `MENUS_Y_PERFILES.md` (árbol de menú, perfiles y SoD). Precedencia: el **código y la base vigentes** mandan sobre conteos y nombres; esos dos documentos mandan sobre diseño técnico y menú; este prompt manda sobre el contenido funcional de las tres pantallas.
+> **Versión del documento:** 3.0 (adaptada a la arquitectura modular vigente al 2026-10-21; el contenido funcional de la v2.0 se conserva).
+
+### Qué cambió respecto de la v2.0 (solo estructura; el contenido funcional no cambia)
+| v2.0 (arquitectura anterior) | v3.0 (arquitectura vigente) |
+|---|---|
+| Menú numerado `1 Configuración > 1.3 > 1.3.3` | La raíz **Configuración ya no existe**. Las tres pantallas viven bajo la raíz **Problemas** del menú del Administrador. Las referencias `1.x.x` a otras pantallas se sustituyen por su **nombre y ruta** (sección 2.1). |
+| Rutas `/admin/...`, `/problemas/...`, `/tecnico/...` | Rutas canónicas `/plataforma/...` (los alias sin `/plataforma` son reescrituras de `next.config.js`, no destinos). |
+| Código en `src/lib`, `src/components`, `src/modules/admin` | `src/modules/problemas` (dominio), `src/shared` (infraestructura transversal) y cascarones en `src/app`. |
+| Cookie `sesion_tickets`, JWT manual | Cookie `sesion`; guardas compartidas `sesionConCapacidad` / `exigirCapacidadPagina` y capacidades `dominio:acción`. |
+| Permisos `config.problemas.*`, `problemas.*` | Capacidades `problemas:config:*`, `problemas:*`, `kedb:*` (sección 9). |
+| Se creaba el perfil Gestor de Problemas y se tocaban otras pantallas | El perfil **ya existe** (id 10). **Este prompt solo toca el módulo `problemas`**; lo que requiere otros módulos se entrega como solicitud (sección 16). |
 
 ---
 
 ## 0. Instrucciones para la IA que implementará esto
 
-**Rol:** eres un arquitecto/desarrollador senior de software ITSM. Vas a construir el área de configuración del *administrador* para el proceso de Gestión de Problemas de un sistema ITSM que ya tiene Incidentes y Solicitudes de servicio.
+**Rol:** eres un arquitecto/desarrollador senior de software ITSM. Vas a construir el área de configuración del *administrador* para el proceso de Gestión de Problemas de FlowDesk, un sistema ITSM que ya tiene Incidentes, Solicitudes de servicio, Cambios, Activos y CMDB.
 
 **Reglas obligatorias:**
 
-1. Implementa **exactamente** lo descrito. Si algo no está especificado, **no lo inventes**: antes de escribir código, devuelve una lista numerada de "Preguntas abiertas" (ver sección 14) y espera respuesta.
-2. **No cambies la numeración ni los nombres del menú**, salvo el renombre indicado en la sección 2.
+1. Implementa **exactamente** lo descrito. Si algo no está especificado, **no lo inventes**: antes de escribir código, devuelve el informe de la Etapa 0 con las "Preguntas abiertas" (sección 14) y espera respuesta.
+2. **No cambies la estructura ni los nombres del menú.** No se crean, mueven ni renombran opciones de `opciones_menu` / `opciones_menu_perfiles` (pertenecen al módulo `plataforma`). Las tres pantallas ya existen en el menú del Administrador.
 3. **Nada hardcodeado:** todo lo que aquí se llama "configurable" se guarda en base de datos y se lee en tiempo de ejecución. Los valores de fábrica (sección 10) se cargan como datos semilla.
 4. Todas las pantallas siguen el **patrón común de la sección 3** (borrador, publicación, versionado, auditoría, permisos).
-5. **Reutiliza lo que ya existe; no crees duplicados.** El sistema ya tiene (ver sección 11): la configuración de formulario de Incidentes (1.3.1.1) y su **creador de campos personalizados**, la **matriz impacto × urgencia → prioridad** usada al crear incidentes, la **matriz institucional de tiempos por prioridad** (1.2.5), el catálogo de servicios, los perfiles y la CMDB. Ubica cada pieza en el código (Etapa 0), extiéndela para la entidad `problema` y solo crea componentes nuevos cuando no exista nada reutilizable.
-6. Para cada pantalla entrega, en este orden: (a) modelo de datos, (b) API, (c) interfaz, (d) validaciones, (e) permisos, (f) auditoría, (g) pruebas.
-7. Trabaja por etapas y detente al final de cada una para validación: **Etapa 0** = reconocimiento del código y la base de datos (sección 14, **obligatoria antes de escribir código**), **Etapa A** = 1.3.3.1, **Etapa B** = 1.3.3.2, **Etapa C** = 1.3.3.3.
-8. **Si falta un dato en la base de datos, agrégalo.** La lista de lo que debe verificarse y, si no existe, crearse está en la sección 12. Todo cambio de esquema va en migraciones SQL versionadas e idempotentes, con autorización en cada Route Handler (cookie `sesion_tickets`, JWT y perfil activo, como el resto de `src/app/api/`) y consultas parametrizadas con `src/lib/db.ts`.
-9. Sigue las convenciones ya presentes en el repositorio (estructura de carpetas, estilo de API, componentes de UI, manejo de errores, tareas programadas).
-
-**Reglas adicionales de esta versión (arquitectura FlowDesk, interfaz y validaciones):**
-
+5. **Reutiliza lo que ya existe; no crees duplicados.** Existen (ubícalos en la Etapa 0): el editor de formularios y el **creador de campos personalizados** (módulo `tickets`), la **matriz impacto × urgencia → prioridad** y la **matriz institucional de tiempos por prioridad** (módulo `servicios`), `calcularPrioridadITIL` (contrato de `tickets`), el motor de SLA con calendarios hábiles, el catálogo de servicios, los perfiles (módulo `identidades`), los técnicos y grupos (módulo `organizacion`) y la CMDB (módulo `cmdb`). Consúmelos **solo por contrato** (`@/modules/<modulo>` o `@/modules/<modulo>/ui`); no los copies ni los modifiques.
+6. Para cada pantalla entrega, en este orden: (a) modelo de datos, (b) API, (c) interfaz, (d) validaciones, (e) permisos, (f) auditoría, (g) pruebas. **Pruebas:** el proyecto no tiene suite automatizada; entrega las reglas críticas como funciones puras verificables y un checklist de humo por perfil (panel + 3 pantallas + 1 detalle). No agregues un framework de pruebas sin aprobación (pregunta abierta 4).
+7. Trabaja por etapas y detente al final de cada una para validación: **Etapa 0** = reconocimiento del código y la base de datos (sección 14, **obligatoria antes de escribir código**), **Etapa A** = pantalla `formulario` (1.3.3.1), **Etapa B** = `flujo` (1.3.3.2), **Etapa C** = `relaciones` (1.3.3.3). Al cerrar cada etapa ejecuta los *quality gates*: `npx tsc --noEmit` sin errores, `npm run build` sin errores, migraciones aplicadas en base limpia y en base existente, y humo de las rutas afectadas.
+8. **Si falta un dato en la base de datos y pertenece al módulo `problemas`, agrégalo.** Todo cambio de esquema va en `db/migrations/YYYYMMDD_descripcion.sql` (idempotente, fecha igual o posterior a la última migración existente; no se edita una migración aplicada) y se refleja en `db/seed.sql` si hay catálogos o datos maestros. Si el dato pertenece a **otro** módulo (por ejemplo una columna de `ticket_incidente`, `servicio_catalogo` o `elemento_configuracion`), **no lo agregues**: regístralo como solicitud (sección 16).
+9. Sigue las convenciones del repositorio: tablas y columnas en `snake_case`; baja lógica con `estado_registro boolean`; auditoría por columnas (`usuario_creacion`, `fecha_creacion`, `usuario_modificacion`, `fecha_modificacion`); extensibilidad por `campos_adicionales jsonb`; FK como `id_*`. No se eliminan datos históricos por conveniencia.
 10. Las pantallas de este prompt **ya existen parcialmente** (ver 2.3). **No las reconstruyas desde cero**: audítalas contra este documento, corrige diferencias, completa lo que falta y conserva datos y contratos de API existentes.
-11. Respeta la arquitectura del repositorio: pantallas en `src/app/plataforma/...` (las rutas URL no llevan el prefijo `plataforma`), Route Handlers en `src/app/api/...`, validadores en `src/lib/validaciones.ts`, lógica de dominio en `src/modules/...` y componentes compartidos en `src/shared/...`. La migración de `src/lib` y `src/components` hacia `src/modules` y `src/shared` está en curso: **el código nuevo va en `modules`/`shared`** y no se crean más copias locales de componentes.
+11. **Arquitectura de código (obligatoria):**
+    - `page.tsx` y `route.ts` en `src/app` son **cascarones**: la página valida con `exigirCapacidadPagina(...)` y monta una vista del módulo; el `route.ts` declara `dynamic = "force-dynamic"`, `revalidate = 0` y reexporta el controlador. Sin SQL, sin reglas de negocio.
+    - Controlador (`src/modules/problemas/**/api/*Controller.ts`): autoriza con `sesionConCapacidad(CAPACIDADES.X)`, valida la forma del request, delega en el servicio y traduce errores con `respuestaError`. **Prohibido** crear guardas propias (`guardia.ts` o equivalentes) y **prohibido** verificar el JWT a mano.
+    - Servicio (`.../services/*`): contiene la regla de dominio y el SQL parametrizado (`query` de `@/shared/lib/db`); lanza `ErrorDominio`; no conoce `NextRequest` ni `NextResponse`.
+    - Las vistas cliente reciben datos o contexto; no acceden a la base.
+    - Los validadores son funciones puras compartidas por el formulario y el controlador (ver 3C).
 12. Cumple en **todas** las pantallas las secciones **3A** (navegación sin duplicar el menú), **3B** (íconos y botones) y **3C** (validaciones en tiempo real, solo errores).
-13. **Autorización:** cada Route Handler verifica la cookie `sesion_tickets` (JWT) y el **perfil activo** (el usuario puede conmutarlo con `/api/auth/cambiar-perfil`), como el resto de `src/app/api/`. Las consultas son SQL parametrizado con `query()` / `queryRow()` de `src/lib/db.ts`.
-14. **SLA:** `src/lib/sla.ts` ya calcula fechas límite con la matriz Urgencia × Impacto y **calendarios hábiles**; reutilízalo, no crees otro motor.
+13. **Autorización en tres capas:** página (`exigirCapacidadPagina`), API (`sesionConCapacidad`) y servicio (alcance y segregación de funciones). El middleware solo comprueba que exista la cookie `sesion`; **no autoriza**. El servidor no confía en el cliente: SoD, SLA, transiciones y permisos se validan siempre en el servicio.
+14. **SLA:** reutiliza el motor de SLA existente (calendarios hábiles, matriz Urgencia × Impacto); no crees otro. Etapa 0 indica en qué módulo vive (antes estaba en `src/lib/sla.ts`).
+15. **Commits y ramas:** trabaja en la rama del módulo (`feature/alexis-problemas-conocimiento`); commits `tipo(problemas): descripción` en español, imperativo, sin emojis (`feat`, `fix`, `refactor`, `docs`, `chore`, `test`); no mezcles refactor masivo con funcionalidad.
+
+---
+
+## 0A. Perímetro del módulo (qué puedes tocar y qué no)
+
+**Regla de oro:** trabajas **dentro de `src/modules/problemas`**: puedes crear carpetas y archivos, modificarlos y eliminarlos. **No puedes** crear módulos nuevos en `src/modules/`, **dividir `problemas` en dos módulos**, ni modificar otro módulo.
+
+| Zona | Permiso |
+|---|---|
+| `src/modules/problemas/**` | **Total** (crear, modificar, eliminar; incluida la carpeta nueva `configuracion/` y `docs/`). |
+| Cascarones: `src/app/plataforma/admin/procesos/problemas/**/page.tsx` y `src/app/api/admin/problemas/**/route.ts` | Solo montar/reexportar lo del módulo. Conserva las rutas y los contratos de API existentes. |
+| `db/migrations/` y `db/seed.sql` | Solo tablas y datos del módulo (`problema*`, `error_conocido*`, `problema_config_*`). |
+| `src/modules/<otro>/**` (`tickets`, `incidentes`, `solicitudes`, `cambios`, `servicios`, `cmdb`, `activos`, `organizacion`, `identidades`, `plataforma`, `conocimiento`, `reportes`, `perfiles`, …) | **Prohibido modificar.** Se consumen por contrato (`index.ts` / `ui.ts`) o, si falta algo, por **solicitud** (sección 16). |
+| `src/shared/**`, `src/middleware.ts`, `next.config.js`, `package.json`, tablas `opciones_menu*` | **Prohibido modificar.** Lo que falte se pide en la sección 16. |
+
+**Cómo se consume a otros módulos:** solo `@/modules/<modulo>` o `@/modules/<modulo>/ui`. Prohibido importar `services/`, `api/`, `views/` o `components/` de otro módulo. Para datos de otro dominio se permite SQL de **lectura acotada** dentro de un servicio propio, nunca importar sus repositorios. El grafo de dependencias debe seguir acíclico.
+
+**Cómo se expone lo que otros módulos necesitan:** agrega a `src/modules/problemas/index.ts` (servidor) y, solo si hay UI que otro módulo deba montar, a `src/modules/problemas/ui.ts` (cliente, sin acceso a DB). Cambiar un contrato es cambiar una API interna: documenta el cambio.
+
+**Solicitudes a otros módulos:** cuando algo requiera tocar un módulo ajeno, no lo implementes: regístralo en `src/modules/problemas/docs/SOLICITUDES_A_OTROS_MODULOS.md` (formato de la sección 16: id, módulo destino, qué se necesita, contrato propuesto, comportamiento mientras no exista) y continúa con la **degradación definida** para ese caso. Las solicitudes ya conocidas están en la sección 16.
+
+**Estructura sugerida dentro del módulo** (si la Etapa 0 encuentra una equivalente ya existente, úsala; no dupliques):
+
+```
+src/modules/problemas/
+├── index.ts                       # contrato de servidor
+├── ui.ts                          # contrato de UI (solo si otro módulo monta algo, p. ej. BloqueObjetivosProblemas)
+├── configuracion/                 # carpeta nueva de esta entrega
+│   ├── compartido/                # BarraAccionesComun, Modal*, Boton, BotonIcono, borrador/publicación/versionado/bloqueo
+│   ├── validaciones/              # problemaValidaciones.ts (validadores del catálogo 3C que no existan en shared)
+│   ├── formulario/                # 1.3.3.1 → components/ (Pestana*), services/, api/, types.ts
+│   ├── flujo/                     # 1.3.3.2 → components/, services/, api/, types.ts
+│   ├── relaciones/                # 1.3.3.3 → components/, services/, api/, types.ts
+│   └── motor/                     # prioridad, asignación, escalamiento, umbral, relojes, tareas programadas
+└── docs/                          # INFORME_ETAPA_0.md y SOLICITUDES_A_OTROS_MODULOS.md
+```
+
+**Ejemplo de cascarones** (los únicos archivos que escribes fuera del módulo):
+
+```tsx
+// src/app/plataforma/admin/procesos/problemas/formulario/page.tsx
+export default async function PaginaProblemasFormulario() {
+  const { sesion } = exigirCapacidadPagina(CAPACIDADES.PROBLEMAS_CONFIG_VER);
+  return <VistaProblemasFormulario sesion={sesion} />;   // importada desde el propio módulo problemas
+}
+
+// src/app/api/admin/problemas/configuracion/route.ts
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export { GET, PUT } from "@/modules/problemas/configuracion/formulario/api/configuracionController";
+```
 
 ---
 
@@ -56,90 +121,77 @@ El diseño debe respetar:
 
 ---
 
-## 2. Ubicación en el menú y estructura de archivos (arquitectura FlowDesk)
+## 2. Ubicación en el menú y estructura de archivos (arquitectura vigente)
 
-### 2.1 Menú de administrador (referencia; ya se sirve desde `/api/menu` y `src/lib/menu.ts`)
+### 2.1 Menú vigente del Administrador (referencia; fuente `MENUS_Y_PERFILES.md` §5, **sin numeración**)
+
+El menú es un catálogo único (`opciones_menu` + visibilidad N:M en `opciones_menu_perfiles`) servido por `src/shared/lib/menu.ts`. Una carpeta tiene `url_menu = ''`; una pantalla tiene URL. **Problemas es una raíz del catálogo** (carpeta) y estas tres pantallas son sus hijas:
 
 ```
-1 Configuración (/admin)
- 1.1 Identidades y accesos
-  1.1.1 Gestión de usuarios (/admin/usuarios)
-  1.1.2 Perfiles y permisos (/admin/perfiles)
-  1.1.3 Estructura del menú (/admin/menu)
- 1.2 Catálogo de servicios y SLAs (/admin/servicios)
-  1.2.1 Servicios de incidentes (/admin/servicios?tipo=1)
-  1.2.2 Servicios de solicitudes (/admin/servicios?tipo=2)
-  1.2.3 Crear servicio (/admin/servicios?vista=crear)
-  1.2.4 Configuración de categorías (componente GestionCategorias; ruta a confirmar en la Etapa 0)
-  1.2.5 Objetivos SLA (/admin/servicios/sla)
- 1.3 Configuración de procesos (/admin/procesos)
-  1.3.1 Incidentes
-   1.3.1.1 Configuración de formulario (/admin/tickets-formularios?tipo=incidente)
-   1.3.1.2 Flujo de estados y acciones (/admin/tickets-vistas?seccion=estados&tipo=incidente)
-  1.3.2 Solicitudes de servicio
-   1.3.2.1 Configuración de formulario (/admin/tickets-formularios?tipo=solicitud)
-   1.3.2.2 Flujo de atención y aprobaciones (/admin/tickets-vistas?seccion=estados&tipo=solicitud)
-  1.3.3 Gestión de problemas (/admin/procesos/problemas)            <-- SE IMPLEMENTA EN ESTE PROMPT
-   1.3.3.1 Configuración de formulario (/admin/procesos/problemas/formulario)
-   1.3.3.2 Flujo de investigación y seguimiento (/admin/procesos/problemas/flujo)
-   1.3.3.3 Relación con incidentes, errores conocidos y conocimiento (/admin/procesos/problemas/relaciones)
-  1.3.4 Gestión de cambios (/admin/procesos/cambios)
-   1.3.4.1 Configuración de formulario (/admin/procesos/cambios/formulario)
-   1.3.4.2 Tipos de cambio y requisitos (/admin/procesos/cambios/tipos-requisitos)
-   1.3.4.3 Flujo de evaluación, autorización y revisión posterior (/admin/procesos/cambios/flujo-evaluacion)
-   1.3.4.4 Notificaciones y calendario de cambios (/admin/procesos/cambios/notificaciones-calendario)
- 1.4 Organización y soporte (/admin/organizacion)
-  1.4.1 Departamentos empresariales (/admin/departamentos-empresa)
-  1.4.2 Departamentos y grupos resolutores de TI (/admin/departamentos)
-  1.4.3 Técnicos y niveles de soporte (/admin/tecnicos)
-  1.4.4 Supervisores (/admin/departamentos?vista=supervisores)
- 1.5 Activos y configuración (/admin/activos-config/tipos-modelos-atributos)
-  1.5.1 Tipos, modelos y atributos de activos (/admin/activos-config/tipos-modelos-atributos)
-  1.5.2 Ciclos de vida y reglas de transición (/admin/activos-config/ciclos-vida-transiciones)
-  1.5.3 Licencias y contratos (/admin/activos-config/licencias-contratos)
-  1.5.4 Tipos de elementos de configuración y relaciones de CMDB (/admin/activos-config/cmdb-relaciones)
- 1.6 Comunicaciones y notificaciones (/admin/comunicaciones)
-  1.6.1 Plantillas de correo y otros canales (/admin/notificaciones?seccion=plantillas)
-  1.6.2 Configuración de contacto (/admin/notificaciones?seccion=contacto)
- 1.7 Gobierno del conocimiento (/admin/conocimiento)
-  1.7.1 Categorías, responsables y reglas de publicación/revisión (/admin/conocimiento-config)
- 1.8 Auditoría, seguridad y retención (/admin/auditoria)
-  1.8.1 Auditoría de cambios (/admin/auditoria-sistema)
-  1.8.2 Registros de seguridad y autenticación (/admin/seguridad-logs)
-  1.8.3 Retención y mantenimiento de datos (/admin/mantenimiento-datos)
-2 Reportes y Analítica
- 2.1 Indicadores operativos y SLA (/tickets/reportes)
- 2.2 Tableros (/admin/reportes-disenador)
+Problemas  (carpeta, perfil Administrador)
+ ├─ Registro de problemas ............................................ /plataforma/problemas                                   (operativa; no se implementa aquí)
+ ├─ Configuración de formulario ..................................... /plataforma/admin/procesos/problemas/formulario        <-- SE IMPLEMENTA
+ ├─ Flujo de investigación y seguimiento ............................ /plataforma/admin/procesos/problemas/flujo             <-- SE IMPLEMENTA
+ └─ Relación con incidentes, errores conocidos y conocimiento ....... /plataforma/admin/procesos/problemas/relaciones        <-- SE IMPLEMENTA
 ```
 
-Cambios respecto de versiones anteriores de este prompt: **(a)** Gestión de problemas es ahora `1.3.3` y Gestión de cambios `1.3.4`; **(b)** aparece el ítem nuevo `1.2.4 Configuración de categorías` y por eso **Objetivos SLA pasa a ser `1.2.5`**; **(c)** `1.3.3.1` ya se llama "Configuración de formulario".
+**Pantallas de otros módulos que este prompt referencia** (se consumen por contrato; **no se modifican**):
 
-### 2.2 Convención de numeración interna
-- `1.3.3.1`, `1.3.3.2` y `1.3.3.3` son **ítems de menú = pantallas** (cada una con su `page.tsx`).
-- Los puntos `1.3.3.1.1`, `1.3.3.1.2`, etc. son **ventanas internas** de esa pantalla (componentes `Pestana*.tsx`), cumpliendo la sección 3A: **ninguna ventana interna repite un ítem del menú**.
-
-| Pantalla (ítem de menú) | Ruta | Ventanas internas (componentes `Pestana*.tsx`) | Modales y cajones |
+| Nombre en el menú | Ruta canónica | Módulo dueño | Qué se toma de ella |
 |---|---|---|---|
-| **1.3.3.1 Configuración de formulario** | `/admin/procesos/problemas/formulario` | 1.3.3.1.1 Campos (`PestanaCampos`, con cajón "Agregar campo" y panel de propiedades) · 1.3.3.1.2 Campos personalizados (`PestanaCamposPersonalizados`) · 1.3.3.1.3 Listas y catálogos (`PestanaListasCatalogos`) · 1.3.3.1.4 Matriz de prioridad (`PestanaPrioridad`) · 1.3.3.1.5 Plantillas de problema (`PestanaPlantillas`) · 1.3.3.1.6 Vista del ticket (`PestanaVistaTicket`) | `ModalVistaPrevia` · `ModalPublicacion` · `ModalHistorialVersiones` · `ModalRestaurarFabrica` · barra `BarraAccionesComun` |
-| **1.3.3.2 Flujo de investigación y seguimiento** | `/admin/procesos/problemas/flujo` | 1.3.3.2.1 Estados (`PestanaEstados`) · 1.3.3.2.2 Transiciones y acciones (`PestanaTransiciones`) · 1.3.3.2.3 Asignación automática (`PestanaAsignacion`) · 1.3.3.2.4 Objetivos de tiempo (`PestanaObjetivosTiempo`) · 1.3.3.2.5 Escalamiento (`PestanaEscalamiento`) · 1.3.3.2.6 Reapertura (`PestanaReapertura`) · 1.3.3.2.7 Tareas predefinidas (`PestanaTareas`) · 1.3.3.2.8 Problemas mayores (`PestanaMayores`) | Los mismos modales de publicación, historial y restauración |
-| **1.3.3.3 Relación con incidentes, errores conocidos y conocimiento** | `/admin/procesos/problemas/relaciones` | 1.3.3.3.1 Creación automática por umbral (`PestanaUmbral`) · 1.3.3.3.2 Incidentes vinculados (`PestanaIncidentesVinculados`) · 1.3.3.3.3 Errores conocidos (`PestanaKedb`) · 1.3.3.3.4 Cambios (RFC) (`PestanaRfc`) · 1.3.3.3.5 Conocimiento (`PestanaConocimiento`) · 1.3.3.3.6 CI y servicios (`PestanaCmdb`) | Los mismos modales |
+| Incidentes › Configuración del formulario | `/plataforma/incidentes/configuracion` | `tickets` (+ `incidentes`) | Editor de formularios y creador de campos personalizados. |
+| Incidentes › Flujo de estados y acciones | `/plataforma/admin/tickets-vistas?seccion=estados&tipo=incidente` | `tickets` | Motor de estados y transiciones (referencia de diseño). |
+| Catálogo de Servicios › Objetivos SLA | `/plataforma/admin/servicios/sla` | `servicios` | Matriz impacto × urgencia, matriz institucional de tiempos por prioridad. |
+| Catálogo de Servicios › Configuración de categorías / Crear servicio | `/plataforma/admin/servicios?vista=categorias` · `?vista=crear` | `servicios` | Servicios activos y su criticidad. |
+| Organización › Departamentos y grupos resolutores de TI | `/plataforma/admin/departamentos` | `organizacion` | Grupos resolutores. |
+| Organización › Técnicos y niveles de soporte | `/plataforma/admin/tecnicos` | `organizacion` | Técnicos, niveles y ausencias. |
+| Plataforma › Identidades › Perfiles y permisos | `/plataforma/admin/perfiles` | `identidades` | Perfiles y capacidades. |
+| Plataforma › Menú y notificaciones › Plantillas de correo y otros canales / Configuración de contacto | `/plataforma/admin/notificaciones?seccion=plantillas` · `?seccion=contacto` | `plataforma` | Plantillas y canales de los eventos de dominio. |
+| Plataforma › Auditoría de cambios de configuración | `/plataforma/admin/auditoria-sistema` | `plataforma` | Registro de toda acción de configuración. |
+| Plataforma › Retención y mantenimiento de datos | `/plataforma/admin/mantenimiento-datos` | `plataforma` | Límites de adjuntos, caducidad de borradores y retención. |
+| Conocimiento › Categorías, responsables y reglas de publicación y revisión | `/plataforma/admin/conocimiento-config` | `conocimiento` | Categorías y flujo editorial de artículos. |
+| Activos y CMDB › Catálogos (ciclos de vida; tipos de CI y relaciones) | `/plataforma/admin/activos-config/ciclos-vida-transiciones` · `/plataforma/admin/activos-config/cmdb-relaciones` | `activos` / `cmdb` | Reglas de baja, clases y criticidad de CI. |
+| Cambios › Configuración de formulario / Flujo / Tipos / Notificaciones | `/plataforma/admin/procesos/cambios/*` | `cambios` (Prompt 2) | Origen = Problema en la RFC y sincronización de estados. |
+| Reportes › Reportes de problemas · Tableros | `/plataforma/reportes/problemas` · `/plataforma/reportes/tableros` | `reportes` | Consumen las métricas de la sección 10 (no se modifican aquí). |
 
-### 2.3 Estado actual de la implementación (según el árbol de archivos del repositorio)
+### 2.2 Identificadores internos de este documento
+
+El menú ya no está numerado. Los códigos `1.3.3.1`, `1.3.3.2` y `1.3.3.3` (y sus derivados `1.3.3.1.1`, …) se conservan **solo como identificadores de este documento** para citar pantallas y ventanas internas; **no son numeración del menú**. Cada pantalla es un ítem de menú con su `page.tsx` (cascarón); las ventanas internas son componentes `Pestana*.tsx` que **no repiten** ningún ítem del menú (sección 3A).
+
+| Pantalla (ítem de menú) | Ruta canónica | Ventanas internas (componentes `Pestana*.tsx`) | Modales y cajones |
+|---|---|---|---|
+| **1.3.3.1 Configuración de formulario** | `/plataforma/admin/procesos/problemas/formulario` | 1.3.3.1.1 Campos (`PestanaCampos`, con cajón "Agregar campo" y panel de propiedades) · 1.3.3.1.2 Campos personalizados (`PestanaCamposPersonalizados`) · 1.3.3.1.3 Listas y catálogos (`PestanaListasCatalogos`) · 1.3.3.1.4 Matriz de prioridad (`PestanaPrioridad`) · 1.3.3.1.5 Plantillas de problema (`PestanaPlantillas`) · 1.3.3.1.6 Vista del ticket (`PestanaVistaTicket`) | `ModalVistaPrevia` · `ModalPublicacion` · `ModalHistorialVersiones` · `ModalRestaurarFabrica` · barra `BarraAccionesComun` |
+| **1.3.3.2 Flujo de investigación y seguimiento** | `/plataforma/admin/procesos/problemas/flujo` | 1.3.3.2.1 Estados (`PestanaEstados`) · 1.3.3.2.2 Transiciones y acciones (`PestanaTransiciones`) · 1.3.3.2.3 Asignación automática (`PestanaAsignacion`) · 1.3.3.2.4 Objetivos de tiempo (`PestanaObjetivosTiempo`) · 1.3.3.2.5 Escalamiento (`PestanaEscalamiento`) · 1.3.3.2.6 Reapertura (`PestanaReapertura`) · 1.3.3.2.7 Tareas predefinidas (`PestanaTareas`) · 1.3.3.2.8 Problemas mayores (`PestanaMayores`) | Los mismos modales de publicación, historial y restauración |
+| **1.3.3.3 Relación con incidentes, errores conocidos y conocimiento** | `/plataforma/admin/procesos/problemas/relaciones` | 1.3.3.3.1 Creación automática por umbral (`PestanaUmbral`) · 1.3.3.3.2 Incidentes vinculados (`PestanaIncidentesVinculados`) · 1.3.3.3.3 Errores conocidos (`PestanaKedb`) · 1.3.3.3.4 Cambios (RFC) (`PestanaRfc`) · 1.3.3.3.5 Conocimiento (`PestanaConocimiento`) · 1.3.3.3.6 CI y servicios (`PestanaCmdb`) | Los mismos modales |
+
+**Ubicación del código de cada pantalla (sugerida):** `src/modules/problemas/configuracion/<formulario|flujo|relaciones>/components/` para las `Pestana*.tsx`; servicios en `.../services/`; controladores en `.../api/`; modales y barra comunes en `src/modules/problemas/configuracion/compartido/`.
+
+### 2.3 Estado actual de la implementación (punto de partida; verifícalo en la Etapa 0)
+
+El código de estas pantallas nació en `src/app/plataforma/admin/procesos/problemas/*/components/` y la migración hacia `src/modules/` está en curso: **la Etapa 0 confirma dónde está hoy cada archivo**. Lo que ya existía (según el inventario previo):
+
 | Pantalla | Ya existe | Falta o hay que corregir |
 |---|---|---|
-| `/admin/procesos/problemas/page.tsx` | Página padre del grupo | Verificar que solo enlace a las tres pantallas hijas (sin pestañas que repitan el menú). |
-| `1.3.3.1` formulario | `page.tsx`, `BarraAccionesComun`, `ModalHistorialVersiones`, `ModalPublicacion`, `ModalRestaurarFabrica`, `ModalVistaPrevia`, `PestanaCampos`, `PestanaListasCatalogos`, `PestanaPlantillas`, `PestanaVistaTicket`. API: `/api/admin/problemas/{configuracion,campos-personalizados,catalogos,matriz-prioridad,plantillas}` | **Faltan** las ventanas `PestanaCamposPersonalizados` y `PestanaPrioridad` (sus APIs ya existen). Unificar los modales y la barra con los de `cambios/formulario` (3A.2.6). |
-| `1.3.3.2` flujo | `page.tsx` y las 8 ventanas `Pestana*`. API: `/api/admin/problemas/flujo/{asignacion,escalamiento,estados,mayores,objetivos,reapertura,tareas,transiciones}` | Auditar contra la sección 7; agregar validaciones (3C) y íconos (3B). |
-| `1.3.3.3` relaciones | `page.tsx` y las 6 ventanas `Pestana*`. API: `/api/admin/problemas/relaciones`, `.../relaciones/kedb`, `.../relaciones/umbral` | Auditar contra la sección 8; agregar validaciones e íconos. |
+| `/plataforma/admin/procesos/problemas/page.tsx` (página padre) | Página del grupo | **No es ítem de menú** (Problemas es carpeta sin URL). Si existe, que **redirija** a `/formulario`; no la elimines (compatibilidad). No debe mostrar pestañas ni enlaces que repitan el menú. |
+| `1.3.3.1` formulario | `page.tsx`, `BarraAccionesComun`, `ModalHistorialVersiones`, `ModalPublicacion`, `ModalRestaurarFabrica`, `ModalVistaPrevia`, `PestanaCampos`, `PestanaListasCatalogos`, `PestanaPlantillas`, `PestanaVistaTicket`. API: `/api/admin/problemas/{configuracion,campos-personalizados,catalogos,matriz-prioridad,plantillas}` | **Faltan** las ventanas `PestanaCamposPersonalizados` y `PestanaPrioridad` (sus APIs ya existen). Llevar los componentes comunes a `configuracion/compartido/` (3A.2.6). Convertir `page.tsx` y `route.ts` en cascarones. |
+| `1.3.3.2` flujo | `page.tsx` y las 8 ventanas `Pestana*`. API: `/api/admin/problemas/flujo/{asignacion,escalamiento,estados,mayores,objetivos,reapertura,tareas,transiciones}` | Auditar contra la sección 7; agregar validaciones (3C) y íconos (3B); cascarones. |
+| `1.3.3.3` relaciones | `page.tsx` y las 6 ventanas `Pestana*`. API: `/api/admin/problemas/relaciones`, `.../relaciones/kedb`, `.../relaciones/umbral` | Auditar contra la sección 8; agregar validaciones e íconos; cascarones. |
 
-### 2.4 Pantallas operativas que consumen esta configuración
-| Menú general | Ruta | Archivos |
+### 2.4 Pantallas operativas que consumen esta configuración (no se implementan aquí)
+
+| Perfil / zona | Pantalla | Ruta canónica |
 |---|---|---|
-| 4.1 Registro de problemas | `/problemas` | `src/app/plataforma/problemas/page.tsx` y `src/components/itsm/ProblemasWorkspace.tsx` |
-| 4.2 Errores conocidos (KEDB) | `/problemas/kedb` | `src/app/plataforma/problemas/kedb/page.tsx` |
-| Técnico M4.1 a M4.5 | `/tecnico/problemas/{asignados,grupo,nuevo,candidatos,errores-conocidos}` | `src/app/plataforma/tecnico/problemas/*` |
-| API de operación | `/api/problemas` | `src/app/api/problemas/*` |
-Las secciones 4 y 5 de este documento describen lo que esas pantallas deben mostrar; si algo difiere, aplica la pregunta 1 de la sección 14.
+| Administrador, Supervisor, Auditor, Aprobador, Técnico, Gestor de Problemas | Registro de problemas | `/plataforma/problemas` |
+| Idem | Errores conocidos (KEDB) | `/plataforma/problemas/kedb` |
+| Idem | Detalle del problema (se autoriza por prefijo, sin fila propia de menú) | `/plataforma/problemas/[id]` (presentador `PresentadorProblemaGestor` de `@/modules/tickets/ui`) |
+| Técnico | Candidatos de mi grupo · Consultar KEDB · Asignados a mí · De mi grupo · Registrar problema | `/plataforma/perfiles/tecnico/problemas/{candidatos,errores-conocidos,asignados,grupo,nuevo}` |
+| Supervisor | Asignación de problemas | `/plataforma/perfiles/supervisor/problemas/asignar` |
+| Aprobador | Riesgo aceptado y cierre de problemas mayores | `/plataforma/perfiles/aprobador/problemas` |
+| Gestor de Problemas (perfil 10) | Panel · Análisis de causa raíz · Bandeja y asignación · Candidatos · Conocimiento derivado · Incidentes recurrentes · Objetivos de tiempo · Mayores y revisión · RFC derivadas | `/plataforma/gestor-problemas/{panel,analisis,asignacion,candidatos,conocimiento,recurrentes,objetivos,mayores,cambios}` |
+| Reportes | Reportes de problemas | `/plataforma/reportes/problemas` (módulo `reportes`) |
+| API de operación | Problemas y gestor | `/api/problemas`, `/api/gestor-problemas` |
+
+Las secciones 4 y 5 de este documento describen lo que esas pantallas deben mostrar; si algo difiere de lo implementado, aplica la pregunta 1 de la sección 14. Esas pantallas pertenecen al mismo módulo `problemas` pero **no son parte de esta entrega**: solo deben leer la configuración publicada a través de los servicios que construyas.
 
 ---
 
@@ -148,7 +200,7 @@ Las secciones 4 y 5 de este documento describen lo que esas pantallas deben most
 Aplica a cada pantalla y pestaña de este documento. **No se repite abajo**; solo se indican los botones y reglas *adicionales* de cada pestaña.
 
 ### 3.1 Estructura visual
-1. **Breadcrumb:** `Configuración > Configuración de procesos > Gestión de problemas > <pantalla> > <pestaña>`.
+1. **Breadcrumb:** `Problemas > <pantalla> > <ventana interna>` (la raíz `Configuración` ya no existe en el menú).
 2. **Encabezado:** título, descripción de una línea (qué configura y qué efecto tiene), y un **indicador de estado de la configuración**:
    - `Publicada vN` (verde) = no hay cambios pendientes.
    - `Borrador con cambios sin publicar` (ámbar) = hay diferencias respecto a la versión publicada.
@@ -183,7 +235,7 @@ Cada versión guarda: número, fecha-hora, autor, motivo, snapshot completo (JSO
 - [Ver ⟨FileText⟩] → vista de solo lectura de esa versión.
 - [Comparar con actual ⟨GitCompare⟩] → diff lado a lado.
 - [Restaurar esta versión ⟨RotateCcw⟩] → carga esa versión como borrador (no publica).
-- Las versiones **no se editan ni se borran** (la retención se rige por 1.8.3).
+- Las versiones **no se editan ni se borran** (la retención se rige por *Retención y mantenimiento de datos*).
 
 ### 3.4 Efecto de la configuración sobre tickets existentes
 Regla general (aplicar salvo que la pestaña indique otra cosa):
@@ -192,11 +244,11 @@ Regla general (aplicar salvo que la pestaña indique otra cosa):
 - Los cambios de **flujo** (estados/transiciones) aplican a todos los tickets abiertos; si un estado en uso se desactiva, la publicación se bloquea con el mensaje "El estado X tiene N tickets; reasígnalos a otro estado" y un asistente de migración (selector de estado destino + botón [Migrar y continuar ⟨ArrowRightLeft⟩]).
 - Los valores de listas en uso **no se eliminan**, solo se desactivan.
 
-### 3.5 Auditoría (conecta con 1.8.1)
-Cada guardado de borrador, publicación, restauración, importación y descarte genera un registro: usuario, IP, fecha-hora UTC, pantalla/pestaña, entidad, valor anterior, valor nuevo, motivo (si lo hay), versión resultante. Los registros son de solo lectura.
+### 3.5 Auditoría (conecta con *Auditoría de cambios de configuración*, `/plataforma/admin/auditoria-sistema`)
+Cada guardado de borrador, publicación, restauración, importación y descarte genera un registro: usuario, IP, fecha-hora UTC, pantalla/pestaña, entidad, valor anterior, valor nuevo, motivo (si lo hay), versión resultante. Los registros son de solo lectura. Se escriben mediante el servicio de auditoría de `@/modules/plataforma` (solicitud S-6); si aún no existe, se guardan en la tabla de auditoría propia del módulo y se exponen para su lectura.
 
-### 3.6 Permisos (conecta con 1.1.2)
-Por cada pantalla existen tres permisos: `ver`, `editar` (guardar borrador) y `publicar`. Detalle en la sección 9.
+### 3.6 Permisos (conecta con *Perfiles y permisos*; capacidades `dominio:acción`)
+Por cada pantalla existen tres niveles de capacidad: `ver`, `editar` (guardar borrador) y `publicar`. Detalle en la sección 9.
 
 ### 3.7 Validaciones generales
 - Mensajes de error junto al campo (rojo) y resumen al inicio de la pestaña con enlaces a cada error.
@@ -211,16 +263,16 @@ Estas reglas aplican a **todas** las pantallas de este prompt y prevalecen sobre
 
 ### 3A.1 Un ítem de menú = una pantalla (prohibido duplicar el menú dentro de la página)
 1. **Prohibido** repetir ítems del menú lateral como pestañas, botones segmentados, chips o enlaces en la parte superior de una página. *Ejemplo del error que se debe evitar:* entrar a "Catálogo de incidentes" y ver arriba los botones "Catálogo de incidentes | Catálogo de solicitudes" cuando ambos ya son opciones del menú. Para cambiar de pantalla se usa el menú.
-2. Antes de implementar o modificar una pantalla, **compara** sus pestañas internas con el árbol de menú real (`src/lib/menu.ts` y la tabla de menú que alimenta `/api/menu`). Si una pestaña coincide en nombre o función con un ítem de menú, **elimínala** de la página.
-3. El título de la página, el breadcrumb y el ítem activo del menú coinciden siempre. El botón "Volver" solo existe en pantallas que **no** son ítem de menú (detalle o edición, por ejemplo `/admin/servicios/[id]/formulario`).
+2. Antes de implementar o modificar una pantalla, **compara** sus pestañas internas con el árbol de menú real (`src/shared/lib/menu.ts`, las tablas `opciones_menu` y `opciones_menu_perfiles` y el árbol de `MENUS_Y_PERFILES.md` §5). Si una pestaña coincide en nombre o función con un ítem de menú, **elimínala** de la página.
+3. El título de la página, el breadcrumb y el ítem activo del menú coinciden siempre. El botón "Volver" solo existe en pantallas que **no** son ítem de menú (detalle o edición, por ejemplo `/plataforma/admin/servicios/[id]/formulario`).
 
 ### 3A.2 Ventanas internas (permitidas y recomendadas)
 1. Una pantalla **sí** puede tener varias **ventanas internas intercambiables** cuando son secciones o herramientas de esa misma pantalla que **no existen** como ítem de menú (ejemplo: en un formulario configurable, las ventanas "Configuración de campos", "Agregar campo" y "Vista previa").
-2. Cada ventana interna es un componente `Pestana*.tsx` dentro de la carpeta `components/` de la página (convención ya usada en el proyecto). La barra de ventanas internas tiene **estilo propio** (subrayado o segmentado pequeño, `role="tablist"`), claramente distinto del menú lateral.
+2. Cada ventana interna es un componente `Pestana*.tsx` dentro de `src/modules/problemas/configuracion/<pantalla>/components/` (convención del proyecto). La barra de ventanas internas tiene **estilo propio** (subrayado o segmentado pequeño, `role="tablist"`), claramente distinto del menú lateral.
 3. La ventana activa se guarda en el parámetro de consulta `?vista=<codigo>` para poder compartir el enlace y volver con el botón del navegador. **Cambiar de ventana interna no cambia el ítem activo del menú.**
 4. Las acciones puntuales (vista previa, publicar, historial de versiones, restaurar valores de fábrica, confirmaciones) usan **modales o cajones laterales** (`ModalVistaPrevia`, `ModalPublicacion`, `ModalHistorialVersiones`, `ModalRestaurarFabrica`), nunca ventanas internas.
 5. Los **selectores de contexto** (por ejemplo "Formulario: Registro / Edición", "Aplicar a: tipo") son **listas desplegables** que filtran los datos de la ventana; no se presentan como pestañas.
-6. Los componentes comunes de las pantallas de configuración (`BarraAccionesComun`, `ModalPublicacion`, `ModalHistorialVersiones`, `ModalRestaurarFabrica`, `ModalVistaPrevia`) hoy están **duplicados** en `procesos/problemas/formulario/components/` y `procesos/cambios/formulario/components/`. **Unifícalos** en un único lugar compartido (`src/shared/components/ui/` o `src/components/admin/`) y haz que ambos módulos y el de activos los importen.
+6. Los componentes comunes de las pantallas de configuración (`BarraAccionesComun`, `ModalPublicacion`, `ModalHistorialVersiones`, `ModalRestaurarFabrica`, `ModalVistaPrevia`) hoy están **duplicados** (en `problemas/formulario/components/` y en `cambios/formulario/components/`). **Dentro de `problemas`**, unifícalos en **una sola copia** en `src/modules/problemas/configuracion/compartido/` y haz que las tres pantallas la importen; elimina las copias locales de problemas. **No edites los de `cambios` ni `activos`**: la promoción a `src/shared/components/ui/` y la unificación entre módulos se pide al Tech Lead (S-10). Si `shared` ya los publica, impórtalos desde allí y no crees copia.
 
 ### 3A.3 Estados, accesibilidad y comportamiento
 - Todo listado y toda ventana interna tienen estados de **carga** (esqueleto), **vacío** (mensaje y acción sugerida) y **error** (mensaje y botón "Reintentar").
@@ -244,9 +296,9 @@ Estas reglas aplican a **todas** las pantallas de este prompt y prevalecen sobre
 Junto a cada botón verás `⟨NombreIcono⟩`: es el **nombre del ícono** (nomenclatura Lucide) que debe llevar, por ejemplo `[Guardar borrador ⟨Save⟩]`. El texto entre corchetes es la etiqueta. Si el botón es de fila de tabla, se muestra **solo el ícono** con tooltip; si es botón de barra o formulario, ícono + texto.
 
 ### 3B.3 Implementación
-- Verifica con qué librería están dibujados los íconos actuales. Si el proyecto ya usa `lucide-react`, úsala. Si no, crea **un único módulo compartido** `src/shared/components/ui/Iconos.tsx` (o `src/components/ui/Iconos.tsx`) con los SVG de los nombres de la tabla 3B.4, con el mismo estilo.
-- **Unifica** los archivos `Iconos.tsx` locales de `admin/procesos/cambios/flujo-evaluacion/components/` y `admin/procesos/cambios/notificaciones-calendario/components/` en ese módulo y elimina las copias.
-- Crea un componente `BotonIcono` (props: `icono`, `etiqueta`, `variante: 'normal' | 'peligro'`, `onClick`, `disabled`) y un componente `Boton` (props: `variante`, `icono?`, `children`) para que ninguna pantalla dibuje botones con estilos propios.
+- Verifica con qué librería están dibujados los íconos actuales. Si el proyecto ya usa `lucide-react`, úsala. Si ya existe un módulo compartido de íconos en `src/shared/components/ui/` (por ejemplo `Iconos.tsx`), impórtalo. Si no existe ninguno, crea **un único módulo** `src/modules/problemas/configuracion/compartido/Iconos.tsx` con los SVG de los nombres de la tabla 3B.4, con el mismo estilo (su promoción a `shared` se pide en S-10).
+- **Unifica dentro de `problemas`** los archivos `Iconos.tsx` locales duplicados y elimina las copias. **No edites** los `Iconos.tsx` de `cambios` (`flujo-evaluacion` y `notificaciones-calendario`) ni de otros módulos: su unificación es la solicitud S-10.
+- Si `BotonIcono` y `Boton` ya existen en `src/shared/components/ui/`, úsalos. Si no, créalos en `configuracion/compartido/`: `BotonIcono` (props: `icono`, `etiqueta`, `variante: 'normal' | 'peligro'`, `onClick`, `disabled`) y `Boton` (props: `variante`, `icono?`, `children`), para que ninguna pantalla dibuje botones con estilos propios.
 
 ### 3B.4 Catálogo de acciones → ícono
 | Acción | Ícono | Variante |
@@ -304,16 +356,16 @@ Junto a cada botón verás `⟨NombreIcono⟩`: es el **nombre del ícono** (nom
 ### 3C.1 Principios
 1. **Todo campo tiene definidos**: tipo de dato, formato, longitud o rango, obligatoriedad y mensaje de error. No existe ningún campo de entrada sin validación (incluidos los de pantallas de configuración, editores, modales y filtros).
 2. **Validación en tiempo real:** el formato, la longitud, el rango y los caracteres se validan **mientras se escribe**. La obligatoriedad se evalúa al **salir del campo** (blur) y al **intentar enviar**; nunca al abrir un formulario vacío.
-3. **Solo se muestran errores.** No hay mensajes, íconos ni bordes de éxito (sin check verde). El error usa el componente `AlertaCampo` (`src/components/ui/AlertaCampo.tsx`: `role="alert"`, texto `#b91c1c`, fondo `#fef2f2`, borde `#fecaca`) y borde rojo en el campo con `aria-invalid="true"` y `aria-describedby`.
+3. **Solo se muestran errores.** No hay mensajes, íconos ni bordes de éxito (sin check verde). El error usa el componente `AlertaCampo` (`AlertaCampo`, ubicado en `src/shared/components/ui/AlertaCampo.tsx` (la Etapa 0 confirma la ruta): `role="alert"`, texto `#b91c1c`, fondo `#fef2f2`, borde `#fecaca`) y borde rojo en el campo con `aria-invalid="true"` y `aria-describedby`.
 4. **Un solo mensaje por campo** (el más específico), breve, en español, que diga qué corregir ("Ingresa 8 dígitos numéricos"), sin tecnicismos.
 5. **Restricción de entrada:** los campos numéricos y de identificación filtran caracteres inválidos al teclear y al pegar (`inputMode`, `maxLength`, máscara) y normalizan el valor (recortar espacios, colapsar espacios múltiples, mayúsculas donde corresponda). Si se pega contenido inválido, se limpia y se muestra el mensaje.
 6. **Campos dependientes:** el valor de un selector controla el validador del campo siguiente. Ejemplo obligatorio: **Tipo de documento = DNI / RUC / Carné de extranjería / Pasaporte** → el campo "Número de documento" cambia de inmediato su `maxLength`, `inputMode`, máscara y validador (V-DNI, V-RUC, V-CE, V-PAS). Al cambiar el selector, el número se revalida; si ya no es válido se marca el error (o se limpia, según la regla del campo).
-7. **Misma lógica en cliente y servidor:** todos los validadores viven en `src/lib/validaciones.ts` (y los específicos de módulo en `src/modules/<dominio>/<modulo>Validaciones.ts`), son funciones puras que devuelven `{ valido: boolean, mensaje?: string }` y se importan tanto en el formulario como en el Route Handler. El servidor responde `400` con `{ campo, mensaje }` y la interfaz lo pinta en el campo correspondiente.
+7. **Misma lógica en cliente y servidor:** los validadores existentes viven en la librería compartida de validaciones (antes `src/lib/validaciones.ts`; la Etapa 0 la ubica) y los que falten o sean específicos de problemas se crean en `src/modules/problemas/configuracion/validaciones/` (sin tocar `shared`), son funciones puras que devuelven `{ valido: boolean, mensaje?: string }` y se importan tanto en el formulario como en el controlador (`*Controller.ts`). El servidor responde `400` con `{ campo, mensaje }` y la interfaz lo pinta en el campo correspondiente.
 8. **Botón primario:** mientras exista algún error de formato visible, queda deshabilitado (`aria-disabled`) con tooltip "Corrige los campos marcados". Los obligatorios vacíos no lo deshabilitan: al hacer clic se muestran los errores y se enfoca el primero.
 9. **Unicidad (nombre, código, serie, hostname):** validación asíncrona con *debounce* de 400 ms contra el servidor; mientras consulta, el campo muestra un indicador discreto de carga **sin** mensaje; si hay duplicado, error ("Ya existe un registro con ese código").
 10. **Coherencia entre campos:** fecha inicio < fecha fin, SLA primera respuesta < SLA resolución, mínimo ≤ máximo, etc. El error se muestra en el campo que debe corregirse.
-11. **Sanitización:** eliminar etiquetas HTML y caracteres de control del texto simple; el texto enriquecido se sanea con lista blanca; consultas siempre parametrizadas; apoyarse en `src/lib/security.ts`.
-12. **Adjuntos:** tipos y tamaño según 1.8.3 (fábrica: 25 MB por archivo, 10 archivos, ejecutables bloqueados); el error indica el archivo y el motivo.
+11. **Sanitización:** eliminar etiquetas HTML y caracteres de control del texto simple; el texto enriquecido se sanea con lista blanca; consultas siempre parametrizadas; apoyarse en las utilidades de saneamiento existentes (antes `src/lib/security.ts`; la Etapa 0 las ubica).
+12. **Adjuntos:** tipos y tamaño según *Retención y mantenimiento de datos* (fábrica: 25 MB por archivo, 10 archivos, ejecutables bloqueados); el error indica el archivo y el motivo.
 
 ### 3C.2 Catálogo de validadores (ID, tipo de dato, regla exacta y mensaje)
 | ID | Tipo de dato | Regla | Mensaje de error |
@@ -379,8 +431,8 @@ Junto a cada botón verás `⟨NombreIcono⟩`: es el **nombre del ícono** (nom
 
 Esta sección define la **versión de fábrica** del formulario. La sección 6 define cómo el administrador la modifica.
 
-**Quién lo usa:** perfiles **Técnico**, **Gestor de Problemas**, **Supervisor** y **Administrador** (permiso `problemas.crear`). Los perfiles Solicitante, Gestor de Área, Auditor y Aprobador **no** registran problemas.
-**Dónde:** menú `4 Gestión de Problemas > 4.1 Registro de problemas > botón [+ Nuevo problema ⟨Plus⟩]`. También desde un incidente: botón **[Crear problema desde este incidente ⟨FilePlus⟩]**, que abre este formulario con Origen = *Incidente(s)*, el incidente ya vinculado, y el servicio, los CI y la categoría prellenados desde el incidente.
+**Quién lo usa:** perfiles **Técnico**, **Gestor de Problemas** y **Supervisor** (capacidad `problemas:crear`). El **Administrador** configura pero no registra (SoD), y los perfiles Solicitante, Gestor de Área, Auditor y Aprobador **no** registran problemas.
+**Dónde:** menú `Problemas › Registro de problemas` (`/plataforma/problemas`) → botón [+ Nuevo problema ⟨Plus⟩]; el Técnico lo hace desde `Problemas › Registrar problema` (`/plataforma/perfiles/tecnico/problemas/nuevo`). También desde un incidente (el botón lo monta el módulo `incidentes`, solicitud S-4; `problemas` expone el servicio de creación): botón **[Crear problema desde este incidente ⟨FilePlus⟩]**, que abre este formulario con Origen = *Incidente(s)*, el incidente ya vinculado, y el servicio, los CI y la categoría prellenados desde el incidente.
 **Disposición:** una sola página con **secciones plegables**, todas abiertas al inicio. Arriba, a la derecha, el selector **[Usar plantilla ▾]** (ver 1.3.3.1.5).
 
 ### 4.1 Secciones y campos
@@ -398,7 +450,7 @@ Esta sección define la **versión de fábrica** del formulario. La sección 6 d
 
 | # | Etiqueta | Código | Control | Obligatorio | Reglas |
 |---|---|---|---|---|---|
-| B1 | Servicio afectado | `servicio_id` | Lista con búsqueda (catálogo 1.2) | Sí | Solo servicios activos. Si hay incidentes vinculados con un único servicio, se prellena y se puede cambiar. |
+| B1 | Servicio afectado | `servicio_id` | Lista con búsqueda (Catálogo de Servicios) | Sí | Solo servicios activos. Si hay incidentes vinculados con un único servicio, se prellena y se puede cambiar. |
 | B2 | Activos / CI afectados | `ci_afectados` | Selector múltiple (CMDB) | No | Filtrado por defecto por el servicio elegido (casilla "Ver todos los CI"). A diferencia del formulario de Incidentes (que solo lista ítems bajo custodia del usuario), aquí se listan **todos** los CI de la CMDB (hardware, software y periféricos). Muestra código, nombre, clase y criticidad. Se sugieren los CI de los incidentes vinculados con botón [Agregar sugeridos ⟨Plus⟩]. |
 | B3 | Categoría | `categoria_id` | Lista en cascada (Categoría → Subcategoría) | Sí | Catálogo editable (1.3.3.1.3). Al elegir categoría puede prellenar grupo resolutor (si la categoría tiene grupo por defecto). |
 
@@ -416,20 +468,20 @@ Esta sección define la **versión de fábrica** del formulario. La sección 6 d
 
 | # | Etiqueta | Código | Control | Obligatorio | Reglas |
 |---|---|---|---|---|---|
-| D1 | Grupo resolutor | `grupo_id` | Lista (grupos de 1.4.2) | Sí | Prellenado por reglas de asignación automática (1.3.3.2.3); editable si el perfil lo permite. |
-| D2 | Responsable | `responsable_id` | Lista con búsqueda (técnicos del grupo, 1.4.3) | No al crear | Si queda vacío, el problema se crea en estado *Nuevo* sin responsable y aparece en la bandeja del grupo. Muestra carga actual (tickets abiertos) junto a cada nombre. |
+| D1 | Grupo resolutor | `grupo_id` | Lista (grupos de *Departamentos y grupos resolutores de TI*) | Sí | Prellenado por reglas de asignación automática (1.3.3.2.3); editable si el perfil lo permite. |
+| D2 | Responsable | `responsable_id` | Lista con búsqueda (técnicos del grupo, *Técnicos y niveles de soporte*) | No al crear | Si queda vacío, el problema se crea en estado *Nuevo* sin responsable y aparece en la bandeja del grupo. Muestra carga actual (tickets abiertos) junto a cada nombre. |
 
 **Sección E — Mitigación**
 
 | # | Etiqueta | Código | Control | Obligatorio | Reglas |
 |---|---|---|---|---|---|
-| E1 | Workaround conocido | `workaround` | Texto enriquecido | No | Si se completa, aparece la casilla "Publicar como error conocido al registrar" (solo con permiso `kedb.publicar`). |
+| E1 | Workaround conocido | `workaround` | Texto enriquecido | No | Si se completa, aparece la casilla "Publicar como error conocido al registrar" (solo con permiso `kedb:publicar`). |
 
 **Sección F — Adjuntos**
 
 | # | Etiqueta | Código | Control | Obligatorio | Reglas |
 |---|---|---|---|---|---|
-| F1 | Evidencias (adjuntos) | `adjuntos` | Zona arrastrar-y-soltar + botón [Seleccionar archivos ⟨FileUp⟩] | No | Tipos permitidos y tamaño máximo configurables en 1.8.3 (valor de fábrica: 25 MB por archivo, 10 archivos; bloquear ejecutables). Muestra nombre, tamaño, barra de progreso y [Quitar ⟨Trash2⟩]. |
+| F1 | Evidencias (adjuntos) | `adjuntos` | Zona arrastrar-y-soltar + botón [Seleccionar archivos ⟨FileUp⟩] | No | Tipos permitidos y tamaño máximo configurables en *Retención y mantenimiento de datos* (valor de fábrica: 25 MB por archivo, 10 archivos; bloquear ejecutables). Muestra nombre, tamaño, barra de progreso y [Quitar ⟨Trash2⟩]. |
 
 **Campos automáticos (no editables; se muestran en un panel lateral "Datos del registro")**
 `id` (formato `PRB-000001`, secuencia sin saltos), `registrado_por`, `fecha_registro`, `estado` inicial = *Nuevo*, `origen_canal` (manual / desde incidente / regla automática).
@@ -437,7 +489,7 @@ Esta sección define la **versión de fábrica** del formulario. La sección 6 d
 ### 4.2 Botones del formulario
 - **[Registrar problema ⟨FilePlus⟩]** (primario): valida, crea el ticket, muestra toast "Problema PRB-xxxxxx registrado" y redirige a la vista del ticket.
 - **[Registrar y crear otro ⟨FilePlus⟩]**: igual, pero limpia el formulario conservando la plantilla.
-- **[Guardar como borrador ⟨Save⟩]**: guarda sin validar obligatorios; el borrador solo lo ve su autor en "Mis borradores" y caduca a los 30 días (configurable en 1.8.3).
+- **[Guardar como borrador ⟨Save⟩]**: guarda sin validar obligatorios; el borrador solo lo ve su autor en "Mis borradores" y caduca a los 30 días (configurable en *Retención y mantenimiento de datos*).
 - **[Cancelar ⟨X⟩]**: pide confirmación si hay datos.
 
 ### 4.3 Validaciones al registrar
@@ -470,7 +522,7 @@ Esta sección define la **versión de fábrica** del formulario. La sección 6 d
 
 ## 5. ESPECIFICACIÓN DEL TICKET DE PROBLEMA YA CREADO (lo que ve el usuario)
 
-**Ruta:** `4 Gestión de Problemas > 4.1 Registro de problemas > (fila) PRB-xxxxxx`.
+**Ruta:** `Problemas › Registro de problemas` (`/plataforma/problemas`) › (fila) PRB-xxxxxx → `/plataforma/problemas/[id]` (se autoriza por prefijo; no es opción de menú).
 **Layout:** cabecera fija arriba + barra de acciones + pestañas a la izquierda/arriba + panel lateral derecho de resumen.
 
 ### 5.1 Cabecera fija
@@ -530,7 +582,7 @@ Cada pestaña tiene configuración de "visible desde el estado X" y "editable en
 **Propósito:** que el administrador controle qué se captura al registrar un problema, qué se muestra en el ticket y con qué catálogos y reglas, sin tocar código (ITIL 4: *start where you are*, *keep it simple*).
 **Pestañas:** 1.3.3.1.1 a 1.3.3.1.6. Todas siguen el patrón de la sección 3.
 
-**Reutilización obligatoria:** la configuración de formulario de Incidentes (1.3.1.1) ya permite configurar campos y tiene un creador de campos. Esta pantalla debe construirse **extendiendo ese mismo editor** para que soporte la entidad `problema` (y, más adelante, `cambio` y `activo`), no copiándolo. Lo que ese editor ya haga igual a lo descrito aquí no se reimplementa; lo que falte (reglas condicionales, versionado de borrador/publicación, bloqueo concurrente, etc.) se agrega al componente compartido de modo que Incidentes también pueda aprovecharlo, **sin cambiar el comportamiento actual de Incidentes**.
+**Reutilización obligatoria:** la configuración de formulario de Incidentes (`Incidentes › Configuración del formulario`, módulo `tickets`, núcleo congelado) ya permite configurar campos y tiene un creador de campos. Esta pantalla debe construirse **sobre ese mismo editor, consumido por contrato** (`@/modules/tickets/ui`) para que soporte la entidad `problema` (y, más adelante, `cambio` y `activo`), **no copiándolo ni editando `tickets`**. Lo que ese editor ya haga igual a lo descrito aquí no se reimplementa. Lo que falte se reparte así: lo propio del patrón de configuración de problemas (borrador/publicación, versionado, bloqueo concurrente, importación/exportación, reglas condicionales de problemas) se implementa en `configuracion/compartido/`; lo que exija **cambiar el editor compartido** se solicita en **S-1** para que `tickets` lo adopte **sin cambiar el comportamiento actual de Incidentes**. Mientras tanto se aplica la degradación de S-1 (adaptador, sin copias).
 
 ---
 
@@ -567,7 +619,7 @@ Cada pestaña tiene configuración de "visible desde el estado X" y "editable en
 | Valor por defecto | Control del mismo tipo del campo | Opcional. Admite variables: `{usuario_actual}`, `{fecha_actual}`, `{grupo_del_usuario}`. |
 | Sección | Lista | Mueve el campo a otra sección. |
 | Ancho | Selector: 1/3 · 1/2 · 2/3 · completo | |
-| Visible para perfiles | Selector múltiple de perfiles (1.1.2) | Vacío = todos. |
+| Visible para perfiles | Selector múltiple de perfiles (*Perfiles y permisos*) | Vacío = todos. |
 | Editable por perfiles | Selector múltiple | Vacío = todos los que ven el campo. |
 | Validaciones | Según tipo: mín./máx. de longitud, rango numérico, expresión regular (con mensaje de error propio, y botón [Probar expresión ⟨FlaskConical⟩] que acepta un texto de prueba) | |
 | Reglas condicionales | Constructor (ver abajo) | |
@@ -625,9 +677,9 @@ Cada pestaña tiene configuración de "visible desde el estado X" y "editable en
    - Número: mín., máx., decimales, unidad (ej. USD, h, %).
    - Listas/selección: editor de opciones (valor, etiqueta, color, orden, activo), opción de "Permitir otro valor", valor por defecto.
    - Fecha: permitir pasadas/futuras, rango, valor por defecto (`hoy`).
-   - Archivo: tipos y tamaño máximo (no superior al límite global de 1.8.3).
+   - Archivo: tipos y tamaño máximo (no superior al límite global de *Retención y mantenimiento de datos*).
    - Referencia a CI: clases permitidas.
-4. **Ubicación y comportamiento:** formulario(s) donde aparece (Registro / Edición), sección, obligatorio (sí/no/condicional), pestaña de la vista del ticket donde se muestra, visible/editable por perfiles, **Incluir en búsqueda**, **Incluir en reportes y filtros** (se expone a 2.1 y 2.2), **Incluir en auditoría** (siempre activado, no se puede desmarcar).
+4. **Ubicación y comportamiento:** formulario(s) donde aparece (Registro / Edición), sección, obligatorio (sí/no/condicional), pestaña de la vista del ticket donde se muestra, visible/editable por perfiles, **Incluir en búsqueda**, **Incluir en reportes y filtros** (se expone a `Reportes de problemas` y `Tableros`), **Incluir en auditoría** (siempre activado, no se puede desmarcar).
 5. **Resumen:** vista previa del control tal como lo verá el usuario + resumen de propiedades. Botón **[Crear campo ⟨FilePlus⟩]**.
 
 **Reglas:** el tipo **no se puede cambiar** una vez creado el campo (se debe crear otro y migrar). Las opciones de una lista en uso solo se desactivan. Los cambios de etiqueta, ayuda, color y orden de opciones sí son libres.
@@ -668,13 +720,13 @@ Cada pestaña tiene configuración de "visible desde el estado X" y "editable en
 
 ### 6.4 Pestaña 1.3.3.1.4 — Matriz de prioridad (compartida con Incidentes)
 
-**Hecho confirmado:** el sistema **ya tiene** una matriz impacto × urgencia → prioridad (P1 Crítica, P2 Alta, P3 Media, P4 Baja) que se usa al crear incidentes. Los niveles de impacto y de urgencia son **Alta / Media / Baja**. Según el árbol de archivos, su edición está en `1.2.5 Objetivos SLA` (`/admin/servicios/sla`, `MatrizPrioridadSla.tsx`, API `/api/admin/sla/matriz`) y el cálculo en `src/lib/sla.ts`; confírmalo en la **Etapa 0** y documenta cómo se consume. **Prohibido crear una segunda matriz paralela como comportamiento por defecto.**
+**Hecho confirmado:** el sistema **ya tiene** una matriz impacto × urgencia → prioridad (P1 Crítica, P2 Alta, P3 Media, P4 Baja) que se usa al crear incidentes. Los niveles de impacto y de urgencia son **Alta / Media / Baja**. Su edición está en la pantalla `Objetivos SLA` (`/plataforma/admin/servicios/sla`, módulo `servicios`; antes `MatrizPrioridadSla.tsx` y API `/api/admin/sla/matriz`) y el cálculo se consume con `calcularPrioridadITIL` (contrato de `tickets`); confírmalo en la **Etapa 0** y documenta cómo se consume desde `problemas`. **Prohibido crear una segunda matriz o un segundo servicio de prioridad paralelos como comportamiento por defecto.**
 
 **Qué hace esta pestaña:**
 
 1. **Matriz vigente (solo lectura por defecto):** cuadrícula impacto × urgencia con la prioridad de cada celda y sus colores, rotulada "Matriz compartida con Incidentes". Debajo, tabla de prioridades (código, nombre, color) tal como están definidas hoy.
-2. **Enlace `[Editar matriz compartida → ⟨ArrowUpRight⟩]`:** lleva a la pantalla donde hoy se edita esa matriz. Si hoy la matriz está fija en código y no tiene pantalla de edición, repórtalo en el informe de la Etapa 0 y propón migrarla a una tabla de base de datos con su pantalla; **no lo implementes sin mi aprobación**.
-3. **Interruptor `Usar matriz propia para problemas`** (apagado por defecto). Al encenderlo, un modal pide confirmación ("Los problemas dejarán de usar la matriz de Incidentes"), copia la matriz actual como punto de partida y habilita la edición de la cuadrícula solo para problemas. Si se apaga de nuevo, vuelve a leerse la matriz compartida (la matriz propia se conserva como borrador archivado).
+2. **Enlace `[Editar matriz compartida → ⟨ArrowUpRight⟩]`:** lleva a la pantalla donde hoy se edita esa matriz. Si hoy la matriz está fija en código y no tiene pantalla de edición, repórtalo en el informe de la Etapa 0 y propón migrarla a una tabla de base de datos con su pantalla; **no lo implementes sin mi aprobación (sería una solicitud al módulo `servicios`)**.
+3. **Interruptor `Usar matriz propia para problemas`** (apagado por defecto; **sujeto a la pregunta abierta 1**: se implementa como tabla de anulación de lectura de celda dentro de `problemas`, sin motor de prioridad paralelo). Al encenderlo, un modal pide confirmación ("Los problemas dejarán de usar la matriz de Incidentes"), copia la matriz actual como punto de partida y habilita la edición de la cuadrícula solo para problemas. Si se apaga de nuevo, vuelve a leerse la matriz compartida (la matriz propia se conserva como borrador archivado).
 4. **Textos de ayuda por nivel (tooltips):** tabla editable con los textos que se muestran al elegir Impacto y Urgencia en el formulario de problemas (ej. "Alta: afecta a un servicio crítico o a más de 100 usuarios"). Cambiar estos textos **no altera** los niveles ni la matriz.
 5. **Opciones propias del módulo:**
    - `Permitir prioridad manual` (interruptor) → define **perfiles autorizados** y exige justificación (mín. 15 caracteres) que queda en la bitácora.
@@ -725,7 +777,7 @@ Cada pestaña tiene configuración de "visible desde el estado X" y "editable en
 | Editable en estados | Selector múltiple de estados |
 | Campos de la pestaña | Botón **[Configurar campos… ⟨Settings2⟩]** (abre panel con la lista de campos de esa pestaña: visible, orden, etiqueta, solo lectura) |
 
-Las pestañas **Detalle**, **Comentarios y bitácora** e **Historial / auditoría** no pueden ocultarse. La pestaña **Historial / auditoría** solo puede mostrarse a perfiles con permiso `problemas.auditoria.ver`.
+Las pestañas **Detalle**, **Comentarios y bitácora** e **Historial / auditoría** no pueden ocultarse. La pestaña **Historial / auditoría** solo puede mostrarse a perfiles con permiso `problemas:auditoria:ver`.
 
 **Bloque 3 — Panel lateral:** lista de elementos del resumen (sección 5.3) con visible y orden.
 
@@ -818,7 +870,7 @@ Las pestañas **Detalle**, **Comentarios y bitácora** e **Historial / auditorí
 | Nombre de la acción | Texto (3–30) | Texto del botón en el ticket (ej. "Iniciar análisis"). |
 | Estado(s) de origen | Selector múltiple | Permite una misma acción desde varios estados. |
 | Estado de destino | Lista (uno) | |
-| Perfiles autorizados | Selector múltiple (1.1.2) | Además: casillas "Responsable del ticket", "Miembros del grupo resolutor", "Supervisor del grupo". |
+| Perfiles autorizados | Selector múltiple (*Perfiles y permisos*) | Además: casillas "Responsable del ticket", "Miembros del grupo resolutor", "Supervisor del grupo". |
 | Condiciones previas | Constructor de reglas (igual al de 6.1) | Ej.: "no hay tareas obligatorias pendientes". Si no se cumplen, el botón se deshabilita y el tooltip muestra el motivo. |
 | Campos obligatorios en esta transición | Selector múltiple de campos y bloques (causa raíz, workaround, solución permanente, RFC vinculada, código de cierre, etc.) | Al ejecutar, se abre un modal con solo esos campos para completar. |
 | Comentario | Ninguno / Opcional / Obligatorio + visibilidad (interno/público) | |
@@ -828,7 +880,7 @@ Las pestañas **Detalle**, **Comentarios y bitácora** e **Historial / auditorí
 | Automatizaciones al ejecutar | Lista ordenable (ver abajo) | |
 | Activa | Interruptor | |
 
-**Automatizaciones disponibles:** asignar responsable (aplica reglas de 1.3.3.2.3) · notificar (selecciona evento/plantilla de 1.6.1 y destinatarios) · crear tareas (paquete) · registrar fecha-hora en un campo · crear registro KEDB · crear RFC prellenada · actualizar incidentes vinculados (según 1.3.3.3.2) · generar borrador de artículo (1.3.3.3.5) · detener/pausar/reanudar relojes · incrementar contador · marcar etiqueta.
+**Automatizaciones disponibles:** asignar responsable (aplica reglas de 1.3.3.2.3) · notificar (selecciona evento/plantilla de *Plantillas de correo y otros canales* y destinatarios) · crear tareas (paquete) · registrar fecha-hora en un campo · crear registro KEDB · crear RFC prellenada · actualizar incidentes vinculados (según 1.3.3.3.2) · generar borrador de artículo (1.3.3.3.5) · detener/pausar/reanudar relojes · incrementar contador · marcar etiqueta.
 
 **Reglas de validación del flujo (se ejecutan antes de publicar; si fallan, se lista cada error con enlace):**
 1. Todo estado no final tiene al menos 1 transición de salida.
@@ -865,9 +917,9 @@ Las pestañas **Detalle**, **Comentarios y bitácora** e **Historial / auditorí
 - **Nombre**, **Activa**.
 - **Cuándo se evalúa:** al registrar · al cambiar de categoría · al cambiar de prioridad · al entrar en un estado (selector).
 - **Condiciones** (constructor): categoría/subcategoría, servicio, clase de CI, criticidad de CI, prioridad, origen, horario (dentro/fuera de horario laboral), etiqueta.
-- **Acción — Grupo destino:** lista de grupos (1.4.2).
-- **Acción — Estrategia dentro del grupo:** *Dejar sin responsable (bandeja del grupo)* · *Round-robin* · *Menor carga (menos tickets abiertos)* · *Por nivel de soporte mínimo* (selector de nivel 1.4.3) · *Técnico fijo* (selector).
-- **Considerar disponibilidad:** interruptor. Omite a los técnicos con una **ausencia vigente** registrada en la tabla `tecnico_ausencias` (sección 12; hoy no existe ningún dato de turnos o ausencias, por lo que debe crearse junto con una sección mínima "Ausencias" en `1.4.3 Técnicos y niveles de soporte`: técnico, desde, hasta, motivo, con botones `[+ Registrar ausencia ⟨Plus⟩]` `[Editar ⟨SquarePen⟩]` `[Eliminar ⟨Trash2⟩]`). No se modelan turnos en esta etapa.
+- **Acción — Grupo destino:** lista de grupos (*Departamentos y grupos resolutores de TI*).
+- **Acción — Estrategia dentro del grupo:** *Dejar sin responsable (bandeja del grupo)* · *Round-robin* · *Menor carga (menos tickets abiertos)* · *Por nivel de soporte mínimo* (selector de nivel *Técnicos y niveles de soporte*) · *Técnico fijo* (selector).
+- **Considerar disponibilidad:** interruptor. Omite a los técnicos con una **ausencia vigente**, consultada al módulo `organizacion` por contrato (`esTecnicoDisponible`, solicitud S-5). La tabla de ausencias **pertenece a `organizacion` y no se crea aquí**. Mientras S-5 no esté atendida, el interruptor aparece deshabilitado con el aviso "Requiere el registro de ausencias". No se modelan turnos en esta etapa.
 - **Fallback:** grupo/técnico alternativo si no hay candidatos.
 - **Notificar al asignar:** interruptor + plantilla.
 
@@ -879,7 +931,7 @@ Las pestañas **Detalle**, **Comentarios y bitácora** e **Historial / auditorí
 
 ### 7.4 Pestaña 1.3.3.2.4 — Objetivos de tiempo
 
-**Contexto confirmado:** `1.2.5 Objetivos SLA` contiene hoy la **"Matriz Institucional de Tiempos por Prioridad"** con las columnas *Nivel · Prioridad · Primera Respuesta (Horas) · Resolución Total (Horas) · Equivalencia / Descripción Operativa* (P1 Crítica 1 h/4 h, P2 Alta 2 h/8 h, P3 Media 4 h/24 h, P4 Baja 8 h/72 h). El tiempo que aplica a un ticket lo determina su **prioridad**. Esta pestaña sigue exactamente esa lógica para problemas. **No modifiques la matriz de Incidentes y Solicitudes ni el SLA que cada servicio tenga configurado.**
+**Contexto confirmado:** la pantalla `Objetivos SLA` (`/plataforma/admin/servicios/sla`, módulo `servicios`) contiene hoy la **"Matriz Institucional de Tiempos por Prioridad"** con las columnas *Nivel · Prioridad · Primera Respuesta (Horas) · Resolución Total (Horas) · Equivalencia / Descripción Operativa* (P1 Crítica 1 h/4 h, P2 Alta 2 h/8 h, P3 Media 4 h/24 h, P4 Baja 8 h/72 h). El tiempo que aplica a un ticket lo determina su **prioridad**. Esta pestaña sigue exactamente esa lógica para problemas. **No modifiques la matriz de Incidentes y Solicitudes ni el SLA que cada servicio tenga configurado.**
 
 **Qué se configura:** metas internas de tiempo (OLA) por prioridad para problemas. *Nota ITIL:* los problemas no suelen tener SLA con el cliente; son objetivos internos de gestión.
 
@@ -893,7 +945,7 @@ Las pestañas **Detalle**, **Comentarios y bitácora** e **Historial / auditorí
 | Resolución total (horas) | Tiempo máximo hasta *Resuelto*. |
 | Equivalencia / descripción operativa | Texto editable propio de problemas (ej. "P1: problema que causa incidentes de interrupción total recurrentes"). |
 
-**Cómputo del tiempo:** usa los **calendarios hábiles de `src/lib/sla.ts`** (documéntalo en la pestaña como texto informativo). **No se crea un módulo de calendarios paralelo: se reutilizan los calendarios hábiles de `src/lib/sla.ts`.** Los relojes se pausan, corren o se detienen según la configuración de cada estado (7.1).
+**Cómputo del tiempo:** usa los **calendarios hábiles del motor de SLA existente** (antes `src/lib/sla.ts`; la Etapa 0 indica su módulo actual; documéntalo en la pestaña como texto informativo). **No se crea un módulo de calendarios paralelo: se reutilizan los calendarios hábiles del motor de SLA existente.** Los relojes se pausan, corren o se detienen según la configuración de cada estado (7.1).
 
 **Otras opciones:** umbrales de alerta (por defecto 50 %, 75 %, 90 %; hasta 5) y `[Vista previa de medidores ⟨Eye⟩]` (cómo se verán los dos medidores de la cabecera del ticket).
 **Botones:** `[Restaurar valores sugeridos ⟨RotateCcw⟩]` + patrón común.
@@ -907,7 +959,7 @@ Las pestañas **Detalle**, **Comentarios y bitácora** e **Historial / auditorí
 | P3 Media | 24 | 240 | 960 |
 | P4 Baja | 72 | 480 | 1440 |
 
-**Integración con 1.2.5:** debajo de la matriz existente de `1.2.5 Objetivos SLA`, agrega un **bloque de solo lectura "Objetivos internos de Problemas"** con estos mismos valores y un enlace `[Editar en Gestión de problemas → ⟨ArrowUpRight⟩]` que apunta a esta pestaña. Fuente única de verdad: esta pestaña.
+**Integración con `Objetivos SLA`:** el módulo `problemas` **exporta** en `src/modules/problemas/ui.ts` el componente de solo lectura `BloqueObjetivosProblemas` ("Objetivos internos de Problemas") con estos mismos valores y un enlace `[Editar en Configuración de problemas → ⟨ArrowUpRight⟩]` hacia `/plataforma/admin/procesos/problemas/flujo?vista=objetivos`. **Montarlo debajo de la matriz existente de `Objetivos SLA` es la solicitud S-3** (pantalla del módulo `servicios`; no se edita aquí). Fuente única de verdad: esta pestaña.
 
 **Validaciones:** valores enteros > 0; Primera respuesta ≤ Diagnóstico ≤ Resolución total en cada fila; los valores no pueden disminuir al bajar de prioridad (P1 ≤ P2 ≤ P3 ≤ P4) en cada columna (aviso, no bloqueo).
 
@@ -1011,6 +1063,8 @@ Editor: Nombre · Descripción · Tipo · Responsable (rol, grupo, "responsable 
 
 **Propósito:** integrar Gestión de Problemas con Incidentes, KEDB, Cambios, Conocimiento y CMDB (ITIL 4: *think and work holistically*).
 
+**Frontera del módulo (obligatoria en toda esta sección):** aquí **solo se configura** la relación y se **expone el contrato** (servicios en `@/modules/problemas`: configuración publicada, creación de problema desde incidente, sugerencia de errores conocidos, creación de RFC, borrador de conocimiento). Todo lo que "se muestra en el incidente / en el CI / en la RFC / en el artículo" lo pinta el **módulo dueño** leyendo esa configuración por contrato (solicitudes S-4, S-7, S-8 y S-9); este prompt **no edita** esos módulos. Cada ventana debe indicar en un aviso discreto si su efecto en el módulo destino aún no está activo.
+
 ### 8.1 Pestaña 1.3.3.3.1 — Creación automática de problemas por umbral
 
 **Qué se configura:** reglas que detectan incidentes recurrentes y crean (o sugieren) problemas de forma proactiva.
@@ -1074,7 +1128,7 @@ Editor: Nombre · Descripción · Tipo · Responsable (rol, grupo, "responsable 
 - **Revisión periódica:** cada N meses (valor de fábrica 6) con recordatorio X días antes al responsable; si no se revisa, pasa a *En revisión* automáticamente (interruptor).
 - **Retiro automático** al cerrar el problema con código de cierre que implique solución permanente (interruptor).
 
-**Bloque 3 — Audiencia (casillas):** Mesa de servicio · Técnicos de todos los grupos · Técnicos del grupo resolutor · Autoservicio (portal 1.1). Se puede definir audiencia distinta por categoría.
+**Bloque 3 — Audiencia (casillas):** Mesa de servicio · Técnicos de todos los grupos · Técnicos del grupo resolutor · Autoservicio (consola del Solicitante). Se puede definir audiencia distinta por categoría.
 
 **Bloque 4 — Coincidencia en el registro de incidentes:**
 - `Sugerir errores conocidos al registrar un incidente` (interruptor).
@@ -1101,16 +1155,16 @@ Editor: Nombre · Descripción · Tipo · Responsable (rol, grupo, "responsable 
 
 ### 8.5 Pestaña 1.3.3.3.5 — Conocimiento
 
-**Qué se configura:** cómo se genera conocimiento a partir de problemas (ITIL 4: *Knowledge Management*), coordinado con 1.7.1.
+**Qué se configura:** cómo se genera conocimiento a partir de problemas (ITIL 4: *Knowledge Management*), coordinado con la configuración de Conocimiento (`/plataforma/admin/conocimiento-config`).
 
 **Controles:**
 - **Cuándo generar borrador de artículo:** casillas — al publicar error conocido · al resolver · al cerrar · solo manual.
 - **Tipo de artículo por evento:** Error conocido (workaround) / Solución definitiva / Guía de resolución.
 - **Plantilla del artículo:** editor con secciones y **mapeo de campos del problema**: `Síntomas` ← descripción · `Causa` ← causa raíz · `Workaround` ← workaround · `Solución` ← solución permanente · `Servicios/CI afectados` ← lista · `Referencia` ← enlace al problema · `Palabras clave` ← categoría + servicio. Botones `[Insertar variable ⟨Braces⟩]` `[Vista previa con problema real ⟨Eye⟩]`.
-- **Audiencia y categoría del artículo:** por defecto según el error conocido; categoría de 1.7.1.
-- **Responsable de revisión:** *Autor del problema*, *Responsable de la categoría de conocimiento* (según 1.7.1) o *Perfil concreto*.
+- **Audiencia y categoría del artículo:** por defecto según el error conocido; categoría de la configuración de Conocimiento.
+- **Responsable de revisión:** *Autor del problema*, *Responsable de la categoría de conocimiento* (según la configuración de Conocimiento) o *Perfil concreto*.
 - **¿Es obligatorio un artículo para cerrar el problema?** (interruptor). Excepciones por código de cierre (casillas).
-- **Estado inicial del borrador:** *Borrador* (no editable aquí si 1.7.1 define otro).
+- **Estado inicial del borrador:** *Borrador* (no editable aquí si la configuración de Conocimiento define otro).
 - **Enlace:** los artículos aparecen en la pestaña "Conocimiento" del ticket y los incidentes resueltos con el workaround quedan asociados al artículo.
 
 ### 8.6 Pestaña 1.3.3.3.6 — CI y servicios (CMDB)
@@ -1124,8 +1178,8 @@ Editor: Nombre · Descripción · Tipo · Responsable (rol, grupo, "responsable 
 - **Máximo de CI por problema** (valor de fábrica 100).
 - **Marca visible en la CMDB:** mostrar en el CI los indicadores `Problema abierto` y `Error conocido vigente` (interruptores) con enlace al ticket (aparecen en 7.1/7.2).
 - **Reglas por criticidad:** si algún CI afectado tiene criticidad ≥ X, **sugerir** Impacto = Alto (nunca fuerza el valor; muestra aviso en el formulario).
-- **Servicios:** si el servicio afectado está marcado crítico en 1.2, activar automáticamente el criterio de problema mayor (enlaza con 7.8).
-- **Al retirar/dar de baja un CI** con problemas abiertos: *Avisar al responsable* / *Bloquear la baja* (el bloqueo se aplica desde 1.5.2).
+- **Servicios:** si el servicio afectado está marcado crítico en el Catálogo de Servicios, activar automáticamente el criterio de problema mayor (enlaza con 7.8).
+- **Al retirar/dar de baja un CI** con problemas abiertos: *Avisar al responsable* / *Bloquear la baja* (el bloqueo se aplica desde *Ciclos de vida y reglas de transición*, módulo `activos`; solicitud S-8).
 
 
 ### 8.7 Validaciones de la pantalla 1.3.3.3 (cumple 3C)
@@ -1146,41 +1200,51 @@ Editor: Nombre · Descripción · Tipo · Responsable (rol, grupo, "responsable 
 | Mapeo de prellenado de la RFC | 1.3.3.3.4 | Listas | V-LISTA; cada campo origen se asigna a un único destino |
 | Plantilla del artículo (secciones y variables) | 1.3.3.3.5 Conocimiento | Texto | V-NOMBRE por sección; variables válidas del problema |
 | Máximo de CI por problema | 1.3.3.3.6 CI y servicios | Entero | V-ENTERO(1,1000) |
-| Criticidad mínima | 1.3.3.3.6 | Lista | V-LISTA (criticidades de 1.5.4.3) |
+| Criticidad mínima | 1.3.3.3.6 | Lista | V-LISTA (criticidades de *Tipos de elementos de configuración y relaciones de CMDB*) |
 
 ---
 
 ## 9. Perfiles y permisos
 
-**Perfiles existentes hoy (1.1.2):** Administrador · Técnico · Solicitante · Supervisor · Gestor de Área · Auditor · Aprobador · Gestor de Cambios · Gestor de Activos y Configuración.
+**Perfiles existentes (10, catálogo `perfiles`; nombres de BD sin tildes):** 1 Administrador · 2 Tecnico · 3 Solicitante · 4 Supervisor · 5 Gestor de Area · 6 Auditor · 7 Aprobador · 8 Gestor de Cambios · 9 Gestor de Activos y Configuracion · 10 **Gestor de Problemas**.
 
-**Perfil nuevo que debes crear (migración semilla):** **Gestor de Problemas** (rol que ITIL 4 prevé para coordinar identificación, control del problema y control de errores). Todas las referencias a "Gestor de Problemas" en este documento apuntan a este perfil.
+El perfil **Gestor de Problemas ya existe** (id 10, consola `/plataforma/gestor-problemas/*`). **No lo crees.** Todas las referencias a "Gestor de Problemas" apuntan a ese perfil.
 
-Por cada pantalla de configuración existen tres permisos: `ver`, `editar` (guardar borrador) y `publicar`. Un usuario con `editar` pero sin `publicar` guarda borradores; otro con `publicar` los revisa y publica (separación de funciones). Las transiciones de 1.3.3.2.2 pueden restringir aún más, nunca ampliar, lo que otorgan estos permisos.
+**Modelo de autorización vigente:** RBAC por **capacidades** `dominio:acción` declaradas en `src/shared/lib/capacidades.ts`, con el puente `CAPACIDADES_POR_PERFIL` (todavía no existe `perfil_capacidades`). La **visibilidad de pantallas** la fija el menú (`opciones_menu_perfiles`); las páginas se protegen con `exigirCapacidadPagina` o `exigirMenuPagina`, y la API con `sesionConCapacidad`.
 
-**Matriz de permisos de fábrica** (✔ = concedido; — = no). Columnas: ADM = Administrador · TEC = Técnico · SOL = Solicitante · SUP = Supervisor · GAR = Gestor de Área · AUD = Auditor · APR = Aprobador · GCA = Gestor de Cambios · GAC = Gestor de Activos y Configuración · GPR = Gestor de Problemas (nuevo).
+**Capacidades ya declaradas para este dominio** (Etapa 0 las lista todas; se conocen): `problemas:gestionar`, `problemas:config:ver`, `kedb:ver`. El grupo "Problemas y KEDB" tiene 7. **Las que falten se piden en la solicitud S-2** (sección 16): este prompt **no modifica `src/shared`**.
 
-| Permiso | ADM | TEC | SOL | SUP | GAR | AUD | APR | GCA | GAC | GPR |
+Por cada pantalla de configuración existen tres niveles: `ver`, `editar` (guardar borrador) y `publicar`. Un usuario con `editar` pero sin `publicar` guarda borradores; otro con `publicar` los revisa y publica (separación de funciones, `MENUS_Y_PERFILES.md` §2.1 punto 9). Las transiciones de 1.3.3.2.2 pueden restringir aún más, nunca ampliar, lo que otorgan estas capacidades. Si `cambios` resolvió la granularidad por pantalla (`cambios:config:*`), sigue el mismo criterio; la Etapa 0 lo confirma.
+
+**Frontera de acceso a las pantallas de configuración:** los tres ítems de configuración existen **solo en el menú del Administrador**. Las capacidades `...config:ver` de otros perfiles habilitan únicamente la **lectura de la configuración publicada** (por API o por las consolas operativas), no una pantalla de configuración. Dar pantalla de configuración a otro perfil exige que el módulo `plataforma` añada la visibilidad en el menú (no es parte de esta entrega).
+
+**Matriz de capacidades de fábrica** (✔ = concedido; — = no). Columnas: ADM = Administrador · TEC = Técnico · SOL = Solicitante · SUP = Supervisor · GAR = Gestor de Área · AUD = Auditor · APR = Aprobador · GCA = Gestor de Cambios · GAC = Gestor de Activos y Configuración · GPR = Gestor de Problemas.
+
+| Capacidad | ADM | TEC | SOL | SUP | GAR | AUD | APR | GCA | GAC | GPR |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `config.problemas.formulario.ver` / `.flujo.ver` / `.relaciones.ver` | ✔ | — | — | ✔ | — | ✔ | — | — | — | ✔ |
-| `config.problemas.*.editar` | ✔ | — | — | — | — | — | — | — | — | — |
-| `config.problemas.*.publicar` | ✔ | — | — | — | — | — | — | — | — | — |
-| `config.problemas.importar_exportar` | ✔ | — | — | — | — | — | — | — | — | — |
-| `config.problemas.restaurar_fabrica` | ✔ | — | — | — | — | — | — | — | — | — |
-| `problemas.crear` | ✔ | ✔ | — | ✔ | — | — | — | — | — | ✔ |
-| `problemas.ver` | ✔ (todos) | ✔ (su grupo y asignados) | — | ✔ (todos) | — | ✔ (todos, solo lectura) | ✔ (los que le piden aprobar) | ✔ (los vinculados a RFC) | ✔ (los que afectan CI) | ✔ (todos) |
-| `problemas.editar` | ✔ | ✔ (asignados) | — | ✔ | — | — | — | — | — | ✔ |
-| `problemas.asignar` | ✔ | — | — | ✔ | — | — | — | — | — | ✔ |
-| `problemas.cerrar` | ✔ | — | — | ✔ | — | — | — | — | — | ✔ |
-| `problemas.reabrir` / `problemas.cancelar` | ✔ | — | — | ✔ | — | — | — | — | — | ✔ |
-| `problemas.prioridad_manual` | ✔ | — | — | ✔ | — | — | — | — | — | ✔ |
-| `problemas.aprobar` (riesgo aceptado, cierre de problema mayor) | ✔ | — | — | ✔ | — | — | ✔ | — | — | — |
-| `problemas.rfc.crear` | ✔ | ✔ (asignados) | — | ✔ | — | — | — | — | — | ✔ |
-| `problemas.auditoria.ver` | ✔ | — | — | ✔ | — | ✔ | — | — | — | ✔ |
-| `kedb.ver` | ✔ | ✔ | ✔ (solo si la audiencia incluye Autoservicio) | ✔ | — | ✔ | — | ✔ | ✔ | ✔ |
-| `kedb.publicar` | ✔ | — | — | — | — | — | — | — | — | ✔ |
+| `problemas:config:ver` (formulario / flujo / relaciones) | ✔ | — | — | ✔ | — | ✔ | — | — | — | ✔ |
+| `problemas:config:editar` | ✔ | — | — | — | — | — | — | — | — | — |
+| `problemas:config:publicar` | ✔ | — | — | — | — | — | — | — | — | — |
+| `problemas:config:importar-exportar` | ✔ | — | — | — | — | — | — | — | — | — |
+| `problemas:config:restaurar` | ✔ | — | — | — | — | — | — | — | — | — |
+| `problemas:crear` | — | ✔ | — | ✔ | — | — | — | — | — | ✔ |
+| `problemas:ver` | ✔ (todos) | ✔ (su grupo y asignados) | — | ✔ (todos) | — | ✔ (todos, solo lectura) | ✔ (los que le piden aprobar) | ✔ (los vinculados a RFC) | ✔ (los que afectan CI) | ✔ (todos) |
+| `problemas:editar` | — | ✔ (asignados) | — | ✔ | — | — | — | — | — | ✔ |
+| `problemas:asignar` | — | — | — | ✔ | — | — | — | — | — | ✔ |
+| `problemas:cerrar` | — | — | — | ✔ | — | — | — | — | — | ✔ |
+| `problemas:reabrir` / `problemas:cancelar` | — | — | — | ✔ | — | — | — | — | — | ✔ |
+| `problemas:prioridad-manual` | — | — | — | ✔ | — | — | — | — | — | ✔ |
+| `problemas:aprobar` (riesgo aceptado, cierre de problema mayor) | — | — | — | — | — | — | ✔ | — | — | — |
+| `problemas:rfc-crear` | — | ✔ (asignados) | — | ✔ | — | — | — | — | — | ✔ |
+| `problemas:auditoria:ver` | ✔ | — | — | ✔ | — | ✔ | — | — | — | ✔ |
+| `kedb:ver` | ✔ | ✔ | ✔ (solo si la audiencia incluye Autoservicio) | ✔ | — | ✔ | — | ✔ | ✔ | ✔ |
+| `kedb:publicar` | — | — | — | — | — | — | — | — | — | ✔ |
 
-Notas: el perfil **Gestor de Área** no tiene acceso a este módulo por defecto (se puede otorgar desde 1.1.2). Los perfiles se resuelven con el mecanismo de permisos que ya usa el proyecto; si ese mecanismo no maneja permisos por acción, repórtalo en la Etapa 0.
+**Notas:**
+- **Ajustes frente a la v2.0 por la segregación de funciones vigente** (`MENUS_Y_PERFILES.md` §2.1): el **Administrador configura y consulta, pero no opera** (sin `crear`, `editar`, `asignar`, `cerrar`, `rfc-crear`, `kedb:publicar`); el cierre de un problema mayor y la aceptación de riesgo los dicta el **Aprobador** (el Gestor de Problemas **no** acepta su propio riesgo mayor). Si la matriz real del código (`CAPACIDADES_POR_PERFIL`) difiere, repórtalo en la Etapa 0 en lugar de sobrescribirla.
+- El Auditor es de **solo lectura**: nunca recibe capacidades de escritura.
+- El perfil **Gestor de Área** no tiene acceso a este módulo por defecto.
+- Mapeo con lo existente: `problemas:gestionar` cubre hoy las capacidades operativas de `problemas:*`; la Etapa 0 indica qué parte de la matriz ya está cubierta y qué entra en la solicitud S-2.
 
 ---
 
@@ -1228,63 +1292,64 @@ Notas: el perfil **Gestor de Área** no tiene acceso a este módulo por defecto 
 - *Problema mayor:* lo anterior + Convocar sesión de análisis (obligatoria) + Informe ejecutivo + Revisión del problema (obligatoria, bloquea *Cerrar*).
 - *Cierre:* Verificar que no hay recurrencia (a N días) → Actualizar CMDB → Publicar/actualizar conocimiento.
 
-**Eventos de dominio que este módulo emite (para plantillas y canales de 1.6.1):**
+**Eventos de dominio que este módulo emite (para plantillas y canales de *Plantillas de correo y otros canales*):**
 `problema.registrado`, `problema.asignado`, `problema.reasignado`, `problema.estado_cambiado`, `problema.causa_raiz_identificada`, `problema.error_conocido_publicado`, `problema.cambio_solicitado`, `problema.objetivo_en_riesgo`, `problema.objetivo_vencido`, `problema.escalado`, `problema.resuelto`, `problema.cerrado`, `problema.reabierto`, `problema.cancelado`, `problema.revision_pendiente`, `problema.mayor_detectado`, `kedb.publicado`, `kedb.revision_proxima`, `kedb.retirado`, `configuracion.publicada`.
 
-**Métricas que los datos deben permitir (para 2.1 y 2.2):** problemas abiertos por estado/prioridad/categoría · tiempo medio hasta diagnóstico y hasta resolución · % de problemas con causa raíz identificada · % con workaround publicado · problemas proactivos vs reactivos · incidentes recurrentes asociados a problemas abiertos · incidentes evitados tras resolución · errores conocidos vigentes y su uso · % de objetivos cumplidos · reaperturas · problemas mayores y % con revisión completada.
+**Métricas que los datos deben permitir (para `Reportes de problemas` y `Tableros`):** problemas abiertos por estado/prioridad/categoría · tiempo medio hasta diagnóstico y hasta resolución · % de problemas con causa raíz identificada · % con workaround publicado · problemas proactivos vs reactivos · incidentes recurrentes asociados a problemas abiertos · incidentes evitados tras resolución · errores conocidos vigentes y su uso · % de objetivos cumplidos · reaperturas · problemas mayores y % con revisión completada.
 
 ---
 
 ## 11. Hechos confirmados del sistema existente (no los vuelvas a preguntar)
 
-### 11.0 Hechos de arquitectura (de `ARQUITECTURA_Y_JERARQUIA_SRC.md`)
-- **Framework:** Next.js 14 (App Router). Las pantallas viven en `src/app/plataforma/` (grupo de rutas protegido con barra lateral `Menu.tsx` y selector de perfil `SelectorPerfilActivo.tsx`); la API en `src/app/api/` (119 endpoints).
-- **Sesión:** cookie `sesion_tickets` validada por `src/middleware.ts`; JWT en `src/lib/auth.ts`; perfil activo conmutable en caliente.
-- **Menú:** `/api/menu` + `src/lib/menu.ts` (`construirArbolMenu()`); `Menu.tsx` pinta el árbol que el perfil activo tiene autorizado.
-- **Base de datos:** pool `pg` en `src/lib/db.ts` (PostgreSQL en Supabase); sin acceso directo desde el cliente.
-- **Validaciones:** `src/lib/validaciones.ts` (DNI, RUC, nombres, correos RFC 5322, códigos, SLAs, adjuntos; retorna `{ valido, mensaje? }`) y `src/components/ui/AlertaCampo.tsx` (solo errores en rojo, `role="alert"`).
-- **SLA y matriz de prioridad:** `src/lib/sla.ts`; edición en `1.2.5 Objetivos SLA` (`/admin/servicios/sla`, componente `MatrizPrioridadSla.tsx`, API `/api/admin/sla/matriz`). Es la ubicación probable de la matriz impacto × urgencia compartida; confírmalo en la Etapa 0.
-- **Categorías de servicios:** módulo `src/modules/admin/categorias/` y componente `GestionCategorias.tsx` (validación de unicidad de nombre y código; regla "SLA respuesta < SLA resolución").
-- **Tickets:** el detalle `/tickets/[id]` usa presentadores por rol (`VistaTicketAdministrador`, `...Consumidor`, `...Gobernanza`, `...Operador`, `...Supervisor`) y secciones (`CockpitTemporizadorSla`, `StreamChatPublico`, `StreamNotasInternas`, `PanelInfraestructuraCi`, `TarjetaAprobacionSod`, `TarjetaCalificacionCsat`).
-- **Problemas:** `src/components/itsm/ProblemasWorkspace.tsx`, `/problemas`, `/problemas/kedb`.
-- **Héredado a revisar:** `/admin/rfc` y `src/components/itsm/ConfiguracionRfc.tsx` (configuración antigua de RFC) conviven con `/admin/procesos/cambios`.
-
+### 11.0 Hechos de arquitectura (de `ARQUITECTURA_Y_CODIGO.md` y `MENUS_Y_PERFILES.md`, vigentes al 2026-10-20/21)
+- **Framework y alcance:** Next.js 14.2 (App Router), React 18, TypeScript 5.5. 17 módulos en `src/modules/`, 207 route handlers en `src/app/api`, 227 páginas bajo `src/app/plataforma`, 126 tablas base y 1 vista (`vista_ticket`) en `public`, 38 migraciones.
+- **Vertical slice:** cada funcionalidad vive completa en `src/modules/<modulo>/` (servicios, controladores, vistas, componentes, tipos). `src/app` es delgado (cascarones). Contratos públicos: `index.ts` (servidor) y `ui.ts` (cliente). Prohibidos los imports profundos entre módulos; `shared` es hoja y nunca importa módulos.
+- **Módulo `problemas`:** 85 archivos; contrato `index.ts`; dominio "Problemas, RCA, KEDB y configuración del proceso"; dueño Alexis. Rutas: `/plataforma/problemas/**`, `/plataforma/gestor-problemas/**`; API `/api/problemas`, `/api/gestor-problemas` y la de configuración `/api/admin/problemas/*`.
+- **Sesión:** JWT en cookie `sesion` (`httpOnly`, 8 h); pre-sesión de 5 min para elegir perfil cuando el usuario tiene varios. `src/middleware.ts` solo comprueba que la cookie exista.
+- **Guardas:** `src/shared/lib/api-auth.ts` (`sesionConCapacidad`, `autorizarApi`, `obtenerSesionDeRequest`) y `src/shared/lib/page-auth.ts` (`exigirCapacidadPagina`, `exigirMenuPagina`). Errores: `ErrorDominio` y `respuestaError` (`src/shared/lib/errores.ts`).
+- **Base de datos:** pool `pg` y `query` parametrizado en `src/shared/lib/db.ts` (PostgreSQL en Supabase, pooler con SSL). Sin acceso desde el cliente.
+- **Menú:** catálogo único `opciones_menu` + visibilidad N:M `opciones_menu_perfiles`; árbol en `src/shared/lib/menu.ts`; doce raíces (entre ellas **Problemas**); el menú también autoriza páginas. El Administrador gestiona la estructura en `/plataforma/admin/menu`.
+- **Modelo C de tickets:** `ticket` (núcleo) + `ticket_incidente` (`id_problema`, `es_incidente_mayor`, `causado_por_cambio_id`) + `ticket_solicitud`, más `vista_ticket`. El núcleo `tickets` está **congelado**: cualquier cambio requiere revisión del Tech Lead; está prohibido un segundo servicio de prioridad.
+- **Tablas del dominio ya existentes** (verifica estructura en la Etapa 0): `problema` (`id_ci_afectado`, `id_estado`), `problema_incidente`, `problema_analisis`, `error_conocido`; además `cambio.id_problema_origen`, `articulo_conocimiento` (problema de origen), `servicio_catalogo` (con criticidad) y `elemento_configuracion` (CI).
+- **Validaciones y componentes de UI transversales:** antes en `src/lib/validaciones.ts`, `src/lib/security.ts` y `src/components/ui/AlertaCampo.tsx`; con la migración están en `src/shared/` o en módulos. **Etapa 0 los ubica.** Si un validador del catálogo 3C no existe, créalo **dentro del módulo** (`configuracion/validaciones/`), no en `shared`.
+- **SLA y matriz de prioridad:** módulo `servicios` ("Catálogo, categorías, SLA, matriz de prioridad y workflow"); edición en `Objetivos SLA` (`/plataforma/admin/servicios/sla`, antes componente `MatrizPrioridadSla.tsx`, API `/api/admin/sla/matriz`); cálculo de prioridad vía `calcularPrioridadITIL` (contrato de `tickets`). El motor de SLA con calendarios hábiles se ubica en la Etapa 0 (antes `src/lib/sla.ts`).
+- **Detalle de ticket:** presentadores por rol y secciones (`CockpitTemporizadorSla`, `StreamChatPublico`, `StreamNotasInternas`, `PanelInfraestructuraCi`, `TarjetaAprobacionSod`, `TarjetaCalificacionCsat`); el detalle de problema usa `PresentadorProblemaGestor` (contrato `@/modules/tickets/ui`).
+- **Heredado a revisar:** la configuración antigua de RFC (`/admin/rfc`, `ConfiguracionRfc.tsx`) puede convivir con `/plataforma/admin/procesos/cambios/*`; pertenece a `cambios`, no se toca aquí.
+- **Deuda técnica conocida:** 100 controladores con JWT manual, 113 páginas sin guarda de página, `db/schema.sql` incompleto (la fuente de verdad es la base viva + migraciones + seed). **No amplíes la deuda**: tu código nuevo usa las guardas compartidas.
 
 | Tema | Lo confirmado |
 |---|---|
-| Stack | Next.js 14 (App Router) y PostgreSQL en Supabase (pool `pg` de `src/lib/db.ts`). Tienes acceso completo al código, la base de datos, el frontend y el backend. |
-| Matriz impacto × urgencia | Existe, calcula P1 a P4 al crear incidentes. Ubicación probable: `1.2.5 Objetivos SLA` (`/admin/servicios/sla`, `MatrizPrioridadSla.tsx`, API `/api/admin/sla/matriz`) y cálculo en `src/lib/sla.ts`; confírmalo en la Etapa 0. Niveles: Alta / Media / Baja. |
-| 1.2.5 Objetivos SLA | Contiene solo la "Matriz Institucional de Tiempos por Prioridad" (horas de primera respuesta y resolución total por prioridad). |
-| SLA por servicio | Cada servicio de incidentes/solicitudes conserva su propio SLA editable, pero el tiempo efectivo de un ticket lo da su prioridad. **No tocar en este prompt** (queda pendiente de revisión por separado). |
-| Formulario de Incidentes | Servicio del catálogo y panel de SLAs asociados · Título · Descripción con texto guía · Urgencia · Impacto · Prioridad calculada (matriz ITIL 4, P1–P4) · Elemento CMDB (opcional, solo ítems bajo custodia del usuario) · Campos adicionales visibles para la prioridad simulada · Carga fija de evidencias. |
-| Creador de campos | Existe; se pueden agregar campos al formulario de Incidentes. Se reutiliza para problemas. |
-| Calendarios y feriados | `src/lib/sla.ts` ya usa calendarios hábiles; se reutiliza su tabla de feriados y no se crea nada nuevo en este prompt. |
-| Turnos y ausencias de técnicos | **No existen datos.** Se crea `tecnico_ausencias` (sección 12). |
-| Perfiles | Administrador, Técnico, Solicitante, Supervisor, Gestor de Área, Auditor, Aprobador, Gestor de Cambios, Gestor de Activos y Configuración. **Falta** Gestor de Problemas (se crea). |
-| Datos que no existan | Se agregan a la base de datos mediante migraciones (sección 12). |
+| Matriz impacto × urgencia | Existe y calcula P1 a P4 al crear incidentes; vive en el módulo `servicios` (pantalla `Objetivos SLA`) y se consume con `calcularPrioridadITIL`. Niveles: Alta / Media / Baja. Confirma archivo y tabla en la Etapa 0. |
+| Objetivos SLA | Contiene la "Matriz Institucional de Tiempos por Prioridad" (horas de primera respuesta y resolución total por prioridad). |
+| SLA por servicio | Cada servicio de incidentes/solicitudes conserva su propio SLA editable, pero el tiempo efectivo de un ticket lo da su prioridad. **No tocar en este prompt.** |
+| Formulario de Incidentes | Servicio del catálogo y panel de SLAs asociados · Título · Descripción con texto guía · Urgencia · Impacto · Prioridad calculada (matriz ITIL 4, P1–P4) · Elemento CMDB (opcional, solo ítems bajo custodia del usuario) · Campos adicionales · Carga fija de evidencias. |
+| Creador de campos | Existe (módulo `tickets`); se pueden agregar campos al formulario de Incidentes. Se reutiliza para problemas **por contrato** (solicitud S-1 si no está publicado). |
+| Calendarios y feriados | El motor de SLA ya usa calendarios hábiles; se reutiliza su tabla de feriados y no se crea nada nuevo. |
+| Turnos y ausencias de técnicos | El módulo `organizacion` declara "ausencias" en su dominio. **Verifica en la Etapa 0** si existe `tecnico_ausencias` o equivalente; si no existe, solicitud S-5. |
+| Perfil Gestor de Problemas | **Existe** (id 10) con consola en `/plataforma/gestor-problemas/*`. |
+| Datos del módulo que no existan | Se agregan con migraciones (sección 12). Los de otros módulos se solicitan (sección 16). |
 
-**Dependencias con otros módulos:**
+**Dependencias con otros módulos** (todas por contrato o solicitud; ninguna implica editar el módulo ajeno):
 
-| Con | Dependencia |
-|---|---|
-| 1.1.2 Perfiles y permisos | Crear perfil Gestor de Problemas y registrar los permisos de la sección 9. |
-| 1.2 Catálogo de servicios y 1.2.5 | Lista de servicios; bloque de solo lectura "Objetivos internos de Problemas" en 1.2.5. |
-| 1.3.1 Incidentes | Botón "Crear problema desde incidente", banner de vínculo, coincidencia de errores conocidos, resolución masiva/asistida, matriz compartida, editor de formulario y creador de campos. |
-| 1.3.4 Gestión de cambios (Prompt 2) | Origen = Problema en la RFC; sincronización de estados (8.4). |
-| 1.4.2 / 1.4.3 | Grupos resolutores, técnicos, niveles de soporte; nueva sección "Ausencias". |
-| 1.5 / CMDB (Prompt 3) | Selector de CI, criticidad, marcas de problema/error conocido en el CI. |
-| 1.6 Comunicaciones | Plantillas para los eventos de dominio de la sección 10. |
-| 1.7 Conocimiento | Plantilla y flujo de revisión de artículos. |
-| 1.8 Auditoría y retención | Registro de cambios de configuración y límites de adjuntos/borradores. |
-| 2 Reportes | Métricas de la sección 10. |
+| Con (módulo · pantalla) | Dependencia | Detalle en |
+|---|---|---|
+| `identidades` · Perfiles y permisos | Capacidades de la sección 9. | S-2 |
+| `servicios` · Catálogo de Servicios y Objetivos SLA | Lista de servicios y su criticidad; matriz de prioridad; bloque de solo lectura "Objetivos internos de Problemas" en `Objetivos SLA`. | S-3 |
+| `tickets` / `incidentes` · Incidentes | Botón "Crear problema desde incidente", banner de vínculo, coincidencia de errores conocidos, resolución asistida, editor de formulario y creador de campos. | S-1, S-4 |
+| `cambios` · Cambios (Prompt 2) | Origen = Problema en la RFC; sincronización de estados (8.4). | S-7 |
+| `organizacion` · Departamentos y grupos / Técnicos | Grupos resolutores, técnicos, niveles de soporte, ausencias. | S-5 |
+| `cmdb` / `activos` · Activos y CMDB (Prompt 3) | Selector de CI, clase y criticidad, marcas `Problema abierto` / `Error conocido vigente`, bloqueo de baja. | S-8 |
+| `plataforma` · Notificaciones, Auditoría, Retención | Plantillas y canales de los eventos de la sección 10; registro de cambios de configuración; límites de adjuntos y borradores. | S-6 |
+| `conocimiento` · Conocimiento | Plantilla y flujo de revisión de artículos derivados. | S-9 |
+| `reportes` · Reportes de problemas | Métricas de la sección 10 (el módulo `reportes` las lee de las tablas del módulo). | — |
 
 ---
 
 ## 12. Cambios de base de datos requeridos
 
-Principio: **verifica primero si existe (Etapa 0); si no existe, créalo mediante migración.** No dupliques tablas o columnas que ya estén.
+Principio: **verifica primero si existe (Etapa 0); si no existe y pertenece al módulo `problemas`, créalo mediante migración.** No dupliques tablas o columnas ya existentes ni toques tablas de otros módulos.
 
-**12.1 Tablas de configuración del módulo** (diseño libre, siguiendo las convenciones del proyecto):
+**12.1 Tablas de configuración del módulo** (prefijo sugerido `problema_config_*`; convenciones de la sección 0, regla 9):
 - Versiones de configuración por pantalla/pestaña: ámbito, número de versión, estado (borrador/publicada), snapshot `jsonb`, autor, motivo, fechas.
 - Catálogos: categorías de problema (2 niveles), orígenes, categorías de causa raíz, códigos de cierre, métodos de análisis, motivos de espera, de cancelación y de reapertura, con los atributos de 6.3.
 - Flujo: estados, transiciones, automatizaciones de transición.
@@ -1292,83 +1357,109 @@ Principio: **verifica primero si existe (Etapa 0); si no existe, créalo mediant
 - Tareas y paquetes de tareas; plantillas de problema; criterios de problema mayor y plantilla de revisión.
 - Parámetros de KEDB, vínculo con RFC, conocimiento y CI/servicios (8.3 a 8.6).
 - Objetivos de tiempo de problemas (7.4).
+- Bloqueo de edición concurrente (por pantalla/pestaña, con expiración a los 15 min).
 
-**12.2 Tablas operativas del problema** (verificar si ya existe algo): `problemas` (con secuencia `PRB-000001`), vínculo problema–incidente (con tipo de vínculo, quién y cuándo), problema–CI, problema–RFC, tareas, comentarios/bitácora, historial de cambios, adjuntos, revisión del problema, y `errores_conocidos` (secuencia `KE-000001`).
+**12.2 Tablas operativas del problema** (ya existen `problema`, `problema_incidente`, `problema_analisis`, `error_conocido`; **auditarlas y completarlas**, no recrearlas): secuencia `PRB-000001` sin saltos, vínculo problema–incidente (tipo de vínculo, quién y cuándo), problema–CI, problema–RFC, tareas, comentarios/bitácora, historial de cambios, adjuntos, revisión del problema y secuencia de errores conocidos (`KE-000001`). Todo lo que ya exista se conserva con sus datos.
 
-**12.3 Seguridad y personas:** perfil **Gestor de Problemas** y todos los permisos de la sección 9 como datos semilla; tabla **`tecnico_ausencias`** (`id`, `tecnico_id`, `desde`, `hasta`, `motivo`, `creado_por`, `creado_en`) con la sección mínima de UI en 1.4.3.
+**12.3 Seguridad y personas:** las capacidades de la sección 9 se declaran en `src/shared/lib/capacidades.ts` (**solicitud S-2**, no se edita aquí); el perfil Gestor de Problemas ya existe. Las **ausencias de técnicos** pertenecen a `organizacion` (**solicitud S-5**): este módulo solo las consulta por contrato. Con ausencias no disponibles, la opción "Considerar disponibilidad" (7.3) queda **deshabilitada con el aviso "Requiere el registro de ausencias"**.
 
-**12.4 Columnas que probablemente falten (verifica y agrega):**
-- Servicio: marca de criticidad (`es_critico` o nivel de criticidad) — usada en 7.8 y 8.6.
-- CI: `clase` y `criticidad` (coordinar con el Prompt 3 para no duplicar).
-- Incidente: `es_incidente_mayor`, `codigo_resolucion`, y la referencia al problema (columna o tabla puente).
-- Entidad `problema` en la definición de campos personalizados.
-- Registro de eventos de dominio de la sección 10 (outbox o mecanismo de eventos ya existente).
+**12.4 Columnas de otros módulos que probablemente falten (verifica y, si faltan, solicítalas; no las agregues):**
+- `servicio_catalogo`: marca/nivel de criticidad (usado en 7.8 y 8.6) — parece existir; confirmar.
+- `elemento_configuracion`: `clase` y `criticidad` (coordinar con el Prompt 3).
+- `ticket_incidente`: `id_problema` y `es_incidente_mayor` **existen** (Modelo C); verificar `codigo_resolucion`. Referencia incidente–problema múltiple vía `problema_incidente`.
+- Entidad `problema` en la definición de campos personalizados (módulo `tickets`; S-1).
+- Registro de eventos de dominio (outbox o mecanismo existente en `plataforma`; S-6).
 
-**12.5 Búsqueda y rendimiento:** índices en incidentes por (servicio, categoría, CI, fecha de creación) para las reglas de umbral; búsqueda de texto completo en español y similitud (`to_tsvector('spanish', …)`, `pg_trgm`) para detectar duplicados al registrar problemas y para sugerir errores conocidos.
+**12.5 Búsqueda y rendimiento:** índices en `ticket`/`vista_ticket` por (servicio, categoría, CI, fecha de creación) para las reglas de umbral **solo si son consultas del módulo y la tabla es de lectura acotada**; si el índice requiere tocar el esquema de `tickets`, solicítalo (S-4). Búsqueda de texto completo en español y similitud (`to_tsvector('spanish', …)`, `pg_trgm`) para detectar duplicados al registrar problemas y para sugerir errores conocidos (índices sobre tablas del propio módulo).
 
-**12.6 Datos semilla:** todo lo de la sección 10, cargado con migración idempotente (reejecutarla no duplica registros).
+**12.6 Datos semilla:** todo lo de la sección 10, cargado con migración idempotente (reejecutarla no duplica registros) y reflejado en `db/seed.sql`.
 
-**12.7 Tareas programadas:** evaluación de reglas de umbral, escalamientos, revisión periódica de KEDB, reanudación de problemas en espera, cierre automático tras *Resuelto*. Usa el mecanismo de jobs que ya exista en el proyecto; si no existe ninguno, propón (no implementes sin aprobación) `pg_cron` de Supabase, Edge Functions o cron de Next.js.
+**12.7 Tareas programadas:** evaluación de reglas de umbral, escalamientos, revisión periódica de KEDB, reanudación de problemas en espera, cierre automático tras *Resuelto*. Usa el mecanismo de jobs que ya exista en el proyecto (la Etapa 0 lo busca; puede estar en `plataforma` u `operacion`); si no existe ninguno, propón (no implementes sin aprobación) `pg_cron` de Supabase, Edge Functions o cron de Next.js. La lógica del job vive en `configuracion/motor/`; el disparador, si es de infraestructura, se solicita.
 
 ---
 
 ## 13. Criterios de aceptación
 
-1. El menú muestra `1.3.3.1 Configuración de formulario`, `1.3.3.2` y `1.3.3.3` con las pestañas numeradas de la sección 2.3.
+1. El menú del Administrador conserva, bajo la raíz **Problemas**, las tres pantallas de configuración con las ventanas internas de la sección 2.2; **no se crearon, movieron ni renombraron opciones de menú**.
 2. Todas las pestañas usan el patrón común (borrador, vista previa, publicar con diff y motivo, versionado, restauración, importación/exportación, bloqueo concurrente).
-3. El editor de formulario y el creador de campos de problemas son **el mismo componente** que usa Incidentes, extendido; Incidentes sigue funcionando igual que antes.
+3. El editor de formulario y el creador de campos de problemas **son el mismo componente que usa Incidentes** cuando `tickets` lo publica por contrato (S-1); si aún no está publicado, existe un adaptador documentado, **sin copias** del editor dentro de `problemas`. Incidentes sigue funcionando igual que antes.
 4. Un administrador puede ocultar un campo no bloqueado, publicar, y el campo desaparece del formulario de registro sin perder datos de tickets existentes.
 5. Un campo bloqueado (Título, Descripción, Servicio, Impacto, Urgencia) **no** puede ocultarse ni hacerse opcional.
 6. Una regla condicional "Origen = Incidente(s) → Incidentes relacionados obligatorio" funciona en el formulario real.
-7. Con `Usar matriz propia para problemas` apagado, un problema con cierto impacto y urgencia recibe **exactamente la misma prioridad** que un incidente con esos valores. No existe una segunda copia de la matriz.
-8. Con matriz propia encendida y publicada, el recálculo de problemas abiertos respeta las prioridades manuales.
-9. El panel de objetivos de tiempo del formulario muestra los valores de 1.3.3.2.4 para la prioridad calculada, y `1.2.5` muestra el bloque de solo lectura de Problemas sin alterar la matriz de Incidentes y Solicitudes.
+7. Con `Usar matriz propia para problemas` apagado, un problema con cierto impacto y urgencia recibe **exactamente la misma prioridad** que un incidente con esos valores (se calcula con el servicio compartido, no con una copia). No existe una segunda copia de la matriz.
+8. Con matriz propia encendida y publicada (sujeta a la pregunta abierta 1), el recálculo de problemas abiertos respeta las prioridades manuales.
+9. El panel de objetivos de tiempo del formulario muestra los valores de 1.3.3.2.4 para la prioridad calculada, y el módulo expone `BloqueObjetivosProblemas` (en `ui.ts`) listo para montarse en `Objetivos SLA` (S-3) sin alterar la matriz de Incidentes y Solicitudes.
 10. Un valor de lista en uso no puede eliminarse, solo desactivarse; los valores 🔒 no pueden eliminarse.
 11. Un estado con tickets no puede desactivarse sin asistente de migración.
 12. El validador de flujo bloquea la publicación si hay estados inalcanzables, sin salida, o sin camino a un final.
 13. Una transición con campos obligatorios abre el modal correcto y no permite ejecutar sin completarlos.
-14. La asignación automática aplica la primera regla que coincide; el simulador reproduce el resultado real; la opción de disponibilidad omite a los técnicos con ausencia vigente.
+14. La asignación automática aplica la primera regla que coincide; el simulador reproduce el resultado real; la opción de disponibilidad omite a los técnicos con ausencia vigente (o queda deshabilitada con aviso si S-5 no está atendida).
 15. Los relojes de diagnóstico y resolución se pausan o corren según cada estado y usan la misma convención de cómputo que el motor de SLA existente.
 16. Una regla de umbral simulada muestra los grupos de incidentes detectados antes de activarse.
-17. Al cerrar un problema con política "Resolución asistida", se muestra la lista de incidentes abiertos vinculados y se exige una decisión.
+17. Al cerrar un problema con política "Resolución asistida", se muestra la lista de incidentes abiertos vinculados y se exige una decisión (la interfaz sobre el incidente la aporta S-4; el servicio y el contrato existen en `problemas`).
 18. Promover a error conocido valida los requisitos configurados y lista lo que falta.
 19. Un problema con RFC rechazada vuelve al estado configurado y se crea la tarea indicada.
 20. Un problema mayor no puede cerrarse sin completar la revisión cuando así se configuró.
-21. Toda acción de configuración queda en `1.8.1 Auditoría de cambios` con usuario, antes/después y motivo.
-22. Existe el perfil **Gestor de Problemas** y la matriz de permisos de la sección 9 se cumple; un usuario con `editar` pero sin `publicar` no ve habilitado el botón Publicar.
-23. Existe `tecnico_ausencias` con su sección mínima en 1.4.3.
+21. Toda acción de configuración queda en `Plataforma › Auditoría de cambios de configuración` (`/plataforma/admin/auditoria-sistema`) con usuario, antes/después y motivo.
+22. Las capacidades de la sección 9 están declaradas (S-2) y se cumplen; un usuario con `problemas:config:editar` pero sin `problemas:config:publicar` no ve habilitado el botón Publicar. El Administrador no tiene capacidades operativas (SoD).
+23. Las ausencias de técnicos se consumen del módulo `organizacion` por contrato (S-5); el módulo `problemas` no crea ni modifica esa tabla.
 24. El formulario de registro y el ticket reflejan exactamente las secciones 4 y 5 con los valores de fábrica.
-25. Ninguna ventana interna de las pantallas 1.3.3.x repite un ítem del menú; las ventanas internas existentes están en `?vista=` y no alteran el ítem activo del menú (3A).
+25. Ninguna ventana interna de las pantallas 1.3.3.x repite un ítem del menú; las ventanas internas existentes están en `?vista=` y no alteran el ítem activo del menú (3A). La página padre `/plataforma/admin/procesos/problemas` redirige a `/formulario`.
 26. Los botones y las acciones de fila usan los íconos de 3B.4, con tooltip y `aria-label`, y el estilo de botones de la sección 3B.1.
 27. Todos los campos de los formularios y de las pantallas de configuración tienen validación en tiempo real con los validadores de 3C; **no aparece ningún indicador de éxito**; los errores usan `AlertaCampo`.
 28. Cambiar el valor de un selector que gobierna otro campo (por ejemplo tipo de documento) cambia al instante el validador, la máscara y el `maxLength` del campo dependiente.
 29. El servidor repite las mismas validaciones y devuelve `400` con `{ campo, mensaje }`, que la interfaz muestra en el campo.
-30. Los modales y la barra de acciones comunes existen una sola vez y los usan los módulos de problemas, cambios y activos; los `Iconos.tsx` duplicados fueron unificados.
+30. Los modales y la barra de acciones comunes existen **una sola vez dentro de `problemas`** (`configuracion/compartido/`); se eliminaron las copias duplicadas dentro del módulo. La promoción a `shared/components` y la unificación con `cambios` y `activos` se solicita al Tech Lead (S-10).
+31. **Perímetro:** el diff de la entrega solo toca `src/modules/problemas/**`, los cascarones de `src/app/plataforma/admin/procesos/problemas/**` y `src/app/api/admin/problemas/**`, y `db/migrations/` + `db/seed.sql` (tablas del módulo). No hay ediciones en otros módulos, en `src/shared`, en `middleware.ts`, en `next.config.js` ni en el menú.
+32. **Contratos:** no hay imports profundos hacia otros módulos; los controladores usan `sesionConCapacidad`; los `page.tsx` usan `exigirCapacidadPagina`; no existe ninguna guarda propia ni verificación manual de JWT en código nuevo.
+33. **Calidad:** `npx tsc --noEmit` y `npm run build` sin errores; migraciones idempotentes aplicadas en base limpia y en base existente; seed cargado; humo por perfil sin 404/403 no deliberados; todas las solicitudes pendientes quedan en `docs/SOLICITUDES_A_OTROS_MODULOS.md`.
 
 ---
 
 ## 14. Etapa 0 — Reconocimiento obligatorio y preguntas abiertas
 
-**Punto de partida de la Etapa 0 (según el árbol de archivos):** el informe debe incluir una **tabla de diferencias** entre este documento y lo ya implementado en `/admin/procesos/problemas/*` (secciones 2.2 y 2.3), listando por cada ventana interna: existe / falta / incompleta, qué validadores (3C) y qué íconos (3B) le faltan, y qué elementos duplican ítems del menú (3A).
+**Punto de partida de la Etapa 0:** el informe debe incluir una **tabla de diferencias** entre este documento y lo ya implementado en `/plataforma/admin/procesos/problemas/*` y `src/modules/problemas` (secciones 2.2 y 2.3), listando por cada ventana interna: existe / falta / incompleta, qué validadores (3C) y qué íconos (3B) le faltan, qué elementos duplican ítems del menú (3A) y **dónde está cada archivo hoy** (¿ya en `src/modules/problemas` o todavía en `src/app`/`src/lib`/`src/components`?).
 
-**Antes de escribir cualquier código**, revisa el repositorio y la base de datos y entrégame un **informe** (sin modificar nada) con:
+**Antes de escribir cualquier código**, revisa el repositorio y la base de datos y entrégame un **informe** (sin modificar nada), guardado en `src/modules/problemas/docs/INFORME_ETAPA_0.md` y resumido en el chat, con:
 
-1. **Matriz de prioridad:** dónde está (archivo/tabla/función), cómo se consume al crear incidentes, y si tiene pantalla de edición.
-2. **Motor de SLA:** dónde está, y si cuenta horas corridas u hábiles. Cómo se pausan y reanudan los relojes hoy.
-3. **Componentes reutilizables:** editor de formulario de 1.3.1.1, creador de campos, constructor de condiciones o reglas (si hay), motor de estados de 1.3.1.2, sistema de notificaciones (1.6), jobs programados, y componentes de UI (tablas, modales, arrastrar-y-soltar, selectores).
-4. **Perfiles y permisos:** cómo se almacenan y cómo se verifican en `src/middleware.ts`, `src/lib/menu.ts`, `src/lib/page-auth.ts` y los Route Handlers.
-5. **Tablas existentes** de servicios, usuarios, técnicos, grupos, niveles de soporte, incidentes, CMDB, errores conocidos, conocimiento y auditoría.
-6. **Qué de la sección 12 ya existe y qué falta**, con el plan de migraciones propuesto.
-7. **Riesgos o conflictos** detectados (por ejemplo, componentes que dependan de comportamientos que esta spec cambia).
+1. **Estructura actual de `src/modules/problemas`:** carpetas, `index.ts` (qué exporta), si existe `ui.ts`, controladores y servicios existentes, y dónde cabe la carpeta `configuracion/` (o la equivalente ya existente).
+2. **Matriz de prioridad:** dónde está (archivo/tabla/función), cómo se consume `calcularPrioridadITIL` al crear incidentes, qué contrato de `servicios`/`tickets` permite usarla desde `problemas` y si admite una matriz alternativa por parámetro.
+3. **Motor de SLA:** en qué módulo está, si cuenta horas corridas u hábiles, y cómo se pausan y reanudan los relojes hoy.
+4. **Componentes reutilizables y su visibilidad de contrato:** editor de formulario y creador de campos de Incidentes (¿publicados en `@/modules/tickets/ui`?), constructor de condiciones o reglas (si hay), motor de estados de `Flujo de estados y acciones`, sistema de notificaciones y emisión de eventos de `plataforma`, jobs programados, y componentes de UI compartidos (`AlertaCampo`, `Iconos`, `Boton`, tablas, modales, arrastrar-y-soltar, selectores) con su ruta real en `src/shared`.
+5. **Capacidades y perfiles:** lista completa de capacidades del dominio en `src/shared/lib/capacidades.ts`, cómo `CAPACIDADES_POR_PERFIL` asigna el dominio a los 10 perfiles, qué guardas usan hoy los controladores de `problemas` (`sesionConCapacidad` vs `verificarTokenSesion`) y la **lista exacta de capacidades que faltan** para la sección 9 (diff propuesto para S-2).
+6. **Tablas existentes** de servicios, usuarios, técnicos, grupos, niveles de soporte, ausencias, incidentes (Modelo C), CMDB, errores conocidos, conocimiento y auditoría, con las columnas relevantes.
+7. **Qué de la sección 12 ya existe y qué falta**, con el plan de migraciones propuesto (número de migración posterior a la última existente).
+8. **Solicitudes S-1 a S-10 (sección 16):** para cada una, si ya está atendida, parcialmente atendida o pendiente, y la **degradación** que aplicarás mientras tanto.
+9. **Riesgos o conflictos** detectados (por ejemplo, componentes que dependan de comportamientos que esta spec cambia, imports profundos existentes en `src/app` hacia vistas del módulo, o rutas legadas con alias).
 
 Después **detente y espera mi aprobación** para iniciar la Etapa A.
 
 **Preguntas abiertas que quedan** (responde con lo que encuentres en el código; pregúntame solo lo que no puedas determinar):
-1. Si la matriz impacto × urgencia está fija en código y sin pantalla de edición: ¿apruebo migrarla a una tabla con pantalla de edición?
-2. ¿Cómo se identifica hoy un "incidente mayor" (si es que existe el concepto)?
-3. ¿El motor de SLA de incidentes admite pausas por estado? (Determina cómo reutilizarlo para los dos relojes de problemas.)
+1. **Matriz propia de problemas:** la arquitectura prohíbe un segundo servicio de prioridad y `calcularPrioridadITIL` pertenece al núcleo congelado `tickets`. ¿Se aprueba que `Usar matriz propia para problemas` opere como una **tabla de anulación del propio módulo** (solo lectura de celda impacto × urgencia, sin motor paralelo), o se pospone esa opción hasta que `tickets`/`servicios` acepten una matriz por parámetro? Si la matriz compartida está fija en código y sin pantalla de edición, ¿apruebo proponer su migración a tabla al módulo `servicios`?
+2. ¿Cómo se identifica hoy un "incidente mayor" para los criterios de problema mayor? (`ticket_incidente.es_incidente_mayor` existe; confirmar el flujo de la sala de crisis.)
+3. ¿El motor de SLA admite pausas por estado? (Determina cómo reutilizarlo para los dos relojes de problemas.)
+4. ¿Se aprueba agregar una suite de pruebas mínima (por ejemplo para SLA, SoD y reglas de configuración) o las pruebas se limitan a funciones puras y checklist de humo?
 
 ---
 
 ## 15. Fuera de alcance de este prompt
-Gestión de cambios (RFC) y sus formularios → Prompt 2 · Activos/CMDB → Prompt 3 · Pantallas operativas del módulo (bandejas, tableros, reportes) · Modificar los SLA por servicio de incidentes y solicitudes · Calendarios y feriados · Integraciones externas de monitoreo (solo se prevé el origen "Evento de monitoreo").
+Cambios (RFC) y sus formularios → Prompt 2 · Activos/CMDB → Prompt 3 · Pantallas operativas del módulo (bandejas, consolas de Técnico, Supervisor, Aprobador y Gestor de Problemas, tableros) y reportes (`/plataforma/reportes/problemas`) · Cualquier cambio en otro módulo (se solicita; sección 16) · Cambios al menú o a la visibilidad por perfil · Modificar los SLA por servicio de incidentes y solicitudes · Calendarios y feriados · Integraciones externas de monitoreo (solo se prevé el origen "Evento de monitoreo") · Migración de capacidades a la tabla `perfil_capacidades`.
+
+---
+
+## 16. Solicitudes a otros módulos (el módulo `problemas` no las implementa)
+
+Formato de cada solicitud en `src/modules/problemas/docs/SOLICITUDES_A_OTROS_MODULOS.md`: **id · módulo destino (dueño) · qué se necesita · contrato propuesto · comportamiento mientras no exista**. El módulo `problemas` entrega su parte (servicio, contrato, componente) y deja el consumo a cargo del módulo destino.
+
+| Id | Módulo destino (dueño) | Qué se necesita | Contrato propuesto | Mientras no exista (degradación) |
+|---|---|---|---|---|
+| S-1 | `tickets` (Miguel; núcleo congelado, aprueba el Tech Lead) | Publicar el editor de formularios y el creador de campos personalizados con soporte para la entidad `problema` (más adelante `cambio` y `activo`). | `@/modules/tickets/ui` (componente reutilizable) + servicio de definición de campos. | `problemas` define un **adaptador** (`CamposAdaptador`) con la interfaz que consumirá el editor y no copia el editor; las ventanas Campos y Campos personalizados quedan marcadas "pendiente de S-1" salvo lo ya existente. |
+| S-2 | `shared` (Tech Lead) | Declarar en `src/shared/lib/capacidades.ts` las capacidades de la sección 9 y actualizar `CAPACIDADES_POR_PERFIL`. | Constantes `CAPACIDADES.PROBLEMAS_*` y `KEDB_*`. | **Bloqueante para la Etapa A** (la separación editar/publicar es criterio de aceptación): se aprueba junto con la Etapa 0. |
+| S-3 | `servicios` (Miguel) | Montar `BloqueObjetivosProblemas` debajo de la matriz en `Objetivos SLA`; permitir que la resolución de prioridad acepte una matriz alternativa (si se aprueba la pregunta 1). | `@/modules/problemas/ui` (bloque) · parámetro opcional en el servicio de prioridad. | El bloque existe y se prueba aislado; la matriz propia queda detrás de la decisión de la pregunta 1. |
+| S-4 | `incidentes` / `tickets` (Miguel) | En el incidente: botón "Crear problema desde este incidente", banner "Vinculado al problema PRB-xxxxxx", mostrar el workaround, sugerir errores conocidos al registrar, resolución asistida de incidentes vinculados; columna `codigo_resolucion` e índices de umbral si faltan. | Servicios en `@/modules/problemas` (`crearProblemaDesdeIncidente`, `obtenerConfiguracionPublicada`, `sugerirErroresConocidos`). | La configuración se guarda y se expone; el comportamiento visible en el incidente no aparece hasta que el módulo destino lo monte. |
+| S-5 | `organizacion` (Junior) | Ausencias de técnicos (`tecnico_ausencias` o equivalente) con su sección en `Técnicos y niveles de soporte`; función de disponibilidad. | `@/modules/organizacion` (`esTecnicoDisponible(idTecnico, fecha)`). | "Considerar disponibilidad" deshabilitada con aviso. |
+| S-6 | `plataforma` (Miguel) | Emisión de eventos y plantillas para `problema.*` y `kedb.*`; registro en `Auditoría de cambios de configuración`; parámetros de adjuntos y caducidad de borradores. | Servicios de eventos, auditoría y parámetros de `@/modules/plataforma`. | Si no hay mecanismo de eventos, el módulo registra los eventos en una tabla propia `problema_config_evento` (outbox mínimo) y no envía notificaciones. |
+| S-7 | `cambios` (Nain) | Origen = Problema en la RFC y sincronización de estados (crear RFC prellenada, devolver el problema si la RFC se rechaza o falla). | `@/modules/cambios` (`crearRfcDesdeProblema`) y eventos de estado. | Se guarda la configuración (8.4); la creación y sincronización automáticas no se activan. |
+| S-8 | `cmdb` / `activos` (Nain) | Marcas `Problema abierto` y `Error conocido vigente` en el CI, clase y criticidad del CI, bloqueo de baja con problemas abiertos. | `@/modules/cmdb` (consulta de CI) y hook de baja de `@/modules/activos`. | Solo lectura de CI por SQL acotado; sin marcas ni bloqueo. |
+| S-9 | `conocimiento` (Alexis) | Plantilla y flujo de revisión de artículos derivados de problemas. | `@/modules/conocimiento` (`crearBorradorDesdeProblema`). | Se guarda la configuración (8.5); no se crea el borrador automáticamente. |
+| S-10 | Tech Lead / `shared` | Promover `BarraAccionesComun`, `Modal*`, `Boton`, `BotonIcono` a `src/shared/components/ui` y unificar con `cambios` y `activos`; unificar `Iconos.tsx` duplicados. | `@/shared/components/ui`. | Una única copia dentro de `problemas/configuracion/compartido/`. |

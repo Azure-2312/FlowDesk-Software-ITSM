@@ -41,7 +41,7 @@ export default function VistaCumplimientoLicencias() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/gestor-activos/licencias/cumplimiento?_t=${Date.now()}`);
+        const res = await fetch(`/api/activos/licencias/cumplimiento?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) {
           setLicencias(Array.isArray(json?.licencias) ? json.licencias : []);

@@ -1,4 +1,0 @@
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
-export { GET, PATCH, DELETE } from "@/modules/administracion/api/admin/categoriaDetalleController";

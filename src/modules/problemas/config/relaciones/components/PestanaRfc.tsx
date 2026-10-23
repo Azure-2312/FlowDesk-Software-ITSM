@@ -35,7 +35,7 @@ export function PestanaRfc({ config, onChange, onMarcarModificado }: Props) {
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div>
         <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-          1.3.4.3.4 Cambios (RFC - Change Enablement)
+          Solicitudes de cambio (RFC)
         </h2>
         <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
           Articula la transición hacia la Gestión de Cambios (ITIL 4), garantizando que las soluciones permanentes a fallas estructurales se implementen bajo control de cambios.

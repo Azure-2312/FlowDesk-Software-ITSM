@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, CheckSquare, Layers, CheckCircle2, AlertTriangle, ArrowRight } from "./Iconos";
+import { Plus, Edit2, Trash2, CheckSquare, Layers, CheckCircle2, AlertTriangle, ArrowRight } from "@/shared/components/ui/Iconos";
 
 interface TareaCatalogo {
   id: string;
@@ -153,7 +153,7 @@ export const PestanaTareasChecklists: React.FC<PestanaTareasChecklistsProps> = (
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <h2 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 4px 0" }}>
-            1.3.3.3.6 Tareas Técnicas, Paquetes y Checklist Go/No-Go
+            Tareas Técnicas, Paquetes y Checklist Go/No-Go
           </h2>
           <p style={{ fontSize: "0.85rem", color: "#64748b", margin: 0 }}>
             Estandarización de actividades operativas por fase, paquetes predeterminados y barrera de control previo a la ejecución.

@@ -86,3 +86,10 @@ export {
   descartarRelaciones,
   restaurarFabricaRelaciones,
 } from "./services/relacionesService";
+
+// --- Autorización del cierre de problemas mayores, movida desde
+// src/modules/perfiles/aprobador para que el rol solo conserve su UI. ---
+export {
+  listarProblemasMayores,
+  resolverProblema,
+} from "./services/cierreProblemaService";

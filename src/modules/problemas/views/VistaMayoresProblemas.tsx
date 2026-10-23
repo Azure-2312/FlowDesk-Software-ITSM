@@ -55,7 +55,7 @@ export default function VistaMayoresProblemas() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-problemas/mayores?_t=${Date.now()}`);
+      const res = await fetch(`/api/problemas/gestion/mayores?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setMayores(Array.isArray(json?.mayores) ? json.mayores : []);
@@ -84,7 +84,7 @@ export default function VistaMayoresProblemas() {
     setOk(null);
     try {
       const candidato = candidatos.find((c) => String(c.id_problema) === nuevo.id_problema);
-      const res = await fetch("/api/gestor-problemas/mayores", {
+      const res = await fetch("/api/problemas/gestion/mayores", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -116,7 +116,7 @@ export default function VistaMayoresProblemas() {
     setOk(null);
     const valores = edicion[id] ?? { severidad: "", sala_virtual: "", comunicados: "" };
     try {
-      const res = await fetch("/api/gestor-problemas/mayores", {
+      const res = await fetch("/api/problemas/gestion/mayores", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

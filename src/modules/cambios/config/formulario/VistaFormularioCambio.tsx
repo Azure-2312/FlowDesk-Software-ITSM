@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "./components/BarraAccionesComun";
-import { ModalPublicacion } from "./components/ModalPublicacion";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "./components/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "./components/ModalRestaurarFabrica";
 import { ModalVistaPrevia } from "./components/ModalVistaPrevia";
@@ -28,37 +28,37 @@ type TabId =
 const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion: string }> = {
   campos: {
     numero: "1.3.3.1.1",
-    titulo: "1.3.3.1.1 Campos",
+    titulo: "Campos",
     descripcion: "Estructura, obligatoriedad y orden de los campos del formulario de registro y edición de RFC.",
   },
   campos_personalizados: {
     numero: "1.3.3.1.2",
-    titulo: "1.3.3.1.2 Campos personalizados",
+    titulo: "Campos personalizados",
     descripcion: "Definición y catálogo de campos técnicos personalizados para la entidad Cambio.",
   },
   catalogos: {
     numero: "1.3.3.1.3",
-    titulo: "1.3.3.1.3 Listas y catálogos",
+    titulo: "Listas y catálogos",
     descripcion: "Valores predefinidos de categorías, orígenes, entornos, motivos y estados de cierre.",
   },
   cuestionario_riesgo: {
     numero: "1.3.3.1.4",
-    titulo: "1.3.3.1.4 Cuestionario de riesgo",
+    titulo: "Cuestionario de riesgo",
     descripcion: "Ponderación multicriterio para el cálculo del nivel de riesgo y autoridad de cambio requerida.",
   },
   prioridad: {
     numero: "1.3.3.1.5",
-    titulo: "1.3.3.1.5 Prioridad (matriz compartida)",
+    titulo: "Prioridad (matriz compartida)",
     descripcion: "Matriz institucional de Impacto × Urgencia compartida y textos guía para solicitudes de cambio.",
   },
   plantillas: {
     numero: "1.3.3.1.6",
-    titulo: "1.3.3.1.6 Plantillas de RFC",
+    titulo: "Plantillas de RFC",
     descripcion: "Plantillas institucionales con campos prellenados y paquetes de tareas estándar.",
   },
   vista_ticket: {
     numero: "1.3.3.1.7",
-    titulo: "1.3.3.1.7 Vista del ticket",
+    titulo: "Vista del ticket",
     descripcion: "Diseño de la cabecera fija, pestañas del ciclo de vida y panel lateral del ticket RFC.",
   },
 };
@@ -99,8 +99,8 @@ export default function ConfiguracionFormularioCambiosPage() {
       setErrorCarga(null);
 
       const [resConfig, resCP] = await Promise.all([
-        fetch(`/api/admin/cambios/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`),
-        fetch(`/api/admin/cambios/campos-personalizados`),
+        fetch(`/api/cambios/configuracion/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`),
+        fetch(`/api/cambios/configuracion/campos-personalizados`),
       ]);
 
       const dataConfig = await resConfig.json();
@@ -142,7 +142,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/cambios/formulario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/formulario/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -186,7 +186,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/cambios/formulario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/formulario/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -215,7 +215,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   const handleDescartarBorrador = async () => {
     if (!confirm("Se perderán todos los cambios del borrador sin publicar. ¿Desea continuar?")) return;
     try {
-      const res = await fetch(`/api/admin/cambios/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`, {
+      const res = await fetch(`/api/cambios/configuracion/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -230,7 +230,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   // Restaurar fábrica
   const handleRestaurarFabrica = async () => {
     try {
-      const res = await fetch("/api/admin/cambios/formulario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/formulario/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -253,7 +253,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   // Ver historial de versiones
   const handleVerHistorial = async () => {
     try {
-      const res = await fetch(`/api/admin/cambios/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`);
+      const res = await fetch(`/api/cambios/configuracion/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`);
       const data = await res.json();
       if (data.ok) {
         setVersionesHistorial([
@@ -327,16 +327,15 @@ export default function ConfiguracionFormularioCambiosPage() {
   const pestanaActualInfo = PESTANAS_INFO[tabActiva];
 
   return (
-    <div className="vista-contenedor" style={{ paddingBottom: 80 }}>
-      {/* 1. Breadcrumb (Sección 3.1) */}
+    <div style={{ width: "100%", maxWidth: "100%", overflowX: "auto", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
+      <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
+        {/* 1. Breadcrumb (Sección 3.1) */}
       <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/admin" style={{ color: "#64748b", textDecoration: "none" }}>Configuración</Link>
+        <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Cambios</Link>
         <span>›</span>
-        <span>Configuración de procesos</span>
+        <Link href="/plataforma/admin/procesos/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Configuración</Link>
         <span>›</span>
-        <Link href="/admin/procesos/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
-        <span>›</span>
-        <span style={{ color: "#0f172a", fontWeight: 700 }}>1.3.3.1 Configuración de formulario</span>
+        <span style={{ color: "#0f172a", fontWeight: 700 }}>Configuración de formulario</span>
         <span>›</span>
         <span style={{ color: "#2563eb", fontWeight: 700 }}>{pestanaActualInfo.titulo}</span>
       </div>
@@ -356,7 +355,7 @@ export default function ConfiguracionFormularioCambiosPage() {
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <h1 style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", margin: 0 }}>
-              1.3.3.1 Configuración de Formulario RFC
+              Configuración de Formulario de Cambios (RFC)
             </h1>
             <span
               className="badge-itil"
@@ -398,7 +397,7 @@ export default function ConfiguracionFormularioCambiosPage() {
             fontSize: 12.5,
           }}
         >
-          <span style={{ fontSize: 16 }}>🔒</span>
+          <span style={{ fontSize: 16 }}>[Bloqueado]</span>
           <span>
             Esta pestaña está actualmente en edición por <strong>{bloqueadoPorOtro}</strong>. La pantalla se encuentra en modo de <strong>solo lectura</strong> para evitar colisiones concurrentes (el bloqueo expira tras 15 min de inactividad).
           </span>
@@ -463,6 +462,7 @@ export default function ConfiguracionFormularioCambiosPage() {
               }}
               camposPersonalizados={camposPersonalizados}
               onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
+              onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
             />
           )}
 
@@ -513,6 +513,7 @@ export default function ConfiguracionFormularioCambiosPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* 3. Barra de Acciones Fija al Pie (Sección 3.1) */}
       <BarraAccionesComun

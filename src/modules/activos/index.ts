@@ -7,15 +7,6 @@ export {
 
 export { listarHistorialActivo } from "./services/activoHistorialService";
 
-export {
-  listarCmdb,
-  crearCi,
-  actualizarCi,
-  type FiltrosCmdb,
-} from "./services/cmdbService";
-
-export { crearRelacionCmdb, eliminarRelacionCmdb } from "./services/cmdbRelacionesService";
-
 export { listarTiposActivo, crearTipoActivo } from "./services/tiposActivoService";
 
 export { listarModelosActivo, crearModeloActivo } from "./services/modelosService";
@@ -28,8 +19,6 @@ export {
   revocarAsignacionLicencia,
   type FiltrosAsignacionesLicencia,
 } from "./services/licenciasAsignacionesService";
-
-export { listarTiposCi, crearTipoCi } from "./services/cmdbTiposService";
 
 export {
   VALORES_FABRICA_153,
@@ -55,10 +44,19 @@ export {
   descartarBorradorCiclosVidaTransiciones,
 } from "./services/ciclosVidaTransicionesConfiguracionService";
 
+// --- Aprobaciones por monto (bajas y renovaciones), movidas desde
+// src/modules/perfiles/aprobador para que el rol solo conserve su UI. ---
 export {
-  VALORES_FABRICA_154,
-  obtenerConfiguracionCmdbRelaciones,
-  procesarAccionCmdbRelaciones,
-  publicarConfiguracionCmdbRelaciones,
-  descartarBorradorCmdbRelaciones,
-} from "./services/cmdbRelacionesConfiguracionService";
+  listarBajasPorMonto,
+  resolverBaja,
+  listarRenovaciones,
+  resolverRenovacion,
+} from "./services/aprobacionesMontoService";
+
+// --- Resolución de bajas por el Supervisor (perfil 4), movida desde
+// src/modules/perfiles/supervisor para que el rol solo conserve su UI. ---
+export { resolverBajaArea } from "./services/supervisionBajasService";
+
+// --- Disposición de activos dados de baja (lectura), movida desde
+// src/modules/perfiles/auditor para que el rol solo conserve su UI. ---
+export { listarBajasDisposicion } from "./services/bajasDisposicionService";

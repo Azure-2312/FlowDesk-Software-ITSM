@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const data = await validarFlujoCambios(body);
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Error en /api/admin/cambios/flujo-evaluacion/validar-flujo:", error);
+    console.error("Error en /api/cambios/configuracion/flujo-evaluacion/validar-flujo:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al validar el flujo");
     return NextResponse.json({ error: mensaje }, { status });
   }

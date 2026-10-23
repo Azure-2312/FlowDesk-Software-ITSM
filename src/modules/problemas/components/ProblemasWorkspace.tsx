@@ -60,7 +60,7 @@ export default function ProblemasWorkspace({ puedeCrear, soloKedb = false }: { p
         {p.workaround && <p><b>Workaround:</b> {p.workaround}</p>}
         <small>Incidentes asociados: {p.incidentes_asociados?.map(i => i.codigo_ticket).join(", ") || "Ninguno"}</small>
         <div style={{ marginTop: 8 }}>
-          <Link href={`/problemas/${p.id_problema}`} className="boton-secundario" style={{ fontSize: 12, textDecoration: "none", display: "inline-block", width: "auto" }}>
+          <Link href={`/plataforma/problemas/${p.id_problema}`} className="boton-secundario" style={{ fontSize: 12, textDecoration: "none", display: "inline-block", width: "auto" }}>
             Ver expediente completo
           </Link>
         </div>

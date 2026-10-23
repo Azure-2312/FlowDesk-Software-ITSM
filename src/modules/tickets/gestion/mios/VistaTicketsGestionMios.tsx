@@ -5,7 +5,17 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Ticket } from "@/types";
 
-export default function PaginaMisTickets() {
+export default function PaginaMisTickets({
+  tipoFijo,
+  rutaDetalleBase,
+  rutaCrear,
+  titulo,
+}: {
+  tipoFijo?: "1" | "2";
+  rutaDetalleBase?: string;
+  rutaCrear?: string;
+  titulo?: string;
+} = {}) {
   const router = useRouter();
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -15,7 +25,7 @@ export default function PaginaMisTickets() {
   // Pestañas requeridas: "en_proceso" | "finalizados" | "todos"
   const [pestana, setPestana] = useState<"en_proceso" | "finalizados" | "todos">("en_proceso");
   const [busqueda, setBusqueda] = useState("");
-  const [filtroTipo, setFiltroTipo] = useState<string>("todos");
+  const [filtroTipo, setFiltroTipo] = useState<string>(tipoFijo ?? "todos");
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todos");
   const [filtroPrioridad, setFiltroPrioridad] = useState<string>("todos");
   const [filtroEstado, setFiltroEstado] = useState<string>("todos");
@@ -26,8 +36,9 @@ export default function PaginaMisTickets() {
     setCargando(true);
     setError(null);
     try {
+      const endpoint = tipoFijo === "1" ? "/api/incidentes" : tipoFijo === "2" ? "/api/solicitudes" : "/api/tickets";
       const [resTickets, resCat] = await Promise.all([
-        fetch(`/api/tickets?vista=mios&_t=${Date.now()}`, {
+        fetch(`${endpoint}?vista=mios&_t=${Date.now()}`, {
           cache: "no-store",
           headers: {
             "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -153,7 +164,7 @@ export default function PaginaMisTickets() {
       >
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-            Mis Tickets
+            {titulo ?? "Mis Tickets"}
           </h1>
           <p style={{ color: "#64748b", fontSize: 13, marginTop: 4, marginBottom: 0 }}>
             Consulta y realiza seguimiento de todos tus tickets reportados en la Mesa de Servicio.
@@ -178,7 +189,7 @@ export default function PaginaMisTickets() {
             Actualizar
           </button>
           <Link
-            href="/tickets/gestion/crear"
+            href={rutaCrear ?? (tipoFijo === "1" ? "/plataforma/incidentes/crear" : "/plataforma/solicitudes/crear")}
             className="boton-primario"
             style={{
               textDecoration: "none",
@@ -349,6 +360,7 @@ export default function PaginaMisTickets() {
               }}
             >
               {/* Filtro por Tipo */}
+              {!tipoFijo && (
               <div>
                 <label style={{ fontSize: 11.5, fontWeight: 700, color: "#475569", display: "block", marginBottom: 4 }}>
                   Tipo de Ticket
@@ -367,6 +379,7 @@ export default function PaginaMisTickets() {
                   <option value="2">Solicitudes de Servicio</option>
                 </select>
               </div>
+              )}
 
               {/* Filtro por Categoría */}
               <div>
@@ -495,7 +508,7 @@ export default function PaginaMisTickets() {
               : "No tienes tickets registrados en este historial."}
           </p>
           <Link
-            href="/tickets/gestion/crear"
+            href={rutaCrear ?? (tipoFijo === "1" ? "/plataforma/incidentes/crear" : "/plataforma/solicitudes/crear")}
             className="boton-primario"
             style={{ width: "auto", display: "inline-block", textDecoration: "none" }}
           >
@@ -530,7 +543,7 @@ export default function PaginaMisTickets() {
                 return (
                   <tr
                     key={t.id_ticket}
-                    onClick={() => router.push(`/tickets/${t.id_ticket}`)}
+                    onClick={() => router.push(rutaDetalleBase ? `${rutaDetalleBase}/${t.id_ticket}` : (esIncidente ? `/plataforma/incidentes/${t.id_ticket}` : `/plataforma/solicitudes/${t.id_ticket}`))}
                     style={{
                       borderBottom: "1px solid #f1f5f9",
                       cursor: "pointer",
@@ -636,7 +649,7 @@ export default function PaginaMisTickets() {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          router.push(`/tickets/${t.id_ticket}`);
+                          router.push(rutaDetalleBase ? `${rutaDetalleBase}/${t.id_ticket}` : (esIncidente ? `/plataforma/incidentes/${t.id_ticket}` : `/plataforma/solicitudes/${t.id_ticket}`));
                         }}
                         className="boton-secundario"
                         style={{

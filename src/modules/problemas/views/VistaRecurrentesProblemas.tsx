@@ -33,7 +33,7 @@ export default function VistaRecurrentesProblemas() {
       setCargando(true);
       setError(null);
       try {
-        const res = await fetch(`/api/gestor-problemas/recurrentes?dimension=${dimension}&_t=${Date.now()}`);
+        const res = await fetch(`/api/problemas/gestion/recurrentes?dimension=${dimension}&_t=${Date.now()}`);
         const json = await res.json();
         if (!activo) return;
         if (res.ok) setData(json);

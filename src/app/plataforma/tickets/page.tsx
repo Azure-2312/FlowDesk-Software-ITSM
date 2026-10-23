@@ -10,16 +10,17 @@ export default function PaginaTickets() {
   if (!sesion) redirect("/login");
 
   const destinosPorPerfil: Record<number, string> = {
-    1: "/admin/usuarios",
-    2: "/tickets/gestion/asignados",
-    3: "/tickets/gestion/mios",
-    4: "/tickets/gestion/todos",
-    5: "/tickets/gestion/aprobaciones",
-    6: "/tickets/gestion/auditoria",
-    7: "/cambios/gestion/cab",
-    8: "/cambios",
-    9: "/activos",
+    1: "/plataforma/tickets/gestion/todos",
+    2: "/plataforma/incidentes/asignados",
+    3: "/plataforma/solicitudes/mios",
+    4: "/plataforma/tickets/gestion/todos",
+    5: "/plataforma/solicitudes/aprobaciones",
+    6: "/plataforma/incidentes",
+    7: "/plataforma/solicitudes/mios",
+    8: "/plataforma/cambios",
+    9: "/plataforma/activos",
+    10: "/plataforma/problemas",
   };
 
-  redirect(destinosPorPerfil[sesion.perfilActivo?.id_perfil] ?? "/login");
+  redirect(destinosPorPerfil[sesion.perfilActivo?.id_perfil] ?? "/plataforma/dashboard");
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, ArrowUp, ArrowDown, Lock, CheckCircle2, AlertCircle } from "./Iconos";
+import { Plus, Edit2, Trash2, ArrowUp, ArrowDown, Lock, CheckCircle2, AlertCircle } from "@/shared/components/ui/Iconos";
 
 interface EstadoConfig {
   id: string;
@@ -153,7 +153,7 @@ export const PestanaEstados: React.FC<PestanaEstadosProps> = ({ snapshot, onChan
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <h2 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 4px 0" }}>
-            1.3.3.3.1 Catálogo de Estados del Cambio
+            Catálogo de Estados del Cambio
           </h2>
           <p style={{ fontSize: "0.85rem", color: "#64748b", margin: 0 }}>
             Configuración del ciclo de vida y políticas de edición, relojes SLA y visibilidad en calendario por estado.

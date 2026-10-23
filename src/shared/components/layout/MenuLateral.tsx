@@ -38,7 +38,7 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
     if (tieneContadores && nivel === 1) {
       async function cargarContadores() {
         try {
-          const res = await fetch("/api/tecnico/contadores", { cache: "no-store" });
+          const res = await fetch("/api/operacion/contadores", { cache: "no-store" });
           if (res.ok) {
             const data = await res.json();
             setContadores(data);
@@ -98,9 +98,28 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
         const estaExpandido = expandidos.has(opcion.id_opcion_menu);
         const tieneDescendienteActivo = tieneHijos && algunDescendienteCoincide(opcion, pathname);
 
-        // SOLO una opción hoja recibe el estado activo azul
-        const esHoja = !tieneHijos;
-        const estaActivo = esHoja && (pathname === opcion.url_menu || pathname.startsWith(opcion.url_menu.split("?")[0] + "/"));
+        // Regla de la arquitectura del menú: url_menu vacío = CARPETA (no navega,
+        // solo despliega/contrae); url_menu con valor = PÁGINA (navega).
+        // Por eso SOLO una página con URL recibe el estado activo azul.
+        // Se prioriza coincidencia exacta para evitar que dos hermanos con subrutas
+        // se iluminen al mismo tiempo (ej: artículos vs categorías).
+        const navegable = !tieneHijos && Boolean(opcion.url_menu);
+        const urlBase = opcion.url_menu ? opcion.url_menu.split("?")[0] : "";
+        const coincideExacto = opcion.url_menu === pathname;
+        const hayHermanoConCoincidenciaMasEspecifica = opciones.some((otra) => {
+          if (otra.id_opcion_menu === opcion.id_opcion_menu || !otra.url_menu) return false;
+          const otraBase = otra.url_menu.split("?")[0];
+          if (otra.url_menu === pathname || otraBase === pathname) return true;
+          return otraBase.length > urlBase.length && pathname.startsWith(otraBase + "/");
+        });
+
+        const estaActivo =
+          navegable &&
+          (coincideExacto ||
+            (!hayHermanoConCoincidenciaMasEspecifica &&
+              urlBase !== "" &&
+              urlBase !== "/plataforma" &&
+              pathname.startsWith(urlBase + "/")));
 
         const badge = opcion.contador_clave ? contadores[opcion.contador_clave] : null;
 
@@ -108,7 +127,9 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
           <li key={opcion.id_opcion_menu} className={tieneHijos ? "menu-nodo-padre" : "menu-nodo-hoja"}>
             <div className="menu-fila">
               {tieneHijos ? (
-                // Carpeta contenedora: despliega / contrae hijos
+                // Carpeta contenedora: despliega / contrae hijos.
+                // Cuando una carpeta tenga url_menu (página resumen de la carpeta),
+                // el clic debería desplegar y el doble clic navegar.
                 <button
                   type="button"
                   className={"menu-item menu-item-carpeta" + (tieneDescendienteActivo ? " menu-carpeta-activa" : "")}
@@ -140,14 +161,14 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
                     </svg>
                   </span>
                 </button>
-              ) : (
-                // Pantalla terminal hoja
+              ) : navegable ? (
+                // Página terminal: navega
                 <Link
                   href={opcion.url_menu}
                   className={"menu-item" + (estaActivo ? " menu-item-activo" : "")}
                   style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}
                 >
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                  <span style={{ flex: 1, whiteSpace: "normal", wordBreak: "break-word", lineHeight: 1.35 }}>
                     {opcion.nombre}
                   </span>
                   {badge && badge.total > 0 && (
@@ -172,6 +193,17 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
                     </span>
                   )}
                 </Link>
+              ) : (
+                // Carpeta sin subopciones activas (url_menu vacío): no navega
+                <span
+                  className="menu-item"
+                  style={{ display: "flex", alignItems: "center", gap: 6, cursor: "default" }}
+                  aria-disabled="true"
+                >
+                  <span style={{ flex: 1, whiteSpace: "normal", wordBreak: "break-word", lineHeight: 1.35 }}>
+                    {opcion.nombre}
+                  </span>
+                </span>
               )}
             </div>
 

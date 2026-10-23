@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { RefreshCw } from "@/shared/components/ui/Iconos";
 
 interface ConfiguracionEtiquetas {
   formato_codigo?: string;
@@ -132,9 +133,10 @@ export function PestanaCodigoEtiquetas({ datos, onChange, bloqueado }: Props) {
                 type="button"
                 className="boton-mini"
                 onClick={generarEjemplos}
-                style={{ fontSize: 11 }}
+                style={{ fontSize: 11, display: "inline-flex", alignItems: "center", gap: 4 }}
               >
-                Probar Formato
+                <RefreshCw size={12} />
+                <span>Probar Formato</span>
               </button>
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>

@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, X } from "@/shared/components/ui/Iconos";
 
 export interface ReglaAlertaItem {
   id: string;
@@ -298,15 +300,7 @@ export function PestanaAlertasVencimiento({ datos, onChange, bloqueado }: Props)
                   <td className="px-4 py-3 text-xs uppercase text-slate-500 font-medium">
                     {alerta.canal || "ambos"}
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      type="button"
-                      onClick={() => abrirModalEditar(alerta)}
-                      className="text-indigo-600 hover:text-indigo-900 font-semibold text-xs"
-                    >
-                      Editar
-                    </button>
-                  </td>
+                  <td className="px-4 py-2 text-right"><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar matriz de alerta" ariaLabel="Editar matriz de alerta" disabled={bloqueado} onClick={() => abrirModalEditar(alerta)} /></td>
                 </tr>
               ))}
             </tbody>

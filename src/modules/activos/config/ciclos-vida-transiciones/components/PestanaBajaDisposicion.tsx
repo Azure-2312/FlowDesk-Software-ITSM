@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { X } from "@/shared/components/ui/Iconos";
 
 export interface MotivoBaja {
   id: string;
@@ -121,7 +123,7 @@ export function PestanaBajaDisposicion({ datos, onChange, bloqueado }: Props) {
       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            1.5.2.6 Baja definitiva y disposición patrimonial
+            Baja definitiva y disposición patrimonial
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Gobernanza de motivos de baja, borrado seguro obligatorio (ISO 27001), bloqueos de integridad y actas oficiales.
@@ -434,9 +436,7 @@ export function PestanaBajaDisposicion({ datos, onChange, bloqueado }: Props) {
               <h3 className="text-sm font-bold text-slate-800">
                 Vista previa: Acta Oficial de Baja y Disposición Patrimonial
               </h3>
-              <button onClick={() => setModalVistaPreviaActa(false)} className="text-slate-400 hover:text-slate-600 font-bold">
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalVistaPreviaActa(false)} />
             </div>
 
             <div className="p-6 space-y-4 text-xs font-serif bg-slate-50/50">

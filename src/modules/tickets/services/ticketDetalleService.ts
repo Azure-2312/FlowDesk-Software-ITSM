@@ -1,6 +1,7 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { validarCargaTecnico } from "./tecnicoCargaService";
 import { Ticket, ComentarioTicket, ActualizarTicketPayload, TicketAprobacion, AdjuntoTicket } from "@/types";
 
 export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
@@ -79,7 +80,7 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
       t.motivo_reapertura,
       COALESCE(t.conteo_reaperturas, 0) as conteo_reaperturas,
       t.estado_registro
-    FROM ticket t
+    FROM vista_ticket t
     INNER JOIN tipo_ticket tt ON tt.id_tipo_ticket = t.id_tipo_ticket
     INNER JOIN categoria_ticket cat ON cat.id_categoria = t.id_categoria
     LEFT JOIN servicio_catalogo s ON s.id_servicio = t.id_servicio
@@ -105,7 +106,7 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
 
   const idPerfil = sesion.perfilActivo?.id_perfil;
   let autorizado = false;
-  if ([4, 6].includes(idPerfil || 0)) {
+  if ([1, 4, 6].includes(idPerfil || 0)) {
     autorizado = true;
   } else if (idPerfil === 3) {
     autorizado = ticket.id_usuario_solicitante === sesion.id_usuario;
@@ -229,7 +230,7 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
 
 export async function actualizarTicket(sesion: any, idTicket: number, body: ActualizarTicketPayload) {
   const actual = await queryRow<any>(
-    "SELECT * FROM ticket WHERE id_ticket = $1 AND estado_registro = true",
+    "SELECT * FROM vista_ticket WHERE id_ticket = $1 AND estado_registro = true",
     [idTicket]
   );
 
@@ -262,6 +263,9 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
   if (body.decision_aprobacion) {
     if (!sesionTieneCapacidad(sesion, CAPACIDADES.SOLICITUDES_APROBAR)) {
       throw new ErrorDominio("Solo el Gestor de Área puede resolver aprobaciones de negocio.", 403);
+    }
+    if (actual.id_tipo_ticket !== 2) {
+      throw new ErrorDominio("Solo las solicitudes tienen compuerta de aprobación.");
     }
     if (actual.estado_aprobacion !== "PENDIENTE_APROBACION" || !["APROBADO", "RECHAZADO"].includes(body.decision_aprobacion)) {
       throw new ErrorDominio("La solicitud no está pendiente o la decisión no es válida.");
@@ -316,13 +320,17 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
     }
 
     await query(
+      `UPDATE ticket_solicitud SET estado_aprobacion = $1 WHERE id_ticket = $2`,
+      [nuevoEstadoAprob, idTicket]
+    );
+
+    await query(
       `UPDATE ticket SET
-        estado_aprobacion = $1,
-        id_estado = $2,
-        usuario_modificacion = $3,
+        id_estado = $1,
+        usuario_modificacion = $2,
         fecha_modificacion = now()
-       WHERE id_ticket = $4`,
-      [nuevoEstadoAprob, nuevoEstadoTicket, sesion.id_usuario, idTicket]
+       WHERE id_ticket = $3`,
+      [nuevoEstadoTicket, sesion.id_usuario, idTicket]
     );
 
     await query(
@@ -331,7 +339,7 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
       [idTicket, sesion.id_usuario, notaDecision, nuevoEstadoTicket !== actual.id_estado ? nuevoEstadoTicket : null]
     );
 
-    const ticketActualizado = await queryRow("SELECT * FROM ticket WHERE id_ticket = $1", [idTicket]);
+    const ticketActualizado = await queryRow("SELECT * FROM vista_ticket WHERE id_ticket = $1", [idTicket]);
     return { ticket: ticketActualizado };
   }
 
@@ -365,7 +373,7 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
       ]
     );
 
-    const ticketActualizado = await queryRow("SELECT * FROM ticket WHERE id_ticket = $1", [idTicket]);
+    const ticketActualizado = await queryRow("SELECT * FROM vista_ticket WHERE id_ticket = $1", [idTicket]);
     return { ticket: ticketActualizado };
   }
 
@@ -389,7 +397,17 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
     throw new ErrorDominio("Este perfil no está autorizado para operar tickets.", 403);
   }
 
+  if (body.id_paso_actual !== undefined && actual.id_tipo_ticket !== 2) {
+    throw new ErrorDominio("El paso de workflow solo aplica a solicitudes.");
+  }
+  if (body.id_problema !== undefined && actual.id_tipo_ticket !== 1) {
+    throw new ErrorDominio("Solo los incidentes pueden vincularse a un problema.");
+  }
+
   if (body.id_usuario_asignado !== undefined && body.id_usuario_asignado !== actual.id_usuario_asignado) {
+    if (body.id_usuario_asignado !== null) {
+      await validarCargaTecnico(Number(body.id_usuario_asignado), idTicket);
+    }
     if (esTecnico) {
       if (actual.id_usuario_asignado !== null || body.id_usuario_asignado !== sesion.id_usuario) {
         throw new ErrorDominio(
@@ -567,34 +585,30 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
       id_estado = $1,
       id_usuario_asignado = $2,
       id_departamento = $3,
-      id_paso_actual = $4,
-      id_motivo_espera = $5,
-      solucion_aplicada = $6,
-      categoria_resolucion = $7,
-      motivo_cancelacion = $8,
-      fecha_primera_respuesta = $9,
-      fecha_resolucion = $10,
-      fecha_cierre = $11,
-      sla_cumplido = $12,
-      tiempo_pausado_minutos = $13,
-      fecha_ultima_pausa = $14,
-      fecha_limite_sla = $15,
-      id_problema = COALESCE($16, id_problema),
-      id_ci = COALESCE($17, id_ci),
-      fecha_reapertura = $18,
-      motivo_reapertura = $19,
-      conteo_reaperturas = $20,
-      usuario_modificacion = $21,
+      id_motivo_espera = $4,
+      solucion_aplicada = $5,
+      categoria_resolucion = $6,
+      motivo_cancelacion = $7,
+      fecha_primera_respuesta = $8,
+      fecha_resolucion = $9,
+      fecha_cierre = $10,
+      sla_cumplido = $11,
+      tiempo_pausado_minutos = $12,
+      fecha_ultima_pausa = $13,
+      fecha_limite_sla = $14,
+      id_ci = COALESCE($15, id_ci),
+      fecha_reapertura = $16,
+      motivo_reapertura = $17,
+      conteo_reaperturas = $18,
+      usuario_modificacion = $19,
       fecha_modificacion = now()
-    WHERE id_ticket = $22
-    RETURNING *
+    WHERE id_ticket = $20
   `;
 
-  const ticketActualizado = await queryRow<Ticket>(sqlUpdate, [
+  await query(sqlUpdate, [
     nuevoEstado,
     nuevoAsignado,
     nuevoDepto,
-    nuevoPasoActual,
     nuevoMotivoEspera,
     nuevaSolucion,
     nuevaCategoriaResolucion,
@@ -606,7 +620,6 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
     tiempoPausado,
     fechaUltimaPausa,
     fechaLimiteSla,
-    body.id_problema || null,
     body.id_ci || null,
     fechaReapertura,
     motivoReapertura,
@@ -614,6 +627,25 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
     sesion.id_usuario,
     idTicket,
   ]);
+
+  if (actual.id_tipo_ticket === 2 && body.id_paso_actual !== undefined) {
+    await query(
+      `UPDATE ticket_solicitud SET id_paso_actual = $1 WHERE id_ticket = $2`,
+      [nuevoPasoActual, idTicket]
+    );
+  }
+
+  if (actual.id_tipo_ticket === 1 && body.id_problema !== undefined) {
+    await query(
+      `UPDATE ticket_incidente SET id_problema = $1 WHERE id_ticket = $2`,
+      [body.id_problema || null, idTicket]
+    );
+  }
+
+  const ticketActualizado = await queryRow<Ticket>(
+    "SELECT * FROM vista_ticket WHERE id_ticket = $1",
+    [idTicket]
+  );
 
   // Registro en auditoría / comentarios
   if (esAccionReapertura) {

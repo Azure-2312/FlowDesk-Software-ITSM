@@ -30,254 +30,626 @@ INSERT INTO usuario_perfiles (id_usuario, id_perfil, estado_registro)
 VALUES (1, 1, true), (1, 2, true), (1, 3, true), (1, 4, true), (1, 5, true), (1, 6, true), (1, 7, true), (1, 8, true), (1, 9, true)
 ON CONFLICT (id_usuario, id_perfil) DO UPDATE SET estado_registro = true;
 
--- ---------- Menú de opciones: 3 niveles (ITIL v4 / ISO 20000 / ISO 27001) ----------
--- Módulo 1: Mesa de Servicio (100)
-INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro) VALUES
-(100, 'Mesa de Servicio', '/tickets', 'Gestión integral de incidentes y requerimientos ITIL v4', NULL, 1, 1, true),
+-- ---------- Catalogo unico de menu: raices por modulo + visibilidad por perfil ----------
+-- Una fila por pantalla; quien la ve se define solo en opciones_menu_perfiles.
+-- La configuracion se distribuye en los modulos duenos; no hay raiz Configuracion.
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21001', 'Mi trabajo', '', '', NULL, '1', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21002', 'Aprobaciones', '', '', '21001', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21003', 'Delegación de aprobaciones', '/plataforma/solicitudes/area/delegacion', 'Delegar por ausencia a un suplente del área.', '21002', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21004', 'Delegaciones', '/plataforma/seguridad/aprobador/delegaciones', 'Delegar por ausencia a un suplente con vigencia.', '21002', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21005', 'Historial de aprobaciones de mi área', '/plataforma/solicitudes/area/historial', '', '21002', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21006', 'Historial de aprobaciones y dictámenes', '/plataforma/seguridad/aprobador/historial', '', '21002', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21007', 'Panel de activos y CMDB', '/plataforma/activos/panel', 'Garantías por vencer, actas pendientes, sobreuso de licencias, inexactitudes y campañas activas.', '21001', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21008', 'Equipo', '', '', '21001', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21009', 'Ausencias y guardias del equipo', '/plataforma/organizacion/equipo/ausencias', 'Registrar y editar ausencias de mi equipo; las usa la asignación automática.', '21008', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21010', 'Vistas y respuestas compartidas', '/plataforma/organizacion/equipo/vistas', 'Vistas guardadas y respuestas predefinidas del grupo.', '21008', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21011', 'Panel de auditoría', '/plataforma/operacion/paneles/auditor', 'Hallazgos, cumplimiento y muestras pendientes (solo lectura).', '21001', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21012', 'Panel de gestión de cambios', '/plataforma/operacion/paneles/gestor-cambios', 'Inicio: RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y PIR vencidas.', '21001', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21013', 'Panel de gestión de problemas', '/plataforma/problemas/gestion/panel', 'Problemas abiertos, sin asignar, por vencer, mayores y errores conocidos por revisar.', '21001', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21014', 'Panel de supervisión', '/plataforma/operacion/paneles/supervisor', 'Página de inicio del supervisor: estado del equipo en un vistazo.', '21001', '2', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21015', 'Panel del aprobador', '/plataforma/operacion/paneles/aprobador', 'Pendientes por vencer, reuniones del comité y decisiones recientes.', '21001', '2', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21016', 'Panel del área', '/plataforma/operacion/paneles/gestor-area', 'Inicio del jefe de área (no TI).', '21001', '2', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21017', 'Panel del técnico', '/plataforma/operacion/paneles/tecnico', 'Qué atender ahora: indicadores, tickets urgentes, agenda, avisos y carga.', '21001', '2', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21018', 'Mi agenda y disponibilidad', '/plataforma/operacion/agenda', 'Calendario personal y estado Disponible / Ocupado / No disponible.', '21001', '2', '9', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21019', 'Mi desempeño', '/plataforma/tickets/desempeno', 'Indicadores propios y agregados del grupo.', '21001', '2', '10', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21020', 'Mis tareas', '/plataforma/operacion/tareas', 'Tareas de tickets, problemas, cambios, mantenimientos y recordatorios personales.', '21001', '2', '11', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21021', 'Panel de administración', '/plataforma/operacion/paneles/administrador', 'Estado global de la mesa de servicio, los cambios, las identidades y los accesos.', '21001', '2', '12', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21022', 'Panel del solicitante', '/plataforma/operacion/paneles/solicitante', 'Mis tickets, mis activos asignados y las guías disponibles.', '21001', '2', '13', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21023', 'Mesa de Servicio', '', '', NULL, '1', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21024', 'Operacion de la mesa', '', 'Operaciones transversales que consumen informacion de incidentes y solicitudes.', '21023', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21044', 'SLA', '', 'Gestion de niveles de servicio.', '21023', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21045', 'Escalamientos y riesgos de SLA', '/plataforma/servicios/sla/supervisor/escalamientos', 'Tickets escalados jerárquicamente y en riesgo; permite intervenir.', '21044', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21046', 'Incumplimientos y causas', '/plataforma/servicios/sla/supervisor/incumplimientos', 'Análisis de tickets vencidos por servicio, técnico y causa.', '21044', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21047', 'Objetivos de tiempo vigentes', '/plataforma/servicios/sla/tecnico/objetivos', 'Se reutiliza en modo consulta.', '21044', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21048', 'Semaforo de SLA de mi cola', '/plataforma/servicios/sla/tecnico/semaforo', '', '21044', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21049', 'Semaforo de SLA del grupo', '/plataforma/servicios/sla/supervisor/semaforo', 'Misma vista que el técnico con alcance de todo el grupo.', '21044', '3', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21059', 'Cambios', '', '', NULL, '1', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21060', 'Mis cambios', '', '', '21059', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21061', 'Aprobaciones técnicas de RFC', '/plataforma/cambios/supervisor/aprobaciones', 'Etapa Técnica de las RFC del grupo implementador; segregación de funciones.', '21060', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21062', 'Calendario de mis cambios', '/plataforma/cambios/tecnico/calendario', '', '21060', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21063', 'Cambios con interrupción para mi área', '/plataforma/cambios/gestor-area/impacto', '', '21060', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21064', 'Cambios por implementar', '/plataforma/cambios/tecnico/implementacion', 'Consola de implementación: Go/No-Go, bitácora, rollback y resultado.', '21060', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21065', 'Cambios que afectan a mi equipo', '/plataforma/cambios/supervisor/impacto', 'Misma lógica del técnico con alcance de grupo.', '21060', '3', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21066', 'Cambios que afectan mis servicios', '/plataforma/cambios/tecnico/impacto', '', '21060', '3', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21067', 'Historial de mis cambios', '/plataforma/cambios/tecnico/historial', '', '21060', '3', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21068', 'Mis cambios', '/plataforma/cambios/tecnico/mis-cambios', '', '21060', '3', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21069', 'Programación de implementaciones del equipo', '/plataforma/cambios/supervisor/programar', 'Programar y reprogramar dentro de ventanas permitidas.', '21060', '3', '9', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21070', 'Registrar solicitud RFC', '/plataforma/cambios/tecnico/nuevo', '', '21060', '3', '10', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21071', 'Calendario de cambios', '/plataforma/cambios/gestion/calendario', '', '21059', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21072', 'Gestión', '', '', '21059', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21073', 'Bandeja de RFC por evaluar', '/plataforma/cambios/gestion/evaluacion', 'Asignar evaluador, calcular riesgo, revisar conflictos y enviar a autorización.', '21072', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21074', 'Conflictos y capacidad', '/plataforma/cambios/gestion/conflictos', 'Solapamientos, congelamientos, feriados y máximos simultáneos.', '21072', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21075', 'Modelos de cambio estándar', '/plataforma/cambios/gestion/modelos', 'Consulta y propuesta de modelos, métricas de éxito y suspensiones.', '21072', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21076', 'Programación de cambios autorizados', '/plataforma/cambios/gestion/programacion', '', '21072', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21077', 'Revisión post-implementación', '/plataforma/cambios/gestion/pir', 'PIR pendientes y vencidas; incidentes causados; lecciones aprendidas.', '21072', '3', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21078', 'Seguimiento de ejecución', '/plataforma/cambios/gestion/ejecucion', 'Tablero en vivo de cambios en ejecución, extensiones de ventana y rollbacks.', '21072', '3', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21079', 'Seguimiento de etapas de aprobación', '/plataforma/cambios/gestion/autorizaciones', 'Etapas pendientes, plazos, recordatorios y escalamiento.', '21072', '3', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21080', 'Historial de cambios', '/plataforma/cambios/gestion/todos', '', '21059', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21081', 'CAB', '', '', '21059', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21082', 'Agenda y actas', '/plataforma/cambios/cab/agenda', '', '21081', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21083', 'Comité de emergencia (ECAB)', '/plataforma/cambios/cab/emergencia', 'Decisión rápida con plazo y revisión retroactiva.', '21081', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21084', 'Convocatoria, agenda y actas', '/plataforma/cambios/gestion/cab-agenda', 'Genera agenda con corte, convoca reuniones extraordinarias y emite el acta.', '21081', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21085', 'Dictamen colegiado (CAB)', '/plataforma/cambios/gestion/cab', 'Quórum, votación, voto de calidad, exclusión por conflicto de interés.', '21081', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21086', 'Solicitar un cambio', '/plataforma/cambios/gestion/crear', 'Formulario del Prompt 2 con validación de calendario y análisis de impacto.', '21059', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21087', 'Aprobaciones', '', '', '21059', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21088', 'Aprobación de negocio de cambios', '/plataforma/cambios/gestor-area/aprobaciones', 'Etapa Negocio de las RFC que afectan a mi departamento.', '21087', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21089', 'Aprobaciones de cambios', '/plataforma/cambios/aprobador', 'Etapas Dirección y excepciones: aprobar, aprobar con condiciones, rechazar, pedir información o delegar.', '21087', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21090', 'Modelos de cambio estándar', '/plataforma/cambios/aprobador/modelos', '', '21087', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21091', 'Problemas', '', '', NULL, '1', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21092', 'Análisis de causa raíz', '/plataforma/problemas/gestion/analisis', 'Herramientas de 5 porqués, Ishikawa y línea de tiempo.', '21091', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21093', 'Asignación de problemas', '/plataforma/problemas/supervisor/asignar', 'Reparte problemas sin responsable mientras no exista el Gestor de Problemas.', '21091', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21094', 'Bandeja y asignación', '/plataforma/problemas/gestion/asignacion', 'Asignar responsables, grupos y prioridad.', '21091', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21095', 'Candidatos a problema', '/plataforma/problemas/gestion/candidatos', 'Sugerencias de las reglas de umbral con alcance global.', '21091', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21096', 'Candidatos de mi grupo', '/plataforma/problemas/tecnico/candidatos', '', '21091', '2', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21097', 'Conocimiento derivado', '/plataforma/problemas/gestion/conocimiento', 'Artículos generados y pendientes por problema.', '21091', '2', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21098', 'Consultar KEDB', '/plataforma/problemas/tecnico/errores-conocidos', '', '21091', '2', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21099', 'Errores conocidos (KEDB)', '/plataforma/problemas/kedb', 'Publicar, retirar y revisar periódicamente.', '21091', '2', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21100', 'Incidentes recurrentes', '/plataforma/problemas/gestion/recurrentes', 'Agrupación por servicio, CI, categoría y código de resolución.', '21091', '2', '9', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21101', 'Objetivos de tiempo', '/plataforma/problemas/gestion/objetivos', 'Consulta de los objetivos internos de problemas.', '21091', '2', '10', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21102', 'Problemas asignados a mí', '/plataforma/problemas/tecnico/asignados', '', '21091', '2', '11', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21103', 'Problemas de mi grupo', '/plataforma/problemas/tecnico/grupo', '', '21091', '2', '12', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21104', 'Problemas mayores y revisión', '/plataforma/problemas/gestion/mayores', '', '21091', '2', '13', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21105', 'Registrar problema', '/plataforma/problemas/tecnico/nuevo', '', '21091', '2', '14', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21106', 'Registro de problemas', '/plataforma/problemas', '', '21091', '2', '15', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21107', 'Riesgo aceptado y cierre de problemas mayores', '/plataforma/problemas/aprobador', '', '21091', '2', '16', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21108', 'Solicitudes de cambio derivadas', '/plataforma/problemas/gestion/cambios', 'RFC vinculadas a problemas y su estado.', '21091', '2', '17', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21109', 'Activos', '', '', NULL, '1', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21110', 'Inventario', '', '', '21109', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21111', 'Activos de mi área', '/plataforma/activos/gestor-area', 'Lectura de activos por colaborador, sin datos financieros sensibles.', '21110', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21112', 'Asignación, custodia y actas', '/plataforma/activos/asignaciones', 'Asignar, transferir, devolver; actas y aceptación del custodio.', '21110', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21113', 'Importación masiva', '/plataforma/activos/importacion', 'Validación en seco, mapeo de columnas y reversión.', '21110', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21114', 'Inventario de activos', '/plataforma/activos/inventario', '', '21110', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21115', 'Inventario físico (campañas)', '/plataforma/activos/inventario-fisico', 'Crear campañas, revisar discrepancias y cerrar con acta (el conteo en campo lo hace el técnico).', '21110', '3', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21116', 'Inventario físico en campo', '/plataforma/activos/tecnico/conteos', 'Conteo con escaneo desde teléfono.', '21110', '3', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21117', 'Inventario técnico', '/plataforma/activos/tecnico/inventario', '', '21110', '3', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21118', 'Mis activos', '/plataforma/activos/mis-activos', 'Activos que el usuario tiene en custodia.', '21110', '3', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21119', 'Recepción de adquisiciones', '/plataforma/activos/recepcion', 'Recepción por lote con series, garantía y vínculo a la solicitud de origen.', '21110', '3', '9', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21120', 'Bajas y disposición', '', '', '21109', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21121', 'Aprobación de bajas de mi área', '/plataforma/activos/supervisor/bajas', 'Aprueba o rechaza bajas solicitadas por técnicos.', '21120', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21122', 'Consulta de bajas', '/plataforma/activos/auditor/bajas', 'Actas de baja, borrado seguro y destino final.', '21120', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21123', 'Gestión de bajas', '/plataforma/activos/bajas', 'Solicitudes de baja, borrado seguro, acta y destino final.', '21120', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21124', 'Bajas y renovaciones por monto', '/plataforma/activos/aprobador', '', '21120', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21125', 'Mantenimiento', '', '', '21109', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21126', 'Mantenimiento y garantías', '/plataforma/activos/mantenimiento', '', '21125', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21127', 'Mantenimiento y reparaciones', '/plataforma/activos/tecnico/mantenimiento', '', '21125', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21128', 'Licencias', '', '', '21109', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21129', 'Catálogo de software autorizado', '/plataforma/activos/licencias/catalogo-software', '', '21128', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21130', 'Consultar licencias', '/plataforma/activos/tecnico/licencias', '', '21128', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21131', 'Cumplimiento y sobreuso', '/plataforma/activos/licencias/cumplimiento', '', '21128', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21132', 'Licencias de software', '/plataforma/activos/licencias', '', '21128', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21133', 'CMDB', '', '', NULL, '1', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21134', 'Actualizaciones de CMDB desde cambios', '/plataforma/cmdb/actualizaciones', 'Aplica a la CMDB lo propuesto en las RFC cerradas.', '21133', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21135', 'Análisis e impacto', '/plataforma/activos/cmdb/analisis', 'Topología de dependencias, impacto en fallas y reconciliación Activo ↔ CI.', '21133', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21136', 'Calidad y auditoría de CMDB', '/plataforma/cmdb/auditoria', '', '21133', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21137', 'Inexactitudes reportadas', '/plataforma/cmdb/inexactitudes', 'Tareas generadas por técnicos.', '21133', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21138', 'Líneas base', '/plataforma/cmdb/lineas-base', '', '21133', '3', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21139', 'Mapa de topología', '/plataforma/activos/cmdb', '', '21133', '3', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21140', 'Mapa de topología CMDB', '/plataforma/cmdb/mapa', '', '21133', '3', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21141', 'Modelado de clases CI', '/plataforma/activos/cmdb/tipos', '', '21133', '3', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21142', 'Resultados de auditorías de CMDB', '/plataforma/cmdb/auditor/resultados', '', '21133', '3', '9', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21143', 'Proveedores y contratos', '', '', '21109', '2', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21144', 'Contratos y cobertura', '/plataforma/activos/contratos', '', '21143', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21145', 'Licencias y contratos de mi departamento', '/plataforma/activos/contratos-area', '', '21143', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21146', 'Proveedores', '/plataforma/proveedores', 'Proveedores con validación de RUC y contacto.', '21143', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21147', 'Renovaciones y vencimientos', '/plataforma/activos/renovaciones', 'Genera solicitudes de renovación y registra el historial.', '21143', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21148', 'Configuración de activos', '', '', '21109', '2', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21149', 'Ciclos de vida y transiciones', '/plataforma/activos/configuracion/ciclos-vida-transiciones', '', '21148', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21150', 'Fabricantes y modelos', '/plataforma/activos/configuracion/tipos-modelos-atributos/fabricantes', '', '21148', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21151', 'Licencias y contratos', '/plataforma/activos/configuracion/licencias-contratos', '', '21148', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21152', 'Listas auxiliares', '/plataforma/activos/configuracion/tipos-modelos-atributos/catalogos', '', '21148', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21153', 'Tipos de CI y relaciones CMDB', '/plataforma/cmdb/configuracion/relaciones', '', '21133', '2', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21154', 'Tipos, modelos y atributos', '/plataforma/activos/configuracion/tipos-modelos-atributos', 'Clases, fabricantes, atributos, formulario, códigos, ubicaciones, listas, ficha e importación.', '21148', '3', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21155', 'Ubicaciones', '/plataforma/activos/configuracion/tipos-modelos-atributos/ubicaciones', '', '21148', '3', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21156', 'Conocimiento', '', '', NULL, '1', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21157', 'Base de conocimiento', '/plataforma/conocimiento', 'Buscador por texto, categoría y servicio.', '21156', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21158', 'Consultar base de conocimiento', '/plataforma/conocimiento/tecnico/base', '', '21156', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21159', 'Crear artículo', '/plataforma/conocimiento/tecnico/nuevo', '', '21156', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21160', 'Mis artículos', '/plataforma/conocimiento/tecnico/mis-articulos', '', '21156', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21161', 'Revisión y publicación de artículos', '/plataforma/conocimiento/supervisor/revisiones', 'Revisa artículos del equipo cuando es revisor de la categoría.', '21156', '2', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21162', 'Revisiones pendientes', '/plataforma/conocimiento/tecnico/revisiones', '', '21156', '2', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21163', 'Catálogo de Servicios', '', '', NULL, '1', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21164', 'Catálogo de servicios', '/plataforma/servicios/catalogo', '', '21163', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21165', 'Configuración de categorías', '/plataforma/servicios/configuracion/categorias', 'CRUD de categorías con unicidad de nombre y código.', '21163', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21166', 'Crear servicio', '/plataforma/servicios/configuracion/crear', 'Formulario oficial de servicio con validaciones en tiempo real.', '21163', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21167', 'Objetivos SLA', '/plataforma/servicios/configuracion/sla', 'Matriz institucional de tiempos por prioridad y matriz impacto × urgencia.', '21163', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21168', 'Servicios de incidentes', '/plataforma/servicios/configuracion/incidentes', 'Listado y edición de servicios de incidente.', '21163', '2', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21169', 'Servicios de solicitudes', '/plataforma/servicios/configuracion/solicitudes', 'Listado, edición y flujo de aprobación por servicio.', '21163', '2', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21170', 'Operación', '', '', NULL, '1', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21171', 'Disponibilidad, capacidad y continuidad', '/plataforma/operacion/resiliencia', 'Indicadores de resiliencia de los servicios del área.', '21170', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21172', 'Eventos y alertas', '/plataforma/operacion/eventos', 'Eventos de monitoreo; permite convertir un evento en incidente.', '21170', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21173', 'Eventos y resiliencia', '/plataforma/operacion', '', '21170', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21174', 'Reportes', '', '', NULL, '1', '9', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21175', 'Indicadores operativos y SLA', '/plataforma/reportes/operativos', 'Indicadores globales de SLA, volumen y satisfacción.', '21174', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21176', 'Informes de auditoría', '/plataforma/reportes/auditoria', 'Hallazgos, recomendaciones y seguimiento.', '21174', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21177', 'Productividad individual', '/plataforma/reportes/productividad', 'Resueltos, tiempos, reabiertos y satisfacción por técnico (uso de gestión, no punitivo).', '21174', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21178', 'Reportes de activos', '/plataforma/reportes/activos', 'Inventario, antigüedad, costos, garantías, cumplimiento y exactitud de CMDB.', '21174', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21179', 'Reportes de cambios', '/plataforma/reportes/cambios', 'Tasa de éxito, emergencias, tiempos de ciclo, incidentes causados y cumplimiento de ventana.', '21174', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21180', 'Reportes de decisiones', '/plataforma/reportes/decisiones', 'Tiempo de respuesta y tasas de aprobación y rechazo.', '21174', '2', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21181', 'Reportes de problemas', '/plataforma/reportes/problemas', 'Tiempo hasta causa raíz, recurrencia, problemas mayores y uso de errores conocidos.', '21174', '2', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21182', 'Reportes del área', '/plataforma/reportes/area', 'Tickets por servicio, SLA percibido, satisfacción y costo referencial consumido.', '21174', '2', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21183', 'Tableros', '/plataforma/reportes/tableros', 'Diseñador de tableros.', '21174', '2', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21229', 'Solicitudes', '', 'Practica de Gestion de Solicitudes de Servicio: peticiones estandar del catalogo.', '21023', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21186', 'Flujo de atención y aprobaciones', '/plataforma/tickets/configuracion/vistas?seccion=estados&tipo=solicitud', 'Estados, tareas y etapas de aprobación.', '21229', '3', '11', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21228', 'Incidentes', '', 'Practica de Gestion de Incidentes: restablecer la operacion normal del servicio.', '21023', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21187', 'Flujo de estados y acciones', '/plataforma/tickets/configuracion/vistas?seccion=estados&tipo=incidente', 'Estados, transiciones y acciones por rol.', '21228', '3', '12', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21191', 'Configuración de formulario', '/plataforma/cambios/configuracion/formulario', 'Formulario de RFC configurable; unificar los modales con los de problemas.', '21059', '2', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21192', 'Feriados', '/plataforma/cambios/configuracion/notificaciones-calendario?vista=feriados', '', '21059', '2', '9', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21193', 'Flujo de evaluación, autorización y revisión posterior', '/plataforma/cambios/configuracion/flujo-evaluacion', 'Estados, transiciones, etapas, comités, plazos, tareas, cierre y PIR; unificar `Iconos.tsx`.', '21059', '2', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21194', 'Notificaciones de cambios', '/plataforma/cambios/configuracion/notificaciones-calendario', 'Eventos, ventanas, congelamientos, feriados, conflictos y presentación; el Gestor de Cambios edita solo las ventanas, congelamientos y feriados.', '21059', '2', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21195', 'Períodos de congelamiento', '/plataforma/cambios/configuracion/notificaciones-calendario?vista=congelamiento', '', '21059', '2', '10', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21196', 'Tipos de cambio y requisitos', '/plataforma/cambios/configuracion/tipos-requisitos', 'Tipos, autoridad, modelos estándar y clasificación.', '21059', '2', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21197', 'Ventanas de mantenimiento', '/plataforma/cambios/configuracion/notificaciones-calendario?vista=ventanas', 'Edición permitida por el permiso `config.cambios.calendario`.', '21059', '2', '11', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21199', 'Configuración de formulario', '/plataforma/problemas/configuracion/formulario', 'Formulario configurable de problemas con versionado.', '21091', '2', '18', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21200', 'Flujo de investigación', '/plataforma/problemas/configuracion/flujo', 'Estados, transiciones, asignación, objetivos, escalamiento, reapertura, tareas y problemas mayores.', '21091', '2', '19', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21201', 'Relación con incidentes y KEDB', '/plataforma/problemas/configuracion/relaciones', 'Umbrales, vínculos, KEDB, RFC, conocimiento y CI.', '21091', '2', '20', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21202', 'Artículos y gobernanza KCS', '/plataforma/conocimiento/configuracion/articulos', '', '21156', '2', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21264', 'Organización', '', 'Departamentos, grupos resolutores, supervisores y técnicos.', NULL, '1', '10', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21204', 'Departamentos empresariales', '/plataforma/organizacion/departamentos-empresa', 'Áreas de negocio (finanzas, legal, ventas, marketing) y su Gestor de Área.', '21264', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21205', 'Grupos resolutores de TI', '/plataforma/organizacion/departamentos', 'Áreas técnicas y grupos resolutores.', '21264', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21206', 'Supervisores', '/plataforma/organizacion/departamentos/supervisores', 'Asignación de supervisores a áreas técnicas.', '21264', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21207', 'Técnicos y niveles de soporte', '/plataforma/organizacion/tecnicos', 'Técnicos, niveles N1/N2/N3 y ausencias.', '21264', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21215', 'Plataforma', '', '', NULL, '1', '11', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21208', 'Identidades', '', '', '21215', '2', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21209', 'Gestión de usuarios', '/plataforma/seguridad/usuarios', 'Alta, edición, bloqueo y desbloqueo de usuarios; asignación de perfiles múltiples; envío de credenciales.', '21208', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21210', 'Perfiles y permisos', '/plataforma/seguridad/perfiles', 'Matriz de permisos por perfil.', '21208', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21211', 'Menú y notificaciones', '', '', '21215', '2', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21212', 'Configuración de contacto', '/plataforma/operacion/notificaciones/contacto', 'Remitente, SMTP y datos de contacto de la mesa.', '21211', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21213', 'Estructura del menú', '/plataforma/operacion/menu', 'Orden, visibilidad y bloqueo de ítems por perfil.', '21211', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21214', 'Plantillas de correo y avisos', '/plataforma/operacion/notificaciones/plantillas', 'Plantillas y reglas de notificación por evento.', '21211', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21216', 'Cumplimiento', '', '', '21215', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21217', 'Cambios sin autorización o fuera de ventana', '/plataforma/seguridad/cumplimiento/cambios', '', '21216', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21218', 'Muestreo de auditoría', '/plataforma/seguridad/muestreo', 'Selecciona muestras aleatorias de tickets, cambios y bajas para revisión.', '21216', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21219', 'Segregación de funciones', '/plataforma/seguridad/cumplimiento/sod', 'Detecta aprobaciones del mismo usuario, autoaprobaciones y excepciones.', '21216', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21220', 'Auditoría de cambios', '/plataforma/seguridad/auditoria-sistema', 'Registro inmutable de cambios de configuración (antes y después).', '21215', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21221', 'Registros de seguridad', '/plataforma/seguridad/seguridad-logs', '', '21215', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21222', 'Recertificación de accesos', '/plataforma/seguridad/accesos/recertificacion', 'Revisión periódica de usuarios y perfiles con confirmación o retiro.', '21215', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21223', 'Retención y depuración', '/plataforma/operacion/mantenimiento-datos', '', '21215', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21224', 'Salud del sistema', '/plataforma/operacion/salud-sistema', 'Estado técnico del sistema para el Administrador.', '21215', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21225', 'Mi cuenta', '', '', NULL, '1', '12', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21226', 'Mi perfil y seguridad', '/plataforma/mi-cuenta/perfil', 'Ver y editar datos permitidos, cambiar contraseña y ver sesiones.', '21225', '2', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21227', 'Preferencias de notificación', '/plataforma/mi-cuenta/notificaciones', 'Eventos × canales (app y correo), resumen diario y horas de silencio; los eventos obligatorios del perfil no se silencian.', '21225', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21230', 'Todos los incidentes', '/plataforma/incidentes', 'Consola integral de incidentes.', '21228', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21231', 'Mis incidentes', '/plataforma/incidentes/mios', 'Incidentes reportados por mi.', '21228', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21232', 'Incidentes asignados a mi', '/plataforma/incidentes/asignados', 'Incidentes bajo mi responsabilidad tecnica.', '21228', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21233', 'Bandeja de incidentes', '/plataforma/incidentes/bandeja', 'Incidentes pendientes de diagnostico y asignacion.', '21228', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21234', 'Incidentes resueltos', '/plataforma/incidentes/resueltos', 'Historial de incidentes cerrados.', '21228', '3', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21235', 'Incidentes de mi departamento', '/plataforma/incidentes/departamento', 'Incidentes que afectan a mi unidad.', '21228', '3', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21236', 'Registrar incidente', '/plataforma/incidentes/crear', 'Reportar una interrupcion o degradacion del servicio.', '21228', '3', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21237', 'Catalogo de incidentes', '/plataforma/incidentes/catalogo', 'Servicios publicados para reportar fallas.', '21228', '3', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21238', 'Incidentes mayores', '/plataforma/incidentes/mayores', 'Gestion de incidentes mayores y sala de crisis.', '21228', '3', '9', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21239', 'Sala de crisis (incidente mayor)', '/plataforma/tickets/mesa/incidente-mayor', 'Mesa de trabajo del incidente mayor.', '21228', '3', '10', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21240', 'Configuración del formulario', '/plataforma/incidentes/configuracion', 'Campos y reglas del reporte de incidentes.', '21228', '3', '11', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21241', 'Todas las solicitudes', '/plataforma/solicitudes', 'Consola integral de solicitudes.', '21229', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21242', 'Mis solicitudes', '/plataforma/solicitudes/mios', 'Solicitudes registradas por mi.', '21229', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21243', 'Solicitudes asignadas a mi', '/plataforma/solicitudes/asignados', 'Solicitudes bajo mi responsabilidad tecnica.', '21229', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21244', 'Bandeja de solicitudes', '/plataforma/solicitudes/bandeja', 'Solicitudes pendientes de atencion.', '21229', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21245', 'Solicitudes resueltas', '/plataforma/solicitudes/resueltos', 'Historial de solicitudes atendidas.', '21229', '3', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21246', 'Solicitudes de mi departamento', '/plataforma/solicitudes/departamento', 'Solicitudes de los colaboradores de mi unidad.', '21229', '3', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21247', 'Registrar solicitud', '/plataforma/solicitudes/crear', 'Pedir un servicio publicado en el catalogo.', '21229', '3', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21248', 'Catalogo de solicitudes', '/plataforma/solicitudes/catalogo', 'Servicios y entregables disponibles para solicitar.', '21229', '3', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21249', 'Aprobaciones de solicitudes', '/plataforma/solicitudes/aprobaciones', 'Dictamen de las solicitudes que requieren aprobacion.', '21229', '3', '9', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21250', 'Configuración del formulario', '/plataforma/solicitudes/configuracion', 'Campos y reglas del requerimiento de servicios.', '21229', '3', '10', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21251', 'Centro de asignacion', '/plataforma/tickets/gestion/asignar', 'Asignar tecnicos a incidentes y solicitudes.', '21024', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21252', 'Colaboradores de mi area', '/plataforma/tickets/gestion/colaboradores', 'Autorizaciones de los colaboradores de mi unidad.', '21024', '3', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21253', 'Bandeja consolidada de pendientes', '/plataforma/tickets/gestion/bandeja', 'Pendientes de ambos modulos sin asignar.', '21024', '3', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21254', 'Historial consolidado de resueltos', '/plataforma/tickets/gestion/resueltos', 'Incidentes y solicitudes resueltos.', '21024', '3', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21255', 'Tickets de mi departamento', '/plataforma/tickets/gestion/departamento', 'Vista consolidada de mi unidad.', '21024', '3', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21256', 'Todos los tickets', '/plataforma/tickets/gestion/todos', 'Consola global de la mesa de servicio.', '21024', '3', '6', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21257', 'Registrar ticket para un usuario', '/plataforma/tickets/gestion/crear', 'Alta asistida en nombre de otro usuario.', '21024', '3', '7', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21258', 'Auditoria de tickets', '/plataforma/tickets/gestion/auditoria', 'Inspeccion de solo lectura de la mesa de servicio.', '21024', '3', '8', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21259', 'Avisos de servicio', '/plataforma/avisos/mantenimientos', 'Mantenimientos programados y avisos.', '21024', '3', '9', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21260', 'Busqueda avanzada de tickets', '/plataforma/tickets/mesa/buscar', 'Busqueda avanzada del tecnico.', '21024', '3', '10', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21261', 'Historial de mis tickets', '/plataforma/tickets/gestion/mios', 'Tickets que registre a lo largo del tiempo.', '21024', '3', '11', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
 
--- Nivel 2 bajo Mesa de Servicio
-(110, 'Portal de Autoservicio', '/tickets/catalogo', 'Portal corporativo para usuarios y requerimientos', 100, 2, 1, true),
-(120, 'Operación y Soporte', '/tickets/gestion/bandeja', 'Bandejas operativas y resolución de incidentes', 100, 2, 2, true),
-(130, 'Supervisión y Despacho', '/tickets/gestion/asignar', 'Gobierno operativo y balanceo de carga', 100, 2, 3, true),
-(140, 'Gobernanza de Área', '/tickets/gestion/aprobaciones', 'Autorización de solicitudes y supervisión departamental', 100, 2, 4, true),
-
--- Nivel 3 bajo Portal de Autoservicio (110)
-(111, 'Catálogo de servicios', '/tickets/catalogo', 'Portal de solicitud de prestaciones TI estandarizadas', 110, 3, 1, true),
-(112, 'Registrar solicitud', '/tickets/gestion/crear', 'Registrar un nuevo ticket o incidente', 110, 3, 2, true),
-(113, 'Mis solicitudes', '/tickets/gestion/mios', 'Seguimiento de mis requerimientos registrados', 110, 3, 3, true),
-(114, 'Guías de autoayuda', '/tickets/gestion/ayuda', 'Procedimientos y soluciones de autoservicio', 110, 3, 4, true),
-
--- Nivel 3 bajo Operación y Soporte (120)
-(121, 'Mis tickets asignados', '/tickets/gestion/asignados', 'Cola de trabajo personal del especialista técnico', 120, 3, 1, true),
-(122, 'Bandeja de pendientes', '/tickets/gestion/bandeja', 'Tickets sin asignar disponibles para atención (Pull)', 120, 3, 2, true),
-(123, 'Tickets de mi área técnica', '/tickets/gestion/departamento', 'Requerimientos asociados al departamento de TI', 120, 3, 3, true),
-(124, 'Historial de resueltos', '/tickets/gestion/resueltos', 'Registro de tickets con solución aplicada', 120, 3, 4, true),
-
--- Nivel 3 bajo Supervisión y Despacho (130)
-(131, 'Centro de asignación', '/tickets/gestion/asignar', 'Despacho y asignación equilibrada a técnicos', 130, 3, 1, true),
-(132, 'Monitoreo de técnicos', '/tickets/gestion/tecnicos', 'Supervisión de disponibilidad y capacidad WIP', 130, 3, 2, true),
-(133, 'Todos los tickets', '/tickets/gestion/todos', 'Visibilidad omnicanal de todos los tickets del sistema', 130, 3, 3, true),
-(134, 'Auditoría forense', '/tickets/gestion/auditoria', 'Trazabilidad de ciclo de vida y cumplimiento de SLA', 130, 3, 4, true),
-
--- Nivel 3 bajo Gobernanza de Área (140)
-(141, 'Mis aprobaciones', '/tickets/gestion/aprobaciones', 'Autorización de solicitudes con impacto de recursos', 140, 3, 1, true),
-(142, 'Tickets de mi departamento', '/tickets/gestion/departamento', 'Monitoreo de tickets abiertos por el personal del área', 140, 3, 2, true),
-
--- Módulo 2: Gestión de Cambios (200)
-(200, 'Gestión de Cambios', '/cambios', 'Habilitación del cambio y gestión de riesgos ITIL v4', NULL, 1, 5, true),
-
--- Nivel 2 bajo Gestión de Cambios
-(210, 'Operación y Solicitudes RFC', '/cambios/gestion', 'Peticiones de cambio formalizadas y calendario', 200, 2, 1, true),
-(220, 'Comité Asesor CAB', '/cambios/gestion/cab', 'Change Advisory Board y evaluación colegiada de riesgos', 200, 2, 2, true),
-
--- Nivel 3 bajo Operación y Solicitudes RFC (210)
-(211, 'Registrar solicitud RFC', '/cambios/gestion/crear', 'Formulario con plan de trabajo, pruebas y rollback', 210, 3, 1, true),
-(212, 'Calendario de ventanas', '/cambios/gestion/calendario', 'Ventanas de mantenimiento y periodos de congelamiento (freeze)', 210, 3, 2, true),
-(213, 'Historial consolidado', '/cambios/gestion/todos', 'Auditoría integral de cambios y revisiones PIR', 210, 3, 3, true),
-
--- Nivel 3 bajo Comité Asesor CAB (220)
-(221, 'Dictamen colegiado CAB', '/cambios/gestion/cab', 'Sesiones de votación y aprobación técnica de cambios', 220, 3, 1, true),
-
--- Módulo 3: Activos de TI y CMDB (300)
-(300, 'Activos y CMDB', '/activos', 'Gestión de activos tecnológicos y mapa de configuración', NULL, 1, 8, true),
-
--- Nivel 2 bajo Activos y CMDB
-(310, 'Inventario de activos (HAM)', '/activos/inventario', 'Control patrimonial de hardware, estaciones y servidores', 300, 2, 1, true),
-(320, 'Mapa de topología CMDB', '/activos/cmdb', 'Elementos de configuración CI y dependencias de servicio', 300, 2, 2, true),
-(330, 'Licencias de software (SAM)', '/activos/licencias', 'Gestión de licencias, suscripciones y garantías', 300, 2, 3, true),
-
--- Módulo 4: Reportes y Analítica (400)
-(400, 'Reportes y Analítica', '/tickets/reportes', 'Indicadores clave de desempeño y métricas SLA', NULL, 1, 2, true),
-(600, 'Operación y gobierno de servicios', '/operacion', 'Eventos, resiliencia y terceros de servicios TI', NULL, 1, 7, true),
-(700, 'Gestión de problemas', '/problemas', 'Análisis de causa raíz y errores conocidos', NULL, 1, 4, true),
-(800, 'Proveedores y contratos TI', '/proveedores', 'Relaciones, contratos y desempeño de proveedores de TI', NULL, 1, 6, true),
-
--- Nivel 2 bajo Reportes y Analítica
-(410, 'Indicadores y SLAs', '/tickets/reportes', 'Métricas de tiempo medio (MTTA/MTTR), cumplimiento SLA y CSAT', 400, 2, 1, true),
-(572, 'Diseñador de dashboards', '/admin/reportes-disenador', 'Diseño de tableros e indicadores', 400, 2, 2, true),
-
--- Módulo 5: Administración del Sistema (500)
-(500, 'Configuración', '/admin', 'Configuración funcional y técnica del sistema', NULL, 1, 1, true),
-
--- Nivel 2 bajo Administración
-(510, 'Identidades y Accesos (IAM)', '/admin/usuarios', 'Administración de usuarios corporativos y roles RBAC', 500, 2, 1, true),
-(520, 'Gobierno del Portafolio', '/admin/servicios', 'Parámetros de catálogo, SLAs y plantillas de captura', 500, 2, 2, true),
-(530, 'Estructura organizacional y soporte', '/admin/departamentos', 'Estructura empresarial y capacidad resolutora de TI', 500, 2, 3, true),
-(540, 'Seguridad ISO 27001', '/admin/seguridad-logs', 'Trazabilidad de seguridad de la información ISO 27001', 500, 2, 4, true),
-
--- Nivel 3 bajo Identidades y Accesos (510)
-(511, 'Gestión de usuarios', '/admin/usuarios', 'Altas, bajas y mantenimiento de usuarios del sistema', 510, 3, 1, true),
-(512, 'Perfiles y permisos', '/admin/perfiles', 'Matriz de control de acceso basada en roles (RBAC)', 510, 3, 2, true),
-(513, 'Estructura del menú', '/admin/menu', 'Configuración de jerarquías y visibilidad de opciones', 510, 3, 3, true),
-
--- Nivel 3 bajo Gobierno del Portafolio (520)
-(521, 'Catálogo de servicios y SLAs', '/admin/servicios', 'Definición de servicios corporativos y acuerdos SLA', 520, 3, 1, true),
-(522, 'Configurador de esquemas RFC', '/admin/rfc', 'Plantillas RFC, campos obligatorios y perfiles solicitantes permitidos', 520, 3, 2, true),
-
--- Nivel 3 bajo Organización y Capacidad (530)
-(531, 'Departamentos de TI', '/admin/departamentos', 'Equipos técnicos resolutores', 530, 3, 1, true),
-(532, 'Especialistas técnicos', '/admin/tecnicos', 'Niveles de soporte L1/L2/L3 y capacidad WIP', 530, 3, 2, true),
-(533, 'Departamentos empresariales', '/admin/departamentos-empresa', 'Unidades organizativas de cada cliente', 530, 3, 3, true),
-
--- Nivel 3 bajo Seguridad ISO 27001 (540)
-(541, 'Logs de seguridad ISO 27001', '/admin/seguridad-logs', 'Registro de accesos, intentos fallidos y bloqueos', 540, 3, 1, true),
-(135, 'Incidentes', '/incidentes', 'Módulo independiente de registro y gestión de incidentes', NULL, 1, 2, true),
-(136, 'Solicitudes de Servicio', '/solicitudes', 'Módulo independiente de atención de solicitudes de servicio', NULL, 1, 3, true),
-(143, 'Colaboradores de mi área', '/tickets/gestion/colaboradores', 'Colaboradores de la unidad empresarial del Gestor de Área', 140, 3, 3, true),
-(340, 'Modelado de clases CI', '/activos/cmdb/tipos', 'Configuración del modelo de elementos de configuración', 300, 2, 4, true),
-(550, 'Diseño de formularios y vistas', '/admin/tickets-vistas', 'Configuración de formularios y vistas de trabajo', 500, 2, 5, true),
-(560, 'Comunicaciones y notificaciones', '/admin/notificaciones', 'Canales y plantillas de comunicación del sistema', 500, 2, 6, true),
-(570, 'Auditoría y mantenimiento', '/admin/auditoria-sistema', 'Auditoría y mantenimiento administrativo', 500, 2, 7, true),
-(580, 'Experiencia y conocimiento', '/admin/portal-autoservicio', 'Configuración administrativa del portal y conocimiento', 500, 2, 8, true),
-(590, 'Configuración de Activos y CMDB', '/activos/cmdb/tipos', 'Modelos y clases de configuración tecnológica', 500, 2, 9, true),
-(551, 'Vistas de ticket por perfil', '/admin/tickets-vistas', 'Configuración de vistas por perfil', 550, 3, 1, true),
-(552, 'Constructor de formularios', '/admin/tickets-formularios', 'Configuración de formularios', 550, 3, 2, true),
-(561, 'Plantillas de correo y canales', '/admin/notificaciones', 'Plantillas y canales de notificación', 560, 3, 1, true),
-(571, 'Auditoría integral', '/admin/auditoria-sistema', 'Trazabilidad integral del sistema', 570, 3, 1, true),
-(573, 'Mantenimiento de datos', '/admin/mantenimiento-datos', 'Retención, depuración y mantenimiento de datos', 570, 3, 2, true),
-(581, 'Configuración del portal', '/admin/portal-autoservicio', 'Gestión administrativa de la experiencia del portal', 580, 3, 1, true),
-(582, 'Gobierno del conocimiento', '/admin/conocimiento-config', 'Revisión y publicación de artículos de conocimiento', 580, 3, 2, true),
-(591, 'Clases de elementos de configuración', '/activos/cmdb/tipos', 'Definición administrativa de clases y atributos CMDB', 590, 3, 1, true),
-(610, 'Eventos y alertas', '/operacion/eventos', 'Registro y triage de eventos vinculados a CI e incidentes', 600, 2, 1, true),
-(620, 'Disponibilidad, capacidad y continuidad', '/operacion/resiliencia', 'Objetivos de servicio, resiliencia y pruebas de continuidad', 600, 2, 2, true),
-(710, 'Registro de problemas', '/problemas', 'Investigación y seguimiento de problemas ITSM', 700, 2, 1, true),
-(720, 'Errores conocidos (KEDB)', '/problemas/kedb', 'Consulta de errores conocidos y workarounds', 700, 2, 2, true)
-ON CONFLICT (id_opcion_menu) DO UPDATE SET 
-  nombre = EXCLUDED.nombre, 
-  url_menu = EXCLUDED.url_menu, 
-  descripcion = EXCLUDED.descripcion, 
-  id_padre = EXCLUDED.id_padre, 
-  nivel = EXCLUDED.nivel, 
-  orden = EXCLUDED.orden, 
-  estado_registro = true;
-
-UPDATE opciones_menu SET nombre='Auditoría y registros',descripcion='Consulta de auditoría operativa, seguridad y mantenimiento de registros' WHERE id_opcion_menu=570;
-UPDATE opciones_menu SET id_padre=570,nivel=3,orden=2,nombre='Registros de seguridad',descripcion='Accesos, intentos fallidos y bloqueos' WHERE id_opcion_menu=541;
-DELETE FROM opciones_menu_perfiles WHERE id_opcion_menu=540;
-DELETE FROM opciones_menu WHERE id_opcion_menu=540;
-DELETE FROM opciones_menu_perfiles WHERE id_opcion_menu IN (137,138);
-DELETE FROM opciones_menu WHERE id_opcion_menu IN (137,138);
-
-SELECT setval('opciones_menu_id_opcion_menu_seq', (SELECT MAX(id_opcion_menu) FROM opciones_menu));
-
--- ---------- Mapeo de permisos por perfil (Segregación SoD / ITIL 4 / ISO 27001) ----------
--- Administrador (id_perfil: 1)
-INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_registro)
-SELECT id_opcion_menu, 1, orden, true FROM opciones_menu
-WHERE id_opcion_menu IN (
-  100, 130, 133,
-  200, 210, 212, 213,
-  300, 310, 320, 330,
-  400, 410,
-  500, 510, 511, 512, 513, 520, 521, 522, 530, 531, 532, 540, 541
-)
-ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
-
--- Tecnico (id_perfil: 2)
-INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_registro)
-SELECT id_opcion_menu, 2, orden, true FROM opciones_menu 
-WHERE id_opcion_menu IN (
-  100, 110, 112, 114,
-  120, 121, 122, 123, 124,
-  200, 210, 211, 212, 213,
-  300, 310, 320
-)
-ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
-
--- Solicitante (id_perfil: 3)
-INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_registro)
-SELECT id_opcion_menu, 3, orden, true FROM opciones_menu 
-WHERE id_opcion_menu IN (
-  100, 110, 111, 112, 113, 114
-)
-ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
-
--- Supervisor (id_perfil: 4)
-INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_registro)
-SELECT id_opcion_menu, 4, orden, true FROM opciones_menu 
-WHERE id_opcion_menu IN (
-  100, 120, 122, 124,
-  130, 131, 132, 133, 134,
-  200, 210, 212, 213,
-  400, 410,
-  500, 530, 531, 532
-)
-ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
-
--- Gestor de Area (id_perfil: 5)
-INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_registro)
-SELECT id_opcion_menu, 5, orden, true FROM opciones_menu 
-WHERE id_opcion_menu IN (
-  100, 110, 111, 112, 113,
-  140, 141, 142,
-  400, 410
-)
-ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
-
--- Auditor (id_perfil: 6)
-INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_registro)
-SELECT id_opcion_menu, 6, orden, true FROM opciones_menu 
-WHERE id_opcion_menu IN (
-  100, 130, 134,
-  200, 210, 213,
-  300, 310, 330,
-  400, 410,
-  500, 520, 521, 540, 541
-)
-ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
-
--- Aprobador / CAB (id_perfil: 7)
-INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_registro)
-SELECT id_opcion_menu, 7, orden, true FROM opciones_menu
-WHERE id_opcion_menu IN (
-  200, 210, 212, 213,
-  220, 221,
-  300, 320
-)
-ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
-
--- Gestor de Cambios (id_perfil: 8)
-UPDATE opciones_menu_perfiles SET estado_registro = false WHERE id_perfil = 8;
-INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_registro)
-SELECT id_opcion_menu, 8, orden, true FROM opciones_menu
-WHERE id_opcion_menu IN (
-  200, 210, 211, 212, 213,
-  220, 221,
-  300, 320
-)
-ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
-
--- Gestor de Activos y Configuracion (id_perfil: 9)
-UPDATE opciones_menu_perfiles SET estado_registro = false WHERE id_perfil = 9;
-INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_registro)
-SELECT id_opcion_menu, 9, orden, true FROM opciones_menu
-WHERE id_opcion_menu IN (
-  300, 310, 320, 330
-)
-ON CONFLICT (id_opcion_menu, id_perfil) DO UPDATE SET orden = EXCLUDED.orden, estado_registro = true;
-
--- Matriz consolidada de los nueve perfiles. Se limpia el mapeo seed anterior para
--- impedir que una ejecución repetida conserve permisos obsoletos.
-DELETE FROM opciones_menu_perfiles WHERE id_opcion_menu IN (
-100,110,111,112,113,114,120,121,122,123,124,130,131,132,133,134,135,136,137,138,140,141,142,
-200,210,211,212,213,220,221,300,310,320,330,340,400,410,500,510,511,512,513,520,521,522,
-530,531,532,540,541,550,551,552,560,561,570,571,572,573,580,581,582,590,591,600,610,620,700,710,720,800
-);
-WITH matriz(id_opcion_menu,id_perfil) AS (VALUES
-(100,2),(110,2),(112,2),(114,2),(120,2),(121,2),(122,2),(123,2),(124,2),(135,2),(136,2),(200,2),(210,2),(211,2),(212,2),(213,2),(300,2),(310,2),(320,2),(600,2),(610,2),(620,2),(700,2),(710,2),(720,2),
-(100,3),(110,3),(111,3),(112,3),(113,3),(114,3),
-(100,4),(120,4),(122,4),(124,4),(130,4),(131,4),(132,4),(133,4),(134,4),(135,4),(136,4),(200,4),(210,4),(212,4),(213,4),(400,4),(410,4),(500,4),(530,4),(531,4),(532,4),(600,4),(610,4),(620,4),(700,4),(710,4),(720,4),
-(100,5),(110,5),(111,5),(112,5),(113,5),(140,5),(141,5),(142,5),(143,5),(400,5),(410,5),
-(100,6),(130,6),(133,6),(134,6),(200,6),(210,6),(213,6),(300,6),(310,6),(320,6),(330,6),(340,6),(400,6),(410,6),(500,6),(520,6),(521,6),(541,6),(570,6),(571,6),(600,6),(610,6),(620,6),(700,6),(710,6),(720,6),(800,6),
-(200,7),(210,7),(212,7),(213,7),(220,7),(221,7),(300,7),(320,7),(600,7),(610,7),(620,7),(700,7),(710,7),(720,7),(800,7),
-(200,8),(210,8),(211,8),(212,8),(213,8),(220,8),(221,8),(300,8),(320,8),(600,8),(610,8),(620,8),(700,8),(710,8),(720,8),(800,8),
-(200,9),(210,9),(212,9),(213,9),(300,9),(310,9),(320,9),(330,9),(340,9),(600,9),(610,9),(620,9),(700,9),(710,9),(720,9),(800,9),
-(400,1),(410,1),(500,1),(510,1),(511,1),(512,1),(513,1),(520,1),(521,1),(522,1),(530,1),(531,1),(532,1),(533,1),(541,1),(550,1),(551,1),(552,1),(560,1),(561,1),(570,1),(571,1),(572,1),(573,1),(580,1),(581,1),(582,1),(590,1),(591,1)
-)
-INSERT INTO opciones_menu_perfiles (id_opcion_menu,id_perfil,orden,estado_registro)
-SELECT id_opcion_menu,id_perfil,ROW_NUMBER() OVER (PARTITION BY id_perfil ORDER BY id_opcion_menu),true FROM matriz
-ON CONFLICT (id_opcion_menu,id_perfil) DO UPDATE SET orden=EXCLUDED.orden,estado_registro=true;
-
+INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_registro) VALUES
+  (21001, 1, 1, true),
+  (21001, 2, 1, true),
+  (21001, 3, 1, true),
+  (21001, 4, 1, true),
+  (21001, 5, 1, true),
+  (21001, 6, 1, true),
+  (21001, 7, 1, true),
+  (21001, 8, 1, true),
+  (21001, 9, 1, true),
+  (21001, 10, 1, true),
+  (21002, 5, 1, true),
+  (21002, 7, 1, true),
+  (21003, 5, 1, true),
+  (21004, 7, 1, true),
+  (21005, 5, 1, true),
+  (21006, 7, 1, true),
+  (21007, 9, 1, true),
+  (21008, 4, 1, true),
+  (21009, 4, 1, true),
+  (21010, 4, 1, true),
+  (21011, 6, 1, true),
+  (21012, 8, 1, true),
+  (21013, 10, 1, true),
+  (21014, 4, 1, true),
+  (21015, 7, 1, true),
+  (21016, 5, 1, true),
+  (21017, 2, 1, true),
+  (21018, 2, 1, true),
+  (21019, 2, 1, true),
+  (21020, 2, 1, true),
+  (21021, 1, 1, true),
+  (21022, 3, 1, true),
+  (21023, 1, 1, true),
+  (21023, 2, 1, true),
+  (21023, 3, 1, true),
+  (21023, 4, 1, true),
+  (21023, 5, 1, true),
+  (21023, 6, 1, true),
+  (21023, 7, 1, true),
+  (21024, 1, 1, true),
+  (21024, 2, 1, true),
+  (21024, 3, 1, true),
+  (21024, 4, 1, true),
+  (21024, 5, 1, true),
+  (21024, 6, 1, true),
+  (21044, 2, 1, true),
+  (21044, 4, 1, true),
+  (21045, 4, 1, true),
+  (21046, 4, 1, true),
+  (21047, 2, 1, true),
+  (21047, 4, 1, true),
+  (21048, 2, 1, true),
+  (21049, 4, 1, true),
+  (21059, 1, 1, true),
+  (21059, 2, 1, true),
+  (21059, 4, 1, true),
+  (21059, 5, 1, true),
+  (21059, 6, 1, true),
+  (21059, 7, 1, true),
+  (21059, 8, 1, true),
+  (21060, 2, 1, true),
+  (21060, 4, 1, true),
+  (21060, 5, 1, true),
+  (21061, 4, 1, true),
+  (21062, 2, 1, true),
+  (21063, 5, 1, true),
+  (21064, 2, 1, true),
+  (21065, 4, 1, true),
+  (21066, 2, 1, true),
+  (21067, 2, 1, true),
+  (21068, 2, 1, true),
+  (21069, 4, 1, true),
+  (21070, 2, 1, true),
+  (21071, 4, 1, true),
+  (21071, 5, 1, true),
+  (21071, 7, 1, true),
+  (21071, 8, 1, true),
+  (21072, 8, 1, true),
+  (21073, 8, 1, true),
+  (21074, 8, 1, true),
+  (21075, 8, 1, true),
+  (21076, 8, 1, true),
+  (21077, 8, 1, true),
+  (21078, 8, 1, true),
+  (21079, 8, 1, true),
+  (21080, 1, 1, true),
+  (21080, 6, 1, true),
+  (21080, 8, 1, true),
+  (21081, 7, 1, true),
+  (21081, 8, 1, true),
+  (21082, 7, 1, true),
+  (21083, 7, 1, true),
+  (21084, 8, 1, true),
+  (21085, 7, 1, true),
+  (21085, 8, 1, true),
+  (21086, 5, 1, true),
+  (21086, 8, 1, true),
+  (21087, 5, 1, true),
+  (21087, 7, 1, true),
+  (21088, 5, 1, true),
+  (21089, 7, 1, true),
+  (21090, 7, 1, true),
+  (21091, 1, 1, true),
+  (21091, 2, 1, true),
+  (21091, 4, 1, true),
+  (21091, 6, 1, true),
+  (21091, 7, 1, true),
+  (21091, 10, 1, true),
+  (21092, 10, 1, true),
+  (21093, 4, 1, true),
+  (21094, 10, 1, true),
+  (21095, 10, 1, true),
+  (21096, 2, 1, true),
+  (21097, 10, 1, true),
+  (21098, 2, 1, true),
+  (21099, 4, 1, true),
+  (21099, 10, 1, true),
+  (21100, 10, 1, true),
+  (21101, 10, 1, true),
+  (21102, 2, 1, true),
+  (21103, 2, 1, true),
+  (21104, 10, 1, true),
+  (21105, 2, 1, true),
+  (21106, 1, 1, true),
+  (21106, 4, 1, true),
+  (21106, 6, 1, true),
+  (21106, 10, 1, true),
+  (21107, 7, 1, true),
+  (21108, 10, 1, true),
+  (21109, 1, 1, true),
+  (21109, 2, 1, true),
+  (21109, 3, 1, true),
+  (21109, 4, 1, true),
+  (21109, 5, 1, true),
+  (21109, 6, 1, true),
+  (21109, 7, 1, true),
+  (21109, 9, 1, true),
+  (21110, 1, 1, true),
+  (21110, 2, 1, true),
+  (21110, 3, 1, true),
+  (21110, 4, 1, true),
+  (21110, 5, 1, true),
+  (21110, 6, 1, true),
+  (21110, 9, 1, true),
+  (21111, 5, 1, true),
+  (21112, 9, 1, true),
+  (21113, 9, 1, true),
+  (21114, 1, 1, true),
+  (21114, 4, 1, true),
+  (21114, 6, 1, true),
+  (21114, 9, 1, true),
+  (21115, 9, 1, true),
+  (21116, 2, 1, true),
+  (21117, 2, 1, true),
+  (21118, 3, 1, true),
+  (21119, 9, 1, true),
+  (21120, 4, 1, true),
+  (21120, 6, 1, true),
+  (21120, 7, 1, true),
+  (21120, 9, 1, true),
+  (21121, 4, 1, true),
+  (21122, 6, 1, true),
+  (21123, 9, 1, true),
+  (21124, 7, 1, true),
+  (21125, 2, 1, true),
+  (21125, 9, 1, true),
+  (21126, 9, 1, true),
+  (21127, 2, 1, true),
+  (21128, 2, 1, true),
+  (21128, 4, 1, true),
+  (21128, 6, 1, true),
+  (21128, 9, 1, true),
+  (21129, 9, 1, true),
+  (21130, 2, 1, true),
+  (21131, 9, 1, true),
+  (21132, 4, 1, true),
+  (21132, 6, 1, true),
+  (21133, 2, 1, true),
+  (21133, 6, 1, true),
+  (21133, 9, 1, true),
+  (21134, 9, 1, true),
+  (21135, 9, 1, true),
+  (21136, 9, 1, true),
+  (21137, 9, 1, true),
+  (21138, 9, 1, true),
+  (21139, 9, 1, true),
+  (21140, 2, 1, true),
+  (21141, 9, 1, true),
+  (21142, 6, 1, true),
+  (21143, 5, 1, true),
+  (21143, 9, 1, true),
+  (21144, 9, 1, true),
+  (21145, 5, 1, true),
+  (21146, 9, 1, true),
+  (21147, 9, 1, true),
+  (21148, 1, 1, true),
+  (21148, 9, 1, true),
+  (21149, 1, 1, true),
+  (21150, 9, 1, true),
+  (21151, 1, 1, true),
+  (21152, 9, 1, true),
+  (21153, 1, 1, true),
+  (21154, 1, 1, true),
+  (21155, 9, 1, true),
+  (21156, 1, 1, true),
+  (21156, 2, 1, true),
+  (21156, 3, 1, true),
+  (21156, 4, 1, true),
+  (21156, 5, 1, true),
+  (21157, 3, 1, true),
+  (21157, 4, 1, true),
+  (21157, 5, 1, true),
+  (21158, 2, 1, true),
+  (21159, 2, 1, true),
+  (21160, 2, 1, true),
+  (21161, 4, 1, true),
+  (21162, 2, 1, true),
+  (21163, 1, 1, true),
+  (21163, 2, 1, true),
+  (21164, 2, 1, true),
+  (21165, 1, 1, true),
+  (21166, 1, 1, true),
+  (21167, 1, 1, true),
+  (21168, 1, 1, true),
+  (21169, 1, 1, true),
+  (21170, 1, 1, true),
+  (21170, 4, 1, true),
+  (21171, 4, 1, true),
+  (21172, 4, 1, true),
+  (21173, 1, 1, true),
+  (21174, 1, 1, true),
+  (21174, 4, 1, true),
+  (21174, 5, 1, true),
+  (21174, 6, 1, true),
+  (21174, 7, 1, true),
+  (21174, 8, 1, true),
+  (21174, 9, 1, true),
+  (21174, 10, 1, true),
+  (21175, 1, 1, true),
+  (21175, 4, 1, true),
+  (21175, 6, 1, true),
+  (21176, 6, 1, true),
+  (21177, 4, 1, true),
+  (21178, 9, 1, true),
+  (21179, 8, 1, true),
+  (21180, 7, 1, true),
+  (21181, 10, 1, true),
+  (21182, 5, 1, true),
+  (21183, 1, 1, true),
+  (21183, 6, 1, true),
+  (21186, 1, 1, true),
+  (21187, 1, 1, true),
+  (21191, 1, 1, true),
+  (21192, 8, 1, true),
+  (21193, 1, 1, true),
+  (21194, 1, 1, true),
+  (21195, 8, 1, true),
+  (21196, 1, 1, true),
+  (21197, 8, 1, true),
+  (21199, 1, 1, true),
+  (21200, 1, 1, true),
+  (21201, 1, 1, true),
+  (21202, 1, 1, true),
+  (21204, 1, 1, true),
+  (21205, 1, 1, true),
+  (21206, 1, 1, true),
+  (21207, 1, 1, true),
+  (21208, 1, 1, true),
+  (21208, 6, 1, true),
+  (21209, 1, 1, true),
+  (21210, 1, 1, true),
+  (21210, 6, 1, true),
+  (21211, 1, 1, true),
+  (21212, 1, 1, true),
+  (21213, 1, 1, true),
+  (21214, 1, 1, true),
+  (21215, 1, 1, true),
+  (21215, 6, 1, true),
+  (21216, 6, 1, true),
+  (21217, 6, 1, true),
+  (21218, 6, 1, true),
+  (21219, 6, 1, true),
+  (21220, 1, 1, true),
+  (21220, 6, 1, true),
+  (21221, 1, 1, true),
+  (21221, 6, 1, true),
+  (21222, 6, 1, true),
+  (21223, 1, 1, true),
+  (21223, 6, 1, true),
+  (21224, 1, 1, true),
+  (21225, 1, 1, true),
+  (21225, 2, 1, true),
+  (21225, 3, 1, true),
+  (21225, 4, 1, true),
+  (21225, 5, 1, true),
+  (21225, 6, 1, true),
+  (21225, 7, 1, true),
+  (21225, 8, 1, true),
+  (21225, 9, 1, true),
+  (21225, 10, 1, true),
+  (21226, 1, 1, true),
+  (21226, 2, 1, true),
+  (21226, 3, 1, true),
+  (21226, 4, 1, true),
+  (21226, 5, 1, true),
+  (21226, 6, 1, true),
+  (21226, 7, 1, true),
+  (21226, 8, 1, true),
+  (21226, 9, 1, true),
+  (21226, 10, 1, true),
+  (21227, 1, 1, true),
+  (21227, 2, 1, true),
+  (21227, 3, 1, true),
+  (21227, 4, 1, true),
+  (21227, 5, 1, true),
+  (21227, 6, 1, true),
+  (21227, 7, 1, true),
+  (21227, 8, 1, true),
+  (21227, 9, 1, true),
+  (21227, 10, 1, true),
+  (21228, 1, 1, true),
+  (21228, 2, 1, true),
+  (21228, 3, 1, true),
+  (21228, 4, 1, true),
+  (21228, 5, 1, true),
+  (21228, 6, 1, true),
+  (21229, 1, 1, true),
+  (21229, 2, 1, true),
+  (21229, 3, 1, true),
+  (21229, 4, 1, true),
+  (21229, 5, 1, true),
+  (21229, 6, 1, true),
+  (21229, 7, 1, true),
+  (21230, 1, 1, true),
+  (21230, 4, 1, true),
+  (21230, 6, 1, true),
+  (21231, 3, 1, true),
+  (21231, 5, 1, true),
+  (21232, 2, 1, true),
+  (21233, 2, 1, true),
+  (21233, 4, 1, true),
+  (21234, 2, 1, true),
+  (21234, 4, 1, true),
+  (21234, 6, 1, true),
+  (21235, 5, 1, true),
+  (21236, 2, 1, true),
+  (21236, 3, 1, true),
+  (21237, 3, 1, true),
+  (21238, 4, 1, true),
+  (21239, 2, 1, true),
+  (21240, 1, 1, true),
+  (21241, 1, 1, true),
+  (21241, 4, 1, true),
+  (21241, 6, 1, true),
+  (21242, 3, 1, true),
+  (21242, 5, 1, true),
+  (21242, 7, 1, true),
+  (21243, 2, 1, true),
+  (21244, 2, 1, true),
+  (21244, 4, 1, true),
+  (21245, 2, 1, true),
+  (21245, 4, 1, true),
+  (21245, 6, 1, true),
+  (21246, 5, 1, true),
+  (21247, 2, 1, true),
+  (21247, 3, 1, true),
+  (21248, 3, 1, true),
+  (21248, 5, 1, true),
+  (21249, 5, 1, true),
+  (21250, 1, 1, true),
+  (21251, 4, 1, true),
+  (21252, 5, 1, true),
+  (21253, 4, 1, true),
+  (21254, 4, 1, true),
+  (21254, 6, 1, true),
+  (21255, 5, 1, true),
+  (21256, 1, 1, true),
+  (21256, 4, 1, true),
+  (21256, 6, 1, true),
+  (21257, 4, 1, true),
+  (21257, 5, 1, true),
+  (21258, 1, 1, true),
+  (21258, 4, 1, true),
+  (21258, 6, 1, true),
+  (21259, 3, 1, true),
+  (21260, 2, 1, true),
+  (21261, 2, 1, true),
+  (21264, 1, 1, true);
 -- ============================================================
 -- CATÁLOGOS ITIL 4 Y DATOS DE PRUEBA
 -- ============================================================

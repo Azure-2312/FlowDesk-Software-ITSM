@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Download, Trash2, X } from "@/shared/components/ui/Iconos";
 
 export interface PerfilImportacion {
   id: string;
@@ -211,7 +213,7 @@ export function PestanaImportacionInventario({ datos, onChange, bloqueado }: Pro
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h3 className="text-base font-bold text-slate-800">
-              1.5.1.9 Importación masiva e inventario físico de activos
+              Importación masiva e inventario físico de activos
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               Gobernanza de plantillas de carga masiva, validación previa en seco (Dry Run) y campañas de conteo físico periódico.
@@ -352,21 +354,7 @@ export function PestanaImportacionInventario({ datos, onChange, bloqueado }: Pro
                       <td className="py-2.5 px-3 font-mono text-slate-700">{p.clave_coincidencia}</td>
                       <td className="py-2.5 px-3 uppercase text-slate-600">{p.manejo_duplicados}</td>
                       <td className="py-2.5 px-3 text-slate-500">{p.ultima_ejecucion || "Sin ejecuciones"}</td>
-                      <td className="py-2.5 px-3 text-right space-x-2">
-                        <button
-                          onClick={() => mostrarAviso(`Descargando plantilla CSV oficial para ${p.nombre}...`)}
-                          className="text-indigo-600 hover:text-indigo-800 font-semibold"
-                        >
-                          Descargar plantilla
-                        </button>
-                        <button
-                          onClick={() => eliminarPerfil(p.id)}
-                          disabled={bloqueado}
-                          className="text-red-600 hover:text-red-800 font-semibold"
-                        >
-                          Eliminar
-                        </button>
-                      </td>
+                      <td className="py-2 px-3 text-right"><div style={{ display: "inline-flex", gap: 4 }}><BotonIcono variante="normal" icono={<Download size={14} />} titulo="Descargar plantilla CSV" ariaLabel="Descargar plantilla CSV" onClick={() => mostrarAviso(`Descargando plantilla CSV oficial para ${p.nombre}...`)} /><BotonIcono variante="peligro" icono={<Trash2 size={14} />} titulo="Eliminar perfil" ariaLabel="Eliminar perfil" disabled={bloqueado} onClick={() => eliminarPerfil(p.id)} /></div></td>
                     </tr>
                   ))}
                 </tbody>
@@ -591,9 +579,7 @@ export function PestanaImportacionInventario({ datos, onChange, bloqueado }: Pro
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
             <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
               <h3 className="text-sm font-bold text-slate-800">Nuevo perfil de importación masiva</h3>
-              <button onClick={() => setModalNuevoPerfil(false)} className="text-slate-400 hover:text-slate-600 font-bold">
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalNuevoPerfil(false)} />
             </div>
 
             <div className="p-5 space-y-3 text-xs">

@@ -44,7 +44,7 @@ export default function PaginaTodosCambios() {
           </p>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <Link href="/cambios/gestion/crear" className="boton-primario" style={{ width: "auto", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <Link href="/plataforma/cambios/gestion/crear" className="boton-primario" style={{ width: "auto", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
@@ -103,7 +103,7 @@ export default function PaginaTodosCambios() {
           <p style={{ margin: "0 0 10px 0", color: "#64748b", fontWeight: 500 }}>
             No se encontraron solicitudes de cambio que coincidan con los filtros seleccionados.
           </p>
-          <Link href="/cambios/gestion/crear" className="boton-mini" style={{ textDecoration: "none" }}>
+          <Link href="/plataforma/cambios/gestion/crear" className="boton-mini" style={{ textDecoration: "none" }}>
             Registrar la primera RFC
           </Link>
         </div>
@@ -128,7 +128,7 @@ export default function PaginaTodosCambios() {
                 <tr key={c.id_cambio}>
                   <td>
                     <Link
-                      href={`/cambios/gestion/${c.id_cambio}`}
+                      href={`/plataforma/cambios/gestion/${c.id_cambio}`}
                       style={{ fontFamily: "monospace", fontWeight: 700, color: "#2563eb", textDecoration: "none" }}
                       title="Abrir vista formal del ticket RFC"
                     >
@@ -137,7 +137,7 @@ export default function PaginaTodosCambios() {
                   </td>
                   <td style={{ fontWeight: 600, maxWidth: 300 }}>
                     <Link
-                      href={`/cambios/gestion/${c.id_cambio}`}
+                      href={`/plataforma/cambios/gestion/${c.id_cambio}`}
                       style={{ color: "#1e293b", textDecoration: "none" }}
                     >
                       {c.titulo}
@@ -176,7 +176,7 @@ export default function PaginaTodosCambios() {
                   <td style={{ textAlign: "center", width: 80 }}>
                     <div style={{ display: "flex", gap: 4, justifyContent: "center" }}>
                       <Link
-                        href={`/cambios/gestion/${c.id_cambio}`}
+                        href={`/plataforma/cambios/gestion/${c.id_cambio}`}
                         className="boton-mini"
                         style={{ textDecoration: "none", padding: "4px 8px", fontSize: 11 }}
                         title="Ver ticket completo"

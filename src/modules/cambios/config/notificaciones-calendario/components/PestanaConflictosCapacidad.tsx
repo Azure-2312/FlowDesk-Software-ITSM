@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Play, AlertTriangle, AlertCircle, CheckCircle2, Clock, Sliders, X, Check } from "./Iconos";
+import { Play, AlertTriangle, AlertCircle, CheckCircle2, Clock, Sliders, X, Check } from "@/shared/components/ui/Iconos";
 
 interface PestanaConflictosCapacidadProps {
   config: any;
@@ -49,7 +49,7 @@ export function PestanaConflictosCapacidad({ config, onChange, servicios, ciList
 
       const fechaHoraISO = `${simFecha}T${simHora}:00.000Z`;
 
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/simular-conflictos", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/simular-conflictos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

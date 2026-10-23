@@ -246,7 +246,7 @@ export async function crearCategoriaConocimiento(body: any, contexto: ContextoCo
 }
 
 export async function actualizarCategoriaConocimiento(body: any, contexto: ContextoConocimiento) {
-  const { id_categoria, nombre, descripcion, estado_registro } = body;
+  const { id_categoria, nombre, descripcion, codigo_corto, estado_registro } = body;
 
   if (!id_categoria) {
     throw new ErrorDominio("ID de categoría requerido.");
@@ -256,16 +256,22 @@ export async function actualizarCategoriaConocimiento(body: any, contexto: Conte
     `UPDATE categoria_ticket SET
         nombre = COALESCE($1, nombre),
         descripcion = COALESCE($2, descripcion),
-        estado_registro = COALESCE($3, estado_registro)
-      WHERE id_categoria = $4
+        codigo_corto = COALESCE($3, codigo_corto),
+        estado_registro = COALESCE($4, estado_registro)
+      WHERE id_categoria = $5
       RETURNING *`,
     [
       nombre?.trim() || null,
       descripcion?.trim() || null,
+      codigo_corto?.trim() ? codigo_corto.trim().toUpperCase() : null,
       estado_registro !== undefined ? Boolean(estado_registro) : null,
       Number(id_categoria),
     ]
   );
+
+  if (!actualizada) {
+    throw new ErrorDominio("Categoría no encontrada para actualizar.", 404);
+  }
 
   await query(
     `INSERT INTO log_auditoria_sistema (
@@ -276,12 +282,61 @@ export async function actualizarCategoriaConocimiento(body: any, contexto: Conte
       "CONOCIMIENTO",
       "ACTUALIZAR_CATEGORIA_CONOCIMIENTO",
       `El usuario ${contexto.nombres} actualizó la categoría de conocimiento #${id_categoria} (${(actualizada as any)?.nombre}).`,
-      JSON.stringify({ id_categoria, nombre, estado_registro }),
+      JSON.stringify({ id_categoria, nombre, codigo_corto, estado_registro }),
       contexto.ip,
     ]
   );
 
   return actualizada;
+}
+
+export async function eliminarCategoriaConocimiento(idCategoria: number, contexto: ContextoConocimiento) {
+  if (!idCategoria) throw new ErrorDominio("ID de categoría requerido.");
+
+  // Validar si tiene artículos asociados
+  const artCount = await queryRow<{ total: number }>(
+    "SELECT COUNT(*)::int AS total FROM articulo_conocimiento WHERE id_categoria = $1 AND estado_registro = true",
+    [idCategoria]
+  );
+  if (artCount && artCount.total > 0) {
+    throw new ErrorDominio(
+      `No se puede eliminar la categoría porque contiene ${artCount.total} artículo(s) de conocimiento activo(s). Puede desactivarla en su lugar.`
+    );
+  }
+
+  // Validar si tiene tickets asociados
+  const ticketCount = await queryRow<{ total: number }>(
+    "SELECT COUNT(*)::int AS total FROM ticket WHERE id_categoria = $1",
+    [idCategoria]
+  );
+  if (ticketCount && ticketCount.total > 0) {
+    throw new ErrorDominio(
+      `No se puede eliminar la categoría porque está asociada a ${ticketCount.total} ticket(s) en el sistema. Puede desactivarla en su lugar.`
+    );
+  }
+
+  const eliminada = await queryRow(
+    "DELETE FROM categoria_ticket WHERE id_categoria = $1 RETURNING *",
+    [idCategoria]
+  );
+
+  if (!eliminada) throw new ErrorDominio("Categoría no encontrada o ya eliminada.", 404);
+
+  await query(
+    `INSERT INTO log_auditoria_sistema (
+        id_usuario, modulo, accion, descripcion, detalles, direccion_ip
+      ) VALUES ($1, $2, $3, $4, $5, $6)`,
+    [
+      contexto.idUsuario,
+      "CONOCIMIENTO",
+      "ELIMINAR_CATEGORIA_CONOCIMIENTO",
+      `El usuario ${contexto.nombres} eliminó definitivamente la categoría de conocimiento #${idCategoria} (${(eliminada as any)?.nombre}).`,
+      JSON.stringify(eliminada),
+      contexto.ip,
+    ]
+  );
+
+  return eliminada;
 }
 
 /* ------------------------------------------------------------------ */
@@ -439,8 +494,93 @@ export async function obtenerArticuloAdmin(id: number) {
     [id]
   );
 
-  return { articulo, historial };
+  const versiones = await query(
+    `SELECT v.id_version, v.numero_version, v.titulo, v.contenido_markdown, v.motivo_cambio, 
+            CONCAT(u.nombres, ' ', u.apellido_paterno) as autor_nombre, v.fecha_creacion
+     FROM articulo_conocimiento_version v
+     LEFT JOIN usuario u ON v.id_autor = u.id_usuario
+     WHERE v.id_articulo = $1
+     ORDER BY v.id_version DESC`,
+    [id]
+  );
+
+  const feedbacks = await query(
+    `SELECT f.id_feedback, f.es_positivo, f.motivo_negativo, f.comentario, f.ip, f.fecha,
+            CONCAT(u.nombres, ' ', u.apellido_paterno) as usuario_nombre
+     FROM articulo_conocimiento_feedback f
+     LEFT JOIN usuario u ON f.id_usuario = u.id_usuario
+     WHERE f.id_articulo = $1
+     ORDER BY f.fecha DESC`,
+    [id]
+  );
+
+  const vinculosTickets = await query(
+    `SELECT v.id_vinculo, v.id_ticket, t.codigo_ticket, t.titulo as ticket_titulo,
+            v.resolvio_ticket, v.fecha_vinculo,
+            CONCAT(u.nombres, ' ', u.apellido_paterno) as tecnico_nombre
+     FROM articulo_conocimiento_vinculo_ticket v
+     JOIN ticket t ON v.id_ticket = t.id_ticket
+     JOIN usuario u ON v.id_tecnico = u.id_usuario
+     WHERE v.id_articulo = $1
+     ORDER BY v.fecha_vinculo DESC`,
+    [id]
+  );
+
+  return { articulo, historial, versiones, feedbacks, vinculosTickets };
 }
+
+export async function actualizarArticuloAdmin(id: number, body: any, contexto: ContextoConocimiento) {
+  const { titulo, contenido_markdown, id_categoria, tipo_plantilla, clasificacion_seguridad, estado_editorial } = body;
+  if (!titulo || !contenido_markdown) {
+    throw new ErrorDominio("Título y contenido son obligatorios.");
+  }
+
+  const anterior = await queryRow<any>(
+    "SELECT * FROM articulo_conocimiento WHERE id_articulo = $1 AND estado_registro = true",
+    [id]
+  );
+  if (!anterior) throw new ErrorDominio("Artículo no encontrado.", 404);
+
+  const nuevaVersion = `1.${anterior.version || 1}`;
+
+  await query(
+    `INSERT INTO articulo_conocimiento_version (id_articulo, numero_version, titulo, contenido_markdown, motivo_cambio, id_autor)
+     VALUES ($1, $2, $3, $4, $5, $6)`,
+    [id, nuevaVersion, anterior.titulo, anterior.contenido_markdown, "Modificación administrativa", contexto.idUsuario]
+  );
+
+  const actualizado = await queryRow<any>(
+    `UPDATE articulo_conocimiento SET
+        titulo = $1,
+        contenido_markdown = $2,
+        id_categoria = $3,
+        tipo_plantilla = COALESCE($4, tipo_plantilla),
+        clasificacion_seguridad = COALESCE($5, clasificacion_seguridad),
+        estado_editorial = COALESCE($6, estado_editorial),
+        version = version + 1,
+        fecha_revision = CURRENT_DATE
+     WHERE id_articulo = $7
+     RETURNING *`,
+    [
+      titulo.trim(),
+      contenido_markdown.trim(),
+      id_categoria || anterior.id_categoria,
+      tipo_plantilla || null,
+      clasificacion_seguridad || null,
+      estado_editorial || null,
+      id,
+    ]
+  );
+
+  await query(
+    `INSERT INTO articulo_conocimiento_historial (id_articulo, estado_anterior, estado_nuevo, comentario, id_usuario, fecha)
+     VALUES ($1, $2, $3, $4, $5, now())`,
+    [id, anterior.estado_editorial, actualizado?.estado_editorial, "Edición y actualización de contenido", contexto.idUsuario]
+  );
+
+  return actualizado;
+}
+
 
 export async function actualizarEstadoEditorial(id: number, body: any, contexto: ContextoConocimiento) {
   const { accion, motivo_retiro, comentario, audiencia_perfiles } = body;
@@ -531,7 +671,7 @@ export async function obtenerPoliticasKcs() {
   const politicas = fila?.valor || POLITICAS_KCS_DEFECTO;
 
   const perfiles = await query(
-    "SELECT id_perfil, nombre, codigo FROM perfiles WHERE estado_registro = true ORDER BY id_perfil ASC"
+    "SELECT id_perfil, nombre, descripcion, LOWER(REPLACE(nombre, ' ', '_')) AS codigo FROM perfiles WHERE estado_registro = true ORDER BY id_perfil ASC"
   );
 
   return { politicas, perfiles };
@@ -560,9 +700,11 @@ export async function guardarPoliticasKcs(body: any, contexto: ContextoConocimie
   };
 
   await query(
-    `INSERT INTO configuracion_sistema (clave, valor, fecha_modificacion, usuario_modificacion)
-       VALUES ($1, $2, now(), $3)
+    `INSERT INTO configuracion_sistema (clave, categoria, descripcion, valor, fecha_modificacion, usuario_modificacion)
+       VALUES ($1, 'CONOCIMIENTO', 'Políticas de gobierno editorial KCS', $2, now(), $3)
        ON CONFLICT (clave) DO UPDATE SET
+         categoria = EXCLUDED.categoria,
+         descripcion = EXCLUDED.descripcion,
          valor = EXCLUDED.valor,
          fecha_modificacion = now(),
          usuario_modificacion = EXCLUDED.usuario_modificacion`,
@@ -584,4 +726,185 @@ export async function guardarPoliticasKcs(body: any, contexto: ContextoConocimie
   );
 
   return { mensaje: "Políticas de gobierno KCS actualizadas y auditadas.", politicas: nuevasPoliticas };
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Extensiones KCS v6: Versionado, Feedback, Vinculacion y Metricas   */
+/* ------------------------------------------------------------------ */
+
+export async function listarVersionesArticulo(idArticulo: number) {
+  return query(
+    `SELECT v.id_version, v.numero_version, v.titulo, v.contenido_markdown, v.motivo_cambio, 
+            v.id_autor, CONCAT(u.nombres, ' ', u.apellido_paterno) as autor_nombre, v.fecha_creacion
+     FROM articulo_conocimiento_version v
+     LEFT JOIN usuario u ON v.id_autor = u.id_usuario
+     WHERE v.id_articulo = $1
+     ORDER BY v.id_version DESC`,
+    [idArticulo]
+  );
+}
+
+export async function crearVersionArticulo(
+  idArticulo: number,
+  numeroVersion: string,
+  titulo: string,
+  contenido: string,
+  motivo: string,
+  idUsuario: number
+) {
+  return query(
+    `INSERT INTO articulo_conocimiento_version (id_articulo, numero_version, titulo, contenido_markdown, motivo_cambio, id_autor)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING *`,
+    [idArticulo, numeroVersion, titulo, contenido, motivo || "Actualización de contenido", idUsuario]
+  );
+}
+
+export async function registrarFeedbackArticulo(
+  idArticulo: number,
+  esPositivo: boolean,
+  motivoNegativo: string | null,
+  comentario: string | null,
+  contexto: ContextoConocimiento
+) {
+  if (esPositivo) {
+    await query(
+      "UPDATE articulo_conocimiento SET utilidad_positiva = utilidad_positiva + 1 WHERE id_articulo = $1",
+      [idArticulo]
+    );
+  } else {
+    await query(
+      "UPDATE articulo_conocimiento SET utilidad_negativa = utilidad_negativa + 1 WHERE id_articulo = $1",
+      [idArticulo]
+    );
+  }
+
+  const feedback = await queryRow(
+    `INSERT INTO articulo_conocimiento_feedback (id_articulo, id_usuario, es_positivo, motivo_negativo, comentario, ip)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING *`,
+    [idArticulo, contexto.idUsuario || null, esPositivo, motivoNegativo || null, comentario || null, contexto.ip || "127.0.0.1"]
+  );
+
+  return { mensaje: "Calificación registrada exitosamente.", feedback };
+}
+
+export async function vincularArticuloTicket(
+  idArticulo: number,
+  idTicket: number,
+  resolvioTicket: boolean,
+  contexto: ContextoConocimiento
+) {
+  const row = await queryRow(
+    `INSERT INTO articulo_conocimiento_vinculo_ticket (id_articulo, id_ticket, id_tecnico, resolvio_ticket)
+     VALUES ($1, $2, $3, $4)
+     ON CONFLICT (id_articulo, id_ticket) DO UPDATE SET
+       resolvio_ticket = EXCLUDED.resolvio_ticket,
+       id_tecnico = EXCLUDED.id_tecnico,
+       fecha_vinculo = now()
+     RETURNING *`,
+    [idArticulo, idTicket, contexto.idUsuario, resolvioTicket]
+  );
+
+  await query(
+    "UPDATE articulo_conocimiento SET veces_utilizado_en_tickets = veces_utilizado_en_tickets + 1 WHERE id_articulo = $1",
+    [idArticulo]
+  );
+
+  return { mensaje: "Artículo vinculado al ticket en sesión de soporte (Solve Loop).", vinculo: row };
+}
+
+export async function listarArticulosVinculadosTicket(idTicket: number) {
+  return query(
+    `SELECT v.id_vinculo, v.id_articulo, a.codigo_articulo, a.titulo, a.tipo_plantilla, 
+            v.resolvio_ticket, v.fecha_vinculo, CONCAT(u.nombres, ' ', u.apellido_paterno) as tecnico_nombre
+     FROM articulo_conocimiento_vinculo_ticket v
+     JOIN articulo_conocimiento a ON v.id_articulo = a.id_articulo
+     JOIN usuario u ON v.id_tecnico = u.id_usuario
+     WHERE v.id_ticket = $1
+     ORDER BY v.fecha_vinculo DESC`,
+    [idTicket]
+  );
+}
+
+export async function registrarBusquedaLog(
+  termino: string,
+  resultados: number,
+  idArticuloClicado: number | null,
+  deflexion: boolean,
+  contexto: ContextoConocimiento,
+  origen: string = "PORTAL"
+) {
+  return queryRow(
+    `INSERT INTO busqueda_conocimiento_log (termino_busqueda, resultados_encontrados, id_articulo_clicado, deflexion_exitosa, id_usuario, id_perfil, origen)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     RETURNING *`,
+    [termino.trim(), resultados, idArticuloClicado || null, deflexion, contexto.idUsuario || null, contexto.idPerfil || null, origen]
+  );
+}
+
+export async function marcarDeflexionExitosa(idLog: number, idArticulo: number, contexto: ContextoConocimiento) {
+  return query(
+    `UPDATE busqueda_conocimiento_log 
+     SET deflexion_exitosa = true, id_articulo_clicado = $1 
+     WHERE id_log = $2`,
+    [idArticulo, idLog]
+  );
+}
+
+export async function listarPlantillasKcs() {
+  return query(
+    "SELECT id_plantilla, codigo, nombre, descripcion, icono, estructura_markdown, campos_obligatorios, activo FROM articulo_plantilla WHERE activo = true ORDER BY id_plantilla ASC"
+  );
+}
+
+export async function obtenerMetricasKcsDashboard() {
+  const totalArticulosRow = await queryRow<{ c: string }>(
+    "SELECT COUNT(*) as c FROM articulo_conocimiento WHERE estado_registro = true AND estado_editorial = 'PUBLICADO'"
+  );
+  const totalRevisionesRow = await queryRow<{ c: string }>(
+    "SELECT COUNT(*) as c FROM articulo_conocimiento WHERE estado_registro = true AND estado_editorial = 'EN_REVISION'"
+  );
+  const totalBusquedasRow = await queryRow<{ c: string }>(
+    "SELECT COUNT(*) as c FROM busqueda_conocimiento_log"
+  );
+  const totalDeflexionesRow = await queryRow<{ c: string }>(
+    "SELECT COUNT(*) as c FROM busqueda_conocimiento_log WHERE deflexion_exitosa = true"
+  );
+  const totalReusosRow = await queryRow<{ c: string }>(
+    "SELECT COUNT(*) as c FROM articulo_conocimiento_vinculo_ticket"
+  );
+
+  const totalBusquedas = parseInt(totalBusquedasRow?.c || "0", 10);
+  const totalDeflexiones = parseInt(totalDeflexionesRow?.c || "0", 10);
+  const tasaDeflexion = totalBusquedas > 0 ? Math.round((totalDeflexiones / totalBusquedas) * 100) : 0;
+
+  const topArticulos = await query(
+    `SELECT id_articulo, codigo_articulo, titulo, visitas, utilidad_positiva, utilidad_negativa, veces_utilizado_en_tickets
+     FROM articulo_conocimiento 
+     WHERE estado_registro = true AND estado_editorial = 'PUBLICADO'
+     ORDER BY veces_utilizado_en_tickets DESC, utilidad_positiva DESC 
+     LIMIT 5`
+  );
+
+  const gapsBusqueda = await query(
+    `SELECT termino_busqueda, COUNT(*) as repeticiones, MAX(fecha) as ultima_fecha
+     FROM busqueda_conocimiento_log
+     WHERE resultados_encontrados = 0
+     GROUP BY termino_busqueda
+     ORDER BY repeticiones DESC
+     LIMIT 5`
+  );
+
+  return {
+    totalArticulos: parseInt(totalArticulosRow?.c || "0", 10),
+    articulosEnRevision: parseInt(totalRevisionesRow?.c || "0", 10),
+    totalBusquedas,
+    totalDeflexiones,
+    tasaDeflexionPct: tasaDeflexion,
+    totalReusoTickets: parseInt(totalReusosRow?.c || "0", 10),
+    topArticulos,
+    gapsBusqueda,
+  };
 }

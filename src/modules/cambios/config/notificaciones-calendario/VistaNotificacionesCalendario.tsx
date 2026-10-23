@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { BarraAccionesComun } from "../formulario/components/BarraAccionesComun";
-import { ModalPublicacion } from "../formulario/components/ModalPublicacion";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "../formulario/components/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "../formulario/components/ModalRestaurarFabrica";
 
@@ -25,38 +26,58 @@ type TabId =
 const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion: string }> = {
   notificaciones: {
     numero: "1.3.3.4.1",
-    titulo: "1.3.3.4.1 Notificaciones",
+    titulo: "Notificaciones",
     descripcion: "32 eventos de dominio ITIL v4, canales, destinatarios, comunicados de interrupción y horas de silencio."
   },
   ventanas_mantenimiento: {
     numero: "1.3.3.4.2",
-    titulo: "1.3.3.4.2 Ventanas de mantenimiento",
+    titulo: "Ventanas de mantenimiento",
     descripcion: "Horarios autorizados de intervención, recurrencias, capacidades simultáneas y límites acumulados."
   },
   periodos_congelamiento: {
     numero: "1.3.3.4.3",
-    titulo: "1.3.3.4.3 Períodos de congelamiento",
+    titulo: "Períodos de congelamiento",
     descripcion: "Restricción de cambios durante cierres contables y campañas. Bloqueo total, con excepción o advertencia."
   },
   feriados: {
     numero: "1.3.3.4.4",
-    titulo: "1.3.3.4.4 Feriados y días no laborables",
+    titulo: "Feriados y días no laborables",
     descripcion: "Calendario de feriados nacionales e institucionales y políticas de bloqueo por tipo de cambio."
   },
   conflictos_capacidad: {
     numero: "1.3.3.4.5",
-    titulo: "1.3.3.4.5 Conflictos y capacidad",
+    titulo: "Conflictos y capacidad",
     descripcion: "Reglas de solapamiento de CIs, servicios, implementadores, tolerancias y simulador de disponibilidad."
   },
   presentacion_calendario: {
     numero: "1.3.3.4.6",
-    titulo: "1.3.3.4.6 Presentación del calendario",
+    titulo: "Presentación del calendario",
     descripcion: "Configuración visual de 5.1.2: criterios cromáticos, vistas, capas, tooltips y suscripción ICS."
   }
 };
 
 export default function NotificacionesCalendarioPage() {
-  const [tabActiva, setTabActiva] = useState<TabId>("notificaciones");
+  const searchParams = useSearchParams();
+  const [tabActiva, setTabActiva] = useState<TabId>(() => {
+    const vistaParam = searchParams.get("vista");
+    if (vistaParam === "feriados") return "feriados";
+    if (vistaParam === "congelamiento") return "periodos_congelamiento";
+    if (vistaParam === "ventanas") return "ventanas_mantenimiento";
+    if (vistaParam === "notificaciones") return "notificaciones";
+    if (vistaParam === "conflictos") return "conflictos_capacidad";
+    if (vistaParam === "presentacion") return "presentacion_calendario";
+    return "notificaciones";
+  });
+
+  useEffect(() => {
+    const vistaParam = searchParams.get("vista");
+    if (vistaParam === "feriados") setTabActiva("feriados");
+    else if (vistaParam === "congelamiento") setTabActiva("periodos_congelamiento");
+    else if (vistaParam === "ventanas") setTabActiva("ventanas_mantenimiento");
+    else if (vistaParam === "notificaciones") setTabActiva("notificaciones");
+    else if (vistaParam === "conflictos") setTabActiva("conflictos_capacidad");
+    else if (vistaParam === "presentacion") setTabActiva("presentacion_calendario");
+  }, [searchParams]);
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
@@ -94,7 +115,7 @@ export default function NotificacionesCalendarioPage() {
       setCargando(true);
       setErrorCarga(null);
 
-      const res = await fetch(`/api/admin/cambios/notificaciones-calendario/configuracion?pestana=${tabActiva}`);
+      const res = await fetch(`/api/cambios/configuracion/notificaciones-calendario/configuracion?pestana=${tabActiva}`);
       if (!res.ok) throw new Error("Error al obtener la configuración del servidor");
       const data = await res.json();
 
@@ -133,7 +154,7 @@ export default function NotificacionesCalendarioPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -161,7 +182,7 @@ export default function NotificacionesCalendarioPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -193,7 +214,7 @@ export default function NotificacionesCalendarioPage() {
     }
     try {
       setCargando(true);
-      const res = await fetch(`/api/admin/cambios/notificaciones-calendario/configuracion?pestana=${tabActiva}`, {
+      const res = await fetch(`/api/cambios/configuracion/notificaciones-calendario/configuracion?pestana=${tabActiva}`, {
         method: "DELETE"
       });
       if (!res.ok) throw new Error("Error al descartar borrador");
@@ -209,7 +230,7 @@ export default function NotificacionesCalendarioPage() {
   const handleRestaurarFabrica = async () => {
     try {
       setCargando(true);
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -233,7 +254,7 @@ export default function NotificacionesCalendarioPage() {
   const handleRestaurarVersion = async (versionId: number) => {
     try {
       setCargando(true);
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -299,18 +320,17 @@ export default function NotificacionesCalendarioPage() {
   ];
 
   return (
-    <div style={{ paddingBottom: 110, minHeight: "100vh", background: "#f8fafc" }}>
-      {/* 3.1.1 Breadcrumb */}
+    <div style={{ minHeight: "100vh", background: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {/* 3.1.1 Breadcrumb */}
       <nav style={{ padding: "12px 24px", fontSize: 13, color: "#64748b", borderBottom: "1px solid #e2e8f0", background: "#ffffff" }}>
-        <Link href="/admin" style={{ color: "#2563eb", textDecoration: "none" }}>Configuración</Link>
+        <Link href="/plataforma/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>Cambios</Link>
         {" > "}
-        <span>Configuración de procesos</span>
+        <Link href="/plataforma/admin/procesos/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>Configuración</Link>
         {" > "}
-        <Link href="/admin/procesos/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>Gestión de cambios</Link>
+        <span style={{ color: "#1e293b", fontWeight: 600 }}>Notificaciones de cambios</span>
         {" > "}
-        <span style={{ color: "#1e293b", fontWeight: 600 }}>1.3.3.4 Notificaciones y calendario</span>
-        {" > "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>{infoPestana.numero}</span>
+        <span style={{ color: "#0f172a", fontWeight: 600 }}>{infoPestana.titulo}</span>
       </nav>
 
       {/* 3.1.2 Encabezado y Estado de la Configuración */}
@@ -452,6 +472,7 @@ export default function NotificacionesCalendarioPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* Barra de Acciones Común Pattern 3.1 */}
       <BarraAccionesComun

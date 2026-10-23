@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, Ban, Play, Check, X } from "@/shared/components/ui/Iconos";
 
 export type TipoEstadoActivo =
   | "planificado"
@@ -271,7 +273,7 @@ export function PestanaCiclosEstados({ datos, onChange, bloqueado }: Props) {
       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            1.5.2.1 Ciclos de vida y estados de activos
+            Ciclos de vida y estados de activos
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Gobierna los estados autorizados por ciclo, flags de inventario físico, vinculación con incidentes y CMDB.
@@ -440,40 +442,44 @@ export function PestanaCiclosEstados({ datos, onChange, bloqueado }: Props) {
                         )}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        {item.cuenta_inventario ? <span className="text-emerald-600 font-bold">✓</span> : <span className="text-slate-300">-</span>}
+                        {item.cuenta_inventario ? <span className="text-emerald-600 inline-flex items-center"><Check size={12} /></span> : <span className="text-slate-300">-</span>}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        {item.asignable ? <span className="text-indigo-600 font-bold">✓</span> : <span className="text-slate-300">-</span>}
+                        {item.asignable ? <span className="text-indigo-600 inline-flex items-center"><Check size={12} /></span> : <span className="text-slate-300">-</span>}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        {item.ci_activo ? <span className="text-blue-600 font-bold">✓</span> : <span className="text-slate-300">-</span>}
+                        {item.ci_activo ? <span className="text-blue-600 inline-flex items-center"><Check size={12} /></span> : <span className="text-slate-300">-</span>}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        {item.permite_incidentes ? <span className="text-emerald-600 font-bold">✓</span> : <span className="text-slate-300">-</span>}
+                        {item.permite_incidentes ? <span className="text-emerald-600 inline-flex items-center"><Check size={12} /></span> : <span className="text-slate-300">-</span>}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        {item.permite_rfc ? <span className="text-purple-600 font-bold">✓</span> : <span className="text-slate-300">-</span>}
+                        {item.permite_rfc ? <span className="text-purple-600 inline-flex items-center"><Check size={12} /></span> : <span className="text-slate-300">-</span>}
                       </td>
-                      <td className="py-2.5 px-3 text-right space-x-2">
-                        <button
-                          onClick={() => {
-                            setFormEstado({ ...item });
-                            setModalEstado({ abierto: true, estado: item, esNuevo: false });
-                          }}
-                          disabled={bloqueado}
-                          className="text-indigo-600 hover:text-indigo-800 font-semibold"
-                        >
-                          Editar
-                        </button>
-                        {!item.sistema && (
-                          <button
-                            onClick={() => toggleEstadoActivo(item.id)}
+                      <td className="py-2.5 px-3 text-right">
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "flex-end" }}>
+                          <BotonIcono
+                            variante="primario"
+                            icono={<Edit2 size={13} />}
+                            titulo="Editar estado"
+                            ariaLabel={`Editar estado ${item.nombre}`}
+                            onClick={() => {
+                              setFormEstado({ ...item });
+                              setModalEstado({ abierto: true, estado: item, esNuevo: false });
+                            }}
                             disabled={bloqueado}
-                            className="text-slate-600 hover:text-slate-800"
-                          >
-                            {item.activo ? "Desactivar" : "Activar"}
-                          </button>
-                        )}
+                          />
+                          {!item.sistema && (
+                            <BotonIcono
+                              variante={item.activo ? "peligro" : "exito"}
+                              icono={item.activo ? <Ban size={13} /> : <Check size={13} />}
+                              titulo={item.activo ? "Desactivar estado" : "Activar estado"}
+                              ariaLabel={item.activo ? `Desactivar estado ${item.nombre}` : `Activar estado ${item.nombre}`}
+                              onClick={() => toggleEstadoActivo(item.id)}
+                              disabled={bloqueado}
+                            />
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -492,12 +498,7 @@ export function PestanaCiclosEstados({ datos, onChange, bloqueado }: Props) {
               <h3 className="text-sm font-bold text-slate-800">
                 {modalEstado.esNuevo ? "Nuevo estado del ciclo" : `Editar estado: ${formEstado.nombre}`}
               </h3>
-              <button
-                onClick={() => setModalEstado({ abierto: false, esNuevo: true })}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalEstado({ abierto: false, esNuevo: true })} />
             </div>
 
             <div className="p-5 space-y-4 text-xs max-h-[75vh] overflow-y-auto">
@@ -675,12 +676,7 @@ export function PestanaCiclosEstados({ datos, onChange, bloqueado }: Props) {
               <h3 className="text-sm font-bold text-slate-800">
                 {modalCiclo.esNuevo ? "Nuevo ciclo de vida" : "Editar ciclo de vida"}
               </h3>
-              <button
-                onClick={() => setModalCiclo({ abierto: false, esNuevo: true })}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalCiclo({ abierto: false, esNuevo: true })} />
             </div>
 
             <div className="p-5 space-y-3 text-xs">

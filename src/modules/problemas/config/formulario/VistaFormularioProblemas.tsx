@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "./components/BarraAccionesComun";
-import { ModalPublicacion } from "./components/ModalPublicacion";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
 import { ModalHistorialVersiones } from "./components/ModalHistorialVersiones";
 import { ModalRestaurarFabrica } from "./components/ModalRestaurarFabrica";
 import { ModalVistaPrevia } from "./components/ModalVistaPrevia";
@@ -75,7 +75,7 @@ export default function ConfiguracionFormularioPage() {
       setErrorCarga(null);
 
       // 1. Configuración de versión y borrador para la pestaña
-      const resConfig = await fetch(`/api/admin/problemas/configuracion?ambito=${tabActiva}`);
+      const resConfig = await fetch(`/api/problemas/configuracion/configuracion?ambito=${tabActiva}`);
       const dataConfig = await resConfig.json();
 
       if (dataConfig.ok) {
@@ -107,10 +107,10 @@ export default function ConfiguracionFormularioPage() {
 
       // 2. Cargar datos específicos adicionales en paralelo
       const [resCampos, resCat, resMatriz, resPlantillas] = await Promise.all([
-        fetch("/api/admin/problemas/campos-personalizados?entidad=problema"),
-        fetch("/api/admin/problemas/catalogos"),
-        fetch("/api/admin/problemas/matriz-prioridad"),
-        fetch("/api/admin/problemas/plantillas"),
+        fetch("/api/problemas/configuracion/campos-personalizados?entidad=problema"),
+        fetch("/api/problemas/configuracion/catalogos"),
+        fetch("/api/problemas/configuracion/matriz-prioridad"),
+        fetch("/api/problemas/configuracion/plantillas"),
       ]);
 
       const [dataCampos, dataCat, dataMatriz, dataPlantillas] = await Promise.all([
@@ -174,7 +174,7 @@ export default function ConfiguracionFormularioPage() {
       setGuardando(true);
       const payloadDatos = construirSnapshot();
 
-      const res = await fetch("/api/admin/problemas/configuracion", {
+      const res = await fetch("/api/problemas/configuracion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -232,7 +232,7 @@ export default function ConfiguracionFormularioPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/problemas/configuracion", {
+      const res = await fetch("/api/problemas/configuracion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -265,7 +265,7 @@ export default function ConfiguracionFormularioPage() {
       return;
     }
     try {
-      const res = await fetch("/api/admin/problemas/configuracion", {
+      const res = await fetch("/api/problemas/configuracion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -285,7 +285,7 @@ export default function ConfiguracionFormularioPage() {
 
   // Restaurar de Fábrica
   const handleRestaurarFabrica = async () => {
-    const res = await fetch("/api/admin/problemas/configuracion", {
+    const res = await fetch("/api/problemas/configuracion/configuracion", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -305,7 +305,7 @@ export default function ConfiguracionFormularioPage() {
   // Ver Historial
   const handleAbrirHistorial = async () => {
     try {
-      const res = await fetch(`/api/admin/problemas/configuracion?ambito=${tabActiva}&historial=true`);
+      const res = await fetch(`/api/problemas/configuracion/configuracion?ambito=${tabActiva}&historial=true`);
       const data = await res.json();
       if (data.ok) {
         setVersionesHistorial(data.versiones || []);
@@ -319,7 +319,7 @@ export default function ConfiguracionFormularioPage() {
   // Restaurar versión específica como borrador
   const handleRestaurarComoBorrador = async (ver: any) => {
     try {
-      const res = await fetch("/api/admin/problemas/configuracion", {
+      const res = await fetch("/api/problemas/configuracion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -344,7 +344,7 @@ export default function ConfiguracionFormularioPage() {
   const handleExportar = () => {
     const dataSnapshot = {
       modulo: "gestion_de_problemas",
-      pantalla: "1.3.3.1 Configuración de formulario",
+      pantalla: "Configuración de formulario",
       ambito: tabActiva,
       version: versionPublicada,
       fecha_exportacion: new Date().toISOString(),
@@ -391,22 +391,19 @@ export default function ConfiguracionFormularioPage() {
   };
 
   return (
-    <div style={{ padding: "20px 28px 120px 28px", minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh" }}>
-      {/* Breadcrumb reglamentario */}
+    <div style={{ minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
+        {/* Breadcrumb reglamentario */}
       <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/admin" style={{ color: "#2563eb", textDecoration: "none" }}>
+        <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
+          Problemas
+        </Link>
+        {" / "}
+        <Link href="/plataforma/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
           Configuración
         </Link>
         {" / "}
-        <Link href="/admin/procesos" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Configuración de procesos
-        </Link>
-        {" / "}
-        <Link href="/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Gestión de problemas
-        </Link>
-        {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>1.3.3.1 Configuración de formulario</span>
+        <span style={{ color: "#0f172a", fontWeight: 600 }}>Formulario</span>
       </nav>
 
       {/* Encabezado Principal de la Pantalla 1.3.3.1 */}
@@ -422,17 +419,7 @@ export default function ConfiguracionFormularioPage() {
       }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{
-              backgroundColor: "#dbeafe",
-              color: "#1e40af",
-              fontSize: 12,
-              fontWeight: 700,
-              padding: "3px 8px",
-              borderRadius: 4,
-              fontFamily: "monospace"
-            }}>
-              1.3.3.1
-            </span>
+            <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Formulario</span>
             <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
               Configuración de Formulario de Problemas
             </h1>
@@ -493,12 +480,12 @@ export default function ConfiguracionFormularioPage() {
         overflowX: "auto"
       }}>
         {[
-          { id: "campos", label: "1.3.3.1.1 Campos" },
-          { id: "campos_personalizados", label: "1.3.3.1.2 Campos personalizados" },
-          { id: "listas_catalogos", label: "1.3.3.1.3 Listas y catálogos" },
-          { id: "matriz_prioridad", label: "1.3.3.1.4 Matriz de prioridad" },
-          { id: "plantillas", label: "1.3.3.1.5 Plantillas de problema" },
-          { id: "vista_ticket", label: "1.3.3.1.6 Vista del ticket" },
+          { id: "campos", label: "Campos" },
+          { id: "campos_personalizados", label: "Campos personalizados" },
+          { id: "listas_catalogos", label: "Listas y catálogos" },
+          { id: "matriz_prioridad", label: "Matriz de prioridad" },
+          { id: "plantillas", label: "Plantillas de problema" },
+          { id: "vista_ticket", label: "Vista del ticket" },
         ].map((tab) => {
           const activa = tabActiva === tab.id;
           return (
@@ -550,8 +537,13 @@ export default function ConfiguracionFormularioPage() {
             {tabActiva === "campos" && (
               <PestanaCampos
                 secciones={seccionesFormulario}
-                camposPersonalizadosDisponibles={camposPersonalizados}
-                onActualizarSecciones={(nuevas) => setSeccionesFormulario(nuevas)}
+                onChangeSecciones={(nuevas) => {
+                  setSeccionesFormulario(nuevas);
+                  setHayBorrador(true);
+                }}
+                camposPersonalizados={camposPersonalizados}
+                onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
+                onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
                 puedeEditar={puedeEditar}
               />
             )}
@@ -569,7 +561,7 @@ export default function ConfiguracionFormularioPage() {
                 catalogos={catalogosData}
                 puedeEditar={puedeEditar}
                 onCrearItem={async (cat, datos) => {
-                  const res = await fetch("/api/admin/problemas/catalogos", {
+                  const res = await fetch("/api/problemas/configuracion/catalogos", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ catalogo: cat, ...datos }),
@@ -579,7 +571,7 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
                 onActualizarItem={async (cat, id, datos) => {
-                  const res = await fetch("/api/admin/problemas/catalogos", {
+                  const res = await fetch("/api/problemas/configuracion/catalogos", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ catalogo: cat, id, ...datos }),
@@ -589,7 +581,7 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
                 onEliminarItem={async (cat, id) => {
-                  const res = await fetch(`/api/admin/problemas/catalogos?catalogo=${cat}&id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/catalogos?catalogo=${cat}&id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -597,7 +589,7 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
                 onFusionarItem={async (cat, idOrigen, idDestino) => {
-                  const res = await fetch("/api/admin/problemas/catalogos", {
+                  const res = await fetch("/api/problemas/configuracion/catalogos", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -622,7 +614,7 @@ export default function ConfiguracionFormularioPage() {
                 config={configMatriz}
                 puedeEditar={puedeEditar}
                 onGuardar={async (nuevaConfig, celdasProblemasActualizadas) => {
-                  const res = await fetch("/api/admin/problemas/matriz-prioridad", {
+                  const res = await fetch("/api/problemas/configuracion/matriz-prioridad", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -642,7 +634,7 @@ export default function ConfiguracionFormularioPage() {
                 plantillas={plantillasData}
                 puedeEditar={puedeEditar}
                 onCrearPlantilla={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/plantillas", {
+                  const res = await fetch("/api/problemas/configuracion/plantillas", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -652,7 +644,7 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
                 onActualizarPlantilla={async (id, datos) => {
-                  const res = await fetch("/api/admin/problemas/plantillas", {
+                  const res = await fetch("/api/problemas/configuracion/plantillas", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_plantilla: id, ...datos }),
@@ -662,7 +654,7 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
                 onEliminarPlantilla={async (id) => {
-                  const res = await fetch(`/api/admin/problemas/plantillas?id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/plantillas?id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -686,6 +678,7 @@ export default function ConfiguracionFormularioPage() {
             )}
           </div>
         )}
+      </div>
 
       {/* Barra de Acciones Común Fija al Pie (Sección 3.1) */}
       <BarraAccionesComun

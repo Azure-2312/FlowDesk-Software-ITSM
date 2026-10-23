@@ -1,4 +1,4 @@
-import VistaCatalogoServicios from "@/modules/solicitudes/views/VistaCatalogoServicios";
+import { VistaCatalogoServicios } from "@/modules/servicios/ui";
 
 export default function PaginaCatalogo() {
   return <VistaCatalogoServicios />;

@@ -34,7 +34,7 @@ export default function VistaCatalogoSoftware() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/licencias/catalogo-software?_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/licencias/catalogo-software?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudo cargar el catálogo.");
@@ -56,7 +56,7 @@ export default function VistaCatalogoSoftware() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/licencias/catalogo-software", {
+      const res = await fetch("/api/activos/licencias/catalogo-software", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -81,7 +81,7 @@ export default function VistaCatalogoSoftware() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/licencias/catalogo-software", {
+      const res = await fetch("/api/activos/licencias/catalogo-software", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_software: idSoftware, estado }),

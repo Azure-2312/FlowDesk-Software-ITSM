@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Eye, EyeOff, Lock } from "@/shared/components/ui/Iconos";
 
 interface SeccionFormulario {
   id: string;
@@ -188,8 +190,13 @@ export function PestanaFormularioActivo({ datos, onChange, bloqueado }: Props) {
                 <strong style={{ fontSize: 12.5, color: "#1e293b", display: "block" }}>
                   {c.etiqueta}
                 </strong>
-                <span style={{ fontSize: 10, fontFamily: "monospace", color: "#64748b" }}>
-                  {c.codigo} {c.bloqueado && "(Bloqueado 🔒)"}
+                <span style={{ fontSize: 10, fontFamily: "monospace", color: "#64748b", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                  <span>{c.codigo}</span>
+                  {c.bloqueado && (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 2, color: "#64748b" }}>
+                      (<Lock size={10} /> Bloqueado)
+                    </span>
+                  )}
                 </span>
               </div>
 
@@ -230,15 +237,14 @@ export function PestanaFormularioActivo({ datos, onChange, bloqueado }: Props) {
               </div>
 
               <div style={{ textAlign: "right" }}>
-                <button
-                  type="button"
-                  className="boton-mini"
+                <BotonIcono
+                  variante="normal"
+                  icono={c.visible ? <EyeOff size={14} /> : <Eye size={14} />}
+                  titulo={c.visible ? "Ocultar campo" : "Mostrar campo"}
+                  ariaLabel={c.visible ? "Ocultar campo" : "Mostrar campo"}
                   disabled={bloqueado || c.bloqueado}
                   onClick={() => toggleVisibilidad(c.id)}
-                  style={{ fontSize: 11 }}
-                >
-                  {c.visible ? "Ocultar" : "Mostrar"}
-                </button>
+                />
               </div>
             </div>
           ))}

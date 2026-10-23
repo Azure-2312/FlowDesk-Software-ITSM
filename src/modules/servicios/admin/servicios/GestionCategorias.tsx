@@ -160,7 +160,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/categorias?estado=todos");
+      const res = await fetch("/api/conocimiento/categorias?estado=todos");
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || "No se pudieron cargar las categorías.");
@@ -247,7 +247,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
   async function alternarEstado(c: CategoriaAdmin) {
     const nuevoEstado = !c.estado_registro;
     try {
-      const res = await fetch(`/api/admin/categorias/${c.id_categoria}`, {
+      const res = await fetch(`/api/conocimiento/categorias/${c.id_categoria}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ estado_registro: nuevoEstado }),
@@ -270,7 +270,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
 
   async function ejecutarEliminar(c: CategoriaAdmin) {
     try {
-      const res = await fetch(`/api/admin/categorias/${c.id_categoria}`, {
+      const res = await fetch(`/api/conocimiento/categorias/${c.id_categoria}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -413,7 +413,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
 
     setGuardando(true);
     try {
-      const url = modoEdicion === "crear" ? "/api/admin/categorias" : `/api/admin/categorias/${categoriaSeleccionada?.id_categoria}`;
+      const url = modoEdicion === "crear" ? "/api/conocimiento/categorias" : `/api/conocimiento/categorias/${categoriaSeleccionada?.id_categoria}`;
       const method = modoEdicion === "crear" ? "POST" : "PATCH";
 
       const res = await fetch(url, {

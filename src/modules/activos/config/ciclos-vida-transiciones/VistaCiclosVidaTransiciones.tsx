@@ -3,10 +3,11 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
-import { BarraAccionesComun } from "@/modules/cambios/config/formulario/components/BarraAccionesComun";
-import { ModalPublicacion } from "@/modules/cambios/config/formulario/components/ModalPublicacion";
-import { ModalHistorialVersiones } from "@/modules/cambios/config/formulario/components/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "@/modules/cambios/config/formulario/components/ModalRestaurarFabrica";
+import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
+import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
+import { ModalHistorialVersiones } from "@/shared/components/admin/ModalHistorialVersiones";
+import { ModalRestaurarFabrica } from "@/shared/components/admin/ModalRestaurarFabrica";
+import { ModalVistaPrevia } from "@/shared/components/admin/ModalVistaPrevia";
 
 import { PestanaCiclosEstados } from "./components/PestanaCiclosEstados";
 import { PestanaTransicionesReglas } from "./components/PestanaTransicionesReglas";
@@ -34,45 +35,88 @@ const PESTANAS: PestanaMetadata[] = [
   {
     id: "ciclos_estados",
     numero: "1.5.2.1",
-    titulo: "1.5.2.1 Ciclos de vida y estados",
+    titulo: "Ciclos de vida y estados",
     descripcion: "Ciclos autorizados, tipos de estado ITIL, flags de inventario físico, disponibilidad CMDB y soporte en incidentes."
   },
   {
     id: "transiciones_reglas",
     numero: "1.5.2.2",
-    titulo: "1.5.2.2 Transiciones y reglas",
+    titulo: "Transiciones y reglas",
     descripcion: "Matriz de transiciones, grafo SVG interactivo, condiciones previas, aprobaciones y automatizaciones de estado."
   },
   {
     id: "asignacion_custodia",
     numero: "1.5.2.3",
-    titulo: "1.5.2.3 Asignación, custodia y devolución",
+    titulo: "Asignación, custodia y devolución",
     descripcion: "Custodio único inmutable, límites por colaborador, aceptación digital, actas y checklist de devolución."
   },
   {
     id: "adquisicion_recepcion",
     numero: "1.5.2.4",
-    titulo: "1.5.2.4 Adquisición y recepción",
-    descripcion: "Vínculo con solicitudes de servicio (1.2.2), datos de compra y formulario de recepción física por escaneo."
+    titulo: "Adquisición y recepción",
+    descripcion: "Vínculo con solicitudes de servicio, datos de compra y formulario de recepción física por escaneo."
   },
   {
     id: "mantenimiento_fin_vida",
     numero: "1.5.2.5",
-    titulo: "1.5.2.5 Mantenimiento y fin de vida",
+    titulo: "Mantenimiento y fin de vida",
     descripcion: "Planes preventivos con emisión de RFCs estándar, cálculo de garantías y anticipación de obsolescencia (EOL/EOS)."
   },
   {
     id: "baja_disposicion",
     numero: "1.5.2.6",
-    titulo: "1.5.2.6 Baja y disposición",
+    titulo: "Baja y disposición",
     descripcion: "Motivos autorizados, borrado seguro obligatorio (ISO 27001), bloqueos de integridad y actas patrimoniales."
   }
 ];
+
+const TAB_POR_SLUG: Record<string, TabId> = {
+  "ciclos-estados": "ciclos_estados",
+  "transiciones": "transiciones_reglas",
+  "custodia": "asignacion_custodia",
+  "recepcion": "adquisicion_recepcion",
+  "mantenimiento": "mantenimiento_fin_vida",
+  "baja": "baja_disposicion",
+};
+
+const SLUG_POR_TAB: Record<TabId, string> = {
+  ciclos_estados: "ciclos-estados",
+  transiciones_reglas: "transiciones",
+  asignacion_custodia: "custodia",
+  adquisicion_recepcion: "recepcion",
+  mantenimiento_fin_vida: "mantenimiento",
+  baja_disposicion: "baja",
+};
 
 export default function CiclosVidaTransicionesPage() {
   const [tabActiva, setTabActiva] = useState<TabId>("ciclos_estados");
   const [cargando, setCargando] = useState<boolean>(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
+
+  // Control de enlaces profundos (?vista=)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const vistaParam = params.get("vista");
+      if (vistaParam && TAB_POR_SLUG[vistaParam]) {
+        setTabActiva(TAB_POR_SLUG[vistaParam]);
+      }
+    }
+  }, []);
+
+  const cambiarTab = (nuevaTab: TabId) => {
+    setTabActiva(nuevaTab);
+    const slug = SLUG_POR_TAB[nuevaTab];
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (slug) {
+        url.searchParams.set("vista", slug);
+      } else {
+        url.searchParams.delete("vista");
+      }
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
 
   // Estados de control de versiones y autoría
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
@@ -92,6 +136,7 @@ export default function CiclosVidaTransicionesPage() {
   const [diffsCalculados, setDiffsCalculados] = useState<any[]>([]);
 
   // Modales
+  const [modalVistaPreviaAbierto, setModalVistaPreviaAbierto] = useState<boolean>(false);
   const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
   const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
   const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
@@ -113,7 +158,7 @@ export default function CiclosVidaTransicionesPage() {
       setErrorCarga(null);
 
       const res = await fetch(
-        `/api/admin/activos-config/ciclos-vida-transiciones/configuracion?pestana=${tabActiva}`
+        `/api/activos/configuracion/ciclos-vida-transiciones/configuracion?pestana=${tabActiva}`
       );
       const data = await res.json();
 
@@ -171,7 +216,7 @@ export default function CiclosVidaTransicionesPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/activos-config/ciclos-vida-transiciones/configuracion", {
+      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -200,7 +245,7 @@ export default function CiclosVidaTransicionesPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/activos-config/ciclos-vida-transiciones/configuracion", {
+      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -229,7 +274,7 @@ export default function CiclosVidaTransicionesPage() {
     if (!confirm("Se perderán todos los cambios del borrador sin publicar. ¿Desea continuar?")) return;
     try {
       const res = await fetch(
-        `/api/admin/activos-config/ciclos-vida-transiciones/configuracion?pestana=${tabActiva}`,
+        `/api/activos/configuracion/ciclos-vida-transiciones/configuracion?pestana=${tabActiva}`,
         { method: "DELETE" }
       );
       if (res.ok) {
@@ -245,7 +290,7 @@ export default function CiclosVidaTransicionesPage() {
   // Restaurar valores de fábrica
   const handleRestaurarFabrica = async () => {
     try {
-      const res = await fetch("/api/admin/activos-config/ciclos-vida-transiciones/configuracion", {
+      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -269,7 +314,7 @@ export default function CiclosVidaTransicionesPage() {
   // Restaurar versión específica desde modal de historial
   const handleRestaurarVersionComoBorrador = async (version: any) => {
     try {
-      const res = await fetch("/api/admin/activos-config/ciclos-vida-transiciones/configuracion", {
+      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -325,7 +370,7 @@ export default function CiclosVidaTransicionesPage() {
         const text = await file.text();
         const json = JSON.parse(text);
         if (json.modulo !== "activos_y_cmdb" || json.pantalla !== "1.5.2") {
-          alert("El archivo JSON no corresponde a la configuración de Ciclos y Transiciones (Pantalla 1.5.2).");
+          alert("El archivo JSON no corresponde a la configuración de Ciclos y Transiciones.");
           return;
         }
         if (json.configuracion) {
@@ -343,7 +388,7 @@ export default function CiclosVidaTransicionesPage() {
   // Solicitar control concurrente
   const handleSolicitarControl = async () => {
     try {
-      const res = await fetch("/api/admin/activos-config/ciclos-vida-transiciones/configuracion", {
+      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -367,8 +412,9 @@ export default function CiclosVidaTransicionesPage() {
   const estaBloqueado = !!bloqueadoPorOtro;
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col pb-24">
-      {/* Toast informativo */}
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {/* Toast informativo */}
       {toastMensaje && (
         <div className="fixed top-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl text-sm font-medium border border-slate-700 animate-in fade-in duration-200">
           {toastMensaje}
@@ -378,13 +424,13 @@ export default function CiclosVidaTransicionesPage() {
       {/* 1. Breadcrumb */}
       <div className="bg-white border-b border-slate-200 px-6 py-2.5 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex items-center space-x-2">
-          <Link href="/admin" className="hover:text-indigo-600 transition-colors">
+          <Link href="/plataforma/operacion/paneles/administrador" className="hover:text-indigo-600 transition-colors">
             Configuración
           </Link>
           <span>&gt;</span>
           <span className="text-slate-600">Activos y CMDB</span>
           <span>&gt;</span>
-          <span className="text-slate-600 font-semibold">1.5.2 Ciclos de vida y transiciones</span>
+          <span className="text-slate-600 font-semibold">Ciclos de vida y transiciones</span>
           <span>&gt;</span>
           <span className="text-indigo-600 font-bold">{pestanaInfo.titulo}</span>
         </div>
@@ -450,7 +496,7 @@ export default function CiclosVidaTransicionesPage() {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setTabActiva(tab.id)}
+                  onClick={() => cambiarTab(tab.id)}
                   className={`px-3 py-2 text-xs font-semibold rounded-lg whitespace-nowrap transition-all ${
                     activa
                       ? "bg-indigo-600 text-white shadow-sm"
@@ -531,6 +577,7 @@ export default function CiclosVidaTransicionesPage() {
           </div>
         )}
       </main>
+      </div>
 
       {/* 5. Barra de acciones fija al pie (Patrón 3.1) */}
       <BarraAccionesComun
@@ -544,7 +591,7 @@ export default function CiclosVidaTransicionesPage() {
         puedePublicar={puedePublicar}
         puedeEditar={puedeEditar}
         onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => mostrarToast("Vista previa activa en el lienzo actual.")}
+        onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
         onAbrirPublicar={() => setModalPublicarAbierto(true)}
         onDescartar={handleDescartarBorrador}
         onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
@@ -554,6 +601,13 @@ export default function CiclosVidaTransicionesPage() {
       />
 
       {/* Modales del Patrón 3.1 */}
+      <ModalVistaPrevia
+        abierto={modalVistaPreviaAbierto}
+        modulo="activos"
+        tituloModulo="Ciclos de Vida y Reglas de Transición"
+        onCerrar={() => setModalVistaPreviaAbierto(false)}
+      />
+
       <ModalPublicacion
         abierto={modalPublicarAbierto}
         versionActual={versionPublicada}

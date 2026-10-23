@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     const data = await obtenerConfiguracionTiposRequisitos(usuario?.id_usuario, pestana);
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Error en GET /api/admin/cambios/tipos-requisitos/configuracion:", error);
+    console.error("Error en GET /api/cambios/configuracion/tipos-requisitos/configuracion:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al cargar configuración");
     return NextResponse.json({ error: mensaje }, { status });
   }
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     const { httpStatus, payload } = await procesarAccionTiposRequisitos(userId, body);
     return NextResponse.json(payload, { status: httpStatus });
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en POST /api/admin/cambios/tipos-requisitos/configuracion:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en POST /api/cambios/configuracion/tipos-requisitos/configuracion:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al procesar solicitud");
     return NextResponse.json({ error: mensaje }, { status });
   }
@@ -49,7 +49,7 @@ export async function PUT(req: NextRequest) {
     const data = await publicarConfiguracionTiposRequisitos(userId, body);
     return NextResponse.json(data);
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en PUT /api/admin/cambios/tipos-requisitos/configuracion:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en PUT /api/cambios/configuracion/tipos-requisitos/configuracion:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al publicar configuración");
     return NextResponse.json({ error: mensaje }, { status });
   }
@@ -65,7 +65,7 @@ export async function DELETE(req: NextRequest) {
     const data = await descartarBorradorTiposRequisitos(userId, pestana || "");
     return NextResponse.json(data);
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en DELETE /api/admin/cambios/tipos-requisitos/configuracion:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en DELETE /api/cambios/configuracion/tipos-requisitos/configuracion:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al descartar borrador");
     return NextResponse.json({ error: mensaje }, { status });
   }

@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { X } from "@/shared/components/ui/Iconos";
 
 export interface ServicioSolicitudVinculado {
   id: number;
@@ -129,7 +131,7 @@ export function PestanaAdquisicionRecepcion({ datos, onChange, bloqueado }: Prop
       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            1.5.2.4 Adquisición y recepción de activos
+            Adquisición y recepción de activos
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Interacción entre solicitudes de servicio del catálogo ITSM (1.2.2), órdenes de compra y el alta física por lotes.
@@ -333,9 +335,7 @@ export function PestanaAdquisicionRecepcion({ datos, onChange, bloqueado }: Prop
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
             <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
               <h3 className="text-sm font-bold text-slate-800">Vincular servicio del catálogo a activo</h3>
-              <button onClick={() => setModalVinculo(false)} className="text-slate-400 hover:text-slate-600 font-bold">
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalVinculo(false)} />
             </div>
 
             <div className="p-5 space-y-3 text-xs">
@@ -402,9 +402,7 @@ export function PestanaAdquisicionRecepcion({ datos, onChange, bloqueado }: Prop
               <h3 className="text-sm font-bold text-slate-800">
                 Simulador de Formulario de Recepción Física en Lote
               </h3>
-              <button onClick={() => setModalSimularRecepcion(false)} className="text-slate-400 hover:text-slate-600 font-bold">
-                ✕
-              </button>
+              <BotonIcono variante="normal" icono={<X size={14} />} titulo="Cerrar modal" ariaLabel="Cerrar modal" onClick={() => setModalSimularRecepcion(false)} />
             </div>
 
             <div className="p-5 space-y-4 text-xs">
