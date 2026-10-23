@@ -52,7 +52,7 @@ export const config = {
   matcher: [
     "/plataforma/:path*",
     "/dashboard/:path*",
-    "/reportes",
+    "/reportes/:path*",
     "/tickets/:path*",
     "/admin/:path*",
     "/mi-cuenta/:path*",

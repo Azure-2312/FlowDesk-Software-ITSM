@@ -15,3 +15,4 @@ export { default as VistaReportesAprobador } from "./views/VistaReportesAprobado
 export { default as VistaReportesProblemas } from "./views/VistaReportesProblemas";
 export { default as VistaReportesArea } from "./views/VistaReportesArea";
 export { default as VistaReportesDisenador } from "./views/VistaReportesDisenador";
+export { default as VistaReportesGerenciales } from "./views/VistaReportesGerenciales";
