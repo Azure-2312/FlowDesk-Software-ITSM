@@ -120,7 +120,27 @@ export async function crearProblema(body: DatosProblema, sesion: SesionProblema)
   } = body;
 
   let idDepartamentoFinal: number;
-  if (sesion.idPerfil === 2) {
+  if (sesion.idPerfil === 1 || sesion.idPerfil === 10) {
+    if (id_departamento) {
+      const depValido = await queryRow<{ id_departamento: number }>(
+        "SELECT id_departamento FROM departamento_ti WHERE id_departamento = $1 AND estado_registro = true",
+        [id_departamento]
+      );
+      if (!depValido) throw new ErrorDominio("El departamento de TI especificado no existe o está inactivo.", 404);
+      idDepartamentoFinal = Number(depValido.id_departamento);
+    } else if (id_ticket_origen) {
+      const depTicket = await queryRow<{ id_departamento: number }>(
+        "SELECT id_departamento FROM ticket WHERE id_ticket = $1 AND estado_registro = true",
+        [id_ticket_origen]
+      );
+      idDepartamentoFinal = depTicket?.id_departamento ? Number(depTicket.id_departamento) : 1;
+    } else {
+      const primerDep = await queryRow<{ id_departamento: number }>(
+        "SELECT id_departamento FROM departamento_ti WHERE estado_registro = true ORDER BY id_departamento LIMIT 1"
+      );
+      idDepartamentoFinal = primerDep ? Number(primerDep.id_departamento) : 1;
+    }
+  } else if (sesion.idPerfil === 2) {
     const grupoTecnico = await queryRow<{ id_departamento: number }>(
       "SELECT id_departamento FROM tecnico_detalle WHERE id_usuario = $1 AND estado_registro = true",
       [sesion.idUsuario]
