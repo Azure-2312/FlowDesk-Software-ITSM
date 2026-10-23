@@ -57,17 +57,18 @@ export default function SelectorPerfilActivo({ perfiles, perfilActivo }: Props) 
 
       setAbierto(false);
       const destinosPorPerfil: Record<number, string> = {
-        1: "/admin/usuarios",
-        2: "/tickets/gestion/asignados",
-        3: "/tickets/gestion/mios",
-        4: "/tickets/gestion/todos",
-        5: "/tickets/gestion/aprobaciones",
-        6: "/tickets/gestion/auditoria",
-        7: "/cambios/gestion/cab",
-        8: "/cambios",
-        9: "/activos",
+        1: "/plataforma/operacion/paneles/administrador",
+        2: "/plataforma/operacion/paneles/tecnico",
+        3: "/plataforma/operacion/paneles/solicitante",
+        4: "/plataforma/operacion/paneles/supervisor",
+        5: "/plataforma/operacion/paneles/gestor-area",
+        6: "/plataforma/operacion/paneles/auditor",
+        7: "/plataforma/operacion/paneles/aprobador",
+        8: "/plataforma/operacion/paneles/gestor-cambios",
+        9: "/plataforma/activos/panel",
+        10: "/plataforma/problemas/gestion/panel",
       };
-      const destino = destinosPorPerfil[idPerfil] ?? "/tickets";
+      const destino = destinosPorPerfil[idPerfil] ?? "/plataforma/dashboard";
 
       window.location.href = destino;
     } catch {

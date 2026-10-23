@@ -211,7 +211,7 @@ export default function PaginaPanelTecnico() {
             </div>
           </div>
           <Link
-            href={`/tickets/${incidenteMayorActivo.id_ticket}`}
+            href={`/plataforma/tickets/${incidenteMayorActivo.id_ticket}`}
             style={{
               padding: "8px 16px",
               backgroundColor: "#dc2626",
@@ -347,10 +347,10 @@ export default function PaginaPanelTecnico() {
                 {atenderAhora.map((t) => (
                   <tr key={t.id_ticket} style={{ borderBottom: "1px solid #f1f5f9" }}>
                     <td style={{ padding: "10px 16px", fontWeight: 600, color: "#2563eb" }}>
-                      <Link href={`/tickets/${t.id_ticket}`}>{t.codigo_ticket}</Link>
+                      <Link href={`/plataforma/tickets/${t.id_ticket}`}>{t.codigo_ticket}</Link>
                     </td>
                     <td style={{ padding: "10px 16px", color: "#1e293b", maxWidth: 260 }}>
-                      <Link href={`/tickets/${t.id_ticket}`} style={{ textDecoration: "none", color: "inherit" }}>
+                      <Link href={`/plataforma/tickets/${t.id_ticket}`} style={{ textDecoration: "none", color: "inherit" }}>
                         {t.titulo}
                       </Link>
                     </td>
@@ -389,7 +389,7 @@ export default function PaginaPanelTecnico() {
                     </td>
                     <td style={{ padding: "10px 16px", textAlign: "right" }}>
                       <Link
-                        href={`/tickets/${t.id_ticket}`}
+                        href={`/plataforma/tickets/${t.id_ticket}`}
                         style={{
                           padding: "3px 8px",
                           backgroundColor: "#f8fafc",

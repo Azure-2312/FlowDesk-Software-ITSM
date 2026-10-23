@@ -189,7 +189,7 @@ export default function PaginaMisTickets({
             Actualizar
           </button>
           <Link
-            href={rutaCrear ?? "/tickets/gestion/crear"}
+            href={rutaCrear ?? (tipoFijo === "1" ? "/plataforma/incidentes/crear" : "/plataforma/solicitudes/crear")}
             className="boton-primario"
             style={{
               textDecoration: "none",
@@ -508,7 +508,7 @@ export default function PaginaMisTickets({
               : "No tienes tickets registrados en este historial."}
           </p>
           <Link
-            href={rutaCrear ?? "/tickets/gestion/crear"}
+            href={rutaCrear ?? (tipoFijo === "1" ? "/plataforma/incidentes/crear" : "/plataforma/solicitudes/crear")}
             className="boton-primario"
             style={{ width: "auto", display: "inline-block", textDecoration: "none" }}
           >
@@ -543,7 +543,7 @@ export default function PaginaMisTickets({
                 return (
                   <tr
                     key={t.id_ticket}
-                    onClick={() => router.push(rutaDetalleBase ? `${rutaDetalleBase}/${t.id_ticket}` : `/tickets/${t.id_ticket}`)}
+                    onClick={() => router.push(rutaDetalleBase ? `${rutaDetalleBase}/${t.id_ticket}` : (esIncidente ? `/plataforma/incidentes/${t.id_ticket}` : `/plataforma/solicitudes/${t.id_ticket}`))}
                     style={{
                       borderBottom: "1px solid #f1f5f9",
                       cursor: "pointer",
@@ -649,7 +649,7 @@ export default function PaginaMisTickets({
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          router.push(rutaDetalleBase ? `${rutaDetalleBase}/${t.id_ticket}` : `/tickets/${t.id_ticket}`);
+                          router.push(rutaDetalleBase ? `${rutaDetalleBase}/${t.id_ticket}` : (esIncidente ? `/plataforma/incidentes/${t.id_ticket}` : `/plataforma/solicitudes/${t.id_ticket}`));
                         }}
                         className="boton-secundario"
                         style={{

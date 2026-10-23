@@ -237,8 +237,9 @@ function ContenidoCatalogo({
 
   function solicitarServicio(s: ServicioCatalogo) {
     const tipoStr = s.id_tipo_ticket === 1 ? "1" : "2";
+    const rutaFallback = esSolicitud ? "/plataforma/solicitudes/crear" : "/plataforma/incidentes/crear";
     router.push(
-      `${rutaCrearBase ?? "/tickets/gestion/crear"}?tipo=${tipoStr}&servicio=${encodeURIComponent(s.codigo_servicio)}&categoria=${s.id_categoria || ""}&titulo=${encodeURIComponent(s.nombre)}`
+      `${rutaCrearBase ?? rutaFallback}?tipo=${tipoStr}&servicio=${encodeURIComponent(s.codigo_servicio)}&categoria=${s.id_categoria || ""}&titulo=${encodeURIComponent(s.nombre)}`
     );
   }
 

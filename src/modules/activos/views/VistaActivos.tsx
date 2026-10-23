@@ -40,7 +40,7 @@ export default function PaginaActivos() {
             Control de equipos de cómputo, servidores físicos, switches, series de fábrica y asignación de custodios.
           </p>
           <Link
-            href="/activos/inventario"
+            href="/plataforma/activos/inventario"
             className="boton-mini"
             style={{ textDecoration: "none", display: "inline-block", backgroundColor: "#f1f5f9", color: "#1e293b", borderColor: "#cbd5e1" }}
           >
@@ -54,7 +54,7 @@ export default function PaginaActivos() {
             Modelado de Elementos de Configuración (CI) y relaciones de dependencia para evaluación de impacto en incidentes y cambios.
           </p>
           <Link
-            href="/activos/cmdb"
+            href="/plataforma/activos/cmdb"
             className="boton-mini"
             style={{ textDecoration: "none", display: "inline-block", backgroundColor: "#f1f5f9", color: "#1e293b", borderColor: "#cbd5e1" }}
           >
@@ -68,7 +68,7 @@ export default function PaginaActivos() {
             Supervisión de asientos de software (M365, bases de datos, utilitarios) y alertas de vencimiento de garantías.
           </p>
           <Link
-            href="/activos/licencias"
+            href="/plataforma/activos/licencias"
             className="boton-mini"
             style={{ textDecoration: "none", display: "inline-block", backgroundColor: "#f1f5f9", color: "#1e293b", borderColor: "#cbd5e1" }}
           >

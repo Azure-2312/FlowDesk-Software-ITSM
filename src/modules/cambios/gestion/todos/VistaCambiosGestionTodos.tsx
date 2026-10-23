@@ -128,7 +128,7 @@ export default function PaginaTodosCambios() {
                 <tr key={c.id_cambio}>
                   <td>
                     <Link
-                      href={`/cambios/gestion/${c.id_cambio}`}
+                      href={`/plataforma/cambios/gestion/${c.id_cambio}`}
                       style={{ fontFamily: "monospace", fontWeight: 700, color: "#2563eb", textDecoration: "none" }}
                       title="Abrir vista formal del ticket RFC"
                     >
@@ -137,7 +137,7 @@ export default function PaginaTodosCambios() {
                   </td>
                   <td style={{ fontWeight: 600, maxWidth: 300 }}>
                     <Link
-                      href={`/cambios/gestion/${c.id_cambio}`}
+                      href={`/plataforma/cambios/gestion/${c.id_cambio}`}
                       style={{ color: "#1e293b", textDecoration: "none" }}
                     >
                       {c.titulo}
@@ -176,7 +176,7 @@ export default function PaginaTodosCambios() {
                   <td style={{ textAlign: "center", width: 80 }}>
                     <div style={{ display: "flex", gap: 4, justifyContent: "center" }}>
                       <Link
-                        href={`/cambios/gestion/${c.id_cambio}`}
+                        href={`/plataforma/cambios/gestion/${c.id_cambio}`}
                         className="boton-mini"
                         style={{ textDecoration: "none", padding: "4px 8px", fontSize: 11 }}
                         title="Ver ticket completo"

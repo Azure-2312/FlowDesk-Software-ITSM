@@ -17,9 +17,10 @@ export default function PaginaTickets() {
     5: "/plataforma/solicitudes/aprobaciones",
     6: "/plataforma/incidentes",
     7: "/plataforma/solicitudes/mios",
-    8: "/cambios",
-    9: "/activos",
+    8: "/plataforma/cambios",
+    9: "/plataforma/activos",
+    10: "/plataforma/problemas",
   };
 
-  redirect(destinosPorPerfil[sesion.perfilActivo?.id_perfil] ?? "/login");
+  redirect(destinosPorPerfil[sesion.perfilActivo?.id_perfil] ?? "/plataforma/dashboard");
 }

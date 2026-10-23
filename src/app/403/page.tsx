@@ -118,7 +118,7 @@ export default function Pagina403AccesoDenegado() {
             </button>
 
             <Link
-              href="/plataforma"
+              href="/plataforma/dashboard"
               className="boton-primario"
               style={{
                 display: "inline-flex",

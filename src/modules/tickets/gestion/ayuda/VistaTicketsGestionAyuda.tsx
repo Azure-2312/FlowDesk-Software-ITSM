@@ -72,7 +72,7 @@ export default function PaginaBaseAyuda() {
             Listado de todos los artículos, documentaciones de incidentes anteriores, problemas conocidos y guías de configuración básica.
           </p>
         </div>
-        <Link href="/tickets/gestion/crear" className="boton-primario" style={{ width: "auto", fontSize: 12.5, textDecoration: "none" }}>
+        <Link href="/plataforma/solicitudes/crear" className="boton-primario" style={{ width: "auto", fontSize: 12.5, textDecoration: "none" }}>
           Crear Ticket
         </Link>
       </div>
@@ -98,7 +98,7 @@ export default function PaginaBaseAyuda() {
           <p style={{ margin: "0 0 12px 0", color: "#64748b", fontWeight: 500 }}>
             No se encontraron artículos publicados que coincidan con la búsqueda.
           </p>
-          <Link href="/tickets/gestion/crear" className="boton-mini" style={{ textDecoration: "none" }}>
+          <Link href="/plataforma/solicitudes/crear" className="boton-mini" style={{ textDecoration: "none" }}>
             Abrir un ticket para atención de la Mesa de Ayuda
           </Link>
         </div>

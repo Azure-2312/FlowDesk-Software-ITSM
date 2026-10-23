@@ -27,7 +27,7 @@ const NIVELES_PRIORIDAD_MAP: Record<number, { nombre: string; color: string; bg:
 export default function PaginaDetalleTicket({
   apiBase = "/api/tickets",
   tipoEsperado,
-  rutaLista = "/tickets/gestion/mios",
+  rutaLista = "/plataforma/solicitudes/mios",
   etiquetaVolver = "Volver a Mis tickets",
 }: {
   apiBase?: string;
