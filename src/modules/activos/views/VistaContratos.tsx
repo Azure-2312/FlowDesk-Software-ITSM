@@ -53,7 +53,7 @@ export default function VistaContratos() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/contratos?_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/contratos?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setContratos(Array.isArray(json?.contratos) ? json.contratos : []);
@@ -77,7 +77,7 @@ export default function VistaContratos() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/contratos", {
+      const res = await fetch("/api/activos/contratos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -102,7 +102,7 @@ export default function VistaContratos() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/contratos", {
+      const res = await fetch("/api/activos/contratos", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_contrato: idContrato, estado }),

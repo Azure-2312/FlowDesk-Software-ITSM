@@ -58,7 +58,7 @@ function ContenidoConfiguracionRfc() {
   }, [seccionParam]);
 
   useEffect(() => {
-    fetch("/api/admin/rfc-config", { cache: "no-store" })
+    fetch("/api/cambios/configuracion/rfc", { cache: "no-store" })
       .then(async (r) => {
         const d = await r.json();
         if (r.ok) setC({ ...inicial, ...d, campos_personalizados: d.campos_personalizados || [] });
@@ -88,7 +88,7 @@ function ContenidoConfiguracionRfc() {
     setOk("");
     setGuardando(true);
     try {
-      const r = await fetch("/api/admin/rfc-config", {
+      const r = await fetch("/api/cambios/configuracion/rfc", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(c),

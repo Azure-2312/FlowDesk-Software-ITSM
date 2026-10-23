@@ -153,8 +153,8 @@ function ContenidoCrearTicket({
         const [resCat, resUser, resConfig, resSla] = await Promise.all([
           fetch("/api/tickets/catalogos").then((r) => r.json()),
           fetch("/api/mi-cuenta").then((r) => r.json()),
-          fetch("/api/admin/configuracion?clave=formularios_solicitante_config").then((r) => r.json()),
-          fetch("/api/admin/sla").then((r) => r.json()),
+          fetch("/api/operacion/configuracion?clave=formularios_solicitante_config").then((r) => r.json()),
+          fetch("/api/servicios/sla").then((r) => r.json()),
         ]);
 
         setCatalogos(resCat);
@@ -270,7 +270,7 @@ function ContenidoCrearTicket({
   async function buscarUsuariosEnApi(termino: string) {
     setBuscandoUsuarios(true);
     try {
-      const res = await fetch(`/api/perfiles/tecnico/usuarios?q=${encodeURIComponent(termino.trim())}`);
+      const res = await fetch(`/api/identidades/tecnicos?q=${encodeURIComponent(termino.trim())}`);
       if (res.ok) {
         const data = await res.json();
         setUsuariosEncontrados(data.usuarios || []);

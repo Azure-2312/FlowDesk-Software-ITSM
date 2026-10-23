@@ -99,8 +99,8 @@ export default function ConfiguracionFormularioCambiosPage() {
       setErrorCarga(null);
 
       const [resConfig, resCP] = await Promise.all([
-        fetch(`/api/admin/cambios/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`),
-        fetch(`/api/admin/cambios/campos-personalizados`),
+        fetch(`/api/cambios/configuracion/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`),
+        fetch(`/api/cambios/configuracion/campos-personalizados`),
       ]);
 
       const dataConfig = await resConfig.json();
@@ -142,7 +142,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/cambios/formulario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/formulario/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -186,7 +186,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/cambios/formulario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/formulario/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -215,7 +215,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   const handleDescartarBorrador = async () => {
     if (!confirm("Se perderán todos los cambios del borrador sin publicar. ¿Desea continuar?")) return;
     try {
-      const res = await fetch(`/api/admin/cambios/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`, {
+      const res = await fetch(`/api/cambios/configuracion/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -230,7 +230,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   // Restaurar fábrica
   const handleRestaurarFabrica = async () => {
     try {
-      const res = await fetch("/api/admin/cambios/formulario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/formulario/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -253,7 +253,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   // Ver historial de versiones
   const handleVerHistorial = async () => {
     try {
-      const res = await fetch(`/api/admin/cambios/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`);
+      const res = await fetch(`/api/cambios/configuracion/formulario/configuracion?pantalla=1.3.3.1&pestana=${tabActiva}`);
       const data = await res.json();
       if (data.ok) {
         setVersionesHistorial([

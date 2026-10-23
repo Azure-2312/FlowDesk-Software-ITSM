@@ -172,7 +172,7 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
   const handleEjecutarSimulacion = async () => {
     try {
       setSimulando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/simular-etapas", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/simular-etapas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(simParams)

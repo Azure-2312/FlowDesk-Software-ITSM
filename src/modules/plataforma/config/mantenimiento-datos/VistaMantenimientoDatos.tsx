@@ -15,7 +15,7 @@ export default function PaginaMantenimientoPurgaDatos() {
     setError(null);
     setResultadoSimulacion(null);
     try {
-      const res = await fetch("/api/admin/mantenimiento-datos", {
+      const res = await fetch("/api/operacion/mantenimiento-datos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -46,7 +46,7 @@ export default function PaginaMantenimientoPurgaDatos() {
     setError(null);
     setMensajeExito(null);
     try {
-      const res = await fetch("/api/admin/mantenimiento-datos", {
+      const res = await fetch("/api/operacion/mantenimiento-datos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

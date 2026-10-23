@@ -32,7 +32,7 @@ export default function VistaHistorialAprobador() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/aprobador/historial?_t=${Date.now()}`);
+        const res = await fetch(`/api/seguridad/historial?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setItems(Array.isArray(json) ? json : []);
         else setError(json.error ?? "No se pudo cargar el historial.");

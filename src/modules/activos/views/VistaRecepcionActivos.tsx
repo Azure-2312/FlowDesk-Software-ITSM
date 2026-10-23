@@ -49,7 +49,7 @@ export default function VistaRecepcionActivos() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/recepcion?_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/recepcion?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setRecepciones(Array.isArray(json?.recepciones) ? json.recepciones : []);
@@ -78,7 +78,7 @@ export default function VistaRecepcionActivos() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/recepcion", {
+      const res = await fetch("/api/activos/recepcion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

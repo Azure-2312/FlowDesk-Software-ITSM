@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const data = await simularConflictosCalendario(body);
     return NextResponse.json(data);
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en POST /api/admin/cambios/notificaciones-calendario/simular-conflictos:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en POST /api/cambios/configuracion/notificaciones-calendario/simular-conflictos:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al simular conflictos");
     return NextResponse.json({ error: mensaje }, { status });
   }

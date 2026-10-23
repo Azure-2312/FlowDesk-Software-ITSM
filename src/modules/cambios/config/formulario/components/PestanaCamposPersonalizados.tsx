@@ -85,7 +85,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
 
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/cambios/campos-personalizados", {
+      const res = await fetch("/api/cambios/configuracion/campos-personalizados", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -119,7 +119,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
 
   const alternarEstado = async (c: CampoPersonalizado) => {
     try {
-      const res = await fetch("/api/admin/cambios/campos-personalizados", {
+      const res = await fetch("/api/cambios/configuracion/campos-personalizados", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_campo: c.id_campo, activo: !c.activo }),
@@ -133,7 +133,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
   const eliminarCampo = async (c: CampoPersonalizado) => {
     if (!confirm(`¿Está seguro de eliminar o desactivar el campo "${c.etiqueta}"?`)) return;
     try {
-      const res = await fetch(`/api/admin/cambios/campos-personalizados?id_campo=${c.id_campo}`, {
+      const res = await fetch(`/api/cambios/configuracion/campos-personalizados?id_campo=${c.id_campo}`, {
         method: "DELETE",
       });
       const data = await res.json();

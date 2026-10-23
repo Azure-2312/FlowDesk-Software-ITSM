@@ -131,7 +131,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
         activa
       };
 
-      const res = await fetch("/api/admin/problemas/relaciones/umbral", {
+      const res = await fetch("/api/problemas/configuracion/relaciones/umbral", {
         method: reglaEditando ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reglaEditando ? payload : { accion: "crear", regla: payload })
@@ -154,7 +154,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
 
   async function toggleActiva(r: ReglaUmbral) {
     try {
-      const res = await fetch("/api/admin/problemas/relaciones/umbral", {
+      const res = await fetch("/api/problemas/configuracion/relaciones/umbral", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_regla: r.id_regla, activa: !r.activa })
@@ -170,7 +170,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
 
   async function duplicarRegla(r: ReglaUmbral) {
     try {
-      const res = await fetch("/api/admin/problemas/relaciones/umbral", {
+      const res = await fetch("/api/problemas/configuracion/relaciones/umbral", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ accion: "duplicar", regla: { id_regla: r.id_regla } })
@@ -187,7 +187,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
   async function eliminarRegla(id: number) {
     if (!confirm("¿Está seguro de eliminar esta regla de detección proactiva?")) return;
     try {
-      const res = await fetch(`/api/admin/problemas/relaciones/umbral?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/problemas/configuracion/relaciones/umbral?id=${id}`, { method: "DELETE" });
       if (res.ok) {
         onMarcarModificado();
         onActualizar();
@@ -212,7 +212,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
     setResultadoSimulacion(null);
 
     try {
-      const res = await fetch("/api/admin/problemas/relaciones/umbral", {
+      const res = await fetch("/api/problemas/configuracion/relaciones/umbral", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -236,7 +236,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
     setReglaSeleccionadaHistorial(r);
     setModalEjecuciones(true);
     try {
-      const res = await fetch(`/api/admin/problemas/relaciones/umbral?id_regla=${r.id_regla}`);
+      const res = await fetch(`/api/problemas/configuracion/relaciones/umbral?id_regla=${r.id_regla}`);
       const data = await res.json();
       if (data.ok) {
         setEjecuciones(data.ejecuciones || []);

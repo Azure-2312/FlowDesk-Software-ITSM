@@ -29,7 +29,7 @@ export default function VistaActivosArea() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/gestor-area/activos?_t=${Date.now()}`);
+        const res = await fetch(`/api/activos/area?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setItems(Array.isArray(json) ? json : []);
         else setError(json.error ?? "No se pudieron cargar los activos.");

@@ -115,7 +115,7 @@ export default function NotificacionesCalendarioPage() {
       setCargando(true);
       setErrorCarga(null);
 
-      const res = await fetch(`/api/admin/cambios/notificaciones-calendario/configuracion?pestana=${tabActiva}`);
+      const res = await fetch(`/api/cambios/configuracion/notificaciones-calendario/configuracion?pestana=${tabActiva}`);
       if (!res.ok) throw new Error("Error al obtener la configuración del servidor");
       const data = await res.json();
 
@@ -154,7 +154,7 @@ export default function NotificacionesCalendarioPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -182,7 +182,7 @@ export default function NotificacionesCalendarioPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -214,7 +214,7 @@ export default function NotificacionesCalendarioPage() {
     }
     try {
       setCargando(true);
-      const res = await fetch(`/api/admin/cambios/notificaciones-calendario/configuracion?pestana=${tabActiva}`, {
+      const res = await fetch(`/api/cambios/configuracion/notificaciones-calendario/configuracion?pestana=${tabActiva}`, {
         method: "DELETE"
       });
       if (!res.ok) throw new Error("Error al descartar borrador");
@@ -230,7 +230,7 @@ export default function NotificacionesCalendarioPage() {
   const handleRestaurarFabrica = async () => {
     try {
       setCargando(true);
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -254,7 +254,7 @@ export default function NotificacionesCalendarioPage() {
   const handleRestaurarVersion = async (versionId: number) => {
     try {
       setCargando(true);
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

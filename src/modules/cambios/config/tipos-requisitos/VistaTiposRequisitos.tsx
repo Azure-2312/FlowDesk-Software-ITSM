@@ -69,7 +69,7 @@ export default function ConfiguracionTiposRequisitosPage() {
       setCargando(true);
       setErrorCarga(null);
 
-      const res = await fetch(`/api/admin/cambios/tipos-requisitos/configuracion?pestana=${tabActiva}`);
+      const res = await fetch(`/api/cambios/configuracion/tipos-requisitos/configuracion?pestana=${tabActiva}`);
       if (!res.ok) throw new Error("Error al obtener la configuración del servidor");
       const data = await res.json();
 
@@ -99,7 +99,7 @@ export default function ConfiguracionTiposRequisitosPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/cambios/tipos-requisitos/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -127,7 +127,7 @@ export default function ConfiguracionTiposRequisitosPage() {
       return;
     }
     try {
-      const res = await fetch(`/api/admin/cambios/tipos-requisitos/configuracion?pestana=${tabActiva}`, {
+      const res = await fetch(`/api/cambios/configuracion/tipos-requisitos/configuracion?pestana=${tabActiva}`, {
         method: "DELETE"
       });
       const data = await res.json();
@@ -143,7 +143,7 @@ export default function ConfiguracionTiposRequisitosPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/cambios/tipos-requisitos/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -167,7 +167,7 @@ export default function ConfiguracionTiposRequisitosPage() {
   // Restaurar de fábrica
   const handleRestaurarFabrica = async () => {
     try {
-      const res = await fetch("/api/admin/cambios/tipos-requisitos/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -188,7 +188,7 @@ export default function ConfiguracionTiposRequisitosPage() {
   // Restaurar versión histórica
   const handleRestaurarVersionHistorica = async (idVersion: number) => {
     try {
-      const res = await fetch("/api/admin/cambios/tipos-requisitos/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -236,7 +236,7 @@ export default function ConfiguracionTiposRequisitosPage() {
 
           <div style={{ display: "flex", gap: 8 }}>
             <Link
-              href="/plataforma/admin/procesos/cambios/formulario"
+              href="/plataforma/cambios/configuracion/formulario"
               style={{
                 padding: "6px 12px",
                 fontSize: 12,

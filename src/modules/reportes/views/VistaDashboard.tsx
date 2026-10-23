@@ -15,16 +15,16 @@ export default function VistaDashboard(): any {
   // perfiles caian en su panel y otros en una pantalla operativa, asi que el
   // mismo enlace /dashboard daba resultados distintos sin una regla clara.
   const destinosPorPerfil: Record<number, string> = {
-    1: "/plataforma/perfiles/administrador/panel", // 1. Administrador
-    2: "/plataforma/perfiles/tecnico/panel", // 2. Tecnico
-    3: "/plataforma/perfiles/solicitante/panel", // 3. Solicitante
-    4: "/plataforma/perfiles/supervisor/panel", // 4. Supervisor
-    5: "/plataforma/perfiles/gestor-area/panel", // 5. Gestor de Area
-    6: "/plataforma/perfiles/auditor/panel", // 6. Auditor
-    7: "/plataforma/perfiles/aprobador/panel", // 7. Aprobador
-    8: "/plataforma/perfiles/gestor-cambios/panel", // 8. Gestor de Cambios
-    9: "/plataforma/gestor-activos/panel", // 9. Gestor de Activos y CMDB
-    10: "/plataforma/gestor-problemas/panel", // 10. Gestor de Problemas
+    1: "/plataforma/operacion/paneles/administrador", // 1. Administrador
+    2: "/plataforma/operacion/paneles/tecnico", // 2. Tecnico
+    3: "/plataforma/operacion/paneles/solicitante", // 3. Solicitante
+    4: "/plataforma/operacion/paneles/supervisor", // 4. Supervisor
+    5: "/plataforma/operacion/paneles/gestor-area", // 5. Gestor de Area
+    6: "/plataforma/operacion/paneles/auditor", // 6. Auditor
+    7: "/plataforma/operacion/paneles/aprobador", // 7. Aprobador
+    8: "/plataforma/operacion/paneles/gestor-cambios", // 8. Gestor de Cambios
+    9: "/plataforma/activos/panel", // 9. Gestor de Activos y CMDB
+    10: "/plataforma/problemas/gestion/panel", // 10. Gestor de Problemas
   };
 
   const idPerfil = sesion.perfilActivo?.id_perfil;

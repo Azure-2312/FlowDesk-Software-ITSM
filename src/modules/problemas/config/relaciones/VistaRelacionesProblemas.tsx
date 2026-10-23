@@ -63,7 +63,7 @@ export default function RelacionesProblemasPage() {
       setCargando(true);
       setErrorCarga(null);
 
-      const res = await fetch("/api/admin/problemas/relaciones");
+      const res = await fetch("/api/problemas/configuracion/relaciones");
       const data = await res.json();
 
       if (!res.ok || !data.ok) {
@@ -107,7 +107,7 @@ export default function RelacionesProblemasPage() {
   async function handleGuardarBorrador() {
     setGuardando(true);
     try {
-      const res = await fetch("/api/admin/problemas/relaciones", {
+      const res = await fetch("/api/problemas/configuracion/relaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -161,7 +161,7 @@ export default function RelacionesProblemasPage() {
   async function handleConfirmarPublicacion(motivo: string) {
     setPublicando(true);
     try {
-      const res = await fetch("/api/admin/problemas/relaciones", {
+      const res = await fetch("/api/problemas/configuracion/relaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -191,7 +191,7 @@ export default function RelacionesProblemasPage() {
     }
 
     try {
-      const res = await fetch("/api/admin/problemas/relaciones", {
+      const res = await fetch("/api/problemas/configuracion/relaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ accion: "descartar" })
@@ -208,7 +208,7 @@ export default function RelacionesProblemasPage() {
   // Restaurar Fábrica
   async function handleConfirmarRestauracion() {
     try {
-      const res = await fetch("/api/admin/problemas/relaciones", {
+      const res = await fetch("/api/problemas/configuracion/relaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

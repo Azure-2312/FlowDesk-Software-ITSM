@@ -79,8 +79,8 @@ function ContenidoConfiguracionVistasTickets() {
       const [resUsuarios, resPerfiles, resVistas, resEstados] = await Promise.all([
         fetch("/api/usuarios").then((r) => r.json()),
         fetch("/api/identidades/perfiles").then((r) => r.json()),
-        fetch("/api/admin/configuracion?clave=vistas_ticket_perfil").then((r) => r.json()),
-        fetch("/api/admin/configuracion?clave=flujo_estados_acciones").then((r) => r.json()),
+        fetch("/api/operacion/configuracion?clave=vistas_ticket_perfil").then((r) => r.json()),
+        fetch("/api/operacion/configuracion?clave=flujo_estados_acciones").then((r) => r.json()),
       ]);
 
       if (resUsuarios.usuarios) setUsuarios(resUsuarios.usuarios);
@@ -197,7 +197,7 @@ function ContenidoConfiguracionVistasTickets() {
     setError(null);
     setMensajeExito(null);
     try {
-      const res = await fetch("/api/admin/configuracion", {
+      const res = await fetch("/api/operacion/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -227,7 +227,7 @@ function ContenidoConfiguracionVistasTickets() {
     setError(null);
     setMensajeExito(null);
     try {
-      const res = await fetch("/api/admin/configuracion", {
+      const res = await fetch("/api/operacion/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -74,7 +74,7 @@ export default function ProblemasHubPage() {
             </ul>
           </div>
           <Link
-            href="/plataforma/admin/procesos/problemas/formulario"
+            href="/plataforma/problemas/configuracion/formulario"
             className="boton-primario"
             style={{ textAlign: "center", textDecoration: "none", padding: "8px 16px", fontSize: 13 }}
           >
@@ -125,7 +125,7 @@ export default function ProblemasHubPage() {
             </ul>
           </div>
           <Link
-            href="/plataforma/admin/procesos/problemas/flujo"
+            href="/plataforma/problemas/configuracion/flujo"
             className="boton-primario"
             style={{ textAlign: "center", textDecoration: "none", padding: "8px 16px", fontSize: 13 }}
           >
@@ -174,7 +174,7 @@ export default function ProblemasHubPage() {
             </ul>
           </div>
           <Link
-            href="/plataforma/admin/procesos/problemas/relaciones"
+            href="/plataforma/problemas/configuracion/relaciones"
             className="boton-primario"
             style={{ textAlign: "center", textDecoration: "none", padding: "8px 16px", fontSize: 13 }}
           >

@@ -37,7 +37,7 @@ export default function VistaAsignacionProblemas() {
     setError(null);
     try {
       const [resP, resT] = await Promise.all([
-        fetch(`/api/perfiles/supervisor/problemas/asignar?_t=${Date.now()}`).then((r) => r.json()),
+        fetch(`/api/problemas/asignar?_t=${Date.now()}`).then((r) => r.json()),
         fetch(`/api/tecnicos?_t=${Date.now()}`).then((r) => r.json()),
       ]);
       setProblemas(Array.isArray(resP) ? resP : []);
@@ -60,7 +60,7 @@ export default function VistaAsignacionProblemas() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/perfiles/supervisor/problemas/asignar", {
+      const res = await fetch("/api/problemas/asignar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_problema: idProblema, id_usuario_asignado: idUsuarioAsignado }),

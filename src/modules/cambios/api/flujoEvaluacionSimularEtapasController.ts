@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const data = await simularEtapasFlujo(body);
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Error en /api/admin/cambios/flujo-evaluacion/simular-etapas:", error);
+    console.error("Error en /api/cambios/configuracion/flujo-evaluacion/simular-etapas:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al simular etapas");
     return NextResponse.json({ error: mensaje }, { status });
   }

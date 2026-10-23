@@ -169,7 +169,7 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({ snapsh
     try {
       setValidando(true);
       setModalValidacionAbierto(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/validar-flujo", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/validar-flujo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ estados, transiciones })

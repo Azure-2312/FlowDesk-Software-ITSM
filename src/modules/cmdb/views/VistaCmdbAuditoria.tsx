@@ -49,7 +49,7 @@ export default function VistaCmdbAuditoria() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/gestor-activos/cmdb/auditoria?_t=${Date.now()}`);
+        const res = await fetch(`/api/cmdb/auditoria?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) {
           setResumen(json?.resumen ?? null);

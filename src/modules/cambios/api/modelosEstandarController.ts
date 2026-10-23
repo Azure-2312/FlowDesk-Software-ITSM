@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     const data = await listarModelosEstandar({ id, estado, categoriaId, busqueda, soloAprobados });
     return NextResponse.json(data);
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en GET /api/admin/cambios/modelos-estandar:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en GET /api/cambios/configuracion/modelos-estandar:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al listar modelos estándar");
     return NextResponse.json({ error: mensaje }, { status });
   }
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     const data = await crearModeloEstandar(userId, body);
     return NextResponse.json(data);
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en POST /api/admin/cambios/modelos-estandar:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en POST /api/cambios/configuracion/modelos-estandar:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al crear modelo estándar");
     return NextResponse.json({ error: mensaje }, { status });
   }
@@ -65,7 +65,7 @@ export async function PUT(req: NextRequest) {
     const data = await actualizarModeloEstandar(userId, body);
     return NextResponse.json(data);
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en PUT /api/admin/cambios/modelos-estandar:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en PUT /api/cambios/configuracion/modelos-estandar:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al actualizar modelo estándar");
     return NextResponse.json({ error: mensaje }, { status });
   }
@@ -79,7 +79,7 @@ export async function DELETE(req: NextRequest) {
     const data = await eliminarModeloEstandar(id as string);
     return NextResponse.json(data);
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en DELETE /api/admin/cambios/modelos-estandar:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en DELETE /api/cambios/configuracion/modelos-estandar:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al eliminar modelo estándar");
     return NextResponse.json({ error: mensaje }, { status });
   }

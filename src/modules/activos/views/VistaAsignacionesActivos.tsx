@@ -35,7 +35,7 @@ export default function VistaAsignacionesActivos() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/asignaciones?_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/asignaciones?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setActivos(Array.isArray(json?.activos) ? json.activos : []);
@@ -74,7 +74,7 @@ export default function VistaAsignacionesActivos() {
     setOk(null);
     const valores = form[idActivo] ?? { id_usuario_custodio: "", id_departamento: "", motivo: "" };
     try {
-      const res = await fetch("/api/gestor-activos/asignaciones", {
+      const res = await fetch("/api/activos/asignaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -27,7 +27,7 @@ export default function VistaObjetivosProblemas() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-problemas/objetivos?_t=${Date.now()}`);
+      const res = await fetch(`/api/problemas/gestion/objetivos?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setObjetivos(Array.isArray(json?.objetivos) ? json.objetivos : []);
       else setError(json.error ?? "No se pudieron cargar los objetivos.");
@@ -70,7 +70,7 @@ export default function VistaObjetivosProblemas() {
       }
     }
     try {
-      const res = await fetch("/api/gestor-problemas/objetivos", {
+      const res = await fetch("/api/problemas/gestion/objetivos", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

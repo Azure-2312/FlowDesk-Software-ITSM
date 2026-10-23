@@ -47,7 +47,7 @@ export default function VistaCandidatosProblemas() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-problemas/candidatos?_t=${Date.now()}`);
+      const res = await fetch(`/api/problemas/gestion/candidatos?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setCandidatos(Array.isArray(json?.candidatos) ? json.candidatos : []);
@@ -79,7 +79,7 @@ export default function VistaCandidatosProblemas() {
     setOk(null);
     const valores = form[clave] ?? { titulo: "", descripcion: "", id_prioridad: "" };
     try {
-      const res = await fetch("/api/gestor-problemas/candidatos", {
+      const res = await fetch("/api/problemas/gestion/candidatos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

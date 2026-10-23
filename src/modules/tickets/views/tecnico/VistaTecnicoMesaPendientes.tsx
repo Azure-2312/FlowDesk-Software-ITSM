@@ -48,7 +48,7 @@ export default function PaginaBandejaPendientes() {
     setError(null);
     setMensajeExito(null);
     try {
-      const res = await fetch("/api/perfiles/tecnico/mesa/tomar", {
+      const res = await fetch("/api/tickets/mesa/tomar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_ticket: idTicket }),

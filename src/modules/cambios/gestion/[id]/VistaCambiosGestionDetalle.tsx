@@ -58,7 +58,7 @@ export default function PaginaDetalleTicketRFC() {
     }
     setProcesandoDecision(true);
     try {
-      const res = await fetch("/api/perfiles/aprobador/cambios", {
+      const res = await fetch("/api/cambios/aprobaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

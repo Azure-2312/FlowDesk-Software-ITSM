@@ -130,7 +130,7 @@ export default function VistaSaludSistema() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/salud-sistema?_t=${Date.now()}`);
+      const res = await fetch(`/api/operacion/salud-sistema?_t=${Date.now()}`);
       const data = await res.json();
       if (res.ok) {
         setSalud(data);
@@ -148,7 +148,7 @@ export default function VistaSaludSistema() {
     setCargandoTareas(true);
     setErrorTareas(null);
     try {
-      const res = await fetch(`/api/admin/salud-sistema/tareas?_t=${Date.now()}`);
+      const res = await fetch(`/api/operacion/salud-sistema/tareas?_t=${Date.now()}`);
       const data = await res.json();
       if (res.ok) {
         setTareas(data);
@@ -166,7 +166,7 @@ export default function VistaSaludSistema() {
     setCargandoCorreos(true);
     setErrorCorreos(null);
     try {
-      const res = await fetch(`/api/admin/salud-sistema/correo?_t=${Date.now()}`);
+      const res = await fetch(`/api/operacion/salud-sistema/correo?_t=${Date.now()}`);
       const data = await res.json();
       if (res.ok) {
         setCorreos(data);
@@ -184,7 +184,7 @@ export default function VistaSaludSistema() {
     setTareaEnCurso(idTarea);
     setAviso(null);
     try {
-      const res = await fetch(`/api/admin/salud-sistema/tareas`, {
+      const res = await fetch(`/api/operacion/salud-sistema/tareas`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_tarea: idTarea }),
@@ -207,7 +207,7 @@ export default function VistaSaludSistema() {
     setCorreoEnCurso(idCorreo);
     setAviso(null);
     try {
-      const res = await fetch(`/api/admin/salud-sistema/correo`, {
+      const res = await fetch(`/api/operacion/salud-sistema/correo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_correo: idCorreo }),

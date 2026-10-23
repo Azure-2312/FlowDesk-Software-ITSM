@@ -37,7 +37,7 @@ export default function VistaPir() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/perfiles/gestor-cambios/pir?_t=${Date.now()}`);
+      const res = await fetch(`/api/cambios/gestion/pir?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudo cargar la PIR.");
@@ -60,7 +60,7 @@ export default function VistaPir() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/perfiles/gestor-cambios/pir", {
+      const res = await fetch("/api/cambios/gestion/pir", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cambio: idCambio, resultado: valores.resultado, incidentes_inducidos: Number(valores.incidentes) || 0 }),

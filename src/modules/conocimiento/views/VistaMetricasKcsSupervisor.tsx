@@ -33,7 +33,7 @@ export default function VistaMetricasKcsSupervisor() {
   async function cargarMetricas() {
     setCargando(true);
     try {
-      const res = await fetch("/api/admin/conocimiento/metricas-kcs", { cache: "no-store" });
+      const res = await fetch("/api/conocimiento/metricas-kcs", { cache: "no-store" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al cargar analítica KCS");
       setMetricas(data);

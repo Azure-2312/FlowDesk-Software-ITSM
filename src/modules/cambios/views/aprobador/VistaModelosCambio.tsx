@@ -25,7 +25,7 @@ export default function VistaModelosCambio() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/aprobador/cambios/modelos?_t=${Date.now()}`);
+        const res = await fetch(`/api/cambios/modelos-aprobador?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setItems(Array.isArray(json) ? json : []);
         else setError(json.error ?? "No se pudieron cargar los modelos.");

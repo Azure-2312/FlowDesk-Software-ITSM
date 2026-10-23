@@ -38,7 +38,7 @@ export default function VistaPanelAuditoria() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/auditor/panel?_t=${Date.now()}`);
+        const res = await fetch(`/api/operacion/paneles/auditor?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudo cargar el panel.");
@@ -74,9 +74,9 @@ export default function VistaPanelAuditoria() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/perfiles/auditor/cumplimiento/sod" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Segregación de funciones</Link>
-            <Link href="/plataforma/perfiles/auditor/cumplimiento/cambios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Cambios sin autorización</Link>
-            <Link href="/plataforma/perfiles/auditor/cmdb/resultados" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Resultados de CMDB</Link>
+            <Link href="/plataforma/seguridad/cumplimiento/sod" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Segregación de funciones</Link>
+            <Link href="/plataforma/seguridad/cumplimiento/cambios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Cambios sin autorización</Link>
+            <Link href="/plataforma/cmdb/auditor/resultados" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Resultados de CMDB</Link>
             <Link href="/plataforma/reportes/auditoria" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Informes de auditoría</Link>
           </div>
         </div>

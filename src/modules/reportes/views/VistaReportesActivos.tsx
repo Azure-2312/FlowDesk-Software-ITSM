@@ -47,7 +47,7 @@ export default function VistaReportesActivos() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/gestor-activos/reportes?_t=${Date.now()}`);
+        const res = await fetch(`/api/activos/reportes?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudieron cargar los reportes.");

@@ -1,7 +1,6 @@
-import { exigirMenuPagina } from "@/shared/lib/page-auth";
-import { VistaTecnicoCatalogo } from "@/modules/servicios/ui";
+import { redirect } from "next/navigation";
 
-export default async function PaginaServiciosCatalogo() {
-  await exigirMenuPagina("/plataforma/servicios/catalogo");
-  return <VistaTecnicoCatalogo />;
+/** Ruta legada del catálogo de consulta del técnico; ahora vive en servicios. */
+export default function PaginaTecnicoCatalogoLegacy() {
+  redirect("/plataforma/servicios/catalogo");
 }

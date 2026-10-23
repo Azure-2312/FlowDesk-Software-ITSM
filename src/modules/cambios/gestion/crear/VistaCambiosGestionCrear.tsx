@@ -71,8 +71,8 @@ export default function PaginaCrearRFC() {
           fetch("/api/menu").then((r) => r.json()),
           fetch("/api/activos/cmdb").then((r) => r.json()),
           fetch("/api/problemas").then((r) => r.json()),
-          fetch("/api/admin/rfc-config").then((r) => r.json()),
-          fetch("/api/admin/cambios/modelos-estandar").then((r) => r.json()).catch(() => ({ modelos: [] })),
+          fetch("/api/cambios/configuracion/rfc").then((r) => r.json()),
+          fetch("/api/cambios/configuracion/modelos-estandar").then((r) => r.json()).catch(() => ({ modelos: [] })),
         ]);
 
         if (resSesion?.sesion) setSesion(resSesion.sesion);

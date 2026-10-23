@@ -135,8 +135,8 @@ function ContenidoConfiguracionNotificaciones({
     setCargando(true);
     try {
       const [resPlantillas, resCanales] = await Promise.all([
-        fetch("/api/admin/configuracion?clave=plantillas_correo_html").then((r) => r.json()),
-        fetch("/api/admin/configuracion?clave=canales_comunicacion").then((r) => r.json()),
+        fetch("/api/operacion/configuracion?clave=plantillas_correo_html").then((r) => r.json()),
+        fetch("/api/operacion/configuracion?clave=canales_comunicacion").then((r) => r.json()),
       ]);
 
       if (resPlantillas.configuracion?.valor) {
@@ -284,7 +284,7 @@ function ContenidoConfiguracionNotificaciones({
       const slack = mediosContacto.find((m) => m.id === "slack");
       const teams = mediosContacto.find((m) => m.id === "teams");
 
-      const res = await fetch("/api/admin/configuracion", {
+      const res = await fetch("/api/operacion/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -335,7 +335,7 @@ function ContenidoConfiguracionNotificaciones({
     setError(null);
     setMensajeExito(null);
     try {
-      const res = await fetch("/api/admin/configuracion", {
+      const res = await fetch("/api/operacion/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

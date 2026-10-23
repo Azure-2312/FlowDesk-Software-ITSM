@@ -51,7 +51,7 @@ export default function VistaCabAgendaGestion() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/perfiles/gestor-cambios/cab/agenda?_t=${Date.now()}`);
+      const res = await fetch(`/api/cambios/gestion/cab-agenda?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setReuniones(Array.isArray(json?.reuniones) ? json.reuniones : []);
@@ -80,7 +80,7 @@ export default function VistaCabAgendaGestion() {
     setOk(null);
     try {
       const agenda = cambios.filter((c) => seleccionados.includes(c.id_cambio)).map((c) => ({ id_cambio: c.id_cambio, codigo: c.codigo_cambio, titulo: c.titulo }));
-      const res = await fetch("/api/perfiles/gestor-cambios/cab/agenda", {
+      const res = await fetch("/api/cambios/gestion/cab-agenda", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, agenda }),
@@ -106,7 +106,7 @@ export default function VistaCabAgendaGestion() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/perfiles/gestor-cambios/cab/agenda", {
+      const res = await fetch("/api/cambios/gestion/cab-agenda", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_reunion: acta.id, acta: acta.texto, estado: "REALIZADA" }),

@@ -51,7 +51,7 @@ export default function VistaCambiosProblemas() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-problemas/cambios?_t=${Date.now()}`);
+      const res = await fetch(`/api/problemas/gestion/cambios?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setCambios(Array.isArray(json?.cambios) ? json.cambios : []);
@@ -76,7 +76,7 @@ export default function VistaCambiosProblemas() {
     setOk(null);
     const candidato = problemas.find((p) => String(p.id_problema) === form.id_problema);
     try {
-      const res = await fetch("/api/gestor-problemas/cambios", {
+      const res = await fetch("/api/problemas/gestion/cambios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

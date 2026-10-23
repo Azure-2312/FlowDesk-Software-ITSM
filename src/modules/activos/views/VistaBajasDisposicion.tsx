@@ -29,7 +29,7 @@ export default function VistaBajasDisposicion() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/auditor/activos/bajas?_t=${Date.now()}`);
+        const res = await fetch(`/api/activos/bajas/auditoria?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setItems(Array.isArray(json) ? json : []);
         else setError(json.error ?? "No se pudieron cargar las bajas.");

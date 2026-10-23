@@ -31,7 +31,7 @@ export default function VistaReportesAprobador() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/aprobador/reportes?_t=${Date.now()}`);
+        const res = await fetch(`/api/reportes/aprobador?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudieron cargar los reportes.");

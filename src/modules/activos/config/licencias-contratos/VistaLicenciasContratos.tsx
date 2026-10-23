@@ -158,7 +158,7 @@ export default function LicenciasContratosConfigPage() {
       setErrorCarga(null);
 
       const res = await fetch(
-        `/api/admin/activos-config/licencias-contratos/configuracion?pestana=${tabActiva}`
+        `/api/activos/configuracion/licencias-contratos/configuracion?pestana=${tabActiva}`
       );
       const data = await res.json();
 
@@ -216,7 +216,7 @@ export default function LicenciasContratosConfigPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/activos-config/licencias-contratos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -245,7 +245,7 @@ export default function LicenciasContratosConfigPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/activos-config/licencias-contratos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -274,7 +274,7 @@ export default function LicenciasContratosConfigPage() {
     if (!confirm("Se perderán todos los cambios del borrador sin publicar. ¿Desea continuar?")) return;
     try {
       const res = await fetch(
-        `/api/admin/activos-config/licencias-contratos/configuracion?pestana=${tabActiva}`,
+        `/api/activos/configuracion/licencias-contratos/configuracion?pestana=${tabActiva}`,
         { method: "DELETE" }
       );
       if (res.ok) {
@@ -290,7 +290,7 @@ export default function LicenciasContratosConfigPage() {
   // Restaurar valores de fábrica
   const handleRestaurarFabrica = async () => {
     try {
-      const res = await fetch("/api/admin/activos-config/licencias-contratos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -314,7 +314,7 @@ export default function LicenciasContratosConfigPage() {
   // Restaurar versión específica desde modal de historial
   const handleRestaurarVersionComoBorrador = async (version: any) => {
     try {
-      const res = await fetch("/api/admin/activos-config/licencias-contratos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

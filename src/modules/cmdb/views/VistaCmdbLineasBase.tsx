@@ -31,7 +31,7 @@ export default function VistaCmdbLineasBase() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/cmdb/lineas-base?_t=${Date.now()}`);
+      const res = await fetch(`/api/cmdb/lineas-base?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar las líneas base.");
@@ -53,7 +53,7 @@ export default function VistaCmdbLineasBase() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/cmdb/lineas-base", {
+      const res = await fetch("/api/cmdb/lineas-base", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

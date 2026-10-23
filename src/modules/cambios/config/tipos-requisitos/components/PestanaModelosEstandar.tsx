@@ -70,7 +70,7 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
   const cargarModelos = async () => {
     try {
       setCargando(true);
-      let url = "/api/admin/cambios/modelos-estandar?";
+      let url = "/api/cambios/configuracion/modelos-estandar?";
       if (filtroEstado !== "todos") url += `estado=${filtroEstado}&`;
       if (busqueda.trim()) url += `busqueda=${encodeURIComponent(busqueda.trim())}&`;
       const res = await fetch(url);
@@ -135,7 +135,7 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
 
   const ejecutarTransicion = async (id: number, transicion: string) => {
     try {
-      const res = await fetch("/api/admin/cambios/modelos-estandar", {
+      const res = await fetch("/api/cambios/configuracion/modelos-estandar", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_modelo: id, transicion_estado: transicion })
@@ -161,7 +161,7 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
     try {
       setGuardando(true);
       const esEdicion = !!modeloEnEdicion.id_modelo;
-      const res = await fetch("/api/admin/cambios/modelos-estandar", {
+      const res = await fetch("/api/cambios/configuracion/modelos-estandar", {
         method: esEdicion ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(modeloEnEdicion)
@@ -185,7 +185,7 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
   const eliminarModelo = async (id: number) => {
     if (!confirm("¿Deseas eliminar este modelo de cambio estándar?")) return;
     try {
-      const res = await fetch(`/api/admin/cambios/modelos-estandar?id=${id}`, {
+      const res = await fetch(`/api/cambios/configuracion/modelos-estandar?id=${id}`, {
         method: "DELETE"
       });
       const data = await res.json();

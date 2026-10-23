@@ -41,7 +41,7 @@ export default function VistaImportacionActivos() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/importacion?_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/importacion?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar las importaciones.");
@@ -81,7 +81,7 @@ export default function VistaImportacionActivos() {
       } else {
         cuerpo.id_importacion = idImportacion;
       }
-      const res = await fetch("/api/gestor-activos/importacion", {
+      const res = await fetch("/api/activos/importacion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cuerpo),

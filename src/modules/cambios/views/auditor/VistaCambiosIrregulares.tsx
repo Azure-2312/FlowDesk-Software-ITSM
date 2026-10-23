@@ -70,7 +70,7 @@ export default function VistaCambiosIrregulares() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/auditor/cumplimiento/cambios?_t=${Date.now()}`);
+        const res = await fetch(`/api/seguridad/cumplimiento/cambios?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudieron cargar los cambios.");

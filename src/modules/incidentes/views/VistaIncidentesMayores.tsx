@@ -33,7 +33,7 @@ export default function VistaIncidentesMayores() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/perfiles/supervisor/incidentes-mayores?_t=${Date.now()}`);
+      const res = await fetch(`/api/tickets/incidentes-mayores?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar los incidentes mayores.");
@@ -52,7 +52,7 @@ export default function VistaIncidentesMayores() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/perfiles/supervisor/incidentes-mayores", {
+      const res = await fetch("/api/tickets/incidentes-mayores", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ titulo, descripcion, severidad, sala_virtual: sala }),
@@ -74,7 +74,7 @@ export default function VistaIncidentesMayores() {
   async function actualizar(id: number, payload: any) {
     setError(null);
     try {
-      const res = await fetch("/api/perfiles/supervisor/incidentes-mayores", {
+      const res = await fetch("/api/tickets/incidentes-mayores", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_incidente_mayor: id, ...payload }),

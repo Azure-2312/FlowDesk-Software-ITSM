@@ -69,7 +69,7 @@ export default function FlujoProblemasPage() {
       setCargando(true);
       setErrorCarga(null);
 
-      const res = await fetch(`/api/admin/problemas/flujo?pestana=${tabActiva}`);
+      const res = await fetch(`/api/problemas/configuracion/flujo?pestana=${tabActiva}`);
       const data = await res.json();
 
       if (!res.ok || !data.ok) {
@@ -111,7 +111,7 @@ export default function FlujoProblemasPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/problemas/flujo", {
+      const res = await fetch("/api/problemas/configuracion/flujo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -156,7 +156,7 @@ export default function FlujoProblemasPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/problemas/flujo", {
+      const res = await fetch("/api/problemas/configuracion/flujo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -181,7 +181,7 @@ export default function FlujoProblemasPage() {
   const handleDescartarBorrador = async () => {
     if (!confirm("¿Desea descartar el borrador sin publicar?")) return;
     try {
-      const res = await fetch("/api/admin/problemas/flujo", {
+      const res = await fetch("/api/problemas/configuracion/flujo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -201,7 +201,7 @@ export default function FlujoProblemasPage() {
 
   // Restaurar de Fábrica
   const handleRestaurarFabrica = async () => {
-    const res = await fetch("/api/admin/problemas/flujo", {
+    const res = await fetch("/api/problemas/configuracion/flujo", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -365,7 +365,7 @@ export default function FlujoProblemasPage() {
                 estados={estados}
                 puedeEditar={puedeEditar}
                 onCrearEstado={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/estados", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/estados", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -375,7 +375,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onActualizarEstado={async (id, datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/estados", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/estados", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_estado: id, ...datos }),
@@ -385,7 +385,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onEliminarEstado={async (id) => {
-                  const res = await fetch(`/api/admin/problemas/flujo/estados?id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/flujo/estados?id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -402,7 +402,7 @@ export default function FlujoProblemasPage() {
                 perfiles={perfiles}
                 puedeEditar={puedeEditar}
                 onCrearTransicion={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/transiciones", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/transiciones", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -412,7 +412,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onActualizarTransicion={async (id, datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/transiciones", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/transiciones", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_transicion: id, ...datos }),
@@ -422,7 +422,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onEliminarTransicion={async (id) => {
-                  const res = await fetch(`/api/admin/problemas/flujo/transiciones?id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/flujo/transiciones?id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -438,7 +438,7 @@ export default function FlujoProblemasPage() {
                 departamentos={departamentos}
                 puedeEditar={puedeEditar}
                 onCrearRegla={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/asignacion", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/asignacion", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -448,7 +448,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onActualizarRegla={async (id, datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/asignacion", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/asignacion", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_regla: id, ...datos }),
@@ -458,7 +458,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onEliminarRegla={async (id) => {
-                  const res = await fetch(`/api/admin/problemas/flujo/asignacion?id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/flujo/asignacion?id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -473,7 +473,7 @@ export default function FlujoProblemasPage() {
                 objetivos={objetivosTiempo}
                 puedeEditar={puedeEditar}
                 onActualizarObjetivos={async (nuevos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/objetivos", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/objetivos", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ objetivos: nuevos }),
@@ -490,7 +490,7 @@ export default function FlujoProblemasPage() {
                 reglas={reglasEscalamiento}
                 puedeEditar={puedeEditar}
                 onCrearRegla={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/escalamiento", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/escalamiento", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -500,7 +500,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onActualizarRegla={async (id, datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/escalamiento", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/escalamiento", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_escalamiento: id, ...datos }),
@@ -510,7 +510,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onEliminarRegla={async (id) => {
-                  const res = await fetch(`/api/admin/problemas/flujo/escalamiento?id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/flujo/escalamiento?id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -527,7 +527,7 @@ export default function FlujoProblemasPage() {
                 perfiles={perfiles}
                 puedeEditar={puedeEditar}
                 onActualizarConfig={async (nuevos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/reapertura", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/reapertura", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(nuevos),
@@ -546,7 +546,7 @@ export default function FlujoProblemasPage() {
                 departamentos={departamentos}
                 puedeEditar={puedeEditar}
                 onCrearTarea={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/tareas", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/tareas", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -556,7 +556,7 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
                 onEliminarTarea={async (id, tipo) => {
-                  const res = await fetch(`/api/admin/problemas/flujo/tareas?id=${id}&tipo=${tipo}`, {
+                  const res = await fetch(`/api/problemas/configuracion/flujo/tareas?id=${id}&tipo=${tipo}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -573,7 +573,7 @@ export default function FlujoProblemasPage() {
                 perfiles={perfiles}
                 puedeEditar={puedeEditar}
                 onActualizarConfig={async (nuevos) => {
-                  const res = await fetch("/api/admin/problemas/flujo/mayores", {
+                  const res = await fetch("/api/problemas/configuracion/flujo/mayores", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(nuevos),

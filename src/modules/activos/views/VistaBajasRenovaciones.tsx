@@ -49,7 +49,7 @@ export default function VistaBajasRenovaciones() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/perfiles/aprobador/activos?_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/aprobaciones?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setBajas(Array.isArray(json?.bajas) ? json.bajas : []);
@@ -75,7 +75,7 @@ export default function VistaBajasRenovaciones() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/perfiles/aprobador/activos", {
+      const res = await fetch("/api/activos/aprobaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tipo, id, decision, comentario }),

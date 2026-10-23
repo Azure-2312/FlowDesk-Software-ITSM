@@ -44,7 +44,7 @@ export default function VistaReportesCambios() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/gestor-cambios/reportes?_t=${Date.now()}`);
+        const res = await fetch(`/api/reportes/cambios?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudieron cargar los reportes.");

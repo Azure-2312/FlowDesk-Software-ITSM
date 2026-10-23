@@ -39,7 +39,7 @@ export default function PaginaAuditoriaSistema() {
       if (fechaHasta) params.set("fecha_hasta", fechaHasta);
       if (busqueda.trim()) params.set("buscar", busqueda.trim());
 
-      const res = await fetch(`/api/admin/auditoria-sistema?${params.toString()}`);
+      const res = await fetch(`/api/seguridad/auditoria?${params.toString()}`);
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || "No se pudo cargar la bitácora de auditoría.");

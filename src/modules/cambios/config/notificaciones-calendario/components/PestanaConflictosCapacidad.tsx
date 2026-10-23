@@ -49,7 +49,7 @@ export function PestanaConflictosCapacidad({ config, onChange, servicios, ciList
 
       const fechaHoraISO = `${simFecha}T${simHora}:00.000Z`;
 
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/simular-conflictos", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/simular-conflictos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

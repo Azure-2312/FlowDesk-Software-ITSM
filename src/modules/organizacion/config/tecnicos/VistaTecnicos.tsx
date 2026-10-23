@@ -81,7 +81,7 @@ export default function PaginaAdminTecnicos() {
   async function cargarAusencias() {
     setCargandoAusencias(true);
     try {
-      const res = await fetch("/api/admin/tecnicos/ausencias").then((r) => r.json());
+      const res = await fetch("/api/organizacion/tecnicos/ausencias").then((r) => r.json());
       if (res.ok && res.ausencias) {
         setAusencias(res.ausencias);
       }
@@ -155,7 +155,7 @@ export default function PaginaAdminTecnicos() {
         motivo: ausMotivo.trim(),
       };
 
-      const res = await fetch("/api/admin/tecnicos/ausencias", {
+      const res = await fetch("/api/organizacion/tecnicos/ausencias", {
         method: ausenciaEditando ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -180,7 +180,7 @@ export default function PaginaAdminTecnicos() {
   async function eliminarAusencia(id: number) {
     if (!confirm("¿Está seguro de eliminar esta ausencia?")) return;
     try {
-      const res = await fetch(`/api/admin/tecnicos/ausencias?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/organizacion/tecnicos/ausencias?id=${id}`, { method: "DELETE" });
       if (res.ok) {
         await cargarAusencias();
       }

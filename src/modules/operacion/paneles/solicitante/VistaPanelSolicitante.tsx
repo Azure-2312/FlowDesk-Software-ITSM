@@ -53,7 +53,7 @@ export default function VistaPanelSolicitante() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/solicitante/panel?_t=${Date.now()}`);
+        const res = await fetch(`/api/operacion/paneles/solicitante?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudo cargar el panel.");
