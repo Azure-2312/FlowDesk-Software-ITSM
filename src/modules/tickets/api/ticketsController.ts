@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
   if (!sesion) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
-  if (!sesionTieneCapacidad(sesion, CAPACIDADES.TICKETS_VER)) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.TICKETS_CREAR)) {
     return NextResponse.json({ error: "Este perfil no puede registrar tickets." }, { status: 403 });
   }
 
