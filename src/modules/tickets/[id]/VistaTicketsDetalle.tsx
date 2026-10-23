@@ -277,7 +277,7 @@ export default function PaginaDetalleTicket({
             type="button"
             className="boton-primario"
             onClick={() => {
-              if (typeof window !== "undefined" && window.history.length > 1) {
+              if (typeof window !== "undefined" && window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
                 router.back();
               } else {
                 router.push(rutaLista);
@@ -317,7 +317,7 @@ export default function PaginaDetalleTicket({
         <button
           type="button"
           onClick={() => {
-            if (typeof window !== "undefined" && window.history.length > 1) {
+            if (typeof window !== "undefined" && window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
               router.back();
             } else {
               router.push(rutaLista);
