@@ -276,7 +276,13 @@ export default function PaginaDetalleTicket({
           <button
             type="button"
             className="boton-primario"
-            onClick={() => router.push(rutaLista)}
+            onClick={() => {
+              if (typeof window !== "undefined" && window.history.length > 1) {
+                router.back();
+              } else {
+                router.push(rutaLista);
+              }
+            }}
           >
             {etiquetaVolver}
           </button>
@@ -310,7 +316,13 @@ export default function PaginaDetalleTicket({
       <div style={{ marginBottom: 16 }}>
         <button
           type="button"
-          onClick={() => router.push(rutaLista)}
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push(rutaLista);
+            }
+          }}
           className="boton-texto"
           style={{
             display: "inline-flex",

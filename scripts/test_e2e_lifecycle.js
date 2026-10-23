@@ -117,6 +117,15 @@ async function runE2E() {
   console.log("================================================================================\n");
 
   try {
+    // Preparación idempotente del entorno de pruebas:
+    // Cerrar tickets asignados previamente al técnico de pruebas para evitar falsos positivos por límite de saturación RN-16
+    await pool.query(
+      `UPDATE ticket
+       SET id_estado = 6, fecha_cierre = now()
+       WHERE id_usuario_asignado = $1 AND id_estado != 6`,
+      [PERSONAS.TECNICO.id_usuario]
+    );
+
     // FASE 1: Administrador
     console.log("--- FASE 1: GOBERNANZA Y CONFIGURACION (ADMINISTRADOR) ---");
     const confRes = await apiRequest('GET', '/api/operacion/configuracion', PERSONAS.ADMIN);
