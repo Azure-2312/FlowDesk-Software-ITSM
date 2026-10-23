@@ -563,9 +563,9 @@ function ContenidoCrearTicket({
       // Redirigir directamente a la página completa del ticket creado
       router.refresh();
       if (datos.ticket?.id_ticket) {
-        router.push(rutaDetalleBase ? `${rutaDetalleBase}/${datos.ticket.id_ticket}` : `/tickets/${datos.ticket.id_ticket}`);
+        router.push(rutaDetalleBase ? `${rutaDetalleBase}/${datos.ticket.id_ticket}` : `/plataforma/tickets/${datos.ticket.id_ticket}`);
       } else {
-        router.push(rutaLista ?? "/tickets/gestion/mios");
+        router.push(rutaLista ?? (esIncidente ? "/plataforma/incidentes/mios" : "/plataforma/solicitudes/mios"));
       }
     } catch {
       setError("Error de conexión al enviar el ticket.");
@@ -1471,7 +1471,13 @@ function ContenidoCrearTicket({
             <button
               type="button"
               className="boton-secundario"
-              onClick={() => router.push(rutaLista ?? "/tickets/gestion/mios")}
+              onClick={() => {
+                if (typeof window !== "undefined" && window.history.length > 1) {
+                  router.back();
+                } else {
+                  router.push(rutaLista ?? (esIncidente ? "/plataforma/incidentes/mios" : "/plataforma/solicitudes/mios"));
+                }
+              }}
               style={{ width: "auto", fontSize: 13, padding: "8px 18px" }}
               disabled={guardando}
             >

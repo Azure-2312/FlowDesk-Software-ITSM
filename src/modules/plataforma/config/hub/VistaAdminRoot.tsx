@@ -8,12 +8,12 @@ export default function PaginaAdministracion() {
         {
           titulo: "Diseñador de Vistas por Perfil",
           descripcion: "Configuración de qué secciones, notas internas, respuestas y tipos de ticket puede visualizar cada rol institucional.",
-          href: "/admin/tickets-vistas",
+          href: "/plataforma/tickets/configuracion/vistas",
         },
         {
           titulo: "Constructor de Formularios",
           descripcion: "Definición de campos requeridos y visibles para incidentes, solicitudes, problemas y cambios RFC.",
-          href: "/admin/tickets-formularios",
+          href: "/plataforma/tickets/configuracion/formularios",
         },
       ],
     },
@@ -23,7 +23,7 @@ export default function PaginaAdministracion() {
         {
           titulo: "Catálogo de Servicios y SLAs",
           descripcion: "Definición de servicios de TI, clasificación de tipos, categorías y acuerdos de nivel de servicio según ITIL v4.",
-          href: "/admin/servicios",
+          href: "/plataforma/servicios/configuracion",
         },
         {
           titulo: "Gobernanza de Conocimientos (KCS)",
@@ -43,7 +43,7 @@ export default function PaginaAdministracion() {
         {
           titulo: "Plantillas de Correo y Canales",
           descripcion: "Diseño visual HTML de correos con logotipo de marca y parametrización de integraciones (WhatsApp, SMS, Slack, Teams).",
-          href: "/admin/notificaciones",
+          href: "/plataforma/operacion/notificaciones",
         },
       ],
     },
@@ -53,27 +53,27 @@ export default function PaginaAdministracion() {
         {
           titulo: "Gestión de Usuarios",
           descripcion: "Administración integral de usuarios, asignación de perfiles, reseteo de contraseñas y desbloqueo de seguridad.",
-          href: "/admin/usuarios",
+          href: "/plataforma/seguridad/usuarios",
         },
         {
           titulo: "Perfiles y Permisos (RBAC)",
           descripcion: "Matriz de privilegios institucionales, control de accesos a menús y delimitación de funciones SoD.",
-          href: "/admin/perfiles",
+          href: "/plataforma/seguridad/perfiles",
         },
         {
           titulo: "Departamentos y Acuerdos OLA",
           descripcion: "Estructura organizativa de áreas resolutoras de TI, jefaturas responsables y acuerdos de nivel operativo.",
-          href: "/admin/departamentos",
+          href: "/plataforma/organizacion/departamentos",
         },
         {
           titulo: "Especialistas Técnicos",
           descripcion: "Enrolamiento de técnicos, asignación de niveles (L1/L2/L3) y calibración de capacidad concurrente (límite WIP).",
-          href: "/admin/tecnicos",
+          href: "/plataforma/organizacion/tecnicos",
         },
         {
           titulo: "Estructura del Menú",
           descripcion: "Parametrización dinámica de la jerarquía de opciones, iconos y niveles de visibilidad.",
-          href: "/admin/menu",
+          href: "/plataforma/operacion/menu",
         },
       ],
     },
@@ -83,7 +83,7 @@ export default function PaginaAdministracion() {
         {
           titulo: "Bitácora de Auditoría Integral (Audit Trail)",
           descripcion: "Registro inmutable de todas las modificaciones de configuración y eventos del sistema con identificación de usuario y fecha.",
-          href: "/admin/auditoria-sistema",
+          href: "/plataforma/seguridad/auditoria-sistema",
         },
         {
           titulo: "Diseñador de Dashboards Globales",
@@ -93,12 +93,12 @@ export default function PaginaAdministracion() {
         {
           titulo: "Mantenimiento y Purga de Datos",
           descripcion: "Herramientas de optimización para archivar y purgar de manera segura tickets cerrados antiguos de la base de datos.",
-          href: "/admin/mantenimiento-datos",
+          href: "/plataforma/operacion/mantenimiento-datos",
         },
         {
           titulo: "Logs de Seguridad ISO 27001",
           descripcion: "Trazabilidad de intentos de inicio de sesión, bloqueos por fuerza bruta y auditoría de direcciones IP.",
-          href: "/admin/seguridad-logs",
+          href: "/plataforma/seguridad/seguridad-logs",
         },
       ],
     },

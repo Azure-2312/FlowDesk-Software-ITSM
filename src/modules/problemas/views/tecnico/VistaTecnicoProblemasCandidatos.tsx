@@ -156,7 +156,7 @@ export default function PaginaCandidatosProblema() {
                   {g.tickets.map((t) => (
                     <Link
                       key={t.id_ticket}
-                      href={`/tickets/${t.id_ticket}`}
+                      href={`/plataforma/tickets/${t.id_ticket}`}
                       style={{
                         padding: "4px 8px",
                         backgroundColor: "#ffffff",

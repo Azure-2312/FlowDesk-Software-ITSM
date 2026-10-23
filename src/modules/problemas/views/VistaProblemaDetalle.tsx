@@ -146,7 +146,18 @@ export default function VistaProblemaDetalle() {
           </div>
         </div>
 
-        <button type="button" className="boton-secundario" style={{ width: "auto" }} onClick={() => router.push("/plataforma/problemas")}>
+        <button
+          type="button"
+          className="boton-secundario"
+          style={{ width: "auto" }}
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/plataforma/problemas");
+            }
+          }}
+        >
           Volver al listado
         </button>
       </div>

@@ -4,5 +4,5 @@ import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 
 export default function OperacionServicios() {
   exigirCapacidadPagina(CAPACIDADES.OPERACION_VER);
-  redirect("/operacion/eventos");
+  redirect("/plataforma/operacion/eventos");
 }

@@ -180,7 +180,13 @@ Confirmar que el servicio responde correctamente...`
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() => {
+              if (typeof window !== "undefined" && window.history.length > 1) {
+                router.back();
+              } else {
+                router.push("/plataforma/conocimiento");
+              }
+            }}
             style={{
               padding: "9px 18px",
               backgroundColor: "#ffffff",

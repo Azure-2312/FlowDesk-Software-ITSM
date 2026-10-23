@@ -212,7 +212,7 @@ function ContenidoModeladoTiposCI() {
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <Link
-                href="/activos/cmdb"
+                href="/plataforma/activos/cmdb"
                 className="boton-secundario"
                 style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center" }}
               >

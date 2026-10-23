@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function PaginaAdminIncidentesIndex() {
-  redirect("/admin/tickets-formularios?tipo=incidente");
+  redirect("/plataforma/tickets/configuracion/formularios?tipo=incidente");
 }

@@ -303,7 +303,7 @@ export default function PaginaAgendaDisponibilidad() {
                     {item.tipo === "ticket" && (
                       <>
                         <Link
-                          href={`/tickets/${item.id_ticket}`}
+                          href={`/plataforma/tickets/${item.id_ticket}`}
                           style={{
                             fontFamily: "monospace",
                             fontWeight: 700,
@@ -360,7 +360,7 @@ export default function PaginaAgendaDisponibilidad() {
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: "#0f172a" }}>
                     {item.tipo === "ticket" ? (
                       <Link
-                        href={`/tickets/${item.id_ticket}`}
+                        href={`/plataforma/tickets/${item.id_ticket}`}
                         style={{ color: "inherit", textDecoration: "none" }}
                       >
                         {item.titulo}
@@ -387,7 +387,7 @@ export default function PaginaAgendaDisponibilidad() {
 
                 {item.tipo === "ticket" && (
                   <Link
-                    href={`/tickets/${item.id_ticket}`}
+                    href={`/plataforma/tickets/${item.id_ticket}`}
                     style={{
                       padding: "6px 12px",
                       backgroundColor: "#ffffff",

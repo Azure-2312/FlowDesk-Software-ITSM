@@ -293,7 +293,7 @@ export default function ModalDetalleTicket({ idTicket, apiBase = "/api/tickets",
           {/* Botones de Cabecera: Abrir Workspace y Cerrar */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <a
-              href={`/tickets/${ticket.id_ticket}`}
+              href={`/plataforma/tickets/${ticket.id_ticket}`}
               className="boton-mini"
               style={{
                 textDecoration: "none",

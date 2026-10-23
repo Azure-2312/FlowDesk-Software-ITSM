@@ -1130,14 +1130,14 @@ export default function PaginaMapaCMDB() {
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <Link
-                href="/activos/cmdb/analisis"
+                href="/plataforma/activos/cmdb/analisis"
                 className="boton-secundario"
                 style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center" }}
               >
                 Análisis e Impacto
               </Link>
               <Link
-                href="/activos/cmdb/tipos"
+                href="/plataforma/activos/cmdb/tipos"
                 className="boton-secundario"
                 style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center" }}
               >

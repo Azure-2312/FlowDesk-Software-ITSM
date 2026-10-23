@@ -162,7 +162,7 @@ export default function PaginaSlaSemaforo() {
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: 11, color: "#dc2626", fontWeight: 600 }}>Plazo expirado</span>
-                      <Link href={`/tickets/${t.id_ticket}`} style={{ fontSize: 12, color: "#2563eb", fontWeight: 600 }}>
+                      <Link href={`/plataforma/tickets/${t.id_ticket}`} style={{ fontSize: 12, color: "#2563eb", fontWeight: 600 }}>
                         Abrir
                       </Link>
                     </div>
@@ -200,7 +200,7 @@ export default function PaginaSlaSemaforo() {
                       <span style={{ fontSize: 11, color: "#d97706", fontWeight: 600 }}>
                         {t.minutos_restantes_sla} min restantes
                       </span>
-                      <Link href={`/tickets/${t.id_ticket}`} style={{ fontSize: 12, color: "#2563eb", fontWeight: 600 }}>
+                      <Link href={`/plataforma/tickets/${t.id_ticket}`} style={{ fontSize: 12, color: "#2563eb", fontWeight: 600 }}>
                         Abrir
                       </Link>
                     </div>
@@ -238,7 +238,7 @@ export default function PaginaSlaSemaforo() {
                       <span style={{ fontSize: 11, color: "#16a34a" }}>
                         {Math.round((t.minutos_restantes_sla ?? 0) / 60)}h restantes
                       </span>
-                      <Link href={`/tickets/${t.id_ticket}`} style={{ fontSize: 12, color: "#2563eb", fontWeight: 600 }}>
+                      <Link href={`/plataforma/tickets/${t.id_ticket}`} style={{ fontSize: 12, color: "#2563eb", fontWeight: 600 }}>
                         Abrir
                       </Link>
                     </div>
@@ -274,7 +274,7 @@ export default function PaginaSlaSemaforo() {
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: 11, color: "#64748b" }}>Reloj SLA pausado</span>
-                      <Link href={`/tickets/${t.id_ticket}`} style={{ fontSize: 12, color: "#2563eb", fontWeight: 600 }}>
+                      <Link href={`/plataforma/tickets/${t.id_ticket}`} style={{ fontSize: 12, color: "#2563eb", fontWeight: 600 }}>
                         Abrir
                       </Link>
                     </div>

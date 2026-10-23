@@ -268,9 +268,20 @@ export default function PaginaCrearRFC() {
             Alineación ITIL v4 y Norma ISO/IEC 20000: Justificación técnica, CI afectado, planes de implementación y rollback.
           </p>
         </div>
-        <Link href="/plataforma/cambios/gestion/todos" className="boton-mini" style={{ textDecoration: "none" }}>
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/plataforma/cambios/gestion/todos");
+            }
+          }}
+          className="boton-secundario"
+          style={{ width: "auto", padding: "6px 14px" }}
+        >
           Volver al Historial
-        </Link>
+        </button>
       </div>
 
       {esAdmin ? (
@@ -632,9 +643,20 @@ export default function PaginaCrearRFC() {
         )}
 
         <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
-          <Link href="/plataforma/cambios/gestion/todos" className="boton-mini" style={{ textDecoration: "none", padding: "8px 16px" }}>
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined" && window.history.length > 1) {
+                router.back();
+              } else {
+                router.push("/plataforma/cambios/gestion/todos");
+              }
+            }}
+            className="boton-secundario"
+            style={{ width: "auto", padding: "8px 16px" }}
+          >
             Cancelar
-          </Link>
+          </button>
           <button
             type="submit"
             className="boton-primario"

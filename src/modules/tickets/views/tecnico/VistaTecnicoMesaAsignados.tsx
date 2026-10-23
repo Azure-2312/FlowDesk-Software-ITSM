@@ -93,7 +93,7 @@ export default function PaginaMisTicketsAsignados() {
   // Atender siguiente ticket urgente
   function atenderSiguiente() {
     if (ticketsFiltrados.length > 0) {
-      router.push(`/tickets/${ticketsFiltrados[0].id_ticket}`);
+      router.push(`/plataforma/tickets/${ticketsFiltrados[0].id_ticket}`);
     }
   }
 
@@ -365,13 +365,13 @@ export default function PaginaMisTicketsAsignados() {
                     }}
                   >
                     <td style={{ padding: "12px 16px", fontWeight: 600, color: "#2563eb" }}>
-                      <Link href={`/tickets/${t.id_ticket}`}>{t.codigo_ticket}</Link>
+                      <Link href={`/plataforma/tickets/${t.id_ticket}`}>{t.codigo_ticket}</Link>
                     </td>
                     <td style={{ padding: "12px 16px", color: "#475569" }}>
                       {t.tipo_nombre || (t.id_tipo_ticket === 1 ? "Incidente" : "Solicitud")}
                     </td>
                     <td style={{ padding: "12px 16px", color: "#1e293b", fontWeight: 500, maxWidth: 300 }}>
-                      <Link href={`/tickets/${t.id_ticket}`} style={{ textDecoration: "none", color: "inherit" }}>
+                      <Link href={`/plataforma/tickets/${t.id_ticket}`} style={{ textDecoration: "none", color: "inherit" }}>
                         {t.titulo}
                       </Link>
                     </td>
@@ -437,7 +437,7 @@ export default function PaginaMisTicketsAsignados() {
                     </td>
                     <td style={{ padding: "12px 16px", textAlign: "right" }}>
                       <Link
-                        href={`/tickets/${t.id_ticket}`}
+                        href={`/plataforma/tickets/${t.id_ticket}`}
                         style={{
                           display: "inline-block",
                           padding: "4px 10px",
