@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { autorizarApi } from "@/shared/lib/api-auth";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { crearProblema, listarProblemas } from "@/modules/problemas/services/problemaService";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_VER)) {
-    return NextResponse.json({ error: "Este perfil no puede consultar problemas." }, { status: 403 });
-  }
+  const auth = autorizarApi(req, CAPACIDADES.PROBLEMAS_VER, {
+    noAutorizado: "Este perfil no puede consultar problemas.",
+  });
+  if (!auth.autorizado) return auth.respuesta;
+  const sesion = auth.sesion;
 
   const { searchParams } = new URL(req.url);
   try {
@@ -26,15 +27,11 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (!sesionTieneCapacidad(sesion, CAPACIDADES.PROBLEMAS_GESTIONAR)) {
-    return NextResponse.json(
-      { error: "Solo Técnicos y Supervisores pueden registrar problemas." },
-      { status: 403 }
-    );
-  }
+  const auth = autorizarApi(req, CAPACIDADES.PROBLEMAS_GESTIONAR, {
+    noAutorizado: "No tienes autorización para registrar problemas en la plataforma.",
+  });
+  if (!auth.autorizado) return auth.respuesta;
+  const sesion = auth.sesion;
 
   try {
     const body = await req.json();

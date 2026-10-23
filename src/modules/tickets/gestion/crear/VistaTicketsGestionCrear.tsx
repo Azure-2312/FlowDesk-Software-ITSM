@@ -240,7 +240,7 @@ function ContenidoCrearTicket({
     setEnNombreDeOtroValor("");
 
     if (catalogos?.categorias) {
-      const primeraCat = catalogos.categorias.find((c) => c.id_tipo_ticket === nuevoTipo);
+      const primeraCat = catalogos.categorias.find((c) => c.id_tipo_ticket === nuevoTipo && c.estado_registro !== false);
       if (primeraCat) setIdCategoria(primeraCat.id_categoria);
       else setIdCategoria("");
     }
@@ -248,7 +248,13 @@ function ContenidoCrearTicket({
 
   // Filtrar servicios acordes al tipo seleccionado (Incidente vs Solicitud)
   const serviciosDelTipo = (catalogos?.servicios || []).filter(
-    (s) => s.id_tipo_ticket === idTipo
+    (s) =>
+      s.id_tipo_ticket === idTipo &&
+      s.estado_registro !== false &&
+      (!s.id_categoria ||
+        (catalogos?.categorias || []).some(
+          (c) => c.id_categoria === s.id_categoria && c.estado_registro !== false
+        ))
   );
 
   const servicioSeleccionado = serviciosDelTipo.find((s) => s.id_servicio === idServicio);

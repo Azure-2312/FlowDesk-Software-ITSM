@@ -1,22 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { autorizarApi } from "@/shared/lib/api-auth";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { tomarTicketDeMesa } from "@/modules/tickets";
 
 export async function POST(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-
-  if (!sesion) {
-    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  }
-  if (!sesionTieneCapacidad(sesion, CAPACIDADES.TICKETS_ATENDER)) {
-    return NextResponse.json(
-      { error: "Solo especialistas técnicos pueden tomar tickets de la cola." },
-      { status: 403 }
-    );
-  }
+  const auth = autorizarApi(req, CAPACIDADES.TICKETS_ATENDER, {
+    noAutorizado: "Solo especialistas técnicos pueden tomar tickets de la cola.",
+  });
+  if (!auth.autorizado) return auth.respuesta;
+  const sesion = auth.sesion;
 
   try {
     const { id_ticket } = await req.json();
