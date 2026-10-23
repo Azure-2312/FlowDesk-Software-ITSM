@@ -1,7 +1,7 @@
 import { query, queryRow } from "@/shared/lib/db";
 
 /**
- * Reportes gerenciales (HU-13) y base para la exportacion CSV (HU-27).
+ * Reportes gerenciales (HU-27) y base para la exportacion CSV.
  *
  * Todas las cifras son agregadas de la tabla `ticket`: el reporte no expone
  * contenido de tickets ni datos personales. El alcance del usuario se aplica

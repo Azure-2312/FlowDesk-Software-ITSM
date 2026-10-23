@@ -11,7 +11,7 @@ import type {
 } from "@/modules/reportes/services/reportesGerencialesService";
 
 /**
- * Reportes gerenciales (HU-13) con filtros por rango de fechas, departamento
+ * Reportes gerenciales (HU-27) con filtros por rango de fechas, departamento
  * de TI y prioridad, mas exportacion CSV (HU-27).
  *
  * Directivas del proyecto: sin emojis, sin mensajes verdes de exito, campos con
@@ -220,7 +220,7 @@ export default function VistaReportesGerenciales() {
         <div>
           <h1>Reportes Gerenciales de Gestion ITIL 4</h1>
           <p className="descripcion">
-            Indicadores agregados de la Mesa de Servicio (HU-13): volumen, carga activa, tiempo
+            Indicadores agregados de la Mesa de Servicio (HU-27): volumen, carga activa, tiempo
             medio de primera respuesta (MTTA), tiempo medio de resolucion (MTTR), cumplimiento de
             SLA y CSAT, con filtros por rango de fechas, departamento de TI y prioridad.
           </p>

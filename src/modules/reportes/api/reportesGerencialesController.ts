@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * GET /api/reportes/gerenciales
- * Indicadores gerenciales agregados (HU-13) con filtros de rango de fechas,
+ * Indicadores gerenciales agregados (HU-27) con filtros de rango de fechas,
  * departamento de TI y prioridad. Solo agrega datos: no expone contenido de
  * tickets ni datos personales.
  */

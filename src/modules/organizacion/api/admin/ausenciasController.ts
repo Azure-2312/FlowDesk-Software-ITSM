@@ -12,11 +12,11 @@ import {
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const { error } = sesionConCapacidad(CAPACIDADES.ADMIN_TECNICOS);
+  const { sesion, error } = sesionConCapacidad(CAPACIDADES.ADMIN_TECNICOS);
   if (error) return error;
 
   try {
-    const data = await listarAusencias();
+    const data = await listarAusencias(sesion);
     return NextResponse.json(data);
   } catch (error: any) {
     console.error("Error al obtener ausencias:", error);
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const data = await crearAusencia(body, sesion.id_usuario);
+    const data = await crearAusencia(body, sesion);
     return NextResponse.json(data);
   } catch (error: any) {
     console.error("Error al registrar ausencia:", error);
@@ -41,12 +41,12 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const { error } = sesionConCapacidad(CAPACIDADES.ADMIN_TECNICOS);
+  const { sesion, error } = sesionConCapacidad(CAPACIDADES.ADMIN_TECNICOS);
   if (error) return error;
 
   try {
     const body = await req.json();
-    const data = await actualizarAusencia(body);
+    const data = await actualizarAusencia(body, sesion);
     return NextResponse.json(data);
   } catch (error: any) {
     console.error("Error al actualizar ausencia:", error);
@@ -56,13 +56,13 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const { error } = sesionConCapacidad(CAPACIDADES.ADMIN_TECNICOS);
+  const { sesion, error } = sesionConCapacidad(CAPACIDADES.ADMIN_TECNICOS);
   if (error) return error;
 
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-    const data = await eliminarAusencia(id);
+    const data = await eliminarAusencia(id, sesion);
     return NextResponse.json(data);
   } catch (error: any) {
     console.error("Error al eliminar ausencia:", error);

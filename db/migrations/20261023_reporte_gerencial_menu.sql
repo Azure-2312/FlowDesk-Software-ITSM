@@ -1,4 +1,4 @@
--- Reportes gerenciales (HU-13, HU-27): indicadores consolidados de SLA,
+-- Reportes gerenciales (HU-27): indicadores consolidados de SLA,
 -- tiempos de atencion, satisfaccion y desgloses por departamento, prioridad,
 -- estado y mes. Se publica como una pantalla mas del modulo Reportes.
 
