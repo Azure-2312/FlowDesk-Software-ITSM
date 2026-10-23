@@ -26,11 +26,6 @@ export async function listarTecnicos(sesion: any, filtros: FiltrosTecnicos) {
     params.push(parseInt(nivelSoporte, 10));
   }
 
-  if (estadoOperativo) {
-    condiciones.push(`td.estado_operativo = $${paramIdx++}`);
-    params.push(estadoOperativo.toUpperCase());
-  }
-
   // La capacidad de un Supervisor se limita a los grupos que tiene asignados.
   if (sesion.perfilActivo?.id_perfil === 4) {
     condiciones.push(`td.id_departamento IN (
@@ -57,6 +52,23 @@ export async function listarTecnicos(sesion: any, filtros: FiltrosTecnicos) {
       td.estado_operativo,
       td.especialidad_principal,
       td.estado_registro,
+      -- Ausencia vigente: se calcula al leer para no depender de un job nocturno.
+      EXISTS (
+        SELECT 1
+        FROM tecnico_ausencias a
+        WHERE a.id_usuario_tecnico = td.id_usuario
+          AND COALESCE(a.estado_registro, true) = true
+          AND CURRENT_DATE BETWEEN a.fecha_desde::date AND a.fecha_hasta::date
+      ) AS ausencia_vigente,
+      (
+        SELECT a.motivo
+        FROM tecnico_ausencias a
+        WHERE a.id_usuario_tecnico = td.id_usuario
+          AND COALESCE(a.estado_registro, true) = true
+          AND CURRENT_DATE BETWEEN a.fecha_desde::date AND a.fecha_hasta::date
+        ORDER BY a.fecha_desde DESC
+        LIMIT 1
+      ) AS motivo_ausencia,
       -- Cómputo de tickets activos (estados no terminales: 1 ABIERTO, 2 ASIGNADO, 3 EN_PROCESO, 4 EN_ESPERA)
       COUNT(t.id_ticket) FILTER (WHERE t.id_estado IN (1, 2, 3, 4) AND t.estado_registro = true)::int as tickets_activos,
       -- Cómputo de tickets resueltos o cerrados (estados 5 y 6)
@@ -80,16 +92,37 @@ export async function listarTecnicos(sesion: any, filtros: FiltrosTecnicos) {
 
   const rawTecnicos = await query<any>(sql, params);
 
-  const tecnicos: TecnicoConCarga[] = rawTecnicos.map((tec) => {
+  type TecnicoConDisponibilidad = TecnicoConCarga & {
+    disponible: boolean;
+    motivo_ausencia: string | null;
+    ausencia_vigente: boolean;
+  };
+
+  const tecnicosBase: TecnicoConDisponibilidad[] = rawTecnicos.map((tec) => {
     const capacidad = tec.capacidad_maxima_tickets || 8;
     const activos = tec.tickets_activos || 0;
     const porcentaje = Math.min(100, Math.round((activos / capacidad) * 100));
+    const ausenciaVigente = Boolean(tec.ausencia_vigente);
+    const estadoOperativoEfectivo = ausenciaVigente
+      ? "VACACIONES"
+      : tec.estado_operativo;
 
     return {
       ...tec,
+      estado_operativo: estadoOperativoEfectivo,
+      disponible:
+        !ausenciaVigente && estadoOperativoEfectivo === "DISPONIBLE",
+      motivo_ausencia: tec.motivo_ausencia ?? null,
+      ausencia_vigente: ausenciaVigente,
       porcentaje_ocupacion: porcentaje,
     };
   });
+
+  const tecnicos = estadoOperativo
+    ? tecnicosBase.filter(
+        (tec) => tec.estado_operativo === estadoOperativo.toUpperCase()
+      )
+    : tecnicosBase;
 
   return { tecnicos };
 }

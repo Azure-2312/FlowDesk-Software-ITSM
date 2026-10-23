@@ -16,7 +16,7 @@ interface EventoTurno {
 interface Props {
   eventos: EventoTurno[];
   tecnicos: { id_usuario: number; nombre: string }[];
-  onCrear?: (datos: { id_usuario_tecnico: number; fecha: string; turno: Turno; notas?: string }) => void;
+  onCrear?: (datos: { id_usuario_tecnico: number; fecha: string; turno: Turno; notas?: string }) => Promise<void> | void;
 }
 
 const TURNOS: { clave: Turno; etiqueta: string; color: string }[] = [
@@ -47,7 +47,10 @@ function obtenerDiasDelMes(fecha: Date) {
 }
 
 function formatearISO(d: Date) {
-  return d.toISOString().slice(0, 10);
+  const anio = d.getFullYear();
+  const mes = String(d.getMonth() + 1).padStart(2, "0");
+  const dia = String(d.getDate()).padStart(2, "0");
+  return `${anio}-${mes}-${dia}`;
 }
 
 export default function CalendarioTurnosTecnicos({ eventos, tecnicos, onCrear }: Props) {
@@ -75,9 +78,9 @@ export default function CalendarioTurnosTecnicos({ eventos, tecnicos, onCrear }:
     setSeleccionado(null);
   }
 
-  function guardar() {
+  async function guardar() {
     if (!onCrear || !seleccionado || !idTecnico) return;
-    onCrear({
+    await onCrear({
       id_usuario_tecnico: Number(idTecnico),
       fecha: seleccionado,
       turno,
