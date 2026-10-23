@@ -31,7 +31,7 @@ export default function VistaAprobacionesNegocio() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/perfiles/gestor-area/cambios/aprobaciones?_t=${Date.now()}`);
+      const res = await fetch(`/api/cambios/area/aprobaciones?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar las aprobaciones.");
@@ -54,7 +54,7 @@ export default function VistaAprobacionesNegocio() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/perfiles/gestor-area/cambios/aprobaciones", {
+      const res = await fetch("/api/cambios/area/aprobaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cambio: idCambio, decision, comentario }),

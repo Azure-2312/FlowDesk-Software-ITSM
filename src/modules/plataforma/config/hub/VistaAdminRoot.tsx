@@ -28,12 +28,12 @@ export default function PaginaAdministracion() {
         {
           titulo: "Gobernanza de Conocimientos (KCS)",
           descripcion: "Supervisión del ciclo editorial, métricas de deflexión y configuración del flujo de aprobación técnica de artículos.",
-          href: "/plataforma/admin/conocimiento-config/articulos",
+          href: "/plataforma/conocimiento/configuracion/articulos",
         },
         {
           titulo: "Configuración de Categorías",
           descripcion: "Taxonomía de soporte, códigos de clasificación temática y catálogo de categorías de autoayuda.",
-          href: "/plataforma/admin/conocimiento-config/categorias",
+          href: "/plataforma/conocimiento/configuracion/categorias",
         },
       ],
     },

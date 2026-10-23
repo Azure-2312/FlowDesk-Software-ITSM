@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const data = await simularReglasClasificacion(body);
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Error en POST /api/admin/cambios/reglas-clasificacion/simular:", error);
+    console.error("Error en POST /api/cambios/configuracion/reglas-clasificacion/simular:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al simular reglas de clasificación");
     return NextResponse.json({ error: mensaje }, { status });
   }

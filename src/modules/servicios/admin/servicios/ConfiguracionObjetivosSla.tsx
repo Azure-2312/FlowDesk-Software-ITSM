@@ -72,7 +72,7 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" 
       setCargando(true);
       setError(null);
       try {
-        const res = await fetch("/api/admin/sla");
+        const res = await fetch("/api/servicios/sla");
         const data = await res.json();
         if (!res.ok) {
           setError(data.error || "No se pudieron cargar los objetivos SLA.");
@@ -153,7 +153,7 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" 
     }
 
     try {
-      const res = await fetch("/api/admin/sla", {
+      const res = await fetch("/api/servicios/sla", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prioridades, politicaSla, objetivosOla }),

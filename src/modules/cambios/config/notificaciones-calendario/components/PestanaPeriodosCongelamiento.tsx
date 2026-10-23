@@ -108,7 +108,7 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
   };
 
   const exportarCsv = () => {
-    window.open("/api/admin/cambios/notificaciones-calendario/congelamiento/csv", "_blank");
+    window.open("/api/cambios/configuracion/notificaciones-calendario/congelamiento/csv", "_blank");
   };
 
   const importarCsv = async () => {
@@ -120,7 +120,7 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
     }
 
     try {
-      const res = await fetch("/api/admin/cambios/notificaciones-calendario/congelamiento/csv", {
+      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/congelamiento/csv", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ csv: csvTexto })

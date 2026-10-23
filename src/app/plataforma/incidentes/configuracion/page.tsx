@@ -1,7 +1,5 @@
-import { exigirMenuPagina } from "@/shared/lib/page-auth";
-import VistaTicketsFormularios from "@/modules/tickets/config/formulario/VistaTicketsFormularios";
+import { redirect } from "next/navigation";
 
-export default async function PaginaIncidentesConfiguracion() {
-  await exigirMenuPagina("/plataforma/incidentes/configuracion");
-  return <VistaTicketsFormularios tipoFijo="incidente" />;
+export default function PaginaAdminIncidentesIndex() {
+  redirect("/admin/tickets-formularios?tipo=incidente");
 }

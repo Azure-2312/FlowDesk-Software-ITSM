@@ -70,7 +70,7 @@ export default function PaginaBaseConocimiento() {
 
         <div style={{ display: "flex", gap: 10 }}>
           <Link
-            href="/plataforma/perfiles/tecnico/conocimiento/nuevo"
+            href="/plataforma/conocimiento/tecnico/nuevo"
             style={{
               padding: "8px 16px",
               backgroundColor: "#2563eb",

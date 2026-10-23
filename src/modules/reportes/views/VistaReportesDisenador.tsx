@@ -30,7 +30,7 @@ export default function PaginaDisenadorReportesDashboards() {
   async function cargarConfiguracion() {
     setCargando(true);
     try {
-      const res = await fetch("/api/admin/reportes-disenador");
+      const res = await fetch("/api/reportes/disenador");
       const data = await res.json();
       if (res.ok && data.widgets) {
         setWidgets(data.widgets);
@@ -57,7 +57,7 @@ export default function PaginaDisenadorReportesDashboards() {
     setError(null);
     setMensajeExito(null);
     try {
-      const res = await fetch("/api/admin/reportes-disenador", {
+      const res = await fetch("/api/reportes/disenador", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ widgets }),

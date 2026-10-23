@@ -38,7 +38,7 @@ export default function VistaAsignacionProblemas() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-problemas/asignacion?_t=${Date.now()}`);
+      const res = await fetch(`/api/problemas/gestion/asignacion?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setProblemas(Array.isArray(json?.problemas) ? json.problemas : []);
@@ -78,7 +78,7 @@ export default function VistaAsignacionProblemas() {
     setOk(null);
     const valores = form[idProblema] ?? { id_usuario_asignado: "", id_departamento: "", id_prioridad: "" };
     try {
-      const res = await fetch("/api/gestor-problemas/asignacion", {
+      const res = await fetch("/api/problemas/gestion/asignacion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

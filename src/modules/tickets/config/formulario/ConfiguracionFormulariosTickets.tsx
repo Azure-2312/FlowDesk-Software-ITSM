@@ -292,7 +292,7 @@ function ContenidoConfiguracionFormularios({ tipoFijo }: { tipoFijo?: "incidente
       setCargando(true);
       setError(null);
       try {
-        const res = await fetch("/api/admin/configuracion?clave=formularios_solicitante_config");
+        const res = await fetch("/api/operacion/configuracion?clave=formularios_solicitante_config");
         const data = await res.json();
         if (data.configuracion?.valor) {
           const valor = data.configuracion.valor;
@@ -399,7 +399,7 @@ function ContenidoConfiguracionFormularios({ tipoFijo }: { tipoFijo?: "incidente
     setMensajeExito(null);
 
     try {
-      const res = await fetch("/api/admin/configuracion", {
+      const res = await fetch("/api/operacion/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

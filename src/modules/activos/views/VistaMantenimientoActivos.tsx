@@ -63,7 +63,7 @@ export default function VistaMantenimientoActivos() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/mantenimiento?_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/mantenimiento?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setMantenimientos(Array.isArray(json?.mantenimientos) ? json.mantenimientos : []);
@@ -88,7 +88,7 @@ export default function VistaMantenimientoActivos() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/mantenimiento", {
+      const res = await fetch("/api/activos/mantenimiento", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, id_activo: Number(form.id_activo) }),
@@ -112,7 +112,7 @@ export default function VistaMantenimientoActivos() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/mantenimiento", {
+      const res = await fetch("/api/activos/mantenimiento", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_mantenimiento: idMantenimiento, estado, fecha_ejecucion: estado === "COMPLETADO" ? new Date().toISOString().slice(0, 10) : undefined }),

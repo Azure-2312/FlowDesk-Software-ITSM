@@ -46,7 +46,7 @@ export default function VistaCabEmergencia() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/perfiles/aprobador/cab/emergencia?_t=${Date.now()}`);
+      const res = await fetch(`/api/cambios/cab/emergencia?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setPendientes(Array.isArray(json?.pendientes) ? json.pendientes : []);
@@ -73,7 +73,7 @@ export default function VistaCabEmergencia() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/perfiles/aprobador/cab/emergencia", {
+      const res = await fetch("/api/cambios/cab/emergencia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cambio: idCambio, decision, condiciones, plazo_horas: plazo }),

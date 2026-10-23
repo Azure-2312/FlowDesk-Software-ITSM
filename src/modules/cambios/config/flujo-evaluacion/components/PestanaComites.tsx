@@ -216,7 +216,7 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
   const ejecutarSimulacionQuorum = async (miembrosData: any[]) => {
     try {
       setSimulando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/simular-quorum", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/simular-quorum", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const data = await simularEscalamiento(body);
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Error en /api/admin/cambios/flujo-evaluacion/simular-escalamiento:", error);
+    console.error("Error en /api/cambios/configuracion/flujo-evaluacion/simular-escalamiento:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al simular escalamiento");
     return NextResponse.json({ error: mensaje }, { status });
   }

@@ -22,7 +22,7 @@ export default function VistaConfigPlantillas() {
   async function cargarPlantillas() {
     setCargando(true);
     try {
-      const res = await fetch("/api/admin/conocimiento/plantillas", { cache: "no-store" });
+      const res = await fetch("/api/conocimiento/plantillas", { cache: "no-store" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al cargar plantillas KCS");
       setPlantillas(data.plantillas || []);

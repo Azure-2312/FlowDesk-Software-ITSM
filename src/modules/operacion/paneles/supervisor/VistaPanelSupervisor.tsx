@@ -42,7 +42,7 @@ export default function VistaPanelSupervisor() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/supervisor/panel?_t=${Date.now()}`);
+        const res = await fetch(`/api/operacion/paneles/supervisor?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudo cargar el panel.");
@@ -61,7 +61,7 @@ export default function VistaPanelSupervisor() {
   const alertas = [
     { texto: "Incidentes mayores abiertos", valor: data.alertas.incidentes_mayores, href: "/plataforma/perfiles/supervisor/incidentes-mayores" },
     { texto: "P1/P2 sin asignar", valor: data.alertas.p1p2_sin_asignar, href: "/plataforma/tickets/gestion/asignar" },
-    { texto: "Aprobaciones de RFC pendientes", valor: data.alertas.aprobaciones_pendientes, href: "/plataforma/perfiles/supervisor/cambios/aprobaciones" },
+    { texto: "Aprobaciones de RFC pendientes", valor: data.alertas.aprobaciones_pendientes, href: "/plataforma/cambios/supervisor/aprobaciones" },
     { texto: "Técnicos sobrecargados", valor: data.alertas.tecnicos_sobrecargados, href: "/plataforma/tickets/gestion/tecnicos" },
   ];
 

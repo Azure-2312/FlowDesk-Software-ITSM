@@ -72,7 +72,7 @@ export default function VistaAnalisisProblemas() {
     setCargando(true);
     setError(null);
     try {
-      const url = new URL("/api/gestor-problemas/analisis", window.location.origin);
+      const url = new URL("/api/problemas/gestion/analisis", window.location.origin);
       if (id) url.searchParams.set("id_problema", String(id));
       url.searchParams.set("_t", String(Date.now()));
       const res = await fetch(url.toString());
@@ -105,7 +105,7 @@ export default function VistaAnalisisProblemas() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-problemas/analisis", {
+      const res = await fetch("/api/problemas/gestion/analisis", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -164,7 +164,7 @@ export const PestanaMatrizAutoridad: React.FC<PestanaMatrizAutoridadProps> = ({
   const ejecutarSimulacion = async () => {
     try {
       setSimulando(true);
-      const res = await fetch("/api/admin/cambios/matriz-autoridad/simular", {
+      const res = await fetch("/api/cambios/configuracion/matriz-autoridad/simular", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(simParams)

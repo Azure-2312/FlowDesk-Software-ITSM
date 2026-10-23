@@ -87,7 +87,7 @@ export default function PaginaDetalleTicket({
       const [resTicket, resUser, resConfig, resCat] = await Promise.all([
         fetch(`${apiBase}/${idTicket}`).then((r) => r.json()),
         fetch("/api/mi-cuenta").then((r) => r.json()),
-        fetch("/api/admin/configuracion?clave=formularios_solicitante_config").then((r) => r.json()),
+        fetch("/api/operacion/configuracion?clave=formularios_solicitante_config").then((r) => r.json()),
         fetch("/api/tickets/catalogos").then((r) => r.json()).catch(() => null),
       ]);
 

@@ -45,7 +45,7 @@ export default function VistaBajasActivos() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/bajas?_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/bajas?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar las bajas.");
@@ -63,7 +63,7 @@ export default function VistaBajasActivos() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/bajas", {
+      const res = await fetch("/api/activos/bajas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_solicitud: idSolicitud, decision }),
@@ -90,7 +90,7 @@ export default function VistaBajasActivos() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/bajas", {
+      const res = await fetch("/api/activos/bajas", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_solicitud: idSolicitud, ...form }),

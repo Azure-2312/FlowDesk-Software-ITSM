@@ -59,7 +59,7 @@ export default function VistaRenovaciones() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/renovaciones?_t=${Date.now()}`);
+      const res = await fetch(`/api/activos/renovaciones?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setPorVencer(Array.isArray(json?.porVencer) ? json.porVencer : []);
@@ -84,7 +84,7 @@ export default function VistaRenovaciones() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/renovaciones", {
+      const res = await fetch("/api/activos/renovaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -108,7 +108,7 @@ export default function VistaRenovaciones() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/renovaciones", {
+      const res = await fetch("/api/activos/renovaciones", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_renovacion: idRenovacion, estado }),

@@ -158,7 +158,7 @@ export default function CiclosVidaTransicionesPage() {
       setErrorCarga(null);
 
       const res = await fetch(
-        `/api/admin/activos-config/ciclos-vida-transiciones/configuracion?pestana=${tabActiva}`
+        `/api/activos/configuracion/ciclos-vida-transiciones/configuracion?pestana=${tabActiva}`
       );
       const data = await res.json();
 
@@ -216,7 +216,7 @@ export default function CiclosVidaTransicionesPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/activos-config/ciclos-vida-transiciones/configuracion", {
+      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -245,7 +245,7 @@ export default function CiclosVidaTransicionesPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/activos-config/ciclos-vida-transiciones/configuracion", {
+      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -274,7 +274,7 @@ export default function CiclosVidaTransicionesPage() {
     if (!confirm("Se perderán todos los cambios del borrador sin publicar. ¿Desea continuar?")) return;
     try {
       const res = await fetch(
-        `/api/admin/activos-config/ciclos-vida-transiciones/configuracion?pestana=${tabActiva}`,
+        `/api/activos/configuracion/ciclos-vida-transiciones/configuracion?pestana=${tabActiva}`,
         { method: "DELETE" }
       );
       if (res.ok) {
@@ -290,7 +290,7 @@ export default function CiclosVidaTransicionesPage() {
   // Restaurar valores de fábrica
   const handleRestaurarFabrica = async () => {
     try {
-      const res = await fetch("/api/admin/activos-config/ciclos-vida-transiciones/configuracion", {
+      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -314,7 +314,7 @@ export default function CiclosVidaTransicionesPage() {
   // Restaurar versión específica desde modal de historial
   const handleRestaurarVersionComoBorrador = async (version: any) => {
     try {
-      const res = await fetch("/api/admin/activos-config/ciclos-vida-transiciones/configuracion", {
+      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -388,7 +388,7 @@ export default function CiclosVidaTransicionesPage() {
   // Solicitar control concurrente
   const handleSolicitarControl = async () => {
     try {
-      const res = await fetch("/api/admin/activos-config/ciclos-vida-transiciones/configuracion", {
+      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

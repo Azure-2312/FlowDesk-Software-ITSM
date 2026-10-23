@@ -112,7 +112,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
   const ejecutarSimulacion = async () => {
     try {
       setEvaluando(true);
-      const res = await fetch("/api/admin/cambios/cuestionario-riesgo", {
+      const res = await fetch("/api/cambios/configuracion/cuestionario-riesgo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -39,7 +39,7 @@ export default function VistaCmdbActualizaciones() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/cmdb/actualizaciones?_t=${Date.now()}`);
+      const res = await fetch(`/api/cmdb/actualizaciones?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setItems(Array.isArray(json?.actualizaciones) ? json.actualizaciones : []);
@@ -59,7 +59,7 @@ export default function VistaCmdbActualizaciones() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/cmdb/actualizaciones", {
+      const res = await fetch("/api/cmdb/actualizaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cuerpo),

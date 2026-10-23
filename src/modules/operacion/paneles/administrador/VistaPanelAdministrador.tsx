@@ -40,7 +40,7 @@ export default function VistaPanelAdministrador() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/perfiles/administrador/panel?_t=${Date.now()}`);
+        const res = await fetch(`/api/operacion/paneles/administrador?_t=${Date.now()}`);
         const json = await res.json();
         if (res.ok) setData(json);
         else setError(json.error ?? "No se pudo cargar el panel.");
@@ -76,11 +76,11 @@ export default function VistaPanelAdministrador() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/admin/usuarios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Gestión de usuarios</Link>
-            <Link href="/plataforma/admin/perfiles" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Perfiles y permisos</Link>
-            <Link href="/plataforma/admin/menu" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Estructura del menú</Link>
-            <Link href="/plataforma/admin/salud-sistema" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Salud del sistema</Link>
-            <Link href="/plataforma/admin/seguridad-logs" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Registros de seguridad</Link>
+            <Link href="/plataforma/seguridad/usuarios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Gestión de usuarios</Link>
+            <Link href="/plataforma/seguridad/perfiles" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Perfiles y permisos</Link>
+            <Link href="/plataforma/operacion/menu" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Estructura del menú</Link>
+            <Link href="/plataforma/operacion/salud-sistema" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Salud del sistema</Link>
+            <Link href="/plataforma/seguridad/seguridad-logs" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Registros de seguridad</Link>
             <Link href="/plataforma/reportes/operativos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Indicadores operativos y SLA</Link>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function VistaPanelAdministrador() {
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>
               {data.usuariosSinPerfil.map((u) => (
                 <li key={u.id_usuario} style={{ fontSize: 13, borderBottom: "1px solid #f1f5f9", paddingBottom: 6 }}>
-                  <Link href={`/plataforma/admin/usuarios/${u.id_usuario}`} style={{ color: "#1d4ed8", fontWeight: 600 }}>{u.nombre}</Link>
+                  <Link href={`/plataforma/seguridad/usuarios/${u.id_usuario}`} style={{ color: "#1d4ed8", fontWeight: 600 }}>{u.nombre}</Link>
                   <div style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>{u.correo_electronico}</div>
                 </li>
               ))}

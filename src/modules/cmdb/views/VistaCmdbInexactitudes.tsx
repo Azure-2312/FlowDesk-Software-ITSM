@@ -52,7 +52,7 @@ export default function VistaCmdbInexactitudes() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/gestor-activos/cmdb/inexactitudes?_t=${Date.now()}`);
+      const res = await fetch(`/api/cmdb/inexactitudes?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) {
         setItems(Array.isArray(json?.inexactitudes) ? json.inexactitudes : []);
@@ -77,7 +77,7 @@ export default function VistaCmdbInexactitudes() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/cmdb/inexactitudes", {
+      const res = await fetch("/api/cmdb/inexactitudes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -101,7 +101,7 @@ export default function VistaCmdbInexactitudes() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/gestor-activos/cmdb/inexactitudes", {
+      const res = await fetch("/api/cmdb/inexactitudes", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_inexactitud: idInexactitud, estado }),

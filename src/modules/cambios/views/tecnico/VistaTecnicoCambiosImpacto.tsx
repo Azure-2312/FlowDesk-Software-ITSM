@@ -29,7 +29,7 @@ export default function PaginaCambiosImpacto() {
 
   async function marcarEnterado(idCambio: number) {
     try {
-      await fetch("/api/perfiles/tecnico/cambios/enterado", {
+      await fetch("/api/cambios/tecnico/enterado", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cambio: idCambio }),

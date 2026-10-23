@@ -38,7 +38,7 @@ function ContenidoModeladoTiposCI() {
   async function cargarTipos() {
     setCargando(true);
     try {
-      const res = await fetch("/api/admin/cmdb/tipos");
+      const res = await fetch("/api/cmdb/tipos");
       const data = await res.json();
       if (Array.isArray(data.tipos)) setTipos(data.tipos);
     } catch {
@@ -63,7 +63,7 @@ function ContenidoModeladoTiposCI() {
         .map((a) => a.trim())
         .filter((a) => a.length > 0);
 
-      const res = await fetch("/api/admin/cmdb/tipos", {
+      const res = await fetch("/api/cmdb/tipos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

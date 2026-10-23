@@ -35,7 +35,7 @@ export default function PaginaMisTareas() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/perfiles/tecnico/recordatorios?_t=${Date.now()}`);
+      const res = await fetch(`/api/operacion/recordatorios?_t=${Date.now()}`);
       const data = await res.json();
       const recs: any[] = data.recordatorios || [];
 
@@ -46,7 +46,7 @@ export default function PaginaMisTareas() {
         descripcion: r.descripcion,
         origenTipo: "Recordatorio",
         origenCodigo: `REC-${r.id_recordatorio}`,
-        origenUrl: "/plataforma/perfiles/tecnico/agenda",
+        origenUrl: "/plataforma/operacion/agenda",
         fechaVencimiento: r.fecha_hora,
         completada: r.completado,
         esPersonal: true,
@@ -66,7 +66,7 @@ export default function PaginaMisTareas() {
 
   async function toggleCompletada(id: string | number, estadoActual: boolean) {
     try {
-      await fetch("/api/perfiles/tecnico/recordatorios", {
+      await fetch("/api/operacion/recordatorios", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_recordatorio: id, completado: !estadoActual }),
@@ -83,7 +83,7 @@ export default function PaginaMisTareas() {
 
     setGuardando(true);
     try {
-      const res = await fetch("/api/perfiles/tecnico/recordatorios", {
+      const res = await fetch("/api/operacion/recordatorios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

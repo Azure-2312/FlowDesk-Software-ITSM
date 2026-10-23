@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     const data = await obtenerConfiguracionLicenciasContratos(usuario?.id_usuario, pestana);
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Error en GET /api/admin/activos-config/licencias-contratos/configuracion:", error);
+    console.error("Error en GET /api/activos/configuracion/licencias-contratos/configuracion:", error);
     return NextResponse.json({ error: error.message || "Error al obtener la configuración del servidor" }, { status: 500 });
   }
 }
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const { httpStatus, payload } = await procesarAccionLicenciasContratos(userId, body);
     return NextResponse.json(payload, { status: httpStatus });
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en POST /api/admin/activos-config/licencias-contratos/configuracion:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en POST /api/activos/configuracion/licencias-contratos/configuracion:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al procesar la solicitud");
     return NextResponse.json({ error: mensaje }, { status });
   }
@@ -48,7 +48,7 @@ export async function PUT(req: NextRequest) {
     const data = await publicarConfiguracionLicenciasContratos(userId, body);
     return NextResponse.json(data);
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en PUT /api/admin/activos-config/licencias-contratos/configuracion:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en PUT /api/activos/configuracion/licencias-contratos/configuracion:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al publicar la versión");
     return NextResponse.json({ error: mensaje }, { status });
   }
@@ -60,7 +60,7 @@ export async function DELETE(req: NextRequest) {
     const data = await descartarBorradorLicenciasContratos(searchParams.get("pestana") || "");
     return NextResponse.json(data);
   } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error en DELETE /api/admin/activos-config/licencias-contratos/configuracion:", error);
+    if (!(error instanceof ErrorDominio)) console.error("Error en DELETE /api/activos/configuracion/licencias-contratos/configuracion:", error);
     const { error: mensaje, status } = respuestaError(error, error?.message || "Error al descartar el borrador");
     return NextResponse.json({ error: mensaje }, { status });
   }

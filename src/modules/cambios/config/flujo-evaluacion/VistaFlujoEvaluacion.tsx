@@ -106,7 +106,7 @@ export default function FlujoEvaluacionPage() {
       setCargando(true);
       setErrorCarga(null);
 
-      const res = await fetch(`/api/admin/cambios/flujo-evaluacion/configuracion?pestana=${tabActiva}`);
+      const res = await fetch(`/api/cambios/configuracion/flujo-evaluacion/configuracion?pestana=${tabActiva}`);
       if (!res.ok) throw new Error("Error al obtener la configuración del servidor");
       const data = await res.json();
 
@@ -141,7 +141,7 @@ export default function FlujoEvaluacionPage() {
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -167,7 +167,7 @@ export default function FlujoEvaluacionPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -197,7 +197,7 @@ export default function FlujoEvaluacionPage() {
     }
     try {
       setCargando(true);
-      const res = await fetch(`/api/admin/cambios/flujo-evaluacion/configuracion?pestana=${tabActiva}`, {
+      const res = await fetch(`/api/cambios/configuracion/flujo-evaluacion/configuracion?pestana=${tabActiva}`, {
         method: "DELETE"
       });
       if (!res.ok) throw new Error("Error al descartar borrador");
@@ -213,7 +213,7 @@ export default function FlujoEvaluacionPage() {
   const handleRestaurarFabrica = async () => {
     try {
       setCargando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -237,7 +237,7 @@ export default function FlujoEvaluacionPage() {
   const handleRestaurarVersion = async (versionId: number) => {
     try {
       setCargando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/configuracion", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -323,7 +323,7 @@ export default function FlujoEvaluacionPage() {
 
           <div style={{ display: "flex", gap: "8px" }}>
             <Link
-              href="/plataforma/admin/procesos/cambios/tipos-requisitos"
+              href="/plataforma/cambios/configuracion/tipos-requisitos"
               style={{
                 fontSize: "0.8rem",
                 padding: "6px 12px",
@@ -338,7 +338,7 @@ export default function FlujoEvaluacionPage() {
               ← Tipos y Requisitos
             </Link>
             <Link
-              href="/plataforma/admin/procesos/cambios/notificaciones-calendario"
+              href="/plataforma/cambios/configuracion/notificaciones-calendario"
               style={{
                 fontSize: "0.8rem",
                 padding: "6px 12px",

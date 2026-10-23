@@ -55,7 +55,7 @@ export const PestanaCatalogos: React.FC = () => {
   const cargarCatalogo = async (cat: string) => {
     setCargando(true);
     try {
-      const res = await fetch(`/api/admin/cambios/catalogos?catalogo=${cat}`);
+      const res = await fetch(`/api/cambios/configuracion/catalogos?catalogo=${cat}`);
       const data = await res.json();
       if (data.ok && Array.isArray(data.items)) {
         setItems(data.items);
@@ -105,7 +105,7 @@ export const PestanaCatalogos: React.FC = () => {
     }
 
     try {
-      const res = await fetch("/api/admin/cambios/catalogos", {
+      const res = await fetch("/api/cambios/configuracion/catalogos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -138,7 +138,7 @@ export const PestanaCatalogos: React.FC = () => {
     }
 
     try {
-      const res = await fetch("/api/admin/cambios/catalogos", {
+      const res = await fetch("/api/cambios/configuracion/catalogos", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -170,7 +170,7 @@ export const PestanaCatalogos: React.FC = () => {
     }
 
     try {
-      const res = await fetch("/api/admin/cambios/catalogos", {
+      const res = await fetch("/api/cambios/configuracion/catalogos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -197,7 +197,7 @@ export const PestanaCatalogos: React.FC = () => {
 
   const alternarActivo = async (item: CatalogoItem) => {
     try {
-      const res = await fetch("/api/admin/cambios/catalogos", {
+      const res = await fetch("/api/cambios/configuracion/catalogos", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_item: item.id_item, activo: !item.activo }),
@@ -216,7 +216,7 @@ export const PestanaCatalogos: React.FC = () => {
   const eliminarItem = async (item: CatalogoItem) => {
     if (!confirm(`¿Está seguro de eliminar "${item.nombre}"?`)) return;
     try {
-      const res = await fetch(`/api/admin/cambios/catalogos?id_item=${item.id_item}`, {
+      const res = await fetch(`/api/cambios/configuracion/catalogos?id_item=${item.id_item}`, {
         method: "DELETE",
       });
       const data = await res.json();

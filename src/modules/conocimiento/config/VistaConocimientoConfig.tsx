@@ -82,7 +82,7 @@ export default function GobiernoConocimiento() {
   async function cargarArticulos() {
     setCargando(true);
     try {
-      const r = await fetch("/api/admin/conocimiento", { cache: "no-store" });
+      const r = await fetch("/api/conocimiento", { cache: "no-store" });
       const d = await r.json();
       if (!r.ok) {
         setError(d.error || "No se pudo cargar la lista de artículos");
@@ -98,7 +98,7 @@ export default function GobiernoConocimiento() {
 
   async function cargarCategorias() {
     try {
-      const r = await fetch("/api/admin/conocimiento/categorias", { cache: "no-store" });
+      const r = await fetch("/api/conocimiento/categorias", { cache: "no-store" });
       const d = await r.json();
       if (r.ok) {
         setCategorias(d.categorias || []);
@@ -110,7 +110,7 @@ export default function GobiernoConocimiento() {
 
   async function cargarPoliticas() {
     try {
-      const r = await fetch("/api/admin/conocimiento/politicas", { cache: "no-store" });
+      const r = await fetch("/api/conocimiento/politicas", { cache: "no-store" });
       const d = await r.json();
       if (r.ok) {
         if (d.politicas) setPoliticas(d.politicas);
@@ -131,7 +131,7 @@ export default function GobiernoConocimiento() {
     setError("");
     setOk("");
     try {
-      const r = await fetch(`/api/admin/conocimiento/${id}`, {
+      const r = await fetch(`/api/conocimiento/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ accion: accionNombre, ...payloadExtra }),
@@ -156,7 +156,7 @@ export default function GobiernoConocimiento() {
     setError("");
     setOk("");
     try {
-      const r = await fetch("/api/admin/conocimiento/politicas", {
+      const r = await fetch("/api/conocimiento/politicas", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(politicas),
@@ -499,7 +499,7 @@ export default function GobiernoConocimiento() {
                             </button>
                           )}
                           <Link
-                            href={`/plataforma/admin/conocimiento-config/articulos/${a.id_articulo}/editar`}
+                            href={`/plataforma/conocimiento/configuracion/articulos/${a.id_articulo}/editar`}
                             className="boton-accion-icono"
                             style={{ width: 30, height: 30, color: "#2563eb", textDecoration: "none" }}
                             title="Editar artículo"
@@ -511,7 +511,7 @@ export default function GobiernoConocimiento() {
                             </svg>
                           </Link>
                           <Link
-                            href={`/plataforma/admin/conocimiento-config/articulos/${a.id_articulo}/historial`}
+                            href={`/plataforma/conocimiento/configuracion/articulos/${a.id_articulo}/historial`}
                             className="boton-accion-icono"
                             style={{ width: 30, height: 30, color: "#475569", textDecoration: "none" }}
                             title="Ver reporte detallado de trazabilidad"

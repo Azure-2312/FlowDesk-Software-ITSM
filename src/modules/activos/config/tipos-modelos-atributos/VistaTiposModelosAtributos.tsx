@@ -204,7 +204,7 @@ export default function TiposModelosAtributosPage({
       setErrorCarga(null);
 
       const res = await fetch(
-        `/api/admin/activos-config/tipos-modelos-atributos/configuracion?pestana=${tabActiva}`
+        `/api/activos/configuracion/tipos-modelos-atributos/configuracion?pestana=${tabActiva}`
       );
       const data = await res.json();
 
@@ -262,7 +262,7 @@ export default function TiposModelosAtributosPage({
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/admin/activos-config/tipos-modelos-atributos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/tipos-modelos-atributos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -296,7 +296,7 @@ export default function TiposModelosAtributosPage({
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/activos-config/tipos-modelos-atributos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/tipos-modelos-atributos/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -325,7 +325,7 @@ export default function TiposModelosAtributosPage({
     if (!confirm("Se perderán todos los cambios del borrador sin publicar. ¿Desea continuar?")) return;
     try {
       const res = await fetch(
-        `/api/admin/activos-config/tipos-modelos-atributos/configuracion?pestana=${tabActiva}`,
+        `/api/activos/configuracion/tipos-modelos-atributos/configuracion?pestana=${tabActiva}`,
         { method: "DELETE" }
       );
       if (res.ok) {
@@ -341,7 +341,7 @@ export default function TiposModelosAtributosPage({
   // Restaurar valores de fábrica
   const handleRestaurarFabrica = async () => {
     try {
-      const res = await fetch("/api/admin/activos-config/tipos-modelos-atributos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/tipos-modelos-atributos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -365,7 +365,7 @@ export default function TiposModelosAtributosPage({
   // Restaurar versión específica desde el modal de historial
   const handleRestaurarVersionComoBorrador = async (version: any) => {
     try {
-      const res = await fetch("/api/admin/activos-config/tipos-modelos-atributos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/tipos-modelos-atributos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -439,7 +439,7 @@ export default function TiposModelosAtributosPage({
   // Solicitar control concurrente
   const handleSolicitarControl = async () => {
     try {
-      const res = await fetch("/api/admin/activos-config/tipos-modelos-atributos/configuracion", {
+      const res = await fetch("/api/activos/configuracion/tipos-modelos-atributos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

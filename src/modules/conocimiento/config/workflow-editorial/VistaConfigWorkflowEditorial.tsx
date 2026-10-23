@@ -34,7 +34,7 @@ export default function VistaConfigWorkflowEditorial() {
   async function cargarPoliticas() {
     setCargando(true);
     try {
-      const res = await fetch("/api/admin/conocimiento/politicas", { cache: "no-store" });
+      const res = await fetch("/api/conocimiento/politicas", { cache: "no-store" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al cargar políticas KCS");
       if (data.politicas) setPoliticas(data.politicas);
@@ -57,7 +57,7 @@ export default function VistaConfigWorkflowEditorial() {
     setOk("");
 
     try {
-      const res = await fetch("/api/admin/conocimiento/politicas", {
+      const res = await fetch("/api/conocimiento/politicas", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(politicas),

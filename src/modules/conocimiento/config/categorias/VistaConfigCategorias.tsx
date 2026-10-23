@@ -43,7 +43,7 @@ export default function VistaConfigCategorias() {
     setCargando(true);
     setError("");
     try {
-      const res = await fetch("/api/admin/conocimiento/categorias", { cache: "no-store" });
+      const res = await fetch("/api/conocimiento/categorias", { cache: "no-store" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al cargar categorías");
       setCategorias(data.categorias || []);
@@ -70,7 +70,7 @@ export default function VistaConfigCategorias() {
     setOk("");
 
     try {
-      const res = await fetch("/api/admin/conocimiento/categorias", {
+      const res = await fetch("/api/conocimiento/categorias", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -119,7 +119,7 @@ export default function VistaConfigCategorias() {
     setOk("");
 
     try {
-      const res = await fetch("/api/admin/conocimiento/categorias", {
+      const res = await fetch("/api/conocimiento/categorias", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -149,7 +149,7 @@ export default function VistaConfigCategorias() {
     setOk("");
     const nuevoEstado = !cat.estado_registro;
     try {
-      const res = await fetch("/api/admin/conocimiento/categorias", {
+      const res = await fetch("/api/conocimiento/categorias", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -176,7 +176,7 @@ export default function VistaConfigCategorias() {
     setOk("");
 
     try {
-      const res = await fetch(`/api/admin/conocimiento/categorias?id=${categoriaEliminar.id_categoria}`, {
+      const res = await fetch(`/api/conocimiento/categorias?id=${categoriaEliminar.id_categoria}`, {
         method: "DELETE",
       });
       const data = await res.json();

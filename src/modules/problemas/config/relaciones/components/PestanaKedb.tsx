@@ -56,7 +56,7 @@ export function PestanaKedb({ config, onChange, onMarcarModificado }: Props) {
   async function ejecutarPrueba() {
     setProbando(true);
     try {
-      const res = await fetch("/api/admin/problemas/relaciones/kedb", {
+      const res = await fetch("/api/problemas/configuracion/relaciones/kedb", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

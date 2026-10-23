@@ -75,7 +75,7 @@ export default function ConfiguracionFormularioPage() {
       setErrorCarga(null);
 
       // 1. Configuración de versión y borrador para la pestaña
-      const resConfig = await fetch(`/api/admin/problemas/configuracion?ambito=${tabActiva}`);
+      const resConfig = await fetch(`/api/problemas/configuracion/configuracion?ambito=${tabActiva}`);
       const dataConfig = await resConfig.json();
 
       if (dataConfig.ok) {
@@ -107,10 +107,10 @@ export default function ConfiguracionFormularioPage() {
 
       // 2. Cargar datos específicos adicionales en paralelo
       const [resCampos, resCat, resMatriz, resPlantillas] = await Promise.all([
-        fetch("/api/admin/problemas/campos-personalizados?entidad=problema"),
-        fetch("/api/admin/problemas/catalogos"),
-        fetch("/api/admin/problemas/matriz-prioridad"),
-        fetch("/api/admin/problemas/plantillas"),
+        fetch("/api/problemas/configuracion/campos-personalizados?entidad=problema"),
+        fetch("/api/problemas/configuracion/catalogos"),
+        fetch("/api/problemas/configuracion/matriz-prioridad"),
+        fetch("/api/problemas/configuracion/plantillas"),
       ]);
 
       const [dataCampos, dataCat, dataMatriz, dataPlantillas] = await Promise.all([
@@ -174,7 +174,7 @@ export default function ConfiguracionFormularioPage() {
       setGuardando(true);
       const payloadDatos = construirSnapshot();
 
-      const res = await fetch("/api/admin/problemas/configuracion", {
+      const res = await fetch("/api/problemas/configuracion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -232,7 +232,7 @@ export default function ConfiguracionFormularioPage() {
   const handleConfirmarPublicacion = async (motivo: string) => {
     try {
       setPublicando(true);
-      const res = await fetch("/api/admin/problemas/configuracion", {
+      const res = await fetch("/api/problemas/configuracion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -265,7 +265,7 @@ export default function ConfiguracionFormularioPage() {
       return;
     }
     try {
-      const res = await fetch("/api/admin/problemas/configuracion", {
+      const res = await fetch("/api/problemas/configuracion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -285,7 +285,7 @@ export default function ConfiguracionFormularioPage() {
 
   // Restaurar de Fábrica
   const handleRestaurarFabrica = async () => {
-    const res = await fetch("/api/admin/problemas/configuracion", {
+    const res = await fetch("/api/problemas/configuracion/configuracion", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -305,7 +305,7 @@ export default function ConfiguracionFormularioPage() {
   // Ver Historial
   const handleAbrirHistorial = async () => {
     try {
-      const res = await fetch(`/api/admin/problemas/configuracion?ambito=${tabActiva}&historial=true`);
+      const res = await fetch(`/api/problemas/configuracion/configuracion?ambito=${tabActiva}&historial=true`);
       const data = await res.json();
       if (data.ok) {
         setVersionesHistorial(data.versiones || []);
@@ -319,7 +319,7 @@ export default function ConfiguracionFormularioPage() {
   // Restaurar versión específica como borrador
   const handleRestaurarComoBorrador = async (ver: any) => {
     try {
-      const res = await fetch("/api/admin/problemas/configuracion", {
+      const res = await fetch("/api/problemas/configuracion/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -561,7 +561,7 @@ export default function ConfiguracionFormularioPage() {
                 catalogos={catalogosData}
                 puedeEditar={puedeEditar}
                 onCrearItem={async (cat, datos) => {
-                  const res = await fetch("/api/admin/problemas/catalogos", {
+                  const res = await fetch("/api/problemas/configuracion/catalogos", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ catalogo: cat, ...datos }),
@@ -571,7 +571,7 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
                 onActualizarItem={async (cat, id, datos) => {
-                  const res = await fetch("/api/admin/problemas/catalogos", {
+                  const res = await fetch("/api/problemas/configuracion/catalogos", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ catalogo: cat, id, ...datos }),
@@ -581,7 +581,7 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
                 onEliminarItem={async (cat, id) => {
-                  const res = await fetch(`/api/admin/problemas/catalogos?catalogo=${cat}&id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/catalogos?catalogo=${cat}&id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();
@@ -589,7 +589,7 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
                 onFusionarItem={async (cat, idOrigen, idDestino) => {
-                  const res = await fetch("/api/admin/problemas/catalogos", {
+                  const res = await fetch("/api/problemas/configuracion/catalogos", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -614,7 +614,7 @@ export default function ConfiguracionFormularioPage() {
                 config={configMatriz}
                 puedeEditar={puedeEditar}
                 onGuardar={async (nuevaConfig, celdasProblemasActualizadas) => {
-                  const res = await fetch("/api/admin/problemas/matriz-prioridad", {
+                  const res = await fetch("/api/problemas/configuracion/matriz-prioridad", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -634,7 +634,7 @@ export default function ConfiguracionFormularioPage() {
                 plantillas={plantillasData}
                 puedeEditar={puedeEditar}
                 onCrearPlantilla={async (datos) => {
-                  const res = await fetch("/api/admin/problemas/plantillas", {
+                  const res = await fetch("/api/problemas/configuracion/plantillas", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(datos),
@@ -644,7 +644,7 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
                 onActualizarPlantilla={async (id, datos) => {
-                  const res = await fetch("/api/admin/problemas/plantillas", {
+                  const res = await fetch("/api/problemas/configuracion/plantillas", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_plantilla: id, ...datos }),
@@ -654,7 +654,7 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
                 onEliminarPlantilla={async (id) => {
-                  const res = await fetch(`/api/admin/problemas/plantillas?id=${id}`, {
+                  const res = await fetch(`/api/problemas/configuracion/plantillas?id=${id}`, {
                     method: "DELETE",
                   });
                   const r = await res.json();

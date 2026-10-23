@@ -145,7 +145,7 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
   const ejecutarSimulacion = async () => {
     try {
       setSimulando(true);
-      const res = await fetch("/api/admin/cambios/flujo-evaluacion/simular-escalamiento", {
+      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/simular-escalamiento", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...simParams, parametros_custom: snapshot })

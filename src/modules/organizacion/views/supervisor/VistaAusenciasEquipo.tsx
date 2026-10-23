@@ -46,7 +46,7 @@ export default function VistaAusenciasEquipo() {
     setError(null);
     try {
       const [resA, resT] = await Promise.all([
-        fetch(`/api/perfiles/supervisor/ausencias?_t=${Date.now()}`).then((r) => r.json()),
+        fetch(`/api/organizacion/equipo/ausencias?_t=${Date.now()}`).then((r) => r.json()),
         fetch(`/api/tecnicos?_t=${Date.now()}`).then((r) => r.json()),
       ]);
       setAusencias(Array.isArray(resA?.ausencias) ? resA.ausencias : []);
@@ -66,7 +66,7 @@ export default function VistaAusenciasEquipo() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/perfiles/supervisor/ausencias", {
+      const res = await fetch("/api/organizacion/equipo/ausencias", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_usuario_tecnico: Number(idTecnico), fecha_desde: desde, fecha_hasta: hasta, motivo }),
@@ -88,7 +88,7 @@ export default function VistaAusenciasEquipo() {
   async function eliminar(id: number) {
     if (!window.confirm("¿Eliminar esta ausencia?")) return;
     try {
-      const res = await fetch(`/api/perfiles/supervisor/ausencias?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/organizacion/equipo/ausencias?id=${id}`, { method: "DELETE" });
       const json = await res.json();
       if (!res.ok || json.ok === false) setError(json.error ?? "No se pudo eliminar.");
       else await cargar();

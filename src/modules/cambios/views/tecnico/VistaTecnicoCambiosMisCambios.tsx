@@ -64,7 +64,7 @@ export default function PaginaMisCambios() {
 
         <div style={{ display: "flex", gap: 10 }}>
           <Link
-            href="/plataforma/perfiles/tecnico/cambios/nuevo"
+            href="/plataforma/cambios/tecnico/nuevo"
             style={{
               padding: "8px 16px",
               backgroundColor: "#2563eb",
@@ -272,7 +272,7 @@ export default function PaginaMisCambios() {
                   </td>
                   <td style={{ padding: "12px 16px", textAlign: "right" }}>
                     <Link
-                      href="/plataforma/perfiles/tecnico/cambios/implementacion"
+                      href="/plataforma/cambios/tecnico/implementacion"
                       style={{
                         padding: "4px 10px",
                         backgroundColor: "#f8fafc",

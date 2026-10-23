@@ -19,7 +19,7 @@ export default function PaginaSeguridadLogs() {
       if (filtroResultado) params.set("resultado", filtroResultado);
       if (busqueda.trim()) params.set("buscar", busqueda.trim());
 
-      const res = await fetch(`/api/admin/logs?${params.toString()}`);
+      const res = await fetch(`/api/seguridad/logs?${params.toString()}`);
       const datos = await res.json();
       if (!res.ok) {
         setError(datos.error || "No se pudieron obtener los registros de seguridad");

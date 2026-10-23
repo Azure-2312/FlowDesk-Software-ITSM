@@ -58,7 +58,7 @@ export default function PaginaCandidatosProblema() {
 
   function crearProblemaConIncidentes(g: GrupoCandidato) {
     const tituloSugerido = `Problema recurrente detectado en ${g.categoria_nombre}`;
-    router.push(`/plataforma/perfiles/tecnico/problemas/nuevo?titulo=${encodeURIComponent(tituloSugerido)}`);
+    router.push(`/plataforma/problemas/tecnico/nuevo?titulo=${encodeURIComponent(tituloSugerido)}`);
   }
 
   return (
