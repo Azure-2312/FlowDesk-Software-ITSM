@@ -1,17 +1,15 @@
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 import { NextRequest, NextResponse } from "next/server";
-import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { autorizarApi, obtenerSesionDeRequest } from "@/shared/lib/api-auth";
 import { CAPACIDADES, Capacidad, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { CrearTicketPayload } from "@/types";
 import { crearTicket, listarTickets } from "@/modules/tickets/services/ticketsService";
 
-export async function GET(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
+export async function GET(req: NextRequest) {
+  const sesion = obtenerSesionDeRequest(req);
   if (!sesion) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
@@ -73,15 +71,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-
-  if (!sesion) {
-    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  const auth = autorizarApi(req, CAPACIDADES.TICKETS_CREAR, {
+    noAutorizado: "Este perfil no puede registrar tickets.",
+  });
+  if (!auth.autorizado) {
+    return auth.respuesta;
   }
-  if (!sesionTieneCapacidad(sesion, CAPACIDADES.TICKETS_CREAR)) {
-    return NextResponse.json({ error: "Este perfil no puede registrar tickets." }, { status: 403 });
-  }
+  const sesion = auth.sesion;
 
   try {
     const body: CrearTicketPayload = await req.json();

@@ -74,7 +74,7 @@ export async function listarCatalogosTickets(sesion: any) {
          AND td.id_departamento IN (SELECT d.id_departamento FROM departamento_ti d WHERE d.id_supervisor = $1 AND d.estado_registro = true)
        GROUP BY u.id_usuario, u.nombres, u.apellido_paterno, u.correo_electronico, td.id_departamento, dep.nombre, td.nivel_soporte, td.estado_operativo, td.capacidad_maxima_tickets
        ORDER BY nombre`, [sesion.id_usuario]) : Promise.resolve([]),
-    query<any>(`SELECT s.* FROM servicio_catalogo s WHERE s.estado_registro = true ORDER BY s.codigo_servicio`),
+    query<any>(`SELECT s.* FROM servicio_catalogo s LEFT JOIN categoria_ticket c ON c.id_categoria = s.id_categoria WHERE s.estado_registro = true AND (s.id_categoria IS NULL OR c.estado_registro = true) ORDER BY s.codigo_servicio`),
     sesion.perfilActivo?.id_perfil === 4
       ? query<any>("SELECT * FROM departamento_ti WHERE estado_registro = true AND id_supervisor = $1 ORDER BY id_departamento", [sesion.id_usuario])
       : Promise.resolve([]),

@@ -635,4 +635,12 @@ export interface ArticuloConocimiento {
   utilidad_negativa: number;
   fecha_publicacion?: string | null;
   fecha_creacion: string;
+  audiencia_perfiles?: number[];
+  version?: number;
+  veces_utilizado_en_tickets?: number;
+  tipo_plantilla?: string | null;
+  clasificacion_seguridad?: string | null;
+  motivo_retiro?: string | null;
+  fecha_revision?: string | null;
+  estado_registro?: boolean;
 }

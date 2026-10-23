@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node scripts/test_e2e_lifecycle.js",
+    "test:e2e": "node scripts/test_e2e_lifecycle.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
