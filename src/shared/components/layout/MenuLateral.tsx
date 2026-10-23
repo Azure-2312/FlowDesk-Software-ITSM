@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { OpcionMenuArbol } from "@/types";
 
 interface Props {
@@ -25,6 +25,7 @@ function algunDescendienteCoincide(opcion: OpcionMenuArbol, ruta: string): boole
  */
 export default function Menu({ opciones, nivel = 1 }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
 
   // Estados de contadores en tiempo real
   const [contadores, setContadores] = useState<Record<string, { total: number; color: "gris" | "ambar" | "rojo" }>>({});
@@ -134,6 +135,11 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
                   type="button"
                   className={"menu-item menu-item-carpeta" + (tieneDescendienteActivo ? " menu-carpeta-activa" : "")}
                   onClick={() => alternarExpandido(opcion.id_opcion_menu)}
+                  onDoubleClick={() => {
+                    if (opcion.url_menu) {
+                      router.push(opcion.url_menu);
+                    }
+                  }}
                   aria-expanded={estaExpandido}
                 >
                   <span className="menu-texto-carpeta" style={{ flex: 1, textAlign: "left" }}>

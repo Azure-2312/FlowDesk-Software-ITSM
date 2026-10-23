@@ -10,6 +10,59 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  // Redirecciones directas de compatibilidad desde rutas por perfil a rutas canonicas por modulo
+  const redireccionesCanonicas: Record<string, string> = {
+    "/plataforma/tickets/mesa/incidente-mayor": "/plataforma/incidentes/sala-crisis",
+    "/plataforma/problemas/tecnico/nuevo": "/plataforma/problemas/nuevo",
+    "/plataforma/problemas/supervisor/asignar": "/plataforma/problemas/asignacion",
+    "/plataforma/problemas/tecnico/candidatos": "/plataforma/problemas/candidatos",
+    "/plataforma/problemas/tecnico/errores-conocidos": "/plataforma/problemas/kedb",
+    "/plataforma/problemas/tecnico/asignados": "/plataforma/problemas/asignados",
+    "/plataforma/problemas/tecnico/grupo": "/plataforma/problemas/grupo",
+    "/plataforma/problemas/aprobador": "/plataforma/problemas/mayores",
+    "/plataforma/cambios/tecnico/nuevo": "/plataforma/cambios/nuevo",
+    "/plataforma/cambios/tecnico/calendario": "/plataforma/cambios/calendario",
+    "/plataforma/cambios/tecnico/implementacion": "/plataforma/cambios/implementacion",
+    "/plataforma/cambios/tecnico/historial": "/plataforma/cambios/historial",
+    "/plataforma/cambios/tecnico/mis-cambios": "/plataforma/cambios/mis-cambios",
+    "/plataforma/cambios/supervisor/aprobaciones": "/plataforma/cambios/aprobaciones/tecnicas",
+    "/plataforma/cambios/supervisor/programar": "/plataforma/cambios/programacion",
+    "/plataforma/cambios/supervisor/impacto": "/plataforma/cambios/impacto/equipo",
+    "/plataforma/cambios/tecnico/impacto": "/plataforma/cambios/impacto/servicios",
+    "/plataforma/cambios/gestor-area/impacto": "/plataforma/cambios/impacto/interrupciones",
+    "/plataforma/cambios/gestor-area/aprobaciones": "/plataforma/cambios/aprobaciones/negocio",
+    "/plataforma/cambios/aprobador": "/plataforma/cambios/aprobaciones",
+    "/plataforma/cambios/aprobador/modelos": "/plataforma/cambios/modelos",
+    "/plataforma/activos/gestor-area": "/plataforma/activos/area",
+    "/plataforma/activos/tecnico/conteos": "/plataforma/activos/conteos",
+    "/plataforma/activos/tecnico/inventario": "/plataforma/activos/inventario-tecnico",
+    "/plataforma/activos/supervisor/bajas": "/plataforma/activos/bajas/aprobacion",
+    "/plataforma/activos/auditor/bajas": "/plataforma/activos/bajas/consulta",
+    "/plataforma/activos/aprobador": "/plataforma/activos/bajas/renovaciones",
+    "/plataforma/activos/tecnico/mantenimiento": "/plataforma/activos/reparaciones",
+    "/plataforma/activos/tecnico/licencias": "/plataforma/activos/licencias/consulta",
+    "/plataforma/activos/cmdb/analisis": "/plataforma/cmdb/analisis",
+    "/plataforma/activos/cmdb": "/plataforma/cmdb/topologia",
+    "/plataforma/activos/cmdb/tipos": "/plataforma/cmdb/tipos",
+    "/plataforma/cmdb/auditor/resultados": "/plataforma/cmdb/auditoria/resultados",
+    "/plataforma/conocimiento/tecnico/base": "/plataforma/conocimiento/base",
+    "/plataforma/conocimiento/tecnico/nuevo": "/plataforma/conocimiento/nuevo",
+    "/plataforma/conocimiento/tecnico/mis-articulos": "/plataforma/conocimiento/mis-articulos",
+    "/plataforma/conocimiento/supervisor/revisiones": "/plataforma/conocimiento/publicacion",
+    "/plataforma/conocimiento/tecnico/revisiones": "/plataforma/conocimiento/revisiones",
+    "/plataforma/servicios/sla/supervisor/escalamientos": "/plataforma/servicios/sla/escalamientos",
+    "/plataforma/servicios/sla/supervisor/incumplimientos": "/plataforma/servicios/sla/incumplimientos",
+    "/plataforma/servicios/sla/tecnico/objetivos": "/plataforma/servicios/sla/objetivos",
+    "/plataforma/servicios/sla/tecnico/semaforo": "/plataforma/servicios/sla/semaforo-cola",
+    "/plataforma/servicios/sla/supervisor/semaforo": "/plataforma/servicios/sla/semaforo-grupo",
+    "/plataforma/seguridad/aprobador/delegaciones": "/plataforma/seguridad/delegaciones",
+    "/plataforma/seguridad/aprobador/historial": "/plataforma/seguridad/historial-aprobaciones",
+  };
+
+  if (redireccionesCanonicas[pathname]) {
+    return NextResponse.redirect(new URL(redireccionesCanonicas[pathname], req.url));
+  }
+
   // Redirecciones de compatibilidad retroactiva hacia el espacio unificado /plataforma/
   if (pathname.startsWith("/tickets/")) {
     return NextResponse.redirect(new URL(pathname.replace("/tickets/", "/plataforma/tickets/"), req.url));
