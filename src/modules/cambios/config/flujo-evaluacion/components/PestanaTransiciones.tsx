@@ -189,7 +189,7 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({ snapsh
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <h2 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 4px 0" }}>
-            1.3.3.3.2 Transiciones, Acciones y Automatizaciones
+            Transiciones, Acciones y Automatizaciones
           </h2>
           <p style={{ fontSize: "0.85rem", color: "#64748b", margin: 0 }}>
             Reglas de pase de estado, perfiles autorizados, pre-condiciones normativas y automatizaciones vinculadas.

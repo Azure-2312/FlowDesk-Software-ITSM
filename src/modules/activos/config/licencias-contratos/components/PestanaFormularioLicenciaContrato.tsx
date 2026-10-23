@@ -81,7 +81,7 @@ export function PestanaFormularioLicenciaContrato({ datos, onChange, bloqueado }
       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            1.5.3.3 Configuración de formularios de licencias y contratos
+            Configuración de formularios de licencias y contratos
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Personalización de obligatoriedad, visibilidad y reglas de consistencia de captura de datos.

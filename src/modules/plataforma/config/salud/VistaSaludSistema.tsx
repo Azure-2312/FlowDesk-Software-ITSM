@@ -319,10 +319,10 @@ export default function VistaSaludSistema() {
         </p>
       )}
 
-      {/* 4.2 Tareas programadas */}
+      {/* Tareas programadas */}
       <div className="tarjeta-formulario" style={{ marginTop: 24 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <h2 style={{ margin: 0 }}>4.2 Tareas programadas</h2>
+          <h2 style={{ margin: 0 }}>Tareas programadas</h2>
           <button
             type="button"
             className="boton-secundario"
@@ -388,10 +388,10 @@ export default function VistaSaludSistema() {
         )}
       </div>
 
-      {/* 4.3 Cola de correo y notificaciones */}
+      {/* Cola de correo y notificaciones */}
       <div className="tarjeta-formulario" style={{ marginTop: 24 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <h2 style={{ margin: 0 }}>4.3 Cola de correo y notificaciones</h2>
+          <h2 style={{ margin: 0 }}>Cola de correo y notificaciones</h2>
           <button
             type="button"
             className="boton-secundario"

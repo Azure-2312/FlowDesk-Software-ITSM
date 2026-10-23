@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, Trash2 } from "@/shared/components/ui/Iconos";
 
 interface PlantillaProblema {
   id_plantilla: number;
@@ -204,41 +206,33 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
                   <td className="py-3 px-4 text-[11px] text-slate-500">
                     {new Date(p.fecha_modificacion).toLocaleDateString()}
                   </td>
-                  <td className="py-3 px-4 text-right space-x-1.5">
-                    <button
-                      type="button"
-                      onClick={() => abrirEditorExistente(p)}
-                      disabled={!puedeEditar}
-                      className="px-2.5 py-1 text-[11px] font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onActualizarPlantilla(p.id_plantilla, { activa: !p.activa })
-                      }
-                      disabled={!puedeEditar}
-                      className="px-2 py-1 text-[11px] font-medium text-slate-600 hover:bg-slate-100 border border-slate-300 rounded"
-                    >
-                      {p.activa ? "Desactivar" : "Activar"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (p.veces_usada > 0) {
-                          alert(`Esta plantilla se ha usado ${p.veces_usada} veces. Solo puede desactivarse.`);
-                          return;
-                        }
-                        if (confirm(`¿Eliminar la plantilla '${p.nombre}'?`)) {
-                          onEliminarPlantilla(p.id_plantilla);
-                        }
-                      }}
-                      disabled={p.veces_usada > 0 || !puedeEditar}
-                      className="px-2 py-1 text-[11px] font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 disabled:opacity-30 rounded"
-                    >
-                      Eliminar
-                    </button>
+                  <td className="py-3 px-4 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <BotonIcono
+                        variante="normal"
+                        icono={<Edit2 size={13} />}
+                        titulo={`Editar plantilla "${p.nombre}"`}
+                        ariaLabel={`Editar plantilla "${p.nombre}"`}
+                        disabled={!puedeEditar}
+                        onClick={() => abrirEditorExistente(p)}
+                      />
+                      <BotonIcono
+                        variante="peligro"
+                        icono={<Trash2 size={13} />}
+                        titulo={`Eliminar plantilla "${p.nombre}"`}
+                        ariaLabel={`Eliminar plantilla "${p.nombre}"`}
+                        disabled={p.veces_usada > 0 || !puedeEditar}
+                        onClick={() => {
+                          if (p.veces_usada > 0) {
+                            alert(`Esta plantilla se ha usado ${p.veces_usada} veces. Solo puede desactivarse.`);
+                            return;
+                          }
+                          if (confirm(`¿Eliminar la plantilla '${p.nombre}'?`)) {
+                            onEliminarPlantilla(p.id_plantilla);
+                          }
+                        }}
+                      />
+                    </div>
                   </td>
                 </tr>
               ))

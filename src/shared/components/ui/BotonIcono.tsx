@@ -6,7 +6,7 @@ export interface BotonIconoProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   icono: React.ReactNode;
   titulo: string;
   ariaLabel?: string;
-  variante?: "normal" | "peligro" | "primario";
+  variante?: "normal" | "peligro" | "primario" | "exito";
 }
 
 export const BotonIcono: React.FC<BotonIconoProps> = ({
@@ -23,7 +23,9 @@ export const BotonIcono: React.FC<BotonIconoProps> = ({
     variante === "peligro"
       ? "boton-accion-icono boton-accion-peligro"
       : variante === "primario"
-      ? "boton-accion-icono"
+      ? "boton-accion-icono boton-accion-primario"
+      : variante === "exito"
+      ? "boton-accion-icono boton-accion-exito"
       : "boton-accion-icono";
 
   return (

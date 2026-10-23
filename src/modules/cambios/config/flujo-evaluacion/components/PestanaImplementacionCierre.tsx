@@ -113,7 +113,7 @@ export const PestanaImplementacionCierre: React.FC<PestanaImplementacionCierrePr
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <h2 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 4px 0" }}>
-            1.3.3.3.7 Parámetros de Implementación, CMDB y Cierre Formal
+            Parámetros de Implementación, CMDB y Cierre Formal
           </h2>
           <p style={{ fontSize: "0.85rem", color: "#64748b", margin: 0 }}>
             Requisitos de registro de resultado, acciones automáticas ante fallo, sincronización de CMDB y políticas de cierre.

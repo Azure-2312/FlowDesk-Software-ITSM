@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Trash2 } from "@/shared/components/ui/Iconos";
 
 interface Ausencia {
   id_ausencia: number;
@@ -153,7 +155,15 @@ export default function VistaAusenciasEquipo() {
                   <td>{String(a.fecha_desde).slice(0, 10)}</td>
                   <td>{String(a.fecha_hasta).slice(0, 10)}</td>
                   <td>{a.motivo}</td>
-                  <td><button className="boton-secundario" style={{ width: "auto" }} onClick={() => eliminar(a.id_ausencia)}>Eliminar</button></td>
+                  <td>
+                    <BotonIcono
+                      variante="peligro"
+                      icono={<Trash2 size={13} />}
+                      titulo="Eliminar ausencia"
+                      ariaLabel="Eliminar ausencia"
+                      onClick={() => eliminar(a.id_ausencia)}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>

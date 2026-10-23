@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Trash2 } from "@/shared/components/ui/Iconos";
 
 interface Delegacion {
   id_delegacion: number;
@@ -146,7 +148,15 @@ export default function VistaDelegacionAprobaciones() {
                   <td>{String(d.fecha_desde).slice(0, 10)}</td>
                   <td>{String(d.fecha_hasta).slice(0, 10)}</td>
                   <td>{d.motivo ?? "—"}</td>
-                  <td><button className="boton-secundario" style={{ width: "auto" }} onClick={() => eliminar(d.id_delegacion)}>Eliminar</button></td>
+                  <td>
+                    <BotonIcono
+                      variante="peligro"
+                      icono={<Trash2 size={13} />}
+                      titulo="Eliminar delegación"
+                      ariaLabel="Eliminar delegación"
+                      onClick={() => eliminar(d.id_delegacion)}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>

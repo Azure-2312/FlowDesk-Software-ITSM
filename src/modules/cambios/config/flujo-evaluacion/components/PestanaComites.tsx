@@ -240,7 +240,7 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <h2 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 4px 0" }}>
-            1.3.3.3.4 Comités Colegiados: CAB y ECAB
+            Comités Colegiados: CAB y ECAB
           </h2>
           <p style={{ fontSize: "0.85rem", color: "#64748b", margin: 0 }}>
             Gobernanza del Change Advisory Board (CAB) y Emergency CAB: composición, quórum, reglas de voto y agendas.

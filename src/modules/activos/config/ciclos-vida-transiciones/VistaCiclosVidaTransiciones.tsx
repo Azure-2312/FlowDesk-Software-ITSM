@@ -35,37 +35,37 @@ const PESTANAS: PestanaMetadata[] = [
   {
     id: "ciclos_estados",
     numero: "1.5.2.1",
-    titulo: "1.5.2.1 Ciclos de vida y estados",
+    titulo: "Ciclos de vida y estados",
     descripcion: "Ciclos autorizados, tipos de estado ITIL, flags de inventario físico, disponibilidad CMDB y soporte en incidentes."
   },
   {
     id: "transiciones_reglas",
     numero: "1.5.2.2",
-    titulo: "1.5.2.2 Transiciones y reglas",
+    titulo: "Transiciones y reglas",
     descripcion: "Matriz de transiciones, grafo SVG interactivo, condiciones previas, aprobaciones y automatizaciones de estado."
   },
   {
     id: "asignacion_custodia",
     numero: "1.5.2.3",
-    titulo: "1.5.2.3 Asignación, custodia y devolución",
+    titulo: "Asignación, custodia y devolución",
     descripcion: "Custodio único inmutable, límites por colaborador, aceptación digital, actas y checklist de devolución."
   },
   {
     id: "adquisicion_recepcion",
     numero: "1.5.2.4",
-    titulo: "1.5.2.4 Adquisición y recepción",
-    descripcion: "Vínculo con solicitudes de servicio (1.2.2), datos de compra y formulario de recepción física por escaneo."
+    titulo: "Adquisición y recepción",
+    descripcion: "Vínculo con solicitudes de servicio, datos de compra y formulario de recepción física por escaneo."
   },
   {
     id: "mantenimiento_fin_vida",
     numero: "1.5.2.5",
-    titulo: "1.5.2.5 Mantenimiento y fin de vida",
+    titulo: "Mantenimiento y fin de vida",
     descripcion: "Planes preventivos con emisión de RFCs estándar, cálculo de garantías y anticipación de obsolescencia (EOL/EOS)."
   },
   {
     id: "baja_disposicion",
     numero: "1.5.2.6",
-    titulo: "1.5.2.6 Baja y disposición",
+    titulo: "Baja y disposición",
     descripcion: "Motivos autorizados, borrado seguro obligatorio (ISO 27001), bloqueos de integridad y actas patrimoniales."
   }
 ];
@@ -370,7 +370,7 @@ export default function CiclosVidaTransicionesPage() {
         const text = await file.text();
         const json = JSON.parse(text);
         if (json.modulo !== "activos_y_cmdb" || json.pantalla !== "1.5.2") {
-          alert("El archivo JSON no corresponde a la configuración de Ciclos y Transiciones (Pantalla 1.5.2).");
+          alert("El archivo JSON no corresponde a la configuración de Ciclos y Transiciones.");
           return;
         }
         if (json.configuracion) {
@@ -424,13 +424,13 @@ export default function CiclosVidaTransicionesPage() {
       {/* 1. Breadcrumb */}
       <div className="bg-white border-b border-slate-200 px-6 py-2.5 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex items-center space-x-2">
-          <Link href="/admin" className="hover:text-indigo-600 transition-colors">
+          <Link href="/plataforma/operacion/paneles/administrador" className="hover:text-indigo-600 transition-colors">
             Configuración
           </Link>
           <span>&gt;</span>
           <span className="text-slate-600">Activos y CMDB</span>
           <span>&gt;</span>
-          <span className="text-slate-600 font-semibold">1.5.2 Ciclos de vida y transiciones</span>
+          <span className="text-slate-600 font-semibold">Ciclos de vida y transiciones</span>
           <span>&gt;</span>
           <span className="text-indigo-600 font-bold">{pestanaInfo.titulo}</span>
         </div>

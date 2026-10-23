@@ -131,7 +131,7 @@ export function PestanaAdquisicionRecepcion({ datos, onChange, bloqueado }: Prop
       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            1.5.2.4 Adquisición y recepción de activos
+            Adquisición y recepción de activos
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Interacción entre solicitudes de servicio del catálogo ITSM (1.2.2), órdenes de compra y el alta física por lotes.

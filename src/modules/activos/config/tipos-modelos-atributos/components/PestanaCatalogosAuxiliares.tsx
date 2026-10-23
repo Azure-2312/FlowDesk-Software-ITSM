@@ -368,7 +368,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h3 className="text-base font-bold text-slate-800">
-              1.5.1.7 Listas y catálogos auxiliares de activos
+              Listas y catálogos auxiliares de activos
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               Administración de listas maestras para normalización de datos en ciclo de vida, finanzas y auditoría.

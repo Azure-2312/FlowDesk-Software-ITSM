@@ -44,7 +44,7 @@ const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion
   },
   comites: {
     numero: "1.3.3.3.4",
-    titulo: "1.3.3.3.4 Comités (CAB y ECAB)",
+    titulo: "Comités (CAB y ECAB)",
     descripcion: "Gobernanza del Change Advisory Board y Emergency CAB: miembros, quórum, desempate y agendas."
   },
   plazos_escalamiento: {

@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, Trash2 } from "@/shared/components/ui/Iconos";
 
 export interface ReglaEscalamiento {
   id_escalamiento: number;
@@ -202,27 +204,29 @@ export const PestanaEscalamiento: React.FC<PestanaEscalamientoProps> = ({
                     {r.activa ? "Activa" : "Inactiva"}
                   </button>
                 </td>
-                <td className="py-3 px-4 text-right space-x-1.5">
-                  <button
-                    type="button"
-                    onClick={() => abrirEditar(r)}
-                    disabled={!puedeEditar}
-                    className="px-2 py-0.5 text-[11px] font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (confirm(`¿Eliminar la regla '${r.nombre}'?`)) {
-                        onEliminarRegla(r.id_escalamiento);
-                      }
-                    }}
-                    disabled={!puedeEditar}
-                    className="px-2 py-0.5 text-[11px] font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 rounded"
-                  >
-                    Eliminar
-                  </button>
+                <td className="py-3 px-4 text-right">
+                  <div className="flex items-center justify-end gap-1.5">
+                    <BotonIcono
+                      variante="normal"
+                      icono={<Edit2 size={13} />}
+                      titulo={`Editar regla "${r.nombre}"`}
+                      ariaLabel={`Editar regla "${r.nombre}"`}
+                      disabled={!puedeEditar}
+                      onClick={() => abrirEditar(r)}
+                    />
+                    <BotonIcono
+                      variante="peligro"
+                      icono={<Trash2 size={13} />}
+                      titulo={`Eliminar regla "${r.nombre}"`}
+                      ariaLabel={`Eliminar regla "${r.nombre}"`}
+                      disabled={!puedeEditar}
+                      onClick={() => {
+                        if (confirm(`¿Eliminar la regla '${r.nombre}'?`)) {
+                          onEliminarRegla(r.id_escalamiento);
+                        }
+                      }}
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

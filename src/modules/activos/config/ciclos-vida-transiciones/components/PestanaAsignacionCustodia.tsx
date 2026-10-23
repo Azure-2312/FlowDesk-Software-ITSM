@@ -151,7 +151,7 @@ export function PestanaAsignacionCustodia({ datos, onChange, bloqueado }: Props)
       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            1.5.2.3 Asignación, custodia y devolución
+            Asignación, custodia y devolución
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Gobierna la responsabilidad unipersonal de custodia, aceptación digital, actas y checklist de devolución.

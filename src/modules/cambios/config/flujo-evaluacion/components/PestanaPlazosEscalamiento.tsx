@@ -165,7 +165,7 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <h2 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 4px 0" }}>
-            1.3.3.3.5 Plazos Operativos y Reglas de Escalamiento
+            Plazos Operativos y Reglas de Escalamiento
           </h2>
           <p style={{ fontSize: "0.85rem", color: "#64748b", margin: 0 }}>
             Tiempos máximos de respuesta, evaluación y autorización por prioridad, y protocolos de alerta y escalamiento jerárquico.

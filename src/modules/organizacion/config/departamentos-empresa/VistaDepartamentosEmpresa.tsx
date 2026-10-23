@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { validarCodigo, validarTexto } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2 } from "@/shared/components/ui/Iconos";
 
 type Departamento = {
   id_departamento_empresa: number;
@@ -211,12 +213,29 @@ export default function DepartamentosEmpresa() {
                   <td>{d.codigo}</td>
                   <td>{d.nombre}</td>
                   <td>{d.colaboradores}</td>
-                  <td>{d.estado_registro ? "Activo" : "Inactivo"}</td>
                   <td>
-                    <button className="boton-secundario" onClick={() => editar(d)}>Editar</button>{" "}
-                    <button className="boton-secundario" onClick={() => alternar(d)}>
-                      {d.estado_registro ? "Inactivar" : "Activar"}
-                    </button>
+                    <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${d.estado_registro ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-500"}`}>
+                      {d.estado_registro ? "Activo" : "Inactivo"}
+                    </span>
+                  </td>
+                  <td>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <BotonIcono
+                        variante="normal"
+                        icono={<Edit2 size={13} />}
+                        titulo={`Editar departamento "${d.nombre}"`}
+                        ariaLabel={`Editar departamento "${d.nombre}"`}
+                        onClick={() => editar(d)}
+                      />
+                      <button
+                        type="button"
+                        className="boton-mini"
+                        style={{ padding: "4px 8px", fontSize: 11.5 }}
+                        onClick={() => alternar(d)}
+                      >
+                        {d.estado_registro ? "Inactivar" : "Activar"}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

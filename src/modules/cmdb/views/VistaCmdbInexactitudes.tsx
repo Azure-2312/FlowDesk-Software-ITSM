@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Check, X, RefreshCw } from "@/shared/components/ui/Iconos";
 
 interface Inexactitud {
   id_inexactitud: number;
@@ -172,10 +174,37 @@ export default function VistaCmdbInexactitudes() {
                   <td>{i.reporta_nombre ?? "—"}</td>
                   <td>{fechaHora(i.fecha_creacion)}</td>
                   <td>
-                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                      {["REPORTADA", "EN_PROCESO"].includes(i.estado) && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => resolver(i.id_inexactitud, "EN_PROCESO")}>En proceso</button>}
-                      {i.estado !== "RESUELTA" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => resolver(i.id_inexactitud, "RESUELTA")}>Resolver</button>}
-                      {i.estado !== "DESCARTADA" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => resolver(i.id_inexactitud, "DESCARTADA")}>Descartar</button>}
+                    <div style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
+                      {["REPORTADA", "EN_PROCESO"].includes(i.estado) && (
+                        <BotonIcono
+                          variante="primario"
+                          icono={<RefreshCw size={13} />}
+                          titulo="Marcar en proceso"
+                          ariaLabel="Marcar en proceso"
+                          disabled={procesando}
+                          onClick={() => resolver(i.id_inexactitud, "EN_PROCESO")}
+                        />
+                      )}
+                      {i.estado !== "RESUELTA" && (
+                        <BotonIcono
+                          variante="exito"
+                          icono={<Check size={13} />}
+                          titulo="Resolver inexactitud"
+                          ariaLabel="Resolver inexactitud"
+                          disabled={procesando}
+                          onClick={() => resolver(i.id_inexactitud, "RESUELTA")}
+                        />
+                      )}
+                      {i.estado !== "DESCARTADA" && (
+                        <BotonIcono
+                          variante="peligro"
+                          icono={<X size={13} />}
+                          titulo="Descartar reporte"
+                          ariaLabel="Descartar reporte"
+                          disabled={procesando}
+                          onClick={() => resolver(i.id_inexactitud, "DESCARTADA")}
+                        />
+                      )}
                     </div>
                   </td>
                 </tr>

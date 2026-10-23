@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Edit2, Trash2 } from "@/shared/components/ui/Iconos";
 
 export interface EstadoProblema {
   id_estado: number;
@@ -234,35 +236,39 @@ export const PestanaEstados: React.FC<PestanaEstadosProps> = ({
                     {est.activo ? "Activo" : "Inactivo"}
                   </button>
                 </td>
-                <td className="py-3 px-3 text-right space-x-1.5">
-                  <button
-                    type="button"
-                    onClick={() => abrirEditar(est)}
-                    disabled={!puedeEditar}
-                    className="px-2 py-0.5 text-[11px] font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (est.es_sistema) {
-                        alert("Los estados institucionales no pueden ser eliminados.");
-                        return;
-                      }
-                      if ((est.usos_tickets || 0) > 0) {
-                        alert(`El estado '${est.nombre}' tiene tickets en curso. Solo puede ser desactivado.`);
-                        return;
-                      }
-                      if (confirm(`¿Eliminar permanentemente el estado '${est.nombre}'?`)) {
-                        onEliminarEstado(est.id_estado);
-                      }
-                    }}
-                    disabled={est.es_sistema || (est.usos_tickets || 0) > 0 || !puedeEditar}
-                    className="px-2 py-0.5 text-[11px] font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 disabled:opacity-30 rounded"
-                  >
-                    Eliminar
-                  </button>
+                <td className="py-3 px-3 text-right">
+                  <div className="flex items-center justify-end gap-1.5">
+                    <BotonIcono
+                      variante="normal"
+                      icono={<Edit2 size={13} />}
+                      titulo={`Editar estado "${est.nombre}"`}
+                      ariaLabel={`Editar estado "${est.nombre}"`}
+                      disabled={!puedeEditar}
+                      onClick={() => abrirEditar(est)}
+                    />
+                    {!est.es_sistema && (
+                      <BotonIcono
+                        variante="peligro"
+                        icono={<Trash2 size={13} />}
+                        titulo={`Eliminar estado "${est.nombre}"`}
+                        ariaLabel={`Eliminar estado "${est.nombre}"`}
+                        disabled={est.es_sistema || (est.usos_tickets || 0) > 0 || !puedeEditar}
+                        onClick={() => {
+                          if (est.es_sistema) {
+                            alert("Los estados institucionales no pueden ser eliminados.");
+                            return;
+                          }
+                          if ((est.usos_tickets || 0) > 0) {
+                            alert(`El estado '${est.nombre}' tiene tickets en curso. Solo puede ser desactivado.`);
+                            return;
+                          }
+                          if (confirm(`¿Eliminar permanentemente el estado '${est.nombre}'?`)) {
+                            onEliminarEstado(est.id_estado);
+                          }
+                        }}
+                      />
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
