@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { PerfilConOpciones, OpcionMenuAdmin } from "@/types";
+import VistaConfigPermisos from "@/modules/identidades/config/permisos/VistaConfigPermisos";
 
 interface FormularioPerfil {
   id_perfil: number | null;
@@ -24,6 +25,7 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
   const [opcionesMenu, setOpcionesMenu] = useState<OpcionMenuAdmin[]>([]);
   const [cargando, setCargando] = useState(true);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [vista, setVista] = useState<"perfiles" | "capacidades">("perfiles");
   const [formulario, setFormulario] = useState<FormularioPerfil>(FORMULARIO_VACIO);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -487,6 +489,8 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
             </div>
           </form>
         </div>
+      ) : vista === "capacidades" ? (
+        <VistaConfigPermisos onVolver={() => setVista("perfiles")} />
       ) : (
         /* VISTA DE TABLA PRINCIPAL DE PERFILES */
         <div>
@@ -497,11 +501,20 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
                 Catálogo de roles del sistema, asignación de permisos de acceso a las opciones del menú y gobierno de privilegios.
               </p>
             </div>
-            {!soloLectura && (
-              <button className="boton-primario" style={{ width: "auto", padding: "8px 16px", fontSize: 13 }} onClick={abrirFormularioNuevo}>
-                + Nuevo perfil
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <button
+                className="boton-secundario"
+                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
+                onClick={() => setVista("capacidades")}
+              >
+                Matriz de capacidades
               </button>
-            )}
+              {!soloLectura && (
+                <button className="boton-primario" style={{ width: "auto", padding: "8px 16px", fontSize: 13 }} onClick={abrirFormularioNuevo}>
+                  + Nuevo perfil
+                </button>
+              )}
+            </div>
           </div>
 
           {cargando ? (
