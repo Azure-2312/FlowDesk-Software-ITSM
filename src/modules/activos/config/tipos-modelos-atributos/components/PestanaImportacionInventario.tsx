@@ -213,7 +213,7 @@ export function PestanaImportacionInventario({ datos, onChange, bloqueado }: Pro
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h3 className="text-base font-bold text-slate-800">
-              1.5.1.9 Importación masiva e inventario físico de activos
+              Importación masiva e inventario físico de activos
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               Gobernanza de plantillas de carga masiva, validación previa en seco (Dry Run) y campañas de conteo físico periódico.

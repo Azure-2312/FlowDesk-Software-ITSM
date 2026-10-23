@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Trash2 } from "@/shared/components/ui/Iconos";
 
 interface Recurso {
   id_recurso: number;
@@ -130,7 +132,15 @@ export default function VistaRecursosEquipo() {
                   <td>{r.nombre}</td>
                   <td>{r.contenido?.detalle ?? "—"}</td>
                   <td>{r.creador_nombre ?? "—"}</td>
-                  <td><button className="boton-secundario" style={{ width: "auto" }} onClick={() => eliminar(r.id_recurso)}>Eliminar</button></td>
+                  <td>
+                    <BotonIcono
+                      variante="peligro"
+                      icono={<Trash2 size={13} />}
+                      titulo="Eliminar recurso"
+                      ariaLabel="Eliminar recurso"
+                      onClick={() => eliminar(r.id_recurso)}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -317,7 +317,7 @@ export default function PaginaMisTicketsAsignados() {
             Revisa la bandeja de pendientes de tu grupo para tomar nuevos casos para atender.
           </p>
           <Link
-            href="/plataforma/perfiles/tecnico/mesa/pendientes"
+            href="/plataforma/tickets/mesa/pendientes"
             style={{
               display: "inline-block",
               padding: "8px 16px",

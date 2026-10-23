@@ -121,8 +121,11 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
             type="button"
             className="boton-mini"
             onClick={() => {
-              setSoloObligatorios(!soloObligatorios);
-              setSoloObligatorios(false);
+              setSoloObligatorios((prev) => {
+                const next = !prev;
+                if (next) setSoloOcultos(false);
+                return next;
+              });
             }}
             style={{
               backgroundColor: soloObligatorios ? "#eff6ff" : "#ffffff",
@@ -136,8 +139,11 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
             type="button"
             className="boton-mini"
             onClick={() => {
-              setSoloOcultos(!soloOcultos);
-              setSoloObligatorios(false);
+              setSoloOcultos((prev) => {
+                const next = !prev;
+                if (next) setSoloObligatorios(false);
+                return next;
+              });
             }}
             style={{
               backgroundColor: soloOcultos ? "#fee2e2" : "#ffffff",
@@ -281,8 +287,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
             display: "flex",
             flexDirection: "column",
             gap: 14,
-            maxHeight: 740,
-            overflowY: "auto",
+            minHeight: 600,
             paddingRight: 4,
           }}
         >
@@ -294,7 +299,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                 borderRadius: 8,
                 border: "1px solid #e2e8f0",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                overflow: "hidden",
+                overflow: "visible",
               }}
             >
               {/* Cabecera de la Sección */}
@@ -469,8 +474,9 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
             display: "flex",
             flexDirection: "column",
             gap: 12,
-            maxHeight: 740,
-            overflowY: "auto",
+            position: "sticky",
+            top: 16,
+            alignSelf: "start",
           }}
         >
           {campoActivo && seccionActiva ? (
@@ -553,7 +559,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                     style={{ width: "100%", fontSize: 12 }}
                   >
                     <option value="si">Siempre Obligatorio</option>
-                    <option value="segun_tipo">Según Tipo de Cambio (Matriz 1.3.3.2.1)</option>
+                    <option value="segun_tipo">Según Tipo de Cambio</option>
                     <option value="condicional">Condicional (Reglas dinámicas)</option>
                     <option value="no">Opcional</option>
                   </select>

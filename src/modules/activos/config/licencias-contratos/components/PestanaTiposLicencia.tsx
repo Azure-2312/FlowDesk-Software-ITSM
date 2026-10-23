@@ -131,7 +131,7 @@ export function PestanaTiposLicencia({ datos, onChange, bloqueado }: Props) {
       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            1.5.3.1 Tipos de licencia, métricas de consumo y catálogo de software
+            Tipos de licencia, métricas de consumo y catálogo de software
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Definición de esquemas de derechos de software (SAM), métricas de cómputo y políticas de autorización de productos.

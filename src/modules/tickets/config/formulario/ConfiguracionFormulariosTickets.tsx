@@ -2,6 +2,8 @@
 
 import { useEffect, useState, Suspense, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { BotonIcono } from "@/shared/components/ui/BotonIcono";
+import { Trash2 } from "@/shared/components/ui/Iconos";
 
 interface PrioridadUsuario {
   id: number;
@@ -642,146 +644,121 @@ function ContenidoConfiguracionFormularios({ tipoFijo }: { tipoFijo?: "incidente
                       key={campo.id}
                       style={{
                         display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "9px 12px",
+                        flexDirection: "column",
+                        padding: "12px 14px",
                         borderRadius: 8,
                         border: `1px solid ${campo.habilitado ? "#cbd5e1" : "#e2e8f0"}`,
                         backgroundColor: campo.habilitado ? "#ffffff" : "#f8fafc",
-                        boxShadow: campo.habilitado ? "0 1px 2px rgba(0,0,0,0.02)" : "none",
-                        gap: 10,
-                        opacity: campo.habilitado ? 1 : 0.65,
+                        boxShadow: campo.habilitado ? "0 1px 3px rgba(0,0,0,0.03)" : "none",
+                        gap: 8,
+                        opacity: campo.habilitado ? 1 : 0.7,
                         transition: "all 0.15s ease",
                       }}
                     >
-                      {/* 1. Nombre y debajo descripción breve */}
-                      <div style={{ flex: 1, minWidth: 160 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                      {/* Fila 1: Título, tipo, badge de personalizado y botón eliminar */}
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", flex: 1 }}>
                           <strong style={{ fontSize: 13, color: "#0f172a" }}>
                             {campo.etiqueta}
                           </strong>
-                          <span style={{ fontSize: 10.5, padding: "1px 5px", borderRadius: 4, backgroundColor: "#f1f5f9", color: "#475569", fontWeight: 600 }}>
+                          <span style={{ fontSize: 10.5, padding: "1px 6px", borderRadius: 4, backgroundColor: "#f1f5f9", color: "#475569", fontWeight: 600 }}>
                             {campo.tipo}
                           </span>
                           {campo.es_personalizado && (
-                            <span style={{ fontSize: 10, padding: "1px 5px", borderRadius: 4, backgroundColor: "#eff6ff", color: "#2563eb", fontWeight: 700 }}>
+                            <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, backgroundColor: "#eff6ff", color: "#2563eb", fontWeight: 700 }}>
                               Personalizado
                             </span>
                           )}
                         </div>
-                        {campo.descripcion && (
-                          <div
-                            style={{
-                              fontSize: 11.5,
-                              color: "#64748b",
-                              marginTop: 2,
-                              lineHeight: 1.3,
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              maxWidth: 320,
-                            }}
-                            title={campo.descripcion}
-                          >
-                            {campo.descripcion}
-                          </div>
-                        )}
+                        <BotonIcono
+                          variante="peligro"
+                          icono={<Trash2 size={13} />}
+                          titulo={`Eliminar campo "${campo.etiqueta}"`}
+                          ariaLabel={`Eliminar campo "${campo.etiqueta}"`}
+                          onClick={() => eliminarCampo(campo.id, campo.etiqueta)}
+                        />
                       </div>
 
-                      {/* 2. Check para habilitarlo */}
-                      <label
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 5,
-                          fontSize: 12,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                          color: campo.habilitado ? "#1e40af" : "#94a3b8",
-                          userSelect: "none",
-                          whiteSpace: "nowrap",
-                        }}
-                        title={campo.habilitado ? "Campo habilitado para el solicitante" : "Campo deshabilitado"}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={campo.habilitado}
-                          onChange={() => togglePropiedadCampo(campo.id, "habilitado")}
-                          style={{ width: 16, height: 16, accentColor: "#2563eb", cursor: "pointer" }}
-                        />
-                        <span>{campo.habilitado ? "Habilitado" : "Inactivo"}</span>
-                      </label>
+                      {/* Descripción si existe */}
+                      {campo.descripcion && (
+                        <div style={{ fontSize: 11.5, color: "#64748b", lineHeight: 1.4 }}>
+                          {campo.descripcion}
+                        </div>
+                      )}
 
-                      {/* 3. Botón de obligatorio u opcional */}
-                      <button
-                        type="button"
-                        disabled={!campo.habilitado}
-                        onClick={() => togglePropiedadCampo(campo.id, "obligatorio")}
-                        style={{
-                          border: `1px solid ${campo.obligatorio ? "#fca5a5" : "#cbd5e1"}`,
-                          backgroundColor: !campo.habilitado ? "#f1f5f9" : campo.obligatorio ? "#fef2f2" : "#ffffff",
-                          color: !campo.habilitado ? "#94a3b8" : campo.obligatorio ? "#dc2626" : "#475569",
-                          padding: "4px 10px",
-                          borderRadius: 6,
-                          fontSize: 11.5,
-                          fontWeight: 600,
-                          cursor: campo.habilitado ? "pointer" : "not-allowed",
-                          whiteSpace: "nowrap",
-                          transition: "all 0.15s ease",
-                        }}
-                        title="Haga clic para alternar entre obligatorio y opcional"
-                      >
-                        {campo.obligatorio ? "Obligatorio" : "Opcional"}
-                      </button>
+                      {/* Fila 2: Controles de habilitado, obligatoriedad y prioridad mínima */}
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, paddingTop: 6, borderTop: "1px dashed #f1f5f9" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          {/* Check para habilitarlo */}
+                          <label
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 6,
+                              fontSize: 12,
+                              fontWeight: 600,
+                              cursor: "pointer",
+                              color: campo.habilitado ? "#1e40af" : "#94a3b8",
+                              userSelect: "none",
+                            }}
+                            title={campo.habilitado ? "Campo habilitado para el solicitante" : "Campo deshabilitado"}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={campo.habilitado}
+                              onChange={() => togglePropiedadCampo(campo.id, "habilitado")}
+                              style={{ width: 15, height: 15, accentColor: "#2563eb", cursor: "pointer" }}
+                            />
+                            <span>{campo.habilitado ? "Habilitado" : "Inactivo"}</span>
+                          </label>
 
-                      {/* 4. Lista desplegable con las prioridades para escoger la mínima requerida */}
-                      <select
-                        className="input-base"
-                        disabled={!campo.habilitado}
-                        value={prioridadMin}
-                        onChange={(e) => cambiarPrioridadMinima(campo.id, parseInt(e.target.value, 10))}
-                        style={{
-                          fontSize: 11.5,
-                          padding: "3px 8px",
-                          height: 30,
-                          backgroundColor: campo.habilitado ? "#ffffff" : "#f1f5f9",
-                          cursor: campo.habilitado ? "pointer" : "not-allowed",
-                          maxWidth: 180,
-                        }}
-                        title="Prioridad mínima requerida del solicitante para ver este campo"
-                      >
-                        <option value={5}>Mínimo: Estándar (Todos)</option>
-                        <option value={4}>Mínimo: Operativa o sup.</option>
-                        <option value={3}>Mínimo: Preferente (Jefes)</option>
-                        <option value={2}>Mínimo: Ejecutiva (Gerentes)</option>
-                        <option value={1}>Solo VIP</option>
-                      </select>
+                          {/* Botón de obligatorio u opcional */}
+                          <button
+                            type="button"
+                            disabled={!campo.habilitado}
+                            onClick={() => togglePropiedadCampo(campo.id, "obligatorio")}
+                            style={{
+                              border: `1px solid ${campo.obligatorio ? "#fca5a5" : "#cbd5e1"}`,
+                              backgroundColor: !campo.habilitado ? "#f1f5f9" : campo.obligatorio ? "#fef2f2" : "#ffffff",
+                              color: !campo.habilitado ? "#94a3b8" : campo.obligatorio ? "#dc2626" : "#475569",
+                              padding: "3px 8px",
+                              borderRadius: 5,
+                              fontSize: 11,
+                              fontWeight: 600,
+                              cursor: campo.habilitado ? "pointer" : "not-allowed",
+                              transition: "all 0.15s ease",
+                            }}
+                            title="Alternar entre obligatorio y opcional"
+                          >
+                            {campo.obligatorio ? "Obligatorio" : "Opcional"}
+                          </button>
+                        </div>
 
-                      {/* 5. Botón de tacho de basura para borrar */}
-                      <button
-                        type="button"
-                        onClick={() => eliminarCampo(campo.id, campo.etiqueta)}
-                        style={{
-                          background: "#fef2f2",
-                          border: "1px solid #fecaca",
-                          color: "#dc2626",
-                          padding: "5px 8px",
-                          borderRadius: 6,
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          transition: "all 0.15s ease",
-                        }}
-                        title={`Eliminar campo "${campo.etiqueta}"`}
-                      >
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6"></polyline>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                          <line x1="10" y1="11" x2="10" y2="17"></line>
-                          <line x1="14" y1="11" x2="14" y2="17"></line>
-                        </svg>
-                      </button>
+                        {/* Selector de prioridad mínima */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <span style={{ fontSize: 11, color: "#64748b", whiteSpace: "nowrap" }}>Visible desde:</span>
+                          <select
+                            className="input-base"
+                            disabled={!campo.habilitado}
+                            value={prioridadMin}
+                            onChange={(e) => cambiarPrioridadMinima(campo.id, parseInt(e.target.value, 10))}
+                            style={{
+                              fontSize: 11,
+                              padding: "2px 6px",
+                              height: 28,
+                              backgroundColor: campo.habilitado ? "#ffffff" : "#f1f5f9",
+                              cursor: campo.habilitado ? "pointer" : "not-allowed",
+                            }}
+                            title="Prioridad mínima requerida del solicitante para ver este campo"
+                          >
+                            <option value={5}>Estándar (Todos)</option>
+                            <option value={4}>Operativa o superior</option>
+                            <option value={3}>Preferente (Jefes)</option>
+                            <option value={2}>Ejecutiva (Gerentes)</option>
+                            <option value={1}>Solo VIP</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}

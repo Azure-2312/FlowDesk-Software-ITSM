@@ -128,7 +128,7 @@ export function PestanaTiposContrato({ datos, onChange, bloqueado }: Props) {
       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            1.5.3.2 Tipos de contrato y catálogos de proveedores
+            Tipos de contrato y catálogos de proveedores
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Configuración de modalidades contractuales TI, preavisos de no renovación y estados de evaluación de proveedores.

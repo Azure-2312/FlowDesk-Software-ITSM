@@ -252,7 +252,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
           <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-            1.3.4.3.1 Creación automática de problemas por umbral
+            Creación automática de problemas por umbral
           </h2>
           <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
             Detecta clusters de incidentes recurrentes y genera proactivamente problemas o sugerencias de investigación antes de que escalen a fallas mayores.

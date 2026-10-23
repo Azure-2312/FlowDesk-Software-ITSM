@@ -35,37 +35,37 @@ const PESTANAS: PestanaMetadata[] = [
   {
     id: "clases_ci",
     numero: "1.5.4.1",
-    titulo: "1.5.4.1 Clases de CI",
+    titulo: "Clases de CI",
     descripcion: "Clases físicas y lógicas de la CMDB, atributos obligatorios por clase, relaciones mínimas y participación en tickets."
   },
   {
     id: "tipos_relacion",
     numero: "1.5.4.2",
-    titulo: "1.5.4.2 Tipos de relación",
+    titulo: "Tipos de relación",
     descripcion: "Catálogo de relaciones topológicas ITIL, dirección de propagación de fallos, matriz de clases permitidas y simulador."
   },
   {
     id: "criticidad_entornos",
     numero: "1.5.4.3",
-    titulo: "1.5.4.3 Criticidad y entornos",
+    titulo: "Criticidad y entornos",
     descripcion: "Escala de criticidad con RTO/RPO, motor de cálculo de criticidad efectiva por topología y entornos operacionales."
   },
   {
     id: "reglas_integridad",
     numero: "1.5.4.4",
-    titulo: "1.5.4.4 Reglas de integridad",
+    titulo: "Reglas de integridad",
     descripcion: "Controles de coherencia topológica, prevención de CI huérfanos, validación de ciclos y diagnóstico en vivo."
   },
   {
     id: "fuentes_atributos_protegidos",
     numero: "1.5.4.5",
-    titulo: "1.5.4.5 Fuentes y atributos protegidos",
+    titulo: "Fuentes y atributos protegidos",
     descripcion: "Jerarquía de fuentes de datos autorizadas, reconciliación y bloqueo de modificaciones sin cambio formal (RFC)."
   },
   {
     id: "auditoria_lineas_base",
     numero: "1.5.4.6",
-    titulo: "1.5.4.6 Auditoría de CMDB y líneas base",
+    titulo: "Auditoría de CMDB y líneas base",
     descripcion: "Campañas de verificación de exactitud, metas institucionales y snapshots inmutables para comparación histórica."
   }
 ];
@@ -397,15 +397,15 @@ export default function CmdbRelacionesConfigPage() {
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="flex items-center space-x-2 text-xs text-slate-500 mb-2">
-            <Link href="/admin" className="hover:text-slate-800">
+            <Link href="/plataforma/operacion/paneles/administrador" className="hover:text-slate-800">
               Administración
             </Link>
             <span>/</span>
-            <Link href="/admin/activos-config/tipos-modelos-atributos" className="hover:text-slate-800">
+            <Link href="/plataforma/activos/configuracion/tipos-modelos-atributos" className="hover:text-slate-800">
               Activos y CMDB
             </Link>
             <span>/</span>
-            <span className="text-slate-800 font-semibold">1.5.4 Tipos de CI y relaciones de CMDB</span>
+            <span className="text-slate-800 font-semibold">Tipos de CI y relaciones de CMDB</span>
           </nav>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
@@ -418,39 +418,39 @@ export default function CmdbRelacionesConfigPage() {
               </p>
             </div>
 
-            {/* Accesos directos a las pantallas del Módulo 1.5 */}
+            {/* Accesos directos a las pantallas del Módulo Activos y CMDB */}
             <div className="flex items-center gap-1.5 overflow-x-auto py-1">
               <Link
-                href="/admin/activos-config/tipos-modelos-atributos"
+                href="/plataforma/activos/configuracion/tipos-modelos-atributos"
                 className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
               >
-                1.5.1 Tipos y Modelos
+                Tipos y Modelos
               </Link>
               <Link
-                href="/admin/activos-config/ciclos-vida-transiciones"
+                href="/plataforma/activos/configuracion/ciclos-vida-transiciones"
                 className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
               >
-                1.5.2 Ciclos de Vida
+                Ciclos de Vida
               </Link>
               <Link
-                href="/admin/activos-config/licencias-contratos"
+                href="/plataforma/activos/configuracion/licencias-contratos"
                 className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
               >
-                1.5.3 Licencias y Contratos
+                Licencias y Contratos
               </Link>
               <span className="px-2.5 py-1 text-xs rounded border border-indigo-300 bg-indigo-50 text-indigo-700 font-semibold">
-                1.5.4 Relaciones CMDB
+                Relaciones CMDB
               </span>
               <span className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
-                1.5.5 Integridad CMDB
+                Integridad CMDB
               </span>
               <span className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
-                1.5.6 Auditoría
+                Auditoría
               </span>
             </div>
           </div>
 
-          {/* Barra de Pestañas (1.5.4.1 a 1.5.4.6) */}
+          {/* Barra de Pestañas sin números */}
           <div className="flex space-x-1 border-b border-slate-200 mt-6 overflow-x-auto">
             {PESTANAS.map((pestana) => {
               const activa = tabActiva === pestana.id;
@@ -458,14 +458,13 @@ export default function CmdbRelacionesConfigPage() {
                 <button
                   key={pestana.id}
                   onClick={() => cambiarTab(pestana.id)}
-                  className={`py-2.5 px-3.5 text-xs font-semibold whitespace-nowrap border-b-2 transition-colors ${
+                  className={`py-2.5 px-4 text-xs font-semibold whitespace-nowrap border-b-2 transition-colors ${
                     activa
                       ? "border-indigo-600 text-indigo-600 bg-indigo-50/50"
                       : "border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300"
                   }`}
                 >
-                  <span className="font-mono mr-1.5 opacity-75">{pestana.numero}</span>
-                  {pestana.titulo.split(" ").slice(1).join(" ")}
+                  {pestana.titulo}
                 </button>
               );
             })}

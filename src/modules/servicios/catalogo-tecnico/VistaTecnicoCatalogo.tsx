@@ -225,7 +225,7 @@ export default function PaginaCatalogoServicios() {
                 </span>
 
                 <Link
-                  href={`/plataforma/perfiles/tecnico/mesa/registrar?servicio=${s.id_servicio}`}
+                  href={`/plataforma/tickets/mesa/registrar?servicio=${s.id_servicio}`}
                   style={{
                     padding: "6px 12px",
                     backgroundColor: "#2563eb",

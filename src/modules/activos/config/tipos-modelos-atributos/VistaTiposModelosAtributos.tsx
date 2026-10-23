@@ -41,55 +41,55 @@ const PESTANAS: PestanaMetadata[] = [
   {
     id: "clases_tipos",
     numero: "1.5.1.1",
-    titulo: "1.5.1.1 Jerarquía de clases y tipos",
+    titulo: "Jerarquía de clases y tipos",
     descripcion: "Definición de clases, tipos subordinados, gobernanza de inventario, soporte y relación con Incidentes."
   },
   {
     id: "fabricantes_modelos",
     numero: "1.5.1.2",
-    titulo: "1.5.1.2 Fabricantes y modelos",
+    titulo: "Fabricantes y modelos",
     descripcion: "Catálogo de marcas certificadas, modelos homologados, garantías estándar y fechas de fin de soporte."
   },
   {
     id: "atributos",
     numero: "1.5.1.3",
-    titulo: "1.5.1.3 Atributos por tipo",
+    titulo: "Atributos por tipo",
     descripcion: "Esquema dinámico de especificaciones técnicas por clase y tipo con banderas de unicidad y confidencialidad."
   },
   {
     id: "formulario_activo",
     numero: "1.5.1.4",
-    titulo: "1.5.1.4 Formulario del activo",
+    titulo: "Formulario del activo",
     descripcion: "Estructura por secciones A-G, campos obligatorios condicionales, anchos de grilla y campos bloqueados."
   },
   {
     id: "codigo_etiquetas",
     numero: "1.5.1.5",
-    titulo: "1.5.1.5 Código de activo y etiquetas",
+    titulo: "Código de activo y etiquetas",
     descripcion: "Constructor del código patrimonial por tokens, alcance correlativo y diseño de etiquetas físicas con código QR."
   },
   {
     id: "ubicaciones",
     numero: "1.5.1.6",
-    titulo: "1.5.1.6 Ubicaciones",
+    titulo: "Ubicaciones",
     descripcion: "Jerarquía de 5 niveles (Sede > Edificio > Piso > Ambiente > Rack), capacidades U y trazabilidad de activos."
   },
   {
     id: "catalogos_auxiliares",
     numero: "1.5.1.7",
-    titulo: "1.5.1.7 Listas y catálogos auxiliares",
+    titulo: "Listas y catálogos auxiliares",
     descripcion: "Listas maestras para condición física, monedas base, adquisición, tipos de documento y centros de costo."
   },
   {
     id: "ficha_listado",
     numero: "1.5.1.8",
-    titulo: "1.5.1.8 Ficha del activo y listado",
-    descripcion: "Configuración de la cabecera fija (5.1), 11 pestañas de la ficha, panel lateral y columnas del inventario 7.1."
+    titulo: "Ficha del activo y listado",
+    descripcion: "Configuración de la cabecera fija, 11 pestañas de la ficha, panel lateral y columnas del inventario."
   },
   {
     id: "importacion_inventario",
     numero: "1.5.1.9",
-    titulo: "1.5.1.9 Importación e inventario físico",
+    titulo: "Importación e inventario físico",
     descripcion: "Perfiles de carga masiva, validación en seco (Dry Run), campañas de auditoría física y generación de actas."
   }
 ];
@@ -421,7 +421,7 @@ export default function TiposModelosAtributosPage({
         const text = await file.text();
         const json = JSON.parse(text);
         if (json.modulo !== "activos_y_cmdb" || json.pantalla !== "1.5.1") {
-          alert("El archivo JSON no corresponde a la configuración de Activos y CMDB (Pantalla 1.5.1).");
+          alert("El archivo JSON no corresponde a la configuración de Activos y CMDB.");
           return;
         }
         if (json.configuracion) {
@@ -475,13 +475,13 @@ export default function TiposModelosAtributosPage({
       {/* 1. Breadcrumb de navegación */}
       <div className="bg-white border-b border-slate-200 px-6 py-2.5 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex items-center space-x-2">
-          <Link href="/admin" className="hover:text-indigo-600 transition-colors">
+          <Link href="/plataforma/operacion/paneles/administrador" className="hover:text-indigo-600 transition-colors">
             Configuración
           </Link>
           <span>&gt;</span>
           <span className="text-slate-600">Activos y CMDB</span>
           <span>&gt;</span>
-          <span className="text-slate-600 font-semibold">1.5.1 Tipos, modelos y atributos</span>
+          <span className="text-slate-600 font-semibold">Tipos, modelos y atributos</span>
           <span>&gt;</span>
           <span className="text-indigo-600 font-bold">{pestanaInfo.titulo}</span>
         </div>

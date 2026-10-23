@@ -73,7 +73,7 @@ export function PestanaIncidentesVinculados({ config, onChange, onMarcarModifica
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div>
         <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-          1.3.4.3.2 Incidentes vinculados
+          Incidentes vinculados
         </h2>
         <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
           Regula cómo se asocian incidentes a un problema, la visibilidad de soluciones provisionales (workarounds) y el comportamiento al resolver o cerrar el problema.

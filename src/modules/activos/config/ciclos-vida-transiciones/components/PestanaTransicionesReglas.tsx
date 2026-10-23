@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { BotonIcono } from "@/shared/components/ui/BotonIcono";
-import { X } from "@/shared/components/ui/Iconos";
+import { X, Edit2, Trash2 } from "@/shared/components/ui/Iconos";
 
 export interface TransicionRegla {
   id: string;
@@ -184,7 +184,7 @@ export function PestanaTransicionesReglas({ datos, onChange, bloqueado }: Props)
       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            1.5.2.2 Transiciones y reglas de ciclo de vida
+            Transiciones y reglas de ciclo de vida
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Define las acciones de cambio de estado en la ficha del activo, autorizaciones, requisitos y automatizaciones.
@@ -295,21 +295,25 @@ export function PestanaTransicionesReglas({ datos, onChange, bloqueado }: Props)
                         {tr.automatizaciones.length} acciones
                       </span>
                     </td>
-                    <td className="py-2.5 px-3 text-right space-x-2">
-                      <button
-                        onClick={() => abrirEdicion(tr)}
-                        disabled={bloqueado}
-                        className="text-indigo-600 hover:text-indigo-800 font-semibold"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        onClick={() => eliminarTransicion(tr.id)}
-                        disabled={bloqueado}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        Eliminar
-                      </button>
+                    <td className="py-2.5 px-3 text-right">
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "flex-end" }}>
+                        <BotonIcono
+                          variante="primario"
+                          icono={<Edit2 size={13} />}
+                          titulo="Editar transición"
+                          ariaLabel={`Editar transición ${tr.nombre}`}
+                          onClick={() => abrirEdicion(tr)}
+                          disabled={bloqueado}
+                        />
+                        <BotonIcono
+                          variante="peligro"
+                          icono={<Trash2 size={13} />}
+                          titulo="Eliminar transición"
+                          ariaLabel={`Eliminar transición ${tr.nombre}`}
+                          onClick={() => eliminarTransicion(tr.id)}
+                          disabled={bloqueado}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))}

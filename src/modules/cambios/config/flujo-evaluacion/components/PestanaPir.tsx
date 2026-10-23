@@ -127,7 +127,7 @@ export const PestanaPir: React.FC<PestanaPirProps> = ({ snapshot, onChange, disa
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <h2 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 4px 0" }}>
-            1.3.3.3.8 Revisión Post-Implementación (PIR - Post-Implementation Review)
+            Revisión Post-Implementación (PIR - Post-Implementation Review)
           </h2>
           <p style={{ fontSize: "0.85rem", color: "#64748b", margin: 0 }}>
             Plantilla de evaluación posterior, ventana de observación de incidentes inducidos y matriz de exigencia normativa.

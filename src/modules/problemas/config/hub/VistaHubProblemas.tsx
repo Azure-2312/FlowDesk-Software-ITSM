@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { FileText, RefreshCw, Network } from "@/shared/components/ui/Iconos";
 
 export default function ProblemasHubPage() {
   return (
@@ -46,17 +47,18 @@ export default function ProblemasHubPage() {
         }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-              <span style={{
-                display: "inline-block",
-                padding: "3px 8px",
-                borderRadius: 4,
-                fontSize: 12,
-                fontWeight: 700,
+              <div style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
                 backgroundColor: "#dbeafe",
-                color: "#1e40af"
+                color: "#1e40af",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}>
-                1.3.3.1
-              </span>
+                <FileText size={16} />
+              </div>
               <h2 style={{ fontSize: 16, fontWeight: 700, margin: 0, color: "#0f172a" }}>
                 Configuración de formulario
               </h2>
@@ -78,7 +80,7 @@ export default function ProblemasHubPage() {
             className="boton-primario"
             style={{ textAlign: "center", textDecoration: "none", padding: "8px 16px", fontSize: 13 }}
           >
-            Abrir Configuración de Formulario →
+            Abrir Configuración de Formulario
           </Link>
         </div>
 
@@ -95,17 +97,18 @@ export default function ProblemasHubPage() {
         }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-              <span style={{
-                display: "inline-block",
-                padding: "3px 8px",
-                borderRadius: 4,
-                fontSize: 12,
-                fontWeight: 700,
+              <div style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
                 backgroundColor: "#e0e7ff",
-                color: "#3730a3"
+                color: "#3730a3",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}>
-                1.3.3.2
-              </span>
+                <RefreshCw size={16} />
+              </div>
               <h2 style={{ fontSize: 16, fontWeight: 700, margin: 0, color: "#0f172a" }}>
                 Flujo de investigación y seguimiento
               </h2>
@@ -129,7 +132,7 @@ export default function ProblemasHubPage() {
             className="boton-primario"
             style={{ textAlign: "center", textDecoration: "none", padding: "8px 16px", fontSize: 13 }}
           >
-            Abrir Flujo de Investigación →
+            Abrir Flujo de Investigación
           </Link>
         </div>
 
@@ -146,17 +149,18 @@ export default function ProblemasHubPage() {
         }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-              <span style={{
-                display: "inline-block",
-                padding: "3px 8px",
-                borderRadius: 4,
-                fontSize: 12,
-                fontWeight: 700,
+              <div style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
                 backgroundColor: "#fef3c7",
-                color: "#92400e"
+                color: "#92400e",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}>
-                1.3.3.3
-              </span>
+                <Network size={16} />
+              </div>
               <h2 style={{ fontSize: 16, fontWeight: 700, margin: 0, color: "#0f172a" }}>
                 Relaciones e integraciones
               </h2>
