@@ -1,9 +1,0 @@
-refactor(reportes): centraliza todos los reportes en el modulo reportes
-
-- Mueve las nueve pantallas de reportes (operativos, auditoria,
-  productividad, activos, cambios, decisiones, problemas, area y tableros)
-  a src/modules/reportes/views y publica el contrato en ui.ts.
-- Expone rutas completas /plataforma/reportes/* con guarda de menu y deja
-  las rutas anteriores como redirecciones.
-- Actualiza el menu (21175-21183), el seed y el alias /reportes.
-- Actualiza los enlaces de los paneles y del disenador de tableros.

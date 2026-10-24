@@ -996,3 +996,45 @@ Las directrices del negocio de soporte se ordenan siguiendo la jerarquia natural
 - **Razon de Negocio:** Preservar la integridad referencial y el rendimiento de la base de datos sin vulnerar requisitos legales o fiscales de conservacion de expedientes.
 - **Automatizacion en el Software:** La consola `/admin/mantenimiento-datos` implementa un flujo en dos fases (simulacion previa y confirmacion autenticada), registrando el resultado final de la purga en `log_auditoria_sistema` con sello inmutable.
 - **Roles Involucrados:** Administrador y Auditor.
+
+### [RN-42] Validación Estricta de CI y Trazabilidad CMDB en Cambios
+- **Directriz de Negocio:** Toda Solicitud de Cambio (RFC) que involucre infraestructura tecnológica debe asociarse obligatoriamente a un Elemento de Configuración (CI) activo y registrado en la CMDB. Al crearse el cambio, debe asentarse automáticamente un registro histórico en la trazabilidad de la CMDB.
+- **Razón de Negocio:** Cumplir con ITIL 4 Change Enablement conectada con Service Configuration Management, garantizando el no repudio y el historial completo de intervenciones sobre el parque tecnológico.
+- **Automatización en el Software:** `crearCambio` en `src/modules/cambios/services/cambiosService.ts` verifica la existencia de `id_ci_afectado` en `elemento_configuracion` e inserta un evento 'CAMBIO_APLICADO' en `cmdb_actualizacion`.
+- **Roles Involucrados:** Gestor de Cambios, Técnico y Gestor de Activos.
+
+### [RN-43] Prevención y Bloqueo de Solapamiento Horario en RFCs
+- **Directriz de Negocio:** Queda estrictamente prohibido programar o autorizar dos o más cambios concurrentes sobre el mismo Elemento de Configuración (CI) durante una misma ventana horaria.
+- **Razón de Negocio:** Evitar fallas catastróficas, conflictos operacionales e indisponibilidad imprevista provocada por intervenciones simultáneas de diferentes equipos sobre un mismo servidor, base de datos o servicio crítico.
+- **Automatización en el Software:** `crearCambio` evalúa colisiones temporales contra cambios en estados activos (3, 4, 5) para el mismo CI. Ante colisión, aborta la operación arrojando un error de dominio con código HTTP 409 Conflict y el código del cambio conflictivo.
+- **Roles Involucrados:** Gestor de Cambios y Aprobador (CAB).
+
+### [RN-44] Semáforo de Cumplimiento de Licencias SAM (Software Asset Management)
+- **Directriz de Negocio:** La asignación y uso de licencias de software debe ser monitoreada permanentemente mediante umbrales estandarizados de consumo: Superávit (< 80%), Límite (80% - 99%) y Déficit (>= 100%).
+- **Razón de Negocio:** Cumplimiento de la norma ISO/IEC 19770-1 (SAM) para evitar multas por sublicenciamiento o sobrecostos innecesarios por licencias ociosas.
+- **Automatización en el Software:** `VistaLicenciasActivos.tsx` renderiza insignias dinámicas calculadas automáticamente en base al ratio de licencias adquiridas versus licencias en uso.
+- **Roles Involucrados:** Gestor de Activos y Auditor.
+
+### [RN-45] Planificación Institucional de Turnos y Reemplazo Obligatorio de Técnicos
+- **Directriz de Negocio:** La cobertura de la mesa de servicio se organiza institucionalmente mediante turnos operativos (Mañana, Tarde, Noche, Guardia 24x7). Las ausencias programadas (vacaciones, licencias, permisos) requieren obligatoriamente la designación de un técnico de reemplazo calificado.
+- **Razón de Negocio:** Asegurar la continuidad ininterrumpida de los compromisos de atención SLA y la disponibilidad técnica de los grupos resolutores.
+- **Automatización en el Software:** El módulo de Organización implementa `/plataforma/organizacion/turnos-ausencias` conectado con las tablas `tecnico_turnos` y `tecnico_ausencias`, bloqueando la asignación de turnos a técnicos con ausencias activas.
+- **Roles Involucrados:** Supervisor y Administrador.
+
+### [RN-46] Blindaje RBAC Anti-Bloqueo de la Plataforma
+- **Directriz de Negocio:** Las operaciones sobre cuentas de usuario y asignación de roles deben garantizar que el sistema nunca quede acéfalo. Se prohíbe desactivar o retirar el rol de Administrador al último administrador activo, así como la auto-desactivación del usuario autenticado en sesión.
+- **Razón de Negocio:** Garantizar la gobernanza, seguridad y disponibilidad perpetua de la consola de administración del sistema.
+- **Automatización en el Software:** `usuarioDetalleService.ts` verifica antes de cualquier mutación de estado o roles la existencia de otro administrador activo en la base de datos, arrojando error de dominio si se vulnera la regla.
+- **Roles Involucrados:** Administrador y Auditor.
+
+### [RN-47] Segregación SoD del Administrador en la Mesa de Servicio
+- **Directriz de Negocio:** El Administrador es una entidad de gobierno y configuración, no un operador de mesa ni un cliente de autoservicio. Su interfaz no debe contener bandejas de "Mis incidentes" ni "Mis solicitudes".
+- **Razón de Negocio:** Mantener estricta segregación de funciones (SoD - ISO/IEC 27001), evitando que los administradores alteren métricas de atención o se asignen requerimientos operativos.
+- **Automatización en el Software:** Las opciones de menú de autoatención están desvinculadas del perfil 1 en `opciones_menu_perfiles`.
+- **Roles Involucrados:** Administrador y Auditor.
+
+### [RN-48] Reportabilidad Ejecutiva Consolidada y Exportación CSV
+- **Directriz de Negocio:** Los roles con atribuciones de supervisión, auditoría y jefatura departamental deben contar con un panel consolidado de KPIs gerenciales (cumplimiento global de SLA, tiempos medios de atención MTTR y distribución de carga) con capacidad de exportación tabular.
+- **Razón de Negocio:** Cumplir con las especificaciones de entrega HU-13 y HU-27 para la toma de decisiones basada en evidencia.
+- **Automatización en el Software:** Pantalla canónica `/plataforma/reportes/gerenciales` respaldada por controladores API dedicados y exportador en formato CSV (`reportesGerencialesCsv.ts`).
+- **Roles Involucrados:** Administrador, Supervisor, Gestor de Área y Auditor.

@@ -1,7 +1,7 @@
 # Menús, perfiles y cobertura — FlowDesk ITSM
 
 > **Documento canónico de navegación, roles y cobertura funcional.**
-> **Vigencia:** 2026-10-20.
+> **Vigencia:** 2026-10-23.
 > **Alcance:** los 10 perfiles oficiales, el catálogo único `opciones_menu`, la visibilidad N:M `opciones_menu_perfiles`, el árbol visible del sidebar y la cobertura frente a ITIL 4, ISO/IEC 20000-1, ISO/IEC 27001, ISO/IEC 19770-1 y COBIT 2019.
 > **Fuente autoritativa del árbol:** la captura generada desde la base el 2026-10-20 e incluida en la sección 5, con el colapso de carpetas de un solo hijo.
 > **Regla de precedencia:** si una matriz histórica contradice el árbol actual, **prevalece el árbol de la sección 5**. Las diferencias se señalan expresamente.
@@ -66,7 +66,7 @@ No es un inventario línea a línea de cada pestaña interna. La matriz exhausti
 | Fuente | Uso en este documento | Precedencia |
 | :--- | :--- | :--- |
 | Captura de la base (sección 5) | Árbol visible por perfil, con colapso de carpetas de un solo hijo. | **Máxima para el árbol.** |
-| `db/migrations/20261020_distribuir_configuracion_en_modulos.sql` | Distribución vigente: eliminó la raíz Configuración y reubicó sus pantallas; 227 opciones y 388 visibilidades. | Máxima para estructura y conteos. |
+| `db/migrations/20261020_distribuir_configuracion_en_modulos.sql` | Distribución vigente: eliminó la raíz Configuración y reubicó sus pantallas; 230 opciones y 388 visibilidades. | Máxima para estructura y conteos. |
 | `db/migrations/20261020_fase2_modulos_incidentes_solicitudes.sql` | Catálogo base de Incidentes y Solicitudes: 231 opciones y 394 visibilidades. | Alta para antecedentes. |
 | `db/migrations/20261019_unificacion_catalogo_menu.sql` | Modelo de catálogo único y migración inicial. | Alta para el modelo. |
 | `db/migrations/20261021_fase3_catalogo_servicios.sql` | Catálogo de consulta del técnico en `servicios`. | Alta para rutas. |
@@ -155,16 +155,16 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
 
 | # | Perfil | Entrada canónica | Pantallas | Filas totales | Carpetas visibles | Colapsadas | 1.er nivel visible |
 | :---: | :--- | :--- | ---: | ---: | ---: | ---: | ---: |
-| 1 | Administrador | `/plataforma/perfiles/administrador/panel` | 47 | 66 | 15 | 4 | 12 |
-| 2 | Técnico | `/plataforma/perfiles/tecnico/panel` | 40 | 57 | 12 | 5 | 8 |
-| 3 | Solicitante | `/plataforma/perfiles/solicitante/panel` | 12 | 21 | 4 | 5 | 5 |
-| 4 | Supervisor | `/plataforma/perfiles/supervisor/panel` | 38 | 56 | 15 | 3 | 9 |
-| 5 | Gestor de Área | `/plataforma/perfiles/gestor-area/panel` | 22 | 37 | 9 | 6 | 7 |
-| 6 | Auditor | `/plataforma/perfiles/auditor/panel` | 27 | 44 | 9 | 8 | 8 |
-| 7 | Aprobador | `/plataforma/perfiles/aprobador/panel` | 15 | 27 | 6 | 6 | 7 |
-| 8 | Gestor de Cambios | `/plataforma/perfiles/gestor-cambios/panel` | 19 | 25 | 4 | 2 | 4 |
-| 9 | Gestor de Activos | `/plataforma/gestor-activos/panel` | 26 | 37 | 7 | 4 | 4 |
-| 10 | Gestor de Problemas | `/plataforma/gestor-problemas/panel` | 14 | 18 | 2 | 2 | 4 |
+| 1 | Administrador | `/plataforma/operacion/paneles/administrador` | 47 | 66 | 15 | 4 | 12 |
+| 2 | Técnico | `/plataforma/operacion/paneles/tecnico` | 40 | 57 | 12 | 5 | 8 |
+| 3 | Solicitante | `/plataforma/operacion/paneles/solicitante` | 12 | 21 | 4 | 5 | 5 |
+| 4 | Supervisor | `/plataforma/operacion/paneles/supervisor` | 38 | 56 | 15 | 3 | 9 |
+| 5 | Gestor de Área | `/plataforma/operacion/paneles/gestor-area` | 22 | 37 | 9 | 6 | 7 |
+| 6 | Auditor | `/plataforma/operacion/paneles/auditor` | 27 | 44 | 9 | 8 | 8 |
+| 7 | Aprobador | `/plataforma/operacion/paneles/aprobador` | 15 | 27 | 6 | 6 | 7 |
+| 8 | Gestor de Cambios | `/plataforma/operacion/paneles/gestor-cambios` | 19 | 25 | 4 | 2 | 4 |
+| 9 | Gestor de Activos | `/plataforma/operacion/paneles/gestor-activos` | 26 | 37 | 7 | 4 | 4 |
+| 10 | Gestor de Problemas | `/plataforma/operacion/paneles/gestor-problemas` | 14 | 18 | 2 | 2 | 4 |
 | — | **Total** | — | **260** | **388** | **83** | **45** | **68** |
 
 **Notas:**
@@ -226,7 +226,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
 ### PERFIL 1 — Administrador
 
 - Mi trabajo
-  - Panel de administración — `/plataforma/perfiles/administrador/panel`
+  - Panel de administración — `/plataforma/operacion/paneles/administrador`
 - Mesa de Servicio
   - Incidentes
     - Todos los incidentes — `/plataforma/incidentes`
@@ -294,7 +294,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
 ### PERFIL 2 — Tecnico
 
 - Mi trabajo
-  - Panel del técnico — `/plataforma/perfiles/tecnico/panel`
+  - Panel del técnico — `/plataforma/operacion/paneles/tecnico`
   - Mi agenda y disponibilidad — `/plataforma/perfiles/tecnico/agenda`
   - Mi desempeño — `/plataforma/perfiles/tecnico/desempeno`
   - Mis tareas — `/plataforma/perfiles/tecnico/tareas`
@@ -351,7 +351,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
 ### PERFIL 3 — Solicitante
 
 - Mi trabajo
-  - Panel del solicitante — `/plataforma/perfiles/solicitante/panel`
+  - Panel del solicitante — `/plataforma/operacion/paneles/solicitante`
 - Mesa de Servicio
   - Incidentes
     - Mis incidentes — `/plataforma/incidentes/mios`
@@ -376,7 +376,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
   - Equipo
     - Ausencias y guardias del equipo — `/plataforma/perfiles/supervisor/equipo/ausencias`
     - Vistas y respuestas compartidas — `/plataforma/perfiles/supervisor/equipo/vistas`
-  - Panel de supervisión — `/plataforma/perfiles/supervisor/panel`
+  - Panel de supervisión — `/plataforma/operacion/paneles/supervisor`
 - Mesa de Servicio
   - Incidentes
     - Todos los incidentes — `/plataforma/incidentes`
@@ -432,7 +432,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
   - Aprobaciones
     - Delegación de aprobaciones — `/plataforma/perfiles/gestor-area/aprobaciones/delegacion`
     - Historial de aprobaciones de mi área — `/plataforma/perfiles/gestor-area/aprobaciones/historial`
-  - Panel del área — `/plataforma/perfiles/gestor-area/panel`
+  - Panel del área — `/plataforma/operacion/paneles/gestor-area`
 - Mesa de Servicio
   - Incidentes
     - Mis incidentes — `/plataforma/incidentes/mios`
@@ -465,7 +465,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
 ### PERFIL 6 — Auditor
 
 - Mi trabajo
-  - Panel de auditoría — `/plataforma/perfiles/auditor/panel`
+  - Panel de auditoría — `/plataforma/operacion/paneles/auditor`
 - Mesa de Servicio
   - Incidentes
     - Todos los incidentes — `/plataforma/incidentes`
@@ -510,7 +510,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
   - Aprobaciones
     - Delegaciones — `/plataforma/perfiles/aprobador/delegaciones`
     - Historial de aprobaciones y dictámenes — `/plataforma/perfiles/aprobador/historial`
-  - Panel del aprobador — `/plataforma/perfiles/aprobador/panel`
+  - Panel del aprobador — `/plataforma/operacion/paneles/aprobador`
 - Mesa de Servicio
   - Mis solicitudes — `/plataforma/solicitudes/mios`
 - Cambios
@@ -535,7 +535,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
 ### PERFIL 8 — Gestor de Cambios
 
 - Mi trabajo
-  - Panel de gestión de cambios — `/plataforma/perfiles/gestor-cambios/panel`
+  - Panel de gestión de cambios — `/plataforma/operacion/paneles/gestor-cambios`
 - Cambios
   - Calendario de cambios — `/plataforma/cambios/gestion/calendario`
   - Gestión
@@ -563,7 +563,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
 ### PERFIL 9 — Gestor de Activos y Configuracion
 
 - Mi trabajo
-  - Panel de activos y CMDB — `/plataforma/gestor-activos/panel`
+  - Panel de activos y CMDB — `/plataforma/operacion/paneles/gestor-activos`
 - Activos y CMDB
   - Inventario
     - Asignación, custodia y actas — `/plataforma/gestor-activos/asignaciones`
@@ -601,7 +601,7 @@ Las **388 visibilidades** se descomponen en **260 asignaciones de pantalla + 128
 ### PERFIL 10 — Gestor de Problemas
 
 - Mi trabajo
-  - Panel de gestión de problemas — `/plataforma/gestor-problemas/panel`
+  - Panel de gestión de problemas — `/plataforma/operacion/paneles/gestor-problemas`
 - Problemas
   - Análisis de causa raíz — `/plataforma/gestor-problemas/analisis`
   - Bandeja y asignación — `/plataforma/gestor-problemas/asignacion`
@@ -744,15 +744,15 @@ Además, `next.config.js` mantiene reescrituras públicas para que `/admin`, `/t
 | Momento | Cambio | Resultado |
 | :--- | :--- | :--- |
 | Antes del 2026-10-18 | 10 menús paralelos escritos a mano; 451 opciones y 308 visibilidades; 240 pantallas para 189 URLs; 51 filas sobrantes. | Duplicación, nombres por perfil y mantenimiento x10. |
-| 2026-10-18 | Unificación ejecutada: una fila por pantalla, visibilidad N:M, 12 raíces, IDs 21001+, respaldo `_bak_20261018`. | 227 opciones (36 carpetas + 191 pantallas) y 363 visibilidades. |
+| 2026-10-18 | Unificación ejecutada: una fila por pantalla, visibilidad N:M, 12 raíces, IDs 21001+, respaldo `_bak_20261018`. | 230 opciones (36 carpetas + 191 pantallas) y 363 visibilidades. |
 | 2026-10-18 | Regla de carpetas de un solo hijo y colapso en render (`colapsarCarpetasDeUnHijo`). | 7 carpetas eliminadas del catálogo; 49 carpetas ocultas al dibujar en ese momento. |
-| 2026-10-18 | Paneles de Administrador y Solicitante; alias de `/gestor-activos`, `/gestor-problemas`, `/avisos` y `/conocimiento`. | 227 opciones; los 10 perfiles aterrizan en su panel; 0 enlaces rotos. |
+| 2026-10-18 | Paneles de Administrador y Solicitante; alias de `/gestor-activos`, `/gestor-problemas`, `/avisos` y `/conocimiento`. | 230 opciones; los 10 perfiles aterrizan en su panel; 0 enlaces rotos. |
 | Fase 1 (2026-10-19) | Modelo C: tabla base de tickets + extensiones 1:1. | Base para separar incidentes y solicitudes sin duplicar estados ni historial. |
 | Fase 2 (2026-10-19) | Separación de Incidentes y Solicitudes; operación de mesa y SLA transversales; configuración de formularios por módulo; reconstrucción del catálogo. | **231 opciones (36 carpetas + 195 pantallas) y 394 visibilidades.** |
 | Fase 3 (2026-10-19) | Catálogos de servicios al módulo `servicios`. | `/plataforma/servicios/catalogo`; redirección de la ruta del técnico. |
 | Fase 4 (2026-10-19) | Reportes centralizados en `reportes`. | 9 rutas `/plataforma/reportes/*`; redirecciones de las rutas antiguas. |
 | Ajuste de menú (2026-10-20) | Configuración de Mesa de Servicio en cuatro niveles: Incidentes y Solicitudes, cada uno con formulario y flujo. | **233 opciones (38 carpetas + 195 pantallas) y 396 visibilidades.** |
-| Distribución de configuración (2026-10-20) | Se eliminó la raíz Configuración; sus pantallas quedaron en Mesa de Servicio, Cambios, Problemas, Conocimiento, Organización y Plataforma. | **227 opciones (32 carpetas + 195 pantallas) y 388 visibilidades.** |
+| Distribución de configuración (2026-10-20) | Se eliminó la raíz Configuración; sus pantallas quedaron en Mesa de Servicio, Cambios, Problemas, Conocimiento, Organización y Plataforma. | **230 opciones (32 carpetas + 195 pantallas) y 388 visibilidades.** |
 
 ### 7.4 Decisiones cerradas
 

@@ -1,6 +1,6 @@
 # Matriz de Trazabilidad — FlowDesk ITSM
 
-> **Versión:** 3.0 · **Fecha:** 2026-10-19 · **Estado:** vigente como matriz de referencia.
+> **Versión:** 3.1 · **Fecha:** 2026-10-23 · **Estado:** vigente como matriz de referencia.
 > **Alcance:** relación entre funcionalidades, historias de usuario, requerimientos funcionales, reglas de negocio y estado de implementación.
 > **Fuentes:** `REQUERIMIENTOS.md` (RF, RNF y RN) e `HISTORIAS_DE_USUARIO.md` (HU). Las rutas y estados se actualizaron al cierre de la Fase 4.
 
@@ -10,7 +10,7 @@
 - **Asignatura:** Programacion Aplicada III / Ingenieria de Software
 - **Estandares y Marcos de Referencia:** ITIL v4, ISO/IEC 20000-1 (Gestion de Servicios de TI), ISO/IEC 27001 (Seguridad de la Informacion).
 - **Estructura Documental Relacionada:**
-  - [REQUERIMIENTOS.md](REQUERIMIENTOS.md) (RF-01 a RF-44, RNF y RN-01 a RN-41)
+  - [REQUERIMIENTOS.md](REQUERIMIENTOS.md) (RF-01 a RF-44, RNF y RN-01 a RN-48)
   - [HISTORIAS_DE_USUARIO.md](HISTORIAS_DE_USUARIO.md) (HU-01 a HU-44 y detalles por perfil)
   - [MENUS_Y_PERFILES.md](MENUS_Y_PERFILES.md) (10 perfiles oficiales, menú y rutas)
   - [ARQUITECTURA_Y_CODIGO.md](ARQUITECTURA_Y_CODIGO.md) (módulos, contratos y seguridad)
