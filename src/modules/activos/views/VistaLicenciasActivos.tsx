@@ -7,6 +7,16 @@ import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 type ModoVista = "tabla" | "nuevo" | "editar" | "asignaciones";
 
+function semaforoSam(adquiridas: any, enUso: any) {
+  const a = Number(adquiridas) || 0;
+  const u = Number(enUso) || 0;
+  const uso = a === 0 ? 0 : (u / a) * 100;
+
+  if (uso >= 100) return { estado: "DÉFICIT", color: "#dc2626", bg: "#fee2e2", border: "#fca5a5" };
+  if (uso >= 80) return { estado: "LÍMITE", color: "#b45309", bg: "#fffbeb", border: "#fde68a" };
+  return { estado: "SUPERÁVIT", color: "#166534", bg: "#f0fdf4", border: "#bbf7d0" };
+}
+
 export default function PaginaLicenciasActivos() {
   const [licencias, setLicencias] = useState<any[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -581,7 +591,8 @@ export default function PaginaLicenciasActivos() {
                       <th style={{ textAlign: "center" }}>Adquiridas</th>
                       <th style={{ textAlign: "center" }}>En Uso</th>
                       <th style={{ textAlign: "center" }}>Disponibles</th>
-                      <th>% Utilización</th>
+                      <th style={{ textAlign: "center" }}>% Utilización</th>
+                      <th style={{ textAlign: "center" }}>Estado SAM</th>
                       <th>Vencimiento</th>
                       <th>Estado Contractual</th>
                       <th style={{ textAlign: "right" }}>Acciones</th>
@@ -617,6 +628,28 @@ export default function PaginaLicenciasActivos() {
                             </div>
                             <span style={{ fontSize: 11, fontWeight: 700, color: "#475569" }}>{l.porcentaje_uso}%</span>
                           </div>
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {(() => {
+                            const s = semaforoSam(l.cantidad_adquirida, l.cantidad_en_uso);
+                            return (
+                              <span
+                                className="badge-itil"
+                                style={{
+                                  backgroundColor: s.bg,
+                                  color: s.color,
+                                  border: `1px solid ${s.border}`,
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  textTransform: "uppercase",
+                                  padding: "2px 8px",
+                                  borderRadius: 999,
+                                }}
+                              >
+                                {s.estado}
+                              </span>
+                            );
+                          })()}
                         </td>
                         <td style={{ fontSize: 12 }}>
                           {l.fecha_vencimiento ? new Date(l.fecha_vencimiento).toLocaleDateString() : "Perpetua"}

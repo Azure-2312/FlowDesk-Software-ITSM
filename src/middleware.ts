@@ -96,6 +96,9 @@ export function middleware(req: NextRequest) {
   if (pathname.startsWith("/conocimiento")) {
     return NextResponse.redirect(new URL(`/plataforma${pathname}`, req.url));
   }
+  if (pathname.startsWith("/reportes")) {
+    return NextResponse.redirect(new URL(`/plataforma${pathname}`, req.url));
+  }
   if (pathname.startsWith("/problemas")) {
     return NextResponse.redirect(new URL(`/plataforma${pathname}`, req.url));
   }
@@ -127,5 +130,6 @@ export const config = {
     "/gestor-problemas/:path*",
     "/avisos/:path*",
     "/conocimiento/:path*",
+    "/reportes/:path*",
   ],
 };

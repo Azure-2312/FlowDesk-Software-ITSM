@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { sesionConCapacidad } from "@/shared/lib/api-auth";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { buscarUsuariosTecnicos } from "@/modules/identidades/services/tecnicoUsuariosService";
 
 export async function GET(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  const { error } = sesionConCapacidad(CAPACIDADES.TICKETS_GESTIONAR);
+  if (error) return error;
 
   const { searchParams } = new URL(req.url);
   try {

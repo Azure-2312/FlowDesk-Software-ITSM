@@ -36,3 +36,17 @@ export {
   actualizarAusencia,
   eliminarAusencia,
 } from "./services/ausenciasService";
+
+export {
+  esTecnicoDisponible,
+  obtenerDisponibilidadTecnico,
+  type DisponibilidadTecnico,
+} from "./services/disponibilidadService";
+
+export {
+  listarTurnos,
+  crearTurno,
+  eliminarTurno,
+  TURNOS_VALIDOS,
+  type TurnoOperativo,
+} from "./services/turnosService";

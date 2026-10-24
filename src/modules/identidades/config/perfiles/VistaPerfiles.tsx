@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { PerfilConOpciones, OpcionMenuAdmin } from "@/types";
+import VistaConfigPermisos from "@/modules/identidades/config/permisos/VistaConfigPermisos";
 
 interface FormularioPerfil {
   id_perfil: number | null;
@@ -18,12 +19,13 @@ const FORMULARIO_VACIO: FormularioPerfil = {
   opciones_ids: [],
 };
 
-export default function PaginaPerfiles() {
+export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: boolean }) {
   const router = useRouter();
   const [perfiles, setPerfiles] = useState<PerfilConOpciones[]>([]);
   const [opcionesMenu, setOpcionesMenu] = useState<OpcionMenuAdmin[]>([]);
   const [cargando, setCargando] = useState(true);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [vista, setVista] = useState<"perfiles" | "capacidades">("perfiles");
   const [formulario, setFormulario] = useState<FormularioPerfil>(FORMULARIO_VACIO);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +58,7 @@ export default function PaginaPerfiles() {
   }
 
   function abrirFormularioNuevo() {
+    if (soloLectura) return;
     setFormulario(FORMULARIO_VACIO);
     setError(null);
     setMostrarFormulario(true);
@@ -188,7 +191,8 @@ export default function PaginaPerfiles() {
             type="checkbox"
             checked={marcado}
             onChange={() => alternarOpcionEnFormulario(nodo.id_opcion_menu)}
-            style={{ accentColor: "#2563eb", cursor: "pointer", width: 16, height: 16 }}
+            disabled={soloLectura}
+            style={{ accentColor: "#2563eb", cursor: soloLectura ? "default" : "pointer", width: 16, height: 16 }}
           />
           <span>{nodo.nombre}</span>
           <span style={{ fontSize: 11, color: "#94a3b8" }}>({nodo.url_menu || "carpeta"})</span>
@@ -204,6 +208,7 @@ export default function PaginaPerfiles() {
 
   async function manejarEnvioFormulario(e: FormEvent) {
     e.preventDefault();
+    if (soloLectura) return;
     setError(null);
     setGuardando(true);
 
@@ -236,6 +241,7 @@ export default function PaginaPerfiles() {
   }
 
   async function alternarEstado(perfil: PerfilConOpciones) {
+    if (soloLectura) return;
     const accion = perfil.estado_registro ? "desactivar" : "activar";
     if (!confirm(`¿Seguro que deseas ${accion} el perfil "${perfil.nombre}"?`)) return;
 
@@ -270,6 +276,21 @@ export default function PaginaPerfiles() {
           fontWeight: 500,
         }}>
           {mensajeExito}
+        </div>
+      )}
+
+      {soloLectura && (
+        <div style={{
+          backgroundColor: "#eff6ff",
+          border: "1px solid #bfdbfe",
+          color: "#1e40af",
+          padding: "10px 14px",
+          borderRadius: 8,
+          marginBottom: 16,
+          fontSize: 13,
+          fontWeight: 500,
+        }}>
+          Modo auditoría: consulta de perfiles y permisos en solo lectura. No puedes crear, editar ni desactivar perfiles.
         </div>
       )}
 
@@ -309,12 +330,16 @@ export default function PaginaPerfiles() {
                 ← Volver a la lista de perfiles
               </button>
               <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-                {formulario.id_perfil === null
-                  ? "Crear Nuevo Perfil de Usuario"
-                  : `Editando Permisos del Perfil: "${formulario.nombre}"`}
+                {soloLectura
+                  ? `Permisos del Perfil: "${formulario.nombre}"`
+                  : formulario.id_perfil === null
+                    ? "Crear Nuevo Perfil de Usuario"
+                    : `Editando Permisos del Perfil: "${formulario.nombre}"`}
               </h2>
               <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
-                Configure las identidades de acceso y los privilegios jerárquicos sobre las opciones de menú (RBAC / SoD).
+                {soloLectura
+                  ? "Consulta de la matriz de permisos y opciones de menú asignadas al perfil (RBAC / SoD)."
+                  : "Configure las identidades de acceso y los privilegios jerárquicos sobre las opciones de menú (RBAC / SoD)."}
               </p>
             </div>
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -324,17 +349,19 @@ export default function PaginaPerfiles() {
                 style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => setMostrarFormulario(false)}
               >
-                Cancelar
+                {soloLectura ? "Cerrar" : "Cancelar"}
               </button>
-              <button
-                type="submit"
-                form="formulario-perfil"
-                className="boton-primario"
-                style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
-                disabled={guardando}
-              >
-                {guardando ? "Guardando..." : formulario.id_perfil === null ? "Crear Perfil" : "Guardar Cambios"}
-              </button>
+              {!soloLectura && (
+                <button
+                  type="submit"
+                  form="formulario-perfil"
+                  className="boton-primario"
+                  style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
+                  disabled={guardando}
+                >
+                  {guardando ? "Guardando..." : formulario.id_perfil === null ? "Crear Perfil" : "Guardar Cambios"}
+                </button>
+              )}
             </div>
           </div>
 
@@ -351,6 +378,7 @@ export default function PaginaPerfiles() {
                   placeholder="Ej. Auditor, Soporte Nivel 2"
                   required
                   autoFocus
+                  disabled={soloLectura}
                 />
               </div>
 
@@ -361,6 +389,7 @@ export default function PaginaPerfiles() {
                   value={formulario.descripcion}
                   onChange={(e) => setFormulario({ ...formulario, descripcion: e.target.value })}
                   placeholder="Detalle de las responsabilidades funcionales y alcance de este rol"
+                  disabled={soloLectura}
                 />
               </div>
             </div>
@@ -384,39 +413,41 @@ export default function PaginaPerfiles() {
                     ({formulario.opciones_ids.length} de {opcionesMenu.length} seleccionadas)
                   </span>
                 </div>
-                <div style={{ display: "flex", gap: 10 }}>
-                  <button
-                    type="button"
-                    onClick={marcarTodasOpciones}
-                    style={{
-                      fontSize: 12,
-                      background: "none",
-                      border: "none",
-                      color: "#2563eb",
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                      fontWeight: 600,
-                    }}
-                  >
-                    Marcar todas
-                  </button>
-                  <span style={{ color: "#cbd5e1" }}>|</span>
-                  <button
-                    type="button"
-                    onClick={desmarcarTodasOpciones}
-                    style={{
-                      fontSize: 12,
-                      background: "none",
-                      border: "none",
-                      color: "#64748b",
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                      fontWeight: 600,
-                    }}
-                  >
-                    Desmarcar todas
-                  </button>
-                </div>
+                {!soloLectura && (
+                  <div style={{ display: "flex", gap: 10 }}>
+                    <button
+                      type="button"
+                      onClick={marcarTodasOpciones}
+                      style={{
+                        fontSize: 12,
+                        background: "none",
+                        border: "none",
+                        color: "#2563eb",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Marcar todas
+                    </button>
+                    <span style={{ color: "#cbd5e1" }}>|</span>
+                    <button
+                      type="button"
+                      onClick={desmarcarTodasOpciones}
+                      style={{
+                        fontSize: 12,
+                        background: "none",
+                        border: "none",
+                        color: "#64748b",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Desmarcar todas
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div
@@ -443,19 +474,23 @@ export default function PaginaPerfiles() {
                 style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => setMostrarFormulario(false)}
               >
-                Cancelar
+                {soloLectura ? "Cerrar" : "Cancelar"}
               </button>
-              <button
-                type="submit"
-                className="boton-primario"
-                style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
-                disabled={guardando}
-              >
-                {guardando ? "Guardando..." : formulario.id_perfil === null ? "Crear Perfil" : "Guardar Cambios"}
-              </button>
+              {!soloLectura && (
+                <button
+                  type="submit"
+                  className="boton-primario"
+                  style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
+                  disabled={guardando}
+                >
+                  {guardando ? "Guardando..." : formulario.id_perfil === null ? "Crear Perfil" : "Guardar Cambios"}
+                </button>
+              )}
             </div>
           </form>
         </div>
+      ) : vista === "capacidades" ? (
+        <VistaConfigPermisos onVolver={() => setVista("perfiles")} />
       ) : (
         /* VISTA DE TABLA PRINCIPAL DE PERFILES */
         <div>
@@ -466,9 +501,20 @@ export default function PaginaPerfiles() {
                 Catálogo de roles del sistema, asignación de permisos de acceso a las opciones del menú y gobierno de privilegios.
               </p>
             </div>
-            <button className="boton-primario" style={{ width: "auto", padding: "8px 16px", fontSize: 13 }} onClick={abrirFormularioNuevo}>
-              + Nuevo perfil
-            </button>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <button
+                className="boton-secundario"
+                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
+                onClick={() => setVista("capacidades")}
+              >
+                Matriz de capacidades
+              </button>
+              {!soloLectura && (
+                <button className="boton-primario" style={{ width: "auto", padding: "8px 16px", fontSize: 13 }} onClick={abrirFormularioNuevo}>
+                  + Nuevo perfil
+                </button>
+              )}
+            </div>
           </div>
 
           {cargando ? (
@@ -520,37 +566,53 @@ export default function PaginaPerfiles() {
                         </td>
                         <td style={{ textAlign: "right" }}>
                           <div style={{ display: "inline-flex", gap: 6 }}>
-                            <button
-                              type="button"
-                              className="boton-accion-icono"
-                              title="Editar permisos"
-                              onClick={() => abrirFormularioEditar(perfil)}
-                            >
-                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                              </svg>
-                            </button>
-
-                            {!esAdmin && (
+                            {soloLectura ? (
                               <button
                                 type="button"
-                                className="boton-accion-icono boton-accion-peligro"
-                                title={perfil.estado_registro ? "Desactivar perfil" : "Activar perfil"}
-                                onClick={() => alternarEstado(perfil)}
+                                className="boton-accion-icono"
+                                title="Ver permisos"
+                                onClick={() => abrirFormularioEditar(perfil)}
                               >
-                                {perfil.estado_registro ? (
-                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
-                                  </svg>
-                                ) : (
-                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
-                                    <line x1="12" y1="2" x2="12" y2="12" />
-                                  </svg>
-                                )}
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                  <circle cx="12" cy="12" r="3" />
+                                </svg>
                               </button>
+                            ) : (
+                              <>
+                                <button
+                                  type="button"
+                                  className="boton-accion-icono"
+                                  title="Editar permisos"
+                                  onClick={() => abrirFormularioEditar(perfil)}
+                                >
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                  </svg>
+                                </button>
+
+                                {!esAdmin && (
+                                  <button
+                                    type="button"
+                                    className="boton-accion-icono boton-accion-peligro"
+                                    title={perfil.estado_registro ? "Desactivar perfil" : "Activar perfil"}
+                                    onClick={() => alternarEstado(perfil)}
+                                  >
+                                    {perfil.estado_registro ? (
+                                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                                      </svg>
+                                    ) : (
+                                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+                                        <line x1="12" y1="2" x2="12" y2="12" />
+                                      </svg>
+                                    )}
+                                  </button>
+                                )}
+                              </>
                             )}
                           </div>
                         </td>
