@@ -1,6 +1,6 @@
 # Historias de Usuario — FlowDesk ITSM
 
-> **Versión:** 4.1 · **Fecha:** 2026-10-24 · **Estado:** Vigente y Alineado con Tablero Trello.
+> **Versión:** 4.2 · **Fecha:** 2026-10-24 · **Estado:** Vigente, Rebalanceado y Alineado con Tablero Trello.
 > **Estructura Documental:**
 > 1. **Parte I — Historias de Usuario en Columna "HECHO" (Sprint 1 y Sprint 2):** Avance tangible y comprobable en el software.
 > 2. **Parte II — Historias de Usuario en Columna "PRODUCT BACKLOG" (Pendientes):** Funcionalidades planificadas para siguientes iteraciones.
@@ -13,9 +13,9 @@
 | Identificador | Título de la Historia de Usuario | Módulo Asignado | Integrante Asignado | Estado en Trello |
 | :---: | :--- | :--- | :---: | :---: |
 | [HU-00](#hu-00-provisi-n-de-credenciales-smtp-seguras) | Provisión de Credenciales SMTP Seguras | `identidades` | Junior | HECHO (Sprint 1) |
-| [HU-01](#hu-01-inicio-de-sesi-n-y-control-de-acceso-institucional) | Inicio de Sesión y Control de Acceso Institucional | `seguridad` | Miguel | HECHO (Sprint 1) |
-| [HU-02](#hu-02-recuperaci-n-aut-noma-de-contrase-a-por-c-digo-temporal) | Recuperación Autónoma de Contraseña por Código Temporal | `seguridad` | Miguel | HECHO (Sprint 1) |
-| [HU-03](#hu-03-actualizaci-n-de-perfil-y-canales-de-contacto) | Actualización de Perfil y Canales de Contacto | `seguridad` | Miguel | HECHO (Sprint 1) |
+| [HU-01](#hu-01-inicio-de-sesi-n-y-control-de-acceso-institucional) | Inicio de Sesión y Control de Acceso Institucional | `seguridad` | Junior | HECHO (Sprint 1) |
+| [HU-02](#hu-02-recuperaci-n-aut-noma-de-contrase-a-por-c-digo-temporal) | Recuperación Autónoma de Contraseña por Código Temporal | `seguridad` | Junior | HECHO (Sprint 1) |
+| [HU-03](#hu-03-actualizaci-n-de-perfil-y-canales-de-contacto) | Actualización de Perfil y Canales de Contacto | `seguridad` | Junior | HECHO (Sprint 1) |
 | [HU-04](#hu-04-administraci-n-centralizada-de-cuentas-de-usuario) | Administración Centralizada de Cuentas de Usuario | `identidades` | Junior | HECHO (Sprint 1) |
 | [HU-05](#hu-05-asignaci-n-de-perfiles-rbac-y-pol-ticas-de-acceso) | Asignación de Perfiles RBAC y Políticas de Acceso | `identidades` | Junior | HECHO (Sprint 1) |
 | [HU-06](#hu-06-creaci-n-y-jerarquizaci-n-de-categor-as-del-cat-logo) | Creación y Jerarquización de Categorías del Catálogo | `servicios` | Lourdes | HECHO (Sprint 1) |
@@ -30,20 +30,20 @@
 | [HU-15](#hu-15-configuraci-n-din-mica-de-formularios-de-incidentes) | Configuración Dinámica de Formularios de Incidentes | `incidentes` | Miguel | HECHO (Sprint 2) |
 | [HU-16](#hu-16-configuraci-n-de-formularios-de-solicitudes-y-justificaci-n-de-negocio) | Configuración de Formularios de Solicitudes y Justificación de Negocio | `solicitudes` | Miguel | HECHO (Sprint 2) |
 | [HU-17](#hu-17-parametrizaci-n-de-acuerdos-de-nivel-de-servicio-sla-y-horarios-h-biles) | Parametrización de Acuerdos de Nivel de Servicio (SLA) y Horarios Hábiles | `servicios` | Lourdes | HECHO (Sprint 2) |
-| [HU-18](#hu-18-dise-ador-din-mico-de-campos-para-formularios-de-servicios-del-cat-logo) | Diseñador Dinámico de Campos para Formularios de Servicios del Catálogo | `servicios` | Lourdes | HECHO (Sprint 2) |
+| [HU-18](#hu-18-inventario-maestro-de-activos-ti-y-control-semaf-rico-de-licencias-sam-) | Inventario Maestro de Activos TI y Control Semafórico de Licencias (SAM) | `activos` | Lourdes | HECHO (Sprint 2) |
 | [HU-19](#hu-19-registro-estructurado-de-problemas-y-an-lisis-causa-ra-z-rca-) | Registro Estructurado de Problemas y Análisis Causa Raíz (RCA) | `problemas` | Alexis | HECHO (Sprint 2) |
 | [HU-20](#hu-20-base-de-datos-de-errores-conocidos-kedb-y-publicaci-n-de-workarounds) | Base de Datos de Errores Conocidos (KEDB) y Publicación de Workarounds | `problemas` | Alexis | HECHO (Sprint 2) |
 | [HU-21](#hu-21-configuraci-n-de-departamentos-ti-y-grupos-resolutores-n1-n2-n3) | Configuración de Departamentos TI y Grupos Resolutores N1/N2/N3 | `organizacion` | Junior | HECHO (Sprint 2) |
 | [HU-22](#hu-22-planificaci-n-de-turnos-t-cnicos-y-control-de-ausencias-en-mesa) | Planificación de Turnos Técnicos y Control de Ausencias en Mesa | `organizacion` | Junior | HECHO (Sprint 2) |
 | [HU-23](#hu-23-registro-de-solicitud-de-cambio-rfc-y-validaci-n-de-ventanas-de-mantenimiento) | Registro de Solicitud de Cambio (RFC) y Validación de Ventanas de Mantenimiento | `cambios` | Nain | HECHO (Sprint 2) |
-| [HU-24](#hu-24-inventario-maestro-de-activos-ti-y-control-semaf-rico-de-licencias-sam-) | Inventario Maestro de Activos TI y Control Semafórico de Licencias (SAM) | `activos` | Nain | HECHO (Sprint 2) |
+| [HU-24](#hu-24-administraci-n-de-elementos-de-configuraci-n-cis-y-auditor-a-de-l-neas-base-en-cmdb) | Administración de Elementos de Configuración (CIs) y Auditoría de Líneas Base en CMDB | `cmdb` | Nain | HECHO (Sprint 2) |
 | [HU-25](#hu-25-sala-de-crisis-colaborativa-y-gesti-n-de-incidentes-mayores-p1) | Sala de Crisis Colaborativa y Gestión de Incidentes Mayores P1 | `incidentes` | Miguel | PRODUCT BACKLOG |
 | [HU-26](#hu-26-motor-de-escalamiento-autom-tico-y-notificaciones-operativas) | Motor de Escalamiento Automático y Notificaciones Operativas | `operacion` | Miguel | PRODUCT BACKLOG |
 | [HU-27](#hu-27-cat-logo-de-servicios-t-cnicos-y-vinculaci-n-con-acuerdos-operativos-ola) | Catálogo de Servicios Técnicos y Vinculación con Acuerdos Operativos OLA | `servicios` | Lourdes | PRODUCT BACKLOG |
-| [HU-28](#hu-28-parametrizaci-n-de-contratos-de-soporte-externo-uc-y-excepciones-de-calendario) | Parametrización de Contratos de Soporte Externo (UC) y Excepciones de Calendario | `servicios` | Lourdes | PRODUCT BACKLOG |
+| [HU-28](#hu-28-control-de-bajas-seguras-y-disposici-n-final-de-activos-obsoletos-itam-) | Control de Bajas Seguras y Disposición Final de Activos Obsoletos (ITAM) | `activos` | Lourdes | PRODUCT BACKLOG |
 | [HU-29](#hu-29-diagrama-causa-efecto-ishikawa-y-rbol-de-fallas-para-problemas-complejos) | Diagrama Causa-Efecto (Ishikawa) y Árbol de Fallas para Problemas Complejos | `problemas` | Alexis | PRODUCT BACKLOG |
 | [HU-30](#hu-30-flujo-editorial-kcs-con-aprobaci-n-y-votaci-n-de-art-culos-de-conocimiento) | Flujo Editorial KCS con Aprobación y Votación de Artículos de Conocimiento | `conocimiento` | Alexis | PRODUCT BACKLOG |
-| [HU-31](#hu-31-matriz-de-desbloqueo-seguro-y-pol-ticas-de-caducidad-de-contrase-as-iam) | Matriz de Desbloqueo Seguro y Políticas de Caducidad de Contraseñas IAM | `identidades` | Junior | PRODUCT BACKLOG |
+| [HU-31](#hu-31-matriz-de-desbloqueo-seguro-y-pol-ticas-de-caducidad-de-contrase-as-iam) | Matriz de Desbloqueo Seguro y Políticas de Caducidad de Contraseñas IAM | `seguridad` | Junior | PRODUCT BACKLOG |
 | [HU-32](#hu-32-cat-logo-de-proveedores-y-evaluaci-n-de-cumplimiento-de-contratos-de-terceros) | Catálogo de Proveedores y Evaluación de Cumplimiento de Contratos de Terceros | `proveedores` | Junior | PRODUCT BACKLOG |
 | [HU-33](#hu-33-topolog-a-interactiva-de-cis-y-matriz-de-an-lisis-de-impacto-en-cmdb) | Topología Interactiva de CIs y Matriz de Análisis de Impacto en CMDB | `cmdb` | Nain | PRODUCT BACKLOG |
 | [HU-34](#hu-34-sesi-n-virtual-del-comit-de-cambios-cab-con-votaci-n-formal-de-rfcs) | Sesión Virtual del Comité de Cambios (CAB) con Votación Formal de RFCs | `cambios` | Nain | PRODUCT BACKLOG |
@@ -99,7 +99,7 @@
 | :--- | :--- |
 | **Identificador** | `HU-01` |
 | **Módulo Asignado** | `seguridad` ([src/modules/seguridad](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/seguridad)) |
-| **Integrante Responsable** | Miguel |
+| **Integrante Responsable** | Junior |
 | **Estado en Trello** | Columna HECHO (Sprint 1) |
 | **Estimación / Complejidad** | Media (M) |
 | **Prioridad de Negocio** | Alta |
@@ -129,7 +129,7 @@
 | :--- | :--- |
 | **Identificador** | `HU-02` |
 | **Módulo Asignado** | `seguridad` ([src/modules/seguridad](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/seguridad)) |
-| **Integrante Responsable** | Miguel |
+| **Integrante Responsable** | Junior |
 | **Estado en Trello** | Columna HECHO (Sprint 1) |
 | **Estimación / Complejidad** | Media (M) |
 | **Prioridad de Negocio** | Alta |
@@ -159,7 +159,7 @@
 | :--- | :--- |
 | **Identificador** | `HU-03` |
 | **Módulo Asignado** | `seguridad` ([src/modules/seguridad](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/seguridad)) |
-| **Integrante Responsable** | Miguel |
+| **Integrante Responsable** | Junior |
 | **Estado en Trello** | Columna HECHO (Sprint 1) |
 | **Estimación / Complejidad** | Baja (S) |
 | **Prioridad de Negocio** | Media |
@@ -627,38 +627,38 @@
 
 ---
 
-### HU-18: Diseñador Dinámico de Campos para Formularios de Servicios del Catálogo
+### HU-18: Inventario Maestro de Activos TI y Control Semafórico de Licencias (SAM)
 
 | Parámetro | Detalle |
 | :--- | :--- |
 | **Identificador** | `HU-18` |
-| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Módulo Asignado** | `activos` ([src/modules/activos](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/activos)) |
 | **Integrante Responsable** | Lourdes |
 | **Estado en Trello** | Columna HECHO (Sprint 2) |
 | **Estimación / Complejidad** | Alta (L) |
 | **Prioridad de Negocio** | Alta |
 
 #### Definición de la Historia
-- **Como:** Gestor de Servicios de TI.
-- **Deseo:** Diseñar y configurar campos dinámicos personalizados (texto, listas desplegables, selectores, casillas) para cada servicio individual.
-- **Para:** Capturar los atributos técnicos y administrativos específicos de cada prestación sin sobrecargar servicios simples con datos innecesarios.
+- **Como:** Gestor de Activos de TI.
+- **Deseo:** Gestionar el inventario físico y lógico de equipos y monitorear el consumo de licencias de software mediante semáforo de cumplimiento.
+- **Para:** Mantener el control patrimonial de hardware y garantizar el cumplimiento contractual de licenciamiento evitando penalidades.
 
 #### Criterios de Aceptación
 
-##### Escenario 1: Creación de campos personalizados por ítem de servicio
-- **Dado que** el gestor accede a la configuración de formulario de un servicio específico del catálogo.
-- **Cuando** agrega un nuevo control de entrada definiendo etiqueta, tipo de dato (texto, numérico, fecha o selección) y obligatoriedad.
-- **Entonces** el diseñador registra el atributo en el esquema dinámico del servicio y lo persiste en la base de datos.
+##### Escenario 1: Alta de activo TI con número de serie y custodia
+- **Dado que** ingresa un nuevo lote de equipos informáticos al almacén.
+- **Cuando** el gestor registra el número de serie, modelo, fabricante, fecha de compra y asigna el colaborador custodio.
+- **Entonces** el sistema crea la ficha patrimonial del activo con su código de barra interno y estado 'En Stock'.
 
-##### Escenario 2: Previsualización en vivo del formulario generado
-- **Dado que** se añaden o reordenan campos dinámicos en el diseñador de servicios.
-- **Cuando** el gestor interactúa con el panel de vista previa.
-- **Entonces** el sistema renderiza en tiempo real el formulario exactamente como lo visualizará el usuario solicitante al requerir dicho servicio.
+##### Escenario 2: Semáforo de cumplimiento SAM de licencias de software
+- **Dado que** se tiene contratado un paquete de 100 licencias de software ofimático o base de datos.
+- **Cuando** el número de asignaciones activas alcanza el 95% del total comprado.
+- **Entonces** el panel SAM cambia el indicador a color ámbar alertando sobre la proximidad de sobreuso de licencias.
 
-##### Escenario 3: Validación reactiva con esquema Zod al registrar solicitud
-- **Dado que** un usuario solicita un servicio que posee campos dinámicos obligatorios configurados.
-- **Cuando** intenta enviar la solicitud sin completar los campos requeridos o con un formato inválido.
-- **Entonces** el motor de validación dinámico previene el envío y resalta los controles con mensajes de error específicos.
+##### Escenario 3: Alerta de bloqueo ante sobreasignación de licencias
+- **Dado que** se intenta asignar una licencia cuando se ha alcanzado el 100% del cupo legal contratado.
+- **Cuando** el operador intenta confirmar la asignación a un nuevo equipo.
+- **Entonces** el sistema emite una alerta en color rojo previniendo la instalación en incumplimiento de los contratos vigentes.
 
 ---
 
@@ -837,38 +837,38 @@
 
 ---
 
-### HU-24: Inventario Maestro de Activos TI y Control Semafórico de Licencias (SAM)
+### HU-24: Administración de Elementos de Configuración (CIs) y Auditoría de Líneas Base en CMDB
 
 | Parámetro | Detalle |
 | :--- | :--- |
 | **Identificador** | `HU-24` |
-| **Módulo Asignado** | `activos` ([src/modules/activos](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/activos)) |
+| **Módulo Asignado** | `cmdb` ([src/modules/cmdb](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/cmdb)) |
 | **Integrante Responsable** | Nain |
 | **Estado en Trello** | Columna HECHO (Sprint 2) |
 | **Estimación / Complejidad** | Alta (L) |
 | **Prioridad de Negocio** | Alta |
 
 #### Definición de la Historia
-- **Como:** Gestor de Activos de TI.
-- **Deseo:** Gestionar el inventario físico y lógico de equipos y monitorear el consumo de licencias de software mediante semáforo de cumplimiento.
-- **Para:** Mantener el control patrimonial de hardware y garantizar el cumplimiento contractual de licenciamiento evitando penalidades.
+- **Como:** Gestor de Configuración y CMDB.
+- **Deseo:** Registrar y mantener elementos de configuración (CIs) tecnológicos, sus relaciones de dependencia y auditar las líneas base de infraestructura.
+- **Para:** Garantizar la exactitud de la información de componentes que soportan los servicios de TI según directrices ITIL 4 SACM.
 
 #### Criterios de Aceptación
 
-##### Escenario 1: Alta de activo TI con número de serie y custodia
-- **Dado que** ingresa un nuevo lote de equipos informáticos al almacén.
-- **Cuando** el gestor registra el número de serie, modelo, fabricante, fecha de compra y asigna el colaborador custodio.
-- **Entonces** el sistema crea la ficha patrimonial del activo con su código de barra interno y estado 'En Stock'.
+##### Escenario 1: Alta y tipificación de Elemento de Configuración (CI)
+- **Dado que** se incorpora un nuevo servidor, switch o cluster de base de datos a la infraestructura.
+- **Cuando** el gestor registra el CI definiendo su clase, versión, entorno y nivel de criticidad.
+- **Entonces** el sistema almacena el CI en la base de datos de configuración y le asigna estado 'Operativo'.
 
-##### Escenario 2: Semáforo de cumplimiento SAM de licencias de software
-- **Dado que** se tiene contratado un paquete de 100 licencias de software ofimático o base de datos.
-- **Cuando** el número de asignaciones activas alcanza el 95% del total comprado.
-- **Entonces** el panel SAM cambia el indicador a color ámbar alertando sobre la proximidad de sobreuso de licencias.
+##### Escenario 2: Establecimiento de relaciones lógicas entre CIs
+- **Dado que** existen elementos de configuración interconectados.
+- **Cuando** el gestor vincula un servicio de software a su servidor de base de datos con relación 'Depende de'.
+- **Entonces** el motor de CMDB registra la arista en el grafo de relaciones y valida que no existan bucles circulares.
 
-##### Escenario 3: Alerta de bloqueo ante sobreasignación de licencias
-- **Dado que** se intenta asignar una licencia cuando se ha alcanzado el 100% del cupo legal contratado.
-- **Cuando** el operador intenta confirmar la asignación a un nuevo equipo.
-- **Entonces** el sistema emite una alerta en color rojo previniendo la instalación en incumplimiento de los contratos vigentes.
+##### Escenario 3: Auditoría de líneas base y detección de inconsistencias
+- **Dado que** se ejecuta una verificación periódica de la infraestructura tecnológica.
+- **Cuando** el sistema compara la línea base registrada contra el estado reportado.
+- **Entonces** emite un reporte de discrepancias resaltando CIs no autorizados o cambios sin RFC asociada.
 
 ---
 
@@ -983,38 +983,38 @@
 
 ---
 
-### HU-28: Parametrización de Contratos de Soporte Externo (UC) y Excepciones de Calendario
+### HU-28: Control de Bajas Seguras y Disposición Final de Activos Obsoletos (ITAM)
 
 | Parámetro | Detalle |
 | :--- | :--- |
 | **Identificador** | `HU-28` |
-| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Módulo Asignado** | `activos` ([src/modules/activos](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/activos)) |
 | **Integrante Responsable** | Lourdes |
 | **Estado en Trello** | Columna PRODUCT BACKLOG |
 | **Estimación / Complejidad** | Media (M) |
 | **Prioridad de Negocio** | Media |
 
 #### Definición de la Historia
-- **Como:** Gestor de Servicios de TI.
-- **Deseo:** Configurar Acuerdos de Soporte Externo (Underpinning Contracts - UC) con proveedores de infraestructura y calendarios con excepciones festivas.
-- **Para:** Sincronizar las penalizaciones y compromisos contractuales de terceros con los SLAs ofrecidos a la empresa.
+- **Como:** Gestor de Activos de TI.
+- **Deseo:** Gestionar el flujo formal de desincorporación, borrado seguro de datos y disposición final de equipos informáticos obsoletos.
+- **Para:** Cumplir con estándares de seguridad de la información y normativas ambientales de reciclaje electrónico.
 
 #### Criterios de Aceptación
 
-##### Escenario 1: Definición de contrato de soporte de tercero (UC) vinculado a servicio
-- **Dado que** un servicio del catálogo depende de un proveedor de enlace de telecomunicaciones.
-- **Cuando** el gestor configura el contrato UC estableciendo 2 horas de respuesta comprometida por el proveedor.
-- **Entonces** el sistema enlaza el tiempo de resolución externa como una meta medible dentro del SLA global.
+##### Escenario 1: Registro de dictamen técnico de obsolescencia o daño irreparable
+- **Dado que** un equipo de cómputo presenta fallas de hardware que superan el costo de reposición.
+- **Cuando** el especialista técnico emite el informe de baja y adjunta el certificado.
+- **Entonces** el activo pasa a estado 'Propuesto para Baja' en el inventario patrimonial.
 
-##### Escenario 2: Configuración de excepciones en el calendario de días no hábiles
-- **Dado que** se publican feriados oficiales o asuetos institucionales de fin de año.
-- **Cuando** el gestor ingresa las fechas no laborables en el calendario del módulo de servicios.
-- **Entonces** el motor de SLA pausa automáticamente el conteo de horas hábiles durante esos días festivos.
+##### Escenario 2: Certificado de borrado seguro de datos confidenciales
+- **Dado que** se aprueba la baja definitiva de un servidor o portátil corporativa.
+- **Cuando** se ejecuta el procedimiento de sobreescritura de almacenamiento y se valida el acta.
+- **Entonces** el sistema registra la confirmación de borrado seguro impidiendo que el equipo salga sin saneamiento.
 
-##### Escenario 3: Diferenciación entre horario hábil 8x5 y cobertura 24x7
-- **Dado que** un servicio VIP o crítico opera con régimen de guardia ininterrumpida.
-- **Cuando** se asigna la política de cobertura 24x7 al servicio.
-- **Entonces** los cronómetros contabilizan horas naturales consecutivas sin aplicar descuentos de jornada laboral.
+##### Escenario 3: Actualización de licencias liberadas tras desincorporación
+- **Dado que** un equipo con licencias activas es desincorporado del servicio.
+- **Cuando** se procesa el retiro en el módulo de activos.
+- **Entonces** el sistema devuelve automáticamente las licencias asignadas al fondo común de software disponible.
 
 ---
 
@@ -1093,14 +1093,14 @@
 | Parámetro | Detalle |
 | :--- | :--- |
 | **Identificador** | `HU-31` |
-| **Módulo Asignado** | `identidades` ([src/modules/identidades](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/identidades)) |
+| **Módulo Asignado** | `seguridad` ([src/modules/seguridad](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/seguridad)) |
 | **Integrante Responsable** | Junior |
 | **Estado en Trello** | Columna PRODUCT BACKLOG |
 | **Estimación / Complejidad** | Media (M) |
 | **Prioridad de Negocio** | Media |
 
 #### Definición de la Historia
-- **Como:** Administrador de la plataforma de TI.
+- **Como:** Administrador de Seguridad de TI.
 - **Deseo:** Configurar políticas de vigencia periódica de credenciales, bloqueo automático por intentos fallidos y flujo de desbloqueo supervisado.
 - **Para:** Proteger la plataforma contra accesos no autorizados y ataques de fuerza bruta según directrices ISO/IEC 27001.
 
@@ -1233,9 +1233,9 @@
 | ID Historia | Título de la Historia de Usuario | Módulo Asignado | Estado en Trello | Integrante Responsable |
 | :---: | :--- | :--- | :---: | :--- |
 | **HU-00** | Provisión de Credenciales SMTP Seguras | `identidades` | HECHO (Sprint 1) | Junior |
-| **HU-01** | Inicio de Sesión y Control de Acceso Institucional | `seguridad` | HECHO (Sprint 1) | Miguel |
-| **HU-02** | Recuperación Autónoma de Contraseña por Código Temporal | `seguridad` | HECHO (Sprint 1) | Miguel |
-| **HU-03** | Actualización de Perfil y Canales de Contacto | `seguridad` | HECHO (Sprint 1) | Miguel |
+| **HU-01** | Inicio de Sesión y Control de Acceso Institucional | `seguridad` | HECHO (Sprint 1) | Junior |
+| **HU-02** | Recuperación Autónoma de Contraseña por Código Temporal | `seguridad` | HECHO (Sprint 1) | Junior |
+| **HU-03** | Actualización de Perfil y Canales de Contacto | `seguridad` | HECHO (Sprint 1) | Junior |
 | **HU-04** | Administración Centralizada de Cuentas de Usuario | `identidades` | HECHO (Sprint 1) | Junior |
 | **HU-05** | Asignación de Perfiles RBAC y Políticas de Acceso | `identidades` | HECHO (Sprint 1) | Junior |
 | **HU-06** | Creación y Jerarquización de Categorías del Catálogo | `servicios` | HECHO (Sprint 1) | Lourdes |
@@ -1250,20 +1250,20 @@
 | **HU-15** | Configuración Dinámica de Formularios de Incidentes | `incidentes` | HECHO (Sprint 2) | Miguel |
 | **HU-16** | Configuración de Formularios de Solicitudes y Justificación de Negocio | `solicitudes` | HECHO (Sprint 2) | Miguel |
 | **HU-17** | Parametrización de Acuerdos de Nivel de Servicio (SLA) y Horarios Hábiles | `servicios` | HECHO (Sprint 2) | Lourdes |
-| **HU-18** | Diseñador Dinámico de Campos para Formularios de Servicios del Catálogo | `servicios` | HECHO (Sprint 2) | Lourdes |
+| **HU-18** | Inventario Maestro de Activos TI y Control Semafórico de Licencias (SAM) | `activos` | HECHO (Sprint 2) | Lourdes |
 | **HU-19** | Registro Estructurado de Problemas y Análisis Causa Raíz (RCA) | `problemas` | HECHO (Sprint 2) | Alexis |
 | **HU-20** | Base de Datos de Errores Conocidos (KEDB) y Publicación de Workarounds | `problemas` | HECHO (Sprint 2) | Alexis |
 | **HU-21** | Configuración de Departamentos TI y Grupos Resolutores N1/N2/N3 | `organizacion` | HECHO (Sprint 2) | Junior |
 | **HU-22** | Planificación de Turnos Técnicos y Control de Ausencias en Mesa | `organizacion` | HECHO (Sprint 2) | Junior |
 | **HU-23** | Registro de Solicitud de Cambio (RFC) y Validación de Ventanas de Mantenimiento | `cambios` | HECHO (Sprint 2) | Nain |
-| **HU-24** | Inventario Maestro de Activos TI y Control Semafórico de Licencias (SAM) | `activos` | HECHO (Sprint 2) | Nain |
+| **HU-24** | Administración de Elementos de Configuración (CIs) y Auditoría de Líneas Base en CMDB | `cmdb` | HECHO (Sprint 2) | Nain |
 | **HU-25** | Sala de Crisis Colaborativa y Gestión de Incidentes Mayores P1 | `incidentes` | PRODUCT BACKLOG | Miguel |
 | **HU-26** | Motor de Escalamiento Automático y Notificaciones Operativas | `operacion` | PRODUCT BACKLOG | Miguel |
 | **HU-27** | Catálogo de Servicios Técnicos y Vinculación con Acuerdos Operativos OLA | `servicios` | PRODUCT BACKLOG | Lourdes |
-| **HU-28** | Parametrización de Contratos de Soporte Externo (UC) y Excepciones de Calendario | `servicios` | PRODUCT BACKLOG | Lourdes |
+| **HU-28** | Control de Bajas Seguras y Disposición Final de Activos Obsoletos (ITAM) | `activos` | PRODUCT BACKLOG | Lourdes |
 | **HU-29** | Diagrama Causa-Efecto (Ishikawa) y Árbol de Fallas para Problemas Complejos | `problemas` | PRODUCT BACKLOG | Alexis |
 | **HU-30** | Flujo Editorial KCS con Aprobación y Votación de Artículos de Conocimiento | `conocimiento` | PRODUCT BACKLOG | Alexis |
-| **HU-31** | Matriz de Desbloqueo Seguro y Políticas de Caducidad de Contraseñas IAM | `identidades` | PRODUCT BACKLOG | Junior |
+| **HU-31** | Matriz de Desbloqueo Seguro y Políticas de Caducidad de Contraseñas IAM | `seguridad` | PRODUCT BACKLOG | Junior |
 | **HU-32** | Catálogo de Proveedores y Evaluación de Cumplimiento de Contratos de Terceros | `proveedores` | PRODUCT BACKLOG | Junior |
 | **HU-33** | Topología Interactiva de CIs y Matriz de Análisis de Impacto en CMDB | `cmdb` | PRODUCT BACKLOG | Nain |
 | **HU-34** | Sesión Virtual del Comité de Cambios (CAB) con Votación Formal de RFCs | `cambios` | PRODUCT BACKLOG | Nain |

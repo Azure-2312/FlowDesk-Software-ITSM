@@ -9,9 +9,9 @@
 > 4. [src/modules/reportes](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/reportes) (Analítica ITSM, Tableros de Control de Gestión y los 9 Reportes Unificados)
 > 5. [src/modules/seguridad](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/seguridad) (Políticas de Seguridad y Auditoría de Acceso ISO 27001)
 > 6. [src/modules/plataforma](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/plataforma) (Gobierno de la Plataforma, Salud, Mantenimiento y Menú Admin)
-> 7. [src/modules/operacion](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/operacion) (Gestión de Eventos, Monitoreo y Resiliencia Operativa ITIL 4)
-> 8. **Todas las Consolas de Perfiles:** [src/modules/perfiles](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/perfiles) (`tecnico`, `solicitante`, `gestor-area`, `auditor`, `supervisor`, `aprobador`, `administrador`).
-> 9. **Infraestructura Transversal:** [src/shared/lib](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/shared/lib), Migraciones SQL, Sincronización en Tiempo Real, WebSockets/SSE y Middleware SoD de Backend.
+> 6. [src/modules/operacion](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/operacion) (Gestión de Eventos, Monitoreo y Resiliencia Operativa ITIL 4)
+> 7. **Todas las Consolas de Perfiles:** [src/modules/perfiles](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/perfiles) (`tecnico`, `solicitante`, `gestor-area`, `auditor`, `supervisor`, `aprobador`, `administrador`).
+> 8. **Infraestructura Transversal:** [src/shared/lib](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/shared/lib), Migraciones SQL, Sincronización en Tiempo Real, WebSockets/SSE y Middleware SoD de Backend.
 
 ---
 
