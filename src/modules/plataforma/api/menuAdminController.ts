@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import {
+  CAPACIDADES,
+  sesionTieneAlgunaCapacidad,
+  sesionTieneCapacidad,
+} from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import {
   listarOpcionesMenuAdmin,
@@ -18,8 +22,16 @@ function obtenerSesionActual() {
 export async function GET() {
   const sesion = obtenerSesionActual();
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
-  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_MENU)) {
-    return NextResponse.json({ error: "Solo el Administrador puede consultar la configuración del menú." }, { status: 403 });
+  if (
+    !sesionTieneAlgunaCapacidad(sesion, [
+      CAPACIDADES.ADMIN_MENU,
+      CAPACIDADES.AUDITORIA_VER,
+    ])
+  ) {
+    return NextResponse.json(
+      { error: "Solo el Administrador o el Auditor pueden consultar la configuración del menú." },
+      { status: 403 }
+    );
   }
 
   try {

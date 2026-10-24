@@ -2,6 +2,15 @@
 
 import { useEffect, useState } from "react";
 
+type CiItem = {
+  id_ci: number;
+  codigo_ci: string;
+  nombre: string;
+  tipo_ci: string;
+  ambiente: string;
+  criticidad: string;
+};
+
 interface Solapamiento {
   codigo_a: string;
   codigo_b: string;
@@ -73,6 +82,11 @@ export default function VistaConflictos() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [listaCis, setListaCis] = useState<CiItem[]>([]);
+  const [idCiSeleccionado, setIdCiSeleccionado] = useState<number | "">("");
+  const [impactoCi, setImpactoCi] = useState<any>(null);
+  const [cargandoCi, setCargandoCi] = useState(false);
+
   useEffect(() => {
     (async () => {
       try {
@@ -87,6 +101,28 @@ export default function VistaConflictos() {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    fetch("/api/activos/cmdb?estado=activos")
+      .then((r) => r.json())
+      .then((d) => setListaCis(Array.isArray(d?.elementos) ? d.elementos : []))
+      .catch(() => setListaCis([]));
+  }, []);
+
+  const cargarImpactoCi = async (idCi: number) => {
+    setCargandoCi(true);
+    setImpactoCi(null);
+    try {
+      const r = await fetch(`/api/activos/cmdb/analisis?vista=impacto&id_ci=${idCi}`);
+      const d = await r.json();
+      if (r.ok) setImpactoCi(d);
+      else setImpactoCi(null);
+    } catch {
+      setImpactoCi(null);
+    } finally {
+      setCargandoCi(false);
+    }
+  };
 
   if (cargando) return <div className="vista-contenedor"><p>Cargando...</p></div>;
   if (error) return <div className="vista-contenedor"><p role="alert" className="mensaje-error">{error}</p></div>;
@@ -160,6 +196,125 @@ export default function VistaConflictos() {
             ))}
           </ul>
         </Seccion>
+
+        <div className="tarjeta-formulario" style={{ margin: 0, gridColumn: "1 / -1" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <h2 style={{ margin: 0 }}>Impacto en CMDB por CI</h2>
+            <span style={{ fontSize: 12, fontWeight: 700, padding: "3px 10px", borderRadius: 999, backgroundColor: "#e5e7eb", color: "#374151" }}>
+              {listaCis.length} CI(s) disponibles
+            </span>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end", marginBottom: 12 }}>
+            <div style={{ flex: 1, minWidth: 260 }}>
+              <label style={{ fontSize: 12, color: "#6b7280", fontWeight: 600, display: "block", marginBottom: 6 }}>
+                Seleccionar Elemento de Configuración (CI)
+              </label>
+              <select
+                className="input-base"
+                value={idCiSeleccionado}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setIdCiSeleccionado(v ? Number(v) : "");
+                  if (!v) setImpactoCi(null);
+                }}
+                style={{ fontSize: 13, backgroundColor: "white", width: "100%" }}
+              >
+                <option value="">— Seleccionar CI —</option>
+                {listaCis.map((c) => (
+                  <option key={c.id_ci} value={c.id_ci}>
+                    [{c.codigo_ci}] {c.nombre} ({c.tipo_ci})
+                  </option>
+                ))}
+              </select>
+            </div>
+            {idCiSeleccionado !== "" && (
+              <button
+                type="button"
+                disabled={cargandoCi}
+                onClick={() => cargarImpactoCi(idCiSeleccionado as number)}
+                style={{
+                  padding: "8px 16px",
+                  fontSize: 13,
+                  backgroundColor: cargandoCi ? "#9ca3af" : "#2563eb",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 6,
+                  cursor: cargandoCi ? "not-allowed" : "pointer",
+                }}
+              >
+                {cargandoCi ? "Consultando..." : "Ver impacto"}
+              </button>
+            )}
+          </div>
+
+          {cargandoCi && (
+            <div style={{ padding: 16, color: "#6b7280", fontSize: 12.5, textAlign: "center" }}>
+              Consultando impacto en la CMDB...
+            </div>
+          )}
+
+          {!cargandoCi && idCiSeleccionado !== "" && !impactoCi && (
+            <div style={{ padding: 16, color: "#9ca3af", fontSize: 12.5, textAlign: "center" }}>
+              Seleccione un CI y presione "Ver impacto".
+            </div>
+          )}
+
+          {!cargandoCi && impactoCi && (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12, marginTop: 12 }}>
+              <div style={{ backgroundColor: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 8, padding: 12 }}>
+                <div style={{ fontSize: 11, color: "#9a3412", fontWeight: 700, textTransform: "uppercase" }}>CI analizado</div>
+                <div style={{ fontSize: 13, marginTop: 4 }}>
+                  <strong>[{impactoCi.ci?.codigo_ci}]</strong> {impactoCi.ci?.nombre}
+                </div>
+                <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>{impactoCi.ci?.tipo_ci} · {impactoCi.ci?.criticidad}</div>
+              </div>
+              <div style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8, padding: 12 }}>
+                <div style={{ fontSize: 11, color: "#166534", fontWeight: 700, textTransform: "uppercase" }}>CIs afectados</div>
+                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4 }}>{impactoCi.afectados?.length ?? 0}</div>
+              </div>
+              <div style={{ backgroundColor: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, padding: 12 }}>
+                <div style={{ fontSize: 11, color: "#1d4ed8", fontWeight: 700, textTransform: "uppercase" }}>Tickets vinculados</div>
+                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4 }}>{impactoCi.tickets?.length ?? 0}</div>
+              </div>
+              <div style={{ backgroundColor: "#fef3c7", border: "1px solid #fde68a", borderRadius: 8, padding: 12 }}>
+                <div style={{ fontSize: 11, color: "#92400e", fontWeight: 700, textTransform: "uppercase" }}>Cambios (RFC) vinculados</div>
+                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4 }}>{impactoCi.cambios?.length ?? 0}</div>
+              </div>
+              <div style={{ backgroundColor: "#f3e8ff", border: "1px solid #e9d5ff", borderRadius: 8, padding: 12 }}>
+                <div style={{ fontSize: 11, color: "#7c3aed", fontWeight: 700, textTransform: "uppercase" }}>Problemas vinculados</div>
+                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4 }}>{impactoCi.problemas?.length ?? 0}</div>
+              </div>
+            </div>
+          )}
+
+          {!cargandoCi && impactoCi && impactoCi.afectados && impactoCi.afectados.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <h3 style={{ fontSize: 14, margin: "0 0 8px 0", color: "#1e293b" }}>CIs dependientes (downstream)</h3>
+              <table className="tabla" style={{ width: "100%", fontSize: 12.5 }}>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: "left" }}>Código CI</th>
+                    <th style={{ textAlign: "left" }}>Nombre</th>
+                    <th style={{ textAlign: "left" }}>Tipo</th>
+                    <th style={{ textAlign: "left" }}>Ambiente</th>
+                    <th style={{ textAlign: "left" }}>Criticidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {impactoCi.afectados.map((a: any) => (
+                    <tr key={a.id_ci} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <td style={{ padding: "6px 4px", fontFamily: "monospace", color: "#2563eb" }}>{a.codigo_ci}</td>
+                      <td style={{ padding: "6px 4px" }}>{a.nombre}</td>
+                      <td style={{ padding: "6px 4px" }}>{a.tipo_ci}</td>
+                      <td style={{ padding: "6px 4px" }}>{a.ambiente}</td>
+                      <td style={{ padding: "6px 4px" }}>{a.criticidad}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

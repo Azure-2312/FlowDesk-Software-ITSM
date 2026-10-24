@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import {
+  CAPACIDADES,
+  sesionTieneAlgunaCapacidad,
+  sesionTieneCapacidad,
+} from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { listarPerfiles, crearPerfil } from "@/modules/identidades/services/perfilService";
 
@@ -15,8 +19,16 @@ function obtenerSesionActual() {
 export async function GET(req: NextRequest) {
   const sesion = obtenerSesionActual();
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
-  if (!sesionTieneCapacidad(sesion, CAPACIDADES.ADMIN_PERFILES)) {
-    return NextResponse.json({ error: "Solo el Administrador puede consultar perfiles y permisos." }, { status: 403 });
+  if (
+    !sesionTieneAlgunaCapacidad(sesion, [
+      CAPACIDADES.ADMIN_PERFILES,
+      CAPACIDADES.AUDITORIA_VER,
+    ])
+  ) {
+    return NextResponse.json(
+      { error: "Solo el Administrador o el Auditor pueden consultar perfiles y permisos." },
+      { status: 403 }
+    );
   }
   const { searchParams } = new URL(req.url);
   const incluirTodos = searchParams.get("todos") === "true";

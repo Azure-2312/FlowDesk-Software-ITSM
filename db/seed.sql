@@ -208,6 +208,7 @@ INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_pad
 INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21205', 'Grupos resolutores de TI', '/plataforma/organizacion/departamentos', 'Áreas técnicas y grupos resolutores.', '21264', '2', '2', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
 INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21206', 'Supervisores', '/plataforma/organizacion/departamentos/supervisores', 'Asignación de supervisores a áreas técnicas.', '21264', '2', '3', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
 INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21207', 'Técnicos y niveles de soporte', '/plataforma/organizacion/tecnicos', 'Técnicos, niveles N1/N2/N3 y ausencias.', '21264', '2', '4', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
+INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21266', 'Turnos y ausencias', '/plataforma/organizacion/turnos-ausencias', 'Calendario de turnos, guardias 24x7, vacaciones, permisos y técnico de reemplazo.', '21264', '2', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
 INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21215', 'Plataforma', '', '', NULL, '1', '11', 'true', NULL, NULL, NULL, NULL, 'false', 'true');
 INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21208', 'Identidades', '', '', '21215', '2', '5', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
 INSERT INTO opciones_menu (id_opcion_menu, nombre, url_menu, descripcion, id_padre, nivel, orden, estado_registro, permiso_requerido, modulo_requerido, condicion_nivel, contador_clave, bloqueado, abierto_por_defecto) VALUES ('21209', 'Gestión de usuarios', '/plataforma/seguridad/usuarios', 'Alta, edición, bloqueo y desbloqueo de usuarios; asignación de perfiles múltiples; envío de credenciales.', '21208', '3', '1', 'true', NULL, NULL, NULL, NULL, 'false', 'false');
@@ -649,7 +650,13 @@ INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_reg
   (21259, 3, 1, true),
   (21260, 2, 1, true),
   (21261, 2, 1, true),
-  (21264, 1, 1, true);
+  (21264, 1, 1, true),
+  (21266, 1, 1, true),
+  (21266, 4, 1, true),
+  (21267, 1, 1, true),
+  (21267, 4, 1, true),
+  (21267, 5, 1, true),
+  (21267, 6, 1, true);
 -- ============================================================
 -- CATÁLOGOS ITIL 4 Y DATOS DE PRUEBA
 -- ============================================================
