@@ -78,17 +78,14 @@ No se commitean `.env`, `.env.local`, credenciales ni `node_modules`.
 | Métrica | Valor al 2026-10-20 | Fuente |
 | :--- | ---: | :--- |
 | Módulos de dominio | 17 | `src/modules/` |
-| Archivos dentro de módulos | 657 | Conteo recursivo |
-| Archivos TypeScript/TSX en `src` | 1.214 | Conteo recursivo |
-| Route handlers en `src/app/api` | 207 | `route.ts` |
-| Controladores `*Controller.ts` | 205 | `src/modules/**/api` |
-| Páginas bajo `src/app/plataforma` | 227 | `page.tsx` |
-| Páginas totales bajo `src/app` | 229 | `page.tsx` |
-| Tablas base en `public` | 126 | `information_schema.tables` |
+| Route handlers en `src/app/api` | 209 | `route.ts` |
+| Páginas bajo `src/app/plataforma` | 312 | `page.tsx` |
+| Páginas totales compiladas | 335 | `next build` |
+| Tablas base en `public` | 132 | `information_schema.tables` |
 | Vistas en `public` | 1 (`vista_ticket`) | `information_schema.views` |
-| Migraciones SQL | 38 | `db/migrations/` |
-| Opciones de menú activas | 227 | `opciones_menu` |
-| Filas de visibilidad activas | 388 | `opciones_menu_perfiles` |
+| Migraciones SQL aplicadas | 40 | `db/migrations/` |
+| Opciones de menú activas | 230 | `opciones_menu` |
+| Filas de visibilidad activas | 393 | `opciones_menu_perfiles` |
 | Raíces del menú | 12 | `id_padre IS NULL` |
 | Perfiles | 10 | `perfiles` |
 
@@ -205,22 +202,26 @@ El resto expone servicios y tipos propios; solo publica UI si otro módulo la ne
 - Prohibido crear una segunda tabla base de tickets, un segundo servicio de prioridad o un segundo flujo de comentarios.
 - Los cambios de modelo van por migración y se reflejan en `tickets`, no en cada frente.
 
-### 4.3. Consolas de rol
+### 4.3. Paneles de control unificados por perfil
 
-Las consolas viven en `src/modules/perfiles/<rol>/`. No son módulos de dominio: solo resuelven alcance, composición y navegación.
+Todos los tableros de mando y aterrizaje de los 10 perfiles del sistema están estandarizados canónicamente bajo `/plataforma/operacion/paneles/<rol>`. La lógica visual y de alcance se modularizó en los módulos de dominio correspondientes, eliminando las carpetas duplicadas.
 
-| Consola | Ruta canónica | Dominio delegado |
-| :--- | :--- | :--- |
-| `administrador` | `/plataforma/perfiles/administrador/panel` | `identidades`, `plataforma`, `organizacion`, `tickets`, `servicios`, `conocimiento` |
-| `supervisor` | `/plataforma/perfiles/supervisor/*` | `cambios`, `activos`, `problemas`, `tickets`, `reportes` |
-| `aprobador` | `/plataforma/perfiles/aprobador/*` | `cambios`, `activos`, `problemas` |
-| `tecnico` | `/plataforma/perfiles/tecnico/*` | `tickets`, `cambios`, `incidentes`, `problemas`, `activos`, `cmdb`, `servicios` |
-| `gestor-area` | `/plataforma/perfiles/gestor-area/*` | `cambios`, `activos`, `reportes` |
-| `solicitante` | `/plataforma/perfiles/solicitante/panel` | `tickets`, `solicitudes`, `incidentes`, `conocimiento` |
-| `gestor-cambios` | `/plataforma/perfiles/gestor-cambios/*` | `cambios`, `cmdb`, `reportes` |
-| `auditor` | `/plataforma/perfiles/auditor/*` | `cmdb`, `activos`, `cambios`, `identidades`, `reportes` |
+| Perfil (#) | Ruta canónica unificada | Dominio funcional principal |
+| :---: | :--- | :--- |
+| **1. Administrador** | `/plataforma/operacion/paneles/administrador` | Gobierno de plataforma, identidades, seguridad, catálogos y auditoría. |
+| **2. Técnico** | `/plataforma/operacion/paneles/tecnico` | Mesa resolutora de incidentes, solicitudes asignadas y KEDB. |
+| **3. Solicitante** | `/plataforma/operacion/paneles/solicitante` | Portal de autoservicio, seguimiento de requerimientos y autoayuda KCS. |
+| **4. Supervisor** | `/plataforma/operacion/paneles/supervisor` | Control de SLA, balanceo de carga, turnos y escalamientos. |
+| **5. Gestor de Área** | `/plataforma/operacion/paneles/gestor-area` | Autorizaciones departamentales, contratos de área e impacto de negocio. |
+| **6. Auditor** | `/plataforma/operacion/paneles/auditor` | Monitoreo SoD, bitácora forense de auditoría y recertificación (Read-Only). |
+| **7. Aprobador (CAB)** | `/plataforma/operacion/paneles/aprobador` | Dictamen colegiado de RFCs, riesgos de cambios y problemas mayores. |
+| **8. Gestor de Cambios** | `/plataforma/operacion/paneles/gestor-cambios` | Calendario de cambios, evaluación de conflictos, ventanas y trazabilidad CMDB. |
+| **9. Gestor de Activos** | `/plataforma/operacion/paneles/gestor-activos` | Inventario ITAM, contratos, semáforo SAM de licencias y mantenimiento. |
+| **10. Gestor de Problemas** | `/plataforma/operacion/paneles/gestor-problemas` | Análisis de Causa Raíz (RCA), gestión de errores conocidos y problemas mayores. |
 
-Regla: si una consola necesita una regla nueva, se implementa en el módulo de dominio y se expone por contrato. La consola solo pinta y aplica alcance. Los perfiles 9 y 10 no usan `perfiles/<rol>`: operan en los árboles `/plataforma/gestor-activos/**` y `/plataforma/gestor-problemas/**`, montando las vistas de `activos`/`cmdb` y `problemas`.
+Regla arquitectónica:
+1. El selector de perfiles (`SelectorPerfil.tsx`), los redireccionadores de dashboard (`VistaDashboard.tsx`) y el middleware enrutan directamente a esta estructura canónica.
+2. Cada panel consume servicios de sus respectivos módulos por contrato (`@/modules/<modulo>`).
 
 ### 4.4. CMDB separada de activos (Opción B)
 
@@ -241,27 +242,23 @@ Consecuencias:
 
 ### 5.1. Mapa general
 
-| Prefijo | Módulo dueño | API principal |
-| :--- | :--- | :--- |
-| `/plataforma/tickets/**` | `tickets` | `/api/tickets` |
-| `/plataforma/incidentes/**` | `incidentes` + `tickets` | `/api/incidentes` |
-| `/plataforma/solicitudes/**` | `solicitudes` + `tickets` | `/api/solicitudes` |
-| `/plataforma/servicios/catalogo` | `servicios` | `/api/servicios` |
-| `/plataforma/cambios/**` | `cambios` | `/api/cambios` |
-| `/plataforma/problemas/**` | `problemas` | `/api/problemas` |
-| `/plataforma/gestor-problemas/**` | `problemas` | `/api/gestor-problemas` |
-| `/plataforma/activos/**` | `activos` | `/api/activos` |
-| `/plataforma/gestor-activos/**` | `activos` + `cmdb` | `/api/gestor-activos`, `/api/activos`, `/api/activos/cmdb` |
-| `/plataforma/activos/cmdb/**` | `cmdb` | `/api/activos/cmdb`, `/api/admin/cmdb` |
-| `/plataforma/proveedores` | `proveedores` | `/api/proveedores` |
-| `/plataforma/conocimiento/**` | `conocimiento` | `/api/conocimiento` |
-| `/plataforma/reportes/**` | `reportes` | `/api/reportes/indicadores` |
-| `/plataforma/operacion/**` | `operacion` | `/api/operacion` |
-| `/plataforma/admin/**` | `plataforma`, `identidades`, `organizacion`, `servicios`, `tickets`, `conocimiento` | `/api/admin/**`, `/api/usuarios`, `/api/identidades/perfiles` |
-| `/plataforma/perfiles/<rol>/**` | `perfiles/<rol>` | `/api/perfiles/<rol>` |
-| `/plataforma/mi-cuenta/**` | `seguridad` | `/api/mi-cuenta` |
-| `/plataforma/avisos/mantenimientos` | `plataforma` | `/api/avisos` |
-| `/plataforma/dashboard` | `reportes` / consolas | — (redirige a la consola del perfil) |
+| Prefijo canónico | Módulo dueño | API principal | Propósito y cobertura |
+| :--- | :--- | :--- | :--- |
+| `/plataforma/operacion/paneles/<rol>` | `operacion` / dominio | `/api/reportes/indicadores` | Tableros de mando y aterrizaje unificados de los 10 perfiles. |
+| `/plataforma/tickets/**` | `tickets` | `/api/tickets` | Núcleo de tickets transversales, bandeja de entrada y búsqueda avanzada. |
+| `/plataforma/incidentes/**` | `incidentes` + `tickets` | `/api/incidentes` | Registro, atención, sala de crisis de incidentes mayores y catálogo de incidentes. |
+| `/plataforma/solicitudes/**` | `solicitudes` + `tickets` | `/api/solicitudes` | Solicitudes de servicio, portal asistido, aprobación de área y catálogo de servicios. |
+| `/plataforma/servicios/**` | `servicios` | `/api/servicios` | Gestión y configuración del catálogo maestro y niveles de servicio SLA. |
+| `/plataforma/cambios/**` | `cambios` | `/api/cambios` | RFCs, evaluación CAB, calendario, detección de solapamientos y trazabilidad CMDB. |
+| `/plataforma/problemas/**` | `problemas` | `/api/problemas` | Registro de problemas, análisis RCA (5-Why/Ishikawa) y base de errores conocidos KEDB. |
+| `/plataforma/activos/**` | `activos` | `/api/activos` | Gestión de activos ITAM, licencias de software (semáforo SAM), bajas y proveedores. |
+| `/plataforma/cmdb/**` | `cmdb` | `/api/activos/cmdb` | Elementos de Configuración (CI), topología de relaciones, análisis de impacto y auditoría. |
+| `/plataforma/conocimiento/**` | `conocimiento` | `/api/conocimiento` | Artículos KCS v6, ciclo editorial, taxonomía, búsqueda y configuración de categorías. |
+| `/plataforma/reportes/**` | `reportes` | `/api/reportes` | 9 reportes analíticos + panel consolidado de reportes gerenciales con CSV. |
+| `/plataforma/organizacion/**` | `organizacion` | `/api/organizacion` | Departamentos, grupos resolutores, técnicos, turnos institucionales y ausencias. |
+| `/plataforma/seguridad/**` | `identidades` + `plataforma` | `/api/usuarios`, `/api/seguridad` | Usuarios, perfiles RBAC, auditoría de cambios inmutables y logs forenses. |
+| `/plataforma/mi-cuenta/**` | `seguridad` | `/api/mi-cuenta` | Preferencias, perfil y seguridad del usuario autenticado. |
+| `/plataforma/dashboard` | `operacion` | — | Redirección canónica automática al panel del perfil en sesión. |
 
 ### 5.2. Fase 2: incidentes y solicitudes separados
 
