@@ -1,921 +1,1269 @@
 # Historias de Usuario — FlowDesk ITSM
 
-> **Versión:** 4.0 · **Fecha:** 2026-10-23 · **Estado:** Vigente y Alineado con Trello.
+> **Versión:** 4.1 · **Fecha:** 2026-10-24 · **Estado:** Vigente y Alineado con Tablero Trello.
 > **Estructura Documental:**
 > 1. **Parte I — Historias de Usuario en Columna "HECHO" (Sprint 1 y Sprint 2):** Avance tangible y comprobable en el software.
 > 2. **Parte II — Historias de Usuario en Columna "PRODUCT BACKLOG" (Pendientes):** Funcionalidades planificadas para siguientes iteraciones.
-> 3. **Parte III — Matriz de Asignación por Integrante:** Mapeo de historias por responsable Scrum y módulo de dominio.
+> 3. **Parte III — Matriz de Asignación por Integrante:** Mapeo de historias por responsable y módulo de dominio.
 
 ---
 
-## Parte I — Historias de Usuario en Columna "HECHO" (Sprint 1 y Sprint 2)
-
-> Estas historias representan las capacidades funcionales desarrolladas, probadas y aceptadas por el equipo Scrum en los dos primeros sprints de trabajo.
-
-Historia de Usuario 00
-
-Como: Administrador de la plataforma de TI.
-Deseo: Generar correos corporativos estandarizados, contraseñas seguras y despacharlos al correo personal del usuario mediante servicio SMTP.
-Para: Agilizar el aprovisionamiento de cuentas de nuevos colaboradores manteniendo altos estándares de seguridad informática.
-
-Criterios de Aceptación:
-Escenario 1: Generación automática de correo institucional y contraseña estándar
-Dado que el administrador ingresa los nombres y apellidos de un nuevo colaborador en el formulario de alta.
-
-Cuando el sistema procesa los campos de texto en tiempo real.
-
-Entonces genera automáticamente la sugerencia de correo corporativo institucional (por ejemplo, inicial_nombre + apellido_paterno @organizacion.com) y una clave aleatoria compleja de 8 o más caracteres con mayúsculas, minúsculas y números.
-
-Escenario 2: Envío de credenciales vía correo electrónico SMTP
-Dado que se ha completado el registro de un nuevo usuario con correo personal verificado.
-
-Cuando el administrador hace clic en el botón "Enviar credenciales por correo".
-
-Entonces el servidor despacha un correo electrónico seguro con la bienvenida institucional, el usuario asignado, la contraseña temporal y el enlace directo de inicio de sesión.
-
-Escenario 3: Copiado rápido de credenciales al portapapeles
-Dado que el administrador visualiza el panel de confirmación de creación de usuario.
-
-Cuando pulsa los botones de acción "Copiar correo" o "Copiar clave".
-
-Entonces el sistema copia la cadena correspondiente al portapapeles del sistema operativo y despliega un indicador visual confirmando el copiado.
-
-
-Historia de Usuario 01
-
-Como: Usuarios
-
-Deseo: Ingresar con mi correo institucional y clave personal
-
-Para: Disponer de mi entorno de trabajo y gestionar mis requerimientos de tecnología.
-
-Criterios de Aceptación
-Escenario 1: Ingreso exitoso con credenciales validas
-Dado que ingreso al sistema como Usuarios con acceso habilitado
-
-Cuando escribo mi correo institucional y mi clave correcta
-
-Entonces el sistema me permite entrar y me muestra mi portal principal de trabajo
-
-Escenario 2: Notificación ante credenciales no coincidentes
-Dado que ingreso al sistema como Usuarios
-
-Cuando escribo una clave que no coincide con los registros
-
-Entonces el sistema me informa que los datos son incorrectos y me ofrece la opción de recuperar mi clave
-
-
-Historia de Usuario 02
-
-Como: Usuarios
-
-Deseo: Solicitar un código temporal de comprobación a mi buzón institucional
-
-Para: Definir una nueva clave y retomar mis labores sin esperar atención manual de soporte.
-
-Criterios de Aceptación
-Escenario 1: Restablecimiento satisfactorio de clave
-Dado que ingreso al sistema como Usuarios en la pantalla de recuperación.
-
-Cuando ingreso mi correo corporativo y transcribo el código de verificación recibido.
-
-Entonces el sistema valida mi identidad y me permite definir una nueva clave de acceso.
-
-Escenario 2: Código de verificación expirado
-Dado que ingreso al sistema como Usuarios con un código fuera de tiempo
-
-Cuando presiono el botón de confirmar
-
-Entonces el sistema me avisa que el código caduco y me ofrece despachar un nuevo código
-
-
-Historias de Usuario 03
-
-Como: Usuarios
-
-Deseo: Actualizar mis canales de contacto telefonico y mi clave personal
-
-Para: Mantener mi ficha al dia y facilitar que los tecnicos me localicen oportunamente.
-
-Criterios de Aceptacion:
-Escenario 1: Actualizacion exitosa de datos de contacto
-Dado que ingreso al sistema como Usuarios en la seccion de mi perfil.
-
-Cuando actualizo mi anexo telefonico y presiono guardar cambios.
-
-Entonces el sistema confirma la actualizacion y refleja el nuevo anexo en mis requerimientos.
-
-Escenario 2: Proteccion de campos institucionales inmutables
-Dado que ingreso al sistema como Usuarios en mi perfil.
-
-Cuando visualizo mi correo institucional y numero de documento.
-
-Entonces el sistema los presenta como campos protegidos que solo el Administrador puede modificar.
-
-Historia de Usuario 04
-Como: Administrador general del sistema.
-Deseo: Crear, editar y administrar las cuentas de usuario institucionales con asignación múltiple de perfiles, dependencias y niveles de prioridad.
-Para: Garantizar un control centralizado de identidades y asegurar que cada colaborador disponga del nivel de servicio y permisos adecuados en la plataforma.
-
-Criterios de Aceptación:
-Escenario 1: Registro exitoso de nuevo usuario con múltiples roles
-Dado que el administrador ingresa al módulo de Gestión de Usuarios y selecciona "Nuevo Usuario".
-
-Cuando completa los datos de identidad (DNI, nombres, apellidos, teléfono, correo personal), selecciona su departamento y asigna los perfiles de "Técnico" y "Solicitante".
-
-Entonces el sistema valida la unicidad del documento y correo, registra la cuenta en la base de datos y presenta una ventana de resumen con las credenciales generadas.
-
-Escenario 2: Asignación de nivel de prioridad VIP / Ejecutiva
-Dado que el administrador edita los datos de un usuario perteneciente a la alta dirección o gerencia.
-
-Cuando modifica el selector de prioridad de "Nivel 5: Estándar" a "Nivel 1: Prioridad VIP".
-
-Entonces el sistema persiste la jerarquía del usuario, provocando que todos los tickets que este usuario reporte en el futuro se etiqueten como prioritarios para el cálculo de tiempos SLA.
-
-Escenario 3: Bloqueo y desactivación de cuenta de usuario
-Dado que un colaborador cesa sus labores o requiere suspensión preventiva de acceso.
-
-Cuando el administrador pulsa la acción de desactivar usuario en la tabla y confirma la operación.
-
-Entonces el sistema efectúa un borrado lógico (estado_registro = false), invalidando de inmediato cualquier sesión activa del colaborador e impidiendo futuros inicios de sesión.
-
-
-
-Historia de Usuario 05
-
-Como: Administrador de seguridad del sistema.
-Deseo: Definir perfiles operativos y asignar permisos granulares sobre el árbol jerárquico del menú de navegación.
-Para: Garantizar el principio de menor privilegio (PoLP) y cumplimiento de directivas de segregación de funciones (SoD).
-
-Criterios de Aceptación:
-Escenario 1: Creación y parametrización de un nuevo perfil
-Dado que el administrador accede a la sección de "Perfiles y Permisos".
-
-Cuando hace clic en "Crear Perfil", ingresa un nombre formal (por ejemplo, "Auditor de Mesa") y una descripción funcional del rol.
-
-Entonces el sistema habilita el árbol interactivo de opciones de menú para configurar los accesos exclusivos que tendrá dicho perfil.
-
-Escenario 2: Propagación jerárquica de selección en el árbol de permisos
-Dado que el administrador está asignando permisos en un perfil dentro del árbol de 3 niveles.
-
-Cuando marca una opción hoja (nivel 3, por ejemplo, "Tickets Pendientes").
-
-Entonces el sistema marca automáticamente todos los módulos padre y carpetas contenedoras ascendentes (nivel 2 y nivel 1) para asegurar la navegabilidad de la ruta.
-
-Escenario 3: Desmarcación en cascada de ramas subordinadas
-Dado que una carpeta contenedora de menú tiene varias opciones hijas seleccionadas.
-
-Cuando el administrador desmarca la casilla del módulo padre de nivel superior.
-
-Entonces el sistema desmarca automáticamente todas las pantallas descendientes asociadas a dicha rama, impidiendo la asignación parcial o inconsistente de permisos.
-
-
-
-
-Historia de Usuario 06
- 
-Como: Administrador del catálogo de servicios de TI.
-Deseo: Administrar el catálogo de servicios orientados a Incidentes, definiendo sus categorías, criticidad y acuerdos de nivel de servicio (SLA).
-Para: Proporcionar a la Mesa de Ayuda un marco formal para clasificar y restaurar de forma priorizada fallas e interrupciones del servicio.
-
-Criterios de Aceptación:
-Escenario 1: Filtrado y consulta exclusiva de servicios de tipo Incidente
-Dado que el administrador ingresa al módulo de Servicios del Catálogo.
-
-Cuando selecciona la vista o filtro de "Incidentes" (tipo = 1).
-
-Entonces la tabla despliega exclusivamente los servicios diseñados para resolver caídas y averías (código con prefijo SRV-INC), omitiendo solicitudes de adquisición o aprovisionamiento.
-
-Escenario 2: Asignación de grupo técnico resolutor inicial
-Dado que el administrador edita un servicio de incidente (por ejemplo, "Falla en Enlace de Fibra Óptica").
-
-Cuando selecciona en el selector de departamento resolutor el grupo "Redes y Telecomunicaciones".
-
-Entonces el sistema almacena dicha relación, garantizando que los incidentes de este servicio se enruten directamente al equipo técnico especializado correspondiente.
-
-Escenario 3: Actualización de tiempos de primera respuesta y resolución
-Dado que la organización renegocia los acuerdos de soporte técnico para incidentes críticos.
-
-Cuando el administrador ajusta el tiempo de primera respuesta a 30 minutos y resolución a 2 horas en la ficha del servicio.
-
-Entonces el catálogo actualiza los parámetros en la base de datos y recalcula automáticamente los límites de vencimiento para los nuevos tickets que se aperturen bajo este servicio.
-
-
-Historia de Usuario 07
-
-Como: Administrador de servicios corporativos.
-Deseo: Configurar los servicios orientados a Solicitudes de Servicio (peticiones de equipamiento, software, accesos y cambios menores).
-Para: Estandarizar la oferta de requerimientos informáticos hacia los colaboradores y definir las reglas de entrega y validación correspondientes.
-
-Criterios de Aceptación:
-Escenario 1: Configuración de acuerdos de entrega (SLA/OLA) para solicitudes
-Dado que el administrador selecciona un servicio del catálogo clasificado como "Solicitud de Servicio" (tipo = 2).
-
-Cuando define el tiempo de entrega prometido (por ejemplo, 24 horas hábiles) y su horario de cobertura (8x5 o 24x7).
-
-Entonces el sistema registra el acuerdo de servicio y lo publica en el catálogo oficial para conocimiento transparente de los usuarios solicitantes.
-
-Escenario 2: Activación de compuertas de aprobación obligatorias
-Dado que un servicio de solicitud implica asignación presupuestal o riesgo de seguridad (por ejemplo, "Asignación de Laptop de Alta Gama").
-
-Cuando el administrador activa la casilla "Requiere Aprobación Jerárquica Obligatoria".
-
-Entonces el sistema configura el servicio para que ningún técnico pueda despacharlo sin contar previamente con el visto bueno del jefe de área o supervisor correspondiente.
-
-Escenario 3: Deshabilitación controlada de un servicio con justificación formal
-Dado que un servicio de solicitud entra en obsolescencia o mantenimiento temporal.
-
-Cuando el administrador pulsa "Deshabilitar Servicio", ingresa la justificación institucional requerida y confirma.
-
-Entonces el servicio se oculta del portal de autoservicio de los solicitantes, quedando archivado en el catálogo administrativo con trazabilidad de auditoría.
-
-
-
-
-[HU-08] Registro Oficial de Nuevos Servicios en el Catálogo
-
-Como: Administrador del sistema ITIL v4.
-Deseo: Utilizar un formulario oficial unificado para dar de alta nuevos servicios en el catálogo institucional.
-Para: Garantizar que todo servicio nuevo cumpla con los estándares de nomenclatura, clasificación, costos y acuerdos de servicio definidos por la organización.
-
-Criterios de Aceptación:
-Escenario 1: Generación automática de código oficial ITIL
-Dado que el administrador abre la vista de creación de servicio.
-
-Cuando selecciona la naturaleza del servicio ("Incidente" o "Solicitud") y la categoría técnica ("Ciberseguridad", "Redes", "Sistemas", etc.).
-
-Entonces el sistema genera en tiempo real el código estandarizado del servicio (por ejemplo, SRV-INC-SEC-005 o SRV-SOL-ACC-012) en formato de solo lectura.
-
-Escenario 2: Validación estricta de parámetros mínimos requeridos
-Dado que el administrador intenta guardar el nuevo servicio sin ingresar la descripción del entregable o con tiempos SLA en cero.
-
-Cuando hace clic en el botón "Registrar Servicio" al pie del formulario.
-
-Entonces el sistema interrumpe el registro, focaliza el campo con error y emite un mensaje indicando que todos los parámetros operativos son mandatorios.
-
-Escenario 3: Redirección automática y publicación en el catálogo
-Dado que todos los campos del formulario cumplen las validaciones de negocio.
-
-Cuando el administrador confirma el registro del nuevo servicio.
-
-Entonces el sistema guarda el servicio en la base de datos, muestra una alerta de confirmación exitosa y redirige al listado filtrado por la categoría correspondiente.
-
-
-HU-09: Exploración del Catálogo de Servicios
-
-Como: Solicitante de soporte institucional.
-Deseo: Explorar el catálogo oficial de servicios categorizado por tipo de requerimiento e insumo técnico.
-Para: Identificar rápidamente la solución tecnológica que requiero y conocer los acuerdos de nivel de servicio (SLA) comprometidos.
-
-Criterios de Aceptación:
-Escenario 1: Diferenciación entre Incidentes y Solicitudes de Servicio
-Dado que el solicitante ingresa al módulo de Catálogo de Servicios.
-
-Cuando alterna entre las pestañas "Incidentes" y "Solicitudes de Servicio".
-
-Entonces el sistema filtra los ítems disponibles, mostrando para incidentes aquellos destinados a reportar fallas e interrupciones, y para solicitudes aquellos destinados a peticiones de equipamiento, software o accesos.
-
-Escenario 2: Visualización transparente de tiempos SLA
-Dado que el usuario navega por las tarjetas de servicio en el catálogo.
-
-Cuando examina un servicio específico (por ejemplo, "Configuración de Red VPN").
-
-Entonces el sistema exhibe el tiempo estimado de primera respuesta, el tiempo máximo de resolución oficial y la descripción funcional del entregable.
-
-Escenario 3: Inicio guiado de ticket desde el catálogo
-Dado que el solicitante localiza el servicio requerido en la cuadrícula de categorías.
-
-Cuando hace clic en el botón de acción del servicio seleccionado.
-
-Entonces el sistema lo redirige al formulario de creación preseleccionando automáticamente el tipo de ticket, la categoría y el servicio correspondiente.
-
-
-
-
-HU-10: Creación y Clasificación de Tickets
-
-Como: Solicitante del portal de autoservicio.
-Deseo: Completar y enviar un formulario estructurado para reportar una incidencia o solicitar un servicio.
-Para: Que el equipo de soporte reciba la información precisa y pueda iniciar la atención de acuerdo con los niveles de servicio establecidos.
-
-Criterios de Aceptación:
-Escenario 1: Deducción automática de prioridad según Impacto y Urgencia
-Dado que el solicitante se encuentra en el formulario oficial de creación de tickets.
-
-Cuando selecciona un nivel de Impacto (por ejemplo, "Alto") y un nivel de Urgencia (por ejemplo, "Alto").
-
-Entonces el sistema calcula en tiempo real la prioridad resultante ("P1 - Crítica") y actualiza la insignia de plazo de resolución asociado según la matriz ITIL.
-
-Escenario 2: Validación de completitud en campos requeridos
-Dado que el solicitante intenta enviar el formulario sin completar el título o detallar la descripción del problema.
-
-Cuando presiona el botón "Registrar Ticket".
-
-Entonces el sistema bloquea el envío, resalta los campos faltantes en color de alerta y muestra mensajes de validación indicando la longitud mínima obligatoria.
-
-Escenario 3: Captura de campos contextuales para Solicitudes de Servicio
-Dado que el solicitante selecciona la modalidad "Solicitud de Servicio".
-
-Cuando se despliega el formulario especializado.
-
-Entonces el sistema habilita de forma obligatoria los campos de "Justificación del Requerimiento" y "Fecha Límite Deseada", validando que dicha fecha no sea anterior a la fecha actual.
-
-
-
-
-
-
-HU-12: Seguimiento y Filtrado de Mis Tickets
-
-Como: Solicitante recurrente de la organización.
-Deseo: Consultar mi historial de tickets con métricas resumidas y herramientas de búsqueda avanzada.
-Para: Conocer el estado de avance de mis solicitudes abiertas y consultar el historial de requerimientos concluidos.
-
-Criterios de Aceptación:
-Escenario 1: Segmentación rápida por estado mediante tarjetas métricas
-Dado que el solicitante accede a la vista de "Mis Tickets".
-
-Cuando pulsa sobre las tarjetas superiores ("En Proceso", "Finalizados" o "Total Registrados").
-
-Entonces la tabla inferior filtra dinámicamente el listado, mostrando exclusivamente los tickets que coincidan con la fase del ciclo de vida seleccionada.
-
-Escenario 2: Búsqueda reactiva por múltiples atributos
-Dado que el solicitante cuenta con múltiples tickets registrados en su historial.
-
-Cuando escribe un término en el campo de búsqueda (código de ticket, nombre de servicio o palabras clave del título).
-
-Entonces la tabla filtra instantáneamente las filas coincidentes sin recargar la página completa.
-
-Escenario 3: Filtrado combinado mediante panel desplegable
-Dado que el usuario abre el panel de filtros mediante el botón "Filtrar".
-
-Cuando selecciona simultáneamente filtros de tipo ("Solicitud de Servicio"), prioridad ("P2 - Alta") y estado ("En Atención").
-
-Entonces la lista muestra únicamente los registros que cumplen todas las condiciones, mostrando un indicador numérico con la cantidad de filtros activos aplicados.
-
-
-
-
-HU-13: Consulta Detallada y Progreso del Ticket
-
-Como: Solicitante del servicio.
-Deseo: Abrir el detalle completo de un ticket específico y observar su evolución en una interfaz simplificada.
-Para: Comprender en qué etapa de atención se encuentra mi requerimiento sin interpretar tecnicismos de soporte.
-
-Criterios de Aceptación:
-Escenario 1: Línea de tiempo visual simplificada (Stepper de 4 etapas)
-Dado que el solicitante ingresa a la vista detallada de uno de sus tickets.
-
-Cuando visualiza el componente de seguimiento en la parte superior.
-
-Entonces el sistema presenta un stepper con 4 fases de negocio claras: "Registrado", "Asignado", "En Proceso" y "Resuelto/Cerrado", marcando con color activo la etapa correspondiente al estado interno ITIL del ticket.
-
-Escenario 2: Información de contacto del especialista y tiempo comprometido
-Dado que el ticket ha sido asignado a un técnico de soporte.
-
-Cuando el usuario revisa la tarjeta de información general.
-
-Entonces el sistema muestra el nombre del especialista a cargo, la fecha de registro y la fecha límite de entrega según el SLA convenido.
-
-Escenario 3: Descarga de evidencias y visualización del requerimiento
-Dado que el ticket contiene archivos adjuntos originales.
-
-Cuando el solicitante hace clic en el enlace "Descargar" de cualquiera de los adjuntos.
-
-Entonces el navegador inicia la descarga del archivo con su nombre original e integridad intacta.
-
-
-
-HU-14: Comunicación Bidireccional con Soporte Técnico
-
-Como: Solicitante con un ticket en atención.
-Deseo: Enviar y recibir mensajes públicos a través de un canal de conversación dentro del ticket.
-Para: Coordinar detalles de la solución, aclarar dudas y responder consultas del técnico asignado.
-
-Criterios de Aceptación:
-Escenario 1: Envío de mensaje al equipo de soporte
-Dado que el ticket se encuentra en estado de atención o espera.
-
-Cuando el solicitante redacta un mensaje en el campo de chat público y presiona "Enviar".
-
-Entonces el comentario se almacena en la bitácora del ticket con autoría del solicitante, fecha y hora exacta, quedando visible para el técnico responsable.
-
-Escenario 2: Restricción de acceso a notas técnicas internas
-Dado que el equipo técnico o supervisor registra notas de trabajo privadas (internas) para coordinación de TI.
-
-Cuando el solicitante consulta el historial de mensajes de su ticket.
-
-Entonces el sistema omite estrictamente la visualización de notas internas, garantizando que el usuario solo visualice mensajes marcados como públicos.
-
-Escenario 3: Validación contra envíos en blanco
-Dado que el solicitante presiona el botón de envío sin haber redactado texto en la caja de comentarios.
-
-Cuando el sistema evalúa la acción.
-
-Entonces el botón permanece inactivo o el sistema previene el envío, evitando la inserción de registros vacíos en la base de datos.
-
-Historia de Usuario 15: Configuración del Formulario de Incidentes
-
-Como: Administrador de la plataforma de TI.
-Deseo: Parametrizar y personalizar los campos del formulario de registro de incidentes en el panel de configuración.
-Para: Estandarizar la recolección de información técnica obligatoria según el tipo de incidente y evitar reportes incompletos.
-
-Criterios de Aceptación:
-Escenario 1: Activación y marcado de campos obligatorios en el formulario
-Dado que el administrador accede a la ruta de configuración de formularios de incidentes.
-Cuando selecciona los campos estándar (síntomas observados, urgencia, impacto y equipo afectado) y activa el interruptor de obligatoriedad.
-Entonces el sistema guarda la plantilla y valida que en los próximos registros de incidentes dichos campos no puedan dejarse en blanco.
-
-Escenario 2: Previsualización reactiva de la plantilla del formulario
-Dado que el administrador modifica la visibilidad de los campos en el panel de administración.
-Cuando observa el panel lateral de previsualización.
-Entonces el sistema refleja instantáneamente los cambios en tiempo real mostrando exactamente cómo visualizará el formulario el usuario técnico.
-
-Escenario 3: Validación contra eliminación de campos esenciales
-Dado que el administrador intenta deshabilitar el campo de descripción detallada o título del incidente.
-Cuando presiona la opción de desactivar.
-Entonces el sistema bloquea la acción notificando que son campos críticos del núcleo ITSM requeridos para el ciclo de vida del ticket.
-
-
-Historia de Usuario 16: Configuración del Formulario de Solicitudes
-
-Como: Administrador de la plataforma de TI.
-Deseo: Configurar la estructura de captura de solicitudes de servicio, incluyendo justificación de negocio y plazos requeridos.
-Para: Garantizar que los pedidos institucionales cuenten con sustento suficiente para la evaluación del gestor de área.
-
-Criterios de Aceptación:
-Escenario 1: Configuración de campos de justificación y fecha límite
-Dado que el administrador ingresa a la configuración de formularios de solicitudes de servicio.
-Cuando activa la exigencia obligatoria de justificación de negocio y fecha requerida de entrega.
-Entonces el sistema actualiza la plantilla de solicitud para todos los servicios del catálogo empresarial.
-
-Escenario 2: Restricción de fecha mínima en el selector
-Dado que un usuario intenta enviar una solicitud indicando una fecha deseada pasada o del mismo instante.
-Cuando el formulario valida el valor ingresado.
-Entonces el sistema bloquea el envío alertando que la fecha requerida debe cumplir con los plazos mínimos del acuerdo de nivel de servicio.
-
-Escenario 3: Persistencia de parámetros adicionales por categoría
-Dado que el administrador añade atributos específicos a una categoría de solicitudes.
-Cuando presiona el botón "Guardar configuración".
-Entonces el sistema confirma la actualización con un mensaje visual y asienta los cambios en la base de datos sin afectar los incidentes.
-
-
-Historia de Usuario 17: Gestión de Acuerdos de Nivel de Servicio (SLA)
-
-Como: Líder de Servicios y Product Owner.
-Deseo: Definir umbrales de tiempo máximo de primera respuesta y tiempo de resolución asociados a la prioridad y categoría del servicio.
-Para: Garantizar compromisos de calidad medibles con las áreas de negocio y monitorear el rendimiento operativo.
-
-Criterios de Aceptación:
-Escenario 1: Registro de matriz de tiempos por nivel de prioridad
-Dado que se configuran los SLAs para incidentes en el módulo de servicios.
-Cuando se asignan 1 hora para P1 Crítica, 4 horas para P2 Alta, 8 horas para P3 Media y 24 horas para P4 Baja.
-Entonces el sistema almacena la matriz de compromisos y la asocia automáticamente a los tickets categorizados bajo esa prioridad.
-
-Escenario 2: Cálculo automático de fecha y hora límite al crear el caso
-Dado que un solicitante o técnico registra un nuevo ticket con prioridad P2.
-Cuando el sistema procesa el guardado inicial.
-Entonces calcula y estampa automáticamente el campo de fecha límite de resolución sumando las horas comprometidas según el calendario laboral.
-
-Escenario 3: Alerta visual de aproximación a vencimiento
-Dado que un ticket se encuentra abierto y el tiempo transcurrido supera el 80% del umbral de SLA establecido.
-Cuando el supervisor o técnico visualiza la bandeja de casos.
-Entonces el sistema despliega un indicador en color ámbar alertando sobre la proximidad del incumplimiento de SLA.
-
-
-Historia de Usuario 18: Homologación Visual de Formularios y Acciones de Mesa
-
-Como: Diseñadora de UI y Analista Funcional.
-Deseo: Homologar los botones de acción, iconos, alertas y espaciados en las pantallas operativas de la mesa de servicio.
-Para: Proporcionar una experiencia de usuario consistente, intuitiva y libre de sobrecargas cognitivas.
-
-Criterios de Aceptación:
-Escenario 1: Estandarización de botones de acción
-Dado que el usuario navega entre las diferentes vistas de tickets, incidentes y solicitudes.
-Cuando interactúa con botones de guardar, editar, cancelar o filtrar.
-Entonces todos los controles presentan la misma paleta de colores, tipografía, tamaño compacto y estados interactivos de hover y focus.
-
-Escenario 2: Presentación adaptativa y eliminación de contenedores desbordados
-Dado que se visualizan formularios con múltiples bloques de configuración en pantallas de diferentes resoluciones.
-Cuando se redimensiona la ventana del navegador.
-Entonces el diseño en tres columnas se reorganiza fluidamente sin generar barras de desplazamiento horizontales innecesarias.
-
-Escenario 3: Mensajería de alerta homogénea ante errores y confirmaciones
-Dado que ocurre un error de validación o una operación exitosa en cualquier módulo.
-Cuando el sistema emite la notificación.
-Entonces despliega el componente estandarizado de alerta con el color correspondiente (rojo para error, verde para éxito, azul para información) sin alterar el layout.
-
-
-Historia de Usuario 19: Registro de Problemas y Análisis Causa Raíz (RCA)
-
-Como: Gestor de Problemas y Especialista de Diagnóstico.
-Deseo: Registrar formalmente un Problema vinculado a incidentes recurrentes y documentar el análisis de causa raíz mediante la técnica de los 5 Porqués.
-Para: Identificar el origen estructural de las fallas de infraestructura y prevenir su repetición en el entorno de producción.
-
-Criterios de Aceptación:
-Escenario 1: Alta formal de problema vinculado a incidentes
-Dado que se detecta un patrón de incidentes recurrentes sobre el mismo servicio.
-Cuando el gestor registra el problema indicando título, categoría, urgencia e impacto.
-Entonces el sistema genera el código correlativo de problema y lo coloca en estado de investigación activa.
-
-Escenario 2: Estructuración del análisis de los 5 Porqués
-Dado que el especialista inicia la etapa de diagnóstico causa raíz.
-Cuando completa los campos guiados correspondientes a la secuencia de los 5 Porqués detallando la cadena causal de la falla.
-Entonces el sistema concatena el análisis en la bitácora técnica del problema y habilita la formulación de una solución temporal o definitiva.
-
-Escenario 3: Vinculación referencial de tickets origen
-Dado que existen dos o más incidentes reportados por los usuarios debido a la misma causa.
-Cuando el gestor enlaza dichos incidentes en la pestaña de tickets asociados del problema.
-Entonces el sistema actualiza la relación bidireccional permitiendo que los técnicos consulten el problema matriz desde la ficha del incidente.
-
-
-Historia de Usuario 20: Publicación en la Base de Errores Conocidos (KEDB)
-
-Como: Técnico de Soporte Nivel 2.
-Deseo: Consultar y publicar soluciones temporales (workarounds) en la KEDB vinculadas a problemas bajo investigación.
-Para: Restablecer el servicio de los usuarios con rapidez mientras el equipo de ingeniería implementa la corrección definitiva.
-
-Criterios de Aceptación:
-Escenario 1: Publicación de solución de contingencia aprobada
-Dado que se ha determinado una solución alternativa eficaz para un problema en curso.
-Cuando el gestor de problemas marca la opción "Publicar en KEDB" ingresando los pasos de remediación rápida.
-Entonces el registro se hace visible de inmediato en la sección de Errores Conocidos para todos los técnicos resolutores.
-
-Escenario 2: Búsqueda reactiva de workarounds desde la mesa de ayuda
-Dado que un técnico atiende un nuevo incidente de red o base de datos.
-Cuando escribe los síntomas en el buscador de la base de errores conocidos.
-Entonces el sistema lista instantáneamente los artículos de la KEDB que coincidan con la descripción del fallo.
-
-Escenario 3: Control de vigencia y actualización de la solución temporal
-Dado que se implementa una solución de raíz que subsana de forma permanente el problema.
-Cuando el gestor actualiza el estado del problema a resuelto.
-Entonces la entrada en la KEDB se actualiza reflejando que la contingencia ya no es requerida e indicando la solución permanente.
-
-
-Historia de Usuario 21: Asignación de Grupos Resolutores y Niveles de Soporte
-
-Como: Administrador de Organización y Recursos.
-Deseo: Estructurar los departamentos técnicos de TI y asignar especialistas definiendo sus niveles de soporte N1, N2 y N3.
-Para: Garantizar que cada incidente o solicitud sea canalizado al escalón técnico con las competencias adecuadas.
-
-Criterios de Aceptación:
-Escenario 1: Creación de grupo resolutor con supervisor asignado
-Dado que el administrador accede al módulo de organización técnica.
-Cuando crea un nuevo departamento de TI (por ejemplo, Infraestructura, Redes, Sistemas) y le asigna un supervisor responsable.
-Entonces el departamento queda habilitado en la plataforma como grupo resolutor destino de tickets.
-
-Escenario 2: Alta de especialista y asignación de nivel de escalamiento
-Dado que se incorpora un nuevo técnico al equipo de soporte.
-Cuando el administrador o supervisor lo asocia a su departamento técnico seleccionando su nivel de escalamiento (Nivel 1, Nivel 2 o Nivel 3).
-Entonces el usuario adquiere las capacidades operativas correspondientes a su nivel en la mesa de ayuda.
-
-Escenario 3: Bloqueo de asignación a técnicos inactivos
-Dado que un técnico se encuentra en estado inactivo o dado de baja institucional.
-Cuando un operador intenta asignarle un ticket en el selector de técnicos.
-Entonces el sistema filtra la lista excluyendo al usuario inactivo e impidiendo asignaciones erróneas.
-
-
-Historia de Usuario 22: Planificación de Turnos Técnicos y Gestión de Ausencias
-
-Como: Supervisor de Mesa de Ayuda.
-Deseo: Programar los turnos operativos semanales de los técnicos y registrar sus ausencias justificadas asignando un técnico de reemplazo.
-Para: Mantener la cobertura permanente de los servicios y asegurar que no queden tickets desatendidos durante vacaciones o permisos.
-
-Criterios de Aceptación:
-Escenario 1: Registro de turno operativo en el calendario
-Dado que el supervisor accede a la pantalla de turnos y ausencias.
-Cuando selecciona a un técnico, una fecha y asigna el turno correspondiente (Mañana, Tarde, Noche o Guardia 24x7).
-Entonces el sistema graba la agenda y muestra visualmente la cuadrícula de cobertura horaria del grupo.
-
-Escenario 2: Registro de ausencia programada con técnico sustituto obligatorio
-Dado que un especialista técnico solicita un período de permiso o descanso.
-Cuando el supervisor registra la ausencia con fecha de inicio, fin y selecciona obligatoriamente al técnico de reemplazo.
-Entonces el sistema asienta la ausencia y bloquea la asignación de turnos a dicho técnico durante el rango de fechas establecido.
-
-Escenario 3: Prevención de solapamiento de ausencias en el mismo grupo
-Dado que el supervisor intenta programar una ausencia que dejaría sin cobertura mínima al departamento.
-Cuando se evalúa la disponibilidad del equipo para la fecha seleccionada.
-Entonces el sistema muestra una advertencia preventiva informando la cantidad de técnicos disponibles en dicho turno.
-
-
-Historia de Usuario 23: Registro de Solicitud de Cambio (RFC) y Solapamiento Horario
-
-Como: Gestor de Cambios y Coordinador Operativo.
-Deseo: Registrar Solicitudes de Cambio (RFC) especificando ventana de ejecución y CI afectado, bloqueando cambios en ventanas concurrentes.
-Para: Evitar colisiones operativas sobre servidores y bases de datos provocadas por intervenciones simultáneas de distintos equipos.
-
-Criterios de Aceptación:
-Escenario 1: Creación exitosa de RFC estándar o normal
-Dado que el usuario responsable completa el formulario de solicitud de cambio con título, justificación, plan de rollback y fechas de inicio y fin.
-Cuando presiona el botón "Registrar RFC".
-Entonces el sistema genera el código correlativo de cambio (ejemplo: RFC-2026-0001) y sitúa la solicitud en estado de evaluación.
-
-Escenario 2: Detección y bloqueo automático de solapamiento de cambios
-Dado que existe una RFC programada sobre el servidor de base de datos principal para el día de mañana de 14:00 a 16:00.
-Cuando otro equipo intenta registrar una nueva RFC sobre el mismo CI para el mismo día de 15:00 a 17:00.
-Entonces el sistema rechaza la creación arrojando un mensaje de conflicto indicando el código y título del cambio solapado.
-
-Escenario 3: Validación obligatoria de plan de reversa (Rollback)
-Dado que la política institucional exige plan de contingencia para todo cambio de infraestructura.
-Cuando el usuario omite redactar las acciones de rollback e intenta guardar la RFC.
-Entonces el sistema detiene el proceso destacando el campo en rojo y exigiendo su llenado para continuar.
-
-
-Historia de Usuario 24: Inventario de Activos y Semáforo SAM de Licencias
-
-Como: Gestor de Activos de TI (ITAM).
-Deseo: Administrar el inventario físico de activos y monitorear el cumplimiento de licencias de software mediante un semáforo visual de consumo.
-Para: Controlar la custodia de equipos informáticos y evitar riesgos legales o sobrecostos por sublicenciamiento o licencias ociosas.
-
-Criterios de Aceptación:
-Escenario 1: Alta y catalogación de activo informático
-Dado que el gestor de activos accede al catálogo de hardware.
-Cuando ingresa número de serie, marca, modelo, ubicación física y colaborador responsable.
-Entonces el activo queda registrado con estado operativo "En Uso" y vinculado al inventario general.
-
-Escenario 2: Semáforo de utilización de licencias en tiempo real
-Dado que el gestor consulta la tabla de licencias de software institucional.
-Cuando el sistema evalúa la relación entre licencias adquiridas y licencias asignadas.
-Entonces despliega una insignia visual: verde ("SUPERÁVIT") si el consumo es menor al 80%, ámbar ("LÍMITE") si está entre 80% y 99%, y rojo ("DÉFICIT") si alcanza o supera el 100%.
-
-Escenario 3: Filtrado de activos por estado operativo
-Dado que se requiere auditar los equipos que se encuentran en mantenimiento o pendientes de baja.
-Cuando el usuario selecciona el filtro de estado contractual u operativo correspondiente.
-Entonces la grilla actualiza instantáneamente los resultados mostrando únicamente los activos que coinciden con el criterio seleccionado.
+## Índice Rápido de Historias de Usuario
+
+| Identificador | Título de la Historia de Usuario | Módulo Asignado | Integrante Asignado | Estado en Trello |
+| :---: | :--- | :--- | :---: | :---: |
+| [HU-00](#hu-00-provisi-n-de-credenciales-smtp-seguras) | Provisión de Credenciales SMTP Seguras | `identidades` | Junior | HECHO (Sprint 1) |
+| [HU-01](#hu-01-inicio-de-sesi-n-y-control-de-acceso-institucional) | Inicio de Sesión y Control de Acceso Institucional | `seguridad` | Miguel | HECHO (Sprint 1) |
+| [HU-02](#hu-02-recuperaci-n-aut-noma-de-contrase-a-por-c-digo-temporal) | Recuperación Autónoma de Contraseña por Código Temporal | `seguridad` | Miguel | HECHO (Sprint 1) |
+| [HU-03](#hu-03-actualizaci-n-de-perfil-y-canales-de-contacto) | Actualización de Perfil y Canales de Contacto | `seguridad` | Miguel | HECHO (Sprint 1) |
+| [HU-04](#hu-04-administraci-n-centralizada-de-cuentas-de-usuario) | Administración Centralizada de Cuentas de Usuario | `identidades` | Junior | HECHO (Sprint 1) |
+| [HU-05](#hu-05-asignaci-n-de-perfiles-rbac-y-pol-ticas-de-acceso) | Asignación de Perfiles RBAC y Políticas de Acceso | `identidades` | Junior | HECHO (Sprint 1) |
+| [HU-06](#hu-06-creaci-n-y-jerarquizaci-n-de-categor-as-del-cat-logo) | Creación y Jerarquización de Categorías del Catálogo | `servicios` | Lourdes | HECHO (Sprint 1) |
+| [HU-07](#hu-07-configuraci-n-de-ficha-de-servicio-y-par-metros-base) | Configuración de Ficha de Servicio y Parámetros Base | `servicios` | Lourdes | HECHO (Sprint 1) |
+| [HU-08](#hu-08-edici-n-integral-y-actualizaci-n-del-cat-logo-de-servicios) | Edición Integral y Actualización del Catálogo de Servicios | `servicios` | Lourdes | HECHO (Sprint 1) |
+| [HU-09](#hu-09-activaci-n-y-retiro-controlado-de-tems-del-cat-logo) | Activación y Retiro Controlado de Ítems del Catálogo | `servicios` | Lourdes | HECHO (Sprint 1) |
+| [HU-10](#hu-10-b-squeda-predictiva-y-exploraci-n-de-servicios-para-solicitantes) | Búsqueda Predictiva y Exploración de Servicios para Solicitantes | `servicios` | Lourdes | HECHO (Sprint 1) |
+| [HU-11](#hu-11-captura-asistida-de-requerimientos-desde-el-cat-logo) | Captura Asistida de Requerimientos desde el Catálogo | `servicios` | Lourdes | HECHO (Sprint 1) |
+| [HU-12](#hu-12-bandeja-de-seguimiento-mis-tickets-con-filtros-de-estado) | Bandeja de Seguimiento 'Mis Tickets' con Filtros de Estado | `tickets` | Miguel | HECHO (Sprint 1) |
+| [HU-13](#hu-13-visualizador-detallado-de-ticket-con-l-nea-de-tiempo-stepper-) | Visualizador Detallado de Ticket con Línea de Tiempo (Stepper) | `tickets` | Miguel | HECHO (Sprint 1) |
+| [HU-14](#hu-14-bit-cora-de-comentarios-p-blicos-y-notas-t-cnicas-privadas) | Bitácora de Comentarios Públicos y Notas Técnicas Privadas | `tickets` | Miguel | HECHO (Sprint 1) |
+| [HU-15](#hu-15-configuraci-n-din-mica-de-formularios-de-incidentes) | Configuración Dinámica de Formularios de Incidentes | `incidentes` | Miguel | HECHO (Sprint 2) |
+| [HU-16](#hu-16-configuraci-n-de-formularios-de-solicitudes-y-justificaci-n-de-negocio) | Configuración de Formularios de Solicitudes y Justificación de Negocio | `solicitudes` | Miguel | HECHO (Sprint 2) |
+| [HU-17](#hu-17-parametrizaci-n-de-acuerdos-de-nivel-de-servicio-sla-y-horarios-h-biles) | Parametrización de Acuerdos de Nivel de Servicio (SLA) y Horarios Hábiles | `servicios` | Lourdes | HECHO (Sprint 2) |
+| [HU-18](#hu-18-dise-ador-din-mico-de-campos-para-formularios-de-servicios-del-cat-logo) | Diseñador Dinámico de Campos para Formularios de Servicios del Catálogo | `servicios` | Lourdes | HECHO (Sprint 2) |
+| [HU-19](#hu-19-registro-estructurado-de-problemas-y-an-lisis-causa-ra-z-rca-) | Registro Estructurado de Problemas y Análisis Causa Raíz (RCA) | `problemas` | Alexis | HECHO (Sprint 2) |
+| [HU-20](#hu-20-base-de-datos-de-errores-conocidos-kedb-y-publicaci-n-de-workarounds) | Base de Datos de Errores Conocidos (KEDB) y Publicación de Workarounds | `problemas` | Alexis | HECHO (Sprint 2) |
+| [HU-21](#hu-21-configuraci-n-de-departamentos-ti-y-grupos-resolutores-n1-n2-n3) | Configuración de Departamentos TI y Grupos Resolutores N1/N2/N3 | `organizacion` | Junior | HECHO (Sprint 2) |
+| [HU-22](#hu-22-planificaci-n-de-turnos-t-cnicos-y-control-de-ausencias-en-mesa) | Planificación de Turnos Técnicos y Control de Ausencias en Mesa | `organizacion` | Junior | HECHO (Sprint 2) |
+| [HU-23](#hu-23-registro-de-solicitud-de-cambio-rfc-y-validaci-n-de-ventanas-de-mantenimiento) | Registro de Solicitud de Cambio (RFC) y Validación de Ventanas de Mantenimiento | `cambios` | Nain | HECHO (Sprint 2) |
+| [HU-24](#hu-24-inventario-maestro-de-activos-ti-y-control-semaf-rico-de-licencias-sam-) | Inventario Maestro de Activos TI y Control Semafórico de Licencias (SAM) | `activos` | Nain | HECHO (Sprint 2) |
+| [HU-25](#hu-25-sala-de-crisis-colaborativa-y-gesti-n-de-incidentes-mayores-p1) | Sala de Crisis Colaborativa y Gestión de Incidentes Mayores P1 | `incidentes` | Miguel | PRODUCT BACKLOG |
+| [HU-26](#hu-26-motor-de-escalamiento-autom-tico-y-notificaciones-operativas) | Motor de Escalamiento Automático y Notificaciones Operativas | `operacion` | Miguel | PRODUCT BACKLOG |
+| [HU-27](#hu-27-cat-logo-de-servicios-t-cnicos-y-vinculaci-n-con-acuerdos-operativos-ola) | Catálogo de Servicios Técnicos y Vinculación con Acuerdos Operativos OLA | `servicios` | Lourdes | PRODUCT BACKLOG |
+| [HU-28](#hu-28-parametrizaci-n-de-contratos-de-soporte-externo-uc-y-excepciones-de-calendario) | Parametrización de Contratos de Soporte Externo (UC) y Excepciones de Calendario | `servicios` | Lourdes | PRODUCT BACKLOG |
+| [HU-29](#hu-29-diagrama-causa-efecto-ishikawa-y-rbol-de-fallas-para-problemas-complejos) | Diagrama Causa-Efecto (Ishikawa) y Árbol de Fallas para Problemas Complejos | `problemas` | Alexis | PRODUCT BACKLOG |
+| [HU-30](#hu-30-flujo-editorial-kcs-con-aprobaci-n-y-votaci-n-de-art-culos-de-conocimiento) | Flujo Editorial KCS con Aprobación y Votación de Artículos de Conocimiento | `conocimiento` | Alexis | PRODUCT BACKLOG |
+| [HU-31](#hu-31-matriz-de-desbloqueo-seguro-y-pol-ticas-de-caducidad-de-contrase-as-iam) | Matriz de Desbloqueo Seguro y Políticas de Caducidad de Contraseñas IAM | `identidades` | Junior | PRODUCT BACKLOG |
+| [HU-32](#hu-32-cat-logo-de-proveedores-y-evaluaci-n-de-cumplimiento-de-contratos-de-terceros) | Catálogo de Proveedores y Evaluación de Cumplimiento de Contratos de Terceros | `proveedores` | Junior | PRODUCT BACKLOG |
+| [HU-33](#hu-33-topolog-a-interactiva-de-cis-y-matriz-de-an-lisis-de-impacto-en-cmdb) | Topología Interactiva de CIs y Matriz de Análisis de Impacto en CMDB | `cmdb` | Nain | PRODUCT BACKLOG |
+| [HU-34](#hu-34-sesi-n-virtual-del-comit-de-cambios-cab-con-votaci-n-formal-de-rfcs) | Sesión Virtual del Comité de Cambios (CAB) con Votación Formal de RFCs | `cambios` | Nain | PRODUCT BACKLOG |
 
 ---
 
-## Parte II — Historias de Usuario en Columna "PRODUCT BACKLOG" (Pendientes)
+## Parte I — Historias de Usuario en Columna "HECHO"
 
-> Estas historias representan el backlog priorizado para sprints futuros. Abarcan funcionalidades avanzadas de orquestación, CMDB gráfica, encuestas y automatizaciones que se desarrollarán en las siguientes iteraciones.
+> Estas historias representan las capacidades funcionales desarrolladas, probadas y aceptadas en los dos primeros sprints de trabajo.
 
-Historia de Usuario 25: Sala de Crisis Colaborativa en Tiempo Real para P1
-
-Como: Coordinador de Incidentes Mayores.
-Deseo: Disponer de una sala de crisis virtual con mensajería instantánea y bitácora en vivo al declararse un Incidente Crítico P1.
-Para: Centralizar la toma de decisiones técnicas entre líderes de infraestructura y reducir el tiempo medio de recuperación del servicio.
-
-Criterios de Aceptación:
-Escenario 1: Apertura automática de sala al escalar a Incidente Mayor
-Dado que un incidente es reclasificado formalmente como P1 Mayor.
-Cuando el sistema confirma el cambio de criticidad.
-Entonces habilita el acceso a la sala de crisis convocando a los supervisores de área y técnicos especialistas asignados.
-
-Escenario 2: Bitácora cronológica inmutable de acciones en vivo
-Dado que los integrantes del comité técnico documentan acciones durante la contingencia.
-Cuando envían mensajes o reportes de estado en la sala.
-Entonces los registros se estampan con marca de tiempo precisa sin posibilidad de alteración o borrado.
-
-Escenario 3: Cierre formal de la sesión y generación de minuta de crisis
-Dado que el incidente mayor ha sido restablecido y mitigado.
-Cuando el coordinador finaliza la sesión de crisis.
-Entonces el sistema compila automáticamente un resumen descargable con la cronología de eventos y diagnósticos vertidos.
-
-
-Historia de Usuario 26: Escalamiento Automatizado por Umbrales de SLA
-
-Como: Supervisor de Operaciones de Mesa de Ayuda.
-Deseo: Que el sistema reasigne automáticamente o alerte a jefaturas cuando un ticket consuma el 90% de su tiempo de atención sin resolución.
-Para: Intervenir proactivamente antes de incurrir en penalizaciones o incumplimientos contractuales con el usuario.
-
-Criterios de Aceptación:
-Escenario 1: Detección y notificación automática por cron de vencimiento
-Dado que un ticket de prioridad alta se encuentra sin resolver y el reloj de SLA alcanza el 90% de su tiempo límite.
-Cuando el servicio de monitoreo en segundo plano ejecuta la revisión periódica.
-Entonces despacha una alerta de prioridad alta al correo del supervisor del departamento técnico responsable.
-
-Escenario 2: Reasignación jerárquica a especialista Nivel 3
-Dado que transcurre el tiempo de gracia posterior a la alerta preventiva sin interacción técnica en el ticket.
-Cuando el motor de escalamiento evalúa la inactividad.
-Entonces transfiere el caso automáticamente a la cola de atención del especialista N3 del grupo resolutor.
-
-Escenario 3: Registro en la bitácora de auditoría del ticket
-Dado que se produce una acción de escalamiento automático por SLA.
-Cuando el supervisor o auditor revisa el historial del ticket.
-Entonces visualiza el evento con autoría del sistema detallando la regla disparadora y la hora de ejecución.
-
-
-Historia de Usuario 27: Diseñador Gráfico de Flujos de Estados para Solicitudes
-
-Como: Administrador de Procesos de Negocio.
-Deseo: Contar con una herramienta visual de modelado de estados para definir transiciones personalizadas en solicitudes complejas.
-Para: Adaptar los flujos de aprobación a los procedimientos cambiantes de cada gerencia sin requerir modificaciones en el código fuente.
-
-Criterios de Aceptación:
-Escenario 1: Conexión visual de nodos de estado
-Dado que el administrador accede al diseñador interactivo de workflows.
-Cuando arrastra una transición entre el estado "Evaluación Técnica" y "Aprobación Financiera".
-Entonces la herramienta valida que el flujo sea unidireccional y persistente en la configuración del servicio.
-
-Escenario 2: Asignación de permisos por transición de estado
-Dado que se modela una transición crítica de aprobación.
-Cuando se especifica qué perfil tiene la atribución exclusiva de ejecutar el cambio de fase.
-Entonces el motor de flujo restringe la visibilidad del botón de acción en la vista operativa a los usuarios autorizados.
-
-Escenario 3: Validación contra ciclos infinitos o estados huérfanos
-Dado que el diseñador detecta un nodo final sin salida o un bucle cerrado sin avance.
-Cuando el administrador presiona "Publicar flujo".
-Entonces el sistema advierte sobre la inconsistencia lógica e impide guardar hasta corregir la estructura.
-
-
-Historia de Usuario 28: Encuestas de Satisfacción Automatizadas (CSAT)
-
-Como: Responsable de Calidad y Experiencia del Cliente.
-Deseo: Enviar automáticamente un cuestionario breve de satisfacción al correo del solicitante una vez resuelto y cerrado su requerimiento.
-Para: Medir el índice CSAT de la mesa de ayuda y detectar áreas de oportunidad en la atención técnica.
-
-Criterios de Aceptación:
-Escenario 1: Disparo de encuesta al confirmar el cierre del caso
-Dado que un ticket pasa a estado formalmente "Cerrado".
-Cuando el sistema procesa el evento de cierre.
-Entonces envía un correo al solicitante con un enlace de acceso seguro de un solo uso para calificar la atención.
-
-Escenario 2: Calificación en escala de estrellas y captura de feedback
-Dado que el usuario abre el formulario de encuesta en su navegador.
-Cuando selecciona una puntuación de 1 a 5 estrellas y redacta un comentario opcional sobre el trato recibido.
-Entonces el sistema graba la evaluación vinculada al ticket y al especialista que lo atendió.
-
-Escenario 3: Consolidación de métricas de satisfacción en el módulo de reportes
-Dado que se han recibido múltiples evaluaciones de usuarios durante el mes.
-Cuando el supervisor consulta los indicadores de calidad.
-Entonces el sistema grafica la distribución de satisfacción global y el promedio por grupo técnico.
-
-
-Historia de Usuario 29: Diagrama Causa-Efecto (Ishikawa) para Problemas Mayores
-
-Como: Gestor de Problemas y Analista de Calidad.
-Deseo: Construir diagramas de espina de pescado (Ishikawa) interactivos en la ficha de problemas mayores categorizando causas.
-Para: Sistematizar el análisis multidisciplinario en fallas complejas que involucran personas, procesos, tecnología y proveedores.
-
-Criterios de Aceptación:
-Escenario 1: Categorización guiada de causas en ramas estándar
-Dado que el especialista inicia la sesión de análisis Ishikawa en un problema mayor.
-Cuando añade causas secundarias en las ramas de Métodos, Máquinas, Mano de obra y Medio ambiente.
-Entonces el sistema renderiza el diagrama gráfico en pantalla organizando visualmente las hipótesis de falla.
-
-Escenario 2: Ponderación y selección de la causa raíz confirmada
-Dado que el equipo técnico valida cuál de las causas identificadas originó el incidente mayor.
-Cuando el gestor marca la causa principal en el diagrama interactivo.
-Entonces el sistema traslada automáticamente dicha hipótesis al campo de Causa Raíz definitiva del problema.
-
-Escenario 3: Exportación del diagrama para comités ejecutivos
-Dado que se debe presentar el informe post-incidente a la gerencia general.
-Cuando el analista pulsa la opción "Exportar diagrama".
-Entonces el sistema descarga el gráfico en formato PDF o imagen de alta resolución junto con las conclusiones.
-
-
-Historia de Usuario 30: Flujo Editorial Multinivel KCS v6 para Conocimiento
-
-Como: Curador de Conocimiento Institucional.
-Deseo: Implementar un flujo de revisión por pares y aprobación formal antes de publicar artículos técnicos en la base pública.
-Para: Asegurar que las guías de solución cumplan con los estándares de redacción, veracidad técnica y seguridad de la información.
-
-Criterios de Aceptación:
-Escenario 1: Envío de borrador a revisión técnica
-Dado que un técnico redacta un nuevo artículo de solución tras resolver un incidente complejo.
-Cuando presiona el botón "Enviar a revisión editorial".
-Entonces el artículo pasa a estado "En Revisión" y queda en la bandeja del curador de contenido.
-
-Escenario 2: Retroalimentación y solicitud de correcciones al autor
-Dado que el revisor identifica pasos técnicos incompletos o imprecisos en el borrador.
-Cuando anota observaciones de mejora y presiona "Solicitar corrección".
-Entonces el sistema devuelve el artículo al autor notificándole los ajustes requeridos para su publicación.
-
-Escenario 3: Publicación final y disponibilidad en el centro de ayuda
-Dado que el revisor verifica que el artículo cumple todas las políticas de calidad KCS.
-Cuando hace clic en "Aprobar y publicar".
-Entonces el artículo se indexa en el motor de búsqueda y queda disponible para consulta del personal y usuarios finales.
-
-
-Historia de Usuario 31: Recertificación Periódica Automatizada de Cuentas
-
-Como: Oficial de Seguridad y Cumplimiento (Auditor).
-Deseo: Iniciar campañas trimestrales de recertificación de usuarios y privilegios exigiendo ratificación por parte de los jefes de área.
-Para: Cumplir con la norma ISO/IEC 27001 retirando accesos obsoletos o privilegios excesivos de colaboradores transferidos o desvinculados.
-
-Criterios de Aceptación:
-Escenario 1: Convocatoria masiva a jefaturas departamentales
-Dado que se apertura el período de recertificación institucional de accesos.
-Cuando el oficial de seguridad lanza la campaña desde la consola de auditoría.
-Entonces el sistema genera una lista de verificación para cada gestor de área con los colaboradores a su cargo.
-
-Escenario 2: Confirmación o solicitud de baja de permisos por perfil
-Dado que el jefe de departamento revisa la nómina de su personal.
-Cuando marca la ratificación de funciones o solicita la desactivación de un perfil no utilizado.
-Entonces el sistema registra la decisión con firma digital de auditoría y genera la tarea de revocación correspondiente.
-
-Escenario 3: Bloqueo preventivo de cuentas no ratificadas al vencer el plazo
-Dado que expira la fecha límite de la campaña de recertificación sin confirmación de la jefatura.
-Cuando el servicio de control ejecuta la regla de cierre.
-Entonces suspende temporalmente las cuentas no confirmadas alertando al administrador para su verificación manual.
-
-
-Historia de Usuario 32: Matriz Forense de Segregación de Funciones (SoD)
-
-Como: Auditor de Sistemas y Gobierno TI.
-Deseo: Ejecutar un análisis automatizado que detecte usuarios con combinaciones de perfiles incompatibles según la matriz SoD.
-Para: Prevenir fraudes internos, autoaprobaciones indebidas y violaciones a las políticas de control interno COBIT.
-
-Criterios de Aceptación:
-Escenario 1: Identificación de conflicto Solicitante - Aprobador
-Dado que se evalúa la asignación de perfiles en la base de usuarios.
-Cuando el motor de auditoría detecta un usuario que ostenta simultáneamente perfil de solicitante y aprobador de compras en la misma área.
-Entonces el sistema emite una alerta de riesgo alto en el informe forense detallando la incompatibilidad detectada.
-
-Escenario 2: Detección de privilegios cruzados de Administrador y Operador
-Dado que las políticas de gobierno prohíben que quien audita o administra la plataforma gestione incidentes operativos ordinarios.
-Cuando se realiza el escaneo de roles del personal.
-Entonces el sistema reporta cualquier técnico que conserve permisos de administración global de base de datos.
-
-Escenario 3: Exportación de evidencias para auditorías externas
-Dado que se requiere presentar los controles de seguridad a auditores regulatorios.
-Cuando el auditor pulsa "Descargar matriz SoD".
-Entonces el sistema genera un reporte inmutable con la totalidad de roles, permisos efectivos y ausencias de conflicto comprobadas.
-
-
-Historia de Usuario 33: Análisis Gráfico de Topología e Impacto en la CMDB
-
-Como: Gestor de Configuración y Especialista de Arquitectura.
-Deseo: Visualizar un mapa interactivo de relaciones y dependencias entre Elementos de Configuración (CIs) de infraestructura.
-Para: Evaluar el impacto sistémico de caídas o mantenimientos programados sobre los servicios de negocio de la organización.
-
-Criterios de Aceptación:
-Escenario 1: Renderizado de grafo de dependencias aguas arriba y aguas abajo
-Dado que el especialista selecciona un servidor de aplicaciones en la consola CMDB.
-Cuando abre la vista de topología interactiva.
-Entonces el sistema dibuja el árbol de relaciones mostrando la base de datos subyacente, el switch de red y los servicios de cara al cliente dependientes.
-
-Escenario 2: Simulación de caída de nodo crítico
-Dado que se planifica una intervención sobre un elemento de red central.
-Cuando el gestor simula la indisponibilidad del nodo en el grafo interactivo.
-Entonces el sistema resalta en color rojo todos los CIs y aplicaciones que quedarían fuera de servicio como consecuencia del corte.
-
-Escenario 3: Detección de relaciones circulares o CIs huérfanos
-Dado que se actualizan las relaciones lógicas de la infraestructura.
-Cuando el módulo audita la integridad del grafo.
-Entonces alerta sobre elementos de configuración sin relaciones ascendentes o bucles lógicos que distorsionen el análisis de impacto.
-
-
-Historia de Usuario 34: Comité de Cambios (CAB) Virtual con Votación en Línea
-
-Como: Miembro del Comité Asesor de Cambios (CAB).
-Deseo: Evaluar las RFCs programadas para la semana y registrar mi voto de aprobación o rechazo con fundamentación técnica en un panel virtual.
-Para: Agilizar la toma de decisiones colegiada sin depender de reuniones presenciales prolongadas.
-
-Criterios de Aceptación:
-Escenario 1: Visualización del expediente consolidado de cambio en la agenda CAB
-Dado que el integrante del CAB ingresa a la sesión de evaluación semanal.
-Cuando consulta una RFC en agenda.
-Entonces el sistema despliega el expediente completo: justificación, análisis de riesgos, plan de pruebas, rollback y CIs involucrados.
-
-Escenario 2: Emisión y registro de dictamen individual fundamentado
-Dado que el aprobador analiza la viabilidad del cambio propuesto.
-Cuando selecciona su voto (Aprobado, Rechazado o Con Observaciones) e ingresa un comentario explicativo.
-Entonces el sistema registra el dictamen formal en la bitácora del cambio contabilizando el quorum requerido.
-
-Escenario 3: Transición automática de estado al alcanzar la mayoría calificada
-Dado que todos los miembros requeridos del comité han emitido su dictamen favorable.
-Cuando el sistema computa el último voto requerido.
-Entonces la RFC transiciona automáticamente a estado "Aprobado para Implementación" notificando al gestor de cambios y al solicitante.
+### Sección A: Historias de Usuario — Sprint 1 (Cimientos y Autoservicio)
 
 ---
 
-## Parte III — Matriz de Asignación por Integrante del Equipo Scrum
+### HU-00: Provisión de Credenciales SMTP Seguras
 
-| ID Historia | Título de la Historia de Usuario | Módulo ITSM | Estado en Trello | Integrante Responsable | Rol en el Equipo |
-| :---: | :--- | :--- | :---: | :--- | :--- |
-| **HU-00** | Provisión de Credenciales SMTP Seguras | Identidades | HECHO (Sprint 1) | Junior | Developer (IAM / Organización) |
-| **HU-01** | Inicio de Sesión y Control de Acceso | Seguridad | HECHO (Sprint 1) | Miguel | Scrum Master / Tech Lead |
-| **HU-02** | Recuperación Autónoma de Clave | Seguridad | HECHO (Sprint 1) | Miguel | Scrum Master / Tech Lead |
-| **HU-03** | Actualización de Perfil y Contacto | Seguridad | HECHO (Sprint 1) | Miguel | Scrum Master / Tech Lead |
-| **HU-04** | Gestión Integral de Usuarios y Roles | Identidades | HECHO (Sprint 1) | Junior | Developer (IAM / Organización) |
-| **HU-05** | Matriz de Perfiles y Capacidades RBAC | Identidades | HECHO (Sprint 1) | Junior | Developer (IAM / Organización) |
-| **HU-06** | Creación y Estructura de Categorías | Servicios | HECHO (Sprint 1) | Lourdes | Product Owner / Líder UI |
-| **HU-07** | Configuración de Servicios y Prioridades | Servicios | HECHO (Sprint 1) | Lourdes | Product Owner / Líder UI |
-| **HU-08** | Edición y Mantenimiento del Catálogo | Servicios | HECHO (Sprint 1) | Lourdes | Product Owner / Líder UI |
-| **HU-09** | Activación y Desactivación de Servicios | Servicios | HECHO (Sprint 1) | Lourdes | Product Owner / Líder UI |
-| **HU-10** | Exploración y Búsqueda en Catálogo | Solicitudes | HECHO (Sprint 1) | Lourdes | Product Owner / Líder UI |
-| **HU-11** | Registro Asistido de Requerimiento | Solicitudes | HECHO (Sprint 1) | Lourdes | Product Owner / Líder UI |
-| **HU-12** | Seguimiento y Filtros de Mis Tickets | Solicitudes | HECHO (Sprint 1) | Miguel | Scrum Master / Tech Lead |
-| **HU-13** | Consulta Detallada y Stepper del Ticket | Solicitudes | HECHO (Sprint 1) | Miguel | Scrum Master / Tech Lead |
-| **HU-14** | Comunicación Bidireccional y Notas Privadas | Tickets Core | HECHO (Sprint 1) | Miguel | Scrum Master / Tech Lead |
-| **HU-15** | Configuración del Formulario de Incidentes | Incidentes / Admin | HECHO (Sprint 2) | Miguel | Scrum Master / Tech Lead |
-| **HU-16** | Configuración del Formulario de Solicitudes | Solicitudes / Admin | HECHO (Sprint 2) | Miguel | Scrum Master / Tech Lead |
-| **HU-17** | Gestión de Acuerdos de Nivel de Servicio (SLA) | Servicios / SLA | HECHO (Sprint 2) | Lourdes | Product Owner / Líder UI |
-| **HU-18** | Homologación Visual de Formularios y Acciones | Shared UI / Core | HECHO (Sprint 2) | Lourdes | Product Owner / Líder UI |
-| **HU-19** | Registro de Problemas y Análisis Causa Raíz (RCA) | Problemas | HECHO (Sprint 2) | Alexis | Developer (Problemas / KCS) |
-| **HU-20** | Publicación en la Base de Errores Conocidos (KEDB) | Problemas / KEDB | HECHO (Sprint 2) | Alexis | Developer (Problemas / KCS) |
-| **HU-21** | Asignación de Grupos Resolutores y Niveles | Organización | HECHO (Sprint 2) | Junior | Developer (IAM / Organización) |
-| **HU-22** | Planificación de Turnos y Gestión de Ausencias | Organización / Turnos | HECHO (Sprint 2) | Junior | Developer (IAM / Organización) |
-| **HU-23** | Registro de RFC y Solapamiento Horario | Cambios / RFC | HECHO (Sprint 2) | Nain | Developer (Cambios / Activos) |
-| **HU-24** | Inventario de Activos y Semáforo SAM de Licencias | Activos / SAM | HECHO (Sprint 2) | Nain | Developer (Cambios / Activos) |
-| **HU-25** | Sala de Crisis Colaborativa en Vivo para P1 | Incidentes Mayores | PRODUCT BACKLOG | Miguel | Scrum Master / Tech Lead |
-| **HU-26** | Escalamiento Automatizado por Umbrales de SLA | Operación / SLA | PRODUCT BACKLOG | Miguel | Scrum Master / Tech Lead |
-| **HU-27** | Diseñador Gráfico de Flujos de Estados | Solicitudes | PRODUCT BACKLOG | Lourdes | Product Owner / Líder UI |
-| **HU-28** | Encuestas de Satisfacción Automatizadas (CSAT) | Servicios / Calidad | PRODUCT BACKLOG | Lourdes | Product Owner / Líder UI |
-| **HU-29** | Diagrama Causa-Efecto (Ishikawa) para Problemas | Problemas | PRODUCT BACKLOG | Alexis | Developer (Problemas / KCS) |
-| **HU-30** | Flujo Editorial Multinivel KCS v6 para Conocimiento | Conocimiento (KCS) | PRODUCT BACKLOG | Alexis | Developer (Problemas / KCS) |
-| **HU-31** | Recertificación Periódica Automatizada de Cuentas | Plataforma / Seguridad | PRODUCT BACKLOG | Junior | Developer (IAM / Organización) |
-| **HU-32** | Matriz Forense de Segregación de Funciones (SoD) | Auditoría / SoD | PRODUCT BACKLOG | Junior | Developer (IAM / Organización) |
-| **HU-33** | Análisis Gráfico de Topología e Impacto CMDB | CMDB | PRODUCT BACKLOG | Nain | Developer (Cambios / Activos) |
-| **HU-34** | Comité de Cambios (CAB) Virtual con Votación | Cambios / CAB | PRODUCT BACKLOG | Nain | Developer (Cambios / Activos) |
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-00` |
+| **Módulo Asignado** | `identidades` ([src/modules/identidades](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/identidades)) |
+| **Integrante Responsable** | Junior |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Administrador de la plataforma de TI.
+- **Deseo:** Generar correos corporativos estandarizados, contraseñas seguras y despacharlos al correo personal del usuario mediante servicio SMTP.
+- **Para:** Agilizar el aprovisionamiento de cuentas de nuevos colaboradores manteniendo altos estándares de seguridad informática.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Generación automática de correo institucional y contraseña estándar
+- **Dado que** el administrador ingresa los nombres y apellidos de un nuevo colaborador en el formulario de alta.
+- **Cuando** el sistema procesa los campos de texto en tiempo real.
+- **Entonces** genera automáticamente la sugerencia de correo corporativo institucional (inicial_nombre + apellido_paterno @organizacion.com) y una clave aleatoria compleja de 8 o más caracteres con mayúsculas, minúsculas y números.
+
+##### Escenario 2: Envío de credenciales vía correo electrónico SMTP
+- **Dado que** se ha completado el registro de un nuevo usuario con correo personal verificado.
+- **Cuando** el administrador hace clic en el botón 'Enviar credenciales por correo'.
+- **Entonces** el servidor despacha un correo electrónico seguro con la bienvenida institucional, el usuario asignado, la contraseña temporal y el enlace directo de inicio de sesión.
+
+##### Escenario 3: Copiado rápido de credenciales al portapapeles
+- **Dado que** el administrador visualiza el panel de confirmación de creación de usuario.
+- **Cuando** pulsa los botones de acción 'Copiar correo' o 'Copiar clave'.
+- **Entonces** el sistema copia la cadena correspondiente al portapapeles del sistema operativo y despliega un indicador visual confirmando el copiado.
+
+---
+
+### HU-01: Inicio de Sesión y Control de Acceso Institucional
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-01` |
+| **Módulo Asignado** | `seguridad` ([src/modules/seguridad](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/seguridad)) |
+| **Integrante Responsable** | Miguel |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Usuario de la plataforma.
+- **Deseo:** Ingresar con mi correo institucional y clave personal autenticada.
+- **Para:** Disponer de mi entorno de trabajo y gestionar mis requerimientos de tecnología con sesión protegida.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Ingreso exitoso con credenciales válidas
+- **Dado que** ingreso al sistema como usuario con acceso activo.
+- **Cuando** escribo mi correo institucional y mi clave correcta.
+- **Entonces** el sistema me permite entrar, inicializa mi sesión protegida y me muestra mi portal principal de trabajo según mi perfil asignado.
+
+##### Escenario 2: Notificación ante credenciales no coincidentes
+- **Dado que** ingreso a la pantalla de login institucional.
+- **Cuando** escribo una clave que no coincide con los registros.
+- **Entonces** el sistema me informa que los datos son incorrectos y me ofrece la opción de recuperar mi clave sin revelar la existencia del correo.
+
+---
+
+### HU-02: Recuperación Autónoma de Contraseña por Código Temporal
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-02` |
+| **Módulo Asignado** | `seguridad` ([src/modules/seguridad](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/seguridad)) |
+| **Integrante Responsable** | Miguel |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Usuario de la plataforma.
+- **Deseo:** Solicitar un código temporal de comprobación a mi buzón institucional.
+- **Para:** Definir una nueva clave y retomar mis labores sin esperar atención manual de soporte.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Restablecimiento satisfactorio de clave
+- **Dado que** ingreso al sistema en la pantalla de recuperación de contraseña.
+- **Cuando** ingreso mi correo corporativo y transcribo el código de verificación recibido.
+- **Entonces** el sistema valida mi identidad y me permite definir una nueva clave de acceso segura.
+
+##### Escenario 2: Código de verificación expirado o inválido
+- **Dado que** ingreso un código que ha superado el tiempo límite de vigencia de 15 minutos.
+- **Cuando** presiono el botón de confirmar.
+- **Entonces** el sistema me avisa que el código caducó y me ofrece despachar un nuevo código de seguridad.
+
+---
+
+### HU-03: Actualización de Perfil y Canales de Contacto
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-03` |
+| **Módulo Asignado** | `seguridad` ([src/modules/seguridad](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/seguridad)) |
+| **Integrante Responsable** | Miguel |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Baja (S) |
+| **Prioridad de Negocio** | Media |
+
+#### Definición de la Historia
+- **Como:** Usuario de la plataforma.
+- **Deseo:** Actualizar mis canales de contacto telefónico y mi clave personal.
+- **Para:** Mantener mi ficha al día y facilitar que los técnicos me localicen oportunamente.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Actualización correcta de número de contacto
+- **Dado que** ingreso al apartado 'Mi Perfil' con sesión activa.
+- **Cuando** digito mi nuevo número telefónico y confirmo el guardado.
+- **Entonces** el sistema actualiza mis datos inmediatamente y emite un mensaje de éxito.
+
+##### Escenario 2: Renovación voluntaria de clave de acceso
+- **Dado que** me encuentro en el formulario de cambio de clave.
+- **Cuando** ingreso mi contraseña actual, digito la nueva clave cumpliendo las políticas de seguridad y la confirmo.
+- **Entonces** el sistema actualiza mi contraseña y me notifica que el cambio fue exitoso.
+
+---
+
+### HU-04: Administración Centralizada de Cuentas de Usuario
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-04` |
+| **Módulo Asignado** | `identidades` ([src/modules/identidades](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/identidades)) |
+| **Integrante Responsable** | Junior |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Administrador de la plataforma de TI.
+- **Deseo:** Visualizar, registrar, modificar y suspender cuentas de colaboradores desde un panel unificado.
+- **Para:** Garantizar que solo el personal autorizado tenga acceso a las herramientas empresariales.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Consulta paginada del listado de colaboradores
+- **Dado que** ingreso al módulo de gestión de usuarios.
+- **Cuando** el panel carga los registros de la organización.
+- **Entonces** visualizo la tabla paginada con nombres, correo, departamento, perfil asignado y estado operativo.
+
+##### Escenario 2: Búsqueda y filtrado facetado de personal
+- **Dado que** tengo un volumen amplio de cuentas registradas.
+- **Cuando** escribo un término de búsqueda o selecciono un filtro por departamento.
+- **Entonces** la grilla actualiza instantáneamente los resultados mostrando solo las coincidencias exactas.
+
+##### Escenario 3: Baja lógica y suspensión preventiva de acceso
+- **Dado que** un colaborador cesa en sus funciones o presenta anomalías de seguridad.
+- **Cuando** el administrador cambia su estado a 'Inactivo' o 'Bloqueado'.
+- **Entonces** el sistema revoca inmediatamente sus credenciales e impide el inicio de nuevas sesiones.
+
+---
+
+### HU-05: Asignación de Perfiles RBAC y Políticas de Acceso
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-05` |
+| **Módulo Asignado** | `identidades` ([src/modules/identidades](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/identidades)) |
+| **Integrante Responsable** | Junior |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Administrador de la plataforma de TI.
+- **Deseo:** Asignar y actualizar los roles funcionales de cada colaborador en la organización.
+- **Para:** Asegurar que cada usuario disponga únicamente de los permisos correspondientes a su cargo (SoD).
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Asignación de rol funcional a colaborador
+- **Dado que** el administrador edita la ficha de un usuario.
+- **Cuando** selecciona uno de los perfiles disponibles (Solicitante, Técnico, Supervisor, etc.) y guarda.
+- **Entonces** el sistema asocia el nuevo rol y recalcula sus permisos de navegación en el menú lateral.
+
+##### Escenario 2: Segregación de funciones (SoD) en roles incompatibles
+- **Dado que** se configuran las directivas de seguridad corporativa.
+- **Cuando** el administrador intenta otorgar permisos concurrentes de solicitante y aprobador de solicitudes propias.
+- **Entonces** el sistema previene la acumulación de privilegios en cumplimiento de la política SoD.
+
+---
+
+### HU-06: Creación y Jerarquización de Categorías del Catálogo
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-06` |
+| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Integrante Responsable** | Lourdes |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Gestor de Servicios de TI.
+- **Deseo:** Diseñar y registrar categorías temáticas para organizar los servicios tecnológicos.
+- **Para:** Facilitar la navegación intuitiva de los usuarios que requieren asistencia.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Alta exitosa de nueva categoría taxonómica
+- **Dado que** el gestor accede a la administración de categorías del catálogo.
+- **Cuando** ingresa nombre, código, icono representativo y descripción de la nueva categoría.
+- **Entonces** el sistema registra la categoría y la despliega en el árbol taxonómico de servicios.
+
+##### Escenario 2: Validación de unicidad en nombres de categoría
+- **Dado que** ya existe una categoría denominada 'Hardware y Equipamiento'.
+- **Cuando** se intenta registrar otra categoría con el mismo nombre en el mismo nivel.
+- **Entonces** el sistema bloquea el guardado advirtiendo que el nombre ya se encuentra en uso.
+
+---
+
+### HU-07: Configuración de Ficha de Servicio y Parámetros Base
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-07` |
+| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Integrante Responsable** | Lourdes |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Gestor de Servicios de TI.
+- **Deseo:** Configurar nuevos servicios definiendo su nombre, descripción, categoría y criticidad.
+- **Para:** Poner a disposición de la organización un portafolio de atención claro y estandarizado.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Creación de servicio en estado Borrador
+- **Dado que** el gestor completa los datos base del nuevo servicio.
+- **Cuando** guarda la ficha técnica inicial.
+- **Entonces** el servicio se crea en estado 'Borrador', quedando listo para su parametrización sin ser visible aún a usuarios finales.
+
+##### Escenario 2: Asociación de categoría obligatoria
+- **Dado que** se está registrando una nueva prestación tecnológica.
+- **Cuando** el gestor intenta guardar sin vincular una categoría padre.
+- **Entonces** el formulario impide el envío resaltando la selección de categoría como obligatoria.
+
+---
+
+### HU-08: Edición Integral y Actualización del Catálogo de Servicios
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-08` |
+| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Integrante Responsable** | Lourdes |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Media |
+
+#### Definición de la Historia
+- **Como:** Gestor de Servicios de TI.
+- **Deseo:** Modificar los datos y alcances de servicios previamente registrados.
+- **Para:** Mantener la oferta tecnológica alineada con las necesidades operativas actuales.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Actualización de descripción y requisitos de entrega
+- **Dado que** un servicio activo requiere cambios en sus términos o entregables.
+- **Cuando** el gestor modifica el texto descriptivo y guarda los cambios.
+- **Entonces** el catálogo actualiza inmediatamente la ficha pública del servicio para futuras solicitudes.
+
+##### Escenario 2: Trazabilidad de modificaciones en catálogo
+- **Dado que** se actualizan parámetros de un servicio crítico.
+- **Cuando** se confirman los cambios en base de datos.
+- **Entonces** el sistema registra la fecha, hora y usuario que ejecutó la edición en la bitácora de auditoría.
+
+---
+
+### HU-09: Activación y Retiro Controlado de Ítems del Catálogo
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-09` |
+| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Integrante Responsable** | Lourdes |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Baja (S) |
+| **Prioridad de Negocio** | Media |
+
+#### Definición de la Historia
+- **Como:** Gestor de Servicios de TI.
+- **Deseo:** Activar o retirar temporalmente servicios del catálogo visible.
+- **Para:** Controlar la disponibilidad de requerimientos según la capacidad operativa de la mesa.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Paso de servicio a estado Activo para publicación
+- **Dado que** un servicio en borrador cuenta con su configuración y SLAs definidos.
+- **Cuando** el gestor pulsa el interruptor de publicación a 'Activo'.
+- **Entonces** el servicio se visualiza de inmediato en la vitrina del solicitante para su consumo.
+
+##### Escenario 2: Retiro de servicio sin afectación a tickets en curso
+- **Dado que** un servicio se vuelve obsoleto y pasa a estado 'Retirado'.
+- **Cuando** se inhabilita en el catálogo.
+- **Entonces** deja de aparecer para nuevas solicitudes, pero los tickets previamente creados continúan su ciclo de vida normal.
+
+---
+
+### HU-10: Búsqueda Predictiva y Exploración de Servicios para Solicitantes
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-10` |
+| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Integrante Responsable** | Lourdes |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Solicitante de la organización.
+- **Deseo:** Explorar el catálogo interactivo mediante un buscador de palabras clave y filtros de categoría.
+- **Para:** Identificar con rapidez el servicio tecnológico adecuado para mi necesidad.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Búsqueda en tiempo real por término clave
+- **Dado que** el usuario se encuentra en el portal de autoservicio.
+- **Cuando** escribe 'laptop' o 'acceso' en el campo de búsqueda.
+- **Entonces** la pantalla filtra instantáneamente las tarjetas de servicio relevantes sin recargar la página.
+
+##### Escenario 2: Navegación por categorías del árbol
+- **Dado que** el usuario prefiere explorar por familia de servicios.
+- **Cuando** selecciona una categoría específica en la barra lateral.
+- **Entonces** se despliegan únicamente los ítems pertenecientes a esa taxonomía.
+
+---
+
+### HU-11: Captura Asistida de Requerimientos desde el Catálogo
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-11` |
+| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Integrante Responsable** | Lourdes |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Solicitante de la organización.
+- **Deseo:** Completar el formulario estandarizado del servicio seleccionado con validación de datos.
+- **Para:** Despachar mi pedido con la información requerida para su pronta resolución.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Apertura del formulario dinámico del servicio
+- **Dado que** el usuario hace clic en el botón 'Solicitar' de una tarjeta del catálogo.
+- **Cuando** se abre la vista de requerimiento.
+- **Entonces** el sistema presenta el formulario oficial con sus campos específicos validados.
+
+##### Escenario 2: Validación de campos obligatorios antes del envío
+- **Dado que** el usuario intenta presionar 'Enviar Solicitud' con campos vacíos requeridos.
+- **Cuando** el motor de validación en cliente evalúa el formulario.
+- **Entonces** bloquea el despacho y resalta los campos pendientes con mensajes claros.
+
+---
+
+### HU-12: Bandeja de Seguimiento 'Mis Tickets' con Filtros de Estado
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-12` |
+| **Módulo Asignado** | `tickets` ([src/modules/tickets](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/tickets)) |
+| **Integrante Responsable** | Miguel |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Solicitante de la organización.
+- **Deseo:** Consultar la lista de todos mis requerimientos e incidentes abiertos y cerrados con filtros.
+- **Para:** Conocer en todo momento la situación de mis casos sin contactar directamente a la mesa.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Visualización de grilla personal de tickets
+- **Dado que** el usuario ingresa a la opción 'Mis Solicitudes' o 'Mis Tickets'.
+- **Cuando** la vista consulta el contrato del módulo de tickets.
+- **Entonces** muestra todos los tickets creados por el solicitante ordenados cronológicamente.
+
+##### Escenario 2: Filtrado por estado de atención
+- **Dado que** el solicitante desea revisar únicamente casos que requieren su atención o están resueltos.
+- **Cuando** aplica el filtro por estado (Abierto, En Proceso, Resuelto, Cerrado).
+- **Entonces** la tabla muestra de inmediato los registros coincidentes.
+
+---
+
+### HU-13: Visualizador Detallado de Ticket con Línea de Tiempo (Stepper)
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-13` |
+| **Módulo Asignado** | `tickets` ([src/modules/tickets](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/tickets)) |
+| **Integrante Responsable** | Miguel |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Solicitante de la organización.
+- **Deseo:** Abrir el expediente de un caso y visualizar su barra de avance (stepper) y técnico asignado.
+- **Para:** Comprender la etapa exacta de atención en la que se encuentra mi trámite.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Renderizado del stepper de ciclo de vida
+- **Dado que** el usuario selecciona un ticket de su bandeja.
+- **Cuando** accede a la pantalla de detalle del ticket.
+- **Entonces** visualiza la barra gráfica de progreso indicando la fase actual (Registrado -> Asignado -> En Proceso -> Resuelto).
+
+##### Escenario 2: Identificación del especialista o grupo asignado
+- **Dado que** un ticket ha sido despachado a un técnico de soporte.
+- **Cuando** el solicitante consulta la ficha del caso.
+- **Entonces** puede identificar el nombre del técnico o departamento TI responsable de la atención.
+
+---
+
+### HU-14: Bitácora de Comentarios Públicos y Notas Técnicas Privadas
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-14` |
+| **Módulo Asignado** | `tickets` ([src/modules/tickets](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/tickets)) |
+| **Integrante Responsable** | Miguel |
+| **Estado en Trello** | Columna HECHO (Sprint 1) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Usuario participante de un ticket.
+- **Deseo:** Intercambiar mensajes en una bitácora cronológica adjuntando aclaraciones sobre el caso.
+- **Para:** Mantener una comunicación fluida y transparente durante todo el ciclo de atención.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Envío y visualización de comentario público
+- **Dado que** el solicitante o el técnico redacta un mensaje de actualización.
+- **Cuando** confirma el envío en el panel de conversación.
+- **Entonces** el comentario se registra en la bitácora con estampa de tiempo y queda visible para ambas partes.
+
+##### Escenario 2: Privacidad de notas técnicas internas
+- **Dado que** un técnico registra una nota de diagnóstico clasificada como privada.
+- **Cuando** se persiste en la base de datos.
+- **Entonces** la nota es visible exclusivamente para el equipo de TI y permanece oculta para el solicitante.
+
+---
+
+### Sección B: Historias de Usuario — Sprint 2 (Operación y Procesos ITIL)
+
+---
+
+### HU-15: Configuración Dinámica de Formularios de Incidentes
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-15` |
+| **Módulo Asignado** | `incidentes` ([src/modules/incidentes](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/incidentes)) |
+| **Integrante Responsable** | Miguel |
+| **Estado en Trello** | Columna HECHO (Sprint 2) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Administrador de la plataforma de TI.
+- **Deseo:** Parametrizar y personalizar los campos del formulario de registro de incidentes en el panel de configuración.
+- **Para:** Estandarizar la recolección de información técnica obligatoria según el tipo de incidente y evitar reportes incompletos.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Activación y marcado de campos obligatorios en el formulario
+- **Dado que** el administrador accede a la ruta de configuración de formularios de incidentes.
+- **Cuando** selecciona los campos estándar (síntomas observados, urgencia, impacto y equipo afectado) y activa el interruptor de obligatoriedad.
+- **Entonces** el sistema guarda la plantilla y valida que en los próximos registros de incidentes dichos campos no puedan dejarse en blanco.
+
+##### Escenario 2: Previsualización reactiva de la plantilla del formulario
+- **Dado que** el administrador modifica la visibilidad de los campos en el panel de administración.
+- **Cuando** observa el panel lateral de previsualización.
+- **Entonces** el sistema refleja instantáneamente los cambios en tiempo real mostrando exactamente cómo visualizará el formulario el usuario técnico.
+
+##### Escenario 3: Validación contra eliminación de campos esenciales
+- **Dado que** el administrador intenta deshabilitar el campo de descripción detallada o título del incidente.
+- **Cuando** presiona la opción de desactivar.
+- **Entonces** el sistema bloquea la acción notificando que son campos críticos del núcleo ITSM requeridos para el ciclo de vida del ticket.
+
+---
+
+### HU-16: Configuración de Formularios de Solicitudes y Justificación de Negocio
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-16` |
+| **Módulo Asignado** | `solicitudes` ([src/modules/solicitudes](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/solicitudes)) |
+| **Integrante Responsable** | Miguel |
+| **Estado en Trello** | Columna HECHO (Sprint 2) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Administrador de la plataforma de TI.
+- **Deseo:** Configurar la estructura de captura de solicitudes de servicio, incluyendo justificación de negocio y plazos requeridos.
+- **Para:** Garantizar que los pedidos institucionales cuenten con sustento suficiente para la evaluación del gestor de área.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Configuración de campos de justificación y fecha límite
+- **Dado que** el administrador ingresa a la configuración de formularios de solicitudes de servicio.
+- **Cuando** activa la exigencia obligatoria de justificación de negocio y fecha requerida de entrega.
+- **Entonces** el sistema actualiza la plantilla de solicitud para todos los servicios del catálogo empresarial.
+
+##### Escenario 2: Restricción de fecha mínima en el selector
+- **Dado que** un usuario intenta enviar una solicitud indicando una fecha deseada pasada o del mismo instante.
+- **Cuando** el formulario valida el valor ingresado.
+- **Entonces** el sistema bloquea el envío alertando que la fecha requerida debe cumplir con los plazos mínimos del acuerdo de nivel de servicio.
+
+##### Escenario 3: Persistencia de parámetros adicionales por categoría
+- **Dado que** el administrador añade atributos específicos a una categoría de solicitudes.
+- **Cuando** presiona el botón 'Guardar configuración'.
+- **Entonces** el sistema confirma la actualización con un mensaje visual y asienta los cambios en la base de datos sin afectar los incidentes.
+
+---
+
+### HU-17: Parametrización de Acuerdos de Nivel de Servicio (SLA) y Horarios Hábiles
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-17` |
+| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Integrante Responsable** | Lourdes |
+| **Estado en Trello** | Columna HECHO (Sprint 2) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Gestor de Servicios de TI.
+- **Deseo:** Definir umbrales de tiempo máximo de primera respuesta y resolución asociados a la prioridad y descontando feriados y fines de semana.
+- **Para:** Garantizar compromisos de servicio medibles con las áreas de negocio y monitorear el cumplimiento operativo.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Registro de matriz de tiempos por nivel de prioridad
+- **Dado que** se configuran los SLAs para servicios en el módulo de servicios.
+- **Cuando** se asignan 1 hora para P1 Crítica, 4 horas para P2 Alta, 8 horas para P3 Media y 24 horas para P4 Baja.
+- **Entonces** el sistema almacena la matriz de compromisos y la asocia automáticamente a los tickets categorizados bajo esa prioridad.
+
+##### Escenario 2: Cálculo automático de fecha y hora límite al crear el caso
+- **Dado que** un solicitante o técnico registra un nuevo ticket con prioridad P2.
+- **Cuando** el sistema procesa el guardado inicial.
+- **Entonces** calcula y estampa automáticamente el campo de fecha límite de resolución sumando las horas comprometidas según el calendario laboral.
+
+##### Escenario 3: Alerta visual de aproximación a vencimiento
+- **Dado que** un ticket se encuentra abierto y el tiempo transcurrido supera el 80% del umbral de SLA establecido.
+- **Cuando** el supervisor o técnico visualiza la bandeja de casos.
+- **Entonces** el sistema despliega un indicador en color ámbar alertando sobre la proximidad del incumplimiento de SLA.
+
+---
+
+### HU-18: Diseñador Dinámico de Campos para Formularios de Servicios del Catálogo
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-18` |
+| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Integrante Responsable** | Lourdes |
+| **Estado en Trello** | Columna HECHO (Sprint 2) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Gestor de Servicios de TI.
+- **Deseo:** Diseñar y configurar campos dinámicos personalizados (texto, listas desplegables, selectores, casillas) para cada servicio individual.
+- **Para:** Capturar los atributos técnicos y administrativos específicos de cada prestación sin sobrecargar servicios simples con datos innecesarios.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Creación de campos personalizados por ítem de servicio
+- **Dado que** el gestor accede a la configuración de formulario de un servicio específico del catálogo.
+- **Cuando** agrega un nuevo control de entrada definiendo etiqueta, tipo de dato (texto, numérico, fecha o selección) y obligatoriedad.
+- **Entonces** el diseñador registra el atributo en el esquema dinámico del servicio y lo persiste en la base de datos.
+
+##### Escenario 2: Previsualización en vivo del formulario generado
+- **Dado que** se añaden o reordenan campos dinámicos en el diseñador de servicios.
+- **Cuando** el gestor interactúa con el panel de vista previa.
+- **Entonces** el sistema renderiza en tiempo real el formulario exactamente como lo visualizará el usuario solicitante al requerir dicho servicio.
+
+##### Escenario 3: Validación reactiva con esquema Zod al registrar solicitud
+- **Dado que** un usuario solicita un servicio que posee campos dinámicos obligatorios configurados.
+- **Cuando** intenta enviar la solicitud sin completar los campos requeridos o con un formato inválido.
+- **Entonces** el motor de validación dinámico previene el envío y resalta los controles con mensajes de error específicos.
+
+---
+
+### HU-19: Registro Estructurado de Problemas y Análisis Causa Raíz (RCA)
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-19` |
+| **Módulo Asignado** | `problemas` ([src/modules/problemas](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/problemas)) |
+| **Integrante Responsable** | Alexis |
+| **Estado en Trello** | Columna HECHO (Sprint 2) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Gestor de Problemas de TI.
+- **Deseo:** Registrar problemas a partir de incidentes recurrentes y documentar el análisis de causa raíz (RCA) mediante metodología de los 5 Porqués.
+- **Para:** Erradicar fallas estructurales y prevenir la repetición de incidentes de alto impacto.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Apertura de caso de problema vinculado a incidentes
+- **Dado que** se identifican incidentes múltiples asociados a la caída recurrente de un servicio.
+- **Cuando** el gestor de problemas crea un registro de problema y vincula los IDs de los incidentes relacionados.
+- **Entonces** el sistema asocia los casos en la base de datos y coloca el problema en estado 'Bajo Investigación'.
+
+##### Escenario 2: Documentación guiada de los 5 Porqués
+- **Dado que** el especialista inicia la investigación técnica en la pestaña RCA.
+- **Cuando** completa secuencialmente las cinco iteraciones de causa-efecto identificando el factor raíz.
+- **Entonces** el sistema estructura el informe técnico de causa raíz y lo asocia permanentemente al expediente.
+
+##### Escenario 3: Bloqueo de cierre sin resolución técnica
+- **Dado que** un problema se encuentra en estado de diagnóstico.
+- **Cuando** el usuario intenta marcar el caso como cerrado sin haber completado el campo de causa raíz confirmada.
+- **Entonces** el sistema impide la transición de estado exigiendo el sustento técnico correspondiente.
+
+---
+
+### HU-20: Base de Datos de Errores Conocidos (KEDB) y Publicación de Workarounds
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-20` |
+| **Módulo Asignado** | `problemas` ([src/modules/problemas](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/problemas)) |
+| **Integrante Responsable** | Alexis |
+| **Estado en Trello** | Columna HECHO (Sprint 2) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Gestor de Problemas de TI.
+- **Deseo:** Publicar soluciones temporales (workarounds) asociadas a errores conocidos en la KEDB con indexación contextual.
+- **Para:** Permitir que los técnicos de mesa resuelvan incidentes similares de forma ágil mientras se implementa la solución definitiva.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Publicación de solución temporal en la KEDB
+- **Dado que** se determina un procedimiento de mitigación temporal para una falla de software no subsanada por el fabricante.
+- **Cuando** el gestor redacta los pasos de remediación y activa el interruptor 'Publicar en KEDB'.
+- **Entonces** el registro se indexa inmediatamente en el repositorio de errores conocidos disponible para la mesa técnica.
+
+##### Escenario 2: Búsqueda contextual de workarounds desde incidentes
+- **Dado que** un técnico atiende un incidente con síntomas semejantes a un error conocido.
+- **Cuando** consulta la pestaña de soluciones temporales recomendadas.
+- **Entonces** el sistema despliega el artículo KEDB con los pasos exactos para restablecer el servicio al usuario.
+
+##### Escenario 3: Trazabilidad de aplicación de soluciones temporales
+- **Dado que** un técnico aplica un workaround de la KEDB para resolver un ticket.
+- **Cuando** confirma la aplicación de la solución temporal.
+- **Entonces** el sistema incrementa el contador de efectividad del artículo y vincula la referencia en la bitácora del ticket.
+
+---
+
+### HU-21: Configuración de Departamentos TI y Grupos Resolutores N1/N2/N3
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-21` |
+| **Módulo Asignado** | `organizacion` ([src/modules/organizacion](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/organizacion)) |
+| **Integrante Responsable** | Junior |
+| **Estado en Trello** | Columna HECHO (Sprint 2) |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Administrador de la plataforma de TI.
+- **Deseo:** Configurar grupos resolutores especializados asignando técnicos, especialidades y niveles de soporte N1, N2 y N3.
+- **Para:** Direccionar eficientemente los requerimientos e incidentes hacia el personal técnico idóneo para su atención.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Creación de grupo resolutor técnico
+- **Dado que** el administrador accede a la gestión de departamentos de TI.
+- **Cuando** crea el grupo 'Soporte de Redes y Conectividad' y asigna un líder de área.
+- **Entonces** el grupo queda registrado y disponible en las listas de derivación y despacho de tickets.
+
+##### Escenario 2: Asignación de técnicos con nivel de escalamiento
+- **Dado que** se agregan miembros a un grupo resolutor.
+- **Cuando** el administrador clasifica a los especialistas en niveles N1 (Mesa), N2 (Especialistas) o N3 (Ingeniería).
+- **Entonces** el sistema restringe las opciones de escalamiento de tickets garantizando el flujo jerárquico correcto.
+
+##### Escenario 3: Prevención de grupos resolutores sin integrantes activos
+- **Dado que** un grupo resolutor tiene asignados incidentes en cola.
+- **Cuando** se intenta desactivar o desvincular a todos sus integrantes.
+- **Entonces** el sistema alerta sobre la presencia de tickets pendientes e impide dejar el grupo sin capacidad resolutora.
+
+---
+
+### HU-22: Planificación de Turnos Técnicos y Control de Ausencias en Mesa
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-22` |
+| **Módulo Asignado** | `organizacion` ([src/modules/organizacion](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/organizacion)) |
+| **Integrante Responsable** | Junior |
+| **Estado en Trello** | Columna HECHO (Sprint 2) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Administrador o Supervisor de TI.
+- **Deseo:** Registrar turnos de trabajo, horarios de disponibilidad y periodos de ausencia o vacaciones del personal técnico.
+- **Para:** Evitar la asignación automática de tickets a especialistas no disponibles y redistribuir la carga operativa equitativamente.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Registro de ausencia programada o licencia técnica
+- **Dado que** un técnico notifica su periodo de descanso médico o vacaciones.
+- **Cuando** el supervisor registra las fechas de inicio y fin en el calendario de ausencias.
+- **Entonces** el sistema cambia el estado operativo del técnico a 'Ausente' durante el periodo configurado.
+
+##### Escenario 2: Exclusión de técnicos ausentes del balanceo de carga
+- **Dado que** un técnico se encuentra en fecha de ausencia registrada.
+- **Cuando** ingresa un nuevo ticket dirigido a su grupo de soporte.
+- **Entonces** el algoritmo de balanceo omite automáticamente al técnico ausente y asigna el caso a un especialista disponible.
+
+##### Escenario 3: Alerta visual en reasignación manual de casos
+- **Dado que** un supervisor intenta reasignar manualmente un ticket a un técnico con turno concluido o ausencia activa.
+- **Cuando** selecciona su nombre en el menú de asignación.
+- **Entonces** el sistema despliega una advertencia indicando que el especialista se encuentra fuera de turno y solicita confirmación.
+
+---
+
+### HU-23: Registro de Solicitud de Cambio (RFC) y Validación de Ventanas de Mantenimiento
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-23` |
+| **Módulo Asignado** | `cambios` ([src/modules/cambios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/cambios)) |
+| **Integrante Responsable** | Nain |
+| **Estado en Trello** | Columna HECHO (Sprint 2) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Gestor de Cambios de TI.
+- **Deseo:** Registrar solicitudes de cambio (RFC) evaluando riesgo, impacto y verificando ventanas de mantenimiento y periodos de congelamiento.
+- **Para:** Minimizar el riesgo de interrupción en los servicios de producción durante la aplicación de actualizaciones o despliegues.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Captura de plan de implementación y plan de rollback
+- **Dado que** un ingeniero registra una Solicitud de Cambio Normal.
+- **Cuando** completa los campos obligatorios de justificación técnica, plan de pruebas y plan de contingencia (rollback).
+- **Entonces** el sistema genera la RFC asignándole código único y estado 'En Evaluación'.
+
+##### Escenario 2: Detección de colisiones con ventanas de congelamiento (freeze)
+- **Dado que** existe un periodo de freeze institucional configurado por cierre fiscal o auditoría.
+- **Cuando** el solicitante intenta programar una RFC normal dentro de esa ventana de tiempo.
+- **Entonces** el sistema bloquea la programación alertando sobre la restricción de cambios en producción.
+
+##### Escenario 3: Cálculo automático de nivel de riesgo de la RFC
+- **Dado que** se seleccionan los CIs afectados y el horario previsto.
+- **Cuando** el formulario cruza impacto sobre usuarios y complejidad técnica.
+- **Entonces** calcula el puntaje de riesgo recomendando si el cambio debe elevarse a evaluación del comité CAB.
+
+---
+
+### HU-24: Inventario Maestro de Activos TI y Control Semafórico de Licencias (SAM)
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-24` |
+| **Módulo Asignado** | `activos` ([src/modules/activos](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/activos)) |
+| **Integrante Responsable** | Nain |
+| **Estado en Trello** | Columna HECHO (Sprint 2) |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Gestor de Activos de TI.
+- **Deseo:** Gestionar el inventario físico y lógico de equipos y monitorear el consumo de licencias de software mediante semáforo de cumplimiento.
+- **Para:** Mantener el control patrimonial de hardware y garantizar el cumplimiento contractual de licenciamiento evitando penalidades.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Alta de activo TI con número de serie y custodia
+- **Dado que** ingresa un nuevo lote de equipos informáticos al almacén.
+- **Cuando** el gestor registra el número de serie, modelo, fabricante, fecha de compra y asigna el colaborador custodio.
+- **Entonces** el sistema crea la ficha patrimonial del activo con su código de barra interno y estado 'En Stock'.
+
+##### Escenario 2: Semáforo de cumplimiento SAM de licencias de software
+- **Dado que** se tiene contratado un paquete de 100 licencias de software ofimático o base de datos.
+- **Cuando** el número de asignaciones activas alcanza el 95% del total comprado.
+- **Entonces** el panel SAM cambia el indicador a color ámbar alertando sobre la proximidad de sobreuso de licencias.
+
+##### Escenario 3: Alerta de bloqueo ante sobreasignación de licencias
+- **Dado que** se intenta asignar una licencia cuando se ha alcanzado el 100% del cupo legal contratado.
+- **Cuando** el operador intenta confirmar la asignación a un nuevo equipo.
+- **Entonces** el sistema emite una alerta en color rojo previniendo la instalación en incumplimiento de los contratos vigentes.
+
+---
+
+## Parte II — Historias de Usuario en Columna "PRODUCT BACKLOG"
+
+> Estas historias representan funcionalidades planificadas para siguientes iteraciones del proyecto que aún no han sido abordadas en el código actual.
+
+---
+
+### HU-25: Sala de Crisis Colaborativa y Gestión de Incidentes Mayores P1
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-25` |
+| **Módulo Asignado** | `incidentes` ([src/modules/incidentes](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/incidentes)) |
+| **Integrante Responsable** | Miguel |
+| **Estado en Trello** | Columna PRODUCT BACKLOG |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Gestor de Incidentes Mayores.
+- **Deseo:** Habilitar una sala de crisis virtual con chat técnico dedicado, cronómetro de impacto y asignación de brigadas de atención inmediata.
+- **Para:** Coordinar la respuesta multidisciplinaria ante caídas críticas de servicios y restablecer la operación en el menor tiempo posible.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Apertura automática de sala de crisis al clasificar incidente P1
+- **Dado que** un incidente es catalogado con Prioridad 1 Crítica por interrupción general de operaciones.
+- **Cuando** se confirma la severidad del caso.
+- **Entonces** el sistema crea un espacio de trabajo colaborativo en vivo y notifica de emergencia a los líderes técnicos y gerentes de servicio.
+
+##### Escenario 2: Cronómetro de indisponibilidad y registro de hitos
+- **Dado que** la sala de crisis se encuentra activa.
+- **Cuando** los especialistas ingresan avances en el chat de operaciones.
+- **Entonces** el panel computa los minutos acumulados de indisponibilidad y estampa los hitos de diagnóstico para el informe post-mortem.
+
+##### Escenario 3: Despacho de comunicados de estado a usuarios corporativos
+- **Dado que** el gestor redacta un comunicado de avance para la empresa.
+- **Cuando** presiona 'Enviar boletín de crisis'.
+- **Entonces** el sistema despacha una notificación por correo y publica un banner informativo en el portal de autoservicio.
+
+---
+
+### HU-26: Motor de Escalamiento Automático y Notificaciones Operativas
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-26` |
+| **Módulo Asignado** | `operacion` ([src/modules/operacion](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/operacion)) |
+| **Integrante Responsable** | Miguel |
+| **Estado en Trello** | Columna PRODUCT BACKLOG |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Media |
+
+#### Definición de la Historia
+- **Como:** Supervisor de Operaciones de TI.
+- **Deseo:** Parametrizar reglas de escalamiento jerárquico y funcional que se disparen automáticamente al consumirse el 75% o 90% del SLA.
+- **Para:** Alertar a líderes técnicos antes de que se produzca una brecha de servicio no mitigada.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Disparo de alerta preventiva por proximidad de vencimiento
+- **Dado que** un ticket de alta prioridad no ha recibido primera respuesta y consume el 75% de su tiempo límite.
+- **Cuando** el cronómetro del motor de reglas evalúa el caso.
+- **Entonces** emite un correo prioritario al supervisor de guardia y resalta el ticket con borde intermitente en la consola técnica.
+
+##### Escenario 2: Reasignación forzosa a especialista senior al vencer el 90%
+- **Dado que** el ticket alcanza el 90% del umbral de resolución sin cambios de estado.
+- **Cuando** la regla de escalamiento se ejecuta.
+- **Entonces** el sistema reasigna automáticamente el caso al equipo de soporte de segundo nivel N2 y registra la novedad en la bitácora.
+
+##### Escenario 3: Registro en la bitácora de auditoría del ticket
+- **Dado que** se produce una acción de escalamiento automático por SLA.
+- **Cuando** el supervisor o auditor revisa el historial del ticket.
+- **Entonces** visualiza el evento con autoría del sistema detallando la regla disparadora y la hora de ejecución.
+
+---
+
+### HU-27: Catálogo de Servicios Técnicos y Vinculación con Acuerdos Operativos OLA
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-27` |
+| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Integrante Responsable** | Lourdes |
+| **Estado en Trello** | Columna PRODUCT BACKLOG |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Media |
+
+#### Definición de la Historia
+- **Como:** Gestor de Servicios de TI.
+- **Deseo:** Publicar una vista del catálogo orientada a especialistas técnicos que vincule CIs subyacentes y acuerdos de nivel operativo (OLA).
+- **Para:** Transparentar las dependencias internas entre grupos resolutores y los tiempos de transferencia técnica.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Visualización de acuerdos operativos internos (OLA) por servicio
+- **Dado que** el gestor accede a la vista de catálogo técnico.
+- **Cuando** consulta un servicio de infraestructura (ej. Aprovisionamiento de Servidor Cloud).
+- **Entonces** el sistema detalla los compromisos de tiempo OLA entre el área de Redes, Sistemas y Seguridad requeridos para la entrega.
+
+##### Escenario 2: Mapeo de elementos de configuración (CIs) al catálogo
+- **Dado que** se asocian componentes de infraestructura a un ítem de servicio.
+- **Cuando** el técnico consulta la ficha técnica.
+- **Entonces** visualiza los servidores, bases de datos y licencias vinculadas al soporte de dicho servicio.
+
+##### Escenario 3: Monitoreo de cumplimiento OLA entre equipos internos
+- **Dado que** un ticket de servicio se transfiere de la mesa de ayuda al equipo de redes.
+- **Cuando** se evalúa el tiempo que permaneció en cada área resolutora.
+- **Entonces** el sistema compara el tiempo transcurrido contra el OLA específico de cada departamento.
+
+---
+
+### HU-28: Parametrización de Contratos de Soporte Externo (UC) y Excepciones de Calendario
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-28` |
+| **Módulo Asignado** | `servicios` ([src/modules/servicios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/servicios)) |
+| **Integrante Responsable** | Lourdes |
+| **Estado en Trello** | Columna PRODUCT BACKLOG |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Media |
+
+#### Definición de la Historia
+- **Como:** Gestor de Servicios de TI.
+- **Deseo:** Configurar Acuerdos de Soporte Externo (Underpinning Contracts - UC) con proveedores de infraestructura y calendarios con excepciones festivas.
+- **Para:** Sincronizar las penalizaciones y compromisos contractuales de terceros con los SLAs ofrecidos a la empresa.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Definición de contrato de soporte de tercero (UC) vinculado a servicio
+- **Dado que** un servicio del catálogo depende de un proveedor de enlace de telecomunicaciones.
+- **Cuando** el gestor configura el contrato UC estableciendo 2 horas de respuesta comprometida por el proveedor.
+- **Entonces** el sistema enlaza el tiempo de resolución externa como una meta medible dentro del SLA global.
+
+##### Escenario 2: Configuración de excepciones en el calendario de días no hábiles
+- **Dado que** se publican feriados oficiales o asuetos institucionales de fin de año.
+- **Cuando** el gestor ingresa las fechas no laborables en el calendario del módulo de servicios.
+- **Entonces** el motor de SLA pausa automáticamente el conteo de horas hábiles durante esos días festivos.
+
+##### Escenario 3: Diferenciación entre horario hábil 8x5 y cobertura 24x7
+- **Dado que** un servicio VIP o crítico opera con régimen de guardia ininterrumpida.
+- **Cuando** se asigna la política de cobertura 24x7 al servicio.
+- **Entonces** los cronómetros contabilizan horas naturales consecutivas sin aplicar descuentos de jornada laboral.
+
+---
+
+### HU-29: Diagrama Causa-Efecto (Ishikawa) y Árbol de Fallas para Problemas Complejos
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-29` |
+| **Módulo Asignado** | `problemas` ([src/modules/problemas](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/problemas)) |
+| **Integrante Responsable** | Alexis |
+| **Estado en Trello** | Columna PRODUCT BACKLOG |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Media |
+
+#### Definición de la Historia
+- **Como:** Gestor de Problemas de TI.
+- **Deseo:** Diseñar diagramas de espina de pescado (Ishikawa) y árboles de falla interactivos dentro del expediente del problema.
+- **Para:** Sistematizar el análisis multidisciplinario en fallas crónicas que involucran métodos, máquinas, personal y entorno.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Categorización guiada de causas en ramas estándar Ishikawa
+- **Dado que** el especialista inicia la sesión de análisis en un problema recurrente.
+- **Cuando** añade causas secundarias en las ramas de Métodos, Máquinas, Personas y Entorno.
+- **Entonces** el sistema renderiza el diagrama gráfico en pantalla organizando visualmente las hipótesis de falla.
+
+##### Escenario 2: Ponderación y selección de la causa raíz confirmada
+- **Dado que** el equipo técnico valida cuál de las hipótesis originó el problema.
+- **Cuando** el gestor marca la causa principal en el diagrama interactivo.
+- **Entonces** el sistema traslada automáticamente dicha hipótesis al campo de Causa Raíz definitiva del expediente.
+
+##### Escenario 3: Exportación del diagrama para informes ejecutivos
+- **Dado que** se debe presentar el informe post-problema a la gerencia.
+- **Cuando** el gestor presiona 'Exportar diagrama'.
+- **Entonces** el sistema genera un archivo vectorial PDF/PNG con el diagrama y las evidencias analizadas.
+
+---
+
+### HU-30: Flujo Editorial KCS con Aprobación y Votación de Artículos de Conocimiento
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-30` |
+| **Módulo Asignado** | `conocimiento` ([src/modules/conocimiento](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/conocimiento)) |
+| **Integrante Responsable** | Alexis |
+| **Estado en Trello** | Columna PRODUCT BACKLOG |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Media |
+
+#### Definición de la Historia
+- **Como:** Especialista de Conocimiento de TI.
+- **Deseo:** Disponer de un flujo editorial formal (Borrador -> En Revisión Técnica -> Aprobado -> Publicado) con sistema de votación de utilidad.
+- **Para:** Garantizar que solo artículos precisos y verificados formen parte de la base de conocimiento institucional.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Envío de artículo a revisión por pares técnicos
+- **Dado que** un técnico documenta la solución para un error de configuración.
+- **Cuando** solicita la publicación del borrador.
+- **Entonces** el artículo entra en cola de revisión para el Gestor de Conocimiento con estado 'En Revisión'.
+
+##### Escenario 2: Votación de utilidad por solicitantes y técnicos
+- **Dado que** un usuario consulta un artículo público para resolver una duda tecnológica.
+- **Cuando** califica el contenido con las opciones '¿Te sirvió este artículo? Sí / No'.
+- **Entonces** el sistema registra la votación y calcula la tasa de efectividad del contenido.
+
+##### Escenario 3: Alerta automática de revisión periódica por obsolescencia
+- **Dado que** un artículo cumple 180 días desde su última fecha de actualización.
+- **Cuando** el motor editorial audita la vigencia de la base de conocimientos.
+- **Entonces** marca el artículo como 'Pendiente de Recertificación' y notifica a su autor para validar si continúa vigente.
+
+---
+
+### HU-31: Matriz de Desbloqueo Seguro y Políticas de Caducidad de Contraseñas IAM
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-31` |
+| **Módulo Asignado** | `identidades` ([src/modules/identidades](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/identidades)) |
+| **Integrante Responsable** | Junior |
+| **Estado en Trello** | Columna PRODUCT BACKLOG |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Media |
+
+#### Definición de la Historia
+- **Como:** Administrador de la plataforma de TI.
+- **Deseo:** Configurar políticas de vigencia periódica de credenciales, bloqueo automático por intentos fallidos y flujo de desbloqueo supervisado.
+- **Para:** Proteger la plataforma contra accesos no autorizados y ataques de fuerza bruta según directrices ISO/IEC 27001.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Bloqueo automático de cuenta tras 5 intentos fallidos
+- **Dado que** un usuario o atacante ingresa contraseñas erróneas consecutivas.
+- **Cuando** el contador alcanza el quinto intento fallido.
+- **Entonces** el sistema bloquea temporalmente la cuenta por 30 minutos y registra la IP de origen en la bitácora de seguridad.
+
+##### Escenario 2: Desbloqueo manual con registro de motivo de seguridad
+- **Dado que** un colaborador bloqueado solicita restablecimiento en la mesa de ayuda.
+- **Cuando** el administrador valida su identidad y pulsa 'Desbloquear cuenta' ingresando una justificación.
+- **Entonces** el sistema restablece el acceso y envía un correo con token de cambio obligatorio en el siguiente inicio.
+
+##### Escenario 3: Notificación de caducidad de clave a los 90 días
+- **Dado que** se alcanza el plazo de vigencia configurado para credenciales institucionales.
+- **Cuando** el usuario inicia sesión.
+- **Entonces** el sistema le exige actualizar su contraseña impidiéndole navegar hasta definir una nueva clave segura.
+
+---
+
+### HU-32: Catálogo de Proveedores y Evaluación de Cumplimiento de Contratos de Terceros
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-32` |
+| **Módulo Asignado** | `proveedores` ([src/modules/proveedores](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/proveedores)) |
+| **Integrante Responsable** | Junior |
+| **Estado en Trello** | Columna PRODUCT BACKLOG |
+| **Estimación / Complejidad** | Media (M) |
+| **Prioridad de Negocio** | Media |
+
+#### Definición de la Historia
+- **Como:** Gestor de Proveedores de TI.
+- **Deseo:** Administrar el directorio oficial de contratistas tecnológicos, sus contratos de mantenimiento y registrar evaluaciones periódicas de servicio.
+- **Para:** Mantener control sobre los terceros homologados y auditar el cumplimiento de los contratos de soporte externo.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Registro de ficha de proveedor tecnológico y contratos asociados
+- **Dado que** se contrata a una empresa externa de soporte de infraestructura o licencias.
+- **Cuando** el gestor registra razón social, RUC, contactos técnicos y adjunta el contrato con sus fechas de vigencia.
+- **Entonces** el proveedor queda homologado en el sistema con estado 'Activo'.
+
+##### Escenario 2: Registro de evaluación semestral de desempeño de proveedores
+- **Dado que** concluye un periodo contractual de soporte externo.
+- **Cuando** el gestor califica el cumplimiento de tiempos de respuesta, calidad técnica y resolución de quejas.
+- **Entonces** el sistema calcula el índice de rendimiento del contratista y emite recomendaciones de renovación.
+
+##### Escenario 3: Alerta de vencimiento de contrato de mantenimiento 30 días antes
+- **Dado que** un contrato de soporte tecnológico se aproxima a su fecha de expiración.
+- **Cuando** restan 30 días calendario para el término.
+- **Entonces** el sistema genera una alerta en la consola del gestor de proveedores para iniciar el trámite de renovación.
+
+---
+
+### HU-33: Topología Interactiva de CIs y Matriz de Análisis de Impacto en CMDB
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-33` |
+| **Módulo Asignado** | `cmdb` ([src/modules/cmdb](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/cmdb)) |
+| **Integrante Responsable** | Nain |
+| **Estado en Trello** | Columna PRODUCT BACKLOG |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Gestor de Configuración y CMDB.
+- **Deseo:** Visualizar el mapa topológico interactivo de relaciones lógicas y físicas entre CIs, con simulación gráfica de fallas aguas arriba y aguas abajo.
+- **Para:** Anticipar el impacto colateral que tendrá la intervención de un servidor, enlace o base de datos sobre los servicios de negocio.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Renderizado de grafo de dependencias aguas arriba y aguas abajo
+- **Dado que** el especialista selecciona un servidor de aplicaciones en la consola CMDB.
+- **Cuando** abre la vista de topología interactiva.
+- **Entonces** el sistema dibuja el árbol de relaciones mostrando la base de datos subyacente, el switch de red y los servicios de negocio dependientes.
+
+##### Escenario 2: Simulación de caída de nodo crítico de infraestructura
+- **Dado que** se planifica una intervención sobre un elemento de red central.
+- **Cuando** el gestor simula la indisponibilidad del nodo en el grafo interactivo.
+- **Entonces** el sistema resalta en color rojo todos los CIs y aplicaciones que quedarían fuera de servicio como consecuencia del corte.
+
+##### Escenario 3: Detección de relaciones circulares o CIs huérfanos
+- **Dado que** se actualizan las relaciones lógicas de la infraestructura tecnológica.
+- **Cuando** el módulo audita la integridad referencial del grafo.
+- **Entonces** alerta sobre elementos de configuración sin relaciones ascendentes o bucles lógicos que distorsionen el análisis de impacto.
+
+---
+
+### HU-34: Sesión Virtual del Comité de Cambios (CAB) con Votación Formal de RFCs
+
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Identificador** | `HU-34` |
+| **Módulo Asignado** | `cambios` ([src/modules/cambios](file:///C:/Users/apaza/Desktop/SISTEMA DE TICKETS/src/modules/cambios)) |
+| **Integrante Responsable** | Nain |
+| **Estado en Trello** | Columna PRODUCT BACKLOG |
+| **Estimación / Complejidad** | Alta (L) |
+| **Prioridad de Negocio** | Alta |
+
+#### Definición de la Historia
+- **Como:** Miembro del Comité Asesor de Cambios (CAB).
+- **Deseo:** Evaluar el expediente consolidado de cambios normales en una agenda virtual y consignar mi voto de aprobación o rechazo fundamentado.
+- **Para:** Agilizar las decisiones colegiadas de autorización de cambios sin depender de reuniones presenciales prolongadas.
+
+#### Criterios de Aceptación
+
+##### Escenario 1: Visualización del expediente consolidado de cambio en la agenda CAB
+- **Dado que** el integrante del CAB ingresa a la sesión de evaluación semanal.
+- **Cuando** consulta una RFC en agenda.
+- **Entonces** el sistema despliega el expediente completo: justificación, análisis de riesgos, plan de pruebas, rollback y CIs involucrados.
+
+##### Escenario 2: Emisión y registro de dictamen individual fundamentado
+- **Dado que** el aprobador analiza la viabilidad del cambio propuesto.
+- **Cuando** selecciona su voto (Aprobado, Rechazado o Con Observaciones) e ingresa un comentario explicativo.
+- **Entonces** el sistema registra el dictamen formal en la bitácora del cambio contabilizando el quórum requerido.
+
+##### Escenario 3: Transición automática de estado al alcanzar la mayoría calificada
+- **Dado que** todos los miembros requeridos del comité han emitido su dictamen favorable.
+- **Cuando** el sistema computa el último voto requerido.
+- **Entonces** la RFC transiciona automáticamente a estado 'Aprobado para Implementación' notificando al gestor de cambios y al solicitante.
+
+---
+
+## Parte III — Matriz de Asignación por Integrante
+
+| ID Historia | Título de la Historia de Usuario | Módulo Asignado | Estado en Trello | Integrante Responsable |
+| :---: | :--- | :--- | :---: | :--- |
+| **HU-00** | Provisión de Credenciales SMTP Seguras | `identidades` | HECHO (Sprint 1) | Junior |
+| **HU-01** | Inicio de Sesión y Control de Acceso Institucional | `seguridad` | HECHO (Sprint 1) | Miguel |
+| **HU-02** | Recuperación Autónoma de Contraseña por Código Temporal | `seguridad` | HECHO (Sprint 1) | Miguel |
+| **HU-03** | Actualización de Perfil y Canales de Contacto | `seguridad` | HECHO (Sprint 1) | Miguel |
+| **HU-04** | Administración Centralizada de Cuentas de Usuario | `identidades` | HECHO (Sprint 1) | Junior |
+| **HU-05** | Asignación de Perfiles RBAC y Políticas de Acceso | `identidades` | HECHO (Sprint 1) | Junior |
+| **HU-06** | Creación y Jerarquización de Categorías del Catálogo | `servicios` | HECHO (Sprint 1) | Lourdes |
+| **HU-07** | Configuración de Ficha de Servicio y Parámetros Base | `servicios` | HECHO (Sprint 1) | Lourdes |
+| **HU-08** | Edición Integral y Actualización del Catálogo de Servicios | `servicios` | HECHO (Sprint 1) | Lourdes |
+| **HU-09** | Activación y Retiro Controlado de Ítems del Catálogo | `servicios` | HECHO (Sprint 1) | Lourdes |
+| **HU-10** | Búsqueda Predictiva y Exploración de Servicios para Solicitantes | `servicios` | HECHO (Sprint 1) | Lourdes |
+| **HU-11** | Captura Asistida de Requerimientos desde el Catálogo | `servicios` | HECHO (Sprint 1) | Lourdes |
+| **HU-12** | Bandeja de Seguimiento 'Mis Tickets' con Filtros de Estado | `tickets` | HECHO (Sprint 1) | Miguel |
+| **HU-13** | Visualizador Detallado de Ticket con Línea de Tiempo (Stepper) | `tickets` | HECHO (Sprint 1) | Miguel |
+| **HU-14** | Bitácora de Comentarios Públicos y Notas Técnicas Privadas | `tickets` | HECHO (Sprint 1) | Miguel |
+| **HU-15** | Configuración Dinámica de Formularios de Incidentes | `incidentes` | HECHO (Sprint 2) | Miguel |
+| **HU-16** | Configuración de Formularios de Solicitudes y Justificación de Negocio | `solicitudes` | HECHO (Sprint 2) | Miguel |
+| **HU-17** | Parametrización de Acuerdos de Nivel de Servicio (SLA) y Horarios Hábiles | `servicios` | HECHO (Sprint 2) | Lourdes |
+| **HU-18** | Diseñador Dinámico de Campos para Formularios de Servicios del Catálogo | `servicios` | HECHO (Sprint 2) | Lourdes |
+| **HU-19** | Registro Estructurado de Problemas y Análisis Causa Raíz (RCA) | `problemas` | HECHO (Sprint 2) | Alexis |
+| **HU-20** | Base de Datos de Errores Conocidos (KEDB) y Publicación de Workarounds | `problemas` | HECHO (Sprint 2) | Alexis |
+| **HU-21** | Configuración de Departamentos TI y Grupos Resolutores N1/N2/N3 | `organizacion` | HECHO (Sprint 2) | Junior |
+| **HU-22** | Planificación de Turnos Técnicos y Control de Ausencias en Mesa | `organizacion` | HECHO (Sprint 2) | Junior |
+| **HU-23** | Registro de Solicitud de Cambio (RFC) y Validación de Ventanas de Mantenimiento | `cambios` | HECHO (Sprint 2) | Nain |
+| **HU-24** | Inventario Maestro de Activos TI y Control Semafórico de Licencias (SAM) | `activos` | HECHO (Sprint 2) | Nain |
+| **HU-25** | Sala de Crisis Colaborativa y Gestión de Incidentes Mayores P1 | `incidentes` | PRODUCT BACKLOG | Miguel |
+| **HU-26** | Motor de Escalamiento Automático y Notificaciones Operativas | `operacion` | PRODUCT BACKLOG | Miguel |
+| **HU-27** | Catálogo de Servicios Técnicos y Vinculación con Acuerdos Operativos OLA | `servicios` | PRODUCT BACKLOG | Lourdes |
+| **HU-28** | Parametrización de Contratos de Soporte Externo (UC) y Excepciones de Calendario | `servicios` | PRODUCT BACKLOG | Lourdes |
+| **HU-29** | Diagrama Causa-Efecto (Ishikawa) y Árbol de Fallas para Problemas Complejos | `problemas` | PRODUCT BACKLOG | Alexis |
+| **HU-30** | Flujo Editorial KCS con Aprobación y Votación de Artículos de Conocimiento | `conocimiento` | PRODUCT BACKLOG | Alexis |
+| **HU-31** | Matriz de Desbloqueo Seguro y Políticas de Caducidad de Contraseñas IAM | `identidades` | PRODUCT BACKLOG | Junior |
+| **HU-32** | Catálogo de Proveedores y Evaluación de Cumplimiento de Contratos de Terceros | `proveedores` | PRODUCT BACKLOG | Junior |
+| **HU-33** | Topología Interactiva de CIs y Matriz de Análisis de Impacto en CMDB | `cmdb` | PRODUCT BACKLOG | Nain |
+| **HU-34** | Sesión Virtual del Comité de Cambios (CAB) con Votación Formal de RFCs | `cambios` | PRODUCT BACKLOG | Nain |
