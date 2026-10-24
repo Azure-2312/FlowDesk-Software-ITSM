@@ -74,20 +74,20 @@ Principios no negociables: `src/app` no contiene lógica; la lógica vive en `sr
 | 1 | `tickets` | 52 | `index.ts` + `ui.ts` | Núcleo ITSM congelado y configuración de formularios/vistas de ticket. | Miguel |
 | 2 | `incidentes` | 12 | `index.ts` | Incidentes, mayores y sala de crisis. | Miguel |
 | 3 | `solicitudes` | 6 | `index.ts` | Solicitudes de servicio y su ciclo. | Miguel |
-| 4 | `cambios` | 96 | `index.ts` | RFC, CAB/ECAB, evaluación, calendario, PIR, plantillas. | Nain |
-| 5 | `problemas` | 85 | `index.ts` | Problemas, RCA, KEDB, configuración del proceso. | Alexis |
-| 6 | `seguridad` | 24 | `index.ts` | Login, JWT, sesiones, captcha, recuperación. | Miguel |
+| 4 | `cambios` | 134 | `index.ts` | RFC, CAB/ECAB, evaluación, calendario, PIR, plantillas. | Nain |
+| 5 | `problemas` | 94 | `index.ts` | Problemas, RCA, KEDB, configuración del proceso. | Alexis |
+| 6 | `seguridad` | 36 | `index.ts` | Login, JWT, sesiones, captcha, recuperación. | Junior |
 | 7 | `plataforma` | 29 | `index.ts` | Salud, mantenimiento, logs, auditoría, menú, notificaciones y parámetros. | Miguel |
 | 8 | `perfiles` | 135 | Subcarpetas por rol | Consolas de rol: solo UI y alcance del perfil. | Compartido por subcarpeta |
-| 9 | `servicios` | 26 | `index.ts` + `ui.ts` | Catálogo, categorías, SLA, matriz de prioridad y workflow. | Miguel |
-| 10 | `operacion` | 10 | `index.ts` | Eventos operativos y resiliencia. | Miguel |
-| 11 | `activos` | 80 | `index.ts` | ITAM/SAM: inventario, licencias, contratos, bajas. | Nain |
-| 12 | `cmdb` | 31 | `index.ts` | SACM: CIs, relaciones, líneas base, exactitud, análisis. | Nain |
-| 13 | `proveedores` | 6 | `index.ts` | Proveedores y contratos. | Nain |
-| 14 | `identidades` | 15 | `index.ts` | Usuarios, perfiles RBAC, credenciales. | Junior |
-| 15 | `organizacion` | 22 | `index.ts` | Departamentos, técnicos, colaboradores, ausencias. | Junior |
-| 16 | `conocimiento` | 14 | `index.ts` | Base de conocimiento, configuración editorial y flujo editorial. | Alexis |
-| 17 | `reportes` | 14 | `index.ts` + `ui.ts` | 9 reportes centralizados e indicadores. | Alexis |
+| 9 | `servicios` | 33 | `index.ts` + `ui.ts` | Catálogo, categorías, SLA, matriz de prioridad y workflow. | Lourdes |
+| 10 | `operacion` | 34 | `index.ts` | Eventos operativos y resiliencia. | Miguel |
+| 11 | `activos` | 94 | `index.ts` | ITAM/SAM: inventario, licencias, contratos, bajas. | Lourdes |
+| 12 | `cmdb` | 34 | `index.ts` | SACM: CIs, relaciones, líneas base, exactitud, análisis. | Nain |
+| 13 | `proveedores` | 6 | `index.ts` | Proveedores y contratos. | Junior |
+| 14 | `identidades` | 22 | `index.ts` | Usuarios, perfiles RBAC, credenciales. | Junior |
+| 15 | `organizacion` | 32 | `index.ts` | Departamentos, técnicos, colaboradores, ausencias. | Junior |
+| 16 | `conocimiento` | 29 | `index.ts` | Base de conocimiento, configuración editorial y flujo editorial. | Alexis |
+| 17 | `reportes` | 24 | `index.ts` + `ui.ts` | 9 reportes centralizados e indicadores. | Miguel |
 \* Conteo referencial al 2026-10-19; dimensiona, no reparte carga.
 
 ### 2.3. Contratos públicos
@@ -143,11 +143,11 @@ El contrato de `tickets` incluye `listarTickets`, `crearTicket`, `obtenerDetalle
 ### 3.1. Composición
 | Integrante | Rol Scrum | Rol técnico | Dominio principal | Rama de trabajo |
 | :--- | :--- | :--- | :--- | :--- |
-| **Miguel** | Scrum Master + Tech Lead | Arquitecto y desarrollador del núcleo | `tickets`, `incidentes`, `solicitudes`, `seguridad`, `plataforma`, `servicios`, `operacion`; `shared/lib` | `feature/miguel-nucleo-servicios-sla` |
-| **Lourdes (Lu)** | Product Owner | Líder de frontend y experiencia | Configuración de plataforma en `plataforma`, `tickets`, `servicios` y `conocimiento`; `perfiles/tecnico`, `perfiles/gestor-area`; `shared/components` | `feature/lourdes-config-tecnico` |
-| **Alexis** | Developer | Conocimiento, problemas y BI | `problemas`, `conocimiento`, `reportes` | `feature/alexis-problemas-conocimiento` |
-| **Nain** | Developer | Cambio, ITAM y CMDB | `cambios`, `activos`, `cmdb`, `proveedores`, `perfiles/gestor-cambios` | `feature/nain-cambios-activos-cmdb` |
-| **Junior** | Developer | IAM, organización y auditoría | `identidades`, `organizacion`, `perfiles/auditor` | `feature/junior-identidades-organizacion-auditor` |
+| **Miguel** | Scrum Master + Tech Lead | Arquitecto y desarrollador del núcleo | `tickets`, `incidentes`, `solicitudes`, `plataforma`, `operacion`, `reportes`; `shared/lib` | `feature/miguel-nucleo-servicios-sla` |
+| **Lourdes (Lu)** | Product Owner | Oferta de servicios y recursos TI | `servicios`, `activos`; `perfiles/tecnico`, `perfiles/gestor-area`, `perfiles/solicitante`; `shared/components` | `feature/lourdes-config-tecnico` |
+| **Alexis** | Developer | Diagnóstico, conocimiento y KCS | `problemas`, `conocimiento` | `feature/alexis-problemas-conocimiento` |
+| **Nain** | Developer | Cambio, infraestructura y CMDB | `cambios`, `cmdb`, `perfiles/gestor-cambios` | `feature/nain-cambios-activos-cmdb` |
+| **Junior** | Developer | Ciberseguridad, IAM, organización y terceros | `seguridad`, `identidades`, `organizacion`, `proveedores`, `perfiles/auditor` | `feature/junior-identidades-organizacion-auditor` |
 Los cinco son Developers; Scrum Master y Product Owner son responsabilidades adicionales, no jerarquías.
 
 ### 3.2. Responsabilidades
