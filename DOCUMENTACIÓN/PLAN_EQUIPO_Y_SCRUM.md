@@ -145,7 +145,7 @@ El contrato de `tickets` incluye `listarTickets`, `crearTicket`, `obtenerDetalle
 | :--- | :--- | :--- | :--- | :--- |
 | **Miguel** | Scrum Master + Tech Lead | Arquitecto y desarrollador del núcleo | `tickets`, `incidentes`, `solicitudes`, `plataforma`, `operacion`, `reportes`; `shared/lib` | `feature/miguel-nucleo-servicios-sla` |
 | **Lourdes (Lu)** | Product Owner | Oferta de servicios y recursos TI | `servicios`, `activos`; `perfiles/tecnico`, `perfiles/gestor-area`, `perfiles/solicitante`; `shared/components` | `feature/lourdes-config-tecnico` |
-| **Alexis** | Developer | Diagnóstico, conocimiento y KCS | `problemas`, `conocimiento` | `feature/alexis-problemas-conocimiento` |
+| **Alexis (Darhien)** | Developer | Diagnóstico, conocimiento y KCS | `problemas`, `conocimiento` | `feature/alexis-problemas-conocimiento` |
 | **Nain** | Developer | Cambio, infraestructura y CMDB | `cambios`, `cmdb`, `perfiles/gestor-cambios` | `feature/nain-cambios-activos-cmdb` |
 | **Junior** | Developer | Ciberseguridad, IAM, organización y terceros | `seguridad`, `identidades`, `organizacion`, `proveedores`, `perfiles/auditor` | `feature/junior-identidades-organizacion-auditor` |
 Los cinco son Developers; Scrum Master y Product Owner son responsabilidades adicionales, no jerarquías.

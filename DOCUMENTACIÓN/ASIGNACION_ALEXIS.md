@@ -1,7 +1,7 @@
-# Plan de Asignación y Especificación Técnica — Alexis (Gestión de Problemas y Conocimiento)
+# Plan de Asignación y Especificación Técnica — Alexis / Darhien (Gestión de Problemas y Conocimiento)
 
 > **Documento de especificación técnica y de desarrollo para el asistente IA.**
-> **Responsable:** Alexis
+> **Responsable:** Alexis / Darhien (Darhien Chavez)
 > **Módulos Asignados (100% Independientes y Aislados):**
 > 1. [src/modules/problemas](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/problemas) (Gestión de Problemas ITIL 4, Análisis Causa Raíz RCA 5-Why/Ishikawa, Base de Datos de Errores Conocidos KEDB, Problemas Mayores y Consola del Gestor de Problemas)
 > 2. [src/modules/conocimiento](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/conocimiento) (Gestión del Conocimiento ITIL 4 / KCS, Base de Artículos de Solución, Taxonomía, Ciclo Editorial y Búsqueda)
