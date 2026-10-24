@@ -65,8 +65,8 @@ export default function SelectorPerfilActivo({ perfiles, perfilActivo }: Props) 
         6: "/plataforma/operacion/paneles/auditor",
         7: "/plataforma/operacion/paneles/aprobador",
         8: "/plataforma/operacion/paneles/gestor-cambios",
-        9: "/plataforma/activos/panel",
-        10: "/plataforma/problemas/gestion/panel",
+        9: "/plataforma/operacion/paneles/gestor-activos",
+        10: "/plataforma/operacion/paneles/gestor-problemas",
       };
       const destino = destinosPorPerfil[idPerfil] ?? "/plataforma/dashboard";
 

@@ -14,26 +14,26 @@ ID | NIVEL | PADRE | NOMBRE | URL
 21215 | 1 | [0] RAIZ | Plataforma | /plataforma/seguridad
 21225 | 1 | [0] RAIZ | Mi cuenta | (carpeta)
 21002 | 2 | [21001] Mi trabajo | Aprobaciones | (carpeta)
-21007 | 2 | [21001] Mi trabajo | Panel de activos y CMDB | /plataforma/activos/panel
+21007 | 2 | [21001] Mi trabajo | Panel de activos | /plataforma/operacion/paneles/gestor-activos
 21008 | 2 | [21001] Mi trabajo | Equipo | (carpeta)
 21011 | 2 | [21001] Mi trabajo | Panel de auditoría | /plataforma/operacion/paneles/auditor
 21012 | 2 | [21001] Mi trabajo | Panel de gestión de cambios | /plataforma/operacion/paneles/gestor-cambios
-21013 | 2 | [21001] Mi trabajo | Panel de problemas | /plataforma/problemas/gestion/panel
+21013 | 2 | [21001] Mi trabajo | Panel de gestión de problemas | /plataforma/operacion/paneles/gestor-problemas
 21014 | 2 | [21001] Mi trabajo | Panel de supervisión | /plataforma/operacion/paneles/supervisor
 21015 | 2 | [21001] Mi trabajo | Panel del aprobador | /plataforma/operacion/paneles/aprobador
 21016 | 2 | [21001] Mi trabajo | Panel del área | /plataforma/operacion/paneles/gestor-area
 21017 | 2 | [21001] Mi trabajo | Panel del técnico | /plataforma/operacion/paneles/tecnico
 21018 | 2 | [21001] Mi trabajo | Mi agenda y disponibilidad | /plataforma/operacion/agenda
-21019 | 2 | [21001] Mi trabajo | Mi desempeño | /plataforma/tickets/desempeno
+21019 | 2 | [21001] Mi trabajo | Mi desempeño | /plataforma/operacion/desempeno
 21020 | 2 | [21001] Mi trabajo | Mis tareas | /plataforma/operacion/tareas
 21021 | 2 | [21001] Mi trabajo | Panel de administración | /plataforma/operacion/paneles/administrador
 21022 | 2 | [21001] Mi trabajo | Panel del solicitante | /plataforma/operacion/paneles/solicitante
-21003 | 3 | [21002] Aprobaciones | Delegación de aprobaciones | /plataforma/solicitudes/delegaciones
-21004 | 3 | [21002] Aprobaciones | Delegaciones | /plataforma/seguridad/delegaciones
-21005 | 3 | [21002] Aprobaciones | Aprobaciones de mi área | /plataforma/solicitudes/historial-area
-21006 | 3 | [21002] Aprobaciones | Historial de aprobaciones | /plataforma/seguridad/historial-aprobaciones
-21009 | 3 | [21008] Equipo | Ausencias y guardias | /plataforma/organizacion/equipo/ausencias
-21010 | 3 | [21008] Equipo | Vistas compartidas | /plataforma/organizacion/equipo/vistas
+21003 | 3 | [21002] Aprobaciones | Delegación de aprobaciones | /plataforma/operacion/aprobaciones/delegacion
+21004 | 3 | [21002] Aprobaciones | Delegaciones | /plataforma/operacion/aprobaciones/delegaciones
+21005 | 3 | [21002] Aprobaciones | Aprobaciones de mi área | /plataforma/operacion/aprobaciones/historial-area
+21006 | 3 | [21002] Aprobaciones | Historial de aprobaciones | /plataforma/operacion/aprobaciones/historial
+21009 | 3 | [21008] Equipo | Ausencias y guardias | /plataforma/operacion/equipo/ausencias
+21010 | 3 | [21008] Equipo | Vistas compartidas | /plataforma/operacion/equipo/vistas
 21228 | 2 | [21023] Mesa de Servicio | Incidentes | /plataforma/incidentes
 21229 | 2 | [21023] Mesa de Servicio | Solicitudes | /plataforma/solicitudes
 21024 | 2 | [21023] Mesa de Servicio | Operacion de la mesa | (carpeta)
@@ -46,7 +46,7 @@ ID | NIVEL | PADRE | NOMBRE | URL
 21256 | 3 | [21024] Operacion de la mesa | Todos los tickets | /plataforma/tickets/gestion/todos
 21257 | 3 | [21024] Operacion de la mesa | Registrar ticket de usuario | /plataforma/tickets/gestion/crear
 21258 | 3 | [21024] Operacion de la mesa | Auditoria de tickets | /plataforma/tickets/gestion/auditoria
-21259 | 3 | [21024] Operacion de la mesa | Avisos de servicio | /plataforma/avisos/mantenimientos
+21259 | 3 | [21024] Operacion de la mesa | Avisos de servicio | /plataforma/tickets/gestion/avisos
 21260 | 3 | [21024] Operacion de la mesa | Busqueda avanzada de tickets | /plataforma/tickets/mesa/buscar
 21261 | 3 | [21024] Operacion de la mesa | Historial de mis tickets | /plataforma/tickets/gestion/mios
 21045 | 3 | [21044] SLA | Riesgos de SLA | /plataforma/servicios/sla/escalamientos
@@ -149,7 +149,7 @@ ID | NIVEL | PADRE | NOMBRE | URL
 21142 | 3 | [21133] CMDB | Auditorías de CMDB | /plataforma/cmdb/auditoria/resultados
 21144 | 3 | [21143] Proveedores y contratos | Contratos y cobertura | /plataforma/activos/contratos
 21145 | 3 | [21143] Proveedores y contratos | Licencias y contratos de área | /plataforma/activos/contratos-area
-21146 | 3 | [21143] Proveedores y contratos | Proveedores | /plataforma/proveedores
+21146 | 3 | [21143] Proveedores y contratos | Proveedores | /plataforma/activos/proveedores
 21147 | 3 | [21143] Proveedores y contratos | Renovaciones y vencimientos | /plataforma/activos/renovaciones
 21149 | 3 | [21148] Configuración de activos | Ciclos de vida y transiciones | /plataforma/activos/configuracion/ciclos-vida-transiciones
 21150 | 3 | [21148] Configuración de activos | Fabricantes y modelos | /plataforma/activos/configuracion/tipos-modelos-atributos/fabricantes

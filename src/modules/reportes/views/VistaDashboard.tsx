@@ -23,8 +23,8 @@ export default function VistaDashboard(): any {
     6: "/plataforma/operacion/paneles/auditor", // 6. Auditor
     7: "/plataforma/operacion/paneles/aprobador", // 7. Aprobador
     8: "/plataforma/operacion/paneles/gestor-cambios", // 8. Gestor de Cambios
-    9: "/plataforma/activos/panel", // 9. Gestor de Activos y CMDB
-    10: "/plataforma/problemas/gestion/panel", // 10. Gestor de Problemas
+    9: "/plataforma/operacion/paneles/gestor-activos", // 9. Gestor de Activos y CMDB
+    10: "/plataforma/operacion/paneles/gestor-problemas", // 10. Gestor de Problemas
   };
 
   const idPerfil = sesion.perfilActivo?.id_perfil;
