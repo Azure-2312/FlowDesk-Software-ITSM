@@ -206,9 +206,9 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                 Campos Estándar (ITIL v4)
               </span>
               <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 4 }}>
-                {secciones.flatMap((s) => s.campos)
-                  .filter((c) => !c.codigo.startsWith("cf_"))
-                  .filter((c) => !filtroBiblioteca || c.etiqueta.toLowerCase().includes(filtroBiblioteca.toLowerCase()) || c.codigo.includes(filtroBiblioteca.toLowerCase()))
+                {secciones.flatMap((s) => s.campos || [])
+                  .filter((c) => Boolean(c && c.codigo && !c.codigo.startsWith("cf_")))
+                  .filter((c) => !filtroBiblioteca || (c.etiqueta && c.etiqueta.toLowerCase().includes(filtroBiblioteca.toLowerCase())) || (c.codigo && c.codigo.toLowerCase().includes(filtroBiblioteca.toLowerCase())))
                   .map((c) => (
                     <div
                       key={c.codigo}

@@ -120,9 +120,60 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
   onVistaPrevia,
   puedeEditar = true,
 }) => {
-  const secciones = (seccionesProp && seccionesProp.length > 0)
-    ? seccionesProp
-    : SECCIONES_PREDETERMINADAS_PROBLEMAS;
+  const catalogoCamposPredeterminados = React.useMemo(() => {
+    const mapa = new Map<string, CampoFormulario>();
+    for (const sec of SECCIONES_PREDETERMINADAS_PROBLEMAS) {
+      for (const campo of sec.campos) {
+        mapa.set(campo.codigo, campo);
+      }
+    }
+    return mapa;
+  }, []);
+
+  const normalizarCampo = React.useCallback(
+    (c: any): CampoFormulario => {
+      if (typeof c === "string") {
+        const pred = catalogoCamposPredeterminados.get(c);
+        if (pred) return { ...pred };
+        return {
+          codigo: c,
+          etiqueta: c,
+          tipo: "texto",
+          visible: true,
+          obligatorio: "no",
+          bloqueado: false,
+          ancho: "completo",
+          reglas: [],
+        };
+      }
+      const codigo = c?.codigo || "";
+      const pred = catalogoCamposPredeterminados.get(codigo);
+      return {
+        codigo,
+        etiqueta: c?.etiqueta || pred?.etiqueta || codigo || "Campo",
+        tipo: c?.tipo || pred?.tipo || "texto",
+        visible: c?.visible ?? pred?.visible ?? true,
+        obligatorio: c?.obligatorio ?? pred?.obligatorio ?? "no",
+        bloqueado: c?.bloqueado ?? pred?.bloqueado ?? false,
+        ancho: c?.ancho || pred?.ancho || "completo",
+        placeholder: c?.placeholder || pred?.placeholder,
+        ayuda: c?.ayuda || pred?.ayuda,
+        reglas: c?.reglas || pred?.reglas || [],
+      };
+    },
+    [catalogoCamposPredeterminados]
+  );
+
+  const secciones = React.useMemo(() => {
+    const base =
+      seccionesProp && seccionesProp.length > 0
+        ? seccionesProp
+        : SECCIONES_PREDETERMINADAS_PROBLEMAS;
+    return base.map((sec) => ({
+      ...sec,
+      campos: (sec.campos || []).map(normalizarCampo),
+    }));
+  }, [seccionesProp, normalizarCampo]);
 
   const camposPersonalizados = cpProp || camposPersonalizadosDisponibles || [];
 
@@ -307,13 +358,13 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
               </span>
               <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 4 }}>
                 {secciones
-                  .flatMap((s) => s.campos)
-                  .filter((c) => !c.codigo.startsWith("cf_"))
+                  .flatMap((s) => s.campos || [])
+                  .filter((c) => Boolean(c && c.codigo && !c.codigo.startsWith("cf_")))
                   .filter(
                     (c) =>
                       !filtroBiblioteca ||
-                      c.etiqueta.toLowerCase().includes(filtroBiblioteca.toLowerCase()) ||
-                      c.codigo.includes(filtroBiblioteca.toLowerCase())
+                      (c.etiqueta && c.etiqueta.toLowerCase().includes(filtroBiblioteca.toLowerCase())) ||
+                      (c.codigo && c.codigo.toLowerCase().includes(filtroBiblioteca.toLowerCase()))
                   )
                   .map((c) => (
                     <div

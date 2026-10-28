@@ -199,14 +199,35 @@ export async function listarCategoriasConocimiento() {
   return query(`
       SELECT 
         c.id_categoria,
+        c.id_tipo_ticket,
+        tt.nombre as tipo_nombre,
+        tt.codigo as tipo_codigo,
         c.nombre,
         c.descripcion,
         c.codigo_corto,
+        c.sla_default_respuesta,
+        c.sla_default_resolucion,
         c.estado_registro,
-        COUNT(a.id_articulo) as total_articulos
+        c.id_padre,
+        COUNT(DISTINCT s.id_servicio)::int as total_servicios,
+        COUNT(DISTINCT s.id_servicio) FILTER (WHERE s.estado_registro = true)::int as servicios_activos,
+        COUNT(DISTINCT a.id_articulo) FILTER (WHERE a.estado_registro = true)::int as total_articulos
       FROM categoria_ticket c
+      LEFT JOIN tipo_ticket tt ON tt.id_tipo_ticket = c.id_tipo_ticket
+      LEFT JOIN servicio_catalogo s ON s.id_categoria = c.id_categoria
       LEFT JOIN articulo_conocimiento a ON a.id_categoria = c.id_categoria AND a.estado_registro = true
-      GROUP BY c.id_categoria, c.nombre, c.descripcion, c.codigo_corto, c.estado_registro
+      GROUP BY 
+        c.id_categoria,
+        c.id_tipo_ticket,
+        tt.nombre,
+        tt.codigo,
+        c.nombre,
+        c.descripcion,
+        c.codigo_corto,
+        c.sla_default_respuesta,
+        c.sla_default_resolucion,
+        c.estado_registro,
+        c.id_padre
       ORDER BY c.nombre ASC
     `);
 }
