@@ -1,10 +1,10 @@
-# Plan de Asignación y Especificación Técnica — Nain (Gestión de Cambios y CMDB)
+﻿# Plan de Asignación y Especificación Técnica — Nain (Gestión de Cambios y CMDB)
 
 > **Documento de especificación técnica y de desarrollo para el asistente IA.**
 > **Responsable:** Nain
 > **Módulos Asignados (100% Independientes y Aislados):**
-> 1. [src/modules/cambios](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/cambios) (Habilitación del Cambio ITIL 4 Change Enablement, Solicitudes de Cambio RFC, Matriz de Autoridad CAB/ECAB, Calendario, Ventanas y Congelamiento)
-> 2. [src/modules/cmdb](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/cmdb) (Gestión de Configuración del Servicio SACM ITIL 4, Elementos de Configuración CIs, Topología de Dependencias, Análisis de Impacto y Líneas Base)
+> 1. [src/modules/cambios](../src/modules/cambios) (Habilitación del Cambio ITIL 4 Change Enablement, Solicitudes de Cambio RFC, Matriz de Autoridad CAB/ECAB, Calendario, Ventanas y Congelamiento)
+> 2. [src/modules/cmdb](../src/modules/cmdb) (Gestión de Configuración del Servicio SACM ITIL 4, Elementos de Configuración CIs, Topología de Dependencias, Análisis de Impacto y Líneas Base)
 > 
 > **Frontera de Trabajo Estricta:**
 > - Nain **NO** interviene en el módulo de activos (`src/modules/activos`), el cual fue reasignado a Lourdes dentro del bloque de aprovisionamiento y recursos TI.
@@ -69,3 +69,18 @@ La dupla Cambios-CMDB es el núcleo de estabilidad tecnológica de la empresa:
 2. Garantizar que toda RFC normal valide contra el calendario de freeze antes de permitir la programación.
 3. Asegurar que las relaciones CMDB eviten ciclos infinitos mediante validación algorítmica.
 4. Compilar con `npm run build` manteniendo cero errores TypeScript y cero emojis.
+
+
+---
+
+## Matriz Canónica de Historias de Usuario Asignadas (41 HUs)
+
+> Asignación formal y vinculante correspondiente a las **41 Historias de Usuario atómicas** definidas en [HISTORIAS_DE_USUARIO.md](./HISTORIAS_DE_USUARIO.md).
+
+| ID | Título de la Historia de Usuario | Fase de Dominio | Estado | Rol / Especialidad |
+| :---: | :--- | :--- | :---: | :--- |
+| **HU-37** | [Registro de Solicitud de Cambio (RFC)](./HISTORIAS_DE_USUARIO.md#hu-37-registro-de-solicitud-de-cambio-rfc-) | Fases Futuras: Cambios RFC | **HECHO** | Cambios / Registro RFC |
+| **HU-38** | [Evaluación de Impacto por Comité de Cambios (CAB)](./HISTORIAS_DE_USUARIO.md#hu-38-evaluaci-n-de-impacto-por-comit-de-cambios-cab-) | Fases Futuras: Cambios RFC | **PRODUCT BACKLOG** | Cambios / Quórum CAB |
+| **HU-39** | [Inventario Maestro de Elementos de Configuración en CMDB](./HISTORIAS_DE_USUARIO.md#hu-39-inventario-maestro-de-elementos-de-configuraci-n-en-cmdb) | Fases Futuras: Activos y CMDB | **HECHO** | CMDB / Relaciones y Topología |
+
+**Total Asignado:** 3 Historias (2 HECHO, 1 PRODUCT BACKLOG).

@@ -1,4 +1,4 @@
-# Tratado Enciclopédico y Manual Maestro de FlowDesk ITSM
+﻿# Tratado Enciclopédico y Manual Maestro de FlowDesk ITSM
 
 **Sistema Integral de Gestión de Servicios de TI, Mesa de Ayuda y Gobernanza Operativa**  
 **Versión de la Plataforma:** 2.0 (Edición Corporativa Unificada)  
@@ -1222,17 +1222,17 @@ La documentación integral de FlowDesk ITSM se estructura en un conjunto de docu
 
 | Documento | Enlace Directo | Propósito y Contenido Principal |
 | :--- | :--- | :--- |
-| **README Raíz del Proyecto** | [README.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/README.md) | Visión ejecutiva, guía de inicio rápido, instalación local y comandos de compilación. |
-| **Arquitectura y Código** | [ARQUITECTURA_Y_CODIGO.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/ARQUITECTURA_Y_CODIGO.md) | Guía técnica profunda de la estructura de directorios, contratos de módulos y directivas para desarrolladores e inteligencias artificiales. |
-| **Menús, Perfiles y Cobertura** | [MENUS_Y_PERFILES.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/MENUS_Y_PERFILES.md) | Catálogo único de 230 opciones de menú, matriz de visibilidad de los 10 perfiles RBAC y árbol visual colapsado. |
-| **Requerimientos y Reglas** | [REQUERIMIENTOS.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/REQUERIMIENTOS.md) | Especificación formal de Requerimientos Funcionales (RF-01 a RF-45), Criterios No Funcionales y Reglas de Negocio (RN-01 a RN-48). |
-| **Historias de Usuario** | [HISTORIAS_DE_USUARIO.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/HISTORIAS_DE_USUARIO.md) | 35 historias de usuario estructuradas (Sprint 1, Sprint 2 y Product Backlog) con tarjetas de metadatos y criterios Given-When-Then. |
-| **Matriz de Trazabilidad** | [TRAZABILIDAD.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/TRAZABILIDAD.md) | Matriz de impacto y cobertura bidireccional entre funcionalidades, requerimientos, reglas, rutas de pantalla y pruebas. |
-| **Plan de Equipo y Scrum** | [PLAN_EQUIPO_Y_SCRUM.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/PLAN_EQUIPO_Y_SCRUM.md) | Metodología ágil del equipo de 5 ingenieros, propiedad balanceada de los 17 módulos y estrategia de ramas en Git. |
-| **Catálogo de Servicios y Datos** | [CATALOGO_SERVICIOS_DATOS.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/CATALOGO_SERVICIOS_DATOS.md) | Definición formal de los 30 servicios de referencia (14 solicitudes y 16 incidentes), SLAs y categorías maestras. |
-| **Bitácora Daily Scrum** | [BITACORA_DAILY_SCRUM.xlsx](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/BITACORA_DAILY_SCRUM.xlsx) | Libro de cálculo Excel con las respuestas diarias de los 5 integrantes durante los 12 días del Sprint 2 (12/10 al 23/10). |
-| **Historias para Trello** | [Historia de Usuario trello.txt](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/Historia%20de%20Usuario%20trello.txt) | Exportación en texto plano de las 35 historias de usuario optimizada para importación ágil en tableros Trello. |
-| **Asignaciones Individuales** | [ASIGNACION_MIGUEL.md](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/ASIGNACION_MIGUEL.md) | Especificaciones de alcance y archivos asignados a cada ingeniero ([Miguel](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/ASIGNACION_MIGUEL.md), [Lourdes](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/ASIGNACION_LOURDES.md), [Alexis / Darhien](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/ASIGNACION_ALEXIS.md), [Junior](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/ASIGNACION_JUNIOR.md), [Nain](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/DOCUMENTACI%C3%93N/ASIGNACION_NAIN.md)). |
+| **README Raíz del Proyecto** | [README.md](../README.md) | Visión ejecutiva, guía de inicio rápido, instalación local y comandos de compilación. |
+| **Arquitectura y Código** | [ARQUITECTURA_Y_CODIGO.md](./ARQUITECTURA_Y_CODIGO.md) | Guía técnica profunda de la estructura de directorios, contratos de módulos y directivas para desarrolladores e inteligencias artificiales. |
+| **Menús, Perfiles y Cobertura** | [MENUS_Y_PERFILES.md](./MENUS_Y_PERFILES.md) | Catálogo único de 230 opciones de menú, matriz de visibilidad de los 10 perfiles RBAC y árbol visual colapsado. |
+| **Requerimientos y Reglas** | [REQUERIMIENTOS.md](./REQUERIMIENTOS.md) | Especificación formal de Requerimientos Funcionales (RF-01 a RF-45), Criterios No Funcionales y Reglas de Negocio (RN-01 a RN-48). |
+| **Historias de Usuario** | [HISTORIAS_DE_USUARIO.md](./HISTORIAS_DE_USUARIO.md) | 41 historias de usuario atómicas estructuradas (31 HECHO, 10 PRODUCT BACKLOG) con tarjetas de metadatos y criterios Given-When-Then. |
+| **Matriz de Trazabilidad** | [TRAZABILIDAD.md](./TRAZABILIDAD.md) | Matriz de impacto y cobertura bidireccional entre funcionalidades, requerimientos, reglas, rutas de pantalla y pruebas. |
+| **Plan de Equipo y Scrum** | [PLAN_EQUIPO_Y_SCRUM.md](./PLAN_EQUIPO_Y_SCRUM.md) | Metodología ágil del equipo de 5 ingenieros, propiedad balanceada de los 17 módulos y estrategia de ramas en Git. |
+| **Catálogo de Servicios y Datos** | [CATALOGO_SERVICIOS_DATOS.md](./CATALOGO_SERVICIOS_DATOS.md) | Definición formal de los 30 servicios de referencia (14 solicitudes y 16 incidentes), SLAs y categorías maestras. |
+| **Bitácora Daily Scrum** | [BITACORA_DAILY_SCRUM.xlsx](./BITACORA_DAILY_SCRUM.xlsx) | Libro de cálculo Excel con las respuestas diarias de los 5 integrantes durante los 12 días del Sprint 2 (12/10 al 23/10). |
+| **Historias para Trello** | [Historia de Usuario trello.txt](./Historia%20de%20Usuario%20trello.txt) | Exportación en texto plano de las 41 historias de usuario atómicas optimizada para importación ágil en tableros Trello. |
+| **Asignaciones Individuales** | [ASIGNACION_MIGUEL.md](./ASIGNACION_MIGUEL.md) | Especificaciones de alcance y archivos asignados a cada ingeniero ([Miguel](./ASIGNACION_MIGUEL.md), [Lourdes](./ASIGNACION_LOURDES.md), [Alexis / Darhien](./ASIGNACION_ALEXIS.md), [Junior](./ASIGNACION_JUNIOR.md), [Nain](./ASIGNACION_NAIN.md)). |
 
 ---
 

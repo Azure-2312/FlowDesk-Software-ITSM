@@ -1,17 +1,17 @@
-# Plan de Asignación y Especificación Técnica — Miguel (Tech Lead & Scrum Master)
+﻿# Plan de Asignación y Especificación Técnica — Miguel (Tech Lead & Scrum Master)
 
 > **Documento de especificación técnica y de desarrollo para el asistente IA.**
 > **Responsable:** Miguel (Tech Lead & Scrum Master)
 > **Módulos Asignados (Core, Transversales y Consolas de Perfil):**
-> 1. [src/modules/tickets](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/tickets) (Motor Core Transaccional de Tickets y Despacho)
-> 2. [src/modules/incidentes](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/incidentes) (Gestión de Incidentes e Incidentes Mayores ITIL 4)
-> 3. [src/modules/solicitudes](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/solicitudes) (Gestión de Solicitudes de Servicio y Flujo de Aprobación SoD)
-> 4. [src/modules/reportes](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/reportes) (Analítica ITSM, Tableros de Control de Gestión y los 9 Reportes Unificados)
-> 5. [src/modules/seguridad](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/seguridad) (Políticas de Seguridad y Auditoría de Acceso ISO 27001)
-> 6. [src/modules/plataforma](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/plataforma) (Gobierno de la Plataforma, Salud, Mantenimiento y Menú Admin)
-> 6. [src/modules/operacion](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/operacion) (Gestión de Eventos, Monitoreo y Resiliencia Operativa ITIL 4)
-> 7. **Todas las Consolas de Perfiles:** [src/modules/perfiles](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/perfiles) (`tecnico`, `solicitante`, `gestor-area`, `auditor`, `supervisor`, `aprobador`, `administrador`).
-> 8. **Infraestructura Transversal:** [src/shared/lib](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/shared/lib), Migraciones SQL, Sincronización en Tiempo Real, WebSockets/SSE y Middleware SoD de Backend.
+> 1. [src/modules/tickets](../src/modules/tickets) (Motor Core Transaccional de Tickets y Despacho)
+> 2. [src/modules/incidentes](../src/modules/incidentes) (Gestión de Incidentes e Incidentes Mayores ITIL 4)
+> 3. [src/modules/solicitudes](../src/modules/solicitudes) (Gestión de Solicitudes de Servicio y Flujo de Aprobación SoD)
+> 4. [src/modules/reportes](../src/modules/reportes) (Analítica ITSM, Tableros de Control de Gestión y los 9 Reportes Unificados)
+> 5. [src/modules/seguridad](../src/modules/seguridad) (Políticas de Seguridad y Auditoría de Acceso ISO 27001)
+> 6. [src/modules/plataforma](../src/modules/plataforma) (Gobierno de la Plataforma, Salud, Mantenimiento y Menú Admin)
+> 6. [src/modules/operacion](../src/modules/operacion) (Gestión de Eventos, Monitoreo y Resiliencia Operativa ITIL 4)
+> 7. **Todas las Consolas de Perfiles:** [src/modules/perfiles](../src/modules/perfiles) (`tecnico`, `solicitante`, `gestor-area`, `auditor`, `supervisor`, `aprobador`, `administrador`).
+> 8. **Infraestructura Transversal:** [src/shared/lib](../src/shared/lib), Migraciones SQL, Sincronización en Tiempo Real, WebSockets/SSE y Middleware SoD de Backend.
 
 ---
 
@@ -227,3 +227,34 @@ flowchart TD
 2. Segregue el archivo monolítico `ConfiguracionFormulariosTickets.tsx` creando los submódulos dentro de `incidentes/config/` y `solicitudes/config/`.
 3. Verifique que todas las rutas canónicas del menú funcionen con autorización `exigirMenuPagina`.
 4. Ejecute periódicamente `npm run build` para garantizar cero errores de TypeScript y estricto cumplimiento de Cero Emojis.
+
+
+---
+
+## Matriz Canónica de Historias de Usuario Asignadas (41 HUs)
+
+> Asignación formal y vinculante correspondiente a las **41 Historias de Usuario atómicas** definidas en [HISTORIAS_DE_USUARIO.md](./HISTORIAS_DE_USUARIO.md).
+
+| ID | Título de la Historia de Usuario | Fase de Dominio | Estado | Rol / Especialidad |
+| :---: | :--- | :--- | :---: | :--- |
+| **HU-01** | [Autenticación Segura de Usuarios](./HISTORIAS_DE_USUARIO.md#hu-01-autenticaci-n-segura-de-usuarios) | Fase 1: Seguridad y Cuentas | **HECHO** | Seguridad / Login |
+| **HU-02** | [Recuperación Autónoma de Contraseña](./HISTORIAS_DE_USUARIO.md#hu-02-recuperaci-n-aut-noma-de-contrase-a) | Fase 1: Seguridad y Cuentas | **HECHO** | Seguridad / Auth |
+| **HU-03** | [Actualización de Perfil de Usuario](./HISTORIAS_DE_USUARIO.md#hu-03-actualizaci-n-de-perfil-de-usuario) | Fase 1: Seguridad y Cuentas | **HECHO** | Cuenta / Perfil |
+| **HU-05** | [Provisión Segura de Credenciales Temporales](./HISTORIAS_DE_USUARIO.md#hu-05-provisi-n-segura-de-credenciales-temporales) | Fase 1: Seguridad y Cuentas | **HECHO** | Seguridad / Credenciales |
+| **HU-08** | [Navegación Segura según Matriz de Privilegios](./HISTORIAS_DE_USUARIO.md#hu-08-navegaci-n-segura-seg-n-matriz-de-privilegios) | Fase 2: Gobernanza RBAC | **HECHO** | Middleware / RBAC |
+| **HU-09** | [Catálogo Maestro de Opciones de Menú](./HISTORIAS_DE_USUARIO.md#hu-09-cat-logo-maestro-de-opciones-de-men-) | Fase 2: Gobernanza RBAC | **HECHO** | Menú / Navegación |
+| **HU-21** | [Reporte Asistido de Incidente Operativo](./HISTORIAS_DE_USUARIO.md#hu-21-reporte-asistido-de-incidente-operativo) | Fase 5: Incidentes y Mesa | **HECHO** | Tickets Core / Mesa |
+| **HU-22** | [Consola Técnica de Incidentes con Indicadores SLA](./HISTORIAS_DE_USUARIO.md#hu-22-consola-t-cnica-de-incidentes-con-indicadores-sla) | Fase 5: Incidentes y Mesa | **HECHO** | Tickets Core / Técnico |
+| **HU-23** | [Autoasignación de Incidentes en Mesa](./HISTORIAS_DE_USUARIO.md#hu-23-autoasignaci-n-de-incidentes-en-mesa) | Fase 5: Incidentes y Mesa | **HECHO** | Tickets Core / Despacho |
+| **HU-24** | [Bitácora Técnica de Comentarios Operativos](./HISTORIAS_DE_USUARIO.md#hu-24-bit-cora-t-cnica-de-comentarios-operativos) | Fase 5: Incidentes y Mesa | **HECHO** | Tickets Core / Bitácora |
+| **HU-25** | [Protocolo de Gestión de Incidentes Mayores P1](./HISTORIAS_DE_USUARIO.md#hu-25-protocolo-de-gesti-n-de-incidentes-mayores-p1) | Fase 5: Incidentes y Mesa | **HECHO** | Incidentes Mayores ITIL |
+| **HU-26** | [Escalamiento Jerárquico por Incumplimiento de SLA](./HISTORIAS_DE_USUARIO.md#hu-26-escalamiento-jer-rquico-por-incumplimiento-de-sla) | Fase 5: Incidentes y Mesa | **PRODUCT BACKLOG** | Incidentes / Daemon SLA |
+| **HU-27** | [Catálogo de Autoservicio de Solicitudes Institucionales](./HISTORIAS_DE_USUARIO.md#hu-27-cat-logo-de-autoservicio-de-solicitudes-institucionales) | Fase 6: Solicitudes de Servicio | **HECHO** | Solicitudes / Autoservicio |
+| **HU-28** | [Captura de Solicitud con Justificación de Negocio](./HISTORIAS_DE_USUARIO.md#hu-28-captura-de-solicitud-con-justificaci-n-de-negocio) | Fase 6: Solicitudes de Servicio | **HECHO** | Solicitudes / Formulario |
+| **HU-29** | [Bandeja Jurisdiccional de Aprobaciones de Área](./HISTORIAS_DE_USUARIO.md#hu-29-bandeja-jurisdiccional-de-aprobaciones-de-rea) | Fase 6: Solicitudes de Servicio | **HECHO** | Aprobaciones / Gestor Área |
+| **HU-30** | [Blindaje de Segregación de Funciones en Aprobaciones](./HISTORIAS_DE_USUARIO.md#hu-30-blindaje-de-segregaci-n-de-funciones-en-aprobaciones) | Fase 6: Solicitudes de Servicio | **HECHO** | Seguridad / Regla SoD RN-32 |
+| **HU-31** | [Delegación Temporal de Autoridad de Aprobación](./HISTORIAS_DE_USUARIO.md#hu-31-delegaci-n-temporal-de-autoridad-de-aprobaci-n) | Fase 6: Solicitudes de Servicio | **PRODUCT BACKLOG** | Aprobaciones / Delegaciones |
+| **HU-40** | [Auditoría Forense de Segregación de Funciones (SoD)](./HISTORIAS_DE_USUARIO.md#hu-40-auditor-a-forense-de-segregaci-n-de-funciones-sod-) | Fases Futuras: Auditoría | **HECHO** | Seguridad / Matriz SoD |
+| **HU-41** | [Tablero de Indicadores Gerenciales de Cumplimiento SLA](./HISTORIAS_DE_USUARIO.md#hu-41-tablero-de-indicadores-gerenciales-de-cumplimiento-sla) | Fases Futuras: Reportes | **PRODUCT BACKLOG** | Reportes / SLA Ejecutivo |
+
+**Total Asignado:** 19 Historias (16 HECHO, 3 PRODUCT BACKLOG).

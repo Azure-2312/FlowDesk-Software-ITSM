@@ -206,7 +206,7 @@ SISTEMA DE TICKETS/
     ├── ARQUITECTURA_Y_CODIGO.md  # Manual exhaustivo de arquitectura y contratos
     ├── MENUS_Y_PERFILES.md       # Catálogo de 230 opciones y matriz de 10 perfiles
     ├── REQUERIMIENTOS.md         # Requerimientos funcionales, no funcionales y reglas de negocio
-    ├── HISTORIAS_DE_USUARIO.md   # Backlog consolidado de 35 historias en formato estructurado
+    ├── HISTORIAS_DE_USUARIO.md   # Backlog consolidado de 41 historias de usuario atómicas (31 HECHO, 10 PRODUCT BACKLOG)
     ├── TRAZABILIDAD.md           # Matriz bidireccional Funcionalidad ↔ HU ↔ RF ↔ RN
     ├── PLAN_EQUIPO_Y_SCRUM.md    # Metodología ágil, propiedad de módulos y flujo Git
     ├── CATALOGO_SERVICIOS_DATOS.md# 30 servicios de referencia precargados
@@ -297,6 +297,6 @@ Para profundizar en cualquier aspecto del sistema, consulte los documentos norma
 - [Arquitectura y Código](./DOCUMENTACIÓN/ARQUITECTURA_Y_CODIGO.md) — Explicación profunda de contratos, vertical slice, base de datos y diseño interno.
 - [Menús y Perfiles](./DOCUMENTACIÓN/MENUS_Y_PERFILES.md) — Detalle de los 10 roles, matriz SoD y árbol de navegación de 230 opciones.
 - [Requerimientos](./DOCUMENTACIÓN/REQUERIMIENTOS.md) — Especificación de Requerimientos Funcionales, No Funcionales y Reglas de Negocio (RN-01 a RN-48).
-- [Historias de Usuario](./DOCUMENTACIÓN/HISTORIAS_DE_USUARIO.md) — 35 historias estructuradas (Sprint 1, Sprint 2 y Product Backlog) con criterios Given-When-Then.
+- [Historias de Usuario](./DOCUMENTACIÓN/HISTORIAS_DE_USUARIO.md) — 41 historias de usuario atómicas estructuradas (31 HECHO, 10 PRODUCT BACKLOG) con criterios Given-When-Then.
 - [Matriz de Trazabilidad](./DOCUMENTACIÓN/TRAZABILIDAD.md) — Trazabilidad bidireccional entre requerimientos, reglas, código y evidencias.
 - [Plan de Equipo y Scrum](./DOCUMENTACIÓN/PLAN_EQUIPO_Y_SCRUM.md) — Ceremonias Scrum, flujo Git, quality gates y aislamiento entre ramas.

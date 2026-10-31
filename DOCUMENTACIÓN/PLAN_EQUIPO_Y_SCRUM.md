@@ -38,7 +38,7 @@ Si hay contradicción: **arquitectura > este plan > documento funcional**. Se re
 | `ARQUITECTURA_Y_CODIGO.md` | Módulos, contratos, rutas y capas. | Vigente (v1.0, 2026-10-19); sustituye a `DOCUMENTACION_COMPLETA_ARQUITECTURA_Y_CODIGO.md` y `ARQUITECTURA_MODULAR_Y_CONTRATOS.md`. |
 | `MENUS_Y_PERFILES.md` | Menú, perfiles, `opciones_menu`. | Vigente (2026-10-20); sustituye a `ESQUEMA_MENUS_POR_PERFIL.md`. |
 | `REQUERIMIENTOS.md` | RF, RNF y RN. | `requerimientos_funcionales.md`, `requerimientos_no_funcionales.md`, `reglas_de_negocio.md` |
-| `HISTORIAS_DE_USUARIO.md` | HU y criterios de aceptación. | `historias_de_usuario.md` |
+| `HISTORIAS_DE_USUARIO.md` | 41 HU atómicas (31 HECHO, 10 PRODUCT BACKLOG) y criterios Gherkin. | Vigente (v5.0, 2026-10-27); sustituye versiones previas de 35 y 44 HUs. |
 | `TRAZABILIDAD.md` | Matriz bidireccional y evidencia. | `matriz_trazabilidad_funciones_hu_rf_rn.md` |
 | `PROMPTS_CONFIGURACION_ADMIN.md` | Configuración de catálogos, menús y procesos. | `prompt_1_config_gestion_de_problemas.md`, `prompt_2_config_gestion_de_cambios.md`, `prompt_3_config_activos_y_cmdb.md` |
 | `CATALOGO_SERVICIOS_DATOS.md` | Servicios, categorías y datos semilla. | `carga_servicios_catalogo_30.md` |
