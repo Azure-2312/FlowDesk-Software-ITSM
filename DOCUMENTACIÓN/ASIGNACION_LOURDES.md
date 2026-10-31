@@ -1,10 +1,10 @@
-# Plan de Asignación y Especificación Técnica — Lourdes (Catálogo de Servicios y Gestión de Activos TI)
+﻿# Plan de Asignación y Especificación Técnica — Lourdes (Catálogo de Servicios y Gestión de Activos TI)
 
 > **Documento de especificación técnica y de desarrollo para el asistente IA.**
 > **Responsable:** Lourdes
 > **Módulos Asignados (100% Independientes y Aislados):**
-> 1. [src/modules/servicios](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/servicios) (Catálogo de Servicios de Negocio y Técnicos, Acuerdos de Nivel de Servicio SLA / OLA / UC ITIL 4, Diseñador de Formularios de Servicio)
-> 2. [src/modules/activos](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/activos) (Gestión de Activos TI HAM/SAM ISO/IEC 19770-1, Inventario Físico/Lógico, Licenciamiento de Software, Contratos de Mantenimiento y Bajas Seguras)
+> 1. [src/modules/servicios](../src/modules/servicios) (Catálogo de Servicios de Negocio y Técnicos, Acuerdos de Nivel de Servicio SLA / OLA / UC ITIL 4, Diseñador de Formularios de Servicio)
+> 2. [src/modules/activos](../src/modules/activos) (Gestión de Activos TI HAM/SAM ISO/IEC 19770-1, Inventario Físico/Lógico, Licenciamiento de Software, Contratos de Mantenimiento y Bajas Seguras)
 > 
 > **Frontera de Trabajo Estricta:**
 > - Lourdes **NO** modifica consolas de perfiles (`src/modules/perfiles/*`), ni interviene en pantallas de otros compañeros.
@@ -76,3 +76,20 @@ La sinergia entre Catálogo de Servicios y Gestión de Activos es el núcleo de 
 2. Garantizar que los formularios dinámicos de servicios validen esquemas Zod en cliente y servidor.
 3. Verificar que el inventario de activos mantenga sincronización estricta de stock y licenciamiento SAM.
 4. Compilación limpia ejecutando `npm run build` con cero errores TypeScript y sin emojis.
+
+
+---
+
+## Matriz Canónica de Historias de Usuario Asignadas (41 HUs)
+
+> Asignación formal y vinculante correspondiente a las **41 Historias de Usuario atómicas** definidas en [HISTORIAS_DE_USUARIO.md](./HISTORIAS_DE_USUARIO.md).
+
+| ID | Título de la Historia de Usuario | Fase de Dominio | Estado | Rol / Especialidad |
+| :---: | :--- | :--- | :---: | :--- |
+| **HU-16** | [Clasificación de Categorías de Servicio](./HISTORIAS_DE_USUARIO.md#hu-16-clasificaci-n-de-categor-as-de-servicio) | Fase 4: Catálogo y SLA | **HECHO** | Catálogo / Taxonomía |
+| **HU-17** | [Ficha Técnica de Servicios Corporativos](./HISTORIAS_DE_USUARIO.md#hu-17-ficha-t-cnica-de-servicios-corporativos) | Fase 4: Catálogo y SLA | **HECHO** | Catálogo / Fichas |
+| **HU-18** | [Parametrización de Acuerdos de Nivel de Servicio (SLA)](./HISTORIAS_DE_USUARIO.md#hu-18-parametrizaci-n-de-acuerdos-de-nivel-de-servicio-sla-) | Fase 4: Catálogo y SLA | **HECHO** | SLA / Acuerdos |
+| **HU-19** | [Priorización ITIL según Matriz Impacto-Urgencia](./HISTORIAS_DE_USUARIO.md#hu-19-priorizaci-n-itil-seg-n-matriz-impacto-urgencia) | Fase 4: Catálogo y SLA | **HECHO** | ITIL / Matriz Prioridad |
+| **HU-20** | [Calendario Laboral de Feriados Corporativos](./HISTORIAS_DE_USUARIO.md#hu-20-calendario-laboral-de-feriados-corporativos) | Fase 4: Catálogo y SLA | **PRODUCT BACKLOG** | SLA / Calendario Feriados |
+
+**Total Asignado:** 5 Historias (4 HECHO, 1 PRODUCT BACKLOG).

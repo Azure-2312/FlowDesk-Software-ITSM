@@ -1,10 +1,10 @@
-# Plan de Asignación y Especificación Técnica — Alexis / Darhien (Gestión de Problemas y Conocimiento)
+﻿# Plan de Asignación y Especificación Técnica — Alexis / Darhien (Gestión de Problemas y Conocimiento)
 
 > **Documento de especificación técnica y de desarrollo para el asistente IA.**
 > **Responsable:** Alexis / Darhien (Darhien Chavez)
 > **Módulos Asignados (100% Independientes y Aislados):**
-> 1. [src/modules/problemas](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/problemas) (Gestión de Problemas ITIL 4, Análisis Causa Raíz RCA 5-Why/Ishikawa, Base de Datos de Errores Conocidos KEDB, Problemas Mayores y Consola del Gestor de Problemas)
-> 2. [src/modules/conocimiento](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/conocimiento) (Gestión del Conocimiento ITIL 4 / KCS, Base de Artículos de Solución, Taxonomía, Ciclo Editorial y Búsqueda)
+> 1. [src/modules/problemas](../src/modules/problemas) (Gestión de Problemas ITIL 4, Análisis Causa Raíz RCA 5-Why/Ishikawa, Base de Datos de Errores Conocidos KEDB, Problemas Mayores y Consola del Gestor de Problemas)
+> 2. [src/modules/conocimiento](../src/modules/conocimiento) (Gestión del Conocimiento ITIL 4 / KCS, Base de Artículos de Solución, Taxonomía, Ciclo Editorial y Búsqueda)
 > 
 > **Frontera de Trabajo Estricta:**
 > - Alexis **NO** interviene en el módulo de reportes (`src/modules/reportes`) ni en consolas de perfiles (`src/modules/perfiles/*`). El módulo de reportes consolida métricas cruzadas de todos los procesos de la organización (tickets, incidentes, cambios, activos, aprobaciones), por lo que su desarrollo recae de forma centralizada en el Tech Lead (Miguel).
@@ -128,3 +128,20 @@ flowchart TD
 2. Descomponga `VistaConocimientoConfig.tsx` creando las subcarpetas modulares en `src/modules/conocimiento/config/`.
 3. Asegúrese de que cada vista valide autorización mediante `exigirMenuPagina`.
 4. Mantenga el estricto estándar de Cero Emojis y ejecute `npm run build` al finalizar cada bloque para garantizar cero errores de TypeScript.
+
+
+---
+
+## Matriz Canónica de Historias de Usuario Asignadas (41 HUs)
+
+> Asignación formal y vinculante correspondiente a las **41 Historias de Usuario atómicas** definidas en [HISTORIAS_DE_USUARIO.md](./HISTORIAS_DE_USUARIO.md).
+
+| ID | Título de la Historia de Usuario | Fase de Dominio | Estado | Rol / Especialidad |
+| :---: | :--- | :--- | :---: | :--- |
+| **HU-32** | [Formalización de Expediente de Problema Operativo](./HISTORIAS_DE_USUARIO.md#hu-32-formalizaci-n-de-expediente-de-problema-operativo) | Fase 7: Problemas y KEDB | **HECHO** | Problemas / Expediente |
+| **HU-33** | [Vinculación de Incidentes Recurrentes a un Problema](./HISTORIAS_DE_USUARIO.md#hu-33-vinculaci-n-de-incidentes-recurrentes-a-un-problema) | Fase 7: Problemas y KEDB | **HECHO** | Problemas / Incidentes Hijos |
+| **HU-34** | [Repositorio de Errores Conocidos (KEDB)](./HISTORIAS_DE_USUARIO.md#hu-34-repositorio-de-errores-conocidos-kedb-) | Fase 7: Problemas y KEDB | **HECHO** | KEDB / Base Conocimiento |
+| **HU-35** | [Análisis Estructurado de Causa Raíz (RCA)](./HISTORIAS_DE_USUARIO.md#hu-35-an-lisis-estructurado-de-causa-ra-z-rca-) | Fase 7: Problemas y KEDB | **PRODUCT BACKLOG** | Problemas / Ishikawa - 5 Porqués |
+| **HU-36** | [Cierre Definitivo de Problema con Validación de Eficacia](./HISTORIAS_DE_USUARIO.md#hu-36-cierre-definitivo-de-problema-con-validaci-n-de-eficacia) | Fase 7: Problemas y KEDB | **PRODUCT BACKLOG** | Problemas / Validación Cierre |
+
+**Total Asignado:** 5 Historias (3 HECHO, 2 PRODUCT BACKLOG).

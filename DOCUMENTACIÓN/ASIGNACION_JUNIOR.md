@@ -1,12 +1,12 @@
-# Plan de Asignación y Especificación Técnica — Junior (Seguridad, Identidades, Organización y Proveedores)
+﻿# Plan de Asignación y Especificación Técnica — Junior (Seguridad, Identidades, Organización y Proveedores)
 
 > **Documento de especificación técnica y de desarrollo para el asistente IA.**
 > **Responsable:** Junior
 > **Módulos Asignados (100% Independientes y Aislados):**
-> 1. [src/modules/seguridad](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/seguridad) (Políticas de Seguridad y Auditoría de Acceso ISO 27001, Login, Sesiones, JWT, Captcha y Recuperación de Contraseñas)
-> 2. [src/modules/identidades](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/identidades) (Gestión de Identidades y Accesos IAM ISO/IEC 27001, Usuarios, Perfiles de Rol RBAC, Matriz de Permisos Granulares y Desbloqueo Seguro)
-> 3. [src/modules/organizacion](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/organizacion) (Estructura Organizacional, Departamentos Empresa, Departamentos TI / Grupos Resolutores, Técnicos, Niveles N1/N2/N3, Turnos y Ausencias)
-> 4. [src/modules/proveedores](file:///c:/Users/apaza/Desktop/SISTEMA%20DE%20TICKETS/src/modules/proveedores) (Gestión de Proveedores ITIL 4 Supplier Management, Catálogo de Terceros, Contratos de Soporte UC y Homologación)
+> 1. [src/modules/seguridad](../src/modules/seguridad) (Políticas de Seguridad y Auditoría de Acceso ISO 27001, Login, Sesiones, JWT, Captcha y Recuperación de Contraseñas)
+> 2. [src/modules/identidades](../src/modules/identidades) (Gestión de Identidades y Accesos IAM ISO/IEC 27001, Usuarios, Perfiles de Rol RBAC, Matriz de Permisos Granulares y Desbloqueo Seguro)
+> 3. [src/modules/organizacion](../src/modules/organizacion) (Estructura Organizacional, Departamentos Empresa, Departamentos TI / Grupos Resolutores, Técnicos, Niveles N1/N2/N3, Turnos y Ausencias)
+> 4. [src/modules/proveedores](../src/modules/proveedores) (Gestión de Proveedores ITIL 4 Supplier Management, Catálogo de Terceros, Contratos de Soporte UC y Homologación)
 > 
 > **Frontera de Trabajo Estricta:**
 > - Junior **NO** interviene en la consola de auditoría (`src/modules/perfiles/auditor`) ni en ningún otro perfil. La consola de Auditoría observa datos cruzados de tickets, cambios y CMDB, por lo que su desarrollo recae en el Tech Lead (Miguel).
@@ -79,3 +79,24 @@ Los cuatro módulos a cargo de Junior representan el Directorio Maestro y la Seg
 2. Asegurar que las políticas de contraseñas seguras y expiración de tokens se apliquen con rigurosidad.
 3. Verificar que los turnos y ausencias excluyan técnicos del reparto automático de tickets.
 4. Compilar con `npm run build` manteniendo cero errores TypeScript y cero emojis.
+
+
+---
+
+## Matriz Canónica de Historias de Usuario Asignadas (41 HUs)
+
+> Asignación formal y vinculante correspondiente a las **41 Historias de Usuario atómicas** definidas en [HISTORIAS_DE_USUARIO.md](./HISTORIAS_DE_USUARIO.md).
+
+| ID | Título de la Historia de Usuario | Fase de Dominio | Estado | Rol / Especialidad |
+| :---: | :--- | :--- | :---: | :--- |
+| **HU-04** | [Administración Centralizada de Cuentas de Usuario](./HISTORIAS_DE_USUARIO.md#hu-04-administraci-n-centralizada-de-cuentas-de-usuario) | Fase 1: Seguridad y Cuentas | **HECHO** | Identidades / Usuarios |
+| **HU-06** | [Bloqueo Preventivo de Cuentas Comprometidas](./HISTORIAS_DE_USUARIO.md#hu-06-bloqueo-preventivo-de-cuentas-comprometidas) | Fase 1: Seguridad y Cuentas | **PRODUCT BACKLOG** | Seguridad / Bloqueo IAM |
+| **HU-07** | [Asignación de Perfiles RBAC Institucionales](./HISTORIAS_DE_USUARIO.md#hu-07-asignaci-n-de-perfiles-rbac-institucionales) | Fase 2: Gobernanza RBAC | **HECHO** | Perfiles / Roles |
+| **HU-10** | [Auditoría Forense de Sesiones de Usuario](./HISTORIAS_DE_USUARIO.md#hu-10-auditor-a-forense-de-sesiones-de-usuario) | Fase 2: Gobernanza RBAC | **PRODUCT BACKLOG** | Auditoría / Logs Sesión |
+| **HU-11** | [Estructura de Departamentos Empresariales](./HISTORIAS_DE_USUARIO.md#hu-11-estructura-de-departamentos-empresariales) | Fase 3: Organización TI | **HECHO** | Organización / Departamentos |
+| **HU-12** | [Configuración de Grupos Resolutores de TI](./HISTORIAS_DE_USUARIO.md#hu-12-configuraci-n-de-grupos-resolutores-de-ti) | Fase 3: Organización TI | **HECHO** | Organización / Grupos TI |
+| **HU-13** | [Planificación de Turnos de Soporte Técnico](./HISTORIAS_DE_USUARIO.md#hu-13-planificaci-n-de-turnos-de-soporte-t-cnico) | Fase 3: Organización TI | **HECHO** | Organización / Turnos |
+| **HU-14** | [Control de Ausencias en Mesa de Ayuda](./HISTORIAS_DE_USUARIO.md#hu-14-control-de-ausencias-en-mesa-de-ayuda) | Fase 3: Organización TI | **HECHO** | Organización / Ausencias |
+| **HU-15** | [Balanceo Automático de Carga de Técnicos](./HISTORIAS_DE_USUARIO.md#hu-15-balanceo-autom-tico-de-carga-de-t-cnicos) | Fase 3: Organización TI | **PRODUCT BACKLOG** | Organización / Algoritmo Carga |
+
+**Total Asignado:** 9 Historias (6 HECHO, 3 PRODUCT BACKLOG).
