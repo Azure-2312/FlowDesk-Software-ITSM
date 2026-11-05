@@ -646,6 +646,11 @@ Dado que ingreso al sistema como *Gestor de problemas de TI* evaluando un caso r
 Cuando establezco que la falla afecta a más de 3 servicios corporativos de forma simultánea.
 Entonces el sistema clasifica el problema con severidad de Problema Mayor y habilita seguimiento prioritario.
 
+Escenario 3: Elevación y escalamiento directo de Incidente a Problema ITIL
+Dado que ingreso al sistema como *Técnico de soporte* o *Supervisor* en la barra de acciones de un incidente.
+Cuando hago clic en 'Elevar a Problema ITIL' y confirmo la operación.
+Entonces el sistema genera el expediente de Problema PRB vinculado al incidente de origen, transfiriendo su servicio, impacto y urgencia.
+
 --------------------------------------------------------------------------------
 
 Historia de Usuario 33: Vinculación de Incidentes Recurrentes a un Problema

@@ -675,6 +675,10 @@ Siguiendo las directrices formales de evaluación académica y metodológica Scr
     - **Dado que** ingreso al sistema como *Gestor de problemas de TI* evaluando un caso recurrente.
     - **Cuando** establezco que la falla afecta a más de 3 servicios corporativos de forma simultánea.
     - **Entonces** el sistema clasifica el problema con severidad de Problema Mayor y habilita seguimiento prioritario.
+  - **Escenario 3: Elevación y escalamiento directo de Incidente Operativo a Problema ITIL**
+    - **Dado que** ingreso al sistema como *Técnico de soporte* o *Supervisor de mesa* en la consola de atención de un incidente no resuelto (/plataforma/incidentes/[id]).
+    - **Cuando** hago clic en la acción **'Elevar a Problema ITIL'** en la barra de transiciones y confirmo la operación.
+    - **Entonces** el sistema genera automáticamente un nuevo expediente de Problema (PRB-XXXX) vinculado al incidente de origen (id_ticket_origen), transfiriendo su servicio afectado, impacto y urgencia para iniciar la investigación de causa raíz.
 
 #### HU-33: Vinculación de Incidentes Recurrentes a un Problema
 - **Identificador:** `HU-33` · **Fase:** Problemas y KEDB
