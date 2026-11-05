@@ -33,37 +33,37 @@ Siguiendo las directrices formales de evaluación académica y metodológica Scr
 | **HU-03** | [Actualización de Perfil de Usuario](#hu-03-actualización-de-perfil-de-usuario) | Fase 1: Seguridad y Cuentas | **HECHO** | Baja (S) |
 | **HU-04** | [Administración Centralizada de Cuentas de Usuario](#hu-04-administración-centralizada-de-cuentas-de-usuario) | Fase 1: Seguridad y Cuentas | **HECHO** | Alta (L) |
 | **HU-05** | [Provisión Segura de Credenciales Temporales](#hu-05-provisión-segura-de-credenciales-temporales) | Fase 1: Seguridad y Cuentas | **HECHO** | Media (M) |
-| **HU-06** | [Bloqueo Preventivo de Cuentas Comprometidas](#hu-06-bloqueo-preventivo-de-cuentas-comprometidas) | Fase 1: Seguridad y Cuentas | **PRODUCT BACKLOG** | Media (M) |
+| **HU-06** | [Bloqueo Preventivo de Cuentas Comprometidas](#hu-06-bloqueo-preventivo-de-cuentas-comprometidas) | Fase 1: Seguridad y Cuentas | **HECHO** | Media (M) |
 | **HU-07** | [Asignación de Perfiles RBAC Institucionales](#hu-07-asignación-de-perfiles-rbac-institucionales) | Fase 2: Gobernanza RBAC | **HECHO** | Media (M) |
 | **HU-08** | [Navegación Segura según Matriz de Privilegios](#hu-08-navegación-segura-según-matriz-de-privilegios) | Fase 2: Gobernanza RBAC | **HECHO** | Alta (L) |
 | **HU-09** | [Catálogo Maestro de Opciones de Menú](#hu-09-catálogo-maestro-de-opciones-de-menú) | Fase 2: Gobernanza RBAC | **HECHO** | Media (M) |
-| **HU-10** | [Auditoría Forense de Sesiones de Usuario](#hu-10-auditoría-forense-de-sesiones-de-usuario) | Fase 2: Gobernanza RBAC | **PRODUCT BACKLOG** | Media (M) |
+| **HU-10** | [Auditoría Forense de Sesiones de Usuario](#hu-10-auditoría-forense-de-sesiones-de-usuario) | Fase 2: Gobernanza RBAC | **HECHO** | Media (M) |
 | **HU-11** | [Estructura de Departamentos Empresariales](#hu-11-estructura-de-departamentos-empresariales) | Fase 3: Organización TI | **HECHO** | Media (M) |
 | **HU-12** | [Configuración de Grupos Resolutores de TI](#hu-12-configuración-de-grupos-resolutores-de-ti) | Fase 3: Organización TI | **HECHO** | Media (M) |
 | **HU-13** | [Planificación de Turnos de Soporte Técnico](#hu-13-planificación-de-turnos-de-soporte-técnico) | Fase 3: Organización TI | **HECHO** | Media (M) |
 | **HU-14** | [Control de Ausencias en Mesa de Ayuda](#hu-14-control-de-ausencias-en-mesa-de-ayuda) | Fase 3: Organización TI | **HECHO** | Media (M) |
-| **HU-15** | [Balanceo Automático de Carga de Técnicos](#hu-15-balanceo-automático-de-carga-de-técnicos) | Fase 3: Organización TI | **PRODUCT BACKLOG** | Alta (L) |
+| **HU-15** | [Balanceo Automático de Carga de Técnicos](#hu-15-balanceo-automático-de-carga-de-técnicos) | Fase 3: Organización TI | **HECHO** | Alta (L) |
 | **HU-16** | [Clasificación de Categorías de Servicio](#hu-16-clasificación-de-categorías-de-servicio) | Fase 4: Catálogo y SLA | **HECHO** | Media (M) |
 | **HU-17** | [Ficha Técnica de Servicios Corporativos](#hu-17-ficha-técnica-de-servicios-corporativos) | Fase 4: Catálogo y SLA | **HECHO** | Alta (L) |
 | **HU-18** | [Parametrización de Acuerdos de Nivel de Servicio (SLA)](#hu-18-parametrización-de-acuerdos-de-nivel-de-servicio-sla) | Fase 4: Catálogo y SLA | **HECHO** | Alta (L) |
 | **HU-19** | [Priorización ITIL según Matriz Impacto-Urgencia](#hu-19-priorización-itil-según-matriz-impacto-urgencia) | Fase 4: Catálogo y SLA | **HECHO** | Media (M) |
-| **HU-20** | [Calendario Laboral de Feriados Corporativos](#hu-20-calendario-laboral-de-feriados-corporativos) | Fase 4: Catálogo y SLA | **PRODUCT BACKLOG** | Media (M) |
+| **HU-20** | [Calendario Laboral de Feriados Corporativos](#hu-20-calendario-laboral-de-feriados-corporativos) | Fase 4: Catálogo y SLA | **HECHO** | Media (M) |
 | **HU-21** | [Reporte Asistido de Incidente Operativo](#hu-21-reporte-asistido-de-incidente-operativo) | Fase 5: Incidentes y Mesa | **HECHO** | Alta (L) |
 | **HU-22** | [Consola Técnica de Incidentes con Indicadores SLA](#hu-22-consola-técnica-de-incidentes-con-indicadores-sla) | Fase 5: Incidentes y Mesa | **HECHO** | Alta (L) |
 | **HU-23** | [Autoasignación de Incidentes en Mesa](#hu-23-autoasignación-de-incidentes-en-mesa) | Fase 5: Incidentes y Mesa | **HECHO** | Media (M) |
 | **HU-24** | [Bitácora Técnica de Comentarios Operativos](#hu-24-bitácora-técnica-de-comentarios-operativos) | Fase 5: Incidentes y Mesa | **HECHO** | Media (M) |
 | **HU-25** | [Protocolo de Gestión de Incidentes Mayores P1](#hu-25-protocolo-de-gestión-de-incidentes-mayores-p1) | Fase 5: Incidentes y Mesa | **HECHO** | Alta (L) |
-| **HU-26** | [Escalamiento Jerárquico por Incumplimiento de SLA](#hu-26-escalamiento-jerárquico-por-incumplimiento-de-sla) | Fase 5: Incidentes y Mesa | **PRODUCT BACKLOG** | Media (M) |
+| **HU-26** | [Escalamiento Jerárquico por Incumplimiento de SLA](#hu-26-escalamiento-jerárquico-por-incumplimiento-de-sla) | Fase 5: Incidentes y Mesa | **HECHO** | Media (M) |
 | **HU-27** | [Catálogo de Autoservicio de Solicitudes Institucionales](#hu-27-catálogo-de-autoservicio-de-solicitudes-institucionales) | Fase 6: Solicitudes de Servicio | **HECHO** | Media (M) |
 | **HU-28** | [Captura de Solicitud con Justificación de Negocio](#hu-28-captura-de-solicitud-con-justificación-de-negocio) | Fase 6: Solicitudes de Servicio | **HECHO** | Alta (L) |
 | **HU-29** | [Bandeja Jurisdiccional de Aprobaciones de Área](#hu-29-bandeja-jurisdiccional-de-aprobaciones-de-área) | Fase 6: Solicitudes de Servicio | **HECHO** | Media (M) |
 | **HU-30** | [Blindaje de Segregación de Funciones en Aprobaciones](#hu-30-blindaje-de-segregación-de-funciones-en-aprobaciones) | Fase 6: Solicitudes de Servicio | **HECHO** | Media (M) |
-| **HU-31** | [Delegación Temporal de Autoridad de Aprobación](#hu-31-delegación-temporal-de-autoridad-de-aprobación) | Fase 6: Solicitudes de Servicio | **PRODUCT BACKLOG** | Media (M) |
+| **HU-31** | [Delegación Temporal de Autoridad de Aprobación](#hu-31-delegación-temporal-de-autoridad-de-aprobación) | Fase 6: Solicitudes de Servicio | **HECHO** | Media (M) |
 | **HU-32** | [Formalización de Expediente de Problema Operativo](#hu-32-formalización-de-expediente-de-problema-operativo) | Fase 7: Problemas y KEDB | **HECHO** | Alta (L) |
 | **HU-33** | [Vinculación de Incidentes Recurrentes a un Problema](#hu-33-vinculación-de-incidentes-recurrentes-a-un-problema) | Fase 7: Problemas y KEDB | **HECHO** | Media (M) |
 | **HU-34** | [Repositorio de Errores Conocidos (KEDB)](#hu-34-repositorio-de-errores-conocidos-kedb) | Fase 7: Problemas y KEDB | **HECHO** | Media (M) |
-| **HU-35** | [Análisis Estructurado de Causa Raíz (RCA)](#hu-35-análisis-estructurado-de-causa-raíz-rca) | Fase 7: Problemas y KEDB | **PRODUCT BACKLOG** | Alta (L) |
-| **HU-36** | [Cierre Definitivo de Problema con Validación de Eficacia](#hu-36-cierre-definitivo-de-problema-con-validación-de-eficacia) | Fase 7: Problemas y KEDB | **PRODUCT BACKLOG** | Media (M) |
+| **HU-35** | [Análisis Estructurado de Causa Raíz (RCA)](#hu-35-análisis-estructurado-de-causa-raíz-rca) | Fase 7: Problemas y KEDB | **HECHO** | Alta (L) |
+| **HU-36** | [Cierre Definitivo de Problema con Validación de Eficacia](#hu-36-cierre-definitivo-de-problema-con-validación-de-eficacia) | Fase 7: Problemas y KEDB | **HECHO** | Media (M) |
 | **HU-37** | [Registro de Solicitud de Cambio (RFC)](#hu-37-registro-de-solicitud-de-cambio-rfc) | Fases Futuras: Cambios RFC | **HECHO** | Alta (L) |
 | **HU-38** | [Evaluación de Impacto por Comité de Cambios (CAB)](#hu-38-evaluación-de-impacto-por-comité-de-cambios-cab) | Fases Futuras: Cambios RFC | **PRODUCT BACKLOG** | Alta (L) |
 | **HU-39** | [Inventario Maestro de Elementos de Configuración en CMDB](#hu-39-inventario-maestro-de-elementos-de-configuración-en-cmdb) | Fases Futuras: Activos y CMDB | **HECHO** | Alta (L) |
@@ -169,7 +169,7 @@ Siguiendo las directrices formales de evaluación académica y metodológica Scr
 #### HU-06: Bloqueo Preventivo de Cuentas Comprometidas
 - **Identificador:** `HU-06` · **Fase:** Seguridad y Cuentas
 - **Equipo Responsable:** Equipo Scrum FlowDesk
-- **Estado:** **PRODUCT BACKLOG** · **Complejidad:** Media (M) · **Prioridad:** Media
+- **Estado:** **HECHO** · **Complejidad:** Media (M) · **Prioridad:** Media
 - **Definición:**
   - **Como:** Supervisor de seguridad de la información.
   - **Deseo:** Suspender preventivamente cuentas de usuario con actividades anómalas o solicitudes urgentes de cese laboral.
@@ -245,7 +245,7 @@ Siguiendo las directrices formales de evaluación académica y metodológica Scr
 #### HU-10: Auditoría Forense de Sesiones de Usuario
 - **Identificador:** `HU-10` · **Fase:** Gobernanza RBAC
 - **Equipo Responsable:** Equipo Scrum FlowDesk
-- **Estado:** **PRODUCT BACKLOG** · **Complejidad:** Media (M) · **Prioridad:** Media
+- **Estado:** **HECHO** · **Complejidad:** Media (M) · **Prioridad:** Media
 - **Definición:**
   - **Como:** Auditor de seguridad de la información.
   - **Deseo:** Consultar un registro histórico de accesos con direcciones IP, fechas, navegadores utilizados y perfiles ejercidos.
@@ -339,7 +339,7 @@ Siguiendo las directrices formales de evaluación académica y metodológica Scr
 #### HU-15: Balanceo Automático de Carga de Técnicos
 - **Identificador:** `HU-15` · **Fase:** Organización TI
 - **Equipo Responsable:** Equipo Scrum FlowDesk
-- **Estado:** **PRODUCT BACKLOG** · **Complejidad:** Alta (L) · **Prioridad:** Media
+- **Estado:** **HECHO** · **Complejidad:** Alta (L) · **Prioridad:** Media
 - **Definición:**
   - **Como:** Supervisor de mesa de ayuda.
   - **Deseo:** Configurar un motor de reparto equitativo que asigne tickets automáticamente al técnico con menor cantidad de casos en curso.
@@ -433,7 +433,7 @@ Siguiendo las directrices formales de evaluación académica y metodológica Scr
 #### HU-20: Calendario Laboral de Feriados Corporativos
 - **Identificador:** `HU-20` · **Fase:** Catálogo y SLA
 - **Equipo Responsable:** Equipo Scrum FlowDesk
-- **Estado:** **PRODUCT BACKLOG** · **Complejidad:** Media (M) · **Prioridad:** Alta
+- **Estado:** **HECHO** · **Complejidad:** Media (M) · **Prioridad:** Alta
 - **Definición:**
   - **Como:** Gestor de niveles de servicio.
   - **Deseo:** Configurar el calendario corporativo con días feriados oficiales y horarios de atención institucional.
@@ -545,7 +545,7 @@ Siguiendo las directrices formales de evaluación académica y metodológica Scr
 #### HU-26: Escalamiento Jerárquico por Incumplimiento de SLA
 - **Identificador:** `HU-26` · **Fase:** Incidentes y Mesa
 - **Equipo Responsable:** Equipo Scrum FlowDesk
-- **Estado:** **PRODUCT BACKLOG** · **Complejidad:** Media (M) · **Prioridad:** Alta
+- **Estado:** **HECHO** · **Complejidad:** Media (M) · **Prioridad:** Alta
 - **Definición:**
   - **Como:** Supervisor de operaciones de TI.
   - **Deseo:** Que el sistema escale automáticamente los tickets que alcancen el 90% de su tiempo límite de atención sin haber sido resueltos.
@@ -639,7 +639,7 @@ Siguiendo las directrices formales de evaluación académica y metodológica Scr
 #### HU-31: Delegación Temporal de Autoridad de Aprobación
 - **Identificador:** `HU-31` · **Fase:** Solicitudes de Servicio
 - **Equipo Responsable:** Equipo Scrum FlowDesk
-- **Estado:** **PRODUCT BACKLOG** · **Complejidad:** Media (M) · **Prioridad:** Media
+- **Estado:** **HECHO** · **Complejidad:** Media (M) · **Prioridad:** Media
 - **Definición:**
   - **Como:** Gerente o Gestor de área aprobador.
   - **Deseo:** Delegar temporalmente mi potestad de aprobación a un suplente calificado durante mis vacaciones o viajes de trabajo.
@@ -715,7 +715,7 @@ Siguiendo las directrices formales de evaluación académica y metodológica Scr
 #### HU-35: Análisis Estructurado de Causa Raíz (RCA)
 - **Identificador:** `HU-35` · **Fase:** Problemas y KEDB
 - **Equipo Responsable:** Equipo Scrum FlowDesk
-- **Estado:** **PRODUCT BACKLOG** · **Complejidad:** Alta (L) · **Prioridad:** Media
+- **Estado:** **HECHO** · **Complejidad:** Alta (L) · **Prioridad:** Media
 - **Definición:**
   - **Como:** Gestor de problemas de TI.
   - **Deseo:** Utilizar herramientas metodológicas estructuradas (técnica de los 5 Porqués y Diagrama de Ishikawa de Causa-Efecto) dentro del expediente del problema.
@@ -733,7 +733,7 @@ Siguiendo las directrices formales de evaluación académica y metodológica Scr
 #### HU-36: Cierre Definitivo de Problema con Validación de Eficacia
 - **Identificador:** `HU-36` · **Fase:** Problemas y KEDB
 - **Equipo Responsable:** Equipo Scrum FlowDesk
-- **Estado:** **PRODUCT BACKLOG** · **Complejidad:** Media (M) · **Prioridad:** Media
+- **Estado:** **HECHO** · **Complejidad:** Media (M) · **Prioridad:** Media
 - **Definición:**
   - **Como:** Gestor de problemas de TI.
   - **Deseo:** Someter los problemas con solución definitiva a un periodo de observación de 30 días antes del cierre final.

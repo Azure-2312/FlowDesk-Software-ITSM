@@ -90,6 +90,6 @@ La sinergia entre Catálogo de Servicios y Gestión de Activos es el núcleo de 
 | **HU-17** | [Ficha Técnica de Servicios Corporativos](./HISTORIAS_DE_USUARIO.md#hu-17-ficha-t-cnica-de-servicios-corporativos) | Fase 4: Catálogo y SLA | **HECHO** | Catálogo / Fichas |
 | **HU-18** | [Parametrización de Acuerdos de Nivel de Servicio (SLA)](./HISTORIAS_DE_USUARIO.md#hu-18-parametrizaci-n-de-acuerdos-de-nivel-de-servicio-sla-) | Fase 4: Catálogo y SLA | **HECHO** | SLA / Acuerdos |
 | **HU-19** | [Priorización ITIL según Matriz Impacto-Urgencia](./HISTORIAS_DE_USUARIO.md#hu-19-priorizaci-n-itil-seg-n-matriz-impacto-urgencia) | Fase 4: Catálogo y SLA | **HECHO** | ITIL / Matriz Prioridad |
-| **HU-20** | [Calendario Laboral de Feriados Corporativos](./HISTORIAS_DE_USUARIO.md#hu-20-calendario-laboral-de-feriados-corporativos) | Fase 4: Catálogo y SLA | **PRODUCT BACKLOG** | SLA / Calendario Feriados |
+| **HU-20** | [Calendario Laboral de Feriados Corporativos](./HISTORIAS_DE_USUARIO.md#hu-20-calendario-laboral-de-feriados-corporativos) | Fase 4: Catálogo y SLA | **HECHO** | SLA / Calendario Feriados |
 
-**Total Asignado:** 5 Historias (4 HECHO, 1 PRODUCT BACKLOG).
+**Total Asignado:** 5 Historias (5 HECHO, 0 PRODUCT BACKLOG).

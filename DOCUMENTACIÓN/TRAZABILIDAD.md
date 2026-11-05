@@ -11,7 +11,7 @@
 - **Estandares y Marcos de Referencia:** ITIL v4, ISO/IEC 20000-1 (Gestion de Servicios de TI), ISO/IEC 27001 (Seguridad de la Informacion).
 - **Estructura Documental Relacionada:**
   - [REQUERIMIENTOS.md](REQUERIMIENTOS.md) (RF-01 a RF-44, RNF y RN-01 a RN-48)
-  - [HISTORIAS_DE_USUARIO.md](HISTORIAS_DE_USUARIO.md) (HU-01 a HU-41 atómicas: 31 HECHO, 10 PRODUCT BACKLOG)
+  - [HISTORIAS_DE_USUARIO.md](HISTORIAS_DE_USUARIO.md) (HU-01 a HU-41 atómicas: 39 HECHO, 2 PRODUCT BACKLOG)
   - [MENUS_Y_PERFILES.md](MENUS_Y_PERFILES.md) (10 perfiles oficiales, menú y rutas)
   - [ARQUITECTURA_Y_CODIGO.md](ARQUITECTURA_Y_CODIGO.md) (módulos, contratos y seguridad)
 - **Roles Oficiales de la Organizacion (10):**

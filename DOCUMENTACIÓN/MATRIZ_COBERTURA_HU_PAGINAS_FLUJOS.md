@@ -9,7 +9,7 @@
 
 ## 1. Resumen Ejecutivo de Cobertura y Arquitectura
 
-1. **Total de Historias de Usuario:** **41 Historias** (31 en estado `HECHO`, 10 en `PRODUCT BACKLOG`).
+1. **Total de Historias de Usuario:** **41 Historias** (39 en estado HECHO, 2 en PRODUCT BACKLOG).
 2. **Total de Páginas Físicas del Menú (Hojas Navegables):** **197 URLs** activas en el repositorio y verificadas contra rutas Next.js en disco.
 3. **Relación Matemática de Agrupación:** 
    $$\mathbf{41\text{ Historias de Usuario}} \times \mathbf{\sim 4.8\text{ páginas promedio por historia}} = \mathbf{197\text{ páginas físicas}}$$
