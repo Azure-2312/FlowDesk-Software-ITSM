@@ -1,7 +1,7 @@
 ================================================================================
 HISTORIAS DE USUARIO - SISTEMA FLOWDESK ITSM
 Documento Canónico para Tablero Trello y Gestión Ágil
-Total de Historias: 41 (HECHO / Sprint Finalizado: 31 | Product Backlog: 10)
+Total de Historias: 41 (HECHO / Sprint Finalizado: 39 | Product Backlog: 2)
 ================================================================================
 
 ================================================================================
@@ -108,6 +108,26 @@ Entonces el sistema transfiere el valor al portapapeles local y presenta un mens
 
 --------------------------------------------------------------------------------
 
+Historia de Usuario 06: Bloqueo Preventivo de Cuentas Comprometidas
+Identificador: HU-06 | Fase: Seguridad y Cuentas | Complejidad: Media (M) | Prioridad: Media
+
+Como: Supervisor de seguridad de la información.
+Deseo: Suspender preventivamente cuentas de usuario con actividades anómalas o solicitudes urgentes de cese laboral.
+Para: Bloquear el acceso a los sistemas corporativos e impedir fugas de información.
+
+Criterios de Aceptación:
+Escenario 1: Inactivación inmediata de cuenta y revocación de sesión
+Dado que ingreso al sistema como *Supervisor de seguridad* en el expediente de un colaborador en investigación.
+Cuando activo la casilla de bloqueo de cuenta por riesgo de seguridad.
+Entonces la cuenta cambia a estado bloqueado y cualquier sesión web activa del usuario se destruye inmediatamente.
+
+Escenario 2: Bitácora obligatoria del motivo de bloqueo
+Dado que ingreso al sistema como *Supervisor de seguridad* en el proceso de suspensión de una cuenta.
+Cuando confirmo el bloqueo en la plataforma.
+Entonces el sistema me exige registrar obligatoriamente una justificación técnica que queda guardada en los registros de auditoría.
+
+--------------------------------------------------------------------------------
+
 Historia de Usuario 07: Asignación de Perfiles RBAC Institucionales
 Identificador: HU-07 | Fase: Gobernanza RBAC | Complejidad: Media (M) | Prioridad: Crítica
 
@@ -165,6 +185,26 @@ Escenario 2: Inactivación de opción de menú obsoleta
 Dado que ingreso al sistema como *Administrador institucional* en el mantenimiento del menú.
 Cuando desactivo una opción que se encuentra en desuso o en migración.
 Entonces desaparece de las barras de navegación de todos los roles sin afectar los datos históricos asociados.
+
+--------------------------------------------------------------------------------
+
+Historia de Usuario 10: Auditoría Forense de Sesiones de Usuario
+Identificador: HU-10 | Fase: Gobernanza RBAC | Complejidad: Media (M) | Prioridad: Media
+
+Como: Auditor de seguridad de la información.
+Deseo: Consultar un registro histórico de accesos con direcciones IP, fechas, navegadores utilizados y perfiles ejercidos.
+Para: Investigar accesos no autorizados o conexiones concurrentes desde ubicaciones geográficas incompatibles.
+
+Criterios de Aceptación:
+Escenario 1: Búsqueda de accesos por rango de fechas e IP
+Dado que ingreso al sistema como *Auditor de seguridad* en el visor de sesiones.
+Cuando filtro por la dirección IP de una sucursal remota durante los últimos 7 días.
+Entonces el sistema lista ordenadamente las sesiones iniciadas, los usuarios involucrados y el estado de la conexión.
+
+Escenario 2: Alerta de conexiones concurrentes bajo una misma credencial
+Dado que ingreso al sistema como *Auditor de seguridad* en el panel de auditoría en tiempo real.
+Cuando una misma cuenta inicia sesión desde dos direcciones IP de diferentes rangos en menos de 5 minutos.
+Entonces el sistema emite una alerta de bandera roja en la bitácora de eventos de seguridad.
 
 --------------------------------------------------------------------------------
 
@@ -248,6 +288,26 @@ Entonces la plataforma despliega una ventana de traspaso para reasignar dichos t
 
 --------------------------------------------------------------------------------
 
+Historia de Usuario 15: Balanceo Automático de Carga de Técnicos
+Identificador: HU-15 | Fase: Organización TI | Complejidad: Alta (L) | Prioridad: Media
+
+Como: Supervisor de mesa de ayuda.
+Deseo: Configurar un motor de reparto equitativo que asigne tickets automáticamente al técnico con menor cantidad de casos en curso.
+Para: Prevenir la saturación de los resolutores y equilibrar los tiempos de atención en la mesa.
+
+Criterios de Aceptación:
+Escenario 1: Reparto por menor carga de trabajo activa
+Dado que ingreso al sistema como *Supervisor de mesa de ayuda* con el motor de asignación automática encendido.
+Cuando ingresa un nuevo ticket de soporte de ofimática al grupo de Mesa Nivel 1.
+Entonces el algoritmo selecciona al técnico que posea el menor número de tickets abiertos en ese instante y le asigna el caso.
+
+Escenario 2: Exclusión automática de técnicos ausentes o fuera de turno
+Dado que ingreso al sistema como *Supervisor de mesa de ayuda* durante la asignación automática.
+Cuando se evalúa la lista de técnicos del grupo resolutor.
+Entonces el motor descarta a los técnicos con ausencias aprobadas o fuera de su franja horaria activa.
+
+--------------------------------------------------------------------------------
+
 Historia de Usuario 16: Clasificación de Categorías de Servicio
 Identificador: HU-16 | Fase: Catálogo y SLA | Complejidad: Media (M) | Prioridad: Alta
 
@@ -325,6 +385,26 @@ Escenario 2: Bloqueo de alteración manual injustificada de prioridad
 Dado que ingreso al sistema como *Solicitante de autoservicio* creando un ticket para una consulta menor.
 Cuando selecciono Impacto Bajo y Urgencia Baja.
 Entonces el sistema fija la prioridad en P4 Baja sin permitir forzar un nivel superior sin elevar el impacto.
+
+--------------------------------------------------------------------------------
+
+Historia de Usuario 20: Calendario Laboral de Feriados Corporativos
+Identificador: HU-20 | Fase: Catálogo y SLA | Complejidad: Media (M) | Prioridad: Alta
+
+Como: Gestor de niveles de servicio.
+Deseo: Configurar el calendario corporativo con días feriados oficiales y horarios de atención institucional.
+Para: Asegurar que los cronómetros de SLA no descuenten horas durante fines de semana, noches o días festivos no laborables.
+
+Criterios de Aceptación:
+Escenario 1: Pausa automática de cronómetro SLA fuera de horario hábil
+Dado que ingreso al sistema como *Supervisor de mesa de ayuda* consultando un ticket P3 ingresado un viernes a las 17:50.
+Cuando llega el horario de cierre operativo a las 18:00.
+Entonces el cronómetro de SLA se congela y reanuda su conteo el lunes a las 08:00 sin incurrir en mora.
+
+Escenario 2: Carga masiva de feriados nacionales en el calendario
+Dado que ingreso al sistema como *Gestor de niveles de servicio* en la configuración del calendario anual.
+Cuando registro los feriados nacionales del calendario oficial.
+Entonces el sistema omite dichos días en los cálculos de vencimiento de todos los tickets activos.
 
 --------------------------------------------------------------------------------
 
@@ -428,6 +508,26 @@ Entonces los directores y jefes de área suscritos visualizan el avance del rest
 
 --------------------------------------------------------------------------------
 
+Historia de Usuario 26: Escalamiento Jerárquico por Incumplimiento de SLA
+Identificador: HU-26 | Fase: Incidentes y Mesa | Complejidad: Media (M) | Prioridad: Alta
+
+Como: Supervisor de operaciones de TI.
+Deseo: Que el sistema escale automáticamente los tickets que alcancen el 90% de su tiempo límite de atención sin haber sido resueltos.
+Para: Intervenir oportunamente en los casos desatendidos antes de que se consume la penalización por quiebre de SLA.
+
+Criterios de Aceptación:
+Escenario 1: Escalamiento funcional hacia técnico especialista de segundo nivel
+Dado que ingreso al sistema como *Supervisor de operaciones* monitoreando la mesa.
+Cuando un ticket P2 en manos de Nivel 1 alcanza el 90% del tiempo de resolución sin avances.
+Entonces el sistema transfiere el ticket al grupo resolutor Nivel 2 y alerta con máxima prioridad al técnico de guardia.
+
+Escenario 2: Notificación gerencial por ticket vencido
+Dado que ingreso al sistema como *Supervisor de operaciones* en el seguimiento de compromisos.
+Cuando un incidente P1 agota el 100% del SLA de resolución sin cerrarse.
+Entonces la plataforma emite un reporte formal de incumplimiento a la Gerencia de TI detallando las causas del retraso.
+
+--------------------------------------------------------------------------------
+
 Historia de Usuario 27: Catálogo de Autoservicio de Solicitudes Institucionales
 Identificador: HU-27 | Fase: Solicitudes de Servicio | Complejidad: Media (M) | Prioridad: Alta
 
@@ -508,6 +608,26 @@ Entonces el ticket se enruta automáticamente hacia la bandeja del superior jer�
 
 --------------------------------------------------------------------------------
 
+Historia de Usuario 31: Delegación Temporal de Autoridad de Aprobación
+Identificador: HU-31 | Fase: Solicitudes de Servicio | Complejidad: Media (M) | Prioridad: Media
+
+Como: Gerente o Gestor de área aprobador.
+Deseo: Delegar temporalmente mi potestad de aprobación a un suplente calificado durante mis vacaciones o viajes de trabajo.
+Para: Evitar que los colaboradores de mi equipo queden paralizados esperando autorizaciones durante mi ausencia.
+
+Criterios de Aceptación:
+Escenario 1: Alta de delegación con fecha de caducidad automática
+Dado que ingreso al sistema como *Gestor de área aprobador* antes de iniciar un periodo de vacaciones de 10 días.
+Cuando elijo a mi coordinador adjunto como delegado temporal fijando la fecha de inicio y retorno.
+Entonces durante ese periodo las solicitudes de mi área llegan a la bandeja de mi delegado con plena facultad resolutiva.
+
+Escenario 2: Restitución automática de autoridad al vencer la delegación
+Dado que ingreso al sistema como *Gestor de área aprobador* al día siguiente de vencido el plazo de la delegación.
+Cuando se genera una nueva solicitud en mi departamento.
+Entonces la delegación se cancela de forma automática y las nuevas autorizaciones retornan exclusivamente a mi cuenta.
+
+--------------------------------------------------------------------------------
+
 Historia de Usuario 32: Formalización de Expediente de Problema Operativo
 Identificador: HU-32 | Fase: Problemas y KEDB | Complejidad: Alta (L) | Prioridad: Alta
 
@@ -565,6 +685,46 @@ Escenario 2: Publicación autorizada de nuevo Error Conocido desde un problema
 Dado que ingreso al sistema como *Gestor de problemas de TI* habiendo validado una solución temporal.
 Cuando activo la casilla de 'Publicar en KEDB' con el detalle del método de mitigación.
 Entonces el registro pasa a ser accesible para todos los técnicos resolutores de la organización.
+
+--------------------------------------------------------------------------------
+
+Historia de Usuario 35: Análisis Estructurado de Causa Raíz (RCA)
+Identificador: HU-35 | Fase: Problemas y KEDB | Complejidad: Alta (L) | Prioridad: Media
+
+Como: Gestor de problemas de TI.
+Deseo: Utilizar herramientas metodológicas estructuradas (técnica de los 5 Porqués y Diagrama de Ishikawa de Causa-Efecto) dentro del expediente del problema.
+Para: Llegar sistemáticamente al origen fundamental de la falla evitando deducciones precipitadas o soluciones superficiales.
+
+Criterios de Aceptación:
+Escenario 1: Construcción guiada de la secuencia de 5 Porqués
+Dado que ingreso al sistema como *Gestor de problemas de TI* en la sección de análisis metodológico.
+Cuando completo los 5 niveles correlativos de causa y efecto documentando cada respuesta técnica.
+Entonces la plataforma genera un diagrama visual de la cadena causal y extrae la conclusión final de la causa raíz.
+
+Escenario 2: Clasificación de causas en las 6M del Diagrama de Ishikawa
+Dado que ingreso al sistema como *Gestor de problemas de TI* analizando un incidente de infraestructura.
+Cuando clasifico los factores contribuyentes en Método, Mano de obra, Maquinaria y Materiales.
+Entonces el sistema genera el gráfico de espina de pescado para el informe técnico de gerencia.
+
+--------------------------------------------------------------------------------
+
+Historia de Usuario 36: Cierre Definitivo de Problema con Validación de Eficacia
+Identificador: HU-36 | Fase: Problemas y KEDB | Complejidad: Media (M) | Prioridad: Media
+
+Como: Gestor de problemas de TI.
+Deseo: Someter los problemas con solución definitiva a un periodo de observación de 30 días antes del cierre final.
+Para: Confirmar fehacientemente que la tasa de recurrencia bajó a cero y que la solución aplicada fue verdaderamente eficaz.
+
+Criterios de Aceptación:
+Escenario 1: Conclusión exitosa de periodo de observación sin reincidencias
+Dado que ingreso al sistema como *Gestor de problemas de TI* evaluando un problema resuelto hace 30 días.
+Cuando verifico que no ha ingresado ningún nuevo incidente vinculado al síntoma en dicho lapso.
+Entonces el sistema autoriza el cierre formal definitivo del expediente y archiva el caso en los registros históricos de calidad.
+
+Escenario 2: Reapertura automática ante aparición de incidente reincidente
+Dado que ingreso al sistema como *Gestor de problemas de TI* con un expediente en periodo de observación.
+Cuando un técnico vincula un nuevo incidente idéntico ocurrido dentro de la ventana de prueba.
+Entonces la plataforma cancela la pre-resolución, devuelve el problema a estado 'En Investigación' y alerta al equipo técnico.
 
 --------------------------------------------------------------------------------
 
@@ -632,166 +792,6 @@ Entonces la plataforma exporta la muestra con sus firmas temporales, logs de aud
 HISTORIAS DE USUARIO - PRODUCT BACKLOG (COLUMNA: PRODUCT BACKLOG / POR HACER)
 ================================================================================
 
-Historia de Usuario 06: Bloqueo Preventivo de Cuentas Comprometidas
-Identificador: HU-06 | Fase: Seguridad y Cuentas | Complejidad: Media (M) | Prioridad: Media
-
-Como: Supervisor de seguridad de la información.
-Deseo: Suspender preventivamente cuentas de usuario con actividades anómalas o solicitudes urgentes de cese laboral.
-Para: Bloquear el acceso a los sistemas corporativos e impedir fugas de información.
-
-Criterios de Aceptación:
-Escenario 1: Inactivación inmediata de cuenta y revocación de sesión
-Dado que ingreso al sistema como *Supervisor de seguridad* en el expediente de un colaborador en investigación.
-Cuando activo la casilla de bloqueo de cuenta por riesgo de seguridad.
-Entonces la cuenta cambia a estado bloqueado y cualquier sesión web activa del usuario se destruye inmediatamente.
-
-Escenario 2: Bitácora obligatoria del motivo de bloqueo
-Dado que ingreso al sistema como *Supervisor de seguridad* en el proceso de suspensión de una cuenta.
-Cuando confirmo el bloqueo en la plataforma.
-Entonces el sistema me exige registrar obligatoriamente una justificación técnica que queda guardada en los registros de auditoría.
-
---------------------------------------------------------------------------------
-
-Historia de Usuario 10: Auditoría Forense de Sesiones de Usuario
-Identificador: HU-10 | Fase: Gobernanza RBAC | Complejidad: Media (M) | Prioridad: Media
-
-Como: Auditor de seguridad de la información.
-Deseo: Consultar un registro histórico de accesos con direcciones IP, fechas, navegadores utilizados y perfiles ejercidos.
-Para: Investigar accesos no autorizados o conexiones concurrentes desde ubicaciones geográficas incompatibles.
-
-Criterios de Aceptación:
-Escenario 1: Búsqueda de accesos por rango de fechas e IP
-Dado que ingreso al sistema como *Auditor de seguridad* en el visor de sesiones.
-Cuando filtro por la dirección IP de una sucursal remota durante los últimos 7 días.
-Entonces el sistema lista ordenadamente las sesiones iniciadas, los usuarios involucrados y el estado de la conexión.
-
-Escenario 2: Alerta de conexiones concurrentes bajo una misma credencial
-Dado que ingreso al sistema como *Auditor de seguridad* en el panel de auditoría en tiempo real.
-Cuando una misma cuenta inicia sesión desde dos direcciones IP de diferentes rangos en menos de 5 minutos.
-Entonces el sistema emite una alerta de bandera roja en la bitácora de eventos de seguridad.
-
---------------------------------------------------------------------------------
-
-Historia de Usuario 15: Balanceo Automático de Carga de Técnicos
-Identificador: HU-15 | Fase: Organización TI | Complejidad: Alta (L) | Prioridad: Media
-
-Como: Supervisor de mesa de ayuda.
-Deseo: Configurar un motor de reparto equitativo que asigne tickets automáticamente al técnico con menor cantidad de casos en curso.
-Para: Prevenir la saturación de los resolutores y equilibrar los tiempos de atención en la mesa.
-
-Criterios de Aceptación:
-Escenario 1: Reparto por menor carga de trabajo activa
-Dado que ingreso al sistema como *Supervisor de mesa de ayuda* con el motor de asignación automática encendido.
-Cuando ingresa un nuevo ticket de soporte de ofimática al grupo de Mesa Nivel 1.
-Entonces el algoritmo selecciona al técnico que posea el menor número de tickets abiertos en ese instante y le asigna el caso.
-
-Escenario 2: Exclusión automática de técnicos ausentes o fuera de turno
-Dado que ingreso al sistema como *Supervisor de mesa de ayuda* durante la asignación automática.
-Cuando se evalúa la lista de técnicos del grupo resolutor.
-Entonces el motor descarta a los técnicos con ausencias aprobadas o fuera de su franja horaria activa.
-
---------------------------------------------------------------------------------
-
-Historia de Usuario 20: Calendario Laboral de Feriados Corporativos
-Identificador: HU-20 | Fase: Catálogo y SLA | Complejidad: Media (M) | Prioridad: Alta
-
-Como: Gestor de niveles de servicio.
-Deseo: Configurar el calendario corporativo con días feriados oficiales y horarios de atención institucional.
-Para: Asegurar que los cronómetros de SLA no descuenten horas durante fines de semana, noches o días festivos no laborables.
-
-Criterios de Aceptación:
-Escenario 1: Pausa automática de cronómetro SLA fuera de horario hábil
-Dado que ingreso al sistema como *Supervisor de mesa de ayuda* consultando un ticket P3 ingresado un viernes a las 17:50.
-Cuando llega el horario de cierre operativo a las 18:00.
-Entonces el cronómetro de SLA se congela y reanuda su conteo el lunes a las 08:00 sin incurrir en mora.
-
-Escenario 2: Carga masiva de feriados nacionales en el calendario
-Dado que ingreso al sistema como *Gestor de niveles de servicio* en la configuración del calendario anual.
-Cuando registro los feriados nacionales del calendario oficial.
-Entonces el sistema omite dichos días en los cálculos de vencimiento de todos los tickets activos.
-
---------------------------------------------------------------------------------
-
-Historia de Usuario 26: Escalamiento Jerárquico por Incumplimiento de SLA
-Identificador: HU-26 | Fase: Incidentes y Mesa | Complejidad: Media (M) | Prioridad: Alta
-
-Como: Supervisor de operaciones de TI.
-Deseo: Que el sistema escale automáticamente los tickets que alcancen el 90% de su tiempo límite de atención sin haber sido resueltos.
-Para: Intervenir oportunamente en los casos desatendidos antes de que se consume la penalización por quiebre de SLA.
-
-Criterios de Aceptación:
-Escenario 1: Escalamiento funcional hacia técnico especialista de segundo nivel
-Dado que ingreso al sistema como *Supervisor de operaciones* monitoreando la mesa.
-Cuando un ticket P2 en manos de Nivel 1 alcanza el 90% del tiempo de resolución sin avances.
-Entonces el sistema transfiere el ticket al grupo resolutor Nivel 2 y alerta con máxima prioridad al técnico de guardia.
-
-Escenario 2: Notificación gerencial por ticket vencido
-Dado que ingreso al sistema como *Supervisor de operaciones* en el seguimiento de compromisos.
-Cuando un incidente P1 agota el 100% del SLA de resolución sin cerrarse.
-Entonces la plataforma emite un reporte formal de incumplimiento a la Gerencia de TI detallando las causas del retraso.
-
---------------------------------------------------------------------------------
-
-Historia de Usuario 31: Delegación Temporal de Autoridad de Aprobación
-Identificador: HU-31 | Fase: Solicitudes de Servicio | Complejidad: Media (M) | Prioridad: Media
-
-Como: Gerente o Gestor de área aprobador.
-Deseo: Delegar temporalmente mi potestad de aprobación a un suplente calificado durante mis vacaciones o viajes de trabajo.
-Para: Evitar que los colaboradores de mi equipo queden paralizados esperando autorizaciones durante mi ausencia.
-
-Criterios de Aceptación:
-Escenario 1: Alta de delegación con fecha de caducidad automática
-Dado que ingreso al sistema como *Gestor de área aprobador* antes de iniciar un periodo de vacaciones de 10 días.
-Cuando elijo a mi coordinador adjunto como delegado temporal fijando la fecha de inicio y retorno.
-Entonces durante ese periodo las solicitudes de mi área llegan a la bandeja de mi delegado con plena facultad resolutiva.
-
-Escenario 2: Restitución automática de autoridad al vencer la delegación
-Dado que ingreso al sistema como *Gestor de área aprobador* al día siguiente de vencido el plazo de la delegación.
-Cuando se genera una nueva solicitud en mi departamento.
-Entonces la delegación se cancela de forma automática y las nuevas autorizaciones retornan exclusivamente a mi cuenta.
-
---------------------------------------------------------------------------------
-
-Historia de Usuario 35: Análisis Estructurado de Causa Raíz (RCA)
-Identificador: HU-35 | Fase: Problemas y KEDB | Complejidad: Alta (L) | Prioridad: Media
-
-Como: Gestor de problemas de TI.
-Deseo: Utilizar herramientas metodológicas estructuradas (técnica de los 5 Porqués y Diagrama de Ishikawa de Causa-Efecto) dentro del expediente del problema.
-Para: Llegar sistemáticamente al origen fundamental de la falla evitando deducciones precipitadas o soluciones superficiales.
-
-Criterios de Aceptación:
-Escenario 1: Construcción guiada de la secuencia de 5 Porqués
-Dado que ingreso al sistema como *Gestor de problemas de TI* en la sección de análisis metodológico.
-Cuando completo los 5 niveles correlativos de causa y efecto documentando cada respuesta técnica.
-Entonces la plataforma genera un diagrama visual de la cadena causal y extrae la conclusión final de la causa raíz.
-
-Escenario 2: Clasificación de causas en las 6M del Diagrama de Ishikawa
-Dado que ingreso al sistema como *Gestor de problemas de TI* analizando un incidente de infraestructura.
-Cuando clasifico los factores contribuyentes en Método, Mano de obra, Maquinaria y Materiales.
-Entonces el sistema genera el gráfico de espina de pescado para el informe técnico de gerencia.
-
---------------------------------------------------------------------------------
-
-Historia de Usuario 36: Cierre Definitivo de Problema con Validación de Eficacia
-Identificador: HU-36 | Fase: Problemas y KEDB | Complejidad: Media (M) | Prioridad: Media
-
-Como: Gestor de problemas de TI.
-Deseo: Someter los problemas con solución definitiva a un periodo de observación de 30 días antes del cierre final.
-Para: Confirmar fehacientemente que la tasa de recurrencia bajó a cero y que la solución aplicada fue verdaderamente eficaz.
-
-Criterios de Aceptación:
-Escenario 1: Conclusión exitosa de periodo de observación sin reincidencias
-Dado que ingreso al sistema como *Gestor de problemas de TI* evaluando un problema resuelto hace 30 días.
-Cuando verifico que no ha ingresado ningún nuevo incidente vinculado al síntoma en dicho lapso.
-Entonces el sistema autoriza el cierre formal definitivo del expediente y archiva el caso en los registros históricos de calidad.
-
-Escenario 2: Reapertura automática ante aparición de incidente reincidente
-Dado que ingreso al sistema como *Gestor de problemas de TI* con un expediente en periodo de observación.
-Cuando un técnico vincula un nuevo incidente idéntico ocurrido dentro de la ventana de prueba.
-Entonces la plataforma cancela la pre-resolución, devuelve el problema a estado 'En Investigación' y alerta al equipo técnico.
-
---------------------------------------------------------------------------------
-
 Historia de Usuario 38: Evaluación de Impacto por Comité de Cambios (CAB)
 Identificador: HU-38 | Fase: Fases Futuras (Cambios RFC) | Complejidad: Alta (L) | Prioridad: Alta
 
@@ -831,4 +831,3 @@ Cuando consulto la métrica de tiempo de resolución de fallas críticas.
 Entonces el sistema calcula el promedio de horas de duración de las interrupciones y grafica la tendencia mensual.
 
 --------------------------------------------------------------------------------
-

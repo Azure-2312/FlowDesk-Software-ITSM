@@ -1226,7 +1226,7 @@ La documentación integral de FlowDesk ITSM se estructura en un conjunto de docu
 | **Arquitectura y Código** | [ARQUITECTURA_Y_CODIGO.md](./ARQUITECTURA_Y_CODIGO.md) | Guía técnica profunda de la estructura de directorios, contratos de módulos y directivas para desarrolladores e inteligencias artificiales. |
 | **Menús, Perfiles y Cobertura** | [MENUS_Y_PERFILES.md](./MENUS_Y_PERFILES.md) | Catálogo único de 230 opciones de menú, matriz de visibilidad de los 10 perfiles RBAC y árbol visual colapsado. |
 | **Requerimientos y Reglas** | [REQUERIMIENTOS.md](./REQUERIMIENTOS.md) | Especificación formal de Requerimientos Funcionales (RF-01 a RF-45), Criterios No Funcionales y Reglas de Negocio (RN-01 a RN-48). |
-| **Historias de Usuario** | [HISTORIAS_DE_USUARIO.md](./HISTORIAS_DE_USUARIO.md) | 41 historias de usuario atómicas estructuradas (31 HECHO, 10 PRODUCT BACKLOG) con tarjetas de metadatos y criterios Given-When-Then. |
+| **Historias de Usuario** | [HISTORIAS_DE_USUARIO.md](./HISTORIAS_DE_USUARIO.md) | 41 historias de usuario atómicas estructuradas (39 HECHO, 2 PRODUCT BACKLOG) con tarjetas de metadatos y criterios Given-When-Then. |
 | **Matriz de Trazabilidad** | [TRAZABILIDAD.md](./TRAZABILIDAD.md) | Matriz de impacto y cobertura bidireccional entre funcionalidades, requerimientos, reglas, rutas de pantalla y pruebas. |
 | **Plan de Equipo y Scrum** | [PLAN_EQUIPO_Y_SCRUM.md](./PLAN_EQUIPO_Y_SCRUM.md) | Metodología ágil del equipo de 5 ingenieros, propiedad balanceada de los 17 módulos y estrategia de ramas en Git. |
 | **Catálogo de Servicios y Datos** | [CATALOGO_SERVICIOS_DATOS.md](./CATALOGO_SERVICIOS_DATOS.md) | Definición formal de los 30 servicios de referencia (14 solicitudes y 16 incidentes), SLAs y categorías maestras. |

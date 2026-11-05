@@ -90,13 +90,13 @@ Los cuatro módulos a cargo de Junior representan el Directorio Maestro y la Seg
 | ID | Título de la Historia de Usuario | Fase de Dominio | Estado | Rol / Especialidad |
 | :---: | :--- | :--- | :---: | :--- |
 | **HU-04** | [Administración Centralizada de Cuentas de Usuario](./HISTORIAS_DE_USUARIO.md#hu-04-administraci-n-centralizada-de-cuentas-de-usuario) | Fase 1: Seguridad y Cuentas | **HECHO** | Identidades / Usuarios |
-| **HU-06** | [Bloqueo Preventivo de Cuentas Comprometidas](./HISTORIAS_DE_USUARIO.md#hu-06-bloqueo-preventivo-de-cuentas-comprometidas) | Fase 1: Seguridad y Cuentas | **PRODUCT BACKLOG** | Seguridad / Bloqueo IAM |
+| **HU-06** | [Bloqueo Preventivo de Cuentas Comprometidas](./HISTORIAS_DE_USUARIO.md#hu-06-bloqueo-preventivo-de-cuentas-comprometidas) | Fase 1: Seguridad y Cuentas | **HECHO** | Seguridad / Bloqueo IAM |
 | **HU-07** | [Asignación de Perfiles RBAC Institucionales](./HISTORIAS_DE_USUARIO.md#hu-07-asignaci-n-de-perfiles-rbac-institucionales) | Fase 2: Gobernanza RBAC | **HECHO** | Perfiles / Roles |
-| **HU-10** | [Auditoría Forense de Sesiones de Usuario](./HISTORIAS_DE_USUARIO.md#hu-10-auditor-a-forense-de-sesiones-de-usuario) | Fase 2: Gobernanza RBAC | **PRODUCT BACKLOG** | Auditoría / Logs Sesión |
+| **HU-10** | [Auditoría Forense de Sesiones de Usuario](./HISTORIAS_DE_USUARIO.md#hu-10-auditor-a-forense-de-sesiones-de-usuario) | Fase 2: Gobernanza RBAC | **HECHO** | Auditoría / Logs Sesión |
 | **HU-11** | [Estructura de Departamentos Empresariales](./HISTORIAS_DE_USUARIO.md#hu-11-estructura-de-departamentos-empresariales) | Fase 3: Organización TI | **HECHO** | Organización / Departamentos |
 | **HU-12** | [Configuración de Grupos Resolutores de TI](./HISTORIAS_DE_USUARIO.md#hu-12-configuraci-n-de-grupos-resolutores-de-ti) | Fase 3: Organización TI | **HECHO** | Organización / Grupos TI |
 | **HU-13** | [Planificación de Turnos de Soporte Técnico](./HISTORIAS_DE_USUARIO.md#hu-13-planificaci-n-de-turnos-de-soporte-t-cnico) | Fase 3: Organización TI | **HECHO** | Organización / Turnos |
 | **HU-14** | [Control de Ausencias en Mesa de Ayuda](./HISTORIAS_DE_USUARIO.md#hu-14-control-de-ausencias-en-mesa-de-ayuda) | Fase 3: Organización TI | **HECHO** | Organización / Ausencias |
-| **HU-15** | [Balanceo Automático de Carga de Técnicos](./HISTORIAS_DE_USUARIO.md#hu-15-balanceo-autom-tico-de-carga-de-t-cnicos) | Fase 3: Organización TI | **PRODUCT BACKLOG** | Organización / Algoritmo Carga |
+| **HU-15** | [Balanceo Automático de Carga de Técnicos](./HISTORIAS_DE_USUARIO.md#hu-15-balanceo-autom-tico-de-carga-de-t-cnicos) | Fase 3: Organización TI | **HECHO** | Organización / Algoritmo Carga |
 
-**Total Asignado:** 9 Historias (6 HECHO, 3 PRODUCT BACKLOG).
+**Total Asignado:** 9 Historias (9 HECHO, 0 PRODUCT BACKLOG).

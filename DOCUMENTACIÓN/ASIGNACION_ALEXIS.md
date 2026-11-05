@@ -141,7 +141,7 @@ flowchart TD
 | **HU-32** | [Formalización de Expediente de Problema Operativo](./HISTORIAS_DE_USUARIO.md#hu-32-formalizaci-n-de-expediente-de-problema-operativo) | Fase 7: Problemas y KEDB | **HECHO** | Problemas / Expediente |
 | **HU-33** | [Vinculación de Incidentes Recurrentes a un Problema](./HISTORIAS_DE_USUARIO.md#hu-33-vinculaci-n-de-incidentes-recurrentes-a-un-problema) | Fase 7: Problemas y KEDB | **HECHO** | Problemas / Incidentes Hijos |
 | **HU-34** | [Repositorio de Errores Conocidos (KEDB)](./HISTORIAS_DE_USUARIO.md#hu-34-repositorio-de-errores-conocidos-kedb-) | Fase 7: Problemas y KEDB | **HECHO** | KEDB / Base Conocimiento |
-| **HU-35** | [Análisis Estructurado de Causa Raíz (RCA)](./HISTORIAS_DE_USUARIO.md#hu-35-an-lisis-estructurado-de-causa-ra-z-rca-) | Fase 7: Problemas y KEDB | **PRODUCT BACKLOG** | Problemas / Ishikawa - 5 Porqués |
-| **HU-36** | [Cierre Definitivo de Problema con Validación de Eficacia](./HISTORIAS_DE_USUARIO.md#hu-36-cierre-definitivo-de-problema-con-validaci-n-de-eficacia) | Fase 7: Problemas y KEDB | **PRODUCT BACKLOG** | Problemas / Validación Cierre |
+| **HU-35** | [Análisis Estructurado de Causa Raíz (RCA)](./HISTORIAS_DE_USUARIO.md#hu-35-an-lisis-estructurado-de-causa-ra-z-rca-) | Fase 7: Problemas y KEDB | **HECHO** | Problemas / Ishikawa - 5 Porqués |
+| **HU-36** | [Cierre Definitivo de Problema con Validación de Eficacia](./HISTORIAS_DE_USUARIO.md#hu-36-cierre-definitivo-de-problema-con-validaci-n-de-eficacia) | Fase 7: Problemas y KEDB | **HECHO** | Problemas / Validación Cierre |
 
-**Total Asignado:** 5 Historias (3 HECHO, 2 PRODUCT BACKLOG).
+**Total Asignado:** 5 Historias (5 HECHO, 0 PRODUCT BACKLOG).

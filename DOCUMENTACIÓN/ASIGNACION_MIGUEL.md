@@ -248,13 +248,13 @@ flowchart TD
 | **HU-23** | [Autoasignación de Incidentes en Mesa](./HISTORIAS_DE_USUARIO.md#hu-23-autoasignaci-n-de-incidentes-en-mesa) | Fase 5: Incidentes y Mesa | **HECHO** | Tickets Core / Despacho |
 | **HU-24** | [Bitácora Técnica de Comentarios Operativos](./HISTORIAS_DE_USUARIO.md#hu-24-bit-cora-t-cnica-de-comentarios-operativos) | Fase 5: Incidentes y Mesa | **HECHO** | Tickets Core / Bitácora |
 | **HU-25** | [Protocolo de Gestión de Incidentes Mayores P1](./HISTORIAS_DE_USUARIO.md#hu-25-protocolo-de-gesti-n-de-incidentes-mayores-p1) | Fase 5: Incidentes y Mesa | **HECHO** | Incidentes Mayores ITIL |
-| **HU-26** | [Escalamiento Jerárquico por Incumplimiento de SLA](./HISTORIAS_DE_USUARIO.md#hu-26-escalamiento-jer-rquico-por-incumplimiento-de-sla) | Fase 5: Incidentes y Mesa | **PRODUCT BACKLOG** | Incidentes / Daemon SLA |
+| **HU-26** | [Escalamiento Jerárquico por Incumplimiento de SLA](./HISTORIAS_DE_USUARIO.md#hu-26-escalamiento-jer-rquico-por-incumplimiento-de-sla) | Fase 5: Incidentes y Mesa | **HECHO** | Incidentes / Daemon SLA |
 | **HU-27** | [Catálogo de Autoservicio de Solicitudes Institucionales](./HISTORIAS_DE_USUARIO.md#hu-27-cat-logo-de-autoservicio-de-solicitudes-institucionales) | Fase 6: Solicitudes de Servicio | **HECHO** | Solicitudes / Autoservicio |
 | **HU-28** | [Captura de Solicitud con Justificación de Negocio](./HISTORIAS_DE_USUARIO.md#hu-28-captura-de-solicitud-con-justificaci-n-de-negocio) | Fase 6: Solicitudes de Servicio | **HECHO** | Solicitudes / Formulario |
 | **HU-29** | [Bandeja Jurisdiccional de Aprobaciones de Área](./HISTORIAS_DE_USUARIO.md#hu-29-bandeja-jurisdiccional-de-aprobaciones-de-rea) | Fase 6: Solicitudes de Servicio | **HECHO** | Aprobaciones / Gestor Área |
 | **HU-30** | [Blindaje de Segregación de Funciones en Aprobaciones](./HISTORIAS_DE_USUARIO.md#hu-30-blindaje-de-segregaci-n-de-funciones-en-aprobaciones) | Fase 6: Solicitudes de Servicio | **HECHO** | Seguridad / Regla SoD RN-32 |
-| **HU-31** | [Delegación Temporal de Autoridad de Aprobación](./HISTORIAS_DE_USUARIO.md#hu-31-delegaci-n-temporal-de-autoridad-de-aprobaci-n) | Fase 6: Solicitudes de Servicio | **PRODUCT BACKLOG** | Aprobaciones / Delegaciones |
+| **HU-31** | [Delegación Temporal de Autoridad de Aprobación](./HISTORIAS_DE_USUARIO.md#hu-31-delegaci-n-temporal-de-autoridad-de-aprobaci-n) | Fase 6: Solicitudes de Servicio | **HECHO** | Aprobaciones / Delegaciones |
 | **HU-40** | [Auditoría Forense de Segregación de Funciones (SoD)](./HISTORIAS_DE_USUARIO.md#hu-40-auditor-a-forense-de-segregaci-n-de-funciones-sod-) | Fases Futuras: Auditoría | **HECHO** | Seguridad / Matriz SoD |
 | **HU-41** | [Tablero de Indicadores Gerenciales de Cumplimiento SLA](./HISTORIAS_DE_USUARIO.md#hu-41-tablero-de-indicadores-gerenciales-de-cumplimiento-sla) | Fases Futuras: Reportes | **PRODUCT BACKLOG** | Reportes / SLA Ejecutivo |
 
-**Total Asignado:** 19 Historias (16 HECHO, 3 PRODUCT BACKLOG).
+**Total Asignado:** 19 Historias (18 HECHO, 1 PRODUCT BACKLOG).
