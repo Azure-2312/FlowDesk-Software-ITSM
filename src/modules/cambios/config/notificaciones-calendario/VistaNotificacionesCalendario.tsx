@@ -346,15 +346,7 @@ export default function NotificacionesCalendarioPage() {
           </div>
 
           <div style={{ textAlign: "right" }}>
-            {hayBorrador ? (
-              <span style={{ display: "inline-block", background: "#fef3c7", color: "#92400e", border: "1px solid #fde68a", padding: "4px 10px", borderRadius: 16, fontSize: 12, fontWeight: 600 }}>
-                Borrador con cambios sin publicar
-              </span>
-            ) : (
-              <span style={{ display: "inline-block", background: "#dcfce7", color: "#166534", border: "1px solid #bbf7d0", padding: "4px 10px", borderRadius: 16, fontSize: 12, fontWeight: 600 }}>
-                Publicada v{versionPublicada}
-              </span>
-            )}
+            <span style={{ display: "inline-block", background: "#dcfce7", color: "#166534", border: "1px solid #bbf7d0", padding: "4px 10px", borderRadius: 16, fontSize: 12, fontWeight: 600 }}>Configuracion Activa</span>
             <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
               Última modificación por {autorPublicada} el {fechaPublicada ? new Date(fechaPublicada).toLocaleString() : "Registro de sistema"}
             </div>

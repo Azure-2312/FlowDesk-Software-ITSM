@@ -360,14 +360,14 @@ export default function ConfiguracionFormularioCambiosPage() {
             <span
               className="badge-itil"
               style={{
-                backgroundColor: hayBorrador ? "#fef3c7" : "#dcfce7",
-                color: hayBorrador ? "#92400e" : "#166534",
-                border: `1px solid ${hayBorrador ? "#fde68a" : "#86efac"}`,
+                backgroundColor: "#dcfce7",
+                color: "#166534",
+                border: `1px solid ${"#86efac"}`,
                 fontWeight: 700,
                 fontSize: 11,
               }}
             >
-              {hayBorrador ? "Borrador con cambios pendientes" : `Publicada v${versionPublicada}`}
+              Configuración Activa
             </span>
           </div>
           <p style={{ fontSize: 12.5, color: "#475569", margin: "4px 0 0 0" }}>

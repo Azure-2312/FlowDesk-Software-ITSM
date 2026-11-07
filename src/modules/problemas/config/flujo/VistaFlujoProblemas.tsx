@@ -260,37 +260,7 @@ export default function FlujoProblemasPage() {
 
         {/* Indicador de estado */}
         <div>
-          {hayBorrador ? (
-            <span style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "6px 14px",
-              borderRadius: 999,
-              fontSize: 12,
-              fontWeight: 600,
-              backgroundColor: "#fef3c7",
-              color: "#92400e",
-              border: "1px solid #fde68a"
-            }}>
-              ● Borrador con cambios sin publicar
-            </span>
-          ) : (
-            <span style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "6px 14px",
-              borderRadius: 999,
-              fontSize: 12,
-              fontWeight: 600,
-              backgroundColor: "#ecfdf5",
-              color: "#065f46",
-              border: "1px solid #a7f3d0"
-            }}>
-              ● Publicada v{versionPublicada}
-            </span>
-          )}
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>● Configuracion Activa</span>
         </div>
       </div>
 
