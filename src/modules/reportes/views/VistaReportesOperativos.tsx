@@ -150,10 +150,13 @@ export default function PaginaReportes() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
         <div>
-          <h1>Reportes y Dashboards Ejecutivos de Gestión ITIL 4</h1>
-          <p>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Analítica Operativa & Cuadros de Mando (ITIL v4)
+          </span>
+          <h1 style={{ margin: 0 }}>Reportes y Dashboards Ejecutivos de Gestión ITIL 4</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>
             Métricas de Mesa de Servicio: Acuerdos de Nivel de Servicio (SLA), gráficos de pastel de tickets abiertos, barras de cumplimiento y distribución por prioridad.
           </p>
         </div>

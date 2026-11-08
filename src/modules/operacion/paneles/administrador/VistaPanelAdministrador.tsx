@@ -138,11 +138,35 @@ export default function VistaPanelAdministrador() {
   return (
     <div className="vista-contenedor">
       {/* Cabecera ejecutiva */}
-      <div className="cabecera-pagina" style={{ marginBottom: 24 }}>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
         <div>
-          <h1>Panel de administración</h1>
-          <p>Estado global de la mesa de servicio, los cambios en curso, las identidades y los accesos.</p>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Administración del Sistema & Gobernanza ITIL
+          </span>
+          <h1 style={{ margin: 0 }}>Panel de administración</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Estado global de la mesa de servicio, los cambios en curso, las identidades y los accesos.</p>
         </div>
+        <button
+          type="button"
+          onClick={() => {
+            setCargando(true);
+            setError(null);
+            fetch(`/api/operacion/paneles/admin?_t=${Date.now()}`)
+              .then((r) => r.json())
+              .then((res) => {
+                if (res.kpis) setData(res);
+                else setError(res.error ?? "No se pudo cargar el panel.");
+              })
+              .catch(() => setError("Error de conexión al cargar el panel."))
+              .finally(() => setCargando(false));
+          }}
+          className="boton-secundario"
+          style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer" }}
+          title="Actualizar panel"
+        >
+          <RefreshCw size={14} />
+          Actualizar
+        </button>
       </div>
 
       {/* Grid de KPIs principales */}

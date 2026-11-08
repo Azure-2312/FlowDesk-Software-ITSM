@@ -216,10 +216,13 @@ export default function VistaReportesGerenciales() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina">
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
         <div>
-          <h1>Reportes Gerenciales de Gestion ITIL 4</h1>
-          <p className="descripcion">
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Reportes Gerenciales & Cumplimiento ITIL v4
+          </span>
+          <h1 style={{ margin: 0 }}>Reportes Gerenciales de Gestion ITIL 4</h1>
+          <p className="descripcion" style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>
             Indicadores agregados de la Mesa de Servicio (HU-27): volumen, carga activa, tiempo
             medio de primera respuesta (MTTA), tiempo medio de resolucion (MTTR), cumplimiento de
             SLA y CSAT, con filtros por rango de fechas, departamento de TI y prioridad.
