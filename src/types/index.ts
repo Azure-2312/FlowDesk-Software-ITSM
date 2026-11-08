@@ -276,6 +276,7 @@ export interface Ticket {
   aprobaciones?: TicketAprobacion[];
   id_problema?: number | null;
   problema_codigo?: string | null;
+  codigo_problema?: string | null;
   problema_titulo?: string | null;
   id_ci?: number | null;
   ci_codigo?: string | null;
