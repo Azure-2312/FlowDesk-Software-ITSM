@@ -587,15 +587,36 @@ function ContenidoCrearTicket({
   return (
     <div className="vista-contenedor" style={{ maxWidth: 860, margin: "0 auto", paddingBottom: 60 }}>
       {/* Encabezado */}
-      <div style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-          {tipoFijo === 1 ? "Registrar incidente" : tipoFijo === 2 ? "Registrar solicitud de servicio" : "Crear Ticket en Mesa de Servicio"}
-        </h1>
-        <p style={{ color: "#64748b", fontSize: 13, marginTop: 4, marginBottom: 0 }}>
-          {tipoFijo
-            ? "Completa el formulario oficial del modulo correspondiente."
-            : "Selecciona el tipo de proceso para habilitar el formulario oficial correspondiente."}
-        </p>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#eff6ff", color: "#1d4ed8", border: "1px solid #bfdbfe", padding: "2px 8px", borderRadius: 4 }}>
+              Mesa de Ayuda &amp; Intake ITIL v4
+            </span>
+          </div>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+            {tipoFijo === 1 ? "Registrar incidente" : tipoFijo === 2 ? "Registrar solicitud de servicio" : "Crear Ticket en Mesa de Servicio"}
+          </h1>
+          <p style={{ color: "#64748b", fontSize: 13, marginTop: 4, marginBottom: 0 }}>
+            {tipoFijo
+              ? "Completa el formulario oficial del módulo correspondiente."
+              : "Selecciona el tipo de proceso para habilitar el formulario oficial correspondiente."}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push(rutaLista ?? (esIncidente ? "/plataforma/incidentes/mios" : "/plataforma/solicitudes/mios"));
+            }
+          }}
+          className="boton-secundario"
+          style={{ width: "auto", fontSize: 12.5, padding: "6px 14px" }}
+        >
+          {rutaLista ? "Volver al Listado" : "Volver"}
+        </button>
       </div>
 
       {/* 1.1 DOS CATEGORÍAS CON ICONOS GRANDES Y BREVE DEFINICIÓN */}

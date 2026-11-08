@@ -56,13 +56,34 @@ export default function PaginaRegistrarProblema() {
 
   return (
     <div style={{ padding: "24px 32px", maxWidth: 900, margin: "0 auto" }}>
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-          Registrar nuevo problema
-        </h1>
-        <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
-          Iniciación formal de investigación de causa raíz según el proceso ITIL Problem Management
-        </p>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#fdf2f8", color: "#9d174d", border: "1px solid #fbcfe8", padding: "2px 8px", borderRadius: 4 }}>
+              Investigación de Problemas (ITIL v4)
+            </span>
+          </div>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+            Registrar nuevo problema
+          </h1>
+          <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}>
+            Iniciación formal de investigación de causa raíz según el proceso ITIL Problem Management
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/plataforma/problemas");
+            }
+          }}
+          className="boton-secundario"
+          style={{ width: "auto", fontSize: 12.5, padding: "6px 14px" }}
+        >
+          Volver a Problemas
+        </button>
       </div>
 
       {error && (
