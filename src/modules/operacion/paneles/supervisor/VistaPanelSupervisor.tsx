@@ -25,11 +25,31 @@ interface Panel {
   }[];
 }
 
-function Kpi({ titulo, valor, color }: { titulo: string; valor: string | number; color?: string }) {
+function Kpi({ titulo, valor, color, subtitulo }: { titulo: string; valor: string | number; color?: string; subtitulo?: string }) {
   return (
-    <div className="tarjeta-formulario" style={{ margin: 0 }}>
-      <div style={{ fontSize: 12, color: "#6b7280", textTransform: "uppercase", letterSpacing: 0.4 }}>{titulo}</div>
-      <div style={{ fontSize: 26, fontWeight: 700, color: color ?? "#0f172a", marginTop: 6 }}>{valor}</div>
+    <div
+      style={{
+        backgroundColor: "#ffffff",
+        border: "1px solid #e2e8f0",
+        borderRadius: 10,
+        padding: "16px 18px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div style={{ fontSize: 11.5, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.5 }}>
+        {titulo}
+      </div>
+      <div style={{ fontSize: 28, fontWeight: 800, color: color ?? "#0f172a", marginTop: 8 }}>
+        {valor}
+      </div>
+      {subtitulo && (
+        <span style={{ fontSize: 11.5, color: "#64748b", marginTop: 4 }}>
+          {subtitulo}
+        </span>
+      )}
     </div>
   );
 }
@@ -39,19 +59,23 @@ export default function VistaPanelSupervisor() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  async function cargarDatos() {
+    setCargando(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/operacion/paneles/supervisor?_t=${Date.now()}`);
+      const json = await res.json();
+      if (res.ok) setData(json);
+      else setError(json.error ?? "No se pudo cargar el panel.");
+    } catch {
+      setError("Error de conexión al cargar el panel.");
+    } finally {
+      setCargando(false);
+    }
+  }
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(`/api/operacion/paneles/supervisor?_t=${Date.now()}`);
-        const json = await res.json();
-        if (res.ok) setData(json);
-        else setError(json.error ?? "No se pudo cargar el panel.");
-      } catch {
-        setError("Error de conexión al cargar el panel.");
-      } finally {
-        setCargando(false);
-      }
-    })();
+    cargarDatos();
   }, []);
 
   if (cargando) return <div className="vista-contenedor"><p>Cargando panel...</p></div>;
@@ -67,17 +91,40 @@ export default function VistaPanelSupervisor() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Panel de supervisión</h1>
-        <p>Estado del equipo de mi área técnica en un vistazo.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+        <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Mesa de Supervisión & Operaciones (ITIL v4)
+          </span>
+          <h1 style={{ margin: 0 }}>Panel de supervisión</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Estado del equipo de mi área técnica en un vistazo.</p>
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <Link
+            href="/plataforma/tickets/gestion/asignar"
+            className="boton-primario"
+            style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
+          >
+            Centro de Asignación
+          </Link>
+          <button
+            type="button"
+            className="boton-secundario"
+            onClick={cargarDatos}
+            style={{ fontSize: 13, padding: "8px 12px", cursor: "pointer" }}
+            title="Actualizar panel"
+          >
+            Actualizar
+          </button>
+        </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14, marginBottom: 24 }}>
-        <Kpi titulo="Tickets abiertos" valor={data.kpis.abiertos} />
-        <Kpi titulo="Sin asignar" valor={data.kpis.sin_asignar} color={data.kpis.sin_asignar > 0 ? "#b45309" : undefined} />
-        <Kpi titulo="Vencidos" valor={data.kpis.vencidos} color={data.kpis.vencidos > 0 ? "#b91c1c" : undefined} />
-        <Kpi titulo="Por vencer (4 h)" valor={data.kpis.por_vencer} color={data.kpis.por_vencer > 0 ? "#b45309" : undefined} />
-        <Kpi titulo="CSAT promedio" valor={data.kpis.csat_promedio ?? "—"} />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+        <Kpi titulo="Tickets abiertos" valor={data.kpis.abiertos} subtitulo="En curso o en atención" />
+        <Kpi titulo="Sin asignar" valor={data.kpis.sin_asignar} color={data.kpis.sin_asignar > 0 ? "#b45309" : undefined} subtitulo={data.kpis.sin_asignar > 0 ? "Requiere asignación" : "Bandeja al día"} />
+        <Kpi titulo="Vencidos" valor={data.kpis.vencidos} color={data.kpis.vencidos > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.vencidos > 0 ? "SLA sobrepasado" : "0 fuera de plazo"} />
+        <Kpi titulo="Por vencer (4 h)" valor={data.kpis.por_vencer} color={data.kpis.por_vencer > 0 ? "#b45309" : undefined} subtitulo="Atención prioritaria" />
+        <Kpi titulo="CSAT promedio" valor={data.kpis.csat_promedio ?? "—"} subtitulo="Calificación de usuarios" />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginBottom: 24 }}>

@@ -146,8 +146,11 @@ export default function PaginaPanelTecnico() {
   return (
     <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto" }}>
       {/* Encabezado */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Mesa de Ayuda & Turno Operativo (N1/N2 ITIL v4)
+          </span>
           <h1 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a", margin: 0 }}>
             Dashboard del especialista técnico
           </h1>
@@ -159,13 +162,10 @@ export default function PaginaPanelTecnico() {
         <button
           type="button"
           onClick={cargarDatosPanel}
+          className="boton-secundario"
           style={{
             padding: "8px 14px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #cbd5e1",
-            borderRadius: 6,
             fontSize: 13,
-            color: "#334155",
             cursor: "pointer",
           }}
         >

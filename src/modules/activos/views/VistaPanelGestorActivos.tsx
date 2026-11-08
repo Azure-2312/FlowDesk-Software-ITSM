@@ -16,11 +16,31 @@ interface Panel {
   campanasActivas: { id_campana: number; codigo: string; nombre: string; alcance: string | null; fecha_fin: string | null; estado: string; items: number; verificados: number }[];
 }
 
-function Kpi({ titulo, valor, color }: { titulo: string; valor: number; color?: string }) {
+function Kpi({ titulo, valor, color, subtitulo }: { titulo: string; valor: number; color?: string; subtitulo?: string }) {
   return (
-    <div className="tarjeta-formulario" style={{ margin: 0 }}>
-      <div style={{ fontSize: 12, color: "#6b7280", textTransform: "uppercase", letterSpacing: 0.4 }}>{titulo}</div>
-      <div style={{ fontSize: 26, fontWeight: 700, color: color ?? "#0f172a", marginTop: 6 }}>{valor}</div>
+    <div
+      style={{
+        backgroundColor: "#ffffff",
+        border: "1px solid #e2e8f0",
+        borderRadius: 10,
+        padding: "16px 18px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div style={{ fontSize: 11.5, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.5 }}>
+        {titulo}
+      </div>
+      <div style={{ fontSize: 28, fontWeight: 800, color: color ?? "#0f172a", marginTop: 8 }}>
+        {valor}
+      </div>
+      {subtitulo && (
+        <span style={{ fontSize: 11.5, color: "#64748b", marginTop: 4 }}>
+          {subtitulo}
+        </span>
+      )}
     </div>
   );
 }
@@ -36,19 +56,23 @@ export default function VistaPanelGestorActivos() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  async function cargarDatos() {
+    setCargando(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/activos/panel?_t=${Date.now()}`);
+      const json = await res.json();
+      if (res.ok) setData(json);
+      else setError(json.error ?? "No se pudo cargar el panel.");
+    } catch {
+      setError("Error de conexión al cargar el panel.");
+    } finally {
+      setCargando(false);
+    }
+  }
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(`/api/activos/panel?_t=${Date.now()}`);
-        const json = await res.json();
-        if (res.ok) setData(json);
-        else setError(json.error ?? "No se pudo cargar el panel.");
-      } catch {
-        setError("Error de conexión al cargar el panel.");
-      } finally {
-        setCargando(false);
-      }
-    })();
+    cargarDatos();
   }, []);
 
   if (cargando) return <div className="vista-contenedor"><p>Cargando panel...</p></div>;
@@ -57,18 +81,41 @@ export default function VistaPanelGestorActivos() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Panel de activos y CMDB</h1>
-        <p>Garantías por vencer, sobreuso de licencias, inexactitudes de CMDB, campañas activas y actas pendientes.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+        <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Gestión de Activos TI & Configuración (SACM / ITIL v4)
+          </span>
+          <h1 style={{ margin: 0 }}>Panel de activos y CMDB</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Garantías por vencer, sobreuso de licencias, inexactitudes de CMDB, campañas activas y actas pendientes.</p>
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <Link
+            href="/plataforma/activos/recepcion"
+            className="boton-primario"
+            style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
+          >
+            + Recepción de Activos
+          </Link>
+          <button
+            type="button"
+            className="boton-secundario"
+            onClick={cargarDatos}
+            style={{ fontSize: 13, padding: "8px 12px", cursor: "pointer" }}
+            title="Actualizar panel"
+          >
+            Actualizar
+          </button>
+        </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14, marginBottom: 24 }}>
-        <Kpi titulo="Activos totales" valor={data.kpis.total_activos} />
-        <Kpi titulo="Garantías por vencer" valor={data.kpis.garantias_por_vencer} color={data.kpis.garantias_por_vencer > 0 ? "#b45309" : undefined} />
-        <Kpi titulo="Licencias en sobreuso" valor={data.kpis.sobreuso_licencias} color={data.kpis.sobreuso_licencias > 0 ? "#b91c1c" : undefined} />
-        <Kpi titulo="Inexactitudes CMDB" valor={data.kpis.inexactitudes_abiertas} color={data.kpis.inexactitudes_abiertas > 0 ? "#b91c1c" : undefined} />
-        <Kpi titulo="Campañas activas" valor={data.kpis.campanas_activas} />
-        <Kpi titulo="Actas pendientes" valor={data.kpis.actas_pendientes} color={data.kpis.actas_pendientes > 0 ? "#b45309" : undefined} />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+        <Kpi titulo="Activos totales" valor={data.kpis.total_activos} subtitulo="Inventario registrado" />
+        <Kpi titulo="Garantías por vencer" valor={data.kpis.garantias_por_vencer} color={data.kpis.garantias_por_vencer > 0 ? "#b45309" : undefined} subtitulo={data.kpis.garantias_por_vencer > 0 ? "Vencen en < 60 días" : "Sin vencimientos próximos"} />
+        <Kpi titulo="Licencias en sobreuso" valor={data.kpis.sobreuso_licencias} color={data.kpis.sobreuso_licencias > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.sobreuso_licencias > 0 ? "Riesgo de cumplimiento SAM" : "Cumplimiento 100%"} />
+        <Kpi titulo="Inexactitudes CMDB" valor={data.kpis.inexactitudes_abiertas} color={data.kpis.inexactitudes_abiertas > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.inexactitudes_abiertas > 0 ? "Discrepancias con auditoría" : "0 inexactitudes"} />
+        <Kpi titulo="Campañas activas" valor={data.kpis.campanas_activas} subtitulo="Inventario físico en curso" />
+        <Kpi titulo="Actas pendientes" valor={data.kpis.actas_pendientes} color={data.kpis.actas_pendientes > 0 ? "#b45309" : undefined} subtitulo={data.kpis.actas_pendientes > 0 ? "Firma de usuario pendiente" : "Todas firmadas"} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>

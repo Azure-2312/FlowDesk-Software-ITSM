@@ -30,11 +30,31 @@ interface PanelSolicitante {
   articulos: { id_articulo: number; titulo: string }[];
 }
 
-function Kpi({ titulo, valor, color }: { titulo: string; valor: string | number; color?: string }) {
+function Kpi({ titulo, valor, color, subtitulo }: { titulo: string; valor: string | number; color?: string; subtitulo?: string }) {
   return (
-    <div className="tarjeta-formulario" style={{ margin: 0 }}>
-      <div style={{ fontSize: 12, color: "#6b7280", textTransform: "uppercase", letterSpacing: 0.4 }}>{titulo}</div>
-      <div style={{ fontSize: 26, fontWeight: 700, color: color ?? "#0f172a", marginTop: 6 }}>{valor}</div>
+    <div
+      style={{
+        backgroundColor: "#ffffff",
+        border: "1px solid #e2e8f0",
+        borderRadius: 10,
+        padding: "16px 18px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div style={{ fontSize: 11.5, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.5 }}>
+        {titulo}
+      </div>
+      <div style={{ fontSize: 28, fontWeight: 800, color: color ?? "#0f172a", marginTop: 8 }}>
+        {valor}
+      </div>
+      {subtitulo && (
+        <span style={{ fontSize: 11.5, color: "#64748b", marginTop: 4 }}>
+          {subtitulo}
+        </span>
+      )}
     </div>
   );
 }
@@ -50,19 +70,23 @@ export default function VistaPanelSolicitante() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  async function cargarDatos() {
+    setCargando(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/operacion/paneles/solicitante?_t=${Date.now()}`);
+      const json = await res.json();
+      if (res.ok) setData(json);
+      else setError(json.error ?? "No se pudo cargar el panel.");
+    } catch {
+      setError("Error de conexión al cargar el panel.");
+    } finally {
+      setCargando(false);
+    }
+  }
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(`/api/operacion/paneles/solicitante?_t=${Date.now()}`);
-        const json = await res.json();
-        if (res.ok) setData(json);
-        else setError(json.error ?? "No se pudo cargar el panel.");
-      } catch {
-        setError("Error de conexión al cargar el panel.");
-      } finally {
-        setCargando(false);
-      }
-    })();
+    cargarDatos();
   }, []);
 
   if (cargando) return <div className="vista-contenedor"><p>Cargando panel...</p></div>;
@@ -71,16 +95,39 @@ export default function VistaPanelSolicitante() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Panel del solicitante</h1>
-        <p>Estado de mis solicitudes, mis activos asignados y las guías disponibles para resolver por mi cuenta.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+        <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Portal de Autoservicio & Solicitudes (ITIL v4)
+          </span>
+          <h1 style={{ margin: 0 }}>Panel del solicitante</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Estado de mis solicitudes, mis activos asignados y las guías disponibles para resolver por mi cuenta.</p>
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <Link
+            href="/plataforma/solicitudes/crear"
+            className="boton-primario"
+            style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
+          >
+            + Nueva Solicitud
+          </Link>
+          <button
+            type="button"
+            className="boton-secundario"
+            onClick={cargarDatos}
+            style={{ fontSize: 13, padding: "8px 12px", cursor: "pointer" }}
+            title="Actualizar panel"
+          >
+            Actualizar
+          </button>
+        </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14, marginBottom: 24 }}>
-        <Kpi titulo="Tickets abiertos" valor={data.kpis.abiertos} />
-        <Kpi titulo="En espera" valor={data.kpis.en_espera} color={data.kpis.en_espera > 0 ? "#b45309" : undefined} />
-        <Kpi titulo="Resueltos (30 días)" valor={data.kpis.resueltos_30d} />
-        <Kpi titulo="Fuera de plazo" valor={data.kpis.vencidos} color={data.kpis.vencidos > 0 ? "#b91c1c" : undefined} />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+        <Kpi titulo="Tickets abiertos" valor={data.kpis.abiertos} subtitulo="En curso o en atención" />
+        <Kpi titulo="En espera" valor={data.kpis.en_espera} color={data.kpis.en_espera > 0 ? "#b45309" : undefined} subtitulo="Esperando información o tercero" />
+        <Kpi titulo="Resueltos (30 días)" valor={data.kpis.resueltos_30d} subtitulo="Atendidos con éxito" />
+        <Kpi titulo="Fuera de plazo" valor={data.kpis.vencidos} color={data.kpis.vencidos > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.vencidos > 0 ? "Requiere seguimiento" : "Sin incidencias fuera de SLA"} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, marginBottom: 16 }}>
