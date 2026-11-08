@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { ModalEditarPropiedadesCampo } from "./ModalEditarPropiedadesCampo";
+import { SimuladorCambiosEnVivo } from "./ModalVistaPrevia";
 
 export interface CampoFormulario {
   codigo: string;
@@ -37,14 +39,13 @@ export interface PestanaCamposProps {
 }
 
 export const PestanaCampos: React.FC<PestanaCamposProps> = ({
-  secciones,
+  secciones = [],
   onChangeSecciones,
   camposPersonalizados = [],
   onIrACamposPersonalizados,
-  onVistaPrevia,
   puedeEditar = true,
 }) => {
-  const [campoSeleccionado, setCampoSeleccionado] = useState<{ seccionId: string; codigo: string } | null>(null);
+  const [campoEditando, setCampoEditando] = useState<{ seccionId: string; campo: CampoFormulario } | null>(null);
   const [formularioActivo, setFormularioActivo] = useState<"solicitud" | "edicion">("solicitud");
   const [soloObligatorios, setSoloObligatorios] = useState(false);
   const [soloOcultos, setSoloOcultos] = useState(false);
@@ -54,10 +55,6 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
   const toggleSeccion = (secId: string) => {
     setSeccionesColapsadas((prev) => ({ ...prev, [secId]: !prev[secId] }));
   };
-
-  // Obtener campo activo para el panel derecho
-  const seccionActiva = campoSeleccionado ? secciones.find((s) => s.id === campoSeleccionado.seccionId) : null;
-  const campoActivo = seccionActiva ? seccionActiva.campos.find((c) => c.codigo === campoSeleccionado?.codigo) : null;
 
   // Actualizar un campo específico
   const actualizarCampo = (seccionId: string, codigo: string, patch: Partial<CampoFormulario>) => {
@@ -82,13 +79,13 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
   };
 
   // Contadores
-  const totalCampos = secciones.reduce((acc, s) => acc + s.campos.length, 0);
-  const totalVisibles = secciones.reduce((acc, s) => acc + s.campos.filter((c) => c.visible).length, 0);
-  const totalObligatorios = secciones.reduce((acc, s) => acc + s.campos.filter((c) => c.visible && c.obligatorio === "si").length, 0);
+  const totalCampos = secciones.reduce((acc, s) => acc + (s.campos?.length || 0), 0);
+  const totalVisibles = secciones.reduce((acc, s) => acc + (s.campos?.filter((c) => c.visible).length || 0), 0);
+  const totalObligatorios = secciones.reduce((acc, s) => acc + (s.campos?.filter((c) => c.visible && c.obligatorio === "si").length || 0), 0);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Barra Superior con Selector de Formulario, Filtros y Vista Previa */}
+      {/* Barra Superior con Selector de Formulario y Filtros (Sin botón redundante de vista previa) */}
       <div
         style={{
           display: "flex",
@@ -108,7 +105,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
             className="input-base"
             value={formularioActivo}
             onChange={(e) => setFormularioActivo(e.target.value as any)}
-            style={{ fontSize: 12, width: 220 }}
+            style={{ fontSize: 12, width: 230 }}
           >
             <option value="solicitud">Solicitud de RFC (Alta)</option>
             <option value="edicion">Edición dentro del Ticket RFC</option>
@@ -155,35 +152,20 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
           >
             Solo ocultos
           </button>
-          {onVistaPrevia && (
-            <button
-              type="button"
-              onClick={onVistaPrevia}
-              className="boton-mini"
-              title="Abrir vista previa interactiva del formulario y ticket"
-              style={{
-                backgroundColor: "#eff6ff",
-                borderColor: "#bfdbfe",
-                color: "#1d4ed8",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                fontWeight: 600,
-              }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-              Vista Previa
-            </button>
-          )}
         </div>
       </div>
 
-      {/* Layout de Dos Columnas: Lienzo de Secciones (1fr) y Panel de Propiedades (380px) */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 16, minHeight: 680, alignItems: "start" }}>
-        {/* Columna Centro: Lienzo de Secciones y Campos (Canvas) */}
+      {/* Layout de Dos Columnas: Lienzo de Secciones y Campos (Izquierda) + Vista Previa en Vivo (Derecha) */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1.08fr 0.92fr",
+          gap: 16,
+          minHeight: 680,
+          alignItems: "start",
+        }}
+      >
+        {/* Columna Izquierda: Lienzo de Secciones y Campos (ancho horizontal ajustado) */}
         <div
           style={{
             display: "flex",
@@ -241,18 +223,10 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                     <span style={{ fontSize: 13.5, fontWeight: 700, color: "#0f172a" }}>
                       {sec.titulo}
                     </span>
-                    {sec.es_condicional_emergencia && (
-                      <span
-                        className="badge-itil"
-                        style={{ backgroundColor: "#fee2e2", color: "#991b1b", border: "1px solid #fca5a5", fontSize: 10, fontWeight: 700 }}
-                      >
-                        Solo visible con Tipo = Emergencia
-                      </span>
-                    )}
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span style={{ fontSize: 11.5, color: "#64748b" }}>
-                      {sec.campos.filter((c) => c.visible).length} / {sec.campos.length} visibles
+                      {sec.campos?.filter((c) => c.visible).length || 0} / {sec.campos?.length || 0} visibles
                     </span>
                     <span style={{ fontSize: 11, color: "#94a3b8" }}>
                       {estaColapsada ? "(Expandir)" : "(Contraer)"}
@@ -263,14 +237,13 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                 {/* Lista de Campos en la Sección */}
                 {!estaColapsada && (
                   <div style={{ padding: "10px 14px", display: "flex", flexDirection: "column", gap: 7 }}>
-                    {sec.campos
+                    {(sec.campos || [])
                       .filter((c) => {
                         if (soloObligatorios) return c.visible && c.obligatorio === "si";
                         if (soloOcultos) return !c.visible;
                         return true;
                       })
                       .map((campo, idx) => {
-                        const estaSeleccionado = campoSeleccionado?.codigo === campo.codigo;
                         return (
                           <div
                             key={campo.codigo}
@@ -300,21 +273,19 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                                 setArrastrando(null);
                               }
                             }}
-                            onClick={() => setCampoSeleccionado({ seccionId: sec.id, codigo: campo.codigo })}
                             style={{
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "space-between",
                               padding: "9px 12px",
                               borderRadius: 6,
-                              border: `1px solid ${estaSeleccionado ? "#2563eb" : "#e2e8f0"}`,
-                              backgroundColor: estaSeleccionado ? "#eff6ff" : campo.visible ? "#ffffff" : "#f8fafc",
-                              cursor: "pointer",
+                              border: "1px solid #e2e8f0",
+                              backgroundColor: campo.visible ? "#ffffff" : "#f8fafc",
                               transition: "all 0.15s ease",
                               opacity: arrastrando?.seccionId === sec.id && arrastrando?.index === idx ? 0.4 : 1,
                             }}
                           >
-                            <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
                               <div
                                 style={{
                                   display: "flex",
@@ -324,8 +295,9 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                                   color: "#94a3b8",
                                   padding: "2px 4px",
                                   borderRadius: 4,
+                                  flexShrink: 0,
                                 }}
-                                title="Arrastra este icono para reordenar el campo"
+                                title="Arrastra los 6 puntos para mover este campo"
                               >
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                                   <circle cx="8" cy="5" r="2" />
@@ -336,9 +308,18 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                                   <circle cx="16" cy="19" r="2" />
                                 </svg>
                               </div>
-                              <div>
+                              <div style={{ minWidth: 0 }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                                  <span style={{ fontSize: 13, fontWeight: 600, color: campo.visible ? "#1e293b" : "#94a3b8" }}>
+                                  <span
+                                    style={{
+                                      fontSize: 13,
+                                      fontWeight: 600,
+                                      color: campo.visible ? "#1e293b" : "#94a3b8",
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                    }}
+                                  >
                                     {campo.etiqueta}
                                   </span>
                                 </div>
@@ -349,7 +330,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                             </div>
 
                             {/* Controles Rápidos en la Fila */}
-                            <div style={{ display: "flex", alignItems: "center", gap: 10 }} onClick={(e) => e.stopPropagation()}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }} onClick={(e) => e.stopPropagation()}>
                               <select
                                 className="input-base"
                                 value={campo.obligatorio}
@@ -358,12 +339,12 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                                 style={{ fontSize: 11.5, padding: "4px 8px", width: "auto" }}
                               >
                                 <option value="si">Siempre Obligatorio</option>
-                                <option value="segun_tipo">Según Tipo de Cambio</option>
+                                <option value="segun_tipo">Según Tipo</option>
                                 <option value="condicional">Condicional</option>
                                 <option value="no">Opcional</option>
                               </select>
 
-                              {/* Botón de visibilidad con icono */}
+                              {/* Botón de visibilidad con icono de ojo */}
                               <button
                                 type="button"
                                 disabled={!puedeEditar}
@@ -393,6 +374,28 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                                   </svg>
                                 )}
                               </button>
+
+                              {/* Botón de edición con icono de lápiz */}
+                              <button
+                                type="button"
+                                disabled={!puedeEditar}
+                                onClick={() => setCampoEditando({ seccionId: sec.id, campo })}
+                                className="boton-accion-icono"
+                                style={{
+                                  width: 28,
+                                  height: 28,
+                                  color: "#2563eb",
+                                  borderColor: "#bfdbfe",
+                                  backgroundColor: "#eff6ff",
+                                }}
+                                title="Editar propiedades del campo (etiqueta, ayuda, ancho, reglas)"
+                                aria-label="Editar propiedades del campo"
+                              >
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M12 20h9" />
+                                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                </svg>
+                              </button>
                             </div>
                           </div>
                         );
@@ -404,137 +407,31 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
           })}
         </div>
 
-        {/* Columna Derecha: Panel Inspector de Propiedades del Campo (380px) */}
+        {/* Columna Derecha: Vista Previa en Vivo Simulada (Sustituye al panel estático eliminado) */}
         <div
           style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            padding: 16,
             display: "flex",
             flexDirection: "column",
-            gap: 12,
             position: "sticky",
             top: 16,
-            alignSelf: "start",
           }}
         >
-          {campoActivo && seccionActiva ? (
-            <div>
-              <div style={{ paddingBottom: 10, borderBottom: "1px solid #e2e8f0", marginBottom: 12 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase" }}>
-                  Propiedades del Campo
-                </span>
-                <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", margin: "2px 0 0 0" }}>
-                  {campoActivo.etiqueta}
-                </h3>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <div>
-                  <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#475569", marginBottom: 4 }}>
-                    Código Interno (Inmutable)
-                  </label>
-                  <input
-                    type="text"
-                    className="input-base"
-                    value={campoActivo.codigo}
-                    readOnly
-                    style={{ width: "100%", fontSize: 12, backgroundColor: "#f1f5f9", fontFamily: "monospace" }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
-                    Etiqueta visible
-                  </label>
-                  <input
-                    type="text"
-                    className="input-base"
-                    value={campoActivo.etiqueta}
-                    disabled={!puedeEditar}
-                    onChange={(e) => actualizarCampo(seccionActiva.id, campoActivo.codigo, { etiqueta: e.target.value })}
-                    style={{ width: "100%", fontSize: 12 }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
-                    Texto de ayuda (Tooltip)
-                  </label>
-                  <textarea
-                    className="input-base"
-                    rows={2}
-                    value={campoActivo.ayuda || ""}
-                    disabled={!puedeEditar}
-                    onChange={(e) => actualizarCampo(seccionActiva.id, campoActivo.codigo, { ayuda: e.target.value })}
-                    style={{ width: "100%", fontSize: 12 }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
-                    Ancho en el formulario
-                  </label>
-                  <select
-                    className="input-base"
-                    value={campoActivo.ancho || "completo"}
-                    disabled={!puedeEditar}
-                    onChange={(e) => actualizarCampo(seccionActiva.id, campoActivo.codigo, { ancho: e.target.value as any })}
-                    style={{ width: "100%", fontSize: 12 }}
-                  >
-                    <option value="completo">Ancho completo (100%)</option>
-                    <option value="1/2">Mitad de fila (50%)</option>
-                    <option value="1/3">Un tercio (33%)</option>
-                    <option value="2/3">Dos tercios (66%)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
-                    Obligatoriedad
-                  </label>
-                  <select
-                    className="input-base"
-                    value={campoActivo.obligatorio}
-                    disabled={!puedeEditar}
-                    onChange={(e) => actualizarCampo(seccionActiva.id, campoActivo.codigo, { obligatorio: e.target.value as any })}
-                    style={{ width: "100%", fontSize: 12 }}
-                  >
-                    <option value="si">Siempre Obligatorio</option>
-                    <option value="segun_tipo">Según Tipo de Cambio</option>
-                    <option value="condicional">Condicional (Reglas dinámicas)</option>
-                    <option value="no">Opcional</option>
-                  </select>
-                </div>
-
-                {/* Reglas condicionales si aplican */}
-                {campoActivo.reglas && campoActivo.reglas.length > 0 && (
-                  <div style={{ backgroundColor: "#f8fafc", padding: 10, borderRadius: 6, border: "1px solid #e2e8f0" }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: "#475569", textTransform: "uppercase" }}>
-                      Reglas condicionales activas ({campoActivo.reglas.length})
-                    </span>
-                    <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 4 }}>
-                      {campoActivo.reglas.map((r, i) => (
-                        <span key={i} style={{ fontSize: 11, color: "#334155" }}>
-                          CUANDO <strong>{r.si_campo}</strong> {r.operador} <em>{String(r.valor)}</em> → <strong>{r.accion}</strong>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div style={{ textAlign: "center", padding: "40px 10px", color: "#94a3b8" }}>
-              <p style={{ fontSize: 13, fontWeight: 600, color: "#64748b" }}>Ningún campo seleccionado</p>
-              <p style={{ fontSize: 11.5, margin: "4px 0 0 0" }}>
-                Haga clic en cualquier campo del lienzo central para editar sus propiedades y reglas.
-              </p>
-            </div>
-          )}
+          <SimuladorCambiosEnVivo
+            secciones={secciones}
+            abierto={true}
+          />
         </div>
       </div>
+
+      {/* Modal de Edición de Propiedades del Campo */}
+      <ModalEditarPropiedadesCampo
+        abierto={!!campoEditando}
+        seccionId={campoEditando?.seccionId || ""}
+        campo={campoEditando?.campo || null}
+        onCerrar={() => setCampoEditando(null)}
+        onGuardar={actualizarCampo}
+        puedeEditar={puedeEditar}
+      />
     </div>
   );
 };
