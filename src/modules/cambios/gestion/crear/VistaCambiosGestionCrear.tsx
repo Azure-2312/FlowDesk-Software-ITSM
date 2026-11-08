@@ -263,6 +263,11 @@ export default function PaginaCrearRFC() {
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#eff6ff", color: "#1d4ed8", border: "1px solid #bfdbfe", padding: "2px 8px", borderRadius: 4 }}>
+              Gestión de Cambios &amp; RFC (ITIL v4)
+            </span>
+          </div>
           <h1>Registrar Solicitud de Cambio (RFC - Request for Change)</h1>
           <p>
             Alineación ITIL v4 y Norma ISO/IEC 20000: Justificación técnica, CI afectado, planes de implementación y rollback.
