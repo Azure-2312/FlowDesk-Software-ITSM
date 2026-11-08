@@ -7,14 +7,6 @@ import { FileText, RefreshCw, Network } from "@/shared/components/ui/Iconos";
 export default function ProblemasHubPage() {
   return (
     <div style={{ padding: "24px 28px", minWidth: 1200, backgroundColor: "#f8fafc", minHeight: "100vh" }}>
-      {/* Breadcrumb */}
-      <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>
-        <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Problemas
-        </Link>
-        {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>Configuración del proceso</span>
-      </nav>
 
       {/* Cabecera */}
       <div style={{

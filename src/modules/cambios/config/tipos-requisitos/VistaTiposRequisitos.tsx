@@ -143,36 +143,6 @@ export default function ConfiguracionTiposRequisitosPage() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Link
-              href="/plataforma/cambios/configuracion/formulario"
-              style={{
-                padding: "7px 12px",
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#475569",
-                backgroundColor: "#ffffff",
-                border: "1px solid #cbd5e1",
-                borderRadius: 6,
-                textDecoration: "none"
-              }}
-            >
-              ← Ir a Formulario
-            </Link>
-            <Link
-              href="/plataforma/cambios/gestion/todos"
-              style={{
-                padding: "7px 12px",
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#2563eb",
-                backgroundColor: "#eff6ff",
-                border: "1px solid #bfdbfe",
-                borderRadius: 6,
-                textDecoration: "none"
-              }}
-            >
-              Ver RFCs Operativas
-            </Link>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>
               ● Configuración Activa
             </span>
