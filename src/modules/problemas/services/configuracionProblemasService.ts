@@ -343,8 +343,54 @@ export async function obtenerConfiguracionProblemas(opciones: {
 
   // 4. Snapshot efectivo
   const valorFabrica = VALORES_FABRICA_PESTANAS[pestana] || {};
-  const snapshotPublicado = versionPublicada?.snapshot || valorFabrica;
-  const snapshotBorrador = borradorPendiente?.snapshot || null;
+  let snapshotPublicado = versionPublicada?.snapshot || valorFabrica;
+  let snapshotBorrador = borradorPendiente?.snapshot || null;
+
+  // Normalización defensiva de campos en secciones
+  const normalizarSecciones = (secciones: any[]): any[] => {
+    if (!Array.isArray(secciones)) return VALORES_FABRICA_PESTANAS.campos.secciones;
+    const fabricaSecciones = VALORES_FABRICA_PESTANAS.campos.secciones;
+    const mapaCamposFabrica = new Map<string, any>();
+    fabricaSecciones.forEach((s: any) => {
+      s.campos?.forEach((c: any) => mapaCamposFabrica.set(c.codigo, c));
+    });
+
+    return secciones.map((sec: any, idx: number) => {
+      const secFabrica = fabricaSecciones[idx] || {};
+      const camposNormalizados = (sec.campos || []).map((c: any) => {
+        if (typeof c === 'string') {
+          return mapaCamposFabrica.get(c) || {
+            codigo: c,
+            etiqueta: c,
+            tipo: 'texto',
+            visible: true,
+            obligatorio: 'no',
+            bloqueado: false,
+            ancho: 'completo',
+            reglas: []
+          };
+        }
+        if ((!c.etiqueta || c.etiqueta === '-') && mapaCamposFabrica.has(c.codigo)) {
+          return { ...mapaCamposFabrica.get(c.codigo), ...c };
+        }
+        return c;
+      });
+      return {
+        ...secFabrica,
+        ...sec,
+        campos: camposNormalizados
+      };
+    });
+  };
+
+  if (pestana === 'campos') {
+    if (snapshotPublicado?.secciones) {
+      snapshotPublicado = { ...snapshotPublicado, secciones: normalizarSecciones(snapshotPublicado.secciones) };
+    }
+    if (snapshotBorrador?.secciones) {
+      snapshotBorrador = { ...snapshotBorrador, secciones: normalizarSecciones(snapshotBorrador.secciones) };
+    }
+  }
 
   // 5. Historial de versiones recientes (hasta 10)
   const historial = await query<any>(
