@@ -101,9 +101,33 @@ export default function VistaCatalogoSoftware() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Catálogo de software autorizado</h1>
-        <p>Registra el software permitido, su categoría y si requiere licencia; restringe o prohíbe el no autorizado.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+        <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Gestión SAM & Software Homologado (ITIL v4)
+          </span>
+          <h1 style={{ margin: 0 }}>Catálogo de software autorizado</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Registra el software permitido, su categoría y si requiere licencia; restringe o prohíbe el no autorizado.</p>
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <button
+            type="button"
+            className="boton-primario"
+            onClick={() => setMostrarForm((v) => !v)}
+            style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
+          >
+            {mostrarForm ? "Cancelar" : "+ Agregar Software"}
+          </button>
+          <button
+            type="button"
+            className="boton-secundario"
+            onClick={cargar}
+            style={{ fontSize: 13, padding: "8px 12px", cursor: "pointer" }}
+            title="Actualizar catálogo"
+          >
+            Actualizar
+          </button>
+        </div>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}

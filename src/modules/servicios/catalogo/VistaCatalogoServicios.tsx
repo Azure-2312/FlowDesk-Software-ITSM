@@ -246,7 +246,10 @@ function ContenidoCatalogo({
   return (
     <div className="vista-contenedor" style={{ maxWidth: 1200, margin: "0 auto", paddingBottom: 60 }}>
       {/* Cabecera Principal */}
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginBottom: 24 }}>
+        <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+          Catálogo de Servicios & Autoservicio (ITIL v4)
+        </span>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
           {esSolicitud ? "Catálogo de Solicitudes de Servicio" : "Catálogo de Incidentes"}
         </h1>
