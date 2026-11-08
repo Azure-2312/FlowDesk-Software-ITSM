@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "db:start": "pg_ctl start -D \"%USERPROFILE%\\AppData\\Local\\Programs\\pgsql\\data\" -l \"%USERPROFILE%\\AppData\\Local\\Programs\\pgsql\\logfile.log\"",
+    "db:status": "pg_ctl status -D \"%USERPROFILE%\\AppData\\Local\\Programs\\pgsql\\data\"",
+    "db:stop": "pg_ctl stop -D \"%USERPROFILE%\\AppData\\Local\\Programs\\pgsql\\data\"",
     "test": "node scripts/test_e2e_lifecycle.js",
     "test:e2e": "node scripts/test_e2e_lifecycle.js"
   },

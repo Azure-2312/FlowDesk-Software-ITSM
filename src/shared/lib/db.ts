@@ -12,11 +12,19 @@ declare global {
   var _pgPool: Pool | undefined;
 }
 
+const dbUrl = process.env.DATABASE_URL || "";
+const esLocal =
+  !dbUrl ||
+  dbUrl.includes("localhost") ||
+  dbUrl.includes("127.0.0.1") ||
+  dbUrl.includes("::1") ||
+  dbUrl.includes("sslmode=disable");
+
 export const pool =
   global._pgPool ??
   new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }, // Supabase requiere conexión SSL
+    connectionString: dbUrl,
+    ssl: esLocal ? false : { rejectUnauthorized: false }, // Supabase / remoto requiere SSL; PostgreSQL local no soporta SSL
   });
 
 if (process.env.NODE_ENV !== "production") {
