@@ -3,12 +3,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
-import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
-import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
-import { ModalHistorialVersiones } from "@/shared/components/admin/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "@/shared/components/admin/ModalRestaurarFabrica";
-import { ModalVistaPrevia } from "@/shared/components/admin/ModalVistaPrevia";
-
 import { PestanaTiposLicencia } from "./components/PestanaTiposLicencia";
 import { PestanaTiposContrato } from "./components/PestanaTiposContrato";
 import { PestanaFormularioLicenciaContrato } from "./components/PestanaFormularioLicenciaContrato";
@@ -118,28 +112,15 @@ export default function LicenciasContratosConfigPage() {
     }
   };
 
-  // Estados de control de versiones y autoría
+  // Estados de autoría y guardado
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
   const [fechaPublicada, setFechaPublicada] = useState<string>("");
   const [autorPublicada, setAutorPublicada] = useState<string>("");
-  const [hayBorrador, setHayBorrador] = useState<boolean>(false);
   const [guardando, setGuardando] = useState<boolean>(false);
-  const [publicando, setPublicando] = useState<boolean>(false);
   const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
-  const [puedePublicar, setPuedePublicar] = useState<boolean>(true);
-  const [puedeEditar, setPuedeEditar] = useState<boolean>(true);
 
   // Snapshot de datos de la pestaña actual
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
-  const [historialVersiones, setHistorialVersiones] = useState<any[]>([]);
-  const [totalActivosAfectados, setTotalActivosAfectados] = useState<number>(0);
-  const [diffsCalculados, setDiffsCalculados] = useState<any[]>([]);
-
-  // Modales
-  const [modalVistaPreviaAbierto, setModalVistaPreviaAbierto] = useState<boolean>(false);
-  const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
-  const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
-  const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
 
   // Toast
   const [toastMensaje, setToastMensaje] = useState<string | null>(null);
@@ -166,30 +147,14 @@ export default function LicenciasContratosConfigPage() {
         setVersionPublicada(data.version_publicada?.numero_version || 1);
         setFechaPublicada(data.version_publicada?.fecha_creacion || "");
         setAutorPublicada(data.version_publicada?.autor_nombre || "Administrador");
-        setHayBorrador(data.tiene_borrador);
 
         const snapshotActual = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
         setConfigSnapshot(snapshotActual);
-
-        setHistorialVersiones(data.historial_versiones || []);
-        setTotalActivosAfectados(data.total_activos || 0);
 
         if (data.bloqueo && !data.bloqueo.bloqueado_por_mi) {
           setBloqueadoPorOtro(data.bloqueo.usuario_nombre);
         } else {
           setBloqueadoPorOtro(undefined);
-        }
-
-        // Formar diffs para el modal de publicación
-        if (data.diff_preview?.cambios) {
-          setDiffsCalculados(
-            data.diff_preview.cambios.map((c: string) => ({
-              tipo: "modificado",
-              campo: c
-            }))
-          );
-        } else {
-          setDiffsCalculados([]);
         }
       } else {
         setErrorCarga(data.error || "Error al cargar la configuración de licencias y contratos.");
@@ -209,128 +174,34 @@ export default function LicenciasContratosConfigPage() {
   // Manejador de cambio de datos en los componentes hijos
   const handleSnapshotChange = (nuevosDatos: any) => {
     setConfigSnapshot(nuevosDatos);
-    setHayBorrador(true);
   };
 
-  // Guardar borrador
-  const handleGuardarBorrador = async () => {
+  // Guardar configuración directa
+  const handleGuardarConfiguracion = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: `Guardado de borrador en pestaña ${pestanaInfo.titulo}`
-        })
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setHayBorrador(true);
-        mostrarToast("Borrador guardado exitosamente.");
-        cargarDatos();
-      } else {
-        mostrarToast(data.error || "No se pudo guardar el borrador.");
-      }
-    } catch (err: any) {
-      mostrarToast(err.message || "Error al guardar el borrador.");
-    } finally {
-      setGuardando(false);
-    }
-  };
-
-  // Confirmar publicación
-  const handleConfirmarPublicacion = async (motivo: string) => {
-    try {
-      setPublicando(true);
       const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           pestana: tabActiva,
           snapshot: configSnapshot,
-          motivo,
+          motivo: `Actualización de licencias y contratos en pestaña ${pestanaInfo.titulo}`,
           diff: { tipo: "modificacion_general", pestana: tabActiva }
         })
       });
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Error al publicar la configuración.");
+        throw new Error(data.error || "Error al guardar la configuración.");
       }
 
-      mostrarToast(data.mensaje || `Versión v${data.nueva_version} publicada exitosamente.`);
-      setHayBorrador(false);
+      mostrarToast(data.mensaje || "Configuración guardada exitosamente.");
       cargarDatos();
+    } catch (err: any) {
+      mostrarToast(err.message || "Error al guardar la configuración.");
     } finally {
-      setPublicando(false);
-    }
-  };
-
-  // Descartar borrador
-  const handleDescartarBorrador = async () => {
-    if (!confirm("Se perderán todos los cambios del borrador sin publicar. ¿Desea continuar?")) return;
-    try {
-      const res = await fetch(
-        `/api/activos/configuracion/licencias-contratos/configuracion?pestana=${tabActiva}`,
-        { method: "DELETE" }
-      );
-      if (res.ok) {
-        mostrarToast("Borrador descartado. Se restauró la versión publicada.");
-        setHayBorrador(false);
-        cargarDatos();
-      }
-    } catch (err: any) {
-      mostrarToast(err.message || "Error al descartar el borrador.");
-    }
-  };
-
-  // Restaurar valores de fábrica
-  const handleRestaurarFabrica = async () => {
-    try {
-      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          accion: "restaurar_fabrica"
-        })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setHayBorrador(true);
-        mostrarToast("Valores de fábrica cargados en el borrador.");
-        cargarDatos();
-      } else {
-        mostrarToast(data.error || "No se pudo restaurar los valores de fábrica.");
-      }
-    } catch (err: any) {
-      mostrarToast(err.message || "Error al restaurar valores de fábrica.");
-    }
-  };
-
-  // Restaurar versión específica desde modal de historial
-  const handleRestaurarVersionComoBorrador = async (version: any) => {
-    try {
-      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          snapshot: version.snapshot,
-          motivo: `Restaurada versión v${version.numero_version} en borrador`
-        })
-      });
-      if (res.ok) {
-        mostrarToast(`Versión v${version.numero_version} cargada en borrador.`);
-        setModalHistorialAbierto(false);
-        setHayBorrador(true);
-        cargarDatos();
-      }
-    } catch (err: any) {
-      mostrarToast(err.message || "Error al restaurar la versión.");
+      setGuardando(false);
     }
   };
 
@@ -371,8 +242,7 @@ export default function LicenciasContratosConfigPage() {
         const json = JSON.parse(text);
         if (json.configuracion) {
           setConfigSnapshot(json.configuracion);
-          setHayBorrador(true);
-          mostrarToast("Configuración importada en borrador. Guarde o publique para aplicar.");
+          mostrarToast("Configuración cargada desde JSON. Haga clic en 'Guardar Licencias y Contratos' para aplicar.");
         } else {
           mostrarToast("El archivo no tiene el formato esperado.");
         }
@@ -393,62 +263,74 @@ export default function LicenciasContratosConfigPage() {
         </div>
       )}
 
-      {/* Migas de pan y Encabezado de Navegación del Módulo */}
+      {/* Encabezado canónico ARQ-4: Configuración de Catálogos */}
       <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <nav className="flex items-center space-x-2 text-xs text-slate-500 mb-2">
-            <Link href="/plataforma/operacion/paneles/administrador" className="hover:text-slate-800">
-              Administración
-            </Link>
-            <span>/</span>
-            <Link href="/plataforma/activos/configuracion/tipos-modelos-atributos" className="hover:text-slate-800">
-              Activos y CMDB
-            </Link>
-            <span>/</span>
-            <span className="text-slate-800 font-semibold">Licencias y contratos</span>
-          </nav>
-
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                Licencias de Software y Contratos TI
-              </h1>
-              <p className="text-sm text-slate-500 mt-0.5">
+              <div className="flex items-center gap-3">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                  Gestión SAM &amp; Contratos
+                </span>
+                <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+                  Licencias de Software y Contratos TI
+                </h1>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  ● Configuración Activa
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1 max-w-3xl">
                 Definición de métricas SAM, modalidades contractuales, umbrales de sobreuso, alertas de expiración y políticas de renovación.
               </p>
             </div>
 
-            {/* Accesos directos a las pantallas del Módulo Activos y CMDB */}
-            <div className="flex items-center gap-1.5 overflow-x-auto py-1">
-              <Link
-                href="/plataforma/activos/configuracion/tipos-modelos-atributos"
-                className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleImportar}
+                className="px-3 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors"
+                title="Importar catálogo JSON"
               >
-                Tipos y Modelos
-              </Link>
-              <Link
-                href="/plataforma/activos/configuracion/ciclos-vida-transiciones"
-                className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
+                Importar JSON
+              </button>
+              <button
+                onClick={handleExportar}
+                className="px-3 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors"
+                title="Exportar catálogo JSON"
               >
-                Ciclos de Vida
-              </Link>
-              <span className="px-2.5 py-1 text-xs rounded border border-indigo-300 bg-indigo-50 text-indigo-700 font-semibold">
-                Licencias y Contratos
-              </span>
-              <span className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
-                Relaciones CMDB
-              </span>
-              <span className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
-                Integridad CMDB
-              </span>
-              <span className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
-                Auditoría
-              </span>
+                Exportar JSON
+              </button>
+              <button
+                onClick={handleGuardarConfiguracion}
+                disabled={guardando || Boolean(bloqueadoPorOtro)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:opacity-50"
+              >
+                {guardando ? "Guardando..." : "Guardar Licencias y Contratos"}
+              </button>
             </div>
           </div>
 
+          {/* Accesos directos a las pantallas del Módulo Activos y CMDB */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pt-3 mt-3 border-t border-slate-100">
+            <span className="text-[11px] font-medium text-slate-400 mr-1">Vistas de Activos:</span>
+            <Link
+              href="/plataforma/activos/configuracion/tipos-modelos-atributos"
+              className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
+            >
+              Tipos y Modelos
+            </Link>
+            <Link
+              href="/plataforma/activos/configuracion/ciclos-vida-transiciones"
+              className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
+            >
+              Ciclos de Vida
+            </Link>
+            <span className="px-2.5 py-1 text-xs rounded border border-indigo-300 bg-indigo-50 text-indigo-700 font-semibold">
+              Licencias y Contratos
+            </span>
+          </div>
+
           {/* Barra de Pestañas sin números */}
-          <div className="flex space-x-1 border-b border-slate-200 mt-6 overflow-x-auto">
+          <div className="flex space-x-1 border-b border-slate-200 mt-4 overflow-x-auto">
             {PESTANAS.map((pestana) => {
               const activa = tabActiva === pestana.id;
               return (
@@ -479,7 +361,7 @@ export default function LicenciasContratosConfigPage() {
               <p className="text-xs text-slate-600 mt-0.5">{pestanaInfo.descripcion}</p>
             </div>
             <div className="text-right text-xs text-slate-400 font-mono">
-              Versión publicada: v{versionPublicada}
+              Versión activa: v{versionPublicada}
             </div>
           </div>
         </div>
@@ -552,58 +434,6 @@ export default function LicenciasContratosConfigPage() {
         )}
       </main>
       </div>
-
-      {/* Barra de Acciones Común Flotante (Patrón 3.1) */}
-      <BarraAccionesComun
-        versionPublicada={versionPublicada}
-        fechaPublicada={fechaPublicada}
-        autorPublicada={autorPublicada}
-        hayBorrador={hayBorrador}
-        guardando={guardando}
-        publicando={publicando}
-        bloqueadoPorOtro={bloqueadoPorOtro}
-        puedePublicar={puedePublicar}
-        puedeEditar={puedeEditar}
-        onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
-        onAbrirPublicar={() => setModalPublicarAbierto(true)}
-        onDescartar={handleDescartarBorrador}
-        onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
-        onVerHistorial={() => setModalHistorialAbierto(true)}
-        onExportar={handleExportar}
-        onImportar={handleImportar}
-      />
-
-      {/* Modales del Patrón 3.1 */}
-      <ModalVistaPrevia
-        abierto={modalVistaPreviaAbierto}
-        modulo="activos"
-        tituloModulo="Licencias y Contratos (SAM)"
-        onCerrar={() => setModalVistaPreviaAbierto(false)}
-      />
-
-      <ModalPublicacion
-        abierto={modalPublicarAbierto}
-        versionActual={versionPublicada}
-        diffs={diffsCalculados}
-        ticketsAbiertosAfectados={totalActivosAfectados}
-        onConfirmar={handleConfirmarPublicacion}
-        onCerrar={() => setModalPublicarAbierto(false)}
-      />
-
-      <ModalRestaurarFabrica
-        abierto={modalRestaurarAbierto}
-        onConfirmar={handleRestaurarFabrica}
-        onCerrar={() => setModalRestaurarAbierto(false)}
-      />
-
-      <ModalHistorialVersiones
-        abierto={modalHistorialAbierto}
-        versiones={historialVersiones}
-        versionActual={versionPublicada}
-        onRestaurarComoBorrador={handleRestaurarVersionComoBorrador}
-        onCerrar={() => setModalHistorialAbierto(false)}
-      />
     </div>
   );
 }

@@ -753,9 +753,17 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
         {/* Cabecera y Botón Nueva Categoría */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
           <div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-              Clasificación y Configuración de Categorías (ITIL v4)
-            </h2>
+            <div className="flex items-center gap-3">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                Catálogo de Servicios TI
+              </span>
+              <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+                Clasificación y Configuración de Categorías (ITIL v4)
+              </h2>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                ● Configuración Activa
+              </span>
+            </div>
             <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
               Administre las categorías maestras que agrupan los servicios y rigen los tiempos base de SLA en el catálogo y los formularios.
             </p>
