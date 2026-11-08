@@ -2,10 +2,6 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
-import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
-import { ModalHistorialVersiones } from "../formulario/components/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "../formulario/components/ModalRestaurarFabrica";
 
 import { PestanaUmbral } from "./components/PestanaUmbral";
 import { PestanaIncidentesVinculados } from "./components/PestanaIncidentesVinculados";
@@ -27,14 +23,11 @@ export default function RelacionesProblemasPage() {
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
-  // Estados de control de versiones y autoría
+  // Estados de control y autoría
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
   const [fechaPublicada, setFechaPublicada] = useState<string>("");
   const [autorPublicada, setAutorPublicada] = useState<string>("");
-  const [hayBorrador, setHayBorrador] = useState<boolean>(false);
   const [guardando, setGuardando] = useState<boolean>(false);
-  const [publicando, setPublicando] = useState<boolean>(false);
-  const [puedePublicar, setPuedePublicar] = useState<boolean>(true);
   const [puedeEditar, setPuedeEditar] = useState<boolean>(true);
 
   // Datos de las 6 pestañas
@@ -49,13 +42,6 @@ export default function RelacionesProblemasPage() {
     categorias: [],
     clasesCI: []
   });
-
-  // Modales
-  const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
-  const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
-  const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
-  const [versionesHistorial, setVersionesHistorial] = useState<any[]>([]);
-  const [diffsPublicacion, setDiffsPublicacion] = useState<any[]>([]);
 
   // Cargar datos
   const cargarDatos = useCallback(async () => {
@@ -77,7 +63,6 @@ export default function RelacionesProblemasPage() {
       setConfigRfc(d.configRfc || {});
       setConfigConocimiento(d.configConocimiento || {});
       setConfigCmdb(d.configCmdb || {});
-      setVersionesHistorial(d.versiones || []);
       setCatalogosAuxiliares(d.catalogosAuxiliares || { servicios: [], categorias: [], clasesCI: [] });
 
       if (d.versionPublicada) {
@@ -85,8 +70,6 @@ export default function RelacionesProblemasPage() {
         setFechaPublicada(d.versionPublicada.fecha_publicacion || new Date().toISOString());
         setAutorPublicada(d.versionPublicada.autor_nombre || "Sistema Base");
       }
-
-      setHayBorrador(false);
     } catch (err: any) {
       console.error(err);
       setErrorCarga(err.message || "Error de conexión");
@@ -100,14 +83,14 @@ export default function RelacionesProblemasPage() {
   }, [cargarDatos]);
 
   function marcarModificado() {
-    setHayBorrador(true);
+    // Para reactividad local
   }
 
-  // Guardar Borrador
-  async function handleGuardarBorrador() {
+  // Guardar y Aplicar Relaciones Directamente
+  async function handleGuardarRelaciones() {
     setGuardando(true);
     try {
-      const res = await fetch("/api/problemas/configuracion/relaciones", {
+      const resGuardar = await fetch("/api/problemas/configuracion/relaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -122,167 +105,26 @@ export default function RelacionesProblemasPage() {
         })
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al guardar borrador");
+      const dataGuardar = await resGuardar.json();
+      if (!resGuardar.ok) throw new Error(dataGuardar.error || "Error al guardar relaciones");
 
-      setHayBorrador(false);
-      alert("Borrador guardado exitosamente");
+      // Auto-publicar para persistir versión activa
+      await fetch("/api/problemas/configuracion/relaciones", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          accion: "publicar",
+          motivo: "Actualización de relaciones y umbrales de problemas"
+        })
+      });
+
+      alert("Configuración de relaciones guardada exitosamente.");
+      cargarDatos();
     } catch (err: any) {
       alert("Error: " + err.message);
     } finally {
       setGuardando(false);
     }
-  }
-
-  // Abrir Modal de Publicación
-  function handleAbrirPublicar() {
-    const diffs: any[] = [];
-    if (hayBorrador) {
-      diffs.push({
-        tipo: "modificado",
-        campo: "Políticas de Integración",
-        antes: "Configuración v" + versionPublicada,
-        despues: "Nuevas reglas operativas ajustadas en borrador"
-      });
-    }
-
-    setDiffsPublicacion(diffs.length > 0 ? diffs : [
-      {
-        tipo: "modificado",
-        campo: "Relaciones e Integraciones",
-        antes: `Versión publicada v${versionPublicada}`,
-        despues: `Ajustes validados para la versión v${versionPublicada + 1}`
-      }
-    ]);
-    setModalPublicarAbierto(true);
-  }
-
-  // Confirmar Publicación
-  async function handleConfirmarPublicacion(motivo: string) {
-    setPublicando(true);
-    try {
-      const res = await fetch("/api/problemas/configuracion/relaciones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "publicar",
-          motivo
-        })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al publicar");
-
-      setModalPublicarAbierto(false);
-      setHayBorrador(false);
-      alert(`Configuración publicada exitosamente como v${data.version?.numero_version || versionPublicada + 1}`);
-      cargarDatos();
-    } catch (err: any) {
-      alert("Error al publicar: " + err.message);
-    } finally {
-      setPublicando(false);
-    }
-  }
-
-  // Descartar Cambios
-  async function handleDescartarCambios() {
-    if (!confirm("¿Está seguro de descartar todos los cambios del borrador y volver a la última versión publicada?")) {
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/problemas/configuracion/relaciones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accion: "descartar" })
-      });
-      if (res.ok) {
-        alert("Cambios descartados exitosamente");
-        cargarDatos();
-      }
-    } catch {
-      alert("Error al descartar cambios");
-    }
-  }
-
-  // Restaurar Fábrica
-  async function handleConfirmarRestauracion() {
-    try {
-      const res = await fetch("/api/problemas/configuracion/relaciones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "restaurar_fabrica",
-          confirmacion: "RESTAURAR"
-        })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al restaurar");
-
-      setModalRestaurarAbierto(false);
-      alert(data.mensaje || "Valores de fábrica restaurados");
-      cargarDatos();
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    }
-  }
-
-  // Exportar configuración a JSON
-  function handleExportar() {
-    const configSnapshot = {
-      modulo: "Relación con incidentes, errores conocidos y conocimiento",
-      version_esquema: "1.0",
-      fecha_exportacion: new Date().toISOString(),
-      datos: {
-        reglasUmbral,
-        configIncidentes,
-        configKedb,
-        configRfc,
-        configConocimiento,
-        configCmdb
-      }
-    };
-
-    const blob = new Blob([JSON.stringify(configSnapshot, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `config_problemas_relaciones_v${versionPublicada}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  // Importar configuración desde JSON
-  function handleImportar() {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json";
-    input.onchange = async (e: any) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        try {
-          const json = JSON.parse(event.target?.result as string);
-          if (!json.datos) throw new Error("Archivo JSON no compatible con el esquema de relaciones");
-
-          if (json.datos.configIncidentes) setConfigIncidentes(json.datos.configIncidentes);
-          if (json.datos.configKedb) setConfigKedb(json.datos.configKedb);
-          if (json.datos.configRfc) setConfigRfc(json.datos.configRfc);
-          if (json.datos.configConocimiento) setConfigConocimiento(json.datos.configConocimiento);
-          if (json.datos.configCmdb) setConfigCmdb(json.datos.configCmdb);
-
-          marcarModificado();
-          alert("Configuración cargada en borrador. Revise las pestañas y pulse 'Guardar borrador' o 'Publicar'.");
-        } catch (err: any) {
-          alert("Error al importar archivo: " + err.message);
-        }
-      };
-      reader.readAsText(file);
-    };
-    input.click();
   }
 
   const tabs: Array<{ id: TabId; label: string }> = [
@@ -297,48 +139,61 @@ export default function RelacionesProblemasPage() {
   return (
     <div style={{ minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
       <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
-        {/* 1. BREADCRUMB */}
-      <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Problemas
-        </Link>
-        {" / "}
-        <Link href="/plataforma/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Configuración
-        </Link>
-        {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>Relación con incidentes, errores conocidos y conocimiento</span>
-      </nav>
+        {/* Encabezado Principal Estandarizado ARQ-3 */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 20,
+          backgroundColor: "#ffffff",
+          padding: "18px 24px",
+          borderRadius: 8,
+          border: "1px solid #e2e8f0"
+        }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Relaciones ITIL</span>
+              <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+                Relación con Incidentes, Errores Conocidos y Conocimiento
+              </h1>
+            </div>
+            <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
+              Integra y coordina el ciclo de vida de problemas con la mesa de incidentes, base de errores conocidos (KEDB), solicitudes de cambio (RFC), artículos de conocimiento y elementos de configuración de la CMDB.
+            </p>
+            <div style={{ marginTop: 6, fontSize: 12, color: "#94a3b8" }}>
+              Última modificación por <strong style={{ color: "#475569" }}>{autorPublicada || "Administrador"}</strong>
+              {fechaPublicada && ` el ${new Date(fechaPublicada).toLocaleString()}`}
+            </div>
+          </div>
 
-      {/* 2. ENCABEZADO */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        marginBottom: 20,
-        backgroundColor: "#ffffff",
-        padding: "18px 24px",
-        borderRadius: 8,
-        border: "1px solid #e2e8f0"
-      }}>
-        <div>
-          <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-            Relación con Incidentes, Errores Conocidos y Conocimiento
-          </h1>
-          <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
-            Integra y coordina el ciclo de vida de problemas con la mesa de incidentes, base de errores conocidos (KEDB), solicitudes de cambio (RFC), artículos de conocimiento y elementos de configuración de la CMDB (ITIL 4: <em>Think and work holistically</em>).
-          </p>
-          <div style={{ marginTop: 8, fontSize: 12, color: "#94a3b8" }}>
-            Última modificación por <strong style={{ color: "#475569" }}>{autorPublicada || "Administrador"}</strong>
-            {fechaPublicada && ` el ${new Date(fechaPublicada).toLocaleString()}`}
+          {/* Acciones y estado del encabezado */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>
+              ● Configuración Activa
+            </span>
+            <button
+              type="button"
+              onClick={handleGuardarRelaciones}
+              disabled={guardando || !puedeEditar}
+              style={{
+                backgroundColor: guardando ? "#93c5fd" : "#2563eb",
+                color: "#ffffff",
+                padding: "8px 16px",
+                borderRadius: 6,
+                border: "none",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: guardando || !puedeEditar ? "not-allowed" : "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                boxShadow: "0 1px 2px rgba(0,0,0,0.05)"
+              }}
+            >
+              {guardando ? "Guardando..." : "Guardar Relaciones"}
+            </button>
           </div>
         </div>
-
-        {/* Indicador de estado */}
-        <div>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>● Configuracion Activa</span>
-        </div>
-      </div>
 
       {/* 3. BARRA DE PESTAÑAS */}
       <div style={{
@@ -456,55 +311,6 @@ export default function RelacionesProblemasPage() {
         </div>
       )}
       </div>
-
-      {/* 5. BARRA DE ACCIONES FIJA INFERIOR (PATRÓN COMÚN) */}
-      <BarraAccionesComun
-        versionPublicada={versionPublicada}
-        fechaPublicada={fechaPublicada}
-        autorPublicada={autorPublicada}
-        hayBorrador={hayBorrador}
-        guardando={guardando}
-        publicando={publicando}
-        puedePublicar={puedePublicar}
-        puedeEditar={puedeEditar}
-        onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => alert("Vista previa interactiva activa para la pestaña " + tabActiva)}
-        onAbrirPublicar={handleAbrirPublicar}
-        onDescartar={handleDescartarCambios}
-        onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
-        onVerHistorial={() => setModalHistorialAbierto(true)}
-        onExportar={handleExportar}
-        onImportar={handleImportar}
-      />
-
-      {/* MODAL: PUBLICACIÓN */}
-      <ModalPublicacion
-        abierto={modalPublicarAbierto}
-        versionActual={versionPublicada}
-        diffs={diffsPublicacion}
-        ticketsAbiertosAfectados={0}
-        onCerrar={() => setModalPublicarAbierto(false)}
-        onConfirmar={handleConfirmarPublicacion}
-      />
-
-      {/* MODAL: HISTORIAL DE VERSIONES */}
-      <ModalHistorialVersiones
-        abierto={modalHistorialAbierto}
-        versiones={versionesHistorial}
-        versionActual={versionPublicada}
-        onCerrar={() => setModalHistorialAbierto(false)}
-        onRestaurarComoBorrador={(v: any) => {
-          alert(`Restaurando versión v${v.numero_version}...`);
-          cargarDatos();
-        }}
-      />
-
-      {/* MODAL: RESTAURAR VALORES DE FÁBRICA */}
-      <ModalRestaurarFabrica
-        abierto={modalRestaurarAbierto}
-        onCerrar={() => setModalRestaurarAbierto(false)}
-        onConfirmar={handleConfirmarRestauracion}
-      />
     </div>
   );
 }
