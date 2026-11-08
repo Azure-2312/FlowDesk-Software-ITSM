@@ -76,9 +76,22 @@ export default function VistaRecertificacion() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Recertificación de accesos</h1>
-        <p>Revisión periódica de usuarios y perfiles con confirmación o retiro recomendado.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+        <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Gobierno de Identidades & Campaña de Recertificación
+          </span>
+          <h1 style={{ margin: 0 }}>Recertificación de accesos</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Revisión periódica de usuarios y perfiles con confirmación o retiro recomendado.</p>
+        </div>
+        <button
+          type="button"
+          onClick={cargar}
+          className="boton-secundario"
+          style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer" }}
+        >
+          Actualizar Campaña
+        </button>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}

@@ -52,19 +52,23 @@ export default function VistaSod() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  async function cargarAnalisis() {
+    setCargando(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/seguridad/cumplimiento/sod?_t=${Date.now()}`);
+      const json = await res.json();
+      if (res.ok) setData(json);
+      else setError(json.error ?? "No se pudo analizar la segregación de funciones.");
+    } catch {
+      setError("Error de conexión al analizar la segregación de funciones.");
+    } finally {
+      setCargando(false);
+    }
+  }
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(`/api/seguridad/cumplimiento/sod?_t=${Date.now()}`);
-        const json = await res.json();
-        if (res.ok) setData(json);
-        else setError(json.error ?? "No se pudo analizar la segregación de funciones.");
-      } catch {
-        setError("Error de conexión al analizar la segregación de funciones.");
-      } finally {
-        setCargando(false);
-      }
-    })();
+    cargarAnalisis();
   }, []);
 
   if (cargando) return <div className="vista-contenedor"><p>Cargando...</p></div>;
@@ -73,9 +77,22 @@ export default function VistaSod() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Segregación de funciones</h1>
-        <p>Detección de aprobaciones del mismo usuario, autoaprobaciones y excepciones de perfiles.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+        <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Seguridad & Segregación de Funciones SoD (ISO 27001)
+          </span>
+          <h1 style={{ margin: 0 }}>Segregación de funciones (SoD)</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Detección de aprobaciones del mismo usuario, autoaprobaciones y excepciones de perfiles.</p>
+        </div>
+        <button
+          type="button"
+          onClick={cargarAnalisis}
+          className="boton-secundario"
+          style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer" }}
+        >
+          Actualizar Análisis
+        </button>
       </div>
 
       <Seccion
