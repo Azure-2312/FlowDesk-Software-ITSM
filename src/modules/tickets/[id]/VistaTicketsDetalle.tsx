@@ -2,6 +2,7 @@
 
 import { useEffect, useState, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { Ticket, ComentarioTicket, Usuario, CatalogosTickets } from "@/types";
 import { validarTexto } from "@/shared/lib/validaciones";
 
@@ -54,7 +55,7 @@ export default function PaginaDetalleTicket({
 
   // Acciones operativas ITIL
   const [ejecutandoAccion, setEjecutandoAccion] = useState(false);
-  const [modalOperativo, setModalOperativo] = useState<"ninguno" | "espera" | "resolver" | "cancelar" | "reabrir" | "asignar">("ninguno");
+  const [modalOperativo, setModalOperativo] = useState<"ninguno" | "espera" | "resolver" | "cancelar" | "reabrir" | "asignar" | "escalar_problema">("ninguno");
   const [motivoEsperaId, setMotivoEsperaId] = useState<number>(1);
   const [solucionTexto, setSolucionTexto] = useState("");
   const [categoriaResolucion, setCategoriaResolucion] = useState("Solución definitiva");
@@ -62,6 +63,11 @@ export default function PaginaDetalleTicket({
   const [motivoReaperturaTexto, setMotivoReaperturaTexto] = useState("");
   const [tecnicoSeleccionadoId, setTecnicoSeleccionadoId] = useState<number | "">("");
   const [errorOperativo, setErrorOperativo] = useState<string | null>(null);
+
+  // Escalamiento a Problema (RCA ITIL v4)
+  const [elevandoProblema, setElevandoProblema] = useState(false);
+  const [tituloProblema, setTituloProblema] = useState("");
+  const [descripcionProblema, setDescripcionProblema] = useState("");
 
   // Pestañas principales
   const [pestanaActiva, setPestanaActiva] = useState<"informacion" | "comunicacion" | "interna">("informacion");
@@ -155,6 +161,46 @@ export default function PaginaDetalleTicket({
       setErrorOperativo("Error de conexión al actualizar el ticket.");
     } finally {
       setEjecutandoAccion(false);
+    }
+  }
+
+  async function handleEscalarAProblema() {
+    if (!ticket) return;
+    setElevandoProblema(true);
+    setErrorOperativo(null);
+    try {
+      const res = await fetch("/api/problemas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          titulo: tituloProblema.trim() || `Problema: ${ticket.titulo}`,
+          descripcion: descripcionProblema.trim() || `Problema ITIL derivado del incidente #${ticket.codigo_ticket}:\n\n${ticket.descripcion || ""}`,
+          id_impacto: ticket.id_impacto,
+          id_urgencia: ticket.id_urgencia,
+          id_prioridad: ticket.id_prioridad,
+          id_ci: ticket.id_ci || null,
+          id_ticket_origen: ticket.id_ticket,
+        }),
+      });
+
+      const d = await res.json();
+      if (!res.ok) {
+        setErrorOperativo(d.error || "Error al escalar a problema.");
+        return;
+      }
+
+      setModalOperativo("ninguno");
+      // Recargar datos del ticket
+      const resActualizado = await fetch(`${apiBase}/${idTicket}`);
+      const dataActualizada = await resActualizado.json();
+      if (dataActualizada.ticket) {
+        setTicket(dataActualizada.ticket);
+      }
+      alert(`Se formalizó exitosamente el Problema con código: ${d.problema?.codigo_problema || "PRB"}. El incidente ha sido vinculado.`);
+    } catch (err: any) {
+      setErrorOperativo(err.message || "Error de conexión al escalar incidente.");
+    } finally {
+      setElevandoProblema(false);
     }
   }
 
@@ -504,7 +550,7 @@ export default function PaginaDetalleTicket({
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                   <span style={{ fontFamily: "monospace", fontSize: 14, fontWeight: 700, color: "#60a5fa" }}>
                     #{ticket.codigo_ticket}
                   </span>
@@ -520,6 +566,28 @@ export default function PaginaDetalleTicket({
                   >
                     {infoPrioridad.nombre}
                   </span>
+                  {ticket.id_problema && (
+                    <Link
+                      href={`/plataforma/problemas/${ticket.id_problema}`}
+                      style={{
+                        backgroundColor: "#fce7f3",
+                        color: "#9d174d",
+                        border: "1px solid #f472b6",
+                        padding: "2px 8px",
+                        borderRadius: 4,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        textDecoration: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4
+                      }}
+                      title={`Problema vinculado: ${ticket.problema_titulo || ""}`}
+                    >
+                      <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#be185d" }} />
+                      Problema: {ticket.problema_codigo || ticket.codigo_problema || `PRB-${ticket.id_problema}`}
+                    </Link>
+                  )}
                 </div>
                 <span className="badge-itil" style={{ backgroundColor: "#1e3a8a", color: "#bfdbfe", fontSize: 11 }}>
                   {esIncidente
@@ -747,6 +815,62 @@ export default function PaginaDetalleTicket({
                               </button>
                             </>
                           )}
+
+                          {/* Escalamiento a Problema ITIL v4: Para incidentes no terminales */}
+                          {esIncidente && !ticket.es_terminal && (perfilesIds.includes(1) || perfilesIds.includes(2) || perfilesIds.includes(4) || ticket.id_usuario_asignado === usuarioActual?.id_usuario) && (
+                            ticket.id_problema ? (
+                              <Link
+                                href={`/plataforma/problemas/${ticket.id_problema}`}
+                                className="boton-secundario"
+                                style={{
+                                  fontSize: 12,
+                                  padding: "6px 14px",
+                                  width: "auto",
+                                  backgroundColor: "#fdf2f8",
+                                  color: "#9d174d",
+                                  borderColor: "#fbcfe8",
+                                  textDecoration: "none",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 6
+                                }}
+                                title="Ver expediente del problema vinculado"
+                              >
+                                <span style={{ width: 7, height: 7, borderRadius: "50%", backgroundColor: "#be185d" }} />
+                                Problema: {ticket.problema_codigo || ticket.codigo_problema || `PRB-${ticket.id_problema}`}
+                              </Link>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setTituloProblema(`Problema: ${ticket.titulo}`);
+                                  setDescripcionProblema(`Investigación de causa raíz derivada del incidente #${ticket.codigo_ticket}:\n\n${ticket.descripcion || ""}`);
+                                  setModalOperativo("escalar_problema");
+                                }}
+                                disabled={ejecutandoAccion || elevandoProblema}
+                                className="boton-secundario"
+                                style={{
+                                  fontSize: 12,
+                                  padding: "6px 14px",
+                                  width: "auto",
+                                  backgroundColor: "#fdf2f8",
+                                  color: "#be185d",
+                                  borderColor: "#f472b6",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 6
+                                }}
+                                title="Escalar este incidente a investigación de causa raíz (Problema ITIL)"
+                              >
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <circle cx="12" cy="12" r="10" />
+                                  <line x1="12" y1="8" x2="12" y2="12" />
+                                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                                </svg>
+                                Escalar a Problema
+                              </button>
+                            )
+                          )}
                         </>
                       )}
 
@@ -788,9 +912,16 @@ export default function PaginaDetalleTicket({
                 </div>
 
                 <div style={{ padding: 12, backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#64748b", display: "block" }}>
-                    Usuario Solicitante
-                  </span>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: "#64748b", display: "block" }}>
+                      Usuario Solicitante
+                    </span>
+                    {nivelPrioridad <= 2 && (
+                      <span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#f3e8ff", color: "#7c3aed", border: "1px solid #d8b4fe", padding: "1px 6px", borderRadius: 4 }}>
+                        VIP / Acceso Interno
+                      </span>
+                    )}
+                  </div>
                   <strong style={{ fontSize: 13, color: "#0f172a", display: "block", marginTop: 2 }}>
                     {ticket.solicitante_nombre || usuarioActual?.nombres || "Usuario Institucional"}
                   </strong>
@@ -1443,6 +1574,7 @@ export default function PaginaDetalleTicket({
                 {modalOperativo === "cancelar" && "Cancelar Ticket"}
                 {modalOperativo === "reabrir" && "Reabrir Ticket"}
                 {modalOperativo === "asignar" && "Asignar Especialista Técnico"}
+                {modalOperativo === "escalar_problema" && "Escalar Incidente a Problema (RCA / ITIL v4)"}
               </strong>
               <button
                 type="button"
@@ -1702,6 +1834,72 @@ export default function PaginaDetalleTicket({
                       style={{ width: "auto", fontSize: 12.5, backgroundColor: "#2563eb" }}
                     >
                       {ejecutandoAccion ? "Asignando..." : "Confirmar Asignación"}
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {/* MODAL 6: ESCALAR A PROBLEMA (RCA / ITIL v4) */}
+              {modalOperativo === "escalar_problema" && (
+                <>
+                  <div style={{ backgroundColor: "#fdf2f8", border: "1px solid #fbcfe8", borderRadius: 8, padding: 12, fontSize: 12.5, color: "#9d174d" }}>
+                    <strong>Escalamiento ITIL a Gestión de Problemas:</strong> Se formalizará un nuevo expediente de investigación de causa raíz (RCA) y se vinculará este incidente como evidencia inicial.
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 700, color: "#334155", display: "block", marginBottom: 4 }}>
+                      Título del Problema <span style={{ color: "#dc2626" }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={tituloProblema}
+                      onChange={(e) => setTituloProblema(e.target.value)}
+                      className="input-base"
+                      style={{ width: "100%", fontSize: 13 }}
+                      placeholder="Ej: Falla recurrente en enlaces VPN / Pérdida intermitente de conectividad"
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 700, color: "#334155", display: "block", marginBottom: 4 }}>
+                      Descripción y Síntomas Observados
+                    </label>
+                    <textarea
+                      value={descripcionProblema}
+                      onChange={(e) => setDescripcionProblema(e.target.value)}
+                      className="input-base"
+                      rows={4}
+                      style={{ width: "100%", fontSize: 12.5 }}
+                      placeholder="Detalle el patrón de comportamiento, impacto acumulado y justificación de escalamiento..."
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, fontSize: 12, color: "#64748b", backgroundColor: "#f8fafc", padding: 10, borderRadius: 6 }}>
+                    <div>
+                      <span>Prioridad heredada:</span> <strong>{ticket.prioridad_nombre || "Media"}</strong>
+                    </div>
+                    <div>
+                      <span>CI Afectado:</span> <strong>{ticket.ci_nombre || "No vinculado"}</strong>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 10 }}>
+                    <button
+                      type="button"
+                      onClick={() => setModalOperativo("ninguno")}
+                      className="boton-secundario"
+                      style={{ width: "auto", fontSize: 12.5 }}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      disabled={elevandoProblema || !tituloProblema.trim()}
+                      onClick={handleEscalarAProblema}
+                      className="boton-primario"
+                      style={{ width: "auto", fontSize: 12.5, backgroundColor: "#be185d", borderColor: "#9d174d" }}
+                    >
+                      {elevandoProblema ? "Creando Problema..." : "Crear Problema y Vincular"}
                     </button>
                   </div>
                 </>
