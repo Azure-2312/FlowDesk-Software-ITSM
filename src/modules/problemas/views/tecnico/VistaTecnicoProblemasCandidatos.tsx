@@ -64,6 +64,9 @@ export default function PaginaCandidatosProblema() {
   return (
     <div style={{ padding: "24px 32px", maxWidth: 1200, margin: "0 auto" }}>
       <div style={{ marginBottom: 24 }}>
+        <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+          Gestión Proactiva de Problemas (ITIL v4)
+        </span>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
           Candidatos a problema (Gestión proactiva)
         </h1>
