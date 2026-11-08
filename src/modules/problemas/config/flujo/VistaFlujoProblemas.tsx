@@ -2,10 +2,6 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
-import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
-import { ModalHistorialVersiones } from "../formulario/components/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "../formulario/components/ModalRestaurarFabrica";
 import { PestanaEstados } from "./components/PestanaEstados";
 import { PestanaTransiciones } from "./components/PestanaTransiciones";
 import { PestanaAsignacion } from "./components/PestanaAsignacion";
@@ -30,15 +26,11 @@ export default function FlujoProblemasPage() {
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
-  // Estados de control de versiones y autoría
+  // Estados de control y autoría
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
   const [fechaPublicada, setFechaPublicada] = useState<string>("");
   const [autorPublicada, setAutorPublicada] = useState<string>("");
-  const [hayBorrador, setHayBorrador] = useState<boolean>(false);
   const [guardando, setGuardando] = useState<boolean>(false);
-  const [publicando, setPublicando] = useState<boolean>(false);
-  const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
-  const [puedePublicar, setPuedePublicar] = useState<boolean>(true);
   const [puedeEditar, setPuedeEditar] = useState<boolean>(true);
 
   // Datos del flujo
@@ -54,14 +46,6 @@ export default function FlujoProblemasPage() {
   const [configMayor, setConfigMayor] = useState<any>({});
   const [departamentos, setDepartamentos] = useState<any[]>([]);
   const [perfiles, setPerfiles] = useState<any[]>([]);
-
-  // Modales
-  const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
-  const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
-  const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
-  const [versionesHistorial, setVersionesHistorial] = useState<any[]>([]);
-  const [diffsPublicacion, setDiffsPublicacion] = useState<any[]>([]);
-  const [ticketsAbiertosAfectados, setTicketsAbiertosAfectados] = useState<number>(0);
 
   // Cargar datos
   const cargarDatos = useCallback(async () => {
@@ -92,8 +76,6 @@ export default function FlujoProblemasPage() {
       setVersionPublicada(data.version_publicada?.numero_version || 1);
       setFechaPublicada(data.version_publicada?.fecha_creacion || "");
       setAutorPublicada(data.version_publicada?.autor_nombre || "");
-      setHayBorrador(data.hay_borrador);
-      setPuedePublicar(data.permisos?.publicar ?? true);
       setPuedeEditar(data.permisos?.editar ?? true);
     } catch (err: any) {
       console.error("Error al cargar pantalla de flujo:", err);
@@ -107,11 +89,11 @@ export default function FlujoProblemasPage() {
     cargarDatos();
   }, [cargarDatos]);
 
-  // Guardar Borrador
-  const handleGuardarBorrador = async () => {
+  // Guardar y Aplicar Flujo
+  const handleGuardarFlujo = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/problemas/configuracion/flujo", {
+      const resGuardar = await fetch("/api/problemas/configuracion/flujo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -127,142 +109,87 @@ export default function FlujoProblemasPage() {
           },
         }),
       });
-      const data = await res.json();
-      if (!res.ok || !data.ok) throw new Error(data.error || "Error al guardar borrador");
-      setHayBorrador(true);
-      alert("Borrador del flujo guardado exitosamente.");
-    } catch (err: any) {
-      alert(err.message || "Error al guardar borrador");
-    } finally {
-      setGuardando(false);
-    }
-  };
+      const dataGuardar = await resGuardar.json();
+      if (!resGuardar.ok || !dataGuardar.ok) throw new Error(dataGuardar.error || "Error al guardar el flujo");
 
-  // Abrir Publicación
-  const handleAbrirPublicar = () => {
-    setDiffsPublicacion([
-      {
-        tipo: "modificado",
-        campo: "Reglas del Flujo ITIL",
-        anterior: `v${versionPublicada}`,
-        nuevo: `v${versionPublicada + 1} (${estados.length} estados, ${transiciones.length} transiciones)`,
-      },
-    ]);
-    setTicketsAbiertosAfectados(14);
-    setModalPublicarAbierto(true);
-  };
-
-  // Confirmar Publicación Oficial
-  const handleConfirmarPublicacion = async (motivo: string) => {
-    try {
-      setPublicando(true);
-      const res = await fetch("/api/problemas/configuracion/flujo", {
+      // Auto-publicar para persistir en producción
+      await fetch("/api/problemas/configuracion/flujo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           accion: "publicar",
           pestana: tabActiva,
-          motivo,
+          motivo: "Actualización de ciclo de vida de problemas",
         }),
       });
-      const data = await res.json();
-      if (!res.ok || !data.ok) throw new Error(data.error || "Error al publicar");
 
-      setVersionPublicada(data.version?.numero_version || versionPublicada + 1);
-      setFechaPublicada(new Date().toISOString());
-      setHayBorrador(false);
-      alert(`Versión v${data.version?.numero_version || versionPublicada + 1} del flujo publicada.`);
+      alert("Flujo de investigación y seguimiento guardado exitosamente.");
+      cargarDatos();
+    } catch (err: any) {
+      alert(err.message || "Error al guardar el flujo");
     } finally {
-      setPublicando(false);
+      setGuardando(false);
     }
-  };
-
-  // Descartar Borrador
-  const handleDescartarBorrador = async () => {
-    if (!confirm("¿Desea descartar el borrador sin publicar?")) return;
-    try {
-      const res = await fetch("/api/problemas/configuracion/flujo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "descartar",
-          pestana: tabActiva,
-        }),
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setHayBorrador(false);
-        cargarDatos();
-      }
-    } catch (err) {
-      alert("Error al descartar");
-    }
-  };
-
-  // Restaurar de Fábrica
-  const handleRestaurarFabrica = async () => {
-    const res = await fetch("/api/problemas/configuracion/flujo", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        accion: "restaurar_fabrica",
-        pestana: tabActiva,
-      }),
-    });
-    const data = await res.json();
-    if (!data.ok) throw new Error(data.error || "Error al restaurar");
-    alert("Valores de fábrica restaurados.");
-    cargarDatos();
   };
 
   return (
     <div style={{ minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
       <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
-        {/* Breadcrumb reglamentario */}
-      <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Problemas
-        </Link>
-        {" / "}
-        <Link href="/plataforma/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Configuración
-        </Link>
-        {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>Flujo de investigación y seguimiento</span>
-      </nav>
-
-      {/* Encabezado Principal 1.3.4.2 */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        marginBottom: 20,
-        backgroundColor: "#ffffff",
-        padding: "18px 24px",
-        borderRadius: 8,
-        border: "1px solid #e2e8f0"
-      }}>
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Flujo</span>
-            <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-              Flujo de Investigación y Seguimiento de Problemas
-            </h1>
+        {/* Encabezado Principal Estandarizado ARQ-2 */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 20,
+          backgroundColor: "#ffffff",
+          padding: "18px 24px",
+          borderRadius: 8,
+          border: "1px solid #e2e8f0"
+        }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Flujo ITIL</span>
+              <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+                Flujo de Investigación y Seguimiento de Problemas
+              </h1>
+            </div>
+            <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
+              Ciclo de vida ITIL 4: estados, transiciones, asignación automática, metas OLA, escalamientos, reaperturas y problemas mayores.
+            </p>
+            <div style={{ marginTop: 6, fontSize: 12, color: "#94a3b8" }}>
+              Última modificación por <strong style={{ color: "#475569" }}>{autorPublicada || "Administrador"}</strong>
+              {fechaPublicada && ` el ${new Date(fechaPublicada).toLocaleString()}`}
+            </div>
           </div>
-          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
-            Ciclo de vida ITIL 4: estados, transiciones, asignación automática, metas OLA, escalamientos, reaperturas y problemas mayores.
-          </p>
-          <div style={{ marginTop: 8, fontSize: 12, color: "#94a3b8" }}>
-            Última modificación por <strong style={{ color: "#475569" }}>{autorPublicada || "Administrador"}</strong>
-            {fechaPublicada && ` el ${new Date(fechaPublicada).toLocaleString()}`}
+
+          {/* Acciones del Encabezado */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>
+              ● Configuración Activa
+            </span>
+            <button
+              type="button"
+              onClick={handleGuardarFlujo}
+              disabled={guardando || !puedeEditar}
+              style={{
+                backgroundColor: guardando ? "#93c5fd" : "#2563eb",
+                color: "#ffffff",
+                padding: "8px 16px",
+                borderRadius: 6,
+                border: "none",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: guardando || !puedeEditar ? "not-allowed" : "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                boxShadow: "0 1px 2px rgba(0,0,0,0.05)"
+              }}
+            >
+              {guardando ? "Guardando..." : "Guardar Flujo"}
+            </button>
           </div>
         </div>
-
-        {/* Indicador de estado */}
-        <div>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>● Configuracion Activa</span>
-        </div>
-      </div>
 
       {/* Selector de las 8 Pestañas Reglamentarias */}
       <div style={{
@@ -557,51 +484,6 @@ export default function FlujoProblemasPage() {
           </div>
         )}
       </div>
-
-      {/* Barra de Acciones Común Fija al Pie (Sección 3.1) */}
-      <BarraAccionesComun
-        versionPublicada={versionPublicada}
-        fechaPublicada={fechaPublicada}
-        autorPublicada={autorPublicada}
-        hayBorrador={hayBorrador}
-        guardando={guardando}
-        publicando={publicando}
-        bloqueadoPorOtro={bloqueadoPorOtro}
-        puedePublicar={puedePublicar}
-        puedeEditar={puedeEditar}
-        onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => alert("Vista previa interactiva del flujo en ejecución.")}
-        onAbrirPublicar={handleAbrirPublicar}
-        onDescartar={handleDescartarBorrador}
-        onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
-        onVerHistorial={() => setModalHistorialAbierto(true)}
-        onExportar={() => alert("Exportar configuración JSON")}
-        onImportar={() => alert("Importar configuración JSON")}
-      />
-
-      {/* Modales del Patrón Común */}
-      <ModalPublicacion
-        abierto={modalPublicarAbierto}
-        versionActual={versionPublicada}
-        diffs={diffsPublicacion}
-        ticketsAbiertosAfectados={ticketsAbiertosAfectados}
-        onConfirmar={handleConfirmarPublicacion}
-        onCerrar={() => setModalPublicarAbierto(false)}
-      />
-
-      <ModalHistorialVersiones
-        abierto={modalHistorialAbierto}
-        versiones={versionesHistorial}
-        versionActual={versionPublicada}
-        onRestaurarComoBorrador={() => {}}
-        onCerrar={() => setModalHistorialAbierto(false)}
-      />
-
-      <ModalRestaurarFabrica
-        abierto={modalRestaurarAbierto}
-        onConfirmar={handleRestaurarFabrica}
-        onCerrar={() => setModalRestaurarAbierto(false)}
-      />
     </div>
   );
 }
