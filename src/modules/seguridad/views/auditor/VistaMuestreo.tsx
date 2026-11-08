@@ -75,9 +75,14 @@ export default function VistaMuestreo() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Muestreo de auditoría</h1>
-        <p>Selecciona muestras aleatorias de tickets, cambios y bajas para revisión.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+        <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Auditoría & Muestreo Estadístico (ISO 20000)
+          </span>
+          <h1 style={{ margin: 0 }}>Muestreo de auditoría</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Selecciona muestras aleatorias representativas de tickets, cambios y bajas para revisión.</p>
+        </div>
       </div>
 
       <div className="tarjeta-formulario" style={{ marginBottom: 20 }}>

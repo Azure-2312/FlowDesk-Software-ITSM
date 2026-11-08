@@ -48,9 +48,14 @@ export default function VistaHistorialAprobador() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Historial de aprobaciones y dictámenes</h1>
-        <p>RFC, dictámenes del ECAB, aprobaciones por monto y cierres de problemas.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+        <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Auditoría de Decisiones CAB & Trazabilidad
+          </span>
+          <h1 style={{ margin: 0 }}>Historial de aprobaciones y dictámenes</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>RFC, dictámenes del ECAB, aprobaciones por monto y cierres de problemas.</p>
+        </div>
       </div>
 
       <div style={{ marginBottom: 16 }}>

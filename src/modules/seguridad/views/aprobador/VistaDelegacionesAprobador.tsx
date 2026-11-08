@@ -91,9 +91,14 @@ export default function VistaDelegacionesAprobador() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Delegaciones</h1>
-        <p>Delega por ausencia a un suplente con perfil Aprobador y vigencia.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+        <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Comité CAB & Delegación Formal de Autoridad
+          </span>
+          <h1 style={{ margin: 0 }}>Delegaciones</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Delega por ausencia a un suplente con perfil Aprobador y vigencia.</p>
+        </div>
       </div>
 
       <form onSubmit={crear} className="tarjeta-formulario" style={{ marginBottom: 20 }}>
