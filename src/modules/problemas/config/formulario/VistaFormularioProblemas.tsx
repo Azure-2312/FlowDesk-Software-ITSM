@@ -419,30 +419,6 @@ export default function ConfiguracionFormularioPage() {
 
         {/* Indicador de estado y Acción Primaria */}
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button
-            type="button"
-            onClick={() => setModalVistaPreviaAbierto(true)}
-            style={{
-              padding: "7px 14px",
-              fontSize: 12.5,
-              fontWeight: 600,
-              color: "#1d4ed8",
-              backgroundColor: "#eff6ff",
-              border: "1px solid #bfdbfe",
-              borderRadius: 6,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 6
-            }}
-            title="Abrir vista previa interactiva del formulario y ticket"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-            Vista Previa
-          </button>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>● Configuración Activa</span>
           <button
             type="button"
@@ -472,7 +448,7 @@ export default function ConfiguracionFormularioPage() {
           { id: "listas_catalogos", label: "Listas y catálogos" },
           { id: "matriz_prioridad", label: "Matriz de prioridad" },
           { id: "plantillas", label: "Plantillas de problema" },
-          { id: "vista_ticket", label: "Vista del ticket" },
+          { id: "vista_ticket", label: "Diseño del ticket" },
         ].map((tab) => {
           const activa = tabActiva === tab.id;
           return (
