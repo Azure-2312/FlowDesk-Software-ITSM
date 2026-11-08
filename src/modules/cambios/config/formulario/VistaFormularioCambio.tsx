@@ -2,11 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
-import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
-import { ModalHistorialVersiones } from "./components/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "./components/ModalRestaurarFabrica";
-import { ModalVistaPrevia } from "./components/ModalVistaPrevia";
+import { SimuladorCambiosEnVivo } from "./components/ModalVistaPrevia";
 
 import { PestanaCampos } from "./components/PestanaCampos";
 import { PestanaCamposPersonalizados } from "./components/PestanaCamposPersonalizados";
@@ -329,16 +325,7 @@ export default function ConfiguracionFormularioCambiosPage() {
   return (
     <div style={{ width: "100%", maxWidth: "100%", overflowX: "auto", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
       <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
-        {/* 1. Breadcrumb (Sección 3.1) */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Cambios</Link>
-        <span>›</span>
-        <Link href="/plataforma/admin/procesos/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Configuración</Link>
-        <span>›</span>
-        <span style={{ color: "#0f172a", fontWeight: 700 }}>Configuración de formulario</span>
-        <span>›</span>
-        <span style={{ color: "#2563eb", fontWeight: 700 }}>{pestanaActualInfo.titulo}</span>
-      </div>
+
 
       {/* 2. Encabezado con Indicador de Estado (Sección 3.1) */}
       <div
@@ -378,6 +365,18 @@ export default function ConfiguracionFormularioCambiosPage() {
               Versión v{versionPublicada} activa publicada el {new Date(fechaPublicada).toLocaleString([], { dateStyle: "short", timeStyle: "short" })} por {autorPublicada || "Administrador del Sistema"}.
             </span>
           )}
+        </div>
+
+        <div>
+          <button
+            type="button"
+            onClick={handleGuardarBorrador}
+            disabled={guardando}
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+          >
+            {guardando ? "Guardando..." : "Guardar Cambios"}
+          </button>
         </div>
       </div>
 
@@ -514,61 +513,6 @@ export default function ConfiguracionFormularioCambiosPage() {
         </div>
       )}
       </div>
-
-      {/* 3. Barra de Acciones Fija al Pie (Sección 3.1) */}
-      <BarraAccionesComun
-        versionPublicada={versionPublicada}
-        fechaPublicada={fechaPublicada}
-        autorPublicada={autorPublicada}
-        hayBorrador={hayBorrador}
-        guardando={guardando}
-        publicando={publicando}
-        bloqueadoPorOtro={bloqueadoPorOtro}
-        puedePublicar={puedePublicar}
-        puedeEditar={puedeEditar}
-        onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
-        onAbrirPublicar={handleAbrirPublicar}
-        onDescartar={handleDescartarBorrador}
-        onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
-        onVerHistorial={handleVerHistorial}
-        onExportar={handleExportar}
-        onImportar={handleImportar}
-      />
-
-      {/* Modales Compartidos */}
-      <ModalPublicacion
-        abierto={modalPublicarAbierto}
-        versionActual={versionPublicada}
-        diffs={[{ tipo: "modificado", campo: `Pestaña ${tabActiva}`, anterior: "v" + versionPublicada, nuevo: "v" + (versionPublicada + 1) }]}
-        ticketsAbiertosAfectados={rfcsAbiertasAfectadas}
-        onConfirmar={handleConfirmarPublicacion}
-        onCerrar={() => setModalPublicarAbierto(false)}
-      />
-
-      <ModalRestaurarFabrica
-        abierto={modalRestaurarAbierto}
-        onConfirmar={handleRestaurarFabrica}
-        onCerrar={() => setModalRestaurarAbierto(false)}
-      />
-
-      <ModalHistorialVersiones
-        abierto={modalHistorialAbierto}
-        versiones={versionesHistorial}
-        versionActual={versionPublicada}
-        onRestaurarComoBorrador={(v) => {
-          setConfigSnapshot(v.snapshot);
-          setHayBorrador(true);
-          alert(`Versión v${v.numero_version} cargada en borrador.`);
-        }}
-        onCerrar={() => setModalHistorialAbierto(false)}
-      />
-
-      <ModalVistaPrevia
-        abierto={modalVistaPreviaAbierto}
-        secciones={configSnapshot.secciones || []}
-        onCerrar={() => setModalVistaPreviaAbierto(false)}
-      />
     </div>
   );
 }

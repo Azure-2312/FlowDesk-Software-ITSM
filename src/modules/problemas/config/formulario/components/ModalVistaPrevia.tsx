@@ -3,9 +3,10 @@
 import React, { useState } from "react";
 
 export interface ModalVistaPreviaProps {
-  abierto: boolean;
+  abierto?: boolean;
   secciones?: any[];
-  onCerrar: () => void;
+  onCerrar?: () => void;
+  modoEmbebido?: boolean;
 }
 
 const PRIORIDADES_PROBLEMA = [
@@ -98,9 +99,10 @@ const INCIDENTES_CATALOGO: IncidenteCatalogo[] = [
 ];
 
 export const ModalVistaPrevia: React.FC<ModalVistaPreviaProps> = ({
-  abierto,
+  abierto = true,
   secciones = [],
   onCerrar,
+  modoEmbebido = false,
 }) => {
   const [subpestana, setSubpestana] = useState<"formulario" | "ticket">("formulario");
   const [urgencia, setUrgencia] = useState<number>(3);
@@ -134,31 +136,54 @@ export const ModalVistaPrevia: React.FC<ModalVistaPreviaProps> = ({
 
   return (
     <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        backgroundColor: "rgba(15, 23, 42, 0.75)",
-        backdropFilter: "blur(4px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 9999,
-        padding: 20,
-      }}
+      style={
+        modoEmbebido
+          ? {
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              position: "sticky",
+              top: 20,
+            }
+          : {
+              position: "fixed",
+              inset: 0,
+              backgroundColor: "rgba(15, 23, 42, 0.75)",
+              backdropFilter: "blur(4px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 9999,
+              padding: 20,
+            }
+      }
     >
       <div
-        style={{
-          backgroundColor: "#ffffff",
-          borderRadius: 12,
-          border: "1px solid #cbd5e1",
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-          width: "100%",
-          maxWidth: 1100,
-          maxHeight: "92vh",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
+        style={
+          modoEmbebido
+            ? {
+                backgroundColor: "#ffffff",
+                borderRadius: 10,
+                border: "2px solid #3b82f6",
+                boxShadow: "0 4px 14px rgba(59, 130, 246, 0.08)",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+              }
+            : {
+                backgroundColor: "#ffffff",
+                borderRadius: 12,
+                border: "1px solid #cbd5e1",
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+                width: "100%",
+                maxWidth: 1100,
+                maxHeight: "92vh",
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+              }
+        }
       >
         {/* Cabecera Principal del Modal */}
         <div
@@ -1298,4 +1323,9 @@ export const ModalVistaPrevia: React.FC<ModalVistaPreviaProps> = ({
       )}
     </div>
   );
+};
+
+
+export const SimuladorProblemasEnVivo: React.FC<Omit<ModalVistaPreviaProps, "abierto"> & { abierto?: boolean }> = (props) => {
+  return <ModalVistaPrevia {...props} abierto={true} modoEmbebido={true} />;
 };

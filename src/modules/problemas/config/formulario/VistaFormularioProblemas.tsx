@@ -2,11 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
-import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
-import { ModalHistorialVersiones } from "./components/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "./components/ModalRestaurarFabrica";
-import { ModalVistaPrevia } from "./components/ModalVistaPrevia";
+import { SimuladorProblemasEnVivo } from "./components/ModalVistaPrevia";
 import { PestanaCampos } from "./components/PestanaCampos";
 import { PestanaCamposPersonalizados } from "./components/PestanaCamposPersonalizados";
 import { PestanaListasCatalogos } from "./components/PestanaListasCatalogos";
@@ -433,9 +429,18 @@ export default function ConfiguracionFormularioPage() {
           </div>
         </div>
 
-        {/* Indicador de estado */}
-        <div>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>● Configuracion Activa</span>
+        {/* Indicador de estado y Acción Primaria */}
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>● Configuración Activa</span>
+          <button
+            type="button"
+            onClick={handleGuardarBorrador}
+            disabled={guardando}
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+          >
+            {guardando ? "Guardando..." : "Guardar Cambios"}
+          </button>
         </div>
       </div>
 
@@ -505,17 +510,33 @@ export default function ConfiguracionFormularioPage() {
           /* Renderizado de la pestaña seleccionada */
           <div>
             {tabActiva === "campos" && (
-              <PestanaCampos
-                secciones={seccionesFormulario}
-                onChangeSecciones={(nuevas) => {
-                  setSeccionesFormulario(nuevas);
-                  setHayBorrador(true);
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(440px, 1fr))",
+                  gap: 24,
+                  alignItems: "start",
                 }}
-                camposPersonalizados={camposPersonalizados}
-                onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
-                onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
-                puedeEditar={puedeEditar}
-              />
+              >
+                <div>
+                  <PestanaCampos
+                    secciones={seccionesFormulario}
+                    onChangeSecciones={(nuevas) => {
+                      setSeccionesFormulario(nuevas);
+                      setHayBorrador(true);
+                    }}
+                    camposPersonalizados={camposPersonalizados}
+                    onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
+                    onVistaPrevia={() => {}}
+                    puedeEditar={puedeEditar}
+                  />
+                </div>
+                <div>
+                  <SimuladorProblemasEnVivo
+                    secciones={seccionesFormulario}
+                  />
+                </div>
+              </div>
             )}
 
             {tabActiva === "campos_personalizados" && (
@@ -650,56 +671,6 @@ export default function ConfiguracionFormularioPage() {
         )}
       </div>
 
-      {/* Barra de Acciones Común Fija al Pie (Sección 3.1) */}
-      <BarraAccionesComun
-        versionPublicada={versionPublicada}
-        fechaPublicada={fechaPublicada}
-        autorPublicada={autorPublicada}
-        hayBorrador={hayBorrador}
-        guardando={guardando}
-        publicando={publicando}
-        bloqueadoPorOtro={bloqueadoPorOtro}
-        puedePublicar={puedePublicar}
-        puedeEditar={puedeEditar}
-        onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
-        onAbrirPublicar={handleAbrirPublicar}
-        onDescartar={handleDescartarBorrador}
-        onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
-        onVerHistorial={handleAbrirHistorial}
-        onExportar={handleExportar}
-        onImportar={handleImportar}
-      />
-
-      {/* Modales del Patrón Común */}
-      <ModalPublicacion
-        abierto={modalPublicarAbierto}
-        versionActual={versionPublicada}
-        diffs={diffsPublicacion}
-        ticketsAbiertosAfectados={ticketsAbiertosAfectados}
-        onConfirmar={handleConfirmarPublicacion}
-        onCerrar={() => setModalPublicarAbierto(false)}
-      />
-
-      <ModalHistorialVersiones
-        abierto={modalHistorialAbierto}
-        versiones={versionesHistorial}
-        versionActual={versionPublicada}
-        onRestaurarComoBorrador={handleRestaurarComoBorrador}
-        onCerrar={() => setModalHistorialAbierto(false)}
-      />
-
-      <ModalRestaurarFabrica
-        abierto={modalRestaurarAbierto}
-        onConfirmar={handleRestaurarFabrica}
-        onCerrar={() => setModalRestaurarAbierto(false)}
-      />
-
-      <ModalVistaPrevia
-        abierto={modalVistaPreviaAbierto}
-        secciones={seccionesFormulario}
-        onCerrar={() => setModalVistaPreviaAbierto(false)}
-      />
-    </div>
+      </div>
   );
 }
