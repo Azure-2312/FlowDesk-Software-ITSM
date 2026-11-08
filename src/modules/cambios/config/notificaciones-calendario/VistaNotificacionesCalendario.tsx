@@ -2,11 +2,6 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
-import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
-import { ModalHistorialVersiones } from "../formulario/components/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "../formulario/components/ModalRestaurarFabrica";
 
 import { PestanaNotificaciones } from "./components/PestanaNotificaciones";
 import { PestanaVentanasMantenimiento } from "./components/PestanaVentanasMantenimiento";
@@ -81,33 +76,21 @@ export default function NotificacionesCalendarioPage() {
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
-  // Estados de control de versiones y autoría (Pattern 3.1)
+  // Estados de autoría y guardado
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
   const [fechaPublicada, setFechaPublicada] = useState<string>("");
   const [autorPublicada, setAutorPublicada] = useState<string>("");
-  const [hayBorrador, setHayBorrador] = useState<boolean>(false);
   const [guardando, setGuardando] = useState<boolean>(false);
-  const [publicando, setPublicando] = useState<boolean>(false);
   const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
-  const [puedePublicar, setPuedePublicar] = useState<boolean>(true);
-  const [puedeEditar, setPuedeEditar] = useState<boolean>(true);
 
   // Snapshot activo de la pestaña
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
-  const [diffPreview, setDiffPreview] = useState<any>(null);
 
   // Catálogos auxiliares (usuarios, departamentos, servicios, CI)
   const [catalogoUsuarios, setCatalogoUsuarios] = useState<any[]>([]);
   const [catalogoDepartamentos, setCatalogoDepartamentos] = useState<any[]>([]);
   const [catalogoServicios, setCatalogoServicios] = useState<any[]>([]);
   const [catalogoCI, setCatalogoCI] = useState<any[]>([]);
-
-  // Modales Pattern 3.1
-  const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
-  const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
-  const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
-  const [versionesHistorial, setVersionesHistorial] = useState<any[]>([]);
-  const [rfcsAbiertasAfectadas, setRfcsAbiertasAfectadas] = useState<number>(0);
 
   // Cargar configuración de la pestaña seleccionada
   const cargarDatos = useCallback(async () => {
@@ -122,20 +105,16 @@ export default function NotificacionesCalendarioPage() {
       setVersionPublicada(data.version_publicada?.numero_version || 1);
       setFechaPublicada(data.version_publicada?.fecha_creacion || "");
       setAutorPublicada(data.version_publicada?.autor_nombre || "Sistema");
-      setHayBorrador(!!data.borrador);
       setBloqueadoPorOtro(
         data.bloqueo && !data.bloqueo.bloqueado_por_mi ? data.bloqueo.usuario_nombre : undefined
       );
-      setRfcsAbiertasAfectadas(data.rfcs_abiertas_impactadas || 0);
-      setVersionesHistorial(data.historial_versiones || []);
-      setDiffPreview(data.diff_preview || null);
 
       if (data.catalogo_usuarios) setCatalogoUsuarios(data.catalogo_usuarios);
       if (data.catalogo_departamentos) setCatalogoDepartamentos(data.catalogo_departamentos);
       if (data.catalogo_servicios) setCatalogoServicios(data.catalogo_servicios);
       if (data.catalogo_ci) setCatalogoCI(data.catalogo_ci);
 
-      // Cargar snapshot activo (borrador o versión publicada)
+      // Cargar snapshot activo
       const snapshotCargado = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
       setConfigSnapshot(snapshotCargado);
     } catch (err: any) {
@@ -150,128 +129,30 @@ export default function NotificacionesCalendarioPage() {
     cargarDatos();
   }, [cargarDatos]);
 
-  // Guardar Borrador (Pattern 3.1)
-  const handleGuardarBorrador = async () => {
+  // Guardar configuración directa
+  const handleGuardarConfiguracion = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "guardar_borrador",
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: "Guardado manual de borrador de trabajo"
-        })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al guardar borrador");
-
-      setHayBorrador(true);
-      setDiffPreview(data.borrador?.diff || null);
-      alert("Borrador guardado exitosamente.");
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    } finally {
-      setGuardando(false);
-    }
-  };
-
-  // Confirmar Publicación (Pattern 3.1)
-  const handleConfirmarPublicacion = async (motivo: string) => {
-    try {
-      setPublicando(true);
       const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           pestana: tabActiva,
           snapshot: configSnapshot,
-          motivo,
-          impacto_resumen: `Publicación de pestaña ${PESTANAS_INFO[tabActiva].titulo}`
+          motivo: `Actualización de calendario en pestaña ${PESTANAS_INFO[tabActiva].titulo}`,
+          impacto_resumen: `Guardado directo de pestaña ${PESTANAS_INFO[tabActiva].titulo}`
         })
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al publicar versión");
+      if (!res.ok) throw new Error(data.error || "Error al guardar la configuración");
 
-      setModalPublicarAbierto(false);
-      await cargarDatos();
-      alert(`Versión publicada exitosamente (v${data.version?.numero_version || versionPublicada + 1}).`);
-    } catch (err: any) {
-      alert("Error al publicar: " + err.message);
-      throw err;
-    } finally {
-      setPublicando(false);
-    }
-  };
-
-  // Descartar Borrador
-  const handleDescartarBorrador = async () => {
-    if (!confirm("Se perderán todos los cambios no publicados de esta pestaña. ¿Desea continuar?")) {
-      return;
-    }
-    try {
-      setCargando(true);
-      const res = await fetch(`/api/cambios/configuracion/notificaciones-calendario/configuracion?pestana=${tabActiva}`, {
-        method: "DELETE"
-      });
-      if (!res.ok) throw new Error("Error al descartar borrador");
+      alert("Configuración guardada exitosamente.");
       await cargarDatos();
     } catch (err: any) {
-      alert("Error: " + err.message);
+      alert("Error al guardar: " + err.message);
     } finally {
-      setCargando(false);
-    }
-  };
-
-  // Restaurar de fábrica
-  const handleRestaurarFabrica = async () => {
-    try {
-      setCargando(true);
-      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "restaurar_fabrica",
-          pestana: tabActiva
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al restaurar valores de fábrica");
-      setModalRestaurarAbierto(false);
-      await cargarDatos();
-      alert("Se han cargado los valores de fábrica en su borrador de trabajo.");
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    } finally {
-      setCargando(false);
-    }
-  };
-
-  // Restaurar versión del historial como borrador
-  const handleRestaurarVersion = async (versionId: number) => {
-    try {
-      setCargando(true);
-      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "restaurar_version",
-          pestana: tabActiva,
-          version_id_origen: versionId
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al restaurar versión histórica");
-      setModalHistorialAbierto(false);
-      await cargarDatos();
-      alert(`Se ha restaurado la versión en su borrador de trabajo.`);
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    } finally {
-      setCargando(false);
+      setGuardando(false);
     }
   };
 
@@ -299,7 +180,7 @@ export default function NotificacionesCalendarioPage() {
         try {
           const parsed = JSON.parse(event.target?.result as string);
           setConfigSnapshot(parsed);
-          alert("Configuración cargada en borrador. Guarde o publique para aplicar.");
+          alert("Configuración cargada desde JSON. Haga clic en 'Guardar Configuración' para aplicar.");
         } catch {
           alert("El archivo seleccionado no es un JSON válido.");
         }
@@ -312,44 +193,61 @@ export default function NotificacionesCalendarioPage() {
   const infoPestana = PESTANAS_INFO[tabActiva];
   const deshabilitadoEdicion = !!bloqueadoPorOtro;
 
-  // Diffs para el modal de publicación
-  const diffItems = [
-    ...(diffPreview?.agregados || []).map((desc: string) => ({ tipo: "agregado" as const, campo: desc })),
-    ...(diffPreview?.modificados || []).map((desc: string) => ({ tipo: "modificado" as const, campo: desc })),
-    ...(diffPreview?.eliminados || []).map((desc: string) => ({ tipo: "eliminado" as const, campo: desc }))
-  ];
-
   return (
     <div style={{ minHeight: "100vh", background: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        {/* 3.1.1 Breadcrumb */}
-      <nav style={{ padding: "12px 24px", fontSize: 13, color: "#64748b", borderBottom: "1px solid #e2e8f0", background: "#ffffff" }}>
-        <Link href="/plataforma/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>Cambios</Link>
-        {" > "}
-        <Link href="/plataforma/admin/procesos/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>Configuración</Link>
-        {" > "}
-        <span style={{ color: "#1e293b", fontWeight: 600 }}>Notificaciones de cambios</span>
-        {" > "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>{infoPestana.titulo}</span>
-      </nav>
-
-      {/* 3.1.2 Encabezado y Estado de la Configuración */}
-      <header style={{ padding: "20px 24px", background: "#ffffff", borderBottom: "1px solid #e2e8f0" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      {/* Encabezado canónico ARQ-4: Configuración de Catálogos */}
+      <header className="bg-white border-b border-slate-200 px-6 py-5">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 style={{ margin: "0 0 6px 0", fontSize: 22, fontWeight: 700, color: "#0f172a" }}>
-              {infoPestana.titulo}
-            </h1>
-            <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>
+            <div className="flex items-center gap-3">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                Gestión de Cambios &amp; Calendario
+              </span>
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+                {infoPestana.titulo}
+              </h1>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                ● Configuración Activa
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-1 max-w-3xl">
               {infoPestana.descripcion}
             </p>
+            <div className="text-[11px] text-slate-400 mt-1">
+              Última modificación por{" "}
+              <span className="font-medium text-slate-600">
+                {autorPublicada || "Sistema"}
+              </span>{" "}
+              el{" "}
+              <span className="font-mono text-slate-600">
+                {fechaPublicada ? new Date(fechaPublicada).toLocaleString() : "Registro de sistema"}
+              </span>
+            </div>
           </div>
 
-          <div style={{ textAlign: "right" }}>
-            <span style={{ display: "inline-block", background: "#dcfce7", color: "#166534", border: "1px solid #bbf7d0", padding: "4px 10px", borderRadius: 16, fontSize: 12, fontWeight: 600 }}>Configuracion Activa</span>
-            <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
-              Última modificación por {autorPublicada} el {fechaPublicada ? new Date(fechaPublicada).toLocaleString() : "Registro de sistema"}
-            </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleImportar}
+              className="px-3 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors"
+              title="Importar configuración JSON"
+            >
+              Importar JSON
+            </button>
+            <button
+              onClick={handleExportar}
+              className="px-3 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors"
+              title="Exportar configuración JSON"
+            >
+              Exportar JSON
+            </button>
+            <button
+              onClick={handleGuardarConfiguracion}
+              disabled={guardando || deshabilitadoEdicion}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:opacity-50"
+            >
+              {guardando ? "Guardando..." : "Guardar Configuración"}
+            </button>
           </div>
         </div>
 
@@ -465,61 +363,6 @@ export default function NotificacionesCalendarioPage() {
         </div>
       )}
       </div>
-
-      {/* Barra de Acciones Común Pattern 3.1 */}
-      <BarraAccionesComun
-        versionPublicada={versionPublicada}
-        fechaPublicada={fechaPublicada}
-        autorPublicada={autorPublicada}
-        hayBorrador={hayBorrador}
-        guardando={guardando}
-        publicando={publicando}
-        bloqueadoPorOtro={bloqueadoPorOtro}
-        puedePublicar={puedePublicar}
-        puedeEditar={puedeEditar}
-        onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => {
-          alert("Vista previa activa: está visualizando la configuración tal como se comportará en ejecución.");
-        }}
-        onAbrirPublicar={() => setModalPublicarAbierto(true)}
-        onDescartar={handleDescartarBorrador}
-        onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
-        onVerHistorial={() => setModalHistorialAbierto(true)}
-        onExportar={handleExportar}
-        onImportar={handleImportar}
-      />
-
-      {/* Modal de Publicación con Diff Semántico */}
-      {modalPublicarAbierto && (
-        <ModalPublicacion
-          abierto={modalPublicarAbierto}
-          versionActual={versionPublicada}
-          diffs={diffItems}
-          ticketsAbiertosAfectados={rfcsAbiertasAfectadas}
-          onConfirmar={handleConfirmarPublicacion}
-          onCerrar={() => setModalPublicarAbierto(false)}
-        />
-      )}
-
-      {/* Modal de Historial de Versiones */}
-      {modalHistorialAbierto && (
-        <ModalHistorialVersiones
-          abierto={modalHistorialAbierto}
-          versiones={versionesHistorial}
-          versionActual={versionPublicada}
-          onRestaurarComoBorrador={(v) => handleRestaurarVersion(v.id_version)}
-          onCerrar={() => setModalHistorialAbierto(false)}
-        />
-      )}
-
-      {/* Modal de Restaurar Valores de Fábrica */}
-      {modalRestaurarAbierto && (
-        <ModalRestaurarFabrica
-          abierto={modalRestaurarAbierto}
-          onConfirmar={handleRestaurarFabrica}
-          onCerrar={() => setModalRestaurarAbierto(false)}
-        />
-      )}
     </div>
   );
 }

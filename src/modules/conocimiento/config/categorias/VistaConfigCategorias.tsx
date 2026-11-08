@@ -219,7 +219,17 @@ export default function VistaConfigCategorias() {
         }}
       >
         <div>
-          <h1>Taxonomía y Categorías de Conocimiento</h1>
+          <div className="flex items-center gap-3">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+              Taxonomía de Conocimiento
+            </span>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+              Taxonomía y Categorías de Conocimiento
+            </h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+              ● Configuración Activa
+            </span>
+          </div>
           <p
             className="subtitulo"
             style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}

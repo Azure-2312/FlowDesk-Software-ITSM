@@ -216,7 +216,17 @@ export default function GobiernoConocimiento() {
       {/* Cabecera Principal */}
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "flex-start" }}>
         <div>
-          <h1>Gobierno de la Base de Conocimiento (KCS / ITIL v4)</h1>
+          <div className="flex items-center gap-3">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+              Gestión de Conocimiento
+            </span>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+              Gobierno de la Base de Conocimiento (KCS / ITIL v4)
+            </h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+              ● Configuración Activa
+            </span>
+          </div>
           <p className="subtitulo">
             Supervise el ciclo editorial de artículos técnicos, audite la trazabilidad y configure las políticas de redacción y compuertas de publicación del autoservicio.
           </p>
