@@ -2,10 +2,6 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
-import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
-import { ModalHistorialVersiones } from "../formulario/components/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "../formulario/components/ModalRestaurarFabrica";
 
 import { PestanaTiposCambio } from "./components/PestanaTiposCambio";
 import { PestanaMatrizAutoridad } from "./components/PestanaMatrizAutoridad";
@@ -42,26 +38,15 @@ export default function ConfiguracionTiposRequisitosPage() {
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
-  // Estados de control de versiones y autoría
+  // Estados de control y autoría
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
   const [fechaPublicada, setFechaPublicada] = useState<string>("");
-  const [autorPublicada, setAutorPublicada] = useState<string>("");
-  const [hayBorrador, setHayBorrador] = useState<boolean>(false);
   const [guardando, setGuardando] = useState<boolean>(false);
-  const [publicando, setPublicando] = useState<boolean>(false);
   const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
-  const [puedePublicar, setPuedePublicar] = useState<boolean>(true);
   const [puedeEditar, setPuedeEditar] = useState<boolean>(true);
 
   // Snapshot activo
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
-
-  // Modales
-  const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
-  const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
-  const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
-  const [versionesHistorial, setVersionesHistorial] = useState<any[]>([]);
-  const [rfcsAbiertasAfectadas, setRfcsAbiertasAfectadas] = useState<number>(0);
 
   // Cargar datos de la pestaña activa
   const cargarDatos = useCallback(async () => {
@@ -75,12 +60,9 @@ export default function ConfiguracionTiposRequisitosPage() {
 
       setVersionPublicada(data.version_publicada?.numero_version || 1);
       setFechaPublicada(data.version_publicada?.fecha_creacion || "");
-      setHayBorrador(!!data.borrador);
       setBloqueadoPorOtro(
         data.bloqueo && !data.bloqueo.bloqueado_por_mi ? data.bloqueo.usuario_nombre : undefined
       );
-      setRfcsAbiertasAfectadas(data.rfcs_abiertas_impactadas || 0);
-      setVersionesHistorial(data.historial_versiones || []);
 
       const snap = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
       setConfigSnapshot(snap);
@@ -95,25 +77,35 @@ export default function ConfiguracionTiposRequisitosPage() {
     cargarDatos();
   }, [cargarDatos]);
 
-  // Guardar borrador
-  const handleGuardarBorrador = async () => {
+  // Guardar y Aplicar Configuración Directamente
+  const handleGuardarConfiguracion = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
+      const resBorrador = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           accion: "guardar_borrador",
           pestana: tabActiva,
           snapshot: configSnapshot,
-          motivo: "Borrador de cambios en edición"
+          motivo: "Guardado directo de tipos y requisitos"
         })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al guardar borrador");
-      setHayBorrador(true);
+      if (!resBorrador.ok) throw new Error("Error al guardar la configuración");
+
+      // Auto-publicar para persistir en activo
+      await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pestana: tabActiva,
+          motivo: "Actualización de tipos y requisitos de cambio",
+          impacto_resumen: `Publicación en Submódulo 1.3.3.2 (${PESTANAS_INFO[tabActiva].titulo})`
+        })
+      });
+
+      alert("Tipos y requisitos de cambio guardados exitosamente.");
       await cargarDatos();
-      alert("Borrador guardado exitosamente.");
     } catch (err: any) {
       alert("Error: " + err.message);
     } finally {
@@ -121,124 +113,40 @@ export default function ConfiguracionTiposRequisitosPage() {
     }
   };
 
-  // Descartar borrador
-  const handleDescartarBorrador = async () => {
-    if (!confirm("¿Deseas descartar todas las modificaciones del borrador y volver a la versión publicada?")) {
-      return;
-    }
-    try {
-      const res = await fetch(`/api/cambios/configuracion/tipos-requisitos/configuracion?pestana=${tabActiva}`, {
-        method: "DELETE"
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al descartar");
-      await cargarDatos();
-      alert("Borrador descartado.");
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    }
-  };
-
-  // Publicar versión formal
-  const handleConfirmarPublicacion = async (motivo: string) => {
-    try {
-      setPublicando(true);
-      const res = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          motivo,
-          impacto_resumen: `Publicación en Submódulo 1.3.3.2 (${PESTANAS_INFO[tabActiva].titulo})`
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al publicar");
-      alert(data.mensaje || "Versión publicada exitosamente.");
-      setModalPublicarAbierto(false);
-      await cargarDatos();
-    } catch (err: any) {
-      alert("Error al publicar: " + err.message);
-    } finally {
-      setPublicando(false);
-    }
-  };
-
-  // Restaurar de fábrica
-  const handleRestaurarFabrica = async () => {
-    try {
-      const res = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "restaurar_fabrica",
-          pestana: tabActiva
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al restaurar");
-      alert("Se cargaron los valores de fábrica ITIL v4 en el borrador.");
-      setModalRestaurarAbierto(false);
-      await cargarDatos();
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    }
-  };
-
-  // Restaurar versión histórica
-  const handleRestaurarVersionHistorica = async (idVersion: number) => {
-    try {
-      const res = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "restaurar_version",
-          pestana: tabActiva,
-          version_id_origen: idVersion
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al restaurar versión");
-      alert(data.mensaje);
-      setModalHistorialAbierto(false);
-      await cargarDatos();
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    }
-  };
-
   return (
     <div style={{ backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
       <div style={{ minWidth: 1000, maxWidth: 1400, margin: "0 auto", padding: "20px 24px 32px 24px", flex: 1, width: "100%", boxSizing: "border-box" }}>
-        {/* Navegación y Encabezado del Módulo */}
-      <div style={{ marginBottom: 20 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748b", marginBottom: 6 }}>
-          <Link href="/plataforma/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>
-            Cambios
-          </Link>
-          <span>/</span>
-          <Link href="/plataforma/admin/procesos/cambios" style={{ color: "#2563eb", textDecoration: "none" }}>
-            Configuración
-          </Link>
-          <span>/</span>
-          <span style={{ color: "#0f172a", fontWeight: 600 }}>Tipos de cambio y requisitos</span>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        {/* Encabezado Principal Estandarizado ARQ-2 */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 20,
+          backgroundColor: "#ffffff",
+          padding: "18px 24px",
+          borderRadius: 8,
+          border: "1px solid #e2e8f0"
+        }}>
           <div>
-            <h1 style={{ margin: "0 0 4px 0", fontSize: 22, fontWeight: 800, color: "#0f172a" }}>
-              Tipos de Cambio y Requisitos
-            </h1>
-            <p style={{ margin: 0, fontSize: 13, color: "#475569" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Flujo ITIL</span>
+              <h1 style={{ margin: 0, fontSize: 21, fontWeight: 800, color: "#0f172a" }}>
+                Tipos de Cambio y Requisitos
+              </h1>
+            </div>
+            <p style={{ margin: "6px 0 0 0", fontSize: 13, color: "#64748b" }}>
               Gobierno de directrices ITIL v4: tipos normativos, matriz de autoridad, catálogo de modelos estándar y reglas de elevación.
             </p>
+            <div style={{ marginTop: 6, fontSize: 12, color: "#94a3b8" }}>
+              Última modificación {fechaPublicada ? `el ${new Date(fechaPublicada).toLocaleString()}` : "por el Administrador"}
+            </div>
           </div>
 
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Link
               href="/plataforma/cambios/configuracion/formulario"
               style={{
-                padding: "6px 12px",
+                padding: "7px 12px",
                 fontSize: 12,
                 fontWeight: 600,
                 color: "#475569",
@@ -253,7 +161,7 @@ export default function ConfiguracionTiposRequisitosPage() {
             <Link
               href="/plataforma/cambios/gestion/todos"
               style={{
-                padding: "6px 12px",
+                padding: "7px 12px",
                 fontSize: 12,
                 fontWeight: 600,
                 color: "#2563eb",
@@ -265,9 +173,32 @@ export default function ConfiguracionTiposRequisitosPage() {
             >
               Ver RFCs Operativas
             </Link>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>
+              ● Configuración Activa
+            </span>
+            <button
+              type="button"
+              onClick={handleGuardarConfiguracion}
+              disabled={guardando || !puedeEditar}
+              style={{
+                backgroundColor: guardando ? "#93c5fd" : "#2563eb",
+                color: "#ffffff",
+                padding: "8px 16px",
+                borderRadius: 6,
+                border: "none",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: guardando || !puedeEditar ? "not-allowed" : "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                boxShadow: "0 1px 2px rgba(0,0,0,0.05)"
+              }}
+            >
+              {guardando ? "Guardando..." : "Guardar Configuración"}
+            </button>
           </div>
         </div>
-      </div>
 
       {/* Selector de Pestañas de 1.3.3.2 */}
       <div
@@ -322,7 +253,6 @@ export default function ConfiguracionTiposRequisitosPage() {
               config={configSnapshot}
               onChange={(nuevo) => {
                 setConfigSnapshot(nuevo);
-                setHayBorrador(true);
               }}
               onIrAMatrizAutoridad={() => setTabActiva("matriz_autoridad")}
             />
@@ -333,7 +263,6 @@ export default function ConfiguracionTiposRequisitosPage() {
               config={configSnapshot}
               onChange={(nuevo) => {
                 setConfigSnapshot(nuevo);
-                setHayBorrador(true);
               }}
             />
           )}
@@ -343,7 +272,6 @@ export default function ConfiguracionTiposRequisitosPage() {
               config={configSnapshot}
               onChange={(nuevo) => {
                 setConfigSnapshot(nuevo);
-                setHayBorrador(true);
               }}
             />
           )}
@@ -353,88 +281,12 @@ export default function ConfiguracionTiposRequisitosPage() {
               config={configSnapshot}
               onChange={(nuevo) => {
                 setConfigSnapshot(nuevo);
-                setHayBorrador(true);
               }}
             />
           )}
         </div>
       )}
       </div>
-
-      {/* Barra de Acciones Común (Pattern 3.1) */}
-      <BarraAccionesComun
-        versionPublicada={versionPublicada}
-        fechaPublicada={fechaPublicada}
-        autorPublicada={autorPublicada}
-        hayBorrador={hayBorrador}
-        guardando={guardando}
-        publicando={publicando}
-        bloqueadoPorOtro={bloqueadoPorOtro}
-        puedePublicar={puedePublicar}
-        puedeEditar={puedeEditar}
-        onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => {}}
-        onAbrirPublicar={() => setModalPublicarAbierto(true)}
-        onDescartar={handleDescartarBorrador}
-        onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
-        onVerHistorial={() => setModalHistorialAbierto(true)}
-        onExportar={() => {
-          const blob = new Blob([JSON.stringify(configSnapshot, null, 2)], { type: "application/json" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `config_1.3.3.2_${tabActiva}_v${versionPublicada}.json`;
-          a.click();
-        }}
-        onImportar={() => {
-          const input = document.createElement("input");
-          input.type = "file";
-          input.accept = ".json";
-          input.onchange = (e: any) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (event: any) => {
-              try {
-                const parsed = JSON.parse(event.target.result);
-                setConfigSnapshot(parsed);
-                setHayBorrador(true);
-                alert("Archivo JSON cargado exitosamente en borrador.");
-              } catch (err: any) {
-                alert("Error al leer el archivo JSON: " + err.message);
-              }
-            };
-            reader.readAsText(file);
-          };
-          input.click();
-        }}
-      />
-
-      {/* Modal de Publicación Formal con Diff */}
-      <ModalPublicacion
-        abierto={modalPublicarAbierto}
-        versionActual={versionPublicada}
-        diffs={[]}
-        ticketsAbiertosAfectados={rfcsAbiertasAfectadas}
-        onConfirmar={handleConfirmarPublicacion}
-        onCerrar={() => setModalPublicarAbierto(false)}
-      />
-
-      {/* Modal de Historial de Versiones */}
-      <ModalHistorialVersiones
-        abierto={modalHistorialAbierto}
-        versiones={versionesHistorial}
-        versionActual={versionPublicada}
-        onRestaurarComoBorrador={(v) => handleRestaurarVersionHistorica(v.id_version)}
-        onCerrar={() => setModalHistorialAbierto(false)}
-      />
-
-      {/* Modal de Restaurar Valores de Fábrica */}
-      <ModalRestaurarFabrica
-        abierto={modalRestaurarAbierto}
-        onConfirmar={handleRestaurarFabrica}
-        onCerrar={() => setModalRestaurarAbierto(false)}
-      />
     </div>
   );
 }
