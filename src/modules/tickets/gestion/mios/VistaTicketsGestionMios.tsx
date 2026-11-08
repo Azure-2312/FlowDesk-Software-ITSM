@@ -159,10 +159,13 @@ export default function PaginaMisTickets({
           alignItems: "flex-start",
           flexWrap: "wrap",
           gap: 16,
-          marginBottom: 20,
+          marginBottom: 24,
         }}
       >
         <div>
+          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+            Mesa de Ayuda & Casos Personales (ITIL v4)
+          </span>
           <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
             {titulo ?? "Mis Tickets"}
           </h1>
