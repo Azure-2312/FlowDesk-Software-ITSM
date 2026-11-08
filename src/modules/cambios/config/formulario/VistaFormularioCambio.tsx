@@ -54,7 +54,7 @@ const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion
   },
   vista_ticket: {
     numero: "1.3.3.1.7",
-    titulo: "Vista del ticket",
+    titulo: "Diseño del ticket",
     descripcion: "Diseño de la cabecera fija, pestañas del ciclo de vida y panel lateral del ticket RFC.",
   },
 };
@@ -368,30 +368,6 @@ export default function ConfiguracionFormularioCambiosPage() {
         </div>
 
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button
-            type="button"
-            onClick={() => setModalVistaPreviaAbierto(true)}
-            style={{
-              padding: "7px 14px",
-              fontSize: 12.5,
-              fontWeight: 600,
-              color: "#1d4ed8",
-              backgroundColor: "#eff6ff",
-              border: "1px solid #bfdbfe",
-              borderRadius: 6,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 6
-            }}
-            title="Abrir vista previa interactiva del formulario y ticket RFC"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-            Vista Previa
-          </button>
           <button
             type="button"
             onClick={handleGuardarBorrador}
