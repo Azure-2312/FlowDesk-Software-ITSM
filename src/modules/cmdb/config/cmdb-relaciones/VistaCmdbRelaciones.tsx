@@ -3,12 +3,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
-import { BarraAccionesComun } from "@/shared/components/admin/BarraAccionesComun";
-import { ModalPublicacion } from "@/shared/components/admin/ModalPublicacion";
-import { ModalHistorialVersiones } from "@/shared/components/admin/ModalHistorialVersiones";
-import { ModalRestaurarFabrica } from "@/shared/components/admin/ModalRestaurarFabrica";
-import { ModalVistaPrevia } from "@/shared/components/admin/ModalVistaPrevia";
-
 import { PestanaClasesCI } from "./components/PestanaClasesCI";
 import { PestanaTiposRelacion } from "./components/PestanaTiposRelacion";
 import { PestanaCriticidadEntornos } from "./components/PestanaCriticidadEntornos";
@@ -118,28 +112,16 @@ export default function CmdbRelacionesConfigPage() {
     }
   };
 
-  // Estados de control de versiones y autoría
+  // Estados de control y autoría
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
   const [fechaPublicada, setFechaPublicada] = useState<string>("");
   const [autorPublicada, setAutorPublicada] = useState<string>("");
-  const [hayBorrador, setHayBorrador] = useState<boolean>(false);
   const [guardando, setGuardando] = useState<boolean>(false);
-  const [publicando, setPublicando] = useState<boolean>(false);
   const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
-  const [puedePublicar, setPuedePublicar] = useState<boolean>(true);
   const [puedeEditar, setPuedeEditar] = useState<boolean>(true);
 
   // Snapshot de datos de la pestaña actual
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
-  const [historialVersiones, setHistorialVersiones] = useState<any[]>([]);
-  const [totalActivosAfectados, setTotalActivosAfectados] = useState<number>(0);
-  const [diffsCalculados, setDiffsCalculados] = useState<any[]>([]);
-
-  // Modales
-  const [modalVistaPreviaAbierto, setModalVistaPreviaAbierto] = useState<boolean>(false);
-  const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
-  const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
-  const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
 
   // Toast
   const [toastMensaje, setToastMensaje] = useState<string | null>(null);
@@ -166,30 +148,14 @@ export default function CmdbRelacionesConfigPage() {
         setVersionPublicada(data.version_publicada?.numero_version || 1);
         setFechaPublicada(data.version_publicada?.fecha_creacion || "");
         setAutorPublicada(data.version_publicada?.autor_nombre || "Administrador");
-        setHayBorrador(data.tiene_borrador);
 
         const snapshotActual = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
         setConfigSnapshot(snapshotActual);
-
-        setHistorialVersiones(data.historial_versiones || []);
-        setTotalActivosAfectados(data.total_activos || 0);
 
         if (data.bloqueo && !data.bloqueo.bloqueado_por_mi) {
           setBloqueadoPorOtro(data.bloqueo.usuario_nombre);
         } else {
           setBloqueadoPorOtro(undefined);
-        }
-
-        // Formar diffs para el modal de publicación
-        if (data.diff_preview?.cambios) {
-          setDiffsCalculados(
-            data.diff_preview.cambios.map((c: string) => ({
-              tipo: "modificado",
-              campo: c
-            }))
-          );
-        } else {
-          setDiffsCalculados([]);
         }
       } else {
         setErrorCarga(data.error || "Error al cargar la configuración de CMDB y relaciones.");
@@ -209,178 +175,35 @@ export default function CmdbRelacionesConfigPage() {
   // Manejador de cambio de datos en los componentes hijos
   const handleSnapshotChange = (nuevosDatos: any) => {
     setConfigSnapshot(nuevosDatos);
-    setHayBorrador(true);
   };
 
-  // Guardar borrador
-  const handleGuardarBorrador = async () => {
+  // Guardar y Aplicar Relaciones CMDB Directamente
+  const handleGuardarRelaciones = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/cmdb/configuracion/relaciones/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: `Guardado de borrador en pestaña ${pestanaInfo.titulo}`
-        })
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setHayBorrador(true);
-        mostrarToast("Borrador guardado exitosamente.");
-        cargarDatos();
-      } else {
-        mostrarToast(data.error || "No se pudo guardar el borrador.");
-      }
-    } catch (err: any) {
-      mostrarToast(err.message || "Error al guardar el borrador.");
-    } finally {
-      setGuardando(false);
-    }
-  };
-
-  // Confirmar publicación
-  const handleConfirmarPublicacion = async (motivo: string) => {
-    try {
-      setPublicando(true);
       const res = await fetch("/api/cmdb/configuracion/relaciones/configuracion", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           pestana: tabActiva,
           snapshot: configSnapshot,
-          motivo,
+          motivo: `Actualización de relaciones CMDB (${pestanaInfo.titulo})`,
           diff: { tipo: "modificacion_cmdb", pestana: tabActiva }
         })
       });
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Error al publicar la configuración.");
+        throw new Error(data.error || "Error al guardar la configuración.");
       }
 
-      mostrarToast(data.mensaje || `Versión v${data.nueva_version} de CMDB publicada exitosamente.`);
-      setHayBorrador(false);
+      mostrarToast(data.mensaje || "Configuración de CMDB y relaciones guardada exitosamente.");
       cargarDatos();
+    } catch (err: any) {
+      mostrarToast(err.message || "Error al guardar la configuración.");
     } finally {
-      setPublicando(false);
+      setGuardando(false);
     }
-  };
-
-  // Descartar borrador
-  const handleDescartarBorrador = async () => {
-    if (!confirm("Se perderán todos los cambios del borrador sin publicar. ¿Desea continuar?")) return;
-    try {
-      const res = await fetch(
-        `/api/cmdb/configuracion/relaciones/configuracion?pestana=${tabActiva}`,
-        { method: "DELETE" }
-      );
-      if (res.ok) {
-        mostrarToast("Borrador descartado. Se restauró la versión publicada.");
-        setHayBorrador(false);
-        cargarDatos();
-      }
-    } catch (err: any) {
-      mostrarToast(err.message || "Error al descartar el borrador.");
-    }
-  };
-
-  // Restaurar valores de fábrica
-  const handleRestaurarFabrica = async () => {
-    try {
-      const res = await fetch("/api/cmdb/configuracion/relaciones/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          accion: "restaurar_fabrica"
-        })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setHayBorrador(true);
-        mostrarToast("Valores de fábrica cargados en el borrador.");
-        cargarDatos();
-      } else {
-        mostrarToast(data.error || "No se pudo restaurar los valores de fábrica.");
-      }
-    } catch (err: any) {
-      mostrarToast(err.message || "Error al restaurar valores de fábrica.");
-    }
-  };
-
-  // Restaurar versión específica desde modal de historial
-  const handleRestaurarVersionComoBorrador = async (version: any) => {
-    try {
-      const res = await fetch("/api/cmdb/configuracion/relaciones/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          snapshot: version.snapshot,
-          motivo: `Restaurada versión v${version.numero_version} en borrador`
-        })
-      });
-      if (res.ok) {
-        mostrarToast(`Versión v${version.numero_version} cargada en borrador.`);
-        setModalHistorialAbierto(false);
-        setHayBorrador(true);
-        cargarDatos();
-      }
-    } catch (err: any) {
-      mostrarToast(err.message || "Error al restaurar la versión.");
-    }
-  };
-
-  // Exportar configuración JSON
-  const handleExportar = () => {
-    const jsonStr = JSON.stringify(
-      {
-        modulo: "activos_y_cmdb",
-        pantalla: "1.5.4",
-        pestana: tabActiva,
-        version: versionPublicada,
-        fecha: new Date().toISOString(),
-        configuracion: configSnapshot
-      },
-      null,
-      2
-    );
-    const blob = new Blob([jsonStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `config_154_${tabActiva}_v${versionPublicada}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    mostrarToast("Configuración de CMDB exportada en formato JSON.");
-  };
-
-  // Importar configuración JSON
-  const handleImportar = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json";
-    input.onchange = async (e: any) => {
-      const file = e.target?.files?.[0];
-      if (!file) return;
-      try {
-        const text = await file.text();
-        const json = JSON.parse(text);
-        if (json.configuracion) {
-          setConfigSnapshot(json.configuracion);
-          setHayBorrador(true);
-          mostrarToast("Configuración importada en borrador. Guarde o publique para aplicar.");
-        } else {
-          mostrarToast("El archivo no tiene el formato esperado.");
-        }
-      } catch (err: any) {
-        mostrarToast("Error al procesar el archivo JSON: " + err.message);
-      }
-    };
-    input.click();
   };
 
   return (
@@ -393,33 +216,29 @@ export default function CmdbRelacionesConfigPage() {
         </div>
       )}
 
-      {/* Migas de pan y Encabezado de Navegación del Módulo */}
+      {/* Encabezado Principal Estandarizado ARQ-3 */}
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <nav className="flex items-center space-x-2 text-xs text-slate-500 mb-2">
-            <Link href="/plataforma/operacion/paneles/administrador" className="hover:text-slate-800">
-              Administración
-            </Link>
-            <span>/</span>
-            <Link href="/plataforma/activos/configuracion/tipos-modelos-atributos" className="hover:text-slate-800">
-              Activos y CMDB
-            </Link>
-            <span>/</span>
-            <span className="text-slate-800 font-semibold">Tipos de CI y relaciones de CMDB</span>
-          </nav>
-
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                Elementos de Configuración y Relaciones de CMDB
-              </h1>
-              <p className="text-sm text-slate-500 mt-0.5">
+              <div className="flex items-center gap-3">
+                <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">
+                  CMDB ITIL
+                </span>
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+                  Elementos de Configuración y Relaciones de CMDB
+                </h1>
+              </div>
+              <p className="text-sm text-slate-500 mt-1">
                 Modelado de clases lógicas y físicas, tipos de enlace topológico, propagación de impacto, integridad y auditoría continua.
               </p>
+              <div className="text-[11px] text-slate-400 mt-1">
+                Última modificación por <span className="font-medium text-slate-600">{autorPublicada || "Administrador"}</span> {fechaPublicada && `el ${new Date(fechaPublicada).toLocaleString()}`}
+              </div>
             </div>
 
-            {/* Accesos directos a las pantallas del Módulo Activos y CMDB */}
-            <div className="flex items-center gap-1.5 overflow-x-auto py-1">
+            {/* Accesos directos y acciones del encabezado */}
+            <div className="flex flex-wrap items-center gap-2">
               <Link
                 href="/plataforma/activos/configuracion/tipos-modelos-atributos"
                 className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
@@ -438,15 +257,17 @@ export default function CmdbRelacionesConfigPage() {
               >
                 Licencias y Contratos
               </Link>
-              <span className="px-2.5 py-1 text-xs rounded border border-indigo-300 bg-indigo-50 text-indigo-700 font-semibold">
-                Relaciones CMDB
+              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                ● Configuración Activa
               </span>
-              <span className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
-                Integridad CMDB
-              </span>
-              <span className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
-                Auditoría
-              </span>
+              <button
+                type="button"
+                onClick={handleGuardarRelaciones}
+                disabled={guardando || !puedeEditar}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm flex items-center gap-1.5"
+              >
+                {guardando ? "Guardando..." : "Guardar Relaciones CMDB"}
+              </button>
             </div>
           </div>
 
@@ -555,58 +376,6 @@ export default function CmdbRelacionesConfigPage() {
         )}
       </main>
       </div>
-
-      {/* Barra de Acciones Común Flotante (Patrón 3.1) */}
-      <BarraAccionesComun
-        versionPublicada={versionPublicada}
-        fechaPublicada={fechaPublicada}
-        autorPublicada={autorPublicada}
-        hayBorrador={hayBorrador}
-        guardando={guardando}
-        publicando={publicando}
-        bloqueadoPorOtro={bloqueadoPorOtro}
-        puedePublicar={puedePublicar}
-        puedeEditar={puedeEditar}
-        onGuardarBorrador={handleGuardarBorrador}
-        onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
-        onAbrirPublicar={() => setModalPublicarAbierto(true)}
-        onDescartar={handleDescartarBorrador}
-        onRestaurarFabrica={() => setModalRestaurarAbierto(true)}
-        onVerHistorial={() => setModalHistorialAbierto(true)}
-        onExportar={handleExportar}
-        onImportar={handleImportar}
-      />
-
-      {/* Modales del Patrón 3.1 */}
-      <ModalVistaPrevia
-        abierto={modalVistaPreviaAbierto}
-        modulo="cmdb"
-        tituloModulo="Gestión de la Configuración (CMDB)"
-        onCerrar={() => setModalVistaPreviaAbierto(false)}
-      />
-
-      <ModalPublicacion
-        abierto={modalPublicarAbierto}
-        versionActual={versionPublicada}
-        diffs={diffsCalculados}
-        ticketsAbiertosAfectados={totalActivosAfectados}
-        onConfirmar={handleConfirmarPublicacion}
-        onCerrar={() => setModalPublicarAbierto(false)}
-      />
-
-      <ModalRestaurarFabrica
-        abierto={modalRestaurarAbierto}
-        onConfirmar={handleRestaurarFabrica}
-        onCerrar={() => setModalRestaurarAbierto(false)}
-      />
-
-      <ModalHistorialVersiones
-        abierto={modalHistorialAbierto}
-        versiones={historialVersiones}
-        versionActual={versionPublicada}
-        onRestaurarComoBorrador={handleRestaurarVersionComoBorrador}
-        onCerrar={() => setModalHistorialAbierto(false)}
-      />
     </div>
   );
 }

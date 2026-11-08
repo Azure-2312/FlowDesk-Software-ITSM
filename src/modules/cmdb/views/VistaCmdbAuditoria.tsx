@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface Resumen {
   total_ci: number;
@@ -70,9 +71,23 @@ export default function VistaCmdbAuditoria() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Calidad y auditoría de CMDB</h1>
-        <p>Completitud de atributos, CIs sin relaciones y exactitud general de la configuración.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Auditoría CMDB</span>
+            <h1 style={{ margin: 0, fontSize: 21, fontWeight: 700, color: "#0f172a" }}>Calidad y Auditoría de CMDB</h1>
+          </div>
+          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
+            Completitud de atributos, CIs sin relaciones y exactitud general de la configuración para cumplimiento ISO 20000.
+          </p>
+        </div>
+        <Link
+          href="/plataforma/activos/cmdb"
+          className="boton-secundario"
+          style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
+        >
+          ← Volver a la CMDB
+        </Link>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 14, marginBottom: 24 }}>

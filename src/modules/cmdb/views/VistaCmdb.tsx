@@ -1121,10 +1121,13 @@ export default function PaginaMapaCMDB() {
       {/* 5. VISTA PRINCIPAL: TABLA DE ELEMENTOS DE CONFIGURACIÓN */}
       {vista === "tabla" && (
         <div>
-          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
             <div>
-              <h1>Base de Datos de Configuración (CMDB - Configuration Management)</h1>
-              <p className="descripcion">
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>CMDB ITIL</span>
+                <h1 style={{ margin: 0, fontSize: 21, fontWeight: 700, color: "#0f172a" }}>Base de Datos de Configuración (CMDB)</h1>
+              </div>
+              <p className="descripcion" style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
                 Modelado integral de Elementos de Configuración (CI), topología de dependencias y análisis de impacto en fallas y cambios (ITIL v4 / ISO 20000).
               </p>
             </div>
@@ -1137,19 +1140,19 @@ export default function PaginaMapaCMDB() {
                 Análisis e Impacto
               </Link>
               <Link
-                href="/plataforma/activos/cmdb/tipos"
+                href="/plataforma/activos/configuracion/cmdb-relaciones"
                 className="boton-secundario"
                 style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center" }}
               >
-                Modelar Clases y Tipos CI
+                Configuración y Reglas
               </Link>
               <button
                 type="button"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+                style={{ width: "auto", padding: "8px 18px", fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6 }}
                 onClick={abrirNuevo}
               >
-                Registrar CI
+                <span>+</span> Registrar CI
               </button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { BotonIcono } from "@/shared/components/ui/BotonIcono";
 import { Check, X, RefreshCw } from "@/shared/components/ui/Iconos";
 
@@ -123,9 +124,23 @@ export default function VistaCmdbInexactitudes() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Inexactitudes reportadas</h1>
-        <p>Atiende las tareas generadas por técnicos y usuarios sobre datos incorrectos de la CMDB.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Calidad CMDB</span>
+            <h1 style={{ margin: 0, fontSize: 21, fontWeight: 700, color: "#0f172a" }}>Inexactitudes de Configuración Reportadas</h1>
+          </div>
+          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
+            Gestión y remediación de discrepancias reportadas por técnicos y usuarios sobre datos de la CMDB.
+          </p>
+        </div>
+        <Link
+          href="/plataforma/activos/cmdb"
+          className="boton-secundario"
+          style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
+        >
+          ← Volver a la CMDB
+        </Link>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
