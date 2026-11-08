@@ -12,18 +12,6 @@ function ContenidoPaginaSla() {
 
   return (
     <div style={{ padding: "20px 28px 80px 28px", minWidth: 1080, backgroundColor: "#f8fafc", minHeight: "100vh" }}>
-      {/* Breadcrumb reglamentario */}
-      <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>
-        <Link href="/plataforma/operacion/administracion" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Configuración
-        </Link>
-        {" / "}
-        <Link href="/plataforma/servicios/configuracion" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Catálogo de servicios
-        </Link>
-        {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>Objetivos SLA</span>
-      </nav>
 
       <ConfiguracionObjetivosSla pestañaInicial={tabInicial} />
     </div>

@@ -176,36 +176,6 @@ export default function FlujoEvaluacionPage() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Link
-              href="/plataforma/cambios/configuracion/tipos-requisitos"
-              style={{
-                fontSize: "0.8rem",
-                padding: "7px 12px",
-                borderRadius: "6px",
-                backgroundColor: "#f8fafc",
-                border: "1px solid #cbd5e1",
-                color: "#334155",
-                textDecoration: "none",
-                fontWeight: 600
-              }}
-            >
-              ← Tipos y Requisitos
-            </Link>
-            <Link
-              href="/plataforma/cambios/configuracion/notificaciones-calendario"
-              style={{
-                fontSize: "0.8rem",
-                padding: "7px 12px",
-                borderRadius: "6px",
-                backgroundColor: "#f8fafc",
-                border: "1px solid #cbd5e1",
-                color: "#334155",
-                textDecoration: "none",
-                fontWeight: 600
-              }}
-            >
-              Notificaciones y Calendario →
-            </Link>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>
               ● Configuración Activa
             </span>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { SimuladorProblemasEnVivo } from "./components/ModalVistaPrevia";
+import { ModalVistaPrevia } from "./components/ModalVistaPrevia";
 import { PestanaCampos } from "./components/PestanaCampos";
 import { PestanaCamposPersonalizados } from "./components/PestanaCamposPersonalizados";
 import { PestanaListasCatalogos } from "./components/PestanaListasCatalogos";
@@ -389,18 +389,6 @@ export default function ConfiguracionFormularioPage() {
   return (
     <div style={{ minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
       <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
-        {/* Breadcrumb reglamentario */}
-      <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/plataforma/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Problemas
-        </Link>
-        {" / "}
-        <Link href="/plataforma/admin/procesos/problemas" style={{ color: "#2563eb", textDecoration: "none" }}>
-          Configuración
-        </Link>
-        {" / "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>Formulario</span>
-      </nav>
 
       {/* Encabezado Principal de la Pantalla 1.3.3.1 */}
       <div style={{
@@ -431,6 +419,30 @@ export default function ConfiguracionFormularioPage() {
 
         {/* Indicador de estado y Acción Primaria */}
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <button
+            type="button"
+            onClick={() => setModalVistaPreviaAbierto(true)}
+            style={{
+              padding: "7px 14px",
+              fontSize: 12.5,
+              fontWeight: 600,
+              color: "#1d4ed8",
+              backgroundColor: "#eff6ff",
+              border: "1px solid #bfdbfe",
+              borderRadius: 6,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 6
+            }}
+            title="Abrir vista previa interactiva del formulario y ticket"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            Vista Previa
+          </button>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>● Configuración Activa</span>
           <button
             type="button"
@@ -510,33 +522,17 @@ export default function ConfiguracionFormularioPage() {
           /* Renderizado de la pestaña seleccionada */
           <div>
             {tabActiva === "campos" && (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(440px, 1fr))",
-                  gap: 24,
-                  alignItems: "start",
+              <PestanaCampos
+                secciones={seccionesFormulario}
+                onChangeSecciones={(nuevas) => {
+                  setSeccionesFormulario(nuevas);
+                  setHayBorrador(true);
                 }}
-              >
-                <div>
-                  <PestanaCampos
-                    secciones={seccionesFormulario}
-                    onChangeSecciones={(nuevas) => {
-                      setSeccionesFormulario(nuevas);
-                      setHayBorrador(true);
-                    }}
-                    camposPersonalizados={camposPersonalizados}
-                    onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
-                    onVistaPrevia={() => {}}
-                    puedeEditar={puedeEditar}
-                  />
-                </div>
-                <div>
-                  <SimuladorProblemasEnVivo
-                    secciones={seccionesFormulario}
-                  />
-                </div>
-              </div>
+                camposPersonalizados={camposPersonalizados}
+                onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
+                onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
+                puedeEditar={puedeEditar}
+              />
             )}
 
             {tabActiva === "campos_personalizados" && (
@@ -669,8 +665,14 @@ export default function ConfiguracionFormularioPage() {
             )}
           </div>
         )}
+      {modalVistaPreviaAbierto && (
+        <ModalVistaPrevia
+          abierto={modalVistaPreviaAbierto}
+          secciones={seccionesFormulario}
+          onCerrar={() => setModalVistaPreviaAbierto(false)}
+        />
+      )}
       </div>
-
-      </div>
+    </div>
   );
 }
