@@ -26,6 +26,7 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
   const [placeholder, setPlaceholder] = useState("");
   const [obligatorio, setObligatorio] = useState<"si" | "no" | "segun_prioridad" | "condicional">("si");
   const [visible, setVisible] = useState(true);
+  const [soloLectura, setSoloLectura] = useState(false);
 
   useEffect(() => {
     if (campo) {
@@ -35,6 +36,7 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
       setPlaceholder(campo.placeholder || "");
       setObligatorio(campo.obligatorio || "si");
       setVisible(campo.visible !== false);
+      setSoloLectura(Boolean(campo.solo_lectura));
     }
   }, [campo]);
 
@@ -50,6 +52,7 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
       placeholder: placeholder.trim(),
       obligatorio,
       visible,
+      solo_lectura: soloLectura,
     });
     onCerrar();
   };
@@ -222,19 +225,35 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
             />
           </div>
 
-          {/* Visibilidad */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
-            <input
-              type="checkbox"
-              id="chk-visible-prb"
-              checked={visible}
-              disabled={!puedeEditar}
-              onChange={(e) => setVisible(e.target.checked)}
-              style={{ width: 16, height: 16, cursor: "pointer" }}
-            />
-            <label htmlFor="chk-visible-prb" style={{ fontSize: 12.5, fontWeight: 600, color: "#1e293b", cursor: "pointer" }}>
-              Campo visible en el formulario
-            </label>
+          {/* Opciones de Visibilidad y Solo Lectura */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 4, padding: "10px 12px", backgroundColor: "#f8fafc", borderRadius: 6, border: "1px solid #e2e8f0" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <input
+                type="checkbox"
+                id="chk-visible-prb"
+                checked={visible}
+                disabled={!puedeEditar}
+                onChange={(e) => setVisible(e.target.checked)}
+                style={{ width: 16, height: 16, cursor: "pointer" }}
+              />
+              <label htmlFor="chk-visible-prb" style={{ fontSize: 12.5, fontWeight: 600, color: "#1e293b", cursor: "pointer" }}>
+                Campo visible en el formulario
+              </label>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <input
+                type="checkbox"
+                id="chk-lectura-prb"
+                checked={soloLectura}
+                disabled={!puedeEditar}
+                onChange={(e) => setSoloLectura(e.target.checked)}
+                style={{ width: 16, height: 16, cursor: "pointer" }}
+              />
+              <label htmlFor="chk-lectura-prb" style={{ fontSize: 12.5, fontWeight: 600, color: "#1e293b", cursor: "pointer" }}>
+                Modo Solo Lectura en investigación (protegido contra edición técnica)
+              </label>
+            </div>
           </div>
 
           {/* Botones de Acción */}
