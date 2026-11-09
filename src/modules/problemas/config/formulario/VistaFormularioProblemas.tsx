@@ -440,7 +440,7 @@ export default function ConfiguracionFormularioPage() {
         backgroundColor: "#ffffff",
         borderRadius: "8px 8px 0 0",
         padding: "0 12px",
-        overflowX: "auto"
+        overflowX: "auto", overflowY: "hidden", scrollbarWidth: "none"
       }}>
         {[
           { id: "campos", label: "Campos" },
