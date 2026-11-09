@@ -324,7 +324,7 @@ export default function ConfiguracionFormularioCambiosPage() {
 
   return (
     <div style={{ width: "100%", maxWidth: "100%", overflowX: "auto", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
-      <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
+      <div style={{ padding: "16px 16px 24px 16px", flex: 1 }}>
 
 
       {/* 2. Encabezado con Indicador de Estado (Sección 3.1) */}
