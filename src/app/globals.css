@@ -230,6 +230,18 @@ textarea.input-base {
   box-sizing: border-box;
   position: relative;
   z-index: 60;
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+
+.barra-lateral.colapsada {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .manija-redimension-sidebar {

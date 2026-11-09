@@ -217,7 +217,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      padding: "9px 12px",
+                      padding: "6px 10px",
                       borderRadius: 6,
                       border: "1px solid #e2e8f0",
                       backgroundColor: campo.visible ? "#ffffff" : "#f8fafc",
@@ -292,7 +292,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                           value={campo.solo_lectura ? "lectura" : "editable"}
                           disabled={!puedeEditar}
                           onChange={(e) => actualizarCampo(sec.id, campo.codigo, { solo_lectura: e.target.value === "lectura" })}
-                          style={{ fontSize: 11.5, padding: "4px 8px", width: "auto" }}
+                          style={{ fontSize: 11, padding: "3px 6px", maxWidth: 140, width: "auto" }}
                         >
                           <option value="editable">Editable por Especialista</option>
                           <option value="lectura">Solo Lectura (Protegido)</option>
@@ -304,7 +304,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                           value={campo.obligatorio}
                           disabled={!puedeEditar}
                           onChange={(e) => actualizarCampo(sec.id, campo.codigo, { obligatorio: e.target.value as any })}
-                          style={{ fontSize: 11.5, padding: "4px 8px", width: "auto" }}
+                          style={{ fontSize: 11, padding: "3px 6px", maxWidth: 140, width: "auto" }}
                         >
                           <option value="si">Obligatorio al Cerrar</option>
                           <option value="segun_prioridad">Según Prioridad</option>
@@ -322,8 +322,8 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                         }}
                         className="boton-accion-icono"
                         style={{
-                          width: 28,
-                          height: 28,
+                          width: 26,
+                          height: 26,
                           color: campo.visible ? "#16a34a" : "#94a3b8",
                           borderColor: campo.visible ? "#bbf7d0" : "#e2e8f0",
                           backgroundColor: campo.visible ? "#f0fdf4" : "#f8fafc",
@@ -488,8 +488,8 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1.08fr 0.92fr",
-          gap: 16,
+          gridTemplateColumns: "minmax(280px, 0.88fr) minmax(360px, 1.12fr)",
+          gap: 12,
           minHeight: 680,
           alignItems: "start",
         }}
