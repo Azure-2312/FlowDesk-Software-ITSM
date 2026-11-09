@@ -29,6 +29,20 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/plataforma/admin/procesos/cambios/:path*",
+        destination: "/plataforma/cambios/configuracion/:path*",
+        permanent: false,
+      },
+      {
+        source: "/plataforma/admin/procesos/problemas/:path*",
+        destination: "/plataforma/problemas/configuracion/:path*",
+        permanent: false,
+      },
+    ];
+  },
   async rewrites() {
     return [
       { source: "/dashboard", destination: "/plataforma/dashboard" },
@@ -48,8 +62,6 @@ const nextConfig = {
       { source: "/gestor-problemas/:path*", destination: "/plataforma/gestor-problemas/:path*" },
       { source: "/avisos/:path*", destination: "/plataforma/avisos/:path*" },
       { source: "/conocimiento/:path*", destination: "/plataforma/conocimiento/:path*" },
-      // Consolas de rol: sin alias. Se usan las URLs de las carpetas fisicas,
-      // es decir /plataforma/perfiles/<rol>/... (ver src/modules/perfiles).
     ];
   },
 };

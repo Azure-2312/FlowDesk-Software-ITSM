@@ -411,6 +411,8 @@ export default function ConfiguracionFormularioCambiosPage() {
           gap: 4,
           marginBottom: 16,
           overflowX: "auto",
+          overflowY: "hidden",
+          scrollbarWidth: "none",
         }}
       >
         {(Object.keys(PESTANAS_INFO) as TabId[]).map((tabKey) => {
