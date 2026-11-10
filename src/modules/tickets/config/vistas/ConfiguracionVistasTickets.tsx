@@ -27,17 +27,29 @@ interface ConfiguracionFlujoEstados {
   permitir_autoasignacion_n1: boolean;
 }
 
-function ContenidoConfiguracionVistasTickets() {
+export interface ConfiguracionVistasTicketsProps {
+  seccionInicial?: "vistas" | "estados";
+  tipoFijo?: "incidente" | "solicitud" | "problema" | "cambio";
+  ocultarTabsSuperiores?: boolean;
+  ocultarCabecera?: boolean;
+}
+
+function ContenidoConfiguracionVistasTickets({
+  seccionInicial,
+  tipoFijo,
+  ocultarTabsSuperiores = false,
+  ocultarCabecera = false,
+}: ConfiguracionVistasTicketsProps = {}) {
   const searchParams = useSearchParams();
   const seccionParam = searchParams.get("seccion");
   const tipoParam = searchParams.get("tipo");
 
   const [pestanaPrincipal, setPestanaPrincipal] = useState<"vistas" | "estados">(
-    seccionParam === "estados" ? "estados" : "vistas"
+    seccionInicial || (seccionParam === "estados" ? "estados" : "vistas")
   );
 
   const [tipoTicket, setTipoTicket] = useState<string>(
-    tipoParam && ["incidente", "solicitud", "problema", "cambio"].includes(tipoParam) ? tipoParam : "incidente"
+    tipoFijo || (tipoParam && ["incidente", "solicitud", "problema", "cambio"].includes(tipoParam) ? tipoParam : "incidente")
   );
 
   // Lista de usuarios y perfiles
@@ -62,16 +74,20 @@ function ContenidoConfiguracionVistasTickets() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (seccionParam === "estados") {
+    if (seccionInicial) {
+      setPestanaPrincipal(seccionInicial);
+    } else if (seccionParam === "estados") {
       setPestanaPrincipal("estados");
     }
-  }, [seccionParam]);
+  }, [seccionInicial, seccionParam]);
 
   useEffect(() => {
-    if (tipoParam && ["incidente", "solicitud", "problema", "cambio"].includes(tipoParam)) {
+    if (tipoFijo) {
+      setTipoTicket(tipoFijo);
+    } else if (tipoParam && ["incidente", "solicitud", "problema", "cambio"].includes(tipoParam)) {
       setTipoTicket(tipoParam);
     }
-  }, [tipoParam]);
+  }, [tipoFijo, tipoParam]);
 
   async function cargarConfiguracion() {
     setCargando(true);
@@ -329,12 +345,14 @@ function ContenidoConfiguracionVistasTickets() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina">
-        <div>
-          <h1>{infoEncabezado.titulo}</h1>
-          <p className="subtitulo">{infoEncabezado.subtitulo}</p>
+      {!ocultarCabecera && (
+        <div className="cabecera-pagina">
+          <div>
+            <h1>{infoEncabezado.titulo}</h1>
+            <p className="subtitulo">{infoEncabezado.subtitulo}</p>
+          </div>
         </div>
-      </div>
+      )}
 
       {mensajeExito && (
         <div style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", color: "#166534", padding: "10px 14px", borderRadius: 8, marginBottom: 16, fontSize: 13, fontWeight: 500 }}>
@@ -344,8 +362,8 @@ function ContenidoConfiguracionVistasTickets() {
 
       {error && <div className="mensaje-error" style={{ marginBottom: 16 }}>{error}</div>}
 
-      {/* Pestañas Principales (solo si no se especificó sección ni tipo estricto en la URL) */}
-      {!seccionParam && !tipoParam && (
+      {/* Pestañas Principales (solo si no se especificó sección ni tipo estricto en la URL y no se ocultaron) */}
+      {!ocultarTabsSuperiores && !seccionParam && !tipoParam && (
         <div style={{ display: "flex", gap: 10, marginBottom: 18, borderBottom: "1px solid #e2e8f0", paddingBottom: 10 }}>
           <button
             type="button"
@@ -1254,10 +1272,10 @@ function ContenidoConfiguracionVistasTickets() {
   );
 }
 
-export default function PaginaConfiguracionVistasTickets() {
+export default function PaginaConfiguracionVistasTickets(props: ConfiguracionVistasTicketsProps = {}) {
   return (
     <Suspense fallback={<div className="vista-contenedor"><p>Cargando vistas y flujos de tickets...</p></div>}>
-      <ContenidoConfiguracionVistasTickets />
+      <ContenidoConfiguracionVistasTickets {...props} />
     </Suspense>
   );
 }
