@@ -6,13 +6,13 @@ import { obtenerMiCuenta, actualizarMiCuenta } from "@/modules/seguridad/miCuent
 
 export const dynamic = "force-dynamic";
 
-function obtenerSesionActual() {
-  const token = cookies().get(COOKIE_SESION)?.value;
+function obtenerSesionActual(req?: NextRequest) {
+  const token = req?.cookies.get(COOKIE_SESION)?.value || cookies().get(COOKIE_SESION)?.value;
   return token ? verificarTokenSesion(token) : null;
 }
 
-export async function GET() {
-  const sesion = obtenerSesionActual();
+export async function GET(req: NextRequest) {
+  const sesion = obtenerSesionActual(req);
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
 
   try {
@@ -26,7 +26,7 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  const sesion = obtenerSesionActual();
+  const sesion = obtenerSesionActual(req);
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
 
   try {

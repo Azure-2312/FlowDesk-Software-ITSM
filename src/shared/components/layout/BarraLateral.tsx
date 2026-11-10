@@ -14,7 +14,7 @@ interface Props {
 
 /**
  * Contenedor redimensionable y colapsable para el menú lateral (sidebar).
- * - Permite contraer y expandir el menú para maximizar el área de trabajo.
+ * - Botón de contraer/expandir ubicado en el punto medio de la altura, en el límite derecho.
  * - Soporta redimensión arrastrando el borde derecho.
  * - Doble clic en la manija restaura el ancho predeterminado (290px).
  * - Atajo de teclado: Ctrl+B para alternar visibilidad.
@@ -80,18 +80,21 @@ export default function BarraLateral({ children }: Props) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [alternarColapso]);
 
-  const actualizarAncho = useCallback((nuevoAncho: number) => {
-    const ajustado = Math.min(ANCHO_MAXIMO, Math.max(ANCHO_MINIMO, Math.round(nuevoAncho)));
-    setAncho(ajustado);
-    if (!colapsado) {
-      document.documentElement.style.setProperty("--ancho-sidebar", `${ajustado}px`);
-    }
-    try {
-      localStorage.setItem(CLAVE_STORAGE, String(ajustado));
-    } catch {
-      // Ignorar fallo
-    }
-  }, [colapsado]);
+  const actualizarAncho = useCallback(
+    (nuevoAncho: number) => {
+      const ajustado = Math.min(ANCHO_MAXIMO, Math.max(ANCHO_MINIMO, Math.round(nuevoAncho)));
+      setAncho(ajustado);
+      if (!colapsado) {
+        document.documentElement.style.setProperty("--ancho-sidebar", `${ajustado}px`);
+      }
+      try {
+        localStorage.setItem(CLAVE_STORAGE, String(ajustado));
+      } catch {
+        // Ignorar fallo
+      }
+    },
+    [colapsado]
+  );
 
   const iniciarArrastre = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -133,7 +136,7 @@ export default function BarraLateral({ children }: Props) {
 
   return (
     <>
-      {/* Botón flotante para expandir el menú cuando está colapsado */}
+      {/* Botón flotante pegado al límite izquierdo a media altura para expandir cuando está colapsado */}
       {colapsado && (
         <button
           type="button"
@@ -142,47 +145,48 @@ export default function BarraLateral({ children }: Props) {
           aria-label="Expandir menú lateral"
           style={{
             position: "fixed",
-            top: 12,
-            left: 12,
+            top: "50%",
+            left: 0,
+            transform: "translateY(-50%)",
             zIndex: 9999,
+            width: 22,
+            height: 52,
             display: "flex",
             alignItems: "center",
-            gap: 6,
-            padding: "6px 12px",
-            backgroundColor: "#0f172a",
-            color: "#f8fafc",
-            border: "1px solid #334155",
-            borderRadius: 6,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
-            fontSize: 12,
-            fontWeight: 600,
+            justifyContent: "center",
+            backgroundColor: "#1e293b",
+            border: "1px solid #475569",
+            borderLeft: "none",
+            borderRadius: "0 6px 6px 0",
+            color: "#cbd5e1",
             cursor: "pointer",
+            boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.35)",
             transition: "all 0.15s ease",
+            padding: 0,
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#1e293b";
+            e.currentTarget.style.backgroundColor = "#2563eb";
             e.currentTarget.style.borderColor = "#3b82f6";
+            e.currentTarget.style.color = "#ffffff";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "#0f172a";
-            e.currentTarget.style.borderColor = "#334155";
+            e.currentTarget.style.backgroundColor = "#1e293b";
+            e.currentTarget.style.borderColor = "#475569";
+            e.currentTarget.style.color = "#cbd5e1";
           }}
         >
           <svg
-            width="15"
-            height="15"
+            width="14"
+            height="14"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2.2"
+            strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="18" x2="21" y2="18" />
+            <polyline points="9 18 15 12 9 6" />
           </svg>
-          <span>Menú</span>
         </button>
       )}
 
@@ -198,7 +202,7 @@ export default function BarraLateral({ children }: Props) {
               }
         }
       >
-        {/* Botón superior para contraer el menú */}
+        {/* Botón en medio de toda la altura pegado al límite derecho para contraer el menú */}
         {!colapsado && (
           <button
             type="button"
@@ -207,33 +211,38 @@ export default function BarraLateral({ children }: Props) {
             aria-label="Contraer menú lateral"
             style={{
               position: "absolute",
-              top: 14,
-              right: 12,
-              zIndex: 65,
-              width: 24,
-              height: 24,
+              top: "50%",
+              right: "-11px",
+              transform: "translateY(-50%)",
+              zIndex: 85,
+              width: 22,
+              height: 52,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: "#1f2937",
-              border: "1px solid #374151",
-              borderRadius: 4,
-              color: "#94a3b8",
+              backgroundColor: "#1e293b",
+              border: "1px solid #475569",
+              borderRadius: "6px",
+              color: "#cbd5e1",
               cursor: "pointer",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.35)",
               transition: "all 0.15s ease",
+              padding: 0,
             }}
             onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#2563eb";
+              e.currentTarget.style.borderColor = "#3b82f6";
               e.currentTarget.style.color = "#ffffff";
-              e.currentTarget.style.backgroundColor = "#374151";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = "#94a3b8";
-              e.currentTarget.style.backgroundColor = "#1f2937";
+              e.currentTarget.style.backgroundColor = "#1e293b";
+              e.currentTarget.style.borderColor = "#475569";
+              e.currentTarget.style.color = "#cbd5e1";
             }}
           >
             <svg
-              width="13"
-              height="13"
+              width="14"
+              height="14"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

@@ -291,7 +291,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                           value={campo.solo_lectura ? "lectura" : "editable"}
                           disabled={!puedeEditar}
                           onChange={(e) => actualizarCampo(sec.id, campo.codigo, { solo_lectura: e.target.value === "lectura" })}
-                          style={{ fontSize: 11, padding: "3px 6px", maxWidth: 140, width: "auto" }}
+                          style={{ fontSize: 10.5, padding: "2px 5px", maxWidth: 115, width: "auto" }}
                         >
                           <option value="editable">Editable por Especialista</option>
                           <option value="lectura">Solo Lectura (Protegido)</option>
@@ -303,7 +303,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                           value={campo.obligatorio}
                           disabled={!puedeEditar}
                           onChange={(e) => actualizarCampo(sec.id, campo.codigo, { obligatorio: e.target.value as any })}
-                          style={{ fontSize: 11, padding: "3px 6px", maxWidth: 140, width: "auto" }}
+                          style={{ fontSize: 10.5, padding: "2px 5px", maxWidth: 115, width: "auto" }}
                         >
                           <option value="si">Obligatorio CAB</option>
                           <option value="segun_tipo">Según Tipo</option>
@@ -487,7 +487,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(280px, 0.88fr) minmax(360px, 1.12fr)",
+          gridTemplateColumns: "minmax(270px, 0.80fr) minmax(380px, 1.20fr)",
           gap: 12,
           minHeight: 680,
           alignItems: "start",

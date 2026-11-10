@@ -6,17 +6,21 @@ import { Usuario, Perfil } from "@/types";
 import { validarNombre, validarCelular } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
-export default function PaginaMiCuenta() {
+interface Props {
+  datosIniciales?: { usuario: Usuario; perfiles: Perfil[] } | null;
+}
+
+export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
   const router = useRouter();
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
-  const [perfiles, setPerfiles] = useState<Perfil[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const [usuario, setUsuario] = useState<Usuario | null>(datosIniciales?.usuario ?? null);
+  const [perfiles, setPerfiles] = useState<Perfil[]>(datosIniciales?.perfiles ?? []);
+  const [cargando, setCargando] = useState(!datosIniciales?.usuario);
 
   // Formulario de datos personales
-  const [nombres, setNombres] = useState("");
-  const [apellidoPaterno, setApellidoPaterno] = useState("");
-  const [apellidoMaterno, setApellidoMaterno] = useState("");
-  const [celular, setCelular] = useState("");
+  const [nombres, setNombres] = useState(datosIniciales?.usuario?.nombres || "");
+  const [apellidoPaterno, setApellidoPaterno] = useState(datosIniciales?.usuario?.apellido_paterno || "");
+  const [apellidoMaterno, setApellidoMaterno] = useState(datosIniciales?.usuario?.apellido_materno || "");
+  const [celular, setCelular] = useState(datosIniciales?.usuario?.celular || "");
   const [guardandoDatos, setGuardandoDatos] = useState(false);
 
   // Formulario de cambio de clave
@@ -62,8 +66,10 @@ export default function PaginaMiCuenta() {
   }
 
   useEffect(() => {
-    cargarDatos();
-  }, []);
+    if (!datosIniciales?.usuario) {
+      cargarDatos();
+    }
+  }, [datosIniciales]);
 
   function mostrarExito(msj: string) {
     setExito(msj);
@@ -182,9 +188,29 @@ export default function PaginaMiCuenta() {
 
   if (!usuario) {
     return (
-      <div className="vista-contenedor" style={{ maxWidth: 640 }}>
-        <h2>Mi perfil</h2>
-        <p className="descripcion">No se pudo encontrar tu información de usuario.</p>
+      <div className="vista-contenedor" style={{ maxWidth: 640, backgroundColor: "#ffffff", padding: 24, borderRadius: 8, border: "1px solid #e2e8f0" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, margin: "0 0 8px 0", color: "#0f172a" }}>Mi perfil</h2>
+        <p className="descripcion" style={{ color: "#64748b" }}>
+          {errorDatos || "No se pudo encontrar tu información de usuario o la sesión requiere sincronización."}
+        </p>
+        <div style={{ marginTop: 16, display: "flex", gap: 10 }}>
+          <button
+            type="button"
+            onClick={() => cargarDatos()}
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 16px" }}
+          >
+            Reintentar cargar información
+          </button>
+          <button
+            type="button"
+            onClick={() => router.refresh()}
+            className="boton-secundario"
+            style={{ width: "auto", padding: "8px 16px" }}
+          >
+            Refrescar página
+          </button>
+        </div>
       </div>
     );
   }

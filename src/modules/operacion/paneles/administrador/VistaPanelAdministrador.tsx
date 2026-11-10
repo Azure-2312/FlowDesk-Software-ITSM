@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  FileText,
-  Clock,
   RefreshCw,
-  AlertTriangle,
   Users,
   ShieldAlert,
   Shield,
@@ -14,21 +11,63 @@ import {
   Database,
   CheckCircle2,
   ChevronRight,
-  UserX,
+  Sliders,
+  Lock,
+  ShieldCheck,
 } from "@/shared/components/ui/Iconos";
+
+interface LogAccesoItem {
+  id_log: number;
+  correo_intento: string | null;
+  exitoso: boolean;
+  ip: string | null;
+  fecha: string;
+  usuario_nombre: string | null;
+}
+
+interface LogAuditoriaItem {
+  id_log: number;
+  modulo: string;
+  accion: string;
+  descripcion: string;
+  detalles: any;
+  direccion_ip: string | null;
+  fecha_creacion: string;
+  admin_nombre: string | null;
+  admin_correo: string | null;
+}
+
+interface UsuarioModificadoItem {
+  id_usuario: number;
+  nombre_completo: string;
+  correo_electronico: string;
+  celular: string | null;
+  fecha_modificacion: string | null;
+  fecha_creacion: string;
+  modificado_por: string | null;
+  perfiles_asignados: string;
+}
+
+interface UsuarioSinPerfilItem {
+  id_usuario: number;
+  nombre: string;
+  correo_electronico: string;
+  fecha_creacion: string;
+}
 
 interface PanelAdministrador {
   kpis: {
-    tickets_abiertos: number;
-    sla_vencidos: number;
-    cambios_activos: number;
-    problemas_abiertos: number;
     usuarios_activos: number;
     accesos_fallidos: number;
+    logins_hoy: number;
+    cambios_configuracion_30d: number;
+    usuarios_sin_perfil: number;
+    perfiles_activos: number;
   };
-  ticketsPorTipo: { tipo: string; abiertos: number }[];
-  accesosFallidos: { correo_intento: string | null; ip: string | null; fecha: string }[];
-  usuariosSinPerfil: { id_usuario: number; nombre: string; correo_electronico: string }[];
+  logsInicioSesion: LogAccesoItem[];
+  logsAuditoriaConfiguracion: LogAuditoriaItem[];
+  usuariosModificadosRecientes: UsuarioModificadoItem[];
+  usuariosSinPerfil: UsuarioSinPerfilItem[];
 }
 
 function fechaHora(valor: string | null) {
@@ -86,10 +125,10 @@ const ACCESOS_RAPIDOS = [
     bgColor: "#fffbeb",
   },
   {
-    href: "/plataforma/reportes/operativos",
-    titulo: "Indicadores operativos y SLA",
-    descripcion: "Métricas de servicio, tiempos y cumplimiento",
-    icono: FileText,
+    href: "/plataforma/seguridad/auditoria-sistema",
+    titulo: "Auditoría de configuración",
+    descripcion: "Trazabilidad de cambios hechos por administradores",
+    icono: Sliders,
     color: "#7c3aed",
     bgColor: "#f5f3ff",
   },
@@ -100,25 +139,29 @@ export default function VistaPanelAdministrador() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const cargarPanel = async () => {
+    try {
+      setCargando(true);
+      setError(null);
+      const res = await fetch(`/api/operacion/paneles/administrador?_t=${Date.now()}`);
+      const json = await res.json();
+      if (res.ok) setData(json);
+      else setError(json.error ?? "No se pudo cargar el panel.");
+    } catch {
+      setError("Error de conexión al cargar el panel.");
+    } finally {
+      setCargando(false);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(`/api/operacion/paneles/administrador?_t=${Date.now()}`);
-        const json = await res.json();
-        if (res.ok) setData(json);
-        else setError(json.error ?? "No se pudo cargar el panel.");
-      } catch {
-        setError("Error de conexión al cargar el panel.");
-      } finally {
-        setCargando(false);
-      }
-    })();
+    cargarPanel();
   }, []);
 
   if (cargando) {
     return (
       <div className="vista-contenedor" style={{ padding: "40px 28px", textAlign: "center" }}>
-        <p style={{ color: "#64748b", fontSize: 14 }}>Cargando panel de administración...</p>
+        <p style={{ color: "#64748b", fontSize: 14 }}>Cargando panel de administración del sistema...</p>
       </div>
     );
   }
@@ -127,39 +170,31 @@ export default function VistaPanelAdministrador() {
     return (
       <div className="vista-contenedor" style={{ padding: "24px 28px" }}>
         <p role="alert" className="mensaje-error">{error}</p>
+        <button type="button" onClick={cargarPanel} className="boton-primario" style={{ marginTop: 12 }}>
+          Reintentar
+        </button>
       </div>
     );
   }
 
   if (!data) return null;
 
-  const totalTickets = data.ticketsPorTipo.reduce((acc, t) => acc + t.abiertos, 0);
-
   return (
-    <div className="vista-contenedor">
-      {/* Cabecera ejecutiva */}
-      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+    <div className="vista-contenedor" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {/* Cabecera del Administrador */}
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
-            Administración del Sistema & Gobernanza ITIL
+            Administración del Sistema & Seguridad ITIL
           </span>
-          <h1 style={{ margin: 0 }}>Panel de administración</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Estado global de la mesa de servicio, los cambios en curso, las identidades y los accesos.</p>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#0f172a" }}>Panel de administración</h1>
+          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>
+            Supervisión integral de seguridad, eventos de autenticación, trazabilidad de identidades y auditoría de cambios del sistema.
+          </p>
         </div>
         <button
           type="button"
-          onClick={() => {
-            setCargando(true);
-            setError(null);
-            fetch(`/api/operacion/paneles/admin?_t=${Date.now()}`)
-              .then((r) => r.json())
-              .then((res) => {
-                if (res.kpis) setData(res);
-                else setError(res.error ?? "No se pudo cargar el panel.");
-              })
-              .catch(() => setError("Error de conexión al cargar el panel."))
-              .finally(() => setCargando(false));
-          }}
+          onClick={cargarPanel}
           className="boton-secundario"
           style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer" }}
           title="Actualizar panel"
@@ -169,212 +204,298 @@ export default function VistaPanelAdministrador() {
         </button>
       </div>
 
-      {/* Grid de KPIs principales */}
+      {/* Grid de 6 KPIs estrictamente administrativos (Seguridad y Gobernanza) */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          gap: 16,
-          marginBottom: 24,
+          gap: 14,
         }}
       >
-        {/* KPI 1: Tickets Abiertos */}
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            border: "1px solid #e2e8f0",
-            borderRadius: 12,
-            padding: "16px 18px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
+        {/* KPI 1: Usuarios Activos */}
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 10, padding: "14px 16px", boxShadow: "0 1px 3px rgba(0,0,0,0.03)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 11.5, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.5 }}>
-              Tickets abiertos
-            </span>
-            <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <FileText size={16} />
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Usuarios activos</span>
+            <div style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: "#f0fdf4", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Users size={15} />
             </div>
           </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0f172a", marginTop: 10 }}>
-            {data.kpis.tickets_abiertos}
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#0f172a", marginTop: 8 }}>{data.kpis.usuarios_activos}</div>
+          <span style={{ fontSize: 11, color: "#16a34a", fontWeight: 600, marginTop: 2, display: "block" }}>Cuentas operativas</span>
+        </div>
+
+        {/* KPI 2: Accesos Fallidos */}
+        <div style={{ backgroundColor: "#ffffff", border: `1px solid ${data.kpis.accesos_fallidos > 0 ? "#fed7aa" : "#e2e8f0"}`, borderRadius: 10, padding: "14px 16px", boxShadow: "0 1px 3px rgba(0,0,0,0.03)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: data.kpis.accesos_fallidos > 0 ? "#9a3412" : "#64748b", textTransform: "uppercase" }}>Accesos fallidos (7d)</span>
+            <div style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: data.kpis.accesos_fallidos > 0 ? "#fff7ed" : "#f8fafc", color: data.kpis.accesos_fallidos > 0 ? "#ea580c" : "#64748b", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <ShieldAlert size={15} />
+            </div>
           </div>
-          <span style={{ fontSize: 11.5, color: "#64748b", marginTop: 4 }}>
-            Mesa de servicio activa
+          <div style={{ fontSize: 26, fontWeight: 800, color: data.kpis.accesos_fallidos > 0 ? "#c2410c" : "#0f172a", marginTop: 8 }}>{data.kpis.accesos_fallidos}</div>
+          <span style={{ fontSize: 11, color: data.kpis.accesos_fallidos > 0 ? "#ea580c" : "#16a34a", fontWeight: 600, marginTop: 2, display: "block" }}>
+            {data.kpis.accesos_fallidos > 0 ? "Alertas de autenticación" : "Sin incidentes"}
           </span>
         </div>
 
-        {/* KPI 2: SLA Vencidos */}
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            border: `1px solid ${data.kpis.sla_vencidos > 0 ? "#fecaca" : "#e2e8f0"}`,
-            borderRadius: 12,
-            padding: "16px 18px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
+        {/* KPI 3: Inicios de Sesión Hoy */}
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 10, padding: "14px 16px", boxShadow: "0 1px 3px rgba(0,0,0,0.03)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 11.5, fontWeight: 700, color: data.kpis.sla_vencidos > 0 ? "#991b1b" : "#64748b", textTransform: "uppercase", letterSpacing: 0.5 }}>
-              SLA vencidos
-            </span>
-            <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: data.kpis.sla_vencidos > 0 ? "#fef2f2" : "#f8fafc", color: data.kpis.sla_vencidos > 0 ? "#dc2626" : "#64748b", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Clock size={16} />
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Logins hoy</span>
+            <div style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <ShieldCheck size={15} />
             </div>
           </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: data.kpis.sla_vencidos > 0 ? "#dc2626" : "#0f172a", marginTop: 10 }}>
-            {data.kpis.sla_vencidos}
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#0f172a", marginTop: 8 }}>{data.kpis.logins_hoy}</div>
+          <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 600, marginTop: 2, display: "block" }}>Autenticaciones exitosas</span>
+        </div>
+
+        {/* KPI 4: Cambios de Configuración */}
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 10, padding: "14px 16px", boxShadow: "0 1px 3px rgba(0,0,0,0.03)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Cambios sistema (30d)</span>
+            <div style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: "#f5f3ff", color: "#7c3aed", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Sliders size={15} />
+            </div>
           </div>
-          <span style={{ fontSize: 11.5, color: data.kpis.sla_vencidos > 0 ? "#dc2626" : "#16a34a", fontWeight: 600, marginTop: 4 }}>
-            {data.kpis.sla_vencidos > 0 ? "Atención requerida" : "Todos en objetivo SLA"}
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#0f172a", marginTop: 8 }}>{data.kpis.cambios_configuracion_30d}</div>
+          <span style={{ fontSize: 11, color: "#7c3aed", fontWeight: 600, marginTop: 2, display: "block" }}>Ajustes por administradores</span>
+        </div>
+
+        {/* KPI 5: Usuarios sin Perfil */}
+        <div style={{ backgroundColor: "#ffffff", border: `1px solid ${data.kpis.usuarios_sin_perfil > 0 ? "#fecaca" : "#e2e8f0"}`, borderRadius: 10, padding: "14px 16px", boxShadow: "0 1px 3px rgba(0,0,0,0.03)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: data.kpis.usuarios_sin_perfil > 0 ? "#b91c1c" : "#64748b", textTransform: "uppercase" }}>Sin perfil asignado</span>
+            <div style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: data.kpis.usuarios_sin_perfil > 0 ? "#fef2f2" : "#f8fafc", color: data.kpis.usuarios_sin_perfil > 0 ? "#dc2626" : "#64748b", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Lock size={15} />
+            </div>
+          </div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: data.kpis.usuarios_sin_perfil > 0 ? "#dc2626" : "#0f172a", marginTop: 8 }}>{data.kpis.usuarios_sin_perfil}</div>
+          <span style={{ fontSize: 11, color: data.kpis.usuarios_sin_perfil > 0 ? "#dc2626" : "#16a34a", fontWeight: 600, marginTop: 2, display: "block" }}>
+            {data.kpis.usuarios_sin_perfil > 0 ? "Requieren asignación" : "Gobernanza RBAC al 100%"}
           </span>
         </div>
 
-        {/* KPI 3: Cambios en Curso */}
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            border: "1px solid #e2e8f0",
-            borderRadius: 12,
-            padding: "16px 18px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
+        {/* KPI 6: Perfiles Activos */}
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 10, padding: "14px 16px", boxShadow: "0 1px 3px rgba(0,0,0,0.03)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 11.5, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.5 }}>
-              Cambios en curso
-            </span>
-            <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: "#eef2ff", color: "#4f46e5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <RefreshCw size={16} />
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Perfiles de roles</span>
+            <div style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: "#ecfeff", color: "#0891b2", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Shield size={15} />
             </div>
           </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0f172a", marginTop: 10 }}>
-            {data.kpis.cambios_activos}
-          </div>
-          <span style={{ fontSize: 11.5, color: "#64748b", marginTop: 4 }}>
-            RFCs en evaluación o ejecución
-          </span>
-        </div>
-
-        {/* KPI 4: Problemas Abiertos */}
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            border: "1px solid #e2e8f0",
-            borderRadius: 12,
-            padding: "16px 18px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 11.5, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.5 }}>
-              Problemas
-            </span>
-            <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: "#fffbeb", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <AlertTriangle size={16} />
-            </div>
-          </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0f172a", marginTop: 10 }}>
-            {data.kpis.problemas_abiertos}
-          </div>
-          <span style={{ fontSize: 11.5, color: "#64748b", marginTop: 4 }}>
-            Investigaciones de causa raíz
-          </span>
-        </div>
-
-        {/* KPI 5: Usuarios Activos */}
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            border: "1px solid #e2e8f0",
-            borderRadius: 12,
-            padding: "16px 18px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 11.5, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.5 }}>
-              Usuarios activos
-            </span>
-            <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: "#f0fdf4", color: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Users size={16} />
-            </div>
-          </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0f172a", marginTop: 10 }}>
-            {data.kpis.usuarios_activos}
-          </div>
-          <span style={{ fontSize: 11.5, color: "#16a34a", fontWeight: 600, marginTop: 4 }}>
-            Identidades operativas
-          </span>
-        </div>
-
-        {/* KPI 6: Accesos Fallidos */}
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            border: `1px solid ${data.kpis.accesos_fallidos > 0 ? "#fed7aa" : "#e2e8f0"}`,
-            borderRadius: 12,
-            padding: "16px 18px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 11.5, fontWeight: 700, color: data.kpis.accesos_fallidos > 0 ? "#9a3412" : "#64748b", textTransform: "uppercase", letterSpacing: 0.5 }}>
-              Accesos fallidos (7d)
-            </span>
-            <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: data.kpis.accesos_fallidos > 0 ? "#fff7ed" : "#f8fafc", color: data.kpis.accesos_fallidos > 0 ? "#ea580c" : "#64748b", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <ShieldAlert size={16} />
-            </div>
-          </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: data.kpis.accesos_fallidos > 0 ? "#c2410c" : "#0f172a", marginTop: 10 }}>
-            {data.kpis.accesos_fallidos}
-          </div>
-          <span style={{ fontSize: 11.5, color: data.kpis.accesos_fallidos > 0 ? "#ea580c" : "#16a34a", fontWeight: 600, marginTop: 4 }}>
-            {data.kpis.accesos_fallidos > 0 ? "Intentos registrados" : "Sin incidentes de acceso"}
-          </span>
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#0f172a", marginTop: 8 }}>{data.kpis.perfiles_activos}</div>
+          <span style={{ fontSize: 11, color: "#0891b2", fontWeight: 600, marginTop: 2, display: "block" }}>Roles institucionales</span>
         </div>
       </div>
 
-      {/* Fila Media: Accesos Rápidos (Grid de Tarjetas) y Tickets Abiertos por Tipo */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
-          gap: 20,
-          marginBottom: 20,
-        }}
-      >
-        {/* Accesos Rápidos */}
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+      {/* Fila 1: Logs de Autenticación y Auditoría de Configuración del Sistema */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 16 }}>
+        {/* Panel 1: Logs de Inicio de Sesión y Seguridad */}
+        <div className="tarjeta-formulario" style={{ margin: 0, padding: 18 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+            <div>
+              <h2 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: "#0f172a" }}>Eventos de Inicio de Sesión y Accesos</h2>
+              <p style={{ margin: "2px 0 0 0", fontSize: 12, color: "#64748b" }}>
+                Registro cronológico de intentos de autenticación exitosos y fallidos.
+              </p>
+            </div>
+            <Link
+              href="/plataforma/seguridad/seguridad-logs"
+              style={{ fontSize: 12, fontWeight: 600, color: "#2563eb", textDecoration: "none", whiteSpace: "nowrap" }}
+            >
+              Ver todos →
+            </Link>
+          </div>
+
+          {data.logsInicioSesion.length === 0 ? (
+            <div style={{ padding: "24px 16px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
+              <p style={{ fontSize: 12.5, color: "#64748b", margin: 0 }}>No hay eventos de acceso registrados.</p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {data.logsInicioSesion.map((log) => (
+                <div
+                  key={log.id_log}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "8px 12px",
+                    backgroundColor: log.exitoso ? "#f8fafc" : "#fef2f2",
+                    border: `1px solid ${log.exitoso ? "#e2e8f0" : "#fecaca"}`,
+                    borderRadius: 6,
+                    fontSize: 12,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                    <span
+                      style={{
+                        padding: "2px 6px",
+                        borderRadius: 4,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        backgroundColor: log.exitoso ? "#dcfce7" : "#fee2e2",
+                        color: log.exitoso ? "#166534" : "#991b1b",
+                        border: `1px solid ${log.exitoso ? "#bbf7d0" : "#fca5a5"}`,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {log.exitoso ? "OK" : "FALLIDO"}
+                    </span>
+                    <div style={{ minWidth: 0 }}>
+                      <strong style={{ color: "#0f172a", display: "block", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                        {log.usuario_nombre || log.correo_intento || "Desconocido"}
+                      </strong>
+                      <span style={{ fontSize: 11, color: "#64748b" }}>
+                        IP: {log.ip || "Local"} · {log.correo_intento}
+                      </span>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 11, color: "#64748b", fontFamily: "monospace", flexShrink: 0 }}>
+                    {fechaHora(log.fecha)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Panel 2: Logs de Auditoría de Configuración del Sistema (Admin Changes) */}
+        <div className="tarjeta-formulario" style={{ margin: 0, padding: 18 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+            <div>
+              <h2 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: "#0f172a" }}>Cambios de Configuración del Sistema</h2>
+              <p style={{ margin: "2px 0 0 0", fontSize: 12, color: "#64748b" }}>
+                Acciones realizadas por administradores sobre parámetros y formularios.
+              </p>
+            </div>
+            <Link
+              href="/plataforma/seguridad/auditoria-sistema"
+              style={{ fontSize: 12, fontWeight: 600, color: "#2563eb", textDecoration: "none", whiteSpace: "nowrap" }}
+            >
+              Auditoría completa →
+            </Link>
+          </div>
+
+          {data.logsAuditoriaConfiguracion.length === 0 ? (
+            <div style={{ padding: "24px 16px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
+              <CheckCircle2 size={20} style={{ color: "#16a34a", margin: "0 auto 6px auto" }} />
+              <p style={{ fontSize: 12.5, color: "#64748b", margin: 0 }}>Sin cambios de configuración registrados.</p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {data.logsAuditoriaConfiguracion.map((aud) => (
+                <div
+                  key={aud.id_log}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8fafc",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: 6,
+                    fontSize: 12,
+                    gap: 10,
+                  }}
+                >
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 4, backgroundColor: "#e0e7ff", color: "#3730a3" }}>
+                        {aud.modulo}
+                      </span>
+                      <strong style={{ color: "#0f172a", fontSize: 11.5 }}>{aud.admin_nombre || "Administrador"}</strong>
+                    </div>
+                    <p style={{ margin: 0, fontSize: 11.5, color: "#334155", lineHeight: 1.35 }}>
+                      {aud.descripcion}
+                    </p>
+                    <span style={{ fontSize: 10.5, color: "#94a3b8" }}>IP: {aud.direccion_ip || "Local"}</span>
+                  </div>
+                  <span style={{ fontSize: 10.5, color: "#64748b", fontFamily: "monospace", flexShrink: 0 }}>
+                    {fechaHora(aud.fecha_creacion)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Fila 2: Trazabilidad de Colaboradores Modificados Recientemente & Accesos Rápidos */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 16 }}>
+        {/* Panel 3: Trazabilidad Reciente de Colaboradores y Perfiles */}
+        <div className="tarjeta-formulario" style={{ margin: 0, padding: 18 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+            <div>
+              <h2 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: "#0f172a" }}>Trazabilidad de Cuentas y Colaboradores</h2>
+              <p style={{ margin: "2px 0 0 0", fontSize: 12, color: "#64748b" }}>
+                Identidades con actualizaciones de datos de contacto o roles asignados.
+              </p>
+            </div>
+            <Link
+              href="/plataforma/seguridad/usuarios"
+              style={{ fontSize: 12, fontWeight: 600, color: "#2563eb", textDecoration: "none", whiteSpace: "nowrap" }}
+            >
+              Gestionar cuentas →
+            </Link>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {data.usuariosModificadosRecientes.map((usr) => (
+              <div
+                key={usr.id_usuario}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "9px 12px",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 6,
+                  fontSize: 12,
+                }}
+              >
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <Link
+                      href={`/plataforma/seguridad/usuarios`}
+                      style={{ fontSize: 12.5, fontWeight: 700, color: "#1d4ed8", textDecoration: "none" }}
+                    >
+                      {usr.nombre_completo}
+                    </Link>
+                    <span style={{ fontSize: 11, color: "#64748b" }}>({usr.correo_electronico})</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>
+                    <strong>Celular:</strong> {usr.celular || "Sin celular"} · <strong>Roles:</strong> {usr.perfiles_asignados}
+                  </div>
+                  {usr.modificado_por && (
+                    <div style={{ fontSize: 10.5, color: "#94a3b8" }}>
+                      Modificado por: {usr.modificado_por}
+                    </div>
+                  )}
+                </div>
+                <span style={{ fontSize: 10.5, color: "#64748b", fontFamily: "monospace", flexShrink: 0, marginLeft: 8 }}>
+                  {fechaHora(usr.fecha_modificacion || usr.fecha_creacion)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Panel 4: Accesos Rápidos de Gobernanza */}
+        <div className="tarjeta-formulario" style={{ margin: 0, padding: 18 }}>
           <div style={{ marginBottom: 14 }}>
-            <h2 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: "#0f172a" }}>Accesos rápidos</h2>
-            <p style={{ margin: "2px 0 0 0", fontSize: 12.5, color: "#64748b" }}>
-              Navegación directa a módulos de configuración y control operativo.
+            <h2 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: "#0f172a" }}>Accesos Rápidos de Administración</h2>
+            <p style={{ margin: "2px 0 0 0", fontSize: 12, color: "#64748b" }}>
+              Navegación directa a módulos normativos y de seguridad.
             </p>
           </div>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))",
               gap: 10,
             }}
           >
@@ -387,11 +508,11 @@ export default function VistaPanelAdministrador() {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 12,
-                    padding: "12px 14px",
+                    gap: 10,
+                    padding: "10px 12px",
                     backgroundColor: "#f8fafc",
                     border: "1px solid #e2e8f0",
-                    borderRadius: 10,
+                    borderRadius: 8,
                     textDecoration: "none",
                     color: "inherit",
                     transition: "all 0.15s ease",
@@ -399,19 +520,17 @@ export default function VistaPanelAdministrador() {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = "#ffffff";
                     e.currentTarget.style.borderColor = "#93c5fd";
-                    e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.05)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = "#f8fafc";
                     e.currentTarget.style.borderColor = "#e2e8f0";
-                    e.currentTarget.style.boxShadow = "none";
                   }}
                 >
                   <div
                     style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 8,
+                      width: 32,
+                      height: 32,
+                      borderRadius: 6,
                       backgroundColor: item.bgColor,
                       color: item.color,
                       display: "flex",
@@ -420,197 +539,21 @@ export default function VistaPanelAdministrador() {
                       flexShrink: 0,
                     }}
                   >
-                    <Icono size={18} />
+                    <Icono size={16} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {item.titulo}
                     </div>
-                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <div style={{ fontSize: 10.5, color: "#64748b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {item.descripcion}
                     </div>
                   </div>
-                  <ChevronRight size={14} style={{ color: "#94a3b8", flexShrink: 0 }} />
+                  <ChevronRight size={13} style={{ color: "#94a3b8", flexShrink: 0 }} />
                 </Link>
               );
             })}
           </div>
-        </div>
-
-        {/* Tickets Abiertos por Tipo con Barras de Distribución */}
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
-          <div style={{ marginBottom: 14 }}>
-            <h2 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: "#0f172a" }}>Tickets abiertos por tipo</h2>
-            <p style={{ margin: "2px 0 0 0", fontSize: 12.5, color: "#64748b" }}>
-              Distribución de la carga de trabajo activa según tipología de ticket.
-            </p>
-          </div>
-
-          {data.ticketsPorTipo.length === 0 ? (
-            <div style={{ padding: "30px 20px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
-              <CheckCircle2 size={24} style={{ color: "#16a34a", margin: "0 auto 6px auto" }} />
-              <p style={{ fontSize: 13, fontWeight: 600, color: "#334155", margin: 0 }}>No hay tickets abiertos</p>
-              <p style={{ fontSize: 11.5, color: "#64748b", margin: "4px 0 0 0" }}>La mesa de servicio no tiene peticiones pendientes.</p>
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {data.ticketsPorTipo.map((t, idx) => {
-                const porcentaje = totalTickets > 0 ? Math.round((t.abiertos / totalTickets) * 100) : 0;
-                const colorBarra = idx === 0 ? "#2563eb" : idx === 1 ? "#d97706" : idx === 2 ? "#7c3aed" : "#059669";
-                return (
-                  <div key={t.tipo}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <span style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: colorBarra }} />
-                        <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b" }}>{t.tipo}</span>
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <span style={{ fontSize: 12, color: "#64748b" }}>{porcentaje}%</span>
-                        <span
-                          style={{
-                            fontSize: 12,
-                            fontWeight: 700,
-                            color: "#0f172a",
-                            backgroundColor: "#f1f5f9",
-                            padding: "2px 8px",
-                            borderRadius: 6,
-                          }}
-                        >
-                          {t.abiertos}
-                        </span>
-                      </div>
-                    </div>
-                    {/* Barra de progreso */}
-                    <div style={{ width: "100%", height: 8, backgroundColor: "#f1f5f9", borderRadius: 999, overflow: "hidden" }}>
-                      <div
-                        style={{
-                          width: `${porcentaje}%`,
-                          height: "100%",
-                          backgroundColor: colorBarra,
-                          borderRadius: 999,
-                          transition: "width 0.4s ease",
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Fila Inferior: Accesos Fallidos Recientes y Usuarios sin Perfil */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
-          gap: 20,
-        }}
-      >
-        {/* Accesos Fallidos Recientes */}
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
-          <div style={{ marginBottom: 14 }}>
-            <h2 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: "#0f172a" }}>Accesos fallidos recientes</h2>
-            <p style={{ margin: "2px 0 0 0", fontSize: 12.5, color: "#64748b" }}>
-              Intentos de autenticación no autorizados o credenciales erróneas.
-            </p>
-          </div>
-
-          {data.accesosFallidos.length === 0 ? (
-            <div style={{ padding: "26px 20px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
-              <CheckCircle2 size={22} style={{ color: "#16a34a", margin: "0 auto 6px auto" }} />
-              <p style={{ fontSize: 12.5, fontWeight: 600, color: "#334155", margin: 0 }}>Sin intentos fallidos registrados</p>
-              <p style={{ fontSize: 11.5, color: "#64748b", margin: "2px 0 0 0" }}>No hay alertas de seguridad en los últimos 7 días.</p>
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {data.accesosFallidos.map((a, i) => (
-                <div
-                  key={`${a.fecha}-${i}`}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "10px 12px",
-                    backgroundColor: "#fef2f2",
-                    border: "1px solid #fee2e2",
-                    borderRadius: 8,
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{ width: 28, height: 28, borderRadius: "50%", backgroundColor: "#fee2e2", color: "#dc2626", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <ShieldAlert size={14} />
-                    </div>
-                    <div>
-                      <strong style={{ fontSize: 12.5, color: "#991b1b" }}>{a.correo_intento ?? "—"}</strong>
-                      <div style={{ fontSize: 11, color: "#7f1d1d", marginTop: 2 }}>IP: {a.ip ?? "—"}</div>
-                    </div>
-                  </div>
-                  <span style={{ fontSize: 11.5, color: "#991b1b", fontWeight: 600, fontFamily: "monospace" }}>
-                    {fechaHora(a.fecha)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Usuarios sin Perfil Asignado */}
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
-          <div style={{ marginBottom: 14 }}>
-            <h2 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: "#0f172a" }}>Usuarios sin perfil asignado</h2>
-            <p style={{ margin: "2px 0 0 0", fontSize: 12.5, color: "#64748b" }}>
-              Identidades activas que requieren asignación de rol en el sistema RBAC.
-            </p>
-          </div>
-
-          {data.usuariosSinPerfil.length === 0 ? (
-            <div style={{ padding: "26px 20px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
-              <CheckCircle2 size={22} style={{ color: "#16a34a", margin: "0 auto 6px auto" }} />
-              <p style={{ fontSize: 12.5, fontWeight: 600, color: "#334155", margin: 0 }}>Gobernanza completa de identidades</p>
-              <p style={{ fontSize: 11.5, color: "#64748b", margin: "2px 0 0 0" }}>Todos los usuarios activos tienen al menos un perfil asignado.</p>
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {data.usuariosSinPerfil.map((u) => (
-                <div
-                  key={u.id_usuario}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "10px 12px",
-                    backgroundColor: "#f8fafc",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{ width: 28, height: 28, borderRadius: "50%", backgroundColor: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <UserX size={14} />
-                    </div>
-                    <div>
-                      <Link
-                        href={`/plataforma/seguridad/usuarios/${u.id_usuario}`}
-                        style={{ fontSize: 13, fontWeight: 700, color: "#1d4ed8", textDecoration: "none" }}
-                      >
-                        {u.nombre}
-                      </Link>
-                      <div style={{ fontSize: 11.5, color: "#64748b", marginTop: 2 }}>{u.correo_electronico}</div>
-                    </div>
-                  </div>
-                  <Link
-                    href={`/plataforma/seguridad/usuarios/${u.id_usuario}`}
-                    className="boton-mini"
-                    style={{ textDecoration: "none" }}
-                  >
-                    Asignar perfil
-                  </Link>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </div>

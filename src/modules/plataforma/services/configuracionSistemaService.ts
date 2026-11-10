@@ -56,7 +56,7 @@ export async function guardarConfiguracion(body: any, contexto: ContextoAuditori
         usuario_modificacion = EXCLUDED.usuario_modificacion,
         fecha_modificacion = NOW()
       RETURNING clave, categoria, descripcion, valor, fecha_modificacion`,
-    [clave, actual?.categoria || "GENERAL", descripcion || null, JSON.stringify(valor), contexto.idUsuario]
+    [clave, actual?.categoria || body.categoria || "GENERAL", descripcion || null, JSON.stringify(valor), contexto.idUsuario]
   );
 
   // Registrar en Audit Trail

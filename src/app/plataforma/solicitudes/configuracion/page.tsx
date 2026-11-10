@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import VistaConfiguracionFormularioMesa from "@/modules/tickets/config/VistaConfiguracionFormularioMesa";
 
-export default function PaginaAdminSolicitudesIndex() {
-  redirect("/plataforma/tickets/configuracion/formularios?tipo=solicitud");
+export default function PaginaAdminSolicitudesConfiguracion() {
+  return <VistaConfiguracionFormularioMesa tipo="solicitud" />;
 }

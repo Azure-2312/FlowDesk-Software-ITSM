@@ -236,7 +236,15 @@ function normalizarCampos(campos: CampoFormulario[]): CampoFormulario[] {
   });
 }
 
-function ContenidoConfiguracionFormularios({ tipoFijo }: { tipoFijo?: "incidente" | "solicitud" } = {}) {
+export interface ConfiguracionFormulariosTicketsProps {
+  tipoFijo?: "incidente" | "solicitud";
+  ocultarCabecera?: boolean;
+}
+
+function ContenidoConfiguracionFormularios({
+  tipoFijo,
+  ocultarCabecera = false,
+}: ConfiguracionFormulariosTicketsProps = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tipoParam = searchParams.get("tipo");
@@ -459,22 +467,24 @@ function ContenidoConfiguracionFormularios({ tipoFijo }: { tipoFijo?: "incidente
   }
 
   return (
-    <div className="vista-contenedor">
+    <div className="vista-contenedor" style={ocultarCabecera ? { padding: 0 } : undefined}>
       {/* Cabecera Principal */}
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
-          <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, margin: "0 0 6px 0", color: "#0f172a" }}>
-              Configuración de Formulario: {tipoActual === "incidente" ? "Incidentes" : "Solicitudes de Servicio"}
-            </h1>
-            <p className="subtitulo" style={{ margin: 0, fontSize: 13.5, color: "#64748b" }}>
-              {tipoActual === "incidente"
-                ? "Defina los campos y permisos visibles para el usuario solicitante en el reporte de incidencias y fallas técnicas según su nivel de prioridad institucional. Los roles técnicos y de supervisión visualizan el ticket íntegro."
-                : "Defina los campos y permisos visibles para el usuario solicitante en el requerimiento de servicios, accesos o equipamiento según su nivel de prioridad institucional. Los roles técnicos y de supervisión visualizan el ticket íntegro."}
-            </p>
+      {!ocultarCabecera && (
+        <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
+            <div>
+              <h1 style={{ fontSize: 22, fontWeight: 700, margin: "0 0 6px 0", color: "#0f172a" }}>
+                Configuración de Formulario: {tipoActual === "incidente" ? "Incidentes" : "Solicitudes de Servicio"}
+              </h1>
+              <p className="subtitulo" style={{ margin: 0, fontSize: 13.5, color: "#64748b" }}>
+                {tipoActual === "incidente"
+                  ? "Defina los campos y permisos visibles para el usuario solicitante en el reporte de incidencias y fallas técnicas según su nivel de prioridad institucional. Los roles técnicos y de supervisión visualizan el ticket íntegro."
+                  : "Defina los campos y permisos visibles para el usuario solicitante en el requerimiento de servicios, accesos o equipamiento según su nivel de prioridad institucional. Los roles técnicos y de supervisión visualizan el ticket íntegro."}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {mensajeExito && (
         <div style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", color: "#166534", padding: "10px 14px", borderRadius: 8, marginBottom: 16, fontSize: 13, fontWeight: 500 }}>
@@ -1730,10 +1740,10 @@ function ContenidoConfiguracionFormularios({ tipoFijo }: { tipoFijo?: "incidente
   );
 }
 
-export default function PaginaConfiguracionFormulariosTickets({ tipoFijo }: { tipoFijo?: "incidente" | "solicitud" } = {}) {
+export default function PaginaConfiguracionFormulariosTickets(props: ConfiguracionFormulariosTicketsProps = {}) {
   return (
     <Suspense fallback={<div className="vista-contenedor"><p>Cargando configuración de formularios de creación...</p></div>}>
-      <ContenidoConfiguracionFormularios tipoFijo={tipoFijo} />
+      <ContenidoConfiguracionFormularios {...props} />
     </Suspense>
   );
 }
