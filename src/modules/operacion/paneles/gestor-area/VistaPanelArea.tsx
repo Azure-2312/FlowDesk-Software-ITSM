@@ -120,7 +120,7 @@ export default function VistaPanelArea() {
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <Link href="/plataforma/tickets/gestion/aprobaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Mis aprobaciones de solicitudes</Link>
-            <Link href="/plataforma/cambios/gestor-area/aprobaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Aprobación de negocio de cambios</Link>
+            <Link href="/plataforma/cambios/aprobaciones/negocio" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Aprobación de negocio de cambios</Link>
             <Link href="/plataforma/tickets/gestion/departamento" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Tickets de mi departamento</Link>
             <Link href="/plataforma/reportes/area" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Reportes del área</Link>
           </div>

@@ -1,3 +1,10 @@
+// ============================================================================
+// GESTIÓN DE ACTIVOS TI (ITAM): INVENTARIO, MODELOS Y CICLO DE VIDA
+// ============================================================================
+// Vista principal de activos de hardware y software: registro de inventario,
+// modelos con depreciación lineal, transiciones de estado y bajas formales.
+// ============================================================================
+
 "use client";
 
 import { useEffect, useState, FormEvent, Suspense } from "react";
@@ -7,6 +14,9 @@ import { Activo } from "@/types";
 type ModoVista = "tabla" | "nuevo" | "editar" | "baja" | "historial";
 
 function ContenidoInventarioActivos() {
+  // --------------------------------------------------------------------------
+  // 1. ESTADOS LOCALES: Lista de activos, filtros, catálogos y modos de vista
+  // --------------------------------------------------------------------------
   const [activos, setActivos] = useState<Activo[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +71,9 @@ function ContenidoInventarioActivos() {
   const [nuevoResidualPct, setNuevoResidualPct] = useState<number>(10);
   const [guardandoModelo, setGuardandoModelo] = useState(false);
 
+  // --------------------------------------------------------------------------
+  // 2. CONSULTAS A LA API: Carga de inventario, modelos y tipos de activos
+  // --------------------------------------------------------------------------
   async function cargarActivos() {
     setCargando(true);
     setError(null);
@@ -92,6 +105,9 @@ function ContenidoInventarioActivos() {
     }).catch(() => {});
   }, [filtroTipo, filtroEstado]);
 
+  // --------------------------------------------------------------------------
+  // 3. MODELOS Y HARDWARE: Creación rápida de modelos con vida útil y depreciación
+  // --------------------------------------------------------------------------
   async function registrarModelo(e: FormEvent) {
     e.preventDefault();
     setGuardandoModelo(true);
@@ -130,6 +146,9 @@ function ContenidoInventarioActivos() {
     }
   }
 
+  // --------------------------------------------------------------------------
+  // 4. TRANSICIONES DE ESTADO: Apertura de modos editar, historial y baja formal
+  // --------------------------------------------------------------------------
   function abrirNuevo() {
     setCodigoPatrimonial("");
     setNumeroSerie("");
@@ -186,6 +205,9 @@ function ContenidoInventarioActivos() {
     setVista("baja");
   }
 
+  // --------------------------------------------------------------------------
+  // 5. REGISTRO Y MUTACIÓN: Alta de nuevo activo o actualización justificada
+  // --------------------------------------------------------------------------
   async function registrarActivo(e: FormEvent) {
     e.preventDefault();
     if (!codigoPatrimonial.trim() || !marca.trim() || !modelo.trim()) {

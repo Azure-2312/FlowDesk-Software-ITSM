@@ -1,3 +1,10 @@
+// ============================================================================
+// GESTIÓN DE CAMBIOS: CONFIGURACIÓN DEL FORMULARIO RFC (ITIL v4)
+// ============================================================================
+// Vista de administración para parametrizar campos, catálogos, cuestionario
+// de riesgo ponderado, plantillas y ciclo de vida de Solicitudes de Cambio.
+// ============================================================================
+
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
@@ -12,6 +19,9 @@ import { PestanaPrioridad } from "./components/PestanaPrioridad";
 import { PestanaPlantillas } from "./components/PestanaPlantillas";
 import { PestanaVistaTicket } from "./components/PestanaVistaTicket";
 
+// ----------------------------------------------------------------------------
+// 1. TAXONOMÍA ITIL: Metadatos y definición de pestañas de configuración
+// ----------------------------------------------------------------------------
 type TabId =
   | "campos"
   | "campos_personalizados"
@@ -60,6 +70,9 @@ const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion
 };
 
 export default function ConfiguracionFormularioCambiosPage() {
+  // --------------------------------------------------------------------------
+  // 2. ESTADOS LOCALES: Control de versión, autoría, borrador y modales
+  // --------------------------------------------------------------------------
   const [tabActiva, setTabActiva] = useState<TabId>("campos");
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
@@ -88,7 +101,9 @@ export default function ConfiguracionFormularioCambiosPage() {
   const [versionesHistorial, setVersionesHistorial] = useState<any[]>([]);
   const [rfcsAbiertasAfectadas, setRfcsAbiertasAfectadas] = useState<number>(0);
 
-  // Cargar datos de la pestaña activa
+  // --------------------------------------------------------------------------
+  // 3. CONSULTA A LA API REST: Carga de configuración de borrador o publicada
+  // --------------------------------------------------------------------------
   const cargarDatos = useCallback(async () => {
     try {
       setCargando(true);
@@ -134,7 +149,9 @@ export default function ConfiguracionFormularioCambiosPage() {
     cargarDatos();
   }, [cargarDatos]);
 
-  // Guardar borrador de la pestaña activa
+  // --------------------------------------------------------------------------
+  // 4. ACCIONES DE PERSISTENCIA: Borradores, publicación formal y restauración
+  // --------------------------------------------------------------------------
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
@@ -322,6 +339,9 @@ export default function ConfiguracionFormularioCambiosPage() {
 
   const pestanaActualInfo = PESTANAS_INFO[tabActiva];
 
+  // --------------------------------------------------------------------------
+  // 5. RENDERIZADO VISUAL: Barra de control, pestañas modulares y modales
+  // --------------------------------------------------------------------------
   return (
     <div style={{ width: "100%", maxWidth: "100%", overflowX: "auto", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
       <div style={{ padding: "16px 16px 24px 16px", flex: 1 }}>

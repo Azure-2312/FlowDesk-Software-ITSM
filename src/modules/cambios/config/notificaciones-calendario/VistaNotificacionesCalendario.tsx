@@ -51,27 +51,25 @@ const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion
   }
 };
 
+const MAPA_VISTAS_TABS: Record<string, TabId> = {
+  feriados: "feriados",
+  congelamiento: "periodos_congelamiento",
+  ventanas: "ventanas_mantenimiento",
+  notificaciones: "notificaciones",
+  conflictos: "conflictos_capacidad",
+  presentacion: "presentacion_calendario",
+};
+
+function resolverTab(vistaParam: string | null): TabId {
+  return (vistaParam && MAPA_VISTAS_TABS[vistaParam]) || "notificaciones";
+}
+
 export default function NotificacionesCalendarioPage() {
   const searchParams = useSearchParams();
-  const [tabActiva, setTabActiva] = useState<TabId>(() => {
-    const vistaParam = searchParams.get("vista");
-    if (vistaParam === "feriados") return "feriados";
-    if (vistaParam === "congelamiento") return "periodos_congelamiento";
-    if (vistaParam === "ventanas") return "ventanas_mantenimiento";
-    if (vistaParam === "notificaciones") return "notificaciones";
-    if (vistaParam === "conflictos") return "conflictos_capacidad";
-    if (vistaParam === "presentacion") return "presentacion_calendario";
-    return "notificaciones";
-  });
+  const [tabActiva, setTabActiva] = useState<TabId>(() => resolverTab(searchParams.get("vista")));
 
   useEffect(() => {
-    const vistaParam = searchParams.get("vista");
-    if (vistaParam === "feriados") setTabActiva("feriados");
-    else if (vistaParam === "congelamiento") setTabActiva("periodos_congelamiento");
-    else if (vistaParam === "ventanas") setTabActiva("ventanas_mantenimiento");
-    else if (vistaParam === "notificaciones") setTabActiva("notificaciones");
-    else if (vistaParam === "conflictos") setTabActiva("conflictos_capacidad");
-    else if (vistaParam === "presentacion") setTabActiva("presentacion_calendario");
+    setTabActiva(resolverTab(searchParams.get("vista")));
   }, [searchParams]);
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);

@@ -114,12 +114,20 @@ export const ModalVistaPrevia: React.FC<ModalVistaPreviaProps> = ({
 
   if (!abierto) return null;
 
+  // Tabla constante para cálculo matricial O(1) de prioridad (Impacto × Urgencia)
+  const MATRIZ_PRIORIDAD_PROBLEMA: Record<string, typeof PRIORIDADES_PROBLEMA[number]> = {
+    "3-3": PRIORIDADES_PROBLEMA[0], // P1
+    "3-2": PRIORIDADES_PROBLEMA[1], // P2
+    "2-3": PRIORIDADES_PROBLEMA[1], // P2
+    "2-2": PRIORIDADES_PROBLEMA[2], // P3
+    "3-1": PRIORIDADES_PROBLEMA[2], // P3
+    "1-3": PRIORIDADES_PROBLEMA[2], // P3
+    "2-1": PRIORIDADES_PROBLEMA[3], // P4
+    "1-2": PRIORIDADES_PROBLEMA[3], // P4
+  };
+
   function calcularPrioridad(imp: number, urg: number) {
-    if (imp === 3 && urg === 3) return PRIORIDADES_PROBLEMA[0];
-    if ((imp === 3 && urg === 2) || (imp === 2 && urg === 3)) return PRIORIDADES_PROBLEMA[1];
-    if ((imp === 2 && urg === 2) || (imp === 3 && urg === 1) || (imp === 1 && urg === 3)) return PRIORIDADES_PROBLEMA[2];
-    if ((imp === 2 && urg === 1) || (imp === 1 && urg === 2)) return PRIORIDADES_PROBLEMA[3];
-    return PRIORIDADES_PROBLEMA[4];
+    return MATRIZ_PRIORIDAD_PROBLEMA[`${imp}-${urg}`] || PRIORIDADES_PROBLEMA[4];
   }
 
   const prioridadCalculada = calcularPrioridad(impacto, urgencia);

@@ -17,6 +17,9 @@ export interface CampoFormulario {
   solo_lectura?: boolean;
   valor_defecto?: string;
   reglas?: any[];
+  tipo_cambio_aplicable?: "TODOS" | "NORMAL" | "EMERGENCIA" | "ESTANDAR";
+  fase_aplicable?: "todas" | "fase_1" | "fase_2";
+  es_personalizado?: boolean;
 }
 
 export interface SeccionFormulario {
@@ -38,6 +41,146 @@ export interface PestanaCamposProps {
   puedeEditar?: boolean;
 }
 
+// Resolver a qué sección estándar corresponde un campo personalizado
+export function resolverSeccionId(
+  seccionStr: string | undefined,
+  listaSecciones: SeccionFormulario[]
+): string {
+  if (!seccionStr) return "sec_a";
+  const sLimpia = seccionStr.toLowerCase().trim();
+
+  // 1. Coincidencia directa por id
+  const porId = listaSecciones.find((s) => s.id.toLowerCase() === sLimpia);
+  if (porId) return porId.id;
+
+  // 2. Coincidencia directa por codigo
+  const porCodigo = listaSecciones.find((s) => s.codigo.toLowerCase() === sLimpia);
+  if (porCodigo) return porCodigo.id;
+
+  // 3. Coincidencia por título exacto o contenido
+  const porTitulo = listaSecciones.find(
+    (s) =>
+      s.titulo.toLowerCase().trim() === sLimpia ||
+      s.titulo.toLowerCase().includes(sLimpia) ||
+      sLimpia.includes(s.titulo.toLowerCase())
+  );
+  if (porTitulo) return porTitulo.id;
+
+  // 4. Coincidencias semánticas por matriz de palabras clave (declarativo)
+  const REGLAS_SEMANTICAS: [string[], string][] = [
+    [["identifica"], "sec_a"],
+    [["justifica", "descripci"], "sec_b"],
+    [["alcance", "cmdb"], "sec_c"],
+    [["evalua", "prioridad", "riesgo"], "sec_d"],
+    [["programa", "calendario", "ventana"], "sec_e"],
+    [["plane", "responsable", "gobernanza", "cab"], "sec_f"],
+    [["crisis", "ecab", "emergencia"], "sec_g"],
+    [["pir", "post-mortem", "mortem"], "sec_pir"],
+    [["evidencia", "adjunto", "documenta"], "sec_h"],
+  ];
+
+  for (const [palabras, seccionId] of REGLAS_SEMANTICAS) {
+    if (palabras.some((p) => sLimpia.includes(p))) return seccionId;
+  }
+
+  return listaSecciones[0]?.id || "sec_a";
+}
+
+// Fusionar dinámicamente campos del catálogo de campos personalizados dentro de la estructura de secciones
+export function fusionarSeccionesConCamposPersonalizados(
+  seccionesBase: SeccionFormulario[],
+  camposPersonalizados: any[]
+): SeccionFormulario[] {
+  if (!Array.isArray(seccionesBase) || seccionesBase.length === 0) {
+    return seccionesBase || [];
+  }
+  if (!Array.isArray(camposPersonalizados)) {
+    return seccionesBase;
+  }
+
+  // Set de códigos de campos personalizados activos y válidos
+  const codigosValidosCP = new Set(camposPersonalizados.map((cp) => cp.codigo));
+
+  // Primero: limpiar en seccionesBase omitiendo tipo_cambio (se define en paso previo de selección)
+  // y aquellos campos marcados como es_personalizado que ya fueron eliminados del catálogo
+  const seccionesLimpias = seccionesBase.map((sec) => ({
+    ...sec,
+    campos: (sec.campos || [])
+      .filter((c) => c.codigo !== "tipo_cambio")
+      .filter((c) => {
+        if (c.es_personalizado || c.codigo.startsWith("cf_")) {
+          return codigosValidosCP.has(c.codigo);
+        }
+        return true;
+      }),
+  }));
+
+  // Segundo: Para cada campo personalizado activo en cpLista, verificar si ya está en su sección
+  const seccionesResultado = seccionesLimpias.map((sec) => ({
+    ...sec,
+    campos: [...sec.campos],
+  }));
+
+  camposPersonalizados.forEach((cp) => {
+    const targetSecId = resolverSeccionId(cp.seccion, seccionesResultado);
+    const targetSec = seccionesResultado.find((s) => s.id === targetSecId) || seccionesResultado[0];
+    if (!targetSec) return;
+
+    const idxExistente = targetSec.campos.findIndex((c) => c.codigo === cp.codigo);
+
+    // Tipos de cambio aplicables
+    const tipos = cp.propiedades?.tipos_cambio;
+    let tipoCambioAplicable: "TODOS" | "NORMAL" | "EMERGENCIA" | "ESTANDAR" = "TODOS";
+    if (Array.isArray(tipos) && tipos.length === 1) {
+      tipoCambioAplicable = tipos[0];
+    }
+
+    const faseAplicable: "todas" | "fase_1" | "fase_2" =
+      cp.propiedades?.fase === "fase_1" || cp.propiedades?.fase === "fase_2"
+        ? cp.propiedades.fase
+        : "todas";
+
+    if (idxExistente === -1) {
+      // Agregar nuevo campo personalizado
+      const nuevoCampo: CampoFormulario = {
+        codigo: cp.codigo,
+        etiqueta: cp.etiqueta || cp.codigo,
+        tipo: cp.tipo || "texto",
+        visible: cp.activo !== false,
+        obligatorio:
+          cp.obligatorio === "si"
+            ? "si"
+            : cp.obligatorio === "segun_tipo"
+            ? "segun_tipo"
+            : cp.obligatorio === "condicional"
+            ? "condicional"
+            : "no",
+        bloqueado: false,
+        ancho: cp.tipo === "area_enriquecida" ? "completo" : "1/2",
+        ayuda: cp.descripcion || undefined,
+        es_personalizado: true,
+        tipo_cambio_aplicable: tipoCambioAplicable,
+        fase_aplicable: faseAplicable,
+      };
+      targetSec.campos.push(nuevoCampo);
+    } else {
+      // Actualizar datos del catálogo conservando personalizaciones locales
+      targetSec.campos[idxExistente] = {
+        ...targetSec.campos[idxExistente],
+        etiqueta: cp.etiqueta || targetSec.campos[idxExistente].etiqueta,
+        tipo: cp.tipo || targetSec.campos[idxExistente].tipo,
+        ayuda: cp.descripcion ?? targetSec.campos[idxExistente].ayuda,
+        es_personalizado: true,
+        visible: cp.activo === false ? false : targetSec.campos[idxExistente].visible,
+        tipo_cambio_aplicable: targetSec.campos[idxExistente].tipo_cambio_aplicable || tipoCambioAplicable,
+        fase_aplicable: targetSec.campos[idxExistente].fase_aplicable || faseAplicable,
+      };
+    }
+  });
+
+  return seccionesResultado;
+}
+
 // Secciones del Alta inicial (solicitud) vs Secciones técnicas de Planificación y Aprobación
 const SECCIONES_ALTA_IDS = ["sec_a", "sec_b", "sec_c", "sec_d"];
 
@@ -49,19 +192,84 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
   puedeEditar = true,
 }) => {
   const [campoEditando, setCampoEditando] = useState<{ seccionId: string; campo: CampoFormulario } | null>(null);
-  const [formularioActivo, setFormularioActivo] = useState<"solicitud" | "edicion">("solicitud");
+  const [tipoCambioActivo, setTipoCambioActivo] = useState<"NORMAL" | "EMERGENCIA" | "ESTANDAR">("NORMAL");
   const [soloObligatorios, setSoloObligatorios] = useState(false);
   const [soloOcultos, setSoloOcultos] = useState(false);
   const [arrastrando, setArrastrando] = useState<{ seccionId: string; index: number } | null>(null);
   const [seccionesColapsadas, setSeccionesColapsadas] = useState<Record<string, boolean>>({});
 
+  // Fusionar dinámicamente las secciones con los campos técnicos personalizados
+  const seccionesEfectivas = React.useMemo(() => {
+    return fusionarSeccionesConCamposPersonalizados(secciones, camposPersonalizados);
+  }, [secciones, camposPersonalizados]);
+
   const toggleSeccion = (secId: string) => {
     setSeccionesColapsadas((prev) => ({ ...prev, [secId]: !prev[secId] }));
   };
 
+  // Filtrado de pertenencia del campo según Tipo de Cambio
+  const campoAplicaATipoYFase = (campo: CampoFormulario) => {
+    // 1. Modelo de cambio estándar ÚNICAMENTE en tipo ESTANDAR
+    if (campo.codigo === "modelo_id") {
+      return tipoCambioActivo === "ESTANDAR";
+    }
+
+    // 2. Campos de crisis de emergencia ÚNICAMENTE en tipo EMERGENCIA
+    if (["ticket_emergencia", "medio_autorizacion_emergencia", "justificacion_emergencia", "consecuencia_emergencia"].includes(campo.codigo)) {
+      return tipoCambioActivo === "EMERGENCIA";
+    }
+
+    // 3. Campos de fase 2 / Post-Mortem PIR no aplican al formulario de alta inicial (se configuran en "Configuración del Ticket")
+    if (["causa_raiz_tecnica", "tiempo_downtime_real", "incidente_colateral", "ticket_problema_preventivo", "lecciones_aprendidas"].includes(campo.codigo)) {
+      return false;
+    }
+
+    // 4. En EMERGENCIA: El alta es de intervención rápida (hotfix). Se excluyen planes detallados de fase 2, cuestionarios y ventanas normales
+    if (tipoCambioActivo === "EMERGENCIA") {
+      if ([
+        "punto_no_retorno", "plan_pruebas", "criterios_exito", "ventana_id",
+        "requiere_interrupcion", "duracion_interrupcion", "riesgo_respuestas",
+        "impacto", "urgencia", "prioridad", "beneficio", "consecuencia_no_hacer"
+      ].includes(campo.codigo)) {
+        return false;
+      }
+    }
+
+    // 5. En ESTANDAR: Se rige por el modelo pre-aprobado. No requiere cuestionario ni priorización dinámica
+    if (tipoCambioActivo === "ESTANDAR") {
+      if ([
+        "riesgo_respuestas", "ticket_origen", "consecuencia_no_hacer",
+        "impacto", "urgencia", "prioridad", "beneficio"
+      ].includes(campo.codigo)) {
+        return false;
+      }
+    }
+
+    // 6. Tipo de cambio aplicable configurado en propiedades
+    if (campo.tipo_cambio_aplicable && campo.tipo_cambio_aplicable !== "TODOS") {
+      if (campo.tipo_cambio_aplicable !== tipoCambioActivo) return false;
+    }
+
+    return true;
+  };
+
+  // Eliminar un campo de una sección (para todos los campos)
+  const eliminarCampoDeSeccion = (seccionId: string, codigo: string) => {
+    const confirmacion = window.confirm(`¿Deseas eliminar el campo "${codigo}" de esta sección del formulario?`);
+    if (!confirmacion) return;
+    const nuevas = seccionesEfectivas.map((sec) => {
+      if (sec.id !== seccionId) return sec;
+      return {
+        ...sec,
+        campos: sec.campos.filter((c) => c.codigo !== codigo),
+      };
+    });
+    onChangeSecciones(nuevas);
+  };
+
   // Actualizar un campo específico
   const actualizarCampo = (seccionId: string, codigo: string, patch: Partial<CampoFormulario>) => {
-    const nuevas = secciones.map((sec) => {
+    const nuevas = seccionesEfectivas.map((sec) => {
       if (sec.id !== seccionId) return sec;
       return {
         ...sec,
@@ -73,26 +281,45 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
 
   // Reordenar campo mediante arrastre
   const reordenarCampo = (seccionId: string, fromIndex: number, toIndex: number) => {
-    const sec = secciones.find((s) => s.id === seccionId);
+    const sec = seccionesEfectivas.find((s) => s.id === seccionId);
     if (!sec || fromIndex === toIndex) return;
     const nuevosCampos = [...sec.campos];
     const [removido] = nuevosCampos.splice(fromIndex, 1);
     nuevosCampos.splice(toIndex, 0, removido);
-    onChangeSecciones(secciones.map((s) => (s.id === seccionId ? { ...s, campos: nuevosCampos } : s)));
+    onChangeSecciones(seccionesEfectivas.map((s) => (s.id === seccionId ? { ...s, campos: nuevosCampos } : s)));
   };
 
-  // Partición entre secciones de Alta y secciones de Planificación/Edición
-  const seccionesAlta = secciones.filter((s) => SECCIONES_ALTA_IDS.includes(s.id));
-  const seccionesPlanificacion = secciones.filter((s) => !SECCIONES_ALTA_IDS.includes(s.id));
+  // Particiones y secciones activas estrictamente por Tipo de Cambio para el Formulario de Alta
+  const obtenerSeccionesActivas = (): SeccionFormulario[] => {
+    if (tipoCambioActivo === "NORMAL") {
+      return ["sec_a", "sec_b", "sec_c", "sec_d", "sec_e", "sec_h"]
+        .map((id) => seccionesEfectivas.find((s) => s.id === id))
+        .filter(Boolean) as SeccionFormulario[];
+    } else if (tipoCambioActivo === "EMERGENCIA") {
+      return ["sec_g", "sec_a", "sec_c", "sec_f", "sec_h"]
+        .map((id) => seccionesEfectivas.find((s) => s.id === id))
+        .filter(Boolean) as SeccionFormulario[];
+    } else {
+      // ESTANDAR
+      return ["sec_a", "sec_c", "sec_e", "sec_h"]
+        .map((id) => seccionesEfectivas.find((s) => s.id === id))
+        .filter(Boolean) as SeccionFormulario[];
+    }
+  };
 
-  // En la vista de Alta solo se configuran las de Alta. En la de Edición se presentan ambas con su herencia explícita.
-  const seccionesVisiblesEnLienzo = formularioActivo === "solicitud" ? seccionesAlta : secciones;
+  const seccionesVisiblesEnLienzo = obtenerSeccionesActivas();
 
-  // Contadores
-  const totalCampos = seccionesVisiblesEnLienzo.reduce((acc, s) => acc + (s.campos?.length || 0), 0);
-  const totalVisibles = seccionesVisiblesEnLienzo.reduce((acc, s) => acc + (s.campos?.filter((c) => c.visible).length || 0), 0);
+  // Contadores dinámicos filtrados por tipo de cambio y fase
+  const totalCampos = seccionesVisiblesEnLienzo.reduce(
+    (acc, s) => acc + (s.campos?.filter(campoAplicaATipoYFase).length || 0),
+    0
+  );
+  const totalVisibles = seccionesVisiblesEnLienzo.reduce(
+    (acc, s) => acc + (s.campos?.filter((c) => campoAplicaATipoYFase(c) && c.visible).length || 0),
+    0
+  );
   const totalObligatorios = seccionesVisiblesEnLienzo.reduce(
-    (acc, s) => acc + (s.campos?.filter((c) => c.visible && c.obligatorio === "si").length || 0),
+    (acc, s) => acc + (s.campos?.filter((c) => campoAplicaATipoYFase(c) && c.visible && c.obligatorio === "si").length || 0),
     0
   );
 
@@ -144,7 +371,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
               <polyline points="6 9 12 15 18 9" />
             </svg>
             <span style={{ fontSize: 13.5, fontWeight: 700, color: "#0f172a" }}>
-              {sec.titulo}
+              {sec.titulo.replace(/^Sección\s+[A-Z]\s*—\s*/i, "")}
             </span>
             {esHeredada && (
               <span
@@ -165,7 +392,8 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span style={{ fontSize: 11.5, color: "#64748b" }}>
-              {sec.campos?.filter((c) => c.visible).length || 0} / {sec.campos?.length || 0} visibles
+              {sec.campos?.filter((c) => campoAplicaATipoYFase(c) && c.visible).length || 0} /{" "}
+              {sec.campos?.filter(campoAplicaATipoYFase).length || 0} visibles
             </span>
             <span style={{ fontSize: 11, color: "#94a3b8" }}>
               {estaColapsada ? "(Expandir)" : "(Contraer)"}
@@ -178,6 +406,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
           <div style={{ padding: "10px 14px", display: "flex", flexDirection: "column", gap: 7 }}>
             {(sec.campos || [])
               .filter((c) => {
+                if (!campoAplicaATipoYFase(c)) return false;
                 if (soloObligatorios) return c.visible && c.obligatorio === "si";
                 if (soloOcultos) return !c.visible;
                 return true;
@@ -261,6 +490,37 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                           >
                             {campo.etiqueta}
                           </span>
+                          {campo.es_personalizado && (
+                            <span
+                              style={{
+                                fontSize: 10,
+                                padding: "1px 6px",
+                                borderRadius: 4,
+                                backgroundColor: "#f1f5f9",
+                                color: "#475569",
+                                border: "1px solid #cbd5e1",
+                                fontWeight: 700,
+                              }}
+                              title="Campo técnico personalizado definido en el catálogo general"
+                            >
+                              Personalizado
+                            </span>
+                          )}
+                          {campo.tipo_cambio_aplicable && campo.tipo_cambio_aplicable !== "TODOS" && (
+                            <span
+                              style={{
+                                fontSize: 9.5,
+                                padding: "1px 5px",
+                                borderRadius: 4,
+                                backgroundColor: "#e0f2fe",
+                                color: "#0369a1",
+                                border: "1px solid #bae6fd",
+                                fontWeight: 600,
+                              }}
+                            >
+                              {campo.tipo_cambio_aplicable}
+                            </span>
+                          )}
                           {esHeredada && campo.solo_lectura && (
                             <span
                               style={{
@@ -284,33 +544,18 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
 
                     {/* Controles en la fila */}
                     <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }} onClick={(e) => e.stopPropagation()}>
-                      {esHeredada ? (
-                        /* En campos heredados, el administrador define si en la edición es modificable o de solo lectura */
-                        <select
-                          className="input-base"
-                          value={campo.solo_lectura ? "lectura" : "editable"}
-                          disabled={!puedeEditar}
-                          onChange={(e) => actualizarCampo(sec.id, campo.codigo, { solo_lectura: e.target.value === "lectura" })}
-                          style={{ fontSize: 10.5, padding: "2px 5px", maxWidth: 115, width: "auto" }}
-                        >
-                          <option value="editable">Editable por Especialista</option>
-                          <option value="lectura">Solo Lectura (Protegido)</option>
-                        </select>
-                      ) : (
-                        /* En campos de planificación técnica, se define obligatoriedad para compuertas CAB / Ejecución */
-                        <select
-                          className="input-base"
-                          value={campo.obligatorio}
-                          disabled={!puedeEditar}
-                          onChange={(e) => actualizarCampo(sec.id, campo.codigo, { obligatorio: e.target.value as any })}
-                          style={{ fontSize: 10.5, padding: "2px 5px", maxWidth: 115, width: "auto" }}
-                        >
-                          <option value="si">Obligatorio CAB</option>
-                          <option value="segun_tipo">Según Tipo</option>
-                          <option value="condicional">Condicional</option>
-                          <option value="no">Opcional</option>
-                        </select>
-                      )}
+                      <select
+                        className="input-base"
+                        value={campo.obligatorio}
+                        disabled={!puedeEditar}
+                        onChange={(e) => actualizarCampo(sec.id, campo.codigo, { obligatorio: e.target.value as any })}
+                        style={{ fontSize: 10.5, padding: "2px 5px", maxWidth: 115, width: "auto" }}
+                      >
+                        <option value="si">Obligatorio</option>
+                        <option value="no">Opcional</option>
+                        <option value="segun_tipo">Según Tipo</option>
+                        <option value="condicional">Condicional</option>
+                      </select>
 
                       {/* Botón de visibilidad con icono de ojo */}
                       <button
@@ -364,6 +609,30 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                           <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                         </svg>
                       </button>
+
+                      {/* Botón de eliminar campo para TODOS los campos */}
+                      <button
+                        type="button"
+                        disabled={!puedeEditar}
+                        onClick={() => eliminarCampoDeSeccion(sec.id, campo.codigo)}
+                        className="boton-accion-icono"
+                        style={{
+                          width: 28,
+                          height: 28,
+                          color: "#dc2626",
+                          borderColor: "#fecaca",
+                          backgroundColor: "#fef2f2",
+                        }}
+                        title="Eliminar campo de la sección"
+                        aria-label="Eliminar campo"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                          <line x1="10" y1="11" x2="10" y2="17" />
+                          <line x1="14" y1="11" x2="14" y2="17" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 );
@@ -390,18 +659,31 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
           gap: 12,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontSize: 12.5, fontWeight: 700, color: "#334155" }}>Fase del Ticket a configurar:</span>
-          <select
-            className="input-base"
-            value={formularioActivo}
-            onChange={(e) => setFormularioActivo(e.target.value as any)}
-            style={{ fontSize: 12, width: 260 }}
-          >
-            <option value="solicitud">1. Solicitud de RFC (Alta Inicial)</option>
-            <option value="edicion">2. Edición Técnica y CAB (Dentro del Ticket)</option>
-          </select>
-          <span style={{ fontSize: 12, color: "#64748b" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+          {/* Selector Maestro: Tipo de Cambio */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 12.5, fontWeight: 700, color: "#1e293b" }}>Tipo de Cambio a configurar:</span>
+            <select
+              className="input-base"
+              value={tipoCambioActivo}
+              onChange={(e) => {
+                const nuevo = e.target.value as "NORMAL" | "EMERGENCIA" | "ESTANDAR";
+                setTipoCambioActivo(nuevo);
+              }}
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: tipoCambioActivo === "EMERGENCIA" ? "#dc2626" : tipoCambioActivo === "ESTANDAR" ? "#16a34a" : "#2563eb",
+                width: 250,
+              }}
+            >
+              <option value="NORMAL">Normal (CAB y Rollback)</option>
+              <option value="EMERGENCIA">Emergencia (Crisis P1 y ECAB)</option>
+              <option value="ESTANDAR">Estándar (Pre-Aprobado por Catálogo)</option>
+            </select>
+          </div>
+
+          <span style={{ fontSize: 11.5, color: "#64748b" }}>
             {totalVisibles} campos visibles · {totalObligatorios} obligatorios
           </span>
         </div>
@@ -446,43 +728,6 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
         </div>
       </div>
 
-      {/* Banner Orientativo según la Fase Seleccionada */}
-      {formularioActivo === "solicitud" ? (
-        <div
-          style={{
-            backgroundColor: "#f0fdf4",
-            border: "1px solid #bbf7d0",
-            borderRadius: 8,
-            padding: "10px 16px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          <span style={{ fontSize: 16 }}>🌱</span>
-          <div style={{ fontSize: 12.5, color: "#166534" }}>
-            <strong>Fase de Solicitud de RFC (Alta del Cambio):</strong> Define únicamente los campos iniciales que el solicitante llena para registrar la RFC y generar el número <strong>#RFC-2026-XXXX</strong>.
-          </div>
-        </div>
-      ) : (
-        <div
-          style={{
-            backgroundColor: "#eff6ff",
-            border: "1px solid #bfdbfe",
-            borderRadius: 8,
-            padding: "10px 16px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          <span style={{ fontSize: 16 }}>🧬</span>
-          <div style={{ fontSize: 12.5, color: "#1e40af" }}>
-            <strong>Fase de Planificación Técnica y CAB dentro del mismo Ticket:</strong> Los campos del Alta se <strong>heredan automáticamente</strong> (no necesitas reconfigurarlos). Aquí solo defines si quedan en <em>Solo Lectura</em> y configuras las <strong>secciones técnicas restantes</strong> (Rollback, Pruebas, Ventanas) que el comité CAB exige para autorizar el cambio.
-          </div>
-        </div>
-      )}
-
       {/* Layout de Dos Columnas: Lienzo de Secciones y Campos (Izquierda) + Vista Previa en Vivo (Derecha) */}
       <div
         style={{
@@ -495,53 +740,26 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
       >
         {/* Columna Izquierda: Lienzo de Secciones */}
         <div style={{ display: "flex", flexDirection: "column", gap: 14, minHeight: 600 }}>
-          {formularioActivo === "solicitud" ? (
-            /* En Alta: Solo se listan las secciones iniciales */
-            seccionesAlta.map((sec) => renderizarSeccion(sec, false))
-          ) : (
-            /* En Edición: Bloque 1 (Campos Heredados) + Bloque 2 (Secciones de Planificación y Rollback) */
-            <>
-              {/* Bloque 1: Heredados de Alta */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 2px" }}>
-                  <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", color: "#1d4ed8", backgroundColor: "#dbeafe", padding: "2px 8px", borderRadius: 4 }}>
-                    ✦ Heredados del Alta
-                  </span>
-                  <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>
-                    Datos base del ticket (conservados automáticamente)
-                  </span>
-                </div>
-                {seccionesAlta.map((sec) => renderizarSeccion(sec, true))}
-              </div>
-
-              {/* Bloque 2: Secciones Técnicas Restantes */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 2px" }}>
-                  <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", color: "#065f46", backgroundColor: "#d1fae5", padding: "2px 8px", borderRadius: 4 }}>
-                    ⚡ Planificación Técnica, Rollback y Autorización CAB
-                  </span>
-                  <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>
-                    Secciones técnicas exigibles para evaluar, autorizar e implementar el cambio
-                  </span>
-                </div>
-                {seccionesPlanificacion.map((sec) => renderizarSeccion(sec, false))}
-              </div>
-            </>
-          )}
+          {seccionesVisiblesEnLienzo.map((sec) => renderizarSeccion(sec, false))}
         </div>
 
-        {/* Columna Derecha: Vista Previa en Vivo Simulada */}
+        {/* Columna Derecha: Vista Previa en Vivo Simulada fijada y con scroll independiente */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             position: "sticky",
             top: 16,
+            maxHeight: "calc(100vh - 32px)",
+            overflowY: "auto",
+            scrollbarWidth: "thin",
           }}
         >
           <SimuladorCambiosEnVivo
-            secciones={secciones}
+            secciones={seccionesEfectivas}
             abierto={true}
+            tipoCambioProp={tipoCambioActivo}
+            onTipoCambioChange={(nuevo) => setTipoCambioActivo(nuevo)}
           />
         </div>
       </div>

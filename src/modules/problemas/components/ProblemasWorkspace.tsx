@@ -1,8 +1,18 @@
+// ============================================================================
+// GESTIÓN DE PROBLEMAS Y ERRORES CONOCIDOS (KEDB): Workspace de Investigación
+// ============================================================================
+// Permite registrar problemas mayores, documentar causas raíz (RCA), registrar
+// soluciones temporales (workarounds) y publicar en la base KEDB (ITIL v4).
+// ============================================================================
+
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 
+// ----------------------------------------------------------------------------
+// 1. MODELO DE DATOS: Estructura de Problema, estado, causa raíz y KEDB
+// ----------------------------------------------------------------------------
 type Problema = {
   id_problema: number;
   codigo_problema: string;
@@ -16,6 +26,9 @@ type Problema = {
 };
 
 export default function ProblemasWorkspace({ puedeCrear, soloKedb = false }: { puedeCrear: boolean; soloKedb?: boolean }) {
+  // --------------------------------------------------------------------------
+  // 2. ESTADOS LOCALES: Lista de problemas, formulario de alta y banderas
+  // --------------------------------------------------------------------------
   const [items, setItems] = useState<Problema[]>([]);
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -23,6 +36,9 @@ export default function ProblemasWorkspace({ puedeCrear, soloKedb = false }: { p
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
 
+  // --------------------------------------------------------------------------
+  // 3. CONSULTA A LA API: Carga el listado completo o exclusivo para la KEDB
+  // --------------------------------------------------------------------------
   async function cargar() {
     setCargando(true);
     const res = await fetch(`/api/problemas${soloKedb ? "?kedb=true" : ""}`, { cache: "no-store" });
@@ -34,6 +50,9 @@ export default function ProblemasWorkspace({ puedeCrear, soloKedb = false }: { p
 
   useEffect(() => { void cargar(); }, [soloKedb]);
 
+  // --------------------------------------------------------------------------
+  // 4. REGISTRO FORMAL: Envía un nuevo problema a la API con título y detalle
+  // --------------------------------------------------------------------------
   async function crear(e: FormEvent) {
     e.preventDefault(); setError(""); setGuardando(true);
     const res = await fetch("/api/problemas", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ titulo, descripcion }) });
@@ -43,28 +62,18 @@ export default function ProblemasWorkspace({ puedeCrear, soloKedb = false }: { p
     setTitulo(""); setDescripcion(""); await cargar();
   }
 
+  // --------------------------------------------------------------------------
+  // 5. RENDERIZADO VISUAL: Encabezado, formulario de creación y tabla KEDB
+  // --------------------------------------------------------------------------
   return <div className="vista-contenedor">
     <div className="cabecera-pagina"><div><h1>{soloKedb ? "Errores conocidos (KEDB)" : "Gestión de problemas"}</h1><p className="subtitulo">Investiga causas raíz, relaciona incidentes y publica workarounds para reducir recurrencias.</p></div></div>
     {error && <p role="alert" className="mensaje-error">{error}</p>}
     {puedeCrear && !soloKedb && <form onSubmit={crear} className="tarjeta-formulario" style={{ display: "grid", gap: 12, marginBottom: 20 }}>
       <h2 style={{ margin: 0 }}>Registrar problema</h2>
       <input className="input-base" required maxLength={180} value={titulo} onChange={e => setTitulo(e.target.value)} placeholder="Título del problema" />
-      <textarea className="input-base" required rows={3} value={descripcion} onChange={e => setDescripcion(e.target.value)} placeholder="Síntomas, alcance e incidentes recurrentes" />
-      <button className="boton-principal" disabled={guardando}>{guardando ? "Guardando…" : "Crear problema"}</button>
+      <textarea className="input-base" required rows={3} value={descripcion} onChange={e => setDescripcion(e.target.value)} placeholder="Descripción del comportamiento anómalo o falla" />
+      <button className="boton-primario" disabled={guardando}>{guardando ? "Registrando..." : "Guardar problema"}</button>
     </form>}
-    {cargando ? <p>Cargando…</p> : items.length === 0 ? <p>No hay problemas{soloKedb ? " conocidos" : " registrados"}.</p> : <div style={{ display: "grid", gap: 12 }}>
-      {items.map(p => <article key={p.id_problema} className="tarjeta" style={{ padding: 16 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}><strong>{p.codigo_problema} · {p.titulo}</strong><span>{p.estado_nombre}</span></div>
-        <p>{p.descripcion}</p>
-        {p.causa_raiz && <p><b>Causa raíz:</b> {p.causa_raiz}</p>}
-        {p.workaround && <p><b>Workaround:</b> {p.workaround}</p>}
-        <small>Incidentes asociados: {p.incidentes_asociados?.map(i => i.codigo_ticket).join(", ") || "Ninguno"}</small>
-        <div style={{ marginTop: 8 }}>
-          <Link href={`/plataforma/problemas/${p.id_problema}`} className="boton-secundario" style={{ fontSize: 12, textDecoration: "none", display: "inline-block", width: "auto" }}>
-            Ver expediente completo
-          </Link>
-        </div>
-      </article>)}
-    </div>}
+    {cargando ? <p className="mensaje-cargando">Cargando problemas...</p> : items.length === 0 ? <p className="mensaje-vacio">No hay registros para mostrar.</p> : <div className="contenedor-tabla"><table className="tabla-registros"><thead><tr><th>Código</th><th>Título</th><th>Estado</th><th>Causa raíz</th><th>Solución temporal</th><th>Incidentes</th></tr></thead><tbody>{items.map(p => <tr key={p.id_problema}><td><Link href={`/plataforma/problemas/${p.id_problema}`} className="enlace-tabla">{p.codigo_problema}</Link></td><td>{p.titulo}</td><td><span className="badge-estado">{p.estado_nombre}</span></td><td>{p.causa_raiz || "Pendiente de análisis"}</td><td>{p.workaround || "Sin solución provisional"}</td><td>{p.incidentes_asociados?.length || 0}</td></tr>)}</tbody></table></div>}
   </div>;
 }

@@ -1,3 +1,10 @@
+// ============================================================================
+// SERVICIO DE TICKETS: REGLAS DE NEGOCIO Y OPERACIÓN ITIL v4
+// ============================================================================
+// Lógica de negocio para incidentes y solicitudes: cálculo de matriz de
+// prioridad ITIL, gestión de transacciones ACID, control de SLA y balance WIP.
+// ============================================================================
+
 import { query, queryRow, transaccion } from "@/shared/lib/db";
 import { Ticket, CrearTicketPayload } from "@/types";
 import { calcularFechaLimiteHorasHabiles, calcularFechaLimiteHorasHabilesAsync } from "@/shared/lib/sla";
@@ -5,20 +12,24 @@ import { validarTexto, validarArchivoAdjunto } from "@/shared/lib/validaciones";
 import { validarCargaTecnico } from "./tecnicoCargaService";
 import { ErrorDominio } from "@/shared/lib/errores";
 
-// Matriz de Prioridad ITIL 4: Impacto (1..3) x Urgencia (1..3)
-// Retorna el código de prioridad: P1, P2, P3, P4
+// ----------------------------------------------------------------------------
+// 1. MATRIZ DE PRIORIDAD ITIL: Cálculo bidimensional de Impacto × Urgencia O(1)
+// ----------------------------------------------------------------------------
+// Tabla constante indexada por coordenadas "impacto-urgencia"
+const MATRIZ_PRIORIDAD_ITIL: Record<string, string> = {
+  "3-3": "P1", // Crítica
+  "3-2": "P2", // Alta
+  "3-1": "P3", // Media
+  "2-3": "P2", // Alta
+  "2-2": "P3", // Media
+  "2-1": "P4", // Baja
+  "1-3": "P3", // Media
+  "1-2": "P4", // Baja
+  "1-1": "P4", // Baja
+};
+
 export function calcularPrioridadITIL(nivelImpacto: number, nivelUrgencia: number): string {
-  if (nivelImpacto === 3 && nivelUrgencia === 3) return "P1"; // Crítica
-  if (nivelImpacto === 3 && nivelUrgencia === 2) return "P2"; // Alta
-  if (nivelImpacto === 3 && nivelUrgencia === 1) return "P3"; // Media
-
-  if (nivelImpacto === 2 && nivelUrgencia === 3) return "P2"; // Alta
-  if (nivelImpacto === 2 && nivelUrgencia === 2) return "P3"; // Media
-  if (nivelImpacto === 2 && nivelUrgencia === 1) return "P4"; // Baja
-
-  if (nivelImpacto === 1 && nivelUrgencia === 3) return "P3"; // Media
-  if (nivelImpacto === 1 && nivelUrgencia === 2) return "P4"; // Baja
-  return "P4"; // Baja
+  return MATRIZ_PRIORIDAD_ITIL[`${nivelImpacto}-${nivelUrgencia}`] || "P4";
 }
 
 export interface ContextoTickets {
@@ -41,6 +52,9 @@ export interface FiltrosTickets {
   tecnico?: string | null;
 }
 
+// ----------------------------------------------------------------------------
+// 2. CONSULTAS DE BANDEJAS: Listado de tickets filtrado por perfil y estado
+// ----------------------------------------------------------------------------
 export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosTickets) {
   const { idUsuario, idPerfil } = contexto;
   const {
@@ -103,7 +117,7 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
     condiciones.push(`t.estado_aprobacion = 'PENDIENTE_APROBACION'`);
     if (idPerfil === 5) {
       // Delimitación departamental estricta de aprobaciones (RN-33)
-      condiciones.push(`t.id_departamento_empresa = (SELECT id_departamento_empresa FROM usuario WHERE id_usuario = ${paramIdx++})`);
+      condiciones.push(`t.id_departamento_empresa = (SELECT id_departamento_empresa FROM usuario WHERE id_usuario = $${paramIdx++})`);
       params.push(idUsuario);
     }
   } else if (vista === "departamento") {
@@ -287,6 +301,9 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
   return { tickets: ticketsConSLA, id_usuario_actual: idUsuario };
 }
 
+// ----------------------------------------------------------------------------
+// 3. REGISTRO DE TICKETS: Transacción ACID, numeración correlativa y cálculo SLA
+// ----------------------------------------------------------------------------
 export async function crearTicket(sesion: any, body: CrearTicketPayload) {
   const {
     titulo,

@@ -1,3 +1,10 @@
+// ============================================================================
+// VISTA DETALLE DE TICKET: Gestión operativa del ciclo de vida ITIL v4
+// ============================================================================
+// Ficha central para técnicos y supervisores: seguimiento de SLA, asignación,
+// registro de notas públicas e internas, pausas de reloj y resolución formal.
+// ============================================================================
+
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
@@ -40,6 +47,9 @@ export default function PaginaDetalleTicket({
   const router = useRouter();
   const idTicket = params.id as string;
 
+  // --------------------------------------------------------------------------
+  // 1. ESTADOS LOCALES: Ticket, catálogos, usuario actual y modales de acción
+  // --------------------------------------------------------------------------
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [comentarios, setComentarios] = useState<ComentarioTicket[]>([]);
   const [catalogos, setCatalogos] = useState<CatalogosTickets | null>(null);
@@ -86,6 +96,9 @@ export default function PaginaDetalleTicket({
   // Visor modal de evidencias
   const [imagenSeleccionada, setImagenSeleccionada] = useState<{ url: string; nombre: string } | null>(null);
 
+  // --------------------------------------------------------------------------
+  // 2. CARGA DE DATOS: Consulta del ticket, historial y campos dinámicos
+  // --------------------------------------------------------------------------
   async function cargarTicketYDatos() {
     setCargando(true);
     setError(null);
@@ -138,6 +151,9 @@ export default function PaginaDetalleTicket({
     }
   }
 
+  // --------------------------------------------------------------------------
+  // 3. ACCIONES OPERATIVAS: Transiciones de estado (asignar, resolver, pausar)
+  // --------------------------------------------------------------------------
   async function ejecutarAccion(payload: any) {
     setEjecutandoAccion(true);
     setErrorOperativo(null);
@@ -164,6 +180,9 @@ export default function PaginaDetalleTicket({
     }
   }
 
+  // --------------------------------------------------------------------------
+  // 4. ESCALAMIENTO ITIL: Creación de problema vinculado (análisis causa raíz)
+  // --------------------------------------------------------------------------
   async function handleEscalarAProblema() {
     if (!ticket) return;
     setElevandoProblema(true);
@@ -229,6 +248,9 @@ export default function PaginaDetalleTicket({
   const comentariosPublicos = comentarios.filter((c) => !c.es_interno);
   const comentariosInternos = comentarios.filter((c) => c.es_interno);
 
+  // --------------------------------------------------------------------------
+  // 5. COMUNICACIÓN: Envío de comentarios públicos o notas técnicas internas
+  // --------------------------------------------------------------------------
   async function enviarComentario(esInterno: boolean) {
     const vCom = validarTexto(nuevoMensaje, 2, 2000, "El mensaje", true);
     if (!vCom.valido) {
@@ -268,6 +290,9 @@ export default function PaginaDetalleTicket({
     }
   }
 
+  // --------------------------------------------------------------------------
+  // 6. CONTROL DE CALIDAD: Encuesta de satisfacción del usuario (CSAT)
+  // --------------------------------------------------------------------------
   async function guardarEncuestaCsat(e: FormEvent) {
     e.preventDefault();
     if (!csatRating) {
@@ -356,6 +381,9 @@ export default function PaginaDetalleTicket({
     { num: 5, label: "Cancelado" },
   ];
 
+  // --------------------------------------------------------------------------
+  // 7. RENDERIZADO VISUAL: Barra de estado, expediente, pestañas y modales
+  // --------------------------------------------------------------------------
   return (
     <div className="vista-contenedor" style={{ maxWidth: 1100, margin: "0 auto", paddingBottom: 60 }}>
       {/* Navegación superior */}

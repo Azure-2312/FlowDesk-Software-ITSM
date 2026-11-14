@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Ticket, DepartamentoTI, TecnicoConCarga } from "@/types";
 import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
 
@@ -119,13 +119,31 @@ export default function PaginaAsignarTickets() {
     return true;
   });
 
-  // Métricas del despacho
-  const sinAsignarTotal = tickets.filter((t) => t.id_usuario_asignado === null && !t.es_terminal).length;
-  const criticosSinAsignar = tickets.filter(
-    (t) => t.id_usuario_asignado === null && !t.es_terminal && (t.prioridad_codigo === "P1" || t.prioridad_codigo === "P2")
-  ).length;
-  const slaVencidos = tickets.filter((t) => !t.es_terminal && t.sla_vencido).length;
-  const tecnicosDisponibles = tecnicos.filter((tec) => tec.estado_operativo === "DISPONIBLE").length;
+  // Métricas del despacho: cálculo consolidado en un solo recorrido O(N) memorizado
+  const { sinAsignarTotal, criticosSinAsignar, slaVencidos } = useMemo(() => {
+    let sinAsignar = 0;
+    let criticos = 0;
+    let sla = 0;
+    for (const t of tickets) {
+      if (!t.es_terminal) {
+        if (t.id_usuario_asignado === null) {
+          sinAsignar++;
+          if (t.prioridad_codigo === "P1" || t.prioridad_codigo === "P2") {
+            criticos++;
+          }
+        }
+        if (t.sla_vencido) {
+          sla++;
+        }
+      }
+    }
+    return { sinAsignarTotal: sinAsignar, criticosSinAsignar: criticos, slaVencidos: sla };
+  }, [tickets]);
+
+  const tecnicosDisponibles = useMemo(
+    () => tecnicos.reduce((acc, tec) => (tec.estado_operativo === "DISPONIBLE" ? acc + 1 : acc), 0),
+    [tecnicos]
+  );
 
   // Filtrado y recomendación de técnicos
   const tecnicosFiltrados = tecnicos

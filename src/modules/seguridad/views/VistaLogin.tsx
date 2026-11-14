@@ -1,3 +1,10 @@
+// ============================================================================
+// SEGURIDAD Y ACCESO: PANTALLA OFICIAL DE AUTENTICACIÓN (LOGIN)
+// ============================================================================
+// Inicio de sesión seguro, selección de perfil activo para usuarios multi-rol
+// y flujo completo de recuperación de contraseña con código de verificación.
+// ============================================================================
+
 "use client";
 
 import { useState, useEffect, useRef, FormEvent, ClipboardEvent } from "react";
@@ -12,7 +19,9 @@ type PasoLogin = "credenciales" | "seleccionar-perfil";
 export default function PaginaLogin() {
   const router = useRouter();
 
-  // Estados de Login tradicional
+  // --------------------------------------------------------------------------
+  // 1. ESTADOS LOCALES: Modo de autenticación, credenciales y multi-perfil
+  // --------------------------------------------------------------------------
   const [modo, setModo] = useState<Modo>("login");
   const [pasoLogin, setPasoLogin] = useState<PasoLogin>("credenciales");
   const [correo, setCorreo] = useState("");
@@ -26,7 +35,9 @@ export default function PaginaLogin() {
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [perfilesDisponibles, setPerfilesDisponibles] = useState<PerfilBasico[]>([]);
 
-  // Estados de CAPTCHA Anti-Bots
+  // --------------------------------------------------------------------------
+  // 2. CAPTCHA Y BLOQUEOS: Protección anti-fuerza bruta y cuenta bloqueada
+  // --------------------------------------------------------------------------
   const [captchaToken, setCaptchaToken] = useState("");
   const [captchaSvg, setCaptchaSvg] = useState("");
   const [captchaRespuesta, setCaptchaRespuesta] = useState("");
@@ -37,7 +48,9 @@ export default function PaginaLogin() {
   const [mostrarModalAlertaBloqueo, setMostrarModalAlertaBloqueo] = useState(false);
   const [cuentaBloqueadaDefinitivo, setCuentaBloqueadaDefinitivo] = useState(false);
 
-  // Estados de Recuperación de Contraseña
+  // --------------------------------------------------------------------------
+  // 3. RECUPERACIÓN DE CLAVE: Código OTP de 6 dígitos y temporizadores
+  // --------------------------------------------------------------------------
   const [correoRecup, setCorreoRecup] = useState("");
   const [tokenSesionRecup, setTokenSesionRecup] = useState("");
   const [expiraCodigoMs, setExpiraCodigoMs] = useState<number | null>(null);
@@ -149,7 +162,9 @@ export default function PaginaLogin() {
     cargarNuevoCaptcha();
   }, []);
 
-  // ---------- Flujo Normal de Login ----------
+  // --------------------------------------------------------------------------
+  // 4. AUTENTICACIÓN: Validación de credenciales y selección de rol
+  // --------------------------------------------------------------------------
   async function manejarEnvioCredenciales(e: FormEvent) {
     e.preventDefault();
     setErrorLogin(null);

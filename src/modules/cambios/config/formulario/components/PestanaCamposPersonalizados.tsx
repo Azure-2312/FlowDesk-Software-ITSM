@@ -49,15 +49,17 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
     seccion: string;
     obligatorio: string;
     tiposCambio: string[];
+    fase: string;
   }>({
     tipo: "texto",
     etiqueta: "",
     codigo: "",
     ayuda: "",
     opciones: "",
-    seccion: "Sección A — Identificación",
+    seccion: "Identificación del Cambio",
     obligatorio: "no",
     tiposCambio: ["NORMAL", "ESTANDAR", "EMERGENCIA"],
+    fase: "todas",
   });
 
   const abrirModalCrear = () => {
@@ -67,9 +69,10 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
       codigo: "",
       ayuda: "",
       opciones: "",
-      seccion: "Sección A — Identificación",
+      seccion: "Identificación del Cambio",
       obligatorio: "no",
       tiposCambio: ["NORMAL", "ESTANDAR", "EMERGENCIA"],
+      fase: "todas",
     });
     setPasoAsistente(1);
     setErrorModal("");
@@ -98,6 +101,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
           propiedades: {
             opciones: nuevoCampo.opciones ? nuevoCampo.opciones.split("\n").map((o) => o.trim()).filter(Boolean) : [],
             tipos_cambio: nuevoCampo.tiposCambio,
+            fase: nuevoCampo.fase,
           },
         }),
       });
@@ -226,7 +230,12 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
               <th>Tipo de dato</th>
               <th>Sección en formulario</th>
               <th>Obligatoriedad</th>
-              <th>RFCs que lo usan</th>
+              <th title="Cantidad de tickets RFC reales en base de datos que ya tienen valores almacenados en este campo. Los campos activos aplican automáticamente al formulario general de RFCs.">
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                  Tickets con datos
+                  <span style={{ cursor: "help", fontSize: 11, color: "#64748b" }} title="Indica cuántos tickets RFC creados en el sistema tienen datos registrados en este campo. Al crearse, el campo aplica globalmente a la plantilla de RFC según su fase y sección.">ℹ️</span>
+                </span>
+              </th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -248,10 +257,15 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
                       {c.tipo}
                     </span>
                   </td>
-                  <td style={{ fontSize: 12 }}>{c.seccion || "Sección A"}</td>
+                  <td style={{ fontSize: 12 }}>
+                    <div style={{ fontWeight: 600, color: "#0f172a" }}>{c.seccion || "Identificación del Cambio"}</div>
+                    <div style={{ fontSize: 10.5, color: "#2563eb", fontWeight: 600, marginTop: 2 }}>
+                      Formulario General RFC
+                    </div>
+                  </td>
                   <td style={{ fontSize: 12, textTransform: "capitalize" }}>{c.obligatorio || "No"}</td>
-                  <td style={{ textAlign: "center", fontWeight: 700, color: c.veces_usado > 0 ? "#2563eb" : "#94a3b8" }}>
-                    {c.veces_usado}
+                  <td style={{ textAlign: "center", fontWeight: 700, color: c.veces_usado > 0 ? "#2563eb" : "#94a3b8" }} title="Tickets RFC en base de datos con valores en este campo">
+                    {c.veces_usado} {c.veces_usado === 1 ? "ticket" : "tickets"}
                   </td>
                   <td>
                     <span
@@ -501,13 +515,15 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
                       onChange={(e) => setNuevoCampo({ ...nuevoCampo, seccion: e.target.value })}
                       style={{ width: "100%", fontSize: 12 }}
                     >
-                      <option value="Sección A — Identificación">Sección A — Identificación</option>
-                      <option value="Sección B — Justificación y descripción">Sección B — Justificación y descripción</option>
-                      <option value="Sección C — Alcance y CMDB">Sección C — Alcance y CMDB</option>
-                      <option value="Sección D — Evaluación inicial">Sección D — Evaluación inicial</option>
-                      <option value="Sección E — Programación y Calendario">Sección E — Programación y Calendario</option>
-                      <option value="Sección F — Planes y Responsables">Sección F — Planes y Responsables</option>
-                      <option value="Sección H — Evidencias y Documentación">Sección H — Evidencias y Documentación</option>
+                      <option value="Identificación del Cambio">Identificación del Cambio</option>
+                      <option value="Justificación y descripción">Justificación y descripción</option>
+                      <option value="Alcance y CMDB">Alcance y CMDB</option>
+                      <option value="Evaluación inicial">Evaluación inicial</option>
+                      <option value="Programación y Calendario">Programación y Calendario</option>
+                      <option value="Planes y Responsables">Planes y Responsables</option>
+                      <option value="Evidencias y Documentación">Evidencias y Documentación</option>
+                      <option value="Justificación de Crisis y ECAB (Emergencia)">Justificación de Crisis (Emergencia)</option>
+                      <option value="Ficha Post-Mortem Mandatoria (PIR)">Ficha Post-Mortem Mandatoria (PIR)</option>
                     </select>
                   </div>
 
@@ -539,6 +555,22 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
 
                   <div>
                     <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
+                      Fase operativa en la que se solicita el campo:
+                    </label>
+                    <select
+                      className="input-base"
+                      value={nuevoCampo.fase}
+                      onChange={(e) => setNuevoCampo({ ...nuevoCampo, fase: e.target.value })}
+                      style={{ width: "100%", fontSize: 12 }}
+                    >
+                      <option value="todas">Ambas Fases (Inicio a Cierre)</option>
+                      <option value="fase_1">Fase 1: Solicitud de RFC (Alta Inicial)</option>
+                      <option value="fase_2">Fase 2: Planificación CAB / Post-Mortem (PIR)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
                       Obligatoriedad base:
                     </label>
                     <select
@@ -562,6 +594,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
                   <div><strong>Código interno:</strong> <code>{nuevoCampo.codigo}</code></div>
                   <div><strong>Tipo:</strong> {nuevoCampo.tipo}</div>
                   <div><strong>Sección:</strong> {nuevoCampo.seccion}</div>
+                  <div><strong>Fase operativa:</strong> {nuevoCampo.fase === "fase_1" ? "Fase 1 (Alta Inicial)" : nuevoCampo.fase === "fase_2" ? "Fase 2 (Planificación / Post-Mortem)" : "Ambas Fases (Todo el ciclo)"}</div>
                   <div><strong>Obligatoriedad:</strong> {nuevoCampo.obligatorio}</div>
                   <div><strong>Tipos de cambio:</strong> {nuevoCampo.tiposCambio.join(", ")}</div>
                   {nuevoCampo.ayuda && <div><strong>Ayuda:</strong> {nuevoCampo.ayuda}</div>}

@@ -1,17 +1,26 @@
 import { queryRow } from "@/shared/lib/db";
+import { VALORES_FABRICA_PESTANAS } from "./formularioConfiguracionService";
 
-export async function evaluarCuestionarioRiesgo(body: any) {
-  const { respuestas = {}, valores_formulario = {} } = body;
+export async function evaluarCuestionarioRiesgo(body: any, puedeSimularBorrador = false) {
+  const { respuestas = {}, valores_formulario = {}, config_simulacion = null } = body;
 
-  // Obtener la configuración activa del cuestionario de riesgo
-  const confRow = await queryRow<any>(`
-    SELECT snapshot FROM configuracion_modulo_versiones
-    WHERE modulo = 'gestion_de_cambios' AND pantalla = '1.3.3.1' AND pestana = 'cuestionario_riesgo'
-    ORDER BY es_borrador DESC, numero_version DESC
-    LIMIT 1
-  `);
+  let config: any = null;
 
-  const config = confRow?.snapshot || {};
+  if (puedeSimularBorrador && config_simulacion && Array.isArray(config_simulacion.preguntas)) {
+    config = config_simulacion;
+  } else {
+    // Obtener la configuración activa del cuestionario de riesgo
+    const confRow = await queryRow<any>(`
+      SELECT snapshot FROM configuracion_modulo_versiones
+      WHERE modulo = 'gestion_de_cambios' AND pantalla = '1.3.3.1' AND pestana = 'cuestionario_riesgo'
+      ORDER BY es_borrador DESC, numero_version DESC
+      LIMIT 1
+    `);
+    config = (confRow?.snapshot && Object.keys(confRow.snapshot).length > 0)
+      ? confRow.snapshot
+      : VALORES_FABRICA_PESTANAS.cuestionario_riesgo;
+  }
+
   const preguntas = config.preguntas || [];
   const niveles = config.niveles || [
     { id: "bajo", nombre: "Bajo", min: 0, max: 10, color: "#16a34a" },
@@ -27,7 +36,6 @@ export async function evaluarCuestionarioRiesgo(body: any) {
     opcion_elegida: string;
     puntaje: number;
     eleva_minimo: string | null;
-    fuente: string;
   }> = [];
   let nivelElevadoMinimo: string | null = null;
 
@@ -43,31 +51,9 @@ export async function evaluarCuestionarioRiesgo(body: any) {
 
     let valorOpcion = respuestas[preg.id];
 
-    // Si es automática, deducir desde valores_formulario si no fue enviada explícitamente
+    // Si no fue enviada explícitamente, tomar la primera opción por defecto
     if (!valorOpcion) {
-      if (preg.fuente === "auto_criticidad") {
-        const crit = valores_formulario.servicios_criticos || 0;
-        valorOpcion = crit > 1 ? "varios" : crit === 1 ? "un_servicio" : "ninguno";
-      } else if (preg.fuente === "auto_usuarios") {
-        const usr = Number(valores_formulario.usuarios_afectados || 0);
-        valorOpcion = usr > 1000 ? "mas_1000" : usr > 100 ? "101_1000" : usr >= 10 ? "10_100" : "menos_10";
-      } else if (preg.fuente === "auto_interrupcion") {
-        const reqInt = valores_formulario.requiere_interrupcion;
-        const dur = valores_formulario.duracion_interrupcion || "";
-        if (!reqInt) valorOpcion = "ninguna";
-        else if (dur.includes("4h") || dur.includes("5h") || dur.includes("6h") || dur.includes("8h")) valorOpcion = "mas_4h";
-        else if (dur.includes("1h") || dur.includes("2h") || dur.includes("3h")) valorOpcion = "1_4h";
-        else valorOpcion = "hasta_1h";
-      } else if (preg.fuente === "auto_entorno") {
-        valorOpcion = (valores_formulario.entorno || "produccion").toLowerCase();
-      } else if (preg.fuente === "auto_calendario") {
-        valorOpcion = valores_formulario.fuera_de_ventana ? "fuera_ventana" : "en_ventana";
-      } else if (preg.fuente === "auto_historial") {
-        const fallos = Number(valores_formulario.fallos_previos || 0);
-        valorOpcion = fallos > 1 ? "mas_fallos" : fallos === 1 ? "un_fallo" : "cero";
-      } else {
-        valorOpcion = preg.opciones[0]?.valor;
-      }
+      valorOpcion = preg.opciones[0]?.valor;
     }
 
     const opcion = preg.opciones.find((o: any) => o.valor === valorOpcion) || preg.opciones[0];
@@ -88,17 +74,22 @@ export async function evaluarCuestionarioRiesgo(body: any) {
       opcion_elegida: opcion?.texto || valorOpcion,
       puntaje: pts,
       eleva_minimo: opcion?.eleva_minimo || null,
-      fuente: preg.fuente,
     });
   }
 
-  // Determinar nivel por puntaje
-  let nivelCalculado = niveles[0];
-  for (const n of niveles) {
+  // Determinar nivel por puntaje (si excede el máximo configurado, corresponde al nivel más alto)
+  const nivelesOrdenados = [...niveles].sort((a: any, b: any) => (a.min ?? 0) - (b.min ?? 0));
+  let nivelCalculado = nivelesOrdenados[0];
+  let encontrado = false;
+  for (const n of nivelesOrdenados) {
     if (puntajeTotal >= n.min && puntajeTotal <= n.max) {
       nivelCalculado = n;
+      encontrado = true;
       break;
     }
+  }
+  if (!encontrado && nivelesOrdenados.length > 0 && puntajeTotal > nivelesOrdenados[nivelesOrdenados.length - 1].max) {
+    nivelCalculado = nivelesOrdenados[nivelesOrdenados.length - 1];
   }
 
   // Aplicar elevación de riesgo si corresponde

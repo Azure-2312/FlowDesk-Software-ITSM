@@ -1,3 +1,10 @@
+// ============================================================================
+// BASE DE DATOS DE CONFIGURACIÓN (CMDB): ELEMENTOS Y RELACIONES DE TI
+// ============================================================================
+// Registro de CIs (servidores, bases de datos, aplicaciones, servicios),
+// topología de dependencias jerárquicas y análisis de criticidad e impacto.
+// ============================================================================
+
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
@@ -7,6 +14,9 @@ import { ElementoConfiguracion, CIRelacion } from "@/types";
 type ModoVista = "tabla" | "nuevo" | "editar" | "relaciones" | "desactivar";
 
 export default function PaginaMapaCMDB() {
+  // --------------------------------------------------------------------------
+  // 1. ESTADOS LOCALES: Lista de CIs, relaciones de topología y filtros
+  // --------------------------------------------------------------------------
   const [elementos, setElementos] = useState<ElementoConfiguracion[]>([]);
   const [relaciones, setRelaciones] = useState<CIRelacion[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -43,6 +53,9 @@ export default function PaginaMapaCMDB() {
   // Desactivación con motivo obligatorio
   const [motivoDesactivacion, setMotivoDesactivacion] = useState("");
 
+  // --------------------------------------------------------------------------
+  // 2. CONSULTAS A LA API: Carga de CIs y relaciones desde /api/activos/cmdb
+  // --------------------------------------------------------------------------
   async function cargarCMDB() {
     setCargando(true);
     setError(null);
@@ -68,6 +81,9 @@ export default function PaginaMapaCMDB() {
     cargarCMDB();
   }, [filtroTipo, filtroCriticidad, filtroEstado]);
 
+  // --------------------------------------------------------------------------
+  // 3. NAVEGACIÓN DE ESTADOS: Modos nuevo, editar, relaciones y desactivar
+  // --------------------------------------------------------------------------
   function abrirNuevo() {
     setCodigoCi("");
     setNombre("");
@@ -116,6 +132,9 @@ export default function PaginaMapaCMDB() {
     setVista("desactivar");
   }
 
+  // --------------------------------------------------------------------------
+  // 4. REGISTRO Y MUTACIÓN: Alta de CIs y vinculación de dependencias
+  // --------------------------------------------------------------------------
   async function registrarCI(e: FormEvent) {
     e.preventDefault();
     if (!codigoCi.trim() || !nombre.trim()) {
@@ -1133,7 +1152,7 @@ export default function PaginaMapaCMDB() {
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <Link
-                href="/plataforma/activos/cmdb/analisis"
+                href="/plataforma/cmdb/analisis"
                 className="boton-secundario"
                 style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center" }}
               >

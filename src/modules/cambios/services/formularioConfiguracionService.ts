@@ -6,7 +6,7 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
   campos: {
     formulario_activo: "solicitud",
     campos_bloqueados: [
-      "titulo", "tipo_cambio", "motivo", "descripcion", "servicios", 
+      "titulo", "motivo", "descripcion", "servicios", 
       "ci_afectados", "impacto", "urgencia", "fecha_inicio", "fecha_fin", 
       "plan_implementacion", "plan_rollback", "grupo_implementador_id"
     ],
@@ -14,13 +14,12 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
       {
         id: "sec_a",
         codigo: "identificacion",
-        titulo: "Sección A — Identificación",
+        titulo: "Identificación del Cambio",
         color: "#2563eb",
         orden: 1,
         campos: [
           { codigo: "titulo", etiqueta: "Título del cambio", tipo: "texto", visible: true, obligatorio: "si", bloqueado: true, ancho: "completo", placeholder: "Resumen claro y conciso de la intervención técnica...", ayuda: "Mínimo 10 y máximo 150 caracteres. El sistema sugiere RFCs similares.", reglas: [] },
-          { codigo: "tipo_cambio", etiqueta: "Tipo de cambio", tipo: "lista_tipo", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/2", ayuda: "Estándar (preautorizado), Normal (requiere evaluación) o Emergencia (intervención inmediata).", reglas: [] },
-          { codigo: "modelo_id", etiqueta: "Modelo de cambio estándar", tipo: "selector_modelo", visible: true, obligatorio: "condicional", bloqueado: false, ancho: "1/2", ayuda: "Exigido para cambios estándar. Prellena planes y fija el riesgo.", reglas: [{ si_campo: "tipo_cambio", operador: "igual", valor: "ESTANDAR", accion: "mostrar" }] },
+          { codigo: "modelo_id", etiqueta: "Modelo de cambio estándar", tipo: "selector_modelo", visible: true, obligatorio: "condicional", bloqueado: false, ancho: "1/2", tipo_cambio_aplicable: "ESTANDAR", ayuda: "Exigido para cambios estándar. Prellena planes y fija el riesgo.", reglas: [{ si_campo: "tipo_cambio", operador: "igual", valor: "ESTANDAR", accion: "mostrar" }] },
           { codigo: "categoria_id", etiqueta: "Categoría del cambio", tipo: "cascada_categoria", visible: true, obligatorio: "si", bloqueado: false, ancho: "1/2", ayuda: "Clasificación tecnológica del objeto de cambio.", reglas: [] },
           { codigo: "origen", etiqueta: "Origen del cambio", tipo: "lista_origen", visible: true, obligatorio: "si", bloqueado: false, ancho: "1/2", ayuda: "Problema, Incidente, Solicitud, Mejora, Proyecto, etc.", reglas: [] },
           { codigo: "ticket_origen", etiqueta: "Ticket de origen vinculado", tipo: "buscador_ticket", visible: true, obligatorio: "condicional", bloqueado: false, ancho: "completo", ayuda: "Obligatorio si el origen es Problema o Incidente.", reglas: [{ si_campo: "origen", operador: "es_uno_de", valor: "problema,incidente,solicitud_servicio", accion: "hacer_obligatorio" }] }
@@ -29,25 +28,25 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
       {
         id: "sec_b",
         codigo: "justificacion",
-        titulo: "Sección B — Justificación y descripción",
+        titulo: "Justificación y Descripción Técnica",
         color: "#0891b2",
         orden: 2,
         campos: [
           { codigo: "motivo", etiqueta: "Motivo / Justificación de negocio", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: true, ancho: "completo", placeholder: "Por qué es necesario y qué objetivo u oportunidad atiende...", ayuda: "Mínimo 30 caracteres. Sustento formal del cambio.", reglas: [] },
           { codigo: "descripcion", etiqueta: "Descripción técnica detallada", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: true, ancho: "completo", placeholder: "Qué se modifica, en qué sistema o componente, y resultado esperado...", ayuda: "Mínimo 50 caracteres.", reglas: [] },
           { codigo: "beneficio", etiqueta: "Beneficio esperado", tipo: "texto", visible: true, obligatorio: "no", bloqueado: false, ancho: "1/2", placeholder: "Ganancia tangible de rendimiento, estabilidad o cumplimiento...", reglas: [] },
-          { codigo: "consecuencia_no_hacer", etiqueta: "Consecuencia de no realizar el cambio", tipo: "texto", visible: true, obligatorio: "no", bloqueado: false, ancho: "1/2", placeholder: "Riesgos de inacción o postergación...", reglas: [] }
+          { codigo: "consecuencia_no_hacer", etiqueta: "Consecuencia de NO realizar el cambio (Riesgo por Inacción)", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: false, ancho: "1/2", placeholder: "Riesgos de inacción o postergación ante rechazo del comité...", ayuda: "Impacto técnico o financiero si el cambio es denegado.", reglas: [] }
         ]
       },
       {
         id: "sec_c",
         codigo: "alcance",
-        titulo: "Sección C — Alcance y CMDB",
+        titulo: "Alcance y Elementos CI (CMDB)",
         color: "#16a34a",
         orden: 3,
         campos: [
-          { codigo: "servicios", etiqueta: "Servicio(s) afectado(s)", tipo: "selector_servicios", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/2", ayuda: "Servicios del catálogo impactados por la intervención.", reglas: [] },
-          { codigo: "ci_afectados", etiqueta: "Activos / CIs afectados", tipo: "selector_cmdb", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/2", ayuda: "Elementos de configuración sujetos a modificación técnica.", reglas: [] },
+          { codigo: "servicios", etiqueta: "Servicio(s) primario(s) afectado(s)", tipo: "selector_servicios", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/2", ayuda: "Servicios del catálogo impactados por la intervención.", reglas: [] },
+          { codigo: "ci_afectados", etiqueta: "Activos / CIs afectados (CMDB)", tipo: "selector_cmdb_multiple", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/2", ayuda: "Elementos de configuración sujetos a modificación técnica (permite asociar múltiples CIs).", reglas: [] },
           { codigo: "entorno", etiqueta: "Entorno operativo", tipo: "lista_entorno", visible: true, obligatorio: "si", bloqueado: false, ancho: "1/3", ayuda: "Producción, Preproducción, Pruebas o Desarrollo.", reglas: [] },
           { codigo: "areas_afectadas", etiqueta: "Áreas / Departamentos afectados", tipo: "selector_departamentos", visible: true, obligatorio: "no", bloqueado: false, ancho: "1/3", ayuda: "Unidades organizacionales usuarias del servicio.", reglas: [] },
           { codigo: "usuarios_afectados", etiqueta: "Usuarios afectados estimados", tipo: "numero", visible: true, obligatorio: "no", bloqueado: false, ancho: "1/3", placeholder: "0", ayuda: "Alimenta el cálculo automático de riesgo.", reglas: [] }
@@ -56,20 +55,20 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
       {
         id: "sec_d",
         codigo: "evaluacion",
-        titulo: "Sección D — Evaluación inicial de Prioridad y Riesgo",
+        titulo: "Evaluación de Prioridad y Riesgo",
         color: "#d97706",
         orden: 4,
         campos: [
-          { codigo: "impacto", etiqueta: "Impacto del cambio", tipo: "selector_impacto", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/3", ayuda: "Nivel de impacto técnico sobre el servicio.", reglas: [] },
-          { codigo: "urgencia", etiqueta: "Urgencia técnica", tipo: "selector_urgencia", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/3", ayuda: "Premura temporal requerida.", reglas: [] },
-          { codigo: "prioridad", etiqueta: "Prioridad calculada", tipo: "prioridad_insignia", visible: true, obligatorio: "no", bloqueado: true, ancho: "1/3", solo_lectura: true, ayuda: "Resuelta automáticamente según la Matriz Institucional compartida.", reglas: [] },
+          { codigo: "impacto", etiqueta: "Impacto del cambio en el negocio", tipo: "selector_impacto", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/3", ayuda: "Nivel de impacto técnico y operativo sobre el servicio.", reglas: [] },
+          { codigo: "riesgo_tecnico", etiqueta: "Riesgo técnico estimado", tipo: "selector_riesgo", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/3", ayuda: "Complejidad técnica de la intervención.", reglas: [] },
+          { codigo: "prioridad", etiqueta: "Prioridad calculada (Impacto × Riesgo)", tipo: "prioridad_insignia", visible: true, obligatorio: "no", bloqueado: true, ancho: "1/3", solo_lectura: true, ayuda: "Resuelta automáticamente según la Matriz de Cambios.", reglas: [] },
           { codigo: "riesgo_respuestas", etiqueta: "Cuestionario de riesgo ponderado", tipo: "cuestionario_riesgo", visible: true, obligatorio: "segun_tipo", bloqueado: false, ancho: "completo", ayuda: "Evaluación multidimensional de riesgo conforme a ITIL 4 y COBIT.", reglas: [] }
         ]
       },
       {
         id: "sec_e",
         codigo: "programacion",
-        titulo: "Sección E — Programación y Calendario",
+        titulo: "Programación y Ventana de Mantenimiento",
         color: "#7c3aed",
         orden: 5,
         campos: [
@@ -83,14 +82,15 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
       {
         id: "sec_f",
         codigo: "planes",
-        titulo: "Sección F — Planes y Responsables",
+        titulo: "Planes Técnicos Mandatorios y Gobernanza CAB",
         color: "#059669",
         orden: 6,
         campos: [
-          { codigo: "plan_implementacion", etiqueta: "Plan detallado de implementación", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: true, ancho: "completo", placeholder: "Paso a paso técnico, comandos, validaciones y responsables...", ayuda: "Obligatorio para Normal y Emergencia.", reglas: [] },
-          { codigo: "plan_pruebas", etiqueta: "Plan de pruebas / QA previo", tipo: "area_enriquecida", visible: true, obligatorio: "segun_tipo", bloqueado: false, ancho: "completo", placeholder: "Pruebas unitarias, funcionales o de integración planificadas...", reglas: [] },
-          { codigo: "plan_rollback", etiqueta: "Plan de rollback (Reversión)", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: true, ancho: "completo", placeholder: "Procedimiento de retorno seguro ante fallas...", ayuda: "Obligatorio por gobernanza ITIL/ISO 20000.", reglas: [] },
-          { codigo: "criterios_exito", etiqueta: "Criterios de éxito verificables", tipo: "lista_criterios", visible: true, obligatorio: "segun_tipo", bloqueado: false, ancho: "completo", ayuda: "Condiciones verificables para declarar el cambio Exitoso.", reglas: [] },
+          { codigo: "plan_implementacion", etiqueta: "Plan detallado de implementación paso a paso", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: true, ancho: "completo", placeholder: "Paso a paso técnico, comandos, validaciones y responsables...", ayuda: "Obligatorio para Normal y Emergencia.", reglas: [] },
+          { codigo: "plan_rollback", etiqueta: "Plan de rollback (Marcha atrás / Reversión)", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: true, ancho: "completo", placeholder: "Procedimiento de retorno seguro ante fallas...", ayuda: "Obligatorio por gobernanza ITIL/ISO 20000.", reglas: [] },
+          { codigo: "punto_no_retorno", etiqueta: "Punto de no retorno (Forward-Fix Boundary)", tipo: "texto", visible: true, obligatorio: "si", bloqueado: false, ancho: "completo", placeholder: "Hito temporal o técnico tras el cual el rollback ya no es viable...", ayuda: "Momento exacto en que se descarta rollback y se fuerza hacia adelante.", reglas: [] },
+          { codigo: "plan_pruebas", etiqueta: "Plan de pruebas / Validación post-cambio", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: false, ancho: "completo", placeholder: "Pruebas unitarias, funcionales o de integración planificadas...", reglas: [] },
+          { codigo: "criterios_exito", etiqueta: "Criterios de éxito y aceptación", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: false, ancho: "completo", ayuda: "Métricas cuantitativas y condiciones verificables para declarar el cambio Exitoso.", reglas: [] },
           { codigo: "grupo_implementador_id", etiqueta: "Grupo implementador asignado", tipo: "selector_grupo", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/2", ayuda: "Equipo técnico que ejecutará los trabajos.", reglas: [] },
           { codigo: "implementador_id", etiqueta: "Especialista técnico responsable", tipo: "selector_tecnico", visible: true, obligatorio: "segun_tipo", bloqueado: false, ancho: "1/2", ayuda: "No puede ser el aprobador de esta RFC (segregación de funciones).", reglas: [] }
         ]
@@ -98,25 +98,39 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
       {
         id: "sec_g",
         codigo: "emergencia",
-        titulo: "Sección G — Justificación de Emergencia (Solo Emergencia)",
+        titulo: "Justificación de Crisis y ECAB (Emergencia)",
         color: "#dc2626",
         orden: 7,
         es_condicional_emergencia: true,
         campos: [
-          { codigo: "justificacion_emergencia", etiqueta: "Justificación de emergencia", tipo: "area_enriquecida", visible: true, obligatorio: "condicional", bloqueado: true, ancho: "completo", placeholder: "Motivo crítico por el cual no puede esperar el ciclo CAB normal...", ayuda: "Mínimo 30 caracteres.", reglas: [{ si_campo: "tipo_cambio", operador: "igual", valor: "EMERGENCIA", accion: "hacer_obligatorio" }] },
-          { codigo: "ticket_emergencia", etiqueta: "Incidente crítico motivador", tipo: "buscador_ticket", visible: true, obligatorio: "condicional", bloqueado: false, ancho: "1/2", ayuda: "Incidente P1 que fuerza la intervención de emergencia.", reglas: [] },
-          { codigo: "consecuencia_emergencia", etiqueta: "Consecuencia de no actuar de inmediato", tipo: "texto", visible: true, obligatorio: "condicional", bloqueado: true, ancho: "1/2", placeholder: "Impacto catastrófico evitado...", reglas: [] },
-          { codigo: "retroactivo", etiqueta: "Documentación retroactiva", tipo: "booleano", visible: true, obligatorio: "no", bloqueado: false, ancho: "completo", ayuda: "Disponible solo con permiso cambios.documentar_retroactivo.", reglas: [] }
+          { codigo: "ticket_emergencia", etiqueta: "Incidente Mayor crítico motivador (#INC)", tipo: "buscador_ticket", visible: true, obligatorio: "si", bloqueado: true, ancho: "1/2", ayuda: "Incidente P1 que fuerza la intervención de emergencia (Mandatorio).", reglas: [] },
+          { codigo: "medio_autorizacion_emergencia", etiqueta: "Medio de autorización inmediata (ECAB)", tipo: "lista_medio_autorizacion", visible: true, obligatorio: "si", bloqueado: false, ancho: "1/2", ayuda: "Llamada grabada en sala de crisis, canal Teams/Slack o aprobación 1-clic.", reglas: [] },
+          { codigo: "justificacion_emergencia", etiqueta: "Justificación de emergencia y causa de urgencia", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: true, ancho: "completo", placeholder: "Motivo crítico por el cual no puede esperar el ciclo CAB normal...", ayuda: "Mínimo 30 caracteres.", reglas: [] },
+          { codigo: "consecuencia_emergencia", etiqueta: "Consecuencia de no actuar de inmediato", tipo: "texto", visible: true, obligatorio: "si", bloqueado: false, ancho: "completo", placeholder: "Impacto catastrófico evitado...", reglas: [] }
+        ]
+      },
+      {
+        id: "sec_pir",
+        codigo: "pir",
+        titulo: "Ficha Post-Mortem Mandatoria (PIR)",
+        color: "#9333ea",
+        orden: 8,
+        campos: [
+          { codigo: "causa_raiz_tecnica", etiqueta: "Causa raíz técnica de la falla de origen", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: false, ancho: "completo", placeholder: "Análisis 5 Porqués o Ishikawa de la falla...", ayuda: "Explicación técnica del origen del fallo.", reglas: [] },
+          { codigo: "tiempo_downtime_real", etiqueta: "Tiempo real de indisponibilidad del servicio (minutos)", tipo: "numero", visible: true, obligatorio: "si", bloqueado: false, ancho: "1/2", placeholder: "0", ayuda: "Minutos de caída real del servicio.", reglas: [] },
+          { codigo: "incidente_colateral", etiqueta: "¿Provocó incidentes secundarios no deseados?", tipo: "booleano", visible: true, obligatorio: "si", bloqueado: false, ancho: "1/2", ayuda: "Indica si generó fallas adicionales.", reglas: [] },
+          { codigo: "ticket_problema_preventivo", etiqueta: "Ticket de Problema preventivo asociado (#PRB)", tipo: "buscador_ticket", visible: true, obligatorio: "no", bloqueado: false, ancho: "completo", ayuda: "Ticket de gestión de problemas para erradicar causa raíz.", reglas: [] },
+          { codigo: "lecciones_aprendidas", etiqueta: "Lecciones aprendidas y mejoras de prevención", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: false, ancho: "completo", placeholder: "Qué controles o pruebas faltaron antes de producción...", ayuda: "Compromiso de mejora continua.", reglas: [] }
         ]
       },
       {
         id: "sec_h",
         codigo: "evidencias",
-        titulo: "Sección H — Evidencias y Documentación",
+        titulo: "Evidencias y Documentación Técnica",
         color: "#64748b",
-        orden: 8,
+        orden: 9,
         campos: [
-          { codigo: "adjuntos", etiqueta: "Archivos adjuntos y evidencias", tipo: "adjuntos", visible: true, obligatorio: "no", bloqueado: false, ancho: "completo", ayuda: "Diagramas, scripts, manuales de proveedor (máx. 25 MB por archivo).", reglas: [] }
+          { codigo: "adjuntos", etiqueta: "Archivos adjuntos, evidencias y scripts", tipo: "adjuntos", visible: true, obligatorio: "no", bloqueado: false, ancho: "completo", ayuda: "Diagramas, scripts, manuales de proveedor (máx. 25 MB por archivo).", reglas: [] }
         ]
       }
     ]
@@ -144,7 +158,6 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         orden: 1,
         texto: "¿Afecta a servicios o CIs críticos?",
         peso: 1,
-        fuente: "auto_criticidad",
         aplica_a: ["NORMAL", "EMERGENCIA"],
         activa: true,
         opciones: [
@@ -158,7 +171,6 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         orden: 2,
         texto: "Usuarios afectados estimados",
         peso: 1,
-        fuente: "auto_usuarios",
         aplica_a: ["NORMAL", "EMERGENCIA"],
         activa: true,
         opciones: [
@@ -173,7 +185,6 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         orden: 3,
         texto: "Interrupción de servicio",
         peso: 1,
-        fuente: "auto_interrupcion",
         aplica_a: ["NORMAL", "EMERGENCIA"],
         activa: true,
         opciones: [
@@ -188,7 +199,6 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         orden: 4,
         texto: "Complejidad técnica de la ejecución",
         peso: 1,
-        fuente: "manual",
         aplica_a: ["NORMAL"],
         activa: true,
         opciones: [
@@ -202,7 +212,6 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         orden: 5,
         texto: "Experiencia previa del equipo",
         peso: 1,
-        fuente: "manual",
         aplica_a: ["NORMAL"],
         activa: true,
         opciones: [
@@ -216,7 +225,6 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         orden: 6,
         texto: "Robustez del plan de Rollback (Reversión)",
         peso: 1,
-        fuente: "manual",
         aplica_a: ["NORMAL", "EMERGENCIA"],
         activa: true,
         opciones: [
@@ -230,7 +238,6 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         orden: 7,
         texto: "Dependencias externas o de terceros",
         peso: 1,
-        fuente: "manual",
         aplica_a: ["NORMAL"],
         activa: true,
         opciones: [
@@ -244,7 +251,6 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         orden: 8,
         texto: "Entorno destino",
         peso: 1,
-        fuente: "auto_entorno",
         aplica_a: ["NORMAL", "EMERGENCIA"],
         activa: true,
         opciones: [
@@ -259,7 +265,6 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         orden: 9,
         texto: "Programación respecto a ventanas oficiales",
         peso: 1,
-        fuente: "auto_calendario",
         aplica_a: ["NORMAL"],
         activa: true,
         opciones: [
@@ -272,7 +277,6 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         orden: 10,
         texto: "Antecedentes de fallos en los mismos CIs en 6 meses",
         peso: 1,
-        fuente: "auto_historial",
         aplica_a: ["NORMAL"],
         activa: true,
         opciones: [
@@ -285,6 +289,11 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
   },
   prioridad: {
     usar_matriz_propia: false,
+    matriz_personalizada: {
+      "1-1": "P1", "1-2": "P2", "1-3": "P3",
+      "2-1": "P2", "2-2": "P3", "2-3": "P4",
+      "3-1": "P3", "3-2": "P4", "3-3": "P5",
+    },
     permitir_prioridad_manual: false,
     perfiles_prioridad_manual: [1, 8],
     recalcular_al_cambiar: true,

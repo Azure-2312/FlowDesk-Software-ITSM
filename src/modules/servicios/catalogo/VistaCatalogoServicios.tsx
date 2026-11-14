@@ -1,3 +1,10 @@
+// ============================================================================
+// CATÁLOGO DE SERVICIOS TI (ITIL v4): PORTAL DE PRESTACIONES ESTANDARIZADAS
+// ============================================================================
+// Presenta las categorías y servicios disponibles para incidentes y solicitudes,
+// calculando objetivos de tiempo de respuesta y solución (SLA) antes de registrar.
+// ============================================================================
+
 "use client";
 
 import { useEffect, useState, useMemo, Suspense } from "react";
@@ -15,6 +22,9 @@ type Categoria = {
   estado_registro?: boolean;
 };
 
+// ----------------------------------------------------------------------------
+// 1. COMPONENTE VISUAL: Iconografía temática según la categoría tecnológica
+// ----------------------------------------------------------------------------
 function IconoCategoria({ nombre, codigo }: { nombre: string; codigo?: string }) {
   const n = (nombre || "").toLowerCase();
   const c = (codigo || "").toUpperCase();
@@ -152,6 +162,9 @@ function ContenidoCatalogo({
   const esSolicitud = tipoFijo ? tipoFijo === 2 : paramTipo === "solicitud" || paramTipo === "2";
   const idTipoFiltro = esSolicitud ? 2 : 1;
 
+  // --------------------------------------------------------------------------
+  // 2. ESTADOS LOCALES: Categorías, servicios, selección activa y filtros
+  // --------------------------------------------------------------------------
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [servicios, setServicios] = useState<ServicioCatalogo[]>([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<Categoria | null>(null);
@@ -160,6 +173,9 @@ function ContenidoCatalogo({
   const [error, setError] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState("");
 
+  // --------------------------------------------------------------------------
+  // 3. CONSULTA A LA API: Carga paralela de categorías y catálogo activo
+  // --------------------------------------------------------------------------
   async function cargarDatos() {
     setCargando(true);
     setError(null);
