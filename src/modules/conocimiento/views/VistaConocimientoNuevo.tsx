@@ -84,7 +84,7 @@ Confirmar que el servicio responde correctamente...`
         return;
       }
 
-      router.push("/plataforma/conocimiento/tecnico/mis-articulos");
+      router.push("/plataforma/conocimiento/mis-articulos");
     } catch {
       setError("Error de conexión al guardar el artículo.");
     } finally {

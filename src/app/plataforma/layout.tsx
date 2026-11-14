@@ -1,3 +1,10 @@
+// ============================================================================
+// CONTENEDOR PRINCIPAL: Layout estructural de la plataforma web
+// ============================================================================
+// Renderiza la barra lateral fija, el selector de perfiles activos, el menú
+// adaptativo según permisos y el contenedor central donde se inyectan las vistas.
+// ============================================================================
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -8,7 +15,9 @@ import BarraLateral from "@/shared/components/layout/BarraLateral";
 import BotonLogout from "@/shared/components/layout/BotonLogout";
 import SelectorPerfil from "@/shared/components/layout/SelectorPerfil";
 
-/** Saca las iniciales del nombre para mostrarlas en el avatar circular. */
+// ----------------------------------------------------------------------------
+// 1. UTILIDAD DE AVATAR: Extrae iniciales del nombre para el círculo visual
+// ----------------------------------------------------------------------------
 function obtenerIniciales(nombres: string): string {
   return nombres
     .trim()
@@ -18,28 +27,43 @@ function obtenerIniciales(nombres: string): string {
     .join("");
 }
 
+// ----------------------------------------------------------------------------
+// 2. COMPONENTE PRINCIPAL DEL SERVIDOR (RSC): Layout global autenticado
+// ----------------------------------------------------------------------------
 export default async function LayoutApp({ children }: { children: React.ReactNode }) {
+  // Validación de token criptográfico de sesión
   const token = cookies().get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 
+  // Redirección si la sesión no es válida
   if (!sesion) {
     redirect("/login");
   }
 
+  // Carga del árbol jerárquico de navegación según el rol activo del usuario
   const menu = await obtenerMenuDelUsuario(sesion.id_usuario, sesion.perfilActivo?.id_perfil);
 
   return (
     <div className="app-layout">
+      {/* -------------------------------------------------------------------- */}
+      {/* 3. BARRA LATERAL: Encabezado, selector de perfil y menú adaptativo   */}
+      {/* -------------------------------------------------------------------- */}
       <BarraLateral>
         <div className="barra-lateral-contenido">
+          {/* Encabezado institucional y conmutador de perfil activo */}
           <div className="barra-lateral-cabecera">
             <div className="marca-fila">
               <span className="marca-titulo">Sistema de tickets</span>
               <SelectorPerfil perfiles={sesion.perfiles} perfilActivo={sesion.perfilActivo} />
             </div>
           </div>
+          {/* Árbol jerárquico de navegación por dominios ITIL */}
           <MenuLateral opciones={menu} />
         </div>
+
+        {/* ------------------------------------------------------------------ */}
+        {/* 4. PIE DE BARRA: Identidad del usuario autenticado y botón logout   */}
+        {/* ------------------------------------------------------------------ */}
         <div className="barra-lateral-pie">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
             <Link
@@ -89,6 +113,9 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
         </div>
       </BarraLateral>
 
+      {/* -------------------------------------------------------------------- */}
+      {/* 5. ÁREA PRINCIPAL: Renderizado de la vista de negocio activa        */}
+      {/* -------------------------------------------------------------------- */}
       <div className="app-area-principal">
         <main className="contenido-principal">{children}</main>
       </div>

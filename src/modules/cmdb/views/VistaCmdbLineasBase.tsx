@@ -86,7 +86,7 @@ export default function VistaCmdbLineasBase() {
           </p>
         </div>
         <Link
-          href="/plataforma/activos/cmdb"
+          href="/plataforma/cmdb/topologia"
           className="boton-secundario"
           style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
         >

@@ -1,8 +1,18 @@
+// ============================================================================
+// GESTIÓN DEL CONOCIMIENTO (KCS): BASE DE ARTÍCULOS Y GUÍAS DE AUTOAYUDA
+// ============================================================================
+// Repositorio de soluciones técnicas verificadas y guías operativas: búsqueda
+// por palabras clave, categorización, métricas de utilidad y lectura en Markdown.
+// ============================================================================
+
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 
+// ----------------------------------------------------------------------------
+// 1. MODELO DE DATOS: Estructura del artículo KCS y métricas de utilidad
+// ----------------------------------------------------------------------------
 interface Articulo {
   id_articulo: number;
   codigo_articulo: string;
@@ -16,12 +26,18 @@ interface Articulo {
 }
 
 export default function PaginaBaseConocimiento() {
+  // --------------------------------------------------------------------------
+  // 2. ESTADOS LOCALES: Listado de artículos, término de búsqueda y visor
+  // --------------------------------------------------------------------------
   const [articulos, setArticulos] = useState<Articulo[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState("");
   const [articuloSeleccionado, setArticuloSeleccionado] = useState<Articulo | null>(null);
 
+  // --------------------------------------------------------------------------
+  // 3. CONSULTA A LA API: Obtención de artículos publicados desde /api/conocimiento
+  // --------------------------------------------------------------------------
   async function cargarArticulos() {
     setCargando(true);
     setError(null);
@@ -31,10 +47,11 @@ export default function PaginaBaseConocimiento() {
         const data = await res.json();
         setArticulos(Array.isArray(data) ? data : []);
       } else {
-        setError("No se pudo cargar la base de conocimiento.");
+        const data = await res.json();
+        setError(data.error || "Error al cargar artículos de conocimiento");
       }
     } catch {
-      setError("Error de conexión al cargar artículos.");
+      setError("Error de red al consultar la base de conocimiento");
     } finally {
       setCargando(false);
     }
@@ -44,272 +61,135 @@ export default function PaginaBaseConocimiento() {
     cargarArticulos();
   }, []);
 
+  // --------------------------------------------------------------------------
+  // 4. FILTRADO REACTIVO: Búsqueda dinámica en tiempo real por título y texto
+  // --------------------------------------------------------------------------
   const articulosFiltrados = useMemo(() => {
     if (!busqueda.trim()) return articulos;
-    const q = busqueda.toLowerCase().trim();
-    return articulos.filter((a) => {
-      const matchCod = a.codigo_articulo?.toLowerCase().includes(q);
-      const matchTit = a.titulo?.toLowerCase().includes(q);
-      const matchCont = a.contenido_markdown?.toLowerCase().includes(q);
-      const matchCat = a.categoria_nombre?.toLowerCase().includes(q);
-      return matchCod || matchTit || matchCont || matchCat;
-    });
+    const q = busqueda.toLowerCase();
+    return articulos.filter(
+      (a) =>
+        a.titulo.toLowerCase().includes(q) ||
+        a.contenido_markdown.toLowerCase().includes(q) ||
+        (a.categoria_nombre && a.categoria_nombre.toLowerCase().includes(q))
+    );
   }, [articulos, busqueda]);
 
+  // --------------------------------------------------------------------------
+  // 5. RENDERIZADO VISUAL: Barra de búsqueda, listado de tarjetas y lector modal
+  // --------------------------------------------------------------------------
   return (
-    <div style={{ padding: "24px 32px", maxWidth: 1300, margin: "0 auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+    <div className="vista-contenedor" style={{ maxWidth: 1000, margin: "0 auto", paddingBottom: 60 }}>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <div>
-          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
-            Gestión del Conocimiento KCS (ITIL v4)
-          </span>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-            Base de conocimiento interno
-          </h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
-            Guías, procedimientos estándar y documentación técnica validada ({articulosFiltrados.length} artículos)
+          <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: "#0f172a" }}>Base de conocimiento KCS</h1>
+          <p className="subtitulo" style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 14 }}>
+            Consulta procedimientos, soluciones a errores conocidos y guías oficiales de soporte.
           </p>
         </div>
-
-        <div style={{ display: "flex", gap: 10 }}>
-          <Link
-            href="/plataforma/conocimiento/tecnico/nuevo"
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "#2563eb",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#ffffff",
-              textDecoration: "none",
-            }}
-          >
-            Crear artículo
-          </Link>
-          <button
-            type="button"
-            onClick={cargarArticulos}
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              fontSize: 13,
-              color: "#334155",
-              cursor: "pointer",
-            }}
-          >
-            Actualizar
-          </button>
-        </div>
+        <Link
+          href="/plataforma/conocimiento/nuevo"
+          className="boton-primario"
+          style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
+        >
+          <span>+ Redactar artículo</span>
+        </Link>
       </div>
 
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginBottom: 24 }}>
         <input
-          type="text"
-          placeholder="Buscar por código, título, categoría o palabras clave..."
+          type="search"
+          className="input-base"
+          placeholder="Buscar soluciones, síntomas o procedimientos..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "10px 14px",
-            border: "1px solid #cbd5e1",
-            borderRadius: 6,
-            fontSize: 13.5,
-            backgroundColor: "#ffffff",
-            boxSizing: "border-box",
-          }}
+          style={{ width: "100%", padding: "12px 16px", fontSize: 15 }}
         />
       </div>
 
-      {cargando && (
-        <div style={{ padding: "40px 0", textAlign: "center", color: "#64748b" }}>
-          Cargando artículos de conocimiento...
-        </div>
-      )}
-
-      {error && (
-        <div style={{ padding: 14, backgroundColor: "#fef2f2", color: "#991b1b", borderRadius: 6, marginBottom: 16 }}>
-          {error}
-        </div>
-      )}
-
-      {!cargando && !error && articulosFiltrados.length === 0 && (
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            padding: "48px 24px",
-            textAlign: "center",
-          }}
-        >
-          <div style={{ fontSize: 16, fontWeight: 600, color: "#1e293b", marginBottom: 6 }}>
-            No se encontraron artículos
-          </div>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: 0 }}>
-            No hay documentación que coincida con el criterio de búsqueda.
-          </p>
-        </div>
-      )}
-
-      {!cargando && !error && articulosFiltrados.length > 0 && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: 16 }}>
-          {articulosFiltrados.map((a) => (
+      {cargando ? (
+        <p className="mensaje-cargando">Cargando base de conocimiento...</p>
+      ) : error ? (
+        <p role="alert" className="mensaje-error">{error}</p>
+      ) : articulosFiltrados.length === 0 ? (
+        <p className="mensaje-vacio">No se encontraron artículos con el término buscado.</p>
+      ) : (
+        <div style={{ display: "grid", gap: 16 }}>
+          {articulosFiltrados.map((art) => (
             <div
-              key={a.id_articulo}
-              onClick={() => setArticuloSeleccionado(a)}
+              key={art.id_articulo}
+              className="tarjeta"
               style={{
-                backgroundColor: "#ffffff",
-                borderRadius: 8,
-                border: "1px solid #e2e8f0",
                 padding: 18,
+                backgroundColor: "#ffffff",
+                border: "1px solid #e2e8f0",
+                borderRadius: 8,
                 cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
                 transition: "border-color 0.15s ease",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#2563eb")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+              onClick={() => setArticuloSeleccionado(art)}
             >
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                  <span style={{ fontSize: 11.5, fontWeight: 700, color: "#2563eb" }}>
-                    {a.codigo_articulo}
-                  </span>
-                  <span style={{ fontSize: 11.5, color: "#64748b" }}>
-                    {a.categoria_nombre || "General"}
-                  </span>
-                </div>
-                <h2 style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", margin: "0 0 8px", lineHeight: 1.35 }}>
-                  {a.titulo}
-                </h2>
-                <p
-                  style={{
-                    fontSize: 12.5,
-                    color: "#475569",
-                    margin: 0,
-                    lineHeight: 1.45,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 3,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {a.contenido_markdown}
-                </p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "#1e293b" }}>{art.titulo}</h3>
+                <span className="badge-categoria" style={{ fontSize: 11, padding: "2px 8px", backgroundColor: "#f1f5f9", borderRadius: 4, color: "#475569" }}>
+                  {art.categoria_nombre || "General"}
+                </span>
               </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginTop: 14,
-                  paddingTop: 10,
-                  borderTop: "1px solid #f1f5f9",
-                  fontSize: 11.5,
-                  color: "#64748b",
-                }}
-              >
-                <span>Por {a.autor_nombre || "Especialista"}</span>
-                <Link
-                  href={`/plataforma/conocimiento/${a.id_articulo}`}
-                  onClick={(e) => e.stopPropagation()}
-                  style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}
-                >
-                  Leer artículo →
-                </Link>
+              <p style={{ margin: "0 0 10px 0", color: "#64748b", fontSize: 13, lineHeight: 1.5, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+                {art.contenido_markdown.replace(/[#*`_]/g, "").slice(0, 160)}...
+              </p>
+              <div style={{ display: "flex", gap: 16, fontSize: 12, color: "#94a3b8" }}>
+                <span>Código: <strong>{art.codigo_articulo}</strong></span>
+                <span>Lecturas: {art.visitas}</span>
+                <span>Votos útiles: {art.utilidad_positiva}</span>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Modal / Cajón de Lectura de Artículo */}
+      {/* Visor modal del artículo completo */}
       {articuloSeleccionado && (
         <div
           style={{
             position: "fixed",
             inset: 0,
-            backgroundColor: "rgba(15, 23, 42, 0.45)",
+            backgroundColor: "rgba(15, 23, 42, 0.6)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             zIndex: 100,
+            padding: 20,
           }}
           onClick={() => setArticuloSeleccionado(null)}
         >
           <div
             style={{
               backgroundColor: "#ffffff",
-              borderRadius: 8,
+              borderRadius: 10,
               width: "100%",
-              maxWidth: 720,
+              maxWidth: 750,
               maxHeight: "85vh",
               overflowY: "auto",
-              padding: 28,
-              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.15)",
+              padding: 24,
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#2563eb" }}>
-                {articuloSeleccionado.codigo_articulo} • {articuloSeleccionado.categoria_nombre}
-              </span>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "1px solid #e2e8f0", paddingBottom: 12, marginBottom: 16 }}>
+              <div>
+                <span style={{ fontSize: 12, color: "#2563eb", fontWeight: 600 }}>{articuloSeleccionado.codigo_articulo}</span>
+                <h2 style={{ margin: "4px 0 0 0", fontSize: 20, fontWeight: 700, color: "#0f172a" }}>{articuloSeleccionado.titulo}</h2>
+              </div>
               <button
                 type="button"
                 onClick={() => setArticuloSeleccionado(null)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  fontSize: 14,
-                  cursor: "pointer",
-                  color: "#64748b",
-                }}
+                style={{ background: "transparent", border: "none", fontSize: 20, cursor: "pointer", color: "#64748b" }}
               >
-                Cerrar
+                ✕
               </button>
             </div>
-
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 16px" }}>
-              {articuloSeleccionado.titulo}
-            </h2>
-
-            <div
-              style={{
-                fontSize: 14,
-                color: "#1e293b",
-                lineHeight: 1.6,
-                whiteSpace: "pre-wrap",
-                backgroundColor: "#f8fafc",
-                padding: 18,
-                borderRadius: 6,
-                border: "1px solid #e2e8f0",
-                marginBottom: 20,
-              }}
-            >
+            <div style={{ whiteSpace: "pre-wrap", color: "#334155", fontSize: 14.5, lineHeight: 1.6 }}>
               {articuloSeleccionado.contenido_markdown}
-            </div>
-
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button
-                type="button"
-                onClick={() => setArticuloSeleccionado(null)}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: "#2563eb",
-                  border: "none",
-                  borderRadius: 6,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#ffffff",
-                  cursor: "pointer",
-                }}
-              >
-                Cerrar artículo
-              </button>
             </div>
           </div>
         </div>

@@ -54,7 +54,7 @@ export default function PaginaActivos() {
             Modelado de Elementos de Configuración (CI) y relaciones de dependencia para evaluación de impacto en incidentes y cambios.
           </p>
           <Link
-            href="/plataforma/activos/cmdb"
+            href="/plataforma/cmdb/topologia"
             className="boton-mini"
             style={{ textDecoration: "none", display: "inline-block", backgroundColor: "#f1f5f9", color: "#1e293b", borderColor: "#cbd5e1" }}
           >

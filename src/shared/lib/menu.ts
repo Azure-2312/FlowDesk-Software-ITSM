@@ -1,8 +1,19 @@
+// ============================================================================
+// MOTOR DE TAXONOMÍA: CONSTRUCTOR DEL ÁRBOL JERÁRQUICO DEL MENÚ
+// ============================================================================
+// Transforma registros relacionales planos de opciones_menu en un árbol jerárquico
+// de navegación filtrado según los perfiles y permisos del usuario autenticado.
+// ============================================================================
+
 import { query } from "@/shared/lib/db";
 import { OpcionMenuArbol, OpcionMenuPlana } from "@/types";
 
+// ----------------------------------------------------------------------------
+// 1. CONSULTAS A BASE DE DATOS: Opciones asignadas por perfil y por usuario
+// ----------------------------------------------------------------------------
+
 /**
- * Trae las opciones de menú asignadas a un perfil específico.
+ * Consulta las opciones de menú asignadas a un perfil específico en opciones_menu_perfiles.
  */
 async function obtenerOpcionesPorPerfil(idPerfil: number): Promise<OpcionMenuPlana[]> {
   const sql = `
@@ -19,7 +30,7 @@ async function obtenerOpcionesPorPerfil(idPerfil: number): Promise<OpcionMenuPla
 }
 
 /**
- * Trae todas las opciones a las que tiene acceso el usuario según todos sus perfiles activos.
+ * Consulta todas las opciones a las que tiene acceso el usuario según todos sus perfiles activos.
  */
 async function obtenerOpcionesPlanasPorUsuario(idUsuario: number): Promise<OpcionMenuPlana[]> {
   const sql = `
@@ -37,13 +48,13 @@ async function obtenerOpcionesPlanasPorUsuario(idUsuario: number): Promise<Opcio
   return query<OpcionMenuPlana>(sql, [idUsuario]);
 }
 
+// ----------------------------------------------------------------------------
+// 2. OPTIMIZACIÓN VISUAL: Colapso de subcarpetas redundantes de un solo hijo
+// ----------------------------------------------------------------------------
+
 /**
- * Regla de la arquitectura del menu: una subcarpeta intermedia que solo muestra
- * un hijo se colapsa para simplificar la navegacion hacia arriba.
- *
- * Sin embargo, las carpetas de nivel raiz (esNivelRaiz = true) se conservan
- * intactas para preservar la identidad de los dominios funcionales (ITSM / ITIL)
- * y evitar que pantallas unicas queden como elementos huerfanos sin contexto.
+ * Simplifica la navegación colapsando carpetas intermedias que solo contienen una opción.
+ * Las carpetas de nivel raíz (esNivelRaiz = true) se conservan siempre intactas.
  */
 function colapsarCarpetasDeUnHijo(nodos: OpcionMenuArbol[], esNivelRaiz: boolean = false): OpcionMenuArbol[] {
   const resultado: OpcionMenuArbol[] = [];
@@ -62,8 +73,12 @@ function colapsarCarpetasDeUnHijo(nodos: OpcionMenuArbol[], esNivelRaiz: boolean
   return resultado;
 }
 
+// ----------------------------------------------------------------------------
+// 3. TRANSFORMACIÓN ALGORÍTMICA: Lista plana con id_padre -> Árbol jerárquico
+// ----------------------------------------------------------------------------
+
 /**
- * Convierte la lista plana (con id_padre) en un árbol de profundidad variable.
+ * Mapea las opciones planas a nodos con arreglo de hijos y los vincula por id_padre.
  */
 function construirArbol(opciones: OpcionMenuPlana[]): OpcionMenuArbol[] {
   const mapa = new Map<number, OpcionMenuArbol>();
@@ -81,13 +96,13 @@ function construirArbol(opciones: OpcionMenuPlana[]): OpcionMenuArbol[] {
       if (padre) {
         padre.hijos.push(nodo);
       } else {
-        // Si el padre no está asignado al perfil, mostramos el nodo en la raíz
+        // Si el padre no está asignado al perfil, se eleva el nodo a la raíz
         raiz.push(nodo);
       }
     }
   });
 
-  // Ordenar nodos de la raíz y los hijos según el campo orden
+  // Ordenamiento según la propiedad orden
   raiz.sort((a, b) => a.orden - b.orden);
   mapa.forEach((nodo) => {
     if (nodo.hijos.length > 0) {
@@ -98,9 +113,12 @@ function construirArbol(opciones: OpcionMenuPlana[]): OpcionMenuArbol[] {
   return colapsarCarpetasDeUnHijo(raiz, true);
 }
 
+// ----------------------------------------------------------------------------
+// 4. FUNCIÓN EXPORTADA: Punto de entrada para obtener el menú del usuario
+// ----------------------------------------------------------------------------
+
 /**
- * Función principal: obtiene el árbol jerárquico de menú filtrado por el perfil activo del usuario
- * respetando la taxonomía del catálogo (tres niveles como norma y cuatro en la configuración de la mesa).
+ * Obtiene el árbol jerárquico del menú según el perfil activo o todos los perfiles del usuario.
  */
 export async function obtenerMenuDelUsuario(
   idUsuario: number,
@@ -117,9 +135,12 @@ export async function obtenerMenuDelUsuario(
   return construirArbol(planas);
 }
 
+// ----------------------------------------------------------------------------
+// 5. VALIDACIONES DE NAVEGACIÓN: Autorización de pantallas y prefijos
+// ----------------------------------------------------------------------------
+
 /**
- * Indica si el arbol de menu del usuario incluye exactamente una pantalla.
- * Se usa en las paginas de los modulos para autorizar la ruta solicitada.
+ * Valida si una ruta específica está habilitada en el menú del usuario.
  */
 export function menuIncluyeUrl(menu: OpcionMenuArbol[], url: string): boolean {
   for (const nodo of menu) {
@@ -130,9 +151,7 @@ export function menuIncluyeUrl(menu: OpcionMenuArbol[], url: string): boolean {
 }
 
 /**
- * Indica si el arbol de menu del usuario incluye alguna pantalla bajo un
- * prefijo (por ejemplo `/plataforma/incidentes`). Se usa en las fichas de
- * detalle, que no aparecen como opcion propia del menu.
+ * Valida si un prefijo de ruta (ej. /plataforma/incidentes) está dentro del menú del usuario.
  */
 export function menuIncluyePrefijo(menu: OpcionMenuArbol[], prefijo: string): boolean {
   for (const nodo of menu) {

@@ -125,28 +125,32 @@ export async function actualizarUsuario(idUsuario: number, body: any, contexto: 
 
   try {
     await transaccion(async (client) => {
-      if (clave) {
-        const claveHash = await hashearClave(clave);
-        await client.query(
-          `UPDATE usuario
-           SET dni = $1, nombres = $2, apellido_paterno = $3, apellido_materno = $4,
-               celular = $5, correo_personal = $6, correo_electronico = $7, clave = $8,
-               id_departamento_empresa = $9, nivel_prioridad = $10, usuario_modificacion = $11, fecha_modificacion = now()
-           WHERE id_usuario = $12`,
-          [dni.trim(), nombres.trim(), apellido_paterno.trim(), apellido_materno?.trim() || null, celular?.trim() || null,
-           correoPersonalLimpio, correoLimpio, claveHash, id_departamento_empresa || null, prioridadInt, contexto.idUsuarioSesion, idUsuario]
-        );
-      } else {
-        await client.query(
-          `UPDATE usuario
-           SET dni = $1, nombres = $2, apellido_paterno = $3, apellido_materno = $4,
-               celular = $5, correo_personal = $6, correo_electronico = $7,
-               id_departamento_empresa = $8, nivel_prioridad = $9, usuario_modificacion = $10, fecha_modificacion = now()
-           WHERE id_usuario = $11`,
-          [dni.trim(), nombres.trim(), apellido_paterno.trim(), apellido_materno?.trim() || null, celular?.trim() || null,
-           correoPersonalLimpio, correoLimpio, id_departamento_empresa || null, prioridadInt, contexto.idUsuarioSesion, idUsuario]
-        );
-      }
+      const claveHash = clave ? await hashearClave(clave) : null;
+
+      // Actualización unificada sin duplicación de sentencias SQL
+      await client.query(
+        `UPDATE usuario
+         SET dni = $1, nombres = $2, apellido_paterno = $3, apellido_materno = $4,
+             celular = $5, correo_personal = $6, correo_electronico = $7,
+             clave = COALESCE($8, clave),
+             id_departamento_empresa = $9, nivel_prioridad = $10,
+             usuario_modificacion = $11, fecha_modificacion = now()
+         WHERE id_usuario = $12`,
+        [
+          dni.trim(),
+          nombres.trim(),
+          apellido_paterno.trim(),
+          apellido_materno?.trim() || null,
+          celular?.trim() || null,
+          correoPersonalLimpio,
+          correoLimpio,
+          claveHash,
+          id_departamento_empresa || null,
+          prioridadInt,
+          contexto.idUsuarioSesion,
+          idUsuario,
+        ]
+      );
 
       if (perfilesNormalizados) {
         await asignarPerfilesAUsuario(client, idUsuario, perfilesNormalizados);

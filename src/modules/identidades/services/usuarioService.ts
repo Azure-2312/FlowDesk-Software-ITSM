@@ -29,12 +29,21 @@ export async function listarUsuarios() {
      WHERE up.estado_registro = true AND p.estado_registro = true`
   );
 
-  // 3) Combinar en JavaScript: a cada usuario le pegamos sus perfiles
+  // 3) Indexación eficiente O(M): Agrupar perfiles por usuario en un mapa para búsqueda O(1)
+  const perfilesPorUsuario = new Map<number, { id_perfil: number; nombre: string }[]>();
+  for (const a of asignaciones) {
+    let lista = perfilesPorUsuario.get(a.id_usuario);
+    if (!lista) {
+      lista = [];
+      perfilesPorUsuario.set(a.id_usuario, lista);
+    }
+    lista.push({ id_perfil: a.id_perfil, nombre: a.nombre });
+  }
+
+  // 4) Enlace lineal O(N): Ensamblar usuarios sin búsquedas anidadas
   const resultado: UsuarioConPerfiles[] = usuarios.map((u) => ({
     ...u,
-    perfiles: asignaciones
-      .filter((a) => a.id_usuario === u.id_usuario)
-      .map((a) => ({ id_perfil: a.id_perfil, nombre: a.nombre })),
+    perfiles: perfilesPorUsuario.get(u.id_usuario) || [],
   }));
   const departamentos_empresa = await query<{ id_departamento_empresa: number; nombre: string }>(
     "SELECT id_departamento_empresa,nombre FROM departamento_empresa WHERE estado_registro=true ORDER BY nombre"

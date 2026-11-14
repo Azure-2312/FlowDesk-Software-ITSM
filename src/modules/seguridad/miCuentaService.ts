@@ -71,7 +71,8 @@ export async function actualizarMiCuenta(
   const nombresLimpio = (nombres as string).trim();
   const apellidoPaternoLimpio = (apellido_paterno as string).trim();
 
-  // Si intenta cambiar la contraseña, validar clave actual
+  // Validación y cálculo opcional de nueva contraseña
+  let nuevoHash: string | null = null;
   if (clave_nueva && clave_nueva.trim()) {
     if (!clave_actual) {
       throw new ErrorDominio("Debes ingresar tu contraseña actual para cambiarla");
@@ -100,40 +101,25 @@ export async function actualizarMiCuenta(
       throw new ErrorDominio("La nueva contraseña no puede ser idéntica a la anterior. Elige una diferente.");
     }
 
-    const nuevoHash = await hashearClave(clave_nueva.trim());
-
-    await query(
-      `UPDATE usuario
-       SET nombres = $1, apellido_paterno = $2, apellido_materno = $3,
-           celular = $4, clave = $5, usuario_modificacion = $6, fecha_modificacion = now()
-       WHERE id_usuario = $7`,
-      [
-        nombresLimpio,
-        apellidoPaternoLimpio,
-        apellido_materno ? apellido_materno.trim() : null,
-        celular ? celular.trim() : null,
-        nuevoHash,
-        sesion.id_usuario,
-        sesion.id_usuario,
-      ]
-    );
-  } else {
-    // Actualización de solo datos personales
-    await query(
-      `UPDATE usuario
-       SET nombres = $1, apellido_paterno = $2, apellido_materno = $3,
-           celular = $4, usuario_modificacion = $5, fecha_modificacion = now()
-       WHERE id_usuario = $6`,
-      [
-        nombresLimpio,
-        apellidoPaternoLimpio,
-        apellido_materno ? apellido_materno.trim() : null,
-        celular ? celular.trim() : null,
-        sesion.id_usuario,
-        sesion.id_usuario,
-      ]
-    );
+    nuevoHash = await hashearClave(clave_nueva.trim());
   }
+
+  // Actualización unificada de perfil y credenciales (sin duplicidad de queries)
+  await query(
+    `UPDATE usuario
+     SET nombres = $1, apellido_paterno = $2, apellido_materno = $3,
+         celular = $4, clave = COALESCE($5, clave), usuario_modificacion = $6, fecha_modificacion = now()
+     WHERE id_usuario = $7`,
+    [
+      nombresLimpio,
+      apellidoPaternoLimpio,
+      apellido_materno ? apellido_materno.trim() : null,
+      celular ? celular.trim() : null,
+      nuevoHash,
+      sesion.id_usuario,
+      sesion.id_usuario,
+    ]
+  );
 
   // Actualizar token de sesión si cambiaron nombres
   const nuevaSesion: SesionUsuario = {

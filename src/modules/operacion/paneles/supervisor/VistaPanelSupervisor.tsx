@@ -85,7 +85,7 @@ export default function VistaPanelSupervisor() {
   const alertas = [
     { texto: "Incidentes mayores abiertos", valor: data.alertas.incidentes_mayores, href: "/plataforma/tickets/incidentes-mayores" },
     { texto: "P1/P2 sin asignar", valor: data.alertas.p1p2_sin_asignar, href: "/plataforma/tickets/gestion/asignar" },
-    { texto: "Aprobaciones de RFC pendientes", valor: data.alertas.aprobaciones_pendientes, href: "/plataforma/cambios/supervisor/aprobaciones" },
+    { texto: "Aprobaciones de RFC pendientes", valor: data.alertas.aprobaciones_pendientes, href: "/plataforma/cambios/aprobaciones/tecnicas" },
     { texto: "Técnicos sobrecargados", valor: data.alertas.tecnicos_sobrecargados, href: "/plataforma/tickets/gestion/tecnicos" },
   ];
 

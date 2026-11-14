@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion } from "@/shared/lib/auth";
+import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { COOKIE_SESION } from "@/shared/lib/constants";
 import { evaluarCuestionarioRiesgo } from "@/modules/cambios/services/cuestionarioRiesgoService";
 
@@ -15,7 +16,8 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const data = await evaluarCuestionarioRiesgo(body);
+    const puedeSimularBorrador = sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_FORMULARIO_CONFIGURAR);
+    const data = await evaluarCuestionarioRiesgo(body, puedeSimularBorrador);
     return NextResponse.json(data);
   } catch (error: any) {
     console.error("Error al evaluar cuestionario de riesgo:", error);

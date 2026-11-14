@@ -27,6 +27,8 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
   const [obligatorio, setObligatorio] = useState<"si" | "no" | "segun_tipo" | "condicional">("si");
   const [visible, setVisible] = useState(true);
   const [soloLectura, setSoloLectura] = useState(false);
+  const [tipoCambio, setTipoCambio] = useState<"TODOS" | "NORMAL" | "EMERGENCIA" | "ESTANDAR">("TODOS");
+  const [fase, setFase] = useState<"todas" | "fase_1" | "fase_2">("todas");
 
   useEffect(() => {
     if (campo) {
@@ -37,6 +39,8 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
       setObligatorio(campo.obligatorio || "si");
       setVisible(campo.visible !== false);
       setSoloLectura(Boolean(campo.solo_lectura));
+      setTipoCambio((campo as any).tipo_cambio_aplicable || "TODOS");
+      setFase((campo as any).fase_aplicable || "todas");
     }
   }, [campo]);
 
@@ -53,6 +57,8 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
       obligatorio,
       visible,
       solo_lectura: soloLectura,
+      tipo_cambio_aplicable: tipoCambio,
+      fase_aplicable: fase,
     });
     onCerrar();
   };
@@ -112,6 +118,22 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
               >
                 Configurar Campo
               </span>
+              {campo.es_personalizado && (
+                <span
+                  style={{
+                    backgroundColor: "#f1f5f9",
+                    color: "#475569",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    padding: "2px 8px",
+                    borderRadius: 4,
+                    border: "1px solid #cbd5e1",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Personalizado
+                </span>
+              )}
               <span style={{ fontSize: 11, color: "#64748b", fontFamily: "monospace" }}>
                 {campo.codigo} ({campo.tipo})
               </span>
@@ -205,6 +227,44 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
                 <option value="segun_tipo">Según Tipo de Cambio</option>
                 <option value="condicional">Condicional (Por Regla)</option>
                 <option value="no">Opcional</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Tipo de Cambio y Fase Operativa */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
+                Tipo de Cambio al que aplica
+              </label>
+              <select
+                className="input-base"
+                value={tipoCambio}
+                disabled={!puedeEditar}
+                onChange={(e) => setTipoCambio(e.target.value as any)}
+                style={{ width: "100%", fontSize: 12 }}
+              >
+                <option value="TODOS">Todos los Tipos (Universal)</option>
+                <option value="NORMAL">Normal (CAB y Rollback)</option>
+                <option value="EMERGENCIA">Emergencia (Crisis P1 y PIR)</option>
+                <option value="ESTANDAR">Estándar (Catálogo)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
+                Fase operativa del campo
+              </label>
+              <select
+                className="input-base"
+                value={fase}
+                disabled={!puedeEditar}
+                onChange={(e) => setFase(e.target.value as any)}
+                style={{ width: "100%", fontSize: 12 }}
+              >
+                <option value="todas">Ambas Fases (Inicio a Cierre)</option>
+                <option value="fase_1">Fase 1: Solicitud (Alta Inicial)</option>
+                <option value="fase_2">Fase 2: Planificación CAB / PIR</option>
               </select>
             </div>
           </div>

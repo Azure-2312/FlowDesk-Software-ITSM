@@ -119,16 +119,19 @@ function ContenidoConfiguracionVistasTickets({
     cargarConfiguracion();
   }, []);
 
+  // Mapa constante para resolución O(1) de claves legadas por ID de perfil
+  const MAPA_PERFIL_LEGADO: Record<string, string> = {
+    "1": "administrador",
+    "2": "tecnico",
+    "3": "solicitante",
+    "4": "supervisor",
+    "5": "gestor_area",
+  };
+
   // Clave en el objeto vistas (ej: "perfil_3", "usuario_5", o claves legadas "solicitante", "tecnico")
   const claveActual = useMemo(() => {
     if (modoSeleccion === "perfil") {
-      // Compatibilidad con claves legadas
-      if (claveSeleccionada === "1") return "administrador";
-      if (claveSeleccionada === "2") return "tecnico";
-      if (claveSeleccionada === "3") return "solicitante";
-      if (claveSeleccionada === "4") return "supervisor";
-      if (claveSeleccionada === "5") return "gestor_area";
-      return `perfil_${claveSeleccionada}`;
+      return MAPA_PERFIL_LEGADO[claveSeleccionada] || `perfil_${claveSeleccionada}`;
     }
     return `usuario_${claveSeleccionada}`;
   }, [modoSeleccion, claveSeleccionada]);

@@ -208,7 +208,16 @@ export async function crearCambio(sesion: any, body: any) {
   if (!Number.isFinite(inicio) || !Number.isFinite(fin) || fin <= inicio) throw new ErrorDominio("La ventana de cambio debe tener fechas válidas y su fin debe ser posterior al inicio.");
   if ((fin - inicio) / 3600000 > Number(config?.duracion_maxima_horas || 24)) throw new ErrorDominio(`La ventana supera el máximo configurado de ${config?.duracion_maxima_horas || 24} horas.`);
 
-  // Trazabilidad: validar que el CI afectado exista en la CMDB si se proporciona.
+  // Normalización y validación única del tipo de cambio según configuración ITIL
+  const tipoNormalizado = String(tipo_cambio || "").toUpperCase();
+  if (!(config?.tipos_rfc || ["ESTANDAR", "NORMAL", "EMERGENCIA"]).includes(tipoNormalizado)) {
+    throw new ErrorDominio("Este tipo de RFC no está habilitado por la configuración del sistema.");
+  }
+  if (tipoNormalizado === "EMERGENCIA" && !config?.permite_emergencia) {
+    throw new ErrorDominio("Las RFC de emergencia están deshabilitadas por configuración.");
+  }
+
+  // Validación consolidada de CI: existencia en CMDB y detección de solapamiento de ventanas
   if (id_ci_afectado) {
     const ciExiste = await queryRow<{ id_ci: number }>(
       "SELECT id_ci FROM elemento_configuracion WHERE id_ci = $1 AND estado_registro = true",
@@ -217,10 +226,7 @@ export async function crearCambio(sesion: any, body: any) {
     if (!ciExiste) {
       throw new ErrorDominio(`El CI afectado (id ${id_ci_afectado}) no existe o no está activo en la CMDB.`, 404);
     }
-  }
 
-  // Validación de solapamiento: evitar dos RFCs que afecten al mismo CI en horarios concurrentes.
-  if (id_ci_afectado) {
     const solapamientoRow = await queryRow<{ id_cambio: number; codigo_cambio: string; titulo: string }>(
       `SELECT c.id_cambio, c.codigo_cambio, c.titulo
        FROM cambio c
@@ -246,7 +252,6 @@ export async function crearCambio(sesion: any, body: any) {
     if (field.obligatorio && (value === undefined || value === null || String(value).trim() === "")) throw new ErrorDominio(`Completa el campo obligatorio: ${field.etiqueta}.`);
     if (value !== undefined && field.tipo === "lista" && !(field.opciones || []).includes(String(value))) throw new ErrorDominio(`Valor no válido para ${field.etiqueta}.`);
   }
-  if (!config?.permite_emergencia && String(tipo_cambio).toUpperCase() === "EMERGENCIA") throw new ErrorDominio("Las RFC de emergencia están deshabilitadas por configuración.");
 
   // Generar código correlativo RFC-YYYY-XXXX
   const year = new Date().getFullYear();
@@ -257,12 +262,9 @@ export async function crearCambio(sesion: any, body: any) {
   const correlativo = String((parseInt(countRow?.c || "0", 10) + 1)).padStart(4, "0");
   const codigo_cambio = `RFC-${year}-${correlativo}`;
 
-  // Estado inicial segun ITIL:
+  // Estado inicial según ITIL:
   // ESTANDAR -> id_estado = 3 (Aprobado pre-autorizado)
-  // NORMAL / EMERGENCIA -> id_estado = 2 (En Evaluacion CAB)
-  const tipoNormalizado = (tipo_cambio as string).toUpperCase();
-  if (!(config?.tipos_rfc || ["ESTANDAR", "NORMAL", "EMERGENCIA"]).includes(tipoNormalizado)) throw new ErrorDominio("Este tipo de RFC no está habilitado por la configuración del sistema.");
-  if (tipoNormalizado === "EMERGENCIA" && !config?.permite_emergencia) throw new ErrorDominio("Las RFC de emergencia están deshabilitadas por configuración.");
+  // NORMAL / EMERGENCIA -> id_estado = 2 (En Evaluación CAB)
   const id_estado = tipoNormalizado === "ESTANDAR" ? 3 : 2;
 
   const insertSql = `

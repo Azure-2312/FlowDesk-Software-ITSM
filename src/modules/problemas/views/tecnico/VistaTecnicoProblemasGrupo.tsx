@@ -47,7 +47,7 @@ export default function PaginaProblemasGrupo() {
 
         <div style={{ display: "flex", gap: 10 }}>
           <Link
-            href="/plataforma/problemas/tecnico/nuevo"
+            href="/plataforma/problemas/nuevo"
             style={{
               padding: "8px 16px",
               backgroundColor: "#2563eb",
@@ -168,7 +168,7 @@ export default function PaginaProblemasGrupo() {
                   </td>
                   <td style={{ padding: "12px 16px", textAlign: "right" }}>
                     <Link
-                      href={`/plataforma/problemas/tecnico/errores-conocidos`}
+                      href={`/plataforma/problemas/kedb`}
                       style={{
                         padding: "4px 10px",
                         backgroundColor: "#f8fafc",
