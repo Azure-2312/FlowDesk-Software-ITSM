@@ -387,39 +387,28 @@ export default function ConfiguracionFormularioPage() {
   };
 
   return (
-    <div style={{ minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
-      <div style={{ padding: "16px 16px 24px 16px", flex: 1 }}>
+    <div style={{ width: "100%", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
+      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto 0 0", padding: "28px 32px 32px 32px", flex: 1, boxSizing: "border-box" }}>
 
-      {/* Encabezado Principal de la Pantalla 1.3.3.1 */}
+      {/* Encabezado Principal de la Pantalla */}
       <div style={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-start",
-        marginBottom: 20,
-        backgroundColor: "#ffffff",
-        padding: "18px 24px",
-        borderRadius: 8,
-        border: "1px solid #e2e8f0"
+        gap: 16,
+        marginBottom: 16
       }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Formulario</span>
-            <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-              Configuración de Formulario de Problemas
-            </h1>
-          </div>
-          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+            Configuración de Formulario de Problemas
+          </h1>
+          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
             Definición de campos, formularios de alta y edición, catálogos ITIL 4, matriz institucional y parametrización visual del ticket.
           </p>
-          <div style={{ marginTop: 8, fontSize: 12, color: "#94a3b8" }}>
-            Última modificación por <strong style={{ color: "#475569" }}>{autorPublicada || "Administrador"}</strong>
-            {fechaPublicada && ` el ${new Date(fechaPublicada).toLocaleString()}`}
-          </div>
         </div>
 
         {/* Indicador de estado y Acción Primaria */}
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>● Configuración Activa</span>
           <button
             type="button"
             onClick={handleGuardarBorrador}
@@ -427,7 +416,7 @@ export default function ConfiguracionFormularioPage() {
             className="boton-primario"
             style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
           >
-            {guardando ? "Guardando..." : "Guardar Cambios"}
+            {guardando ? "Guardando..." : "Guardar Configuración"}
           </button>
         </div>
       </div>
@@ -435,12 +424,11 @@ export default function ConfiguracionFormularioPage() {
       {/* Selector de las 6 Pestañas Reglamentarias */}
       <div style={{
         display: "flex",
-        borderBottom: "2px solid #e2e8f0",
-        marginBottom: 20,
-        backgroundColor: "#ffffff",
-        borderRadius: "8px 8px 0 0",
-        padding: "0 12px",
-        overflowX: "auto", overflowY: "hidden", scrollbarWidth: "none"
+        gap: 8,
+        borderBottom: "1px solid #e2e8f0",
+        marginBottom: 24,
+        justifyContent: "flex-start",
+        overflowX: "auto"
       }}>
         {[
           { id: "campos", label: "Campos" },
@@ -457,16 +445,13 @@ export default function ConfiguracionFormularioPage() {
               type="button"
               onClick={() => setTabActiva(tab.id as TabId)}
               style={{
-                padding: "12px 18px",
+                padding: "10px 16px",
                 fontSize: 13,
-                fontWeight: activa ? 700 : 500,
+                fontWeight: activa ? 600 : 500,
                 color: activa ? "#2563eb" : "#64748b",
                 borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
-                marginBottom: -2,
-                background: activa ? "#eff6ff" : "none",
-                borderTop: "none",
-                borderLeft: "none",
-                borderRight: "none",
+                background: "transparent",
+                border: "none",
                 cursor: "pointer",
                 whiteSpace: "nowrap"
               }}

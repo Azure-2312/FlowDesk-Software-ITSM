@@ -364,7 +364,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
       )}
 
       {/* Barra superior con navegación de submódulos de catálogos */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+      <div className="mb-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h3 className="text-base font-bold text-slate-800">
@@ -376,29 +376,19 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => mostrarAviso("Plantilla CSV descargada con encabezados estándar.")}
-              className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 transition-colors"
-            >
-              Exportar CSV
-            </button>
-            <button
-              onClick={() => mostrarAviso("Seleccione un archivo CSV para importar valores normalizados.")}
-              className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 transition-colors"
-            >
-              Importar CSV
-            </button>
-            <button
+              type="button"
               onClick={() => abrirEdicion(catalogoActivo)}
               disabled={bloqueado}
-              className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded transition-colors disabled:opacity-50"
+              className="boton-primario"
+              style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
             >
-              + Nuevo valor
+              Nuevo valor
             </button>
           </div>
         </div>
 
         {/* Pestañas horizontales de catálogos */}
-        <div className="flex overflow-x-auto gap-2 border-b border-slate-200 mt-4 pb-2">
+        <div className="flex overflow-x-auto gap-2 border-b border-slate-200 mt-4 pb-0">
           {[
             { id: "condicion_fisica", label: "Condición física", badge: condiciones.length },
             { id: "monedas", label: "Monedas", badge: monedas.length },
@@ -407,26 +397,29 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
             { id: "centros_costo", label: "Centros de costo", badge: centrosCosto.length },
             { id: "etiquetas_sugeridas", label: "Etiquetas sugeridas", badge: etiquetasSugeridas.length },
             { id: "motivos_auxiliares", label: "Motivos de reclasificación / fusión", badge: motivosAuxiliares.length }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setCatalogoActivo(tab.id as CatalogoId)}
-              className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap transition-colors ${
-                catalogoActivo === tab.id
-                  ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
-                  : "text-slate-600 hover:bg-slate-100"
-              }`}
-            >
-              <span>{tab.label}</span>
-              <span
-                className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                  catalogoActivo === tab.id ? "bg-indigo-200 text-indigo-800" : "bg-slate-200 text-slate-700"
-                }`}
+          ].map((tab) => {
+            const activa = catalogoActivo === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setCatalogoActivo(tab.id as CatalogoId)}
+                style={{
+                  padding: "10px 14px",
+                  border: "none",
+                  background: "transparent",
+                  borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
+                  color: activa ? "#2563eb" : "#64748b",
+                  fontWeight: activa ? 600 : 500,
+                  fontSize: 13,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap"
+                }}
               >
-                {tab.badge}
-              </span>
-            </button>
-          ))}
+                {tab.label} ({tab.badge})
+              </button>
+            );
+          })}
         </div>
       </div>
 

@@ -225,9 +225,9 @@ export const PestanaPlantillas: React.FC = () => {
           type="button"
           className="boton-primario"
           onClick={abrirCrearPlantilla}
-          style={{ width: "auto", fontSize: 12, padding: "7px 14px", backgroundColor: "#2563eb" }}
+          style={{ width: "auto", fontSize: 13, padding: "8px 16px" }}
         >
-          + Nueva Plantilla RFC
+          Nueva Plantilla RFC
         </button>
       </div>
 

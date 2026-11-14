@@ -213,17 +213,19 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                     type="button"
                     onClick={() => abrirModalNuevo(false)}
                     disabled={!puedeEditar}
-                    className="px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs transition"
+                    className="boton-primario"
+                    style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                   >
-                    + Nueva categoría
+                    Nueva categoría
                   </button>
                   <button
                     type="button"
                     onClick={() => abrirModalNuevo(true)}
                     disabled={!puedeEditar}
-                    className="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition"
+                    className="boton-secundario"
+                    style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                   >
-                    + Subcategoría
+                    Subcategoría
                   </button>
                 </>
               ) : (
@@ -231,9 +233,10 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                   type="button"
                   onClick={() => abrirModalNuevo(false)}
                   disabled={!puedeEditar}
-                  className="px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs transition"
+                  className="boton-primario"
+                  style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 >
-                  + Nuevo valor
+                  Nuevo valor
                 </button>
               )}
 

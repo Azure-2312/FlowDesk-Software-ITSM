@@ -50,12 +50,9 @@ export default function PaginaCambiosImpacto() {
     <div style={{ padding: "24px 32px", maxWidth: 1300, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Impacto TI</span>
-            <h1 style={{ fontSize: 21, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-              Cambios que Afectan mis Servicios
-            </h1>
-          </div>
+          <h1 style={{ fontSize: 21, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+            Cambios que Afectan mis Servicios
+          </h1>
           <p style={{ fontSize: 13, color: "#64748b", margin: "6px 0 0" }}>
             Notificación preventiva de intervenciones de infraestructura que pueden generar incidentes o consultas de usuarios ({cambios.length} cambios programados).
           </p>

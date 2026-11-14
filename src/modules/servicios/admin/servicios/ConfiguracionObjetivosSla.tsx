@@ -194,28 +194,38 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" 
   }
 
   return (
-    <div>
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
+    <div style={{ padding: "28px 32px 32px 32px", width: "100%", maxWidth: 1400, margin: "0 auto 0 0", boxSizing: "border-box" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, margin: "0 0 6px 0", color: "#0f172a" }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
             Objetivos y Acuerdos de Nivel de Servicio (SLA)
           </h1>
-          <p className="subtitulo" style={{ margin: 0, fontSize: 13.5, color: "#64748b" }}>
+          <p style={{ margin: "6px 0 0 0", fontSize: 13, color: "#64748b", lineHeight: 1.45 }}>
             Parametrización de la matriz institucional de tiempos por prioridad, metas globales de cumplimiento, calendario laboral y reglas de congelación de cronómetros conforme a ITIL v4 e ISO/IEC 20000.
           </p>
         </div>
+        {pestañaActiva === "tiempos" && (
+          <button
+            type="button"
+            className="boton-primario"
+            onClick={guardarObjetivos as any}
+            disabled={guardando || hayInconsistenciasTiempos}
+            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+            title={hayInconsistenciasTiempos ? "Corrija las inconsistencias de tiempos SLA/OLA para guardar." : ""}
+          >
+            {guardando ? "Guardando..." : "Guardar Configuración"}
+          </button>
+        )}
       </div>
 
-      {/* Selector de Pestañas SLA (sin números de versión en las etiquetas) */}
+      {/* Selector de Pestañas SLA */}
       <div
         style={{
           display: "flex",
-          borderBottom: "2px solid #e2e8f0",
-          marginBottom: 20,
-          backgroundColor: "#ffffff",
-          borderRadius: "8px 8px 0 0",
-          padding: "0 12px",
-          gap: 4,
+          gap: 8,
+          borderBottom: "1px solid #e2e8f0",
+          marginBottom: 24,
+          justifyContent: "flex-start",
           overflowX: "auto",
         }}
       >
@@ -223,16 +233,13 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" 
           type="button"
           onClick={() => setPestañaActiva("tiempos")}
           style={{
-            padding: "12px 18px",
+            padding: "10px 16px",
             fontSize: 13,
-            fontWeight: pestañaActiva === "tiempos" ? 700 : 500,
+            fontWeight: pestañaActiva === "tiempos" ? 600 : 500,
             color: pestañaActiva === "tiempos" ? "#2563eb" : "#64748b",
             borderBottom: pestañaActiva === "tiempos" ? "2px solid #2563eb" : "2px solid transparent",
-            marginBottom: -2,
-            background: pestañaActiva === "tiempos" ? "#eff6ff" : "none",
-            borderTop: "none",
-            borderLeft: "none",
-            borderRight: "none",
+            background: "transparent",
+            border: "none",
             cursor: "pointer",
             whiteSpace: "nowrap",
           }}
@@ -243,16 +250,13 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" 
           type="button"
           onClick={() => setPestañaActiva("matriz")}
           style={{
-            padding: "12px 18px",
+            padding: "10px 16px",
             fontSize: 13,
-            fontWeight: pestañaActiva === "matriz" ? 700 : 500,
+            fontWeight: pestañaActiva === "matriz" ? 600 : 500,
             color: pestañaActiva === "matriz" ? "#2563eb" : "#64748b",
             borderBottom: pestañaActiva === "matriz" ? "2px solid #2563eb" : "2px solid transparent",
-            marginBottom: -2,
-            background: pestañaActiva === "matriz" ? "#eff6ff" : "none",
-            borderTop: "none",
-            borderLeft: "none",
-            borderRight: "none",
+            background: "transparent",
+            border: "none",
             cursor: "pointer",
             whiteSpace: "nowrap",
           }}
@@ -302,9 +306,14 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" 
               }}
             >
               <div style={{ marginBottom: 16 }}>
-                <h2 style={{ fontSize: 16, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-                  Matriz Institucional de Tiempos por Prioridad (SLA)
-                </h2>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <h2 style={{ fontSize: 16, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+                    Matriz Institucional de Tiempos por Prioridad (SLA)
+                  </h2>
+                  <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>
+                    Compromiso con el Negocio
+                  </span>
+                </div>
                 <p style={{ margin: "4px 0 0 0", fontSize: 12.5, color: "#64748b" }}>
                   Tiempos máximos comprometidos para el primer contacto técnico y el restablecimiento total del servicio.
                 </p>
@@ -431,25 +440,33 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" 
                   </tbody>
                 </table>
               </div>
+            </div>
 
-              {/* SECCIÓN OLA EDITABLE: Objetivos Internos de Problemas (ITIL v4 OLA) */}
-              <div
-                style={{
-                  marginTop: 28,
-                  padding: 20,
-                  backgroundColor: "#f8fafc",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                }}
-              >
-                <div style={{ marginBottom: 14 }}>
-                  <h3 style={{ fontSize: 14.5, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-                    Objetivos Internos de Problemas (OLA)
-                  </h3>
-                  <p style={{ margin: "4px 0 0 0", fontSize: 12, color: "#64748b" }}>
-                    Metas de gestión técnica para primera respuesta, diagnóstico de causa raíz y mitigación definitiva (valores editables).
-                  </p>
+            {/* SECCIÓN 2: TARJETA INDEPENDIENTE DE OBJETIVOS OPERATIVOS INTERNOS (OLA) */}
+            <div
+              className="tarjeta"
+              style={{
+                backgroundColor: "#ffffff",
+                border: "1px solid #e2e8f0",
+                borderRadius: 10,
+                padding: 24,
+                marginBottom: 24,
+                boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+              }}
+            >
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <h2 style={{ fontSize: 16, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+                    Objetivos Internos de Operación por Prioridad (OLA)
+                  </h2>
+                  <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4, backgroundColor: "#eff6ff", color: "#1d4ed8", border: "1px solid #bfdbfe" }}>
+                    Acuerdos Internos TI
+                  </span>
                 </div>
+                <p style={{ margin: "4px 0 0 0", fontSize: 12.5, color: "#64748b" }}>
+                  Metas de gestión técnica operativa entre equipos de TI para primera respuesta, diagnóstico de causa raíz y mitigación definitiva.
+                </p>
+              </div>
 
                 <div style={{ overflowX: "auto" }}>
                   <table className="tabla-base" style={{ width: "100%", fontSize: 12.5, borderCollapse: "collapse" }}>
@@ -611,9 +628,8 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" 
                   </table>
                 </div>
               </div>
-            </div>
 
-            {/* SECCIÓN 2: METAS GLOBALES Y CALENDARIO LABORAL */}
+            {/* SECCIÓN 3: METAS GLOBALES Y CALENDARIO LABORAL */}
             <div
               className="tarjeta"
               style={{
@@ -940,7 +956,7 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" 
                 }}
                 title={hayInconsistenciasTiempos ? "Corrija las inconsistencias de tiempos SLA/OLA para guardar." : ""}
               >
-                {guardando ? "Guardando Configuración..." : "Guardar Objetivos SLA y OLA"}
+                {guardando ? "Guardando Configuración..." : "Guardar Configuración"}
               </button>
             </div>
           </form>

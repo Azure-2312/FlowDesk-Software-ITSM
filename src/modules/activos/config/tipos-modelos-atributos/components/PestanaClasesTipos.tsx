@@ -270,13 +270,24 @@ export function PestanaClasesTipos({ datos, onChange, bloqueado }: Props) {
                 <label style={{ fontSize: 12, fontWeight: 600, color: "#334155", display: "block", marginBottom: 4 }}>
                   Color Distintivo
                 </label>
-                <input
-                  type="color"
-                  value={claseActiva.color || "#3b82f6"}
-                  disabled={bloqueado}
-                  onChange={(e) => actualizarClaseActual({ color: e.target.value })}
-                  style={{ width: "100%", height: 35, borderRadius: 6, border: "1px solid #cbd5e1", cursor: "pointer" }}
-                />
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="color"
+                    value={claseActiva.color || "#3b82f6"}
+                    disabled={bloqueado}
+                    onChange={(e) => actualizarClaseActual({ color: e.target.value })}
+                    style={{ width: 36, height: 35, borderRadius: 6, border: "1px solid #cbd5e1", padding: 2, cursor: "pointer", background: "none" }}
+                  />
+                  <input
+                    type="text"
+                    className="input-base"
+                    value={claseActiva.color || "#3b82f6"}
+                    disabled={bloqueado}
+                    onChange={(e) => actualizarClaseActual({ color: e.target.value })}
+                    style={{ flex: 1, fontFamily: "monospace", fontSize: 12, height: 35 }}
+                    maxLength={7}
+                  />
+                </div>
               </div>
             </div>
 

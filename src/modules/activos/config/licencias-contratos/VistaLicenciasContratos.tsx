@@ -254,117 +254,81 @@ export default function LicenciasContratosConfigPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", width: "100%", boxSizing: "border-box", padding: "32px 48px 48px 48px" }}>
+      <div style={{ maxWidth: 1400, width: "100%", margin: "0 auto 0 0" }}>
         {/* Toast flotante */}
-      {toastMensaje && (
-        <div className="fixed top-4 right-4 z-50 bg-slate-800 text-white px-4 py-2 rounded-md shadow-lg text-sm transition-opacity">
-          {toastMensaje}
-        </div>
-      )}
+        {toastMensaje && (
+          <div className="fixed top-4 right-4 z-50 bg-slate-800 text-white px-4 py-2 rounded-md shadow-lg text-sm transition-opacity">
+            {toastMensaje}
+          </div>
+        )}
 
-      {/* Encabezado canónico ARQ-4: Configuración de Catálogos */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3">
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                  Gestión SAM &amp; Contratos
-                </span>
-                <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-                  Licencias de Software y Contratos TI
-                </h1>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                  ● Configuración Activa
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 mt-1 max-w-3xl">
-                Definición de métricas SAM, modalidades contractuales, umbrales de sobreuso, alertas de expiración y políticas de renovación.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleImportar}
-                className="px-3 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors"
-                title="Importar catálogo JSON"
-              >
-                Importar JSON
-              </button>
-              <button
-                onClick={handleExportar}
-                className="px-3 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors"
-                title="Exportar catálogo JSON"
-              >
-                Exportar JSON
-              </button>
-              <button
-                onClick={handleGuardarConfiguracion}
-                disabled={guardando || Boolean(bloqueadoPorOtro)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:opacity-50"
-              >
-                {guardando ? "Guardando..." : "Guardar Licencias y Contratos"}
-              </button>
-            </div>
+        {/* Encabezado Principal Estandarizado (Con márgenes superiores y laterales) */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: 24,
+          marginBottom: 20
+        }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+              Licencias de Software y Contratos TI
+            </h1>
+            <p style={{ margin: "8px 0 0 0", color: "#64748b", fontSize: 13.5, lineHeight: 1.5 }}>
+              Definición de métricas SAM, modalidades contractuales, umbrales de sobreuso, alertas de expiración y políticas de renovación.
+            </p>
           </div>
 
-          {/* Accesos directos a las pantallas del Módulo Activos y CMDB */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pt-3 mt-3 border-t border-slate-100">
-            <span className="text-[11px] font-medium text-slate-400 mr-1">Vistas de Activos:</span>
-            <Link
-              href="/plataforma/activos/configuracion/tipos-modelos-atributos"
-              className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, paddingTop: 4 }}>
+            <button
+              onClick={handleGuardarConfiguracion}
+              type="button"
+              disabled={guardando || Boolean(bloqueadoPorOtro)}
+              className="boton-primario"
+              style={{ padding: "9px 22px", fontSize: 13, width: "auto", fontWeight: 700 }}
             >
-              Tipos y Modelos
-            </Link>
-            <Link
-              href="/plataforma/activos/configuracion/ciclos-vida-transiciones"
-              className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
-            >
-              Ciclos de Vida
-            </Link>
-            <span className="px-2.5 py-1 text-xs rounded border border-indigo-300 bg-indigo-50 text-indigo-700 font-semibold">
-              Licencias y Contratos
-            </span>
-          </div>
-
-          {/* Barra de Pestañas sin números */}
-          <div className="flex space-x-1 border-b border-slate-200 mt-4 overflow-x-auto">
-            {PESTANAS.map((pestana) => {
-              const activa = tabActiva === pestana.id;
-              return (
-                <button
-                  key={pestana.id}
-                  onClick={() => cambiarTab(pestana.id)}
-                  className={`py-2.5 px-4 text-xs font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                    activa
-                      ? "border-indigo-600 text-indigo-600 bg-indigo-50/50"
-                      : "border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300"
-                  }`}
-                >
-                  {pestana.titulo}
-                </button>
-              );
-            })}
+              {guardando ? "Guardando..." : "Guardar Configuración"}
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* Contenido Principal de la Pestaña Activa */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Banner informativo de pestaña */}
-        <div className="bg-white border-l-4 border-indigo-500 p-4 rounded-r-lg shadow-sm border border-slate-200 mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-sm font-bold text-slate-800">{pestanaInfo.titulo}</h2>
-              <p className="text-xs text-slate-600 mt-0.5">{pestanaInfo.descripcion}</p>
-            </div>
-            <div className="text-right text-xs text-slate-400 font-mono">
-              Versión activa: v{versionPublicada}
-            </div>
-          </div>
+        {/* Navegación horizontal de pestañas */}
+        <div style={{
+          display: "flex",
+          gap: 8,
+          borderBottom: "1px solid #e2e8f0",
+          marginBottom: 28,
+          justifyContent: "flex-start",
+          overflowX: "auto"
+        }}>
+          {PESTANAS.map((pestana) => {
+            const activa = tabActiva === pestana.id;
+            return (
+              <button
+                key={pestana.id}
+                onClick={() => cambiarTab(pestana.id)}
+                style={{
+                  padding: "12px 18px",
+                  border: "none",
+                  background: "transparent",
+                  borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
+                  color: activa ? "#2563eb" : "#64748b",
+                  fontWeight: activa ? 600 : 500,
+                  fontSize: 13.5,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                {pestana.titulo}
+              </button>
+            );
+          })}
         </div>
+
+        {/* Contenido Principal de la Pestaña Activa */}
+        <div style={{ width: "100%" }}>
 
         {/* Error o Spinner de Carga */}
         {errorCarga && (
@@ -432,7 +396,7 @@ export default function LicenciasContratosConfigPage() {
             )}
           </div>
         )}
-      </main>
+        </div>
       </div>
     </div>
   );

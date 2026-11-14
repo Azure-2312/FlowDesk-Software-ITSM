@@ -748,36 +748,80 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
         </div>
       )}
 
+      {/* Cabecera General de la Vista */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16, marginBottom: 16 }}>
+        <div>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+            Clasificación y Configuración de Categorías
+          </h1>
+          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
+            Administre las categorías maestras que agrupan los servicios y rigen los tiempos base de SLA en el catálogo y los formularios.
+          </p>
+        </div>
+        <button
+          type="button"
+          className="boton-primario"
+          style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+          onClick={abrirCrear}
+        >
+          Nueva Categoría
+        </button>
+      </div>
+
+      {/* Tabs por Tipo (Debajo del Título General) */}
+      <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #e2e8f0", marginBottom: 24, justifyContent: "flex-start" }}>
+        <button
+          type="button"
+          onClick={() => setFiltroTipo("todos")}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: filtroTipo === "todos" ? "#2563eb" : "#64748b",
+            fontWeight: filtroTipo === "todos" ? 600 : 500,
+            padding: "10px 16px",
+            fontSize: 13,
+            cursor: "pointer",
+            borderBottom: filtroTipo === "todos" ? "2px solid #2563eb" : "2px solid transparent",
+          }}
+        >
+          Todas ({totalCategorias})
+        </button>
+        <button
+          type="button"
+          onClick={() => setFiltroTipo("1")}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: filtroTipo === "1" ? "#2563eb" : "#64748b",
+            fontWeight: filtroTipo === "1" ? 600 : 500,
+            padding: "10px 16px",
+            fontSize: 13,
+            cursor: "pointer",
+            borderBottom: filtroTipo === "1" ? "2px solid #2563eb" : "2px solid transparent",
+          }}
+        >
+          Incidentes ({cantIncidentes})
+        </button>
+        <button
+          type="button"
+          onClick={() => setFiltroTipo("2")}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: filtroTipo === "2" ? "#2563eb" : "#64748b",
+            fontWeight: filtroTipo === "2" ? 600 : 500,
+            padding: "10px 16px",
+            fontSize: 13,
+            cursor: "pointer",
+            borderBottom: filtroTipo === "2" ? "2px solid #2563eb" : "2px solid transparent",
+          }}
+        >
+          Solicitudes ({cantSolicitudes})
+        </button>
+      </div>
+
       {/* PANEL PRINCIPAL: TABLA DE CATEGORÍAS */}
       <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 10, padding: 20 }}>
-        {/* Cabecera y Botón Nueva Categoría */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                Catálogo de Servicios TI
-              </span>
-              <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-                Clasificación y Configuración de Categorías (ITIL v4)
-              </h2>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                ● Configuración Activa
-              </span>
-            </div>
-            <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
-              Administre las categorías maestras que agrupan los servicios y rigen los tiempos base de SLA en el catálogo y los formularios.
-            </p>
-          </div>
-          <button
-            type="button"
-            className="boton-primario"
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
-            onClick={abrirCrear}
-          >
-            + Nueva Categoría
-          </button>
-        </div>
-
         {/* Tarjetas de Métricas Rápidas */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 18 }}>
           <div style={{ padding: "12px 14px", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
@@ -799,62 +843,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
         </div>
 
         {/* Barra de Filtros y Búsqueda */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
-          {/* Tabs por Tipo */}
-          <div style={{ display: "flex", gap: 6, backgroundColor: "#f1f5f9", padding: 4, borderRadius: 8 }}>
-            <button
-              type="button"
-              onClick={() => setFiltroTipo("todos")}
-              style={{
-                border: "none",
-                background: filtroTipo === "todos" ? "#ffffff" : "transparent",
-                color: filtroTipo === "todos" ? "#0f172a" : "#64748b",
-                fontWeight: filtroTipo === "todos" ? 700 : 500,
-                padding: "6px 12px",
-                borderRadius: 6,
-                fontSize: 12.5,
-                cursor: "pointer",
-                boxShadow: filtroTipo === "todos" ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
-              }}
-            >
-              Todas ({totalCategorias})
-            </button>
-            <button
-              type="button"
-              onClick={() => setFiltroTipo("1")}
-              style={{
-                border: "none",
-                background: filtroTipo === "1" ? "#ffffff" : "transparent",
-                color: filtroTipo === "1" ? "#c2410c" : "#64748b",
-                fontWeight: filtroTipo === "1" ? 700 : 500,
-                padding: "6px 12px",
-                borderRadius: 6,
-                fontSize: 12.5,
-                cursor: "pointer",
-                boxShadow: filtroTipo === "1" ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
-              }}
-            >
-              Incidentes ({cantIncidentes})
-            </button>
-            <button
-              type="button"
-              onClick={() => setFiltroTipo("2")}
-              style={{
-                border: "none",
-                background: filtroTipo === "2" ? "#ffffff" : "transparent",
-                color: filtroTipo === "2" ? "#1d4ed8" : "#64748b",
-                fontWeight: filtroTipo === "2" ? 700 : 500,
-                padding: "6px 12px",
-                borderRadius: 6,
-                fontSize: 12.5,
-                cursor: "pointer",
-                boxShadow: filtroTipo === "2" ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
-              }}
-            >
-              Solicitudes ({cantSolicitudes})
-            </button>
-          </div>
-
+        <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
           {/* Filtro Estado y Búsqueda */}
           <div style={{ display: "flex", gap: 10, flex: 1, justifyContent: "flex-end", minWidth: 280 }}>
             <select
@@ -892,31 +881,31 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
             <button
               type="button"
               className="boton-secundario"
-              style={{ width: "auto", padding: "6px 14px", fontSize: 12 }}
+              style={{ width: "auto", padding: "6px 14px", fontSize: 12.5 }}
               onClick={abrirCrear}
             >
-              + Crear la primera categoría
+              Crear la primera categoría
             </button>
           </div>
         ) : (
           <div className="contenedor-tabla">
-            <table className="tabla">
+            <table className="tabla" style={{ width: "100%", fontSize: "13.5px" }}>
               <thead>
                 <tr>
-                  <th style={{ width: 44 }}>Icono</th>
+                  <th style={{ width: 44, textAlign: "center" }}>Icono</th>
                   <th>Categoría y Descripción</th>
-                  <th>Tipo</th>
-                  <th>Código</th>
-                  <th>SLA Base</th>
-                  <th>Servicios</th>
-                  <th>Estado</th>
+                  <th style={{ textAlign: "center" }}>Tipo</th>
+                  <th style={{ textAlign: "center" }}>Código</th>
+                  <th style={{ textAlign: "center" }}>SLA Base</th>
+                  <th style={{ textAlign: "center" }}>Servicios</th>
+                  <th style={{ textAlign: "center" }}>Estado</th>
                   <th style={{ textAlign: "right" }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {categoriasFiltradas.map((c) => (
                   <tr key={c.id_categoria} style={{ opacity: c.estado_registro ? 1 : 0.65 }}>
-                    <td>
+                    <td style={{ textAlign: "center" }}>
                       <div
                         style={{
                           width: 34,
@@ -924,7 +913,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
                           borderRadius: 6,
                           backgroundColor: "#f8fafc",
                           border: "1px solid #e2e8f0",
-                          display: "flex",
+                          display: "inline-flex",
                           alignItems: "center",
                           justifyContent: "center",
                         }}
@@ -934,18 +923,18 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
                     </td>
 
                     <td>
-                      <strong style={{ fontSize: 13, color: "#0f172a", display: "block" }}>
+                      <strong style={{ fontSize: 13.5, color: "#0f172a", display: "block" }}>
                         {c.nombre}
                       </strong>
-                      <span style={{ fontSize: 11.5, color: "#64748b", display: "block", marginTop: 2, lineHeight: 1.3 }}>
+                      <span style={{ fontSize: 12, color: "#64748b", display: "block", marginTop: 2, lineHeight: 1.3 }}>
                         {c.descripcion || "Sin descripción funcional registrada."}
                       </span>
                     </td>
 
-                    <td>
+                    <td style={{ textAlign: "center" }}>
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: 11.5,
                           fontWeight: 700,
                           padding: "2px 8px",
                           borderRadius: 4,
@@ -957,11 +946,11 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
                       </span>
                     </td>
 
-                    <td>
+                    <td style={{ textAlign: "center" }}>
                       <span
                         style={{
                           fontFamily: "monospace",
-                          fontSize: 12,
+                          fontSize: 12.5,
                           fontWeight: 700,
                           backgroundColor: "#f1f5f9",
                           color: "#334155",
@@ -974,16 +963,16 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
                       </span>
                     </td>
 
-                    <td>
-                      <span style={{ fontSize: 12, color: "#0f172a", fontWeight: 600 }}>
+                    <td style={{ textAlign: "center" }}>
+                      <span style={{ fontSize: 12.5, color: "#0f172a", fontWeight: 600 }}>
                         {c.sla_default_respuesta}h resp. / {c.sla_default_resolucion}h resol.
                       </span>
                     </td>
 
-                    <td>
+                    <td style={{ textAlign: "center" }}>
                       <span
                         style={{
-                          fontSize: 11.5,
+                          fontSize: 12,
                           fontWeight: 600,
                           color: c.total_servicios > 0 ? "#2563eb" : "#94a3b8",
                         }}
@@ -992,10 +981,10 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
                       </span>
                     </td>
 
-                    <td>
+                    <td style={{ textAlign: "center" }}>
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: 11.5,
                           fontWeight: 700,
                           padding: "2px 8px",
                           borderRadius: 4,

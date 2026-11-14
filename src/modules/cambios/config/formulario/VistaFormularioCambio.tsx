@@ -344,47 +344,26 @@ export default function ConfiguracionFormularioCambiosPage() {
   // --------------------------------------------------------------------------
   return (
     <div style={{ width: "100%", maxWidth: "100%", overflowX: "auto", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
-      <div style={{ padding: "16px 16px 24px 16px", flex: 1 }}>
+      <div style={{ padding: "32px 48px 48px 48px", flex: 1, width: "100%", maxWidth: 1650, margin: "0 auto 0 0", boxSizing: "border-box" }}>
 
 
-      {/* 2. Encabezado con Indicador de Estado (Sección 3.1) */}
+      {/* 2. Encabezado con Indicador de Estado */}
       <div
-        className="cabecera-pagina"
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-start",
           marginBottom: 16,
-          flexWrap: "wrap",
-          gap: 12,
+          gap: 16,
         }}
       >
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <h1 style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", margin: 0 }}>
-              Configuración de Formulario de Cambios (RFC)
-            </h1>
-            <span
-              className="badge-itil"
-              style={{
-                backgroundColor: "#dcfce7",
-                color: "#166534",
-                border: `1px solid ${"#86efac"}`,
-                fontWeight: 700,
-                fontSize: 11,
-              }}
-            >
-              Configuración Activa
-            </span>
-          </div>
-          <p style={{ fontSize: 12.5, color: "#475569", margin: "4px 0 0 0" }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+            Configuración de Formulario de Cambios (RFC)
+          </h1>
+          <p style={{ fontSize: 13, color: "#64748b", margin: "6px 0 0 0", lineHeight: 1.45 }}>
             {pestanaActualInfo.descripcion}
           </p>
-          {fechaPublicada && (
-            <span style={{ fontSize: 11, color: "#64748b", display: "block", marginTop: 2 }}>
-              Versión v{versionPublicada} activa publicada el {new Date(fechaPublicada).toLocaleString([], { dateStyle: "short", timeStyle: "short" })} por {autorPublicada || "Administrador del Sistema"}.
-            </span>
-          )}
         </div>
 
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -395,7 +374,7 @@ export default function ConfiguracionFormularioCambiosPage() {
             className="boton-primario"
             style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
           >
-            {guardando ? "Guardando..." : "Guardar Cambios"}
+            {guardando ? "Guardando..." : "Guardar Configuración"}
           </button>
         </div>
       </div>
@@ -423,16 +402,15 @@ export default function ConfiguracionFormularioCambiosPage() {
         </div>
       )}
 
-      {/* Selector de las 7 Pestañas Numeradas (Sección 2.3) */}
+      {/* Selector de las 7 Pestañas */}
       <div
         style={{
           display: "flex",
-          borderBottom: "2px solid #e2e8f0",
-          gap: 4,
-          marginBottom: 16,
+          gap: 8,
+          borderBottom: "1px solid #e2e8f0",
+          marginBottom: 24,
+          justifyContent: "flex-start",
           overflowX: "auto",
-          overflowY: "hidden",
-          scrollbarWidth: "none",
         }}
       >
         {(Object.keys(PESTANAS_INFO) as TabId[]).map((tabKey) => {
@@ -446,15 +424,13 @@ export default function ConfiguracionFormularioCambiosPage() {
               style={{
                 padding: "10px 16px",
                 border: "none",
-                background: "none",
+                background: "transparent",
                 cursor: "pointer",
-                fontSize: 12.5,
-                fontWeight: esActiva ? 700 : 600,
-                color: esActiva ? "#2563eb" : "#475569",
-                borderBottom: `3px solid ${esActiva ? "#2563eb" : "transparent"}`,
-                marginBottom: -2,
+                fontSize: 13,
+                fontWeight: esActiva ? 600 : 500,
+                color: esActiva ? "#2563eb" : "#64748b",
+                borderBottom: esActiva ? "2px solid #2563eb" : "2px solid transparent",
                 whiteSpace: "nowrap",
-                transition: "all 0.15s ease",
               }}
             >
               {info.titulo}

@@ -209,7 +209,7 @@ export function PestanaImportacionInventario({ datos, onChange, bloqueado }: Pro
       )}
 
       {/* Encabezado */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+      <div className="mb-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h3 className="text-base font-bold text-slate-800">
@@ -221,41 +221,46 @@ export function PestanaImportacionInventario({ datos, onChange, bloqueado }: Pro
           </div>
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => setModalNuevoPerfil(true)}
               disabled={bloqueado}
-              className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded transition-colors disabled:opacity-50"
+              className="boton-primario"
+              style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
             >
-              + Nuevo perfil de importación
+              Nuevo perfil de importación
             </button>
           </div>
         </div>
 
         {/* Sub-navegación */}
-        <div className="flex gap-2 border-b border-slate-200 mt-4 pb-2">
+        <div className="flex gap-2 border-b border-slate-200 mt-4 pb-0 overflow-x-auto">
           {[
             { id: "importacion", label: "A. Perfiles y reglas de importación", badge: perfiles.length },
             { id: "campanias", label: "B. Campañas de inventario físico (conteos)", badge: campania.periodicidad },
             { id: "simulador", label: "Simulador de validación en seco (Dry Run)", badge: "Test" }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setSeccionActiva(tab.id as any)}
-              className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                seccionActiva === tab.id
-                  ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
-                  : "text-slate-600 hover:bg-slate-100"
-              }`}
-            >
-              <span>{tab.label}</span>
-              <span
-                className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                  seccionActiva === tab.id ? "bg-indigo-200 text-indigo-800" : "bg-slate-200 text-slate-700"
-                }`}
+          ].map((tab) => {
+            const activa = seccionActiva === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setSeccionActiva(tab.id as any)}
+                style={{
+                  padding: "10px 14px",
+                  border: "none",
+                  background: "transparent",
+                  borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
+                  color: activa ? "#2563eb" : "#64748b",
+                  fontWeight: activa ? 600 : 500,
+                  fontSize: 13,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap"
+                }}
               >
-                {tab.badge}
-              </span>
-            </button>
-          ))}
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 

@@ -233,100 +233,97 @@ export default function CiclosVidaTransicionesPage() {
   const estaBloqueado = !!bloqueadoPorOtro;
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", width: "100%", boxSizing: "border-box", padding: "32px 48px 48px 48px" }}>
+      <div style={{ maxWidth: 1400, width: "100%", margin: "0 auto 0 0" }}>
         {/* Toast informativo */}
-      {toastMensaje && (
-        <div className="fixed top-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl text-sm font-medium border border-slate-700 animate-in fade-in duration-200">
-          {toastMensaje}
-        </div>
-      )}
+        {toastMensaje && (
+          <div className="fixed top-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl text-sm font-medium border border-slate-700 animate-in fade-in duration-200">
+            {toastMensaje}
+          </div>
+        )}
 
-      {/* Encabezado principal Estandarizado ARQ-2 */}
-      <div className="bg-white border-b border-slate-200 px-6 py-5">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">
-                Ciclo ITIL
-              </span>
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-                {pestanaInfo.titulo}
-              </h1>
-            </div>
-            <p className="text-xs text-slate-500 mt-1 max-w-4xl">
+        {/* Encabezado Principal Estandarizado (Con márgenes superiores y laterales) */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: 24,
+          marginBottom: 20
+        }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+              Ciclos de Vida y Reglas de Transición
+            </h1>
+            <p style={{ margin: "8px 0 0 0", color: "#64748b", fontSize: 13.5, lineHeight: 1.5 }}>
               {pestanaInfo.descripcion}
             </p>
-            <div className="text-[11px] text-slate-400 mt-1">
-              Última modificación por{" "}
-              <span className="font-medium text-slate-600">
-                {autorPublicada || "Administrador"}
-              </span>{" "}
-              el{" "}
-              <span className="font-mono text-slate-600">
-                {fechaPublicada ? new Date(fechaPublicada).toLocaleString() : "Versión de fábrica"}
-              </span>
-            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-              ● Configuración Activa
-            </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, paddingTop: 4 }}>
             <button
               type="button"
               onClick={handleGuardarCiclosVida}
               disabled={guardando || estaBloqueado || !puedeEditar}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm flex items-center gap-1.5"
+              className="boton-primario"
+              style={{ padding: "9px 22px", fontSize: 13, width: "auto", fontWeight: 700 }}
             >
-              {guardando ? "Guardando..." : "Guardar Ciclos de Vida"}
+              {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Banner de bloqueo concurrente si aplica */}
-      {bloqueadoPorOtro && (
-        <div className="bg-amber-500 text-white px-6 py-2.5 text-xs font-medium flex items-center justify-between shadow-sm">
-          <div>
-            Esta pestaña se encuentra en edición exclusiva por <span className="font-bold underline">{bloqueadoPorOtro}</span>. 
-            El modo de solo lectura está activo.
+        {/* Banner de bloqueo concurrente si aplica */}
+        {bloqueadoPorOtro && (
+          <div className="bg-amber-500 text-white px-6 py-2.5 text-xs font-medium flex items-center justify-between rounded-lg shadow-sm mb-6">
+            <div>
+              Esta pestaña se encuentra en edición exclusiva por <span className="font-bold underline">{bloqueadoPorOtro}</span>. 
+              El modo de solo lectura está activo.
+            </div>
+            <button
+              onClick={handleSolicitarControl}
+              className="px-3 py-1 bg-white text-amber-800 font-bold rounded shadow-sm hover:bg-amber-50 transition-colors"
+            >
+              Solicitar control
+            </button>
           </div>
-          <button
-            onClick={handleSolicitarControl}
-            className="px-3 py-1 bg-white text-amber-800 font-bold rounded shadow-sm hover:bg-amber-50 transition-colors"
-          >
-            Solicitar control
-          </button>
-        </div>
-      )}
+        )}
 
-      {/* 3. Barra de pestañas horizontales (6 pestañas) */}
-      <div className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <nav className="flex space-x-1 overflow-x-auto py-2 scrollbar-none" aria-label="Pestañas de ciclos de vida">
-            {PESTANAS.map((tab) => {
-              const activa = tabActiva === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => cambiarTab(tab.id)}
-                  className={`px-3 py-2 text-xs font-semibold rounded-lg whitespace-nowrap transition-all ${
-                    activa
-                      ? "bg-indigo-600 text-white shadow-sm"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  }`}
-                >
-                  {tab.titulo}
-                </button>
-              );
-            })}
-          </nav>
+        {/* Barra de pestañas horizontales corporativa */}
+        <div style={{
+          display: "flex",
+          gap: 8,
+          borderBottom: "1px solid #e2e8f0",
+          marginBottom: 28,
+          justifyContent: "flex-start",
+          overflowX: "auto"
+        }}>
+          {PESTANAS.map((tab) => {
+            const activa = tabActiva === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => cambiarTab(tab.id)}
+                style={{
+                  padding: "12px 18px",
+                  border: "none",
+                  background: "transparent",
+                  borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
+                  color: activa ? "#2563eb" : "#64748b",
+                  fontWeight: activa ? 600 : 500,
+                  fontSize: 13.5,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                {tab.titulo}
+              </button>
+            );
+          })}
         </div>
-      </div>
 
-      {/* 4. Cuerpo de la pantalla */}
-      <main className="max-w-7xl mx-auto w-full px-6 py-6 flex-1">
+        {/* Cuerpo de la pantalla con las tarjetas */}
+        <div style={{ width: "100%" }}>
         {cargando ? (
           <div className="bg-white rounded-xl border border-slate-200 p-12 text-center shadow-sm">
             <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
@@ -390,7 +387,7 @@ export default function CiclosVidaTransicionesPage() {
             )}
           </div>
         )}
-      </main>
+        </div>
       </div>
     </div>
   );

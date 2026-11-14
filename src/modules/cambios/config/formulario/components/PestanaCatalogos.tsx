@@ -468,7 +468,7 @@ export const PestanaCatalogos: React.FC = () => {
                   ? categoriaPadreActivaId !== null
                     ? "Agregar subcategoría"
                     : "Agregar categoría principal"
-                  : "+ Nuevo Valor"}
+                  : "Nuevo valor"}
               </button>
             )}
           </div>
@@ -648,7 +648,7 @@ export const PestanaCatalogos: React.FC = () => {
                 {subcategoriasFiltradas.length === 0 ? (
                   <tr>
                     <td colSpan={7} style={{ textAlign: "center", padding: 32, color: "#64748b" }}>
-                      No hay subcategorías registradas en <strong>{catPadreActual?.nombre}</strong>. Haz clic en <strong>+ Nuevo Valor</strong> arriba para agregar una subcategoría.
+                      No hay subcategorías registradas en <strong>{catPadreActual?.nombre}</strong>. Haz clic en <strong>Nuevo valor</strong> arriba para agregar una subcategoría.
                     </td>
                   </tr>
                 ) : (

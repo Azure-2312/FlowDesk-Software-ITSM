@@ -137,60 +137,35 @@ export default function RelacionesProblemasPage() {
   ];
 
   return (
-    <div style={{ minWidth: 1280, backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
-      <div style={{ padding: "20px 28px 32px 28px", flex: 1 }}>
-        {/* Encabezado Principal Estandarizado ARQ-3 */}
+    <div style={{ width: "100%", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
+      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto 0 0", padding: "28px 32px 32px 32px", flex: 1, boxSizing: "border-box" }}>
+        {/* Encabezado Principal Estandarizado */}
         <div style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 20,
-          backgroundColor: "#ffffff",
-          padding: "18px 24px",
-          borderRadius: 8,
-          border: "1px solid #e2e8f0"
+          alignItems: "flex-start",
+          gap: 16,
+          marginBottom: 16
         }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Relaciones ITIL</span>
-              <h1 style={{ fontSize: 21, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-                Relación con Incidentes, Errores Conocidos y Conocimiento
-              </h1>
-            </div>
-            <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
+            <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+              Relación con Incidentes, Errores Conocidos y Conocimiento
+            </h1>
+            <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
               Integra y coordina el ciclo de vida de problemas con la mesa de incidentes, base de errores conocidos (KEDB), solicitudes de cambio (RFC), artículos de conocimiento y elementos de configuración de la CMDB.
             </p>
-            <div style={{ marginTop: 6, fontSize: 12, color: "#94a3b8" }}>
-              Última modificación por <strong style={{ color: "#475569" }}>{autorPublicada || "Administrador"}</strong>
-              {fechaPublicada && ` el ${new Date(fechaPublicada).toLocaleString()}`}
-            </div>
           </div>
 
           {/* Acciones y estado del encabezado */}
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>
-              ● Configuración Activa
-            </span>
             <button
               type="button"
               onClick={handleGuardarRelaciones}
               disabled={guardando || !puedeEditar}
-              style={{
-                backgroundColor: guardando ? "#93c5fd" : "#2563eb",
-                color: "#ffffff",
-                padding: "8px 16px",
-                borderRadius: 6,
-                border: "none",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: guardando || !puedeEditar ? "not-allowed" : "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)"
-              }}
+              className="boton-primario"
+              style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
             >
-              {guardando ? "Guardando..." : "Guardar Relaciones"}
+              {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
           </div>
         </div>
@@ -198,11 +173,10 @@ export default function RelacionesProblemasPage() {
       {/* 3. BARRA DE PESTAÑAS */}
       <div style={{
         display: "flex",
-        borderBottom: "2px solid #e2e8f0",
-        marginBottom: 20,
-        backgroundColor: "#ffffff",
-        borderRadius: "8px 8px 0 0",
-        padding: "0 12px",
+        gap: 8,
+        borderBottom: "1px solid #e2e8f0",
+        marginBottom: 24,
+        justifyContent: "flex-start",
         overflowX: "auto"
       }}>
         {tabs.map((tab) => {
@@ -213,16 +187,13 @@ export default function RelacionesProblemasPage() {
               type="button"
               onClick={() => setTabActiva(tab.id)}
               style={{
-                padding: "12px 18px",
+                padding: "10px 16px",
                 fontSize: 13,
-                fontWeight: activa ? 700 : 500,
+                fontWeight: activa ? 600 : 500,
                 color: activa ? "#2563eb" : "#64748b",
                 borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
-                marginBottom: -2,
-                background: "none",
-                borderTop: "none",
-                borderLeft: "none",
-                borderRight: "none",
+                background: "transparent",
+                border: "none",
                 cursor: "pointer",
                 whiteSpace: "nowrap"
               }}

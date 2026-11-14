@@ -125,7 +125,7 @@ export function PestanaTiposContrato({ datos, onChange, bloqueado }: Props) {
       )}
 
       {/* Encabezado */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
             Tipos de contrato y catálogos de proveedores
@@ -135,22 +135,36 @@ export function PestanaTiposContrato({ datos, onChange, bloqueado }: Props) {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* Sub-navegación */}
-          <div className="flex rounded-lg border border-slate-300 p-0.5 bg-slate-100 text-xs font-semibold">
+          <div className="flex gap-2">
             <button
+              type="button"
               onClick={() => setSubSeccion("contratos")}
-              className={`px-3 py-1 rounded-md transition-colors ${
-                subSeccion === "contratos" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
+              className="boton-secundario"
+              style={{
+                width: "auto",
+                padding: "6px 14px",
+                fontSize: 12.5,
+                backgroundColor: subSeccion === "contratos" ? "#eff6ff" : "transparent",
+                color: subSeccion === "contratos" ? "#2563eb" : "#475569",
+                borderColor: subSeccion === "contratos" ? "#bfdbfe" : "#cbd5e1"
+              }}
             >
               Tipos de contrato ({tiposContrato.length})
             </button>
             <button
+              type="button"
               onClick={() => setSubSeccion("proveedores")}
-              className={`px-3 py-1 rounded-md transition-colors ${
-                subSeccion === "proveedores" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
+              className="boton-secundario"
+              style={{
+                width: "auto",
+                padding: "6px 14px",
+                fontSize: 12.5,
+                backgroundColor: subSeccion === "proveedores" ? "#eff6ff" : "transparent",
+                color: subSeccion === "proveedores" ? "#2563eb" : "#475569",
+                borderColor: subSeccion === "proveedores" ? "#bfdbfe" : "#cbd5e1"
+              }}
             >
               Gobernanza de proveedores
             </button>
@@ -158,11 +172,13 @@ export function PestanaTiposContrato({ datos, onChange, bloqueado }: Props) {
 
           {subSeccion === "contratos" && (
             <button
+              type="button"
               onClick={() => abrirEdicionContrato()}
               disabled={bloqueado}
-              className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded transition-colors disabled:opacity-50"
+              className="boton-primario"
+              style={{ width: "auto", padding: "6px 16px", fontSize: 12.5 }}
             >
-              + Nuevo tipo de contrato
+              Nuevo tipo de contrato
             </button>
           )}
         </div>

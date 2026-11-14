@@ -214,28 +214,30 @@ export default function GobiernoConocimiento() {
   return (
     <div className="vista-contenedor">
       {/* Cabecera Principal */}
-      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "flex-start" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
         <div>
-          <div className="flex items-center gap-3">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-              Gestión de Conocimiento
-            </span>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-              Gobierno de la Base de Conocimiento (KCS / ITIL v4)
-            </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-              ● Configuración Activa
-            </span>
-          </div>
-          <p className="subtitulo">
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+            Gobierno de la Base de Conocimiento
+          </h1>
+          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
             Supervise el ciclo editorial de artículos técnicos, audite la trazabilidad y configure las políticas de redacción y compuertas de publicación del autoservicio.
           </p>
         </div>
-        
+        {pestañaActiva === "politicas" && (
+          <button
+            type="button"
+            className="boton-primario"
+            onClick={guardarPoliticasKCS}
+            disabled={guardandoPoliticas}
+            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+          >
+            {guardandoPoliticas ? "Guardando..." : "Guardar Configuración"}
+          </button>
+        )}
       </div>
 
       {/* Navegación por Pestañas */}
-      <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #cbd5e1", marginBottom: 16 }}>
+      <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #e2e8f0", marginBottom: 24, justifyContent: "flex-start", overflowX: "auto" }}>
         <button
           type="button"
           onClick={() => {
@@ -244,17 +246,18 @@ export default function GobiernoConocimiento() {
             setArticuloSeleccionadoPreview(null);
           }}
           style={{
-            padding: "9px 18px",
+            padding: "10px 16px",
             border: "none",
-            background: "none",
-            borderBottom: pestañaActiva === "articulos" ? "3px solid #2563eb" : "3px solid transparent",
-            color: pestañaActiva === "articulos" ? "#1e40af" : "#64748b",
-            fontWeight: pestañaActiva === "articulos" ? 700 : 500,
+            background: "transparent",
+            borderBottom: pestañaActiva === "articulos" ? "2px solid #2563eb" : "2px solid transparent",
+            color: pestañaActiva === "articulos" ? "#2563eb" : "#64748b",
+            fontWeight: pestañaActiva === "articulos" ? 600 : 500,
             cursor: "pointer",
-            fontSize: 13.5,
+            fontSize: 13,
+            whiteSpace: "nowrap",
           }}
         >
-          Artículos y Ciclo de Vida Editorial ({articulos.length})
+          Artículos y Ciclo de Vida Editorial
         </button>
 
         <button
@@ -266,17 +269,18 @@ export default function GobiernoConocimiento() {
             setFeedbackSimulado(null);
           }}
           style={{
-            padding: "9px 18px",
+            padding: "10px 16px",
             border: "none",
-            background: "none",
-            borderBottom: pestañaActiva === "portal_preview" ? "3px solid #2563eb" : "3px solid transparent",
-            color: pestañaActiva === "portal_preview" ? "#1e40af" : "#64748b",
-            fontWeight: pestañaActiva === "portal_preview" ? 700 : 500,
+            background: "transparent",
+            borderBottom: pestañaActiva === "portal_preview" ? "2px solid #2563eb" : "2px solid transparent",
+            color: pestañaActiva === "portal_preview" ? "#2563eb" : "#64748b",
+            fontWeight: pestañaActiva === "portal_preview" ? 600 : 500,
             cursor: "pointer",
-            fontSize: 13.5,
+            fontSize: 13,
+            whiteSpace: "nowrap",
           }}
         >
-          Vista Previa del Portal de Ayuda ({articulosPublicados.length} publicados)
+          Vista Previa del Portal de Ayuda
         </button>
 
         <button
@@ -287,14 +291,15 @@ export default function GobiernoConocimiento() {
             setArticuloSeleccionadoPreview(null);
           }}
           style={{
-            padding: "9px 18px",
+            padding: "10px 16px",
             border: "none",
-            background: "none",
-            borderBottom: pestañaActiva === "politicas" ? "3px solid #2563eb" : "3px solid transparent",
-            color: pestañaActiva === "politicas" ? "#1e40af" : "#64748b",
-            fontWeight: pestañaActiva === "politicas" ? 700 : 500,
+            background: "transparent",
+            borderBottom: pestañaActiva === "politicas" ? "2px solid #2563eb" : "2px solid transparent",
+            color: pestañaActiva === "politicas" ? "#2563eb" : "#64748b",
+            fontWeight: pestañaActiva === "politicas" ? 600 : 500,
             cursor: "pointer",
-            fontSize: 13.5,
+            fontSize: 13,
+            whiteSpace: "nowrap",
           }}
         >
           Gobernanza y Políticas KCS
@@ -400,33 +405,33 @@ export default function GobiernoConocimiento() {
             </div>
           ) : (
             <div className="contenedor-tabla">
-              <table className="tabla-datos">
+              <table className="tabla-datos" style={{ width: "100%", fontSize: "13.5px" }}>
                 <thead>
                   <tr>
-                    <th>Código</th>
+                    <th style={{ textAlign: "center", width: 95 }}>Código</th>
                     <th>Título y Categoría</th>
-                    <th>Estado Editorial</th>
+                    <th style={{ textAlign: "center", width: 130 }}>Estado Editorial</th>
                     <th>Autor</th>
-                    <th>Visitas / Utilidad</th>
-                    <th>Versión</th>
-                    <th>Fecha Creación</th>
-                    <th style={{ textAlign: "center", width: 200 }}>Acciones</th>
+                    <th style={{ textAlign: "center", width: 150 }}>Visitas / Utilidad</th>
+                    <th style={{ textAlign: "center", width: 80 }}>Versión</th>
+                    <th style={{ textAlign: "center", width: 110 }}>Fecha Creación</th>
+                    <th style={{ textAlign: "center", width: 180 }}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {articulosFiltrados.map((a) => (
                     <tr key={a.id_articulo}>
-                      <td style={{ fontWeight: 700, fontFamily: "monospace", fontSize: 12 }}>
+                      <td style={{ textAlign: "center", fontWeight: 700, fontFamily: "monospace", fontSize: 12.5 }}>
                         {a.codigo_articulo}
                       </td>
                       <td>
-                        <strong style={{ fontSize: 13, color: "#0f172a", display: "block" }}>{a.titulo}</strong>
-                        <span style={{ fontSize: 11, color: "#64748b" }}>{a.categoria || "General"}</span>
+                        <strong style={{ fontSize: 13.5, color: "#0f172a", display: "block" }}>{a.titulo}</strong>
+                        <span style={{ fontSize: 11.5, color: "#64748b" }}>{a.categoria || "General"}</span>
                       </td>
-                      <td>
+                      <td style={{ textAlign: "center" }}>
                         <span
                           style={{
-                            fontSize: 11,
+                            fontSize: 11.5,
                             fontWeight: 700,
                             padding: "3px 8px",
                             borderRadius: 4,
@@ -451,14 +456,14 @@ export default function GobiernoConocimiento() {
                           {a.estado_editorial}
                         </span>
                       </td>
-                      <td style={{ fontSize: 12 }}>{a.autor || "Especialista TI"}</td>
-                      <td style={{ fontSize: 12, color: "#475569" }}>
+                      <td style={{ fontSize: 12.5 }}>{a.autor || "Especialista TI"}</td>
+                      <td style={{ textAlign: "center", fontSize: 12.5, color: "#475569" }}>
                         {a.visitas} visitas (+{a.utilidad_positiva} / -{a.utilidad_negativa})
                       </td>
-                      <td style={{ fontSize: 12, fontFamily: "monospace", color: "#2563eb", fontWeight: 600 }}>
+                      <td style={{ textAlign: "center", fontSize: 12.5, fontFamily: "monospace", color: "#2563eb", fontWeight: 600 }}>
                         v{a.version || 1}
                       </td>
-                      <td style={{ fontSize: 12, color: "#64748b" }}>
+                      <td style={{ textAlign: "center", fontSize: 12, color: "#64748b" }}>
                         {new Date(a.fecha_creacion).toLocaleDateString()}
                       </td>
                       <td style={{ textAlign: "center" }}>
@@ -897,7 +902,7 @@ export default function GobiernoConocimiento() {
               disabled={guardandoPoliticas}
               style={{ padding: "10px 20px", alignSelf: "flex-start", fontSize: 13 }}
             >
-              {guardandoPoliticas ? "Guardando..." : "Guardar Políticas KCS"}
+              {guardandoPoliticas ? "Guardando..." : "Guardar Configuración"}
             </button>
           </div>
         </div>

@@ -247,79 +247,32 @@ export const ModalVistaPrevia: React.FC<ModalVistaPreviaProps> = ({
         display: "flex",
         flexDirection: "column",
         width: "100%",
-        height: modoEmbebido ? "100%" : "auto",
         backgroundColor: "#f8fafc",
         borderRadius: 8,
         border: "1px solid #cbd5e1",
-        overflow: "hidden",
+        position: "relative",
       }}
     >
-      {/* Barra Superior con Selector de Tipo de Cambio */}
-      <div
-        style={{
-          padding: "10px 16px",
-          backgroundColor: "#ffffff",
-          borderBottom: "1px solid #e2e8f0",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 10,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase" }}>
-            👁️ VISTA PREVIA DEL FORMULARIO
-          </span>
-          <span style={{ fontSize: 11, color: "#64748b" }}>· Solicitud RFC</span>
+      {!modoEmbebido && onCerrar && (
+        <div style={{ position: "absolute", top: 12, right: 12, zIndex: 20 }}>
+          <button
+            type="button"
+            onClick={onCerrar}
+            className="boton-accion-icono"
+            title="Cerrar vista previa"
+            aria-label="Cerrar vista previa"
+            style={{ backgroundColor: "#ffffff", borderRadius: "50%", padding: 6, boxShadow: "0 1px 3px rgba(0,0,0,0.12)" }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
         </div>
-
-        {/* Selector de Tipo de Cambio para simular en tiempo real */}
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ fontSize: 11, color: "#64748b", fontWeight: 600 }}>Tipo de Cambio:</span>
-          <div style={{ display: "flex", gap: 2, backgroundColor: "#e2e8f0", padding: 2, borderRadius: 6 }}>
-            {(["NORMAL", "EMERGENCIA", "ESTANDAR"] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => handleCambioTipo(t)}
-                style={{
-                  fontSize: 10.5,
-                  padding: "3px 9px",
-                  borderRadius: 4,
-                  border: "none",
-                  cursor: "pointer",
-                  backgroundColor: tipoCambio === t ? "#ffffff" : "transparent",
-                  color: tipoCambio === t ? "#0f172a" : "#64748b",
-                  fontWeight: tipoCambio === t ? 700 : 500,
-                  boxShadow: tipoCambio === t ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
-                }}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
-          {!modoEmbebido && onCerrar && (
-            <button
-              type="button"
-              onClick={onCerrar}
-              className="boton-accion-icono"
-              title="Cerrar vista previa"
-              aria-label="Cerrar vista previa"
-              style={{ marginLeft: 8 }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          )}
-        </div>
-      </div>
+      )}
 
       {/* Contenedor del Formulario Simulado */}
-      <div style={{ padding: 16, overflowY: "auto", display: "flex", flexDirection: "column", gap: 14 }}>
+      <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 14, width: "100%", boxSizing: "border-box" }}>
         <div
           style={{
             backgroundColor: "#ffffff",

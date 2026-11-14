@@ -186,12 +186,12 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
       )}
 
       {/* Encabezado */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-800">
+          <h2 className="text-base font-bold text-slate-800">
             Tipos de Relación Topológica y Matriz de Clases Permitidas
           </h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-xs text-slate-500 mt-0.5">
             Definición de enlaces semánticos, dirección de propagación de fallos, propagación de criticidad y restricciones de conectividad.
           </p>
         </div>
@@ -199,7 +199,8 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
           <button
             type="button"
             onClick={() => setModalSimulador(true)}
-            className="px-3 py-2 border border-indigo-600 text-indigo-600 bg-white hover:bg-indigo-50 text-sm font-semibold rounded-md shadow-sm"
+            className="boton-secundario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
             Simulador de enlaces
           </button>
@@ -207,27 +208,28 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
             type="button"
             disabled={bloqueado}
             onClick={abrirNuevoTipo}
-            className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-md shadow-sm disabled:opacity-50"
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
-            + Nuevo tipo de relación
+            Nuevo tipo de relación
           </button>
         </div>
       </div>
 
       {/* Tabla de Tipos de Relación */}
-      <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden mb-6">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-            <thead className="bg-slate-50 text-slate-700 font-semibold uppercase">
+          <table className="w-full divide-y divide-slate-200 text-left text-[13.5px]">
+            <thead className="bg-slate-50 text-slate-700 font-semibold uppercase text-xs">
               <tr>
-                <th className="px-4 py-3">Estado</th>
-                <th className="px-4 py-3">Nombre Directo / Inverso</th>
-                <th className="px-4 py-3">Código</th>
-                <th className="px-4 py-3">Dirección del Impacto</th>
-                <th className="px-4 py-3 text-center">Propaga Criticidad</th>
-                <th className="px-4 py-3 text-center">Cardinalidad</th>
-                <th className="px-4 py-3 text-center">Ciclos</th>
-                <th className="px-4 py-3 text-right">Acción</th>
+                <th className="px-5 py-3.5 text-center" style={{ width: 100 }}>Estado</th>
+                <th className="px-5 py-3.5">Nombre Directo / Inverso</th>
+                <th className="px-5 py-3.5 text-center">Código</th>
+                <th className="px-5 py-3.5">Dirección del Impacto</th>
+                <th className="px-5 py-3.5 text-center">Propaga Criticidad</th>
+                <th className="px-5 py-3.5 text-center">Cardinalidad</th>
+                <th className="px-5 py-3.5 text-center">Ciclos</th>
+                <th className="px-5 py-3.5 text-center" style={{ width: 80 }}>Acción</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -241,7 +243,7 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
                       seleccionada ? "bg-indigo-50/70 font-medium" : "hover:bg-slate-50"
                     }`}
                   >
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5 text-center">
                       <button
                         type="button"
                         disabled={bloqueado}
@@ -249,7 +251,7 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
                           e.stopPropagation();
                           handleToggleActivo(tipo.id);
                         }}
-                        className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
+                        className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold ${
                           tipo.activo
                             ? "bg-emerald-100 text-emerald-800"
                             : "bg-slate-100 text-slate-500"
@@ -258,41 +260,41 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
                         {tipo.activo ? "Activa" : "Inactiva"}
                       </button>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       <div className="flex items-center gap-2">
                         <span
-                          className="w-3 h-3 rounded-full"
+                          className="w-3 h-3 rounded-full flex-shrink-0"
                           style={{ backgroundColor: tipo.color }}
                         ></span>
                         <div>
-                          <div className="font-bold text-slate-900">{tipo.nombre_directo}</div>
-                          <div className="text-[11px] text-slate-500">{tipo.nombre_inverso}</div>
+                          <div className="font-bold text-slate-900 text-[13.5px]">{tipo.nombre_directo}</div>
+                          <div className="text-xs text-slate-500">{tipo.nombre_inverso}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-mono text-slate-600">{tipo.codigo}</td>
-                    <td className="px-4 py-3 text-slate-700">
+                    <td className="px-5 py-3.5 text-center font-mono text-slate-600 font-semibold">{tipo.codigo}</td>
+                    <td className="px-5 py-3.5 text-slate-700">
                       {tipo.direccion_impacto === "destino_a_origen" && "Fallo de Destino impacta a Origen"}
                       {tipo.direccion_impacto === "origen_a_destino" && "Fallo de Origen impacta a Destino"}
                       {tipo.direccion_impacto === "bidireccional" && "Impacto mutuo bidireccional"}
                       {tipo.direccion_impacto === "ninguna" && "Sin propagación de impacto"}
                     </td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-5 py-3.5 text-center">
                       {tipo.propaga_criticidad ? (
                         <span className="text-emerald-700 font-bold">Si</span>
                       ) : (
                         <span className="text-slate-400">No</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-center font-mono">{tipo.cardinalidad}</td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-5 py-3.5 text-center font-mono font-bold text-slate-700">{tipo.cardinalidad}</td>
+                    <td className="px-5 py-3.5 text-center">
                       {tipo.permite_ciclos ? (
-                        <span className="text-amber-700 font-semibold">Si</span>
+                        <span className="text-amber-700 font-bold">Si</span>
                       ) : (
                         <span className="text-slate-400">No</span>
                       )}
                     </td>
-                    <td className="px-4 py-2 text-right"><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar tipo de relación" ariaLabel="Editar tipo de relación" disabled={bloqueado} onClick={(e) => { e.stopPropagation(); abrirEditarTipo(tipo); }} /></td>
+                    <td className="px-5 py-3.5 text-center"><BotonIcono variante="normal" icono={<Edit2 size={14} />} titulo="Editar tipo de relación" ariaLabel="Editar tipo de relación" disabled={bloqueado} onClick={(e) => { e.stopPropagation(); abrirEditarTipo(tipo); }} /></td>
                   </tr>
                 );
               })}

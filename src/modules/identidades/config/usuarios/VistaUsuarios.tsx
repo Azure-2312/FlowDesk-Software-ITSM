@@ -1189,7 +1189,7 @@ export default function PaginaUsuarios() {
           </p>
         </div>
         <button className="boton-primario" style={{ width: "auto" }} onClick={abrirFormularioNuevo}>
-          + Nuevo usuario
+          Nuevo usuario
         </button>
       </div>
 

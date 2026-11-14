@@ -128,7 +128,7 @@ export function PestanaTiposLicencia({ datos, onChange, bloqueado }: Props) {
       )}
 
       {/* Encabezado */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
             Tipos de licencia, métricas de consumo y catálogo de software
@@ -138,22 +138,36 @@ export function PestanaTiposLicencia({ datos, onChange, bloqueado }: Props) {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* Sub-navegación */}
-          <div className="flex rounded-lg border border-slate-300 p-0.5 bg-slate-100 text-xs font-semibold">
+          <div className="flex gap-2">
             <button
+              type="button"
               onClick={() => setSubSeccion("tipos")}
-              className={`px-3 py-1 rounded-md transition-colors ${
-                subSeccion === "tipos" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
+              className="boton-secundario"
+              style={{
+                width: "auto",
+                padding: "6px 14px",
+                fontSize: 12.5,
+                backgroundColor: subSeccion === "tipos" ? "#eff6ff" : "transparent",
+                color: subSeccion === "tipos" ? "#2563eb" : "#475569",
+                borderColor: subSeccion === "tipos" ? "#bfdbfe" : "#cbd5e1"
+              }}
             >
               Tipos de licencia ({tipos.length})
             </button>
             <button
+              type="button"
               onClick={() => setSubSeccion("software")}
-              className={`px-3 py-1 rounded-md transition-colors ${
-                subSeccion === "software" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
+              className="boton-secundario"
+              style={{
+                width: "auto",
+                padding: "6px 14px",
+                fontSize: 12.5,
+                backgroundColor: subSeccion === "software" ? "#eff6ff" : "transparent",
+                color: subSeccion === "software" ? "#2563eb" : "#475569",
+                borderColor: subSeccion === "software" ? "#bfdbfe" : "#cbd5e1"
+              }}
             >
               Catálogo de software ({software.length})
             </button>
@@ -161,11 +175,13 @@ export function PestanaTiposLicencia({ datos, onChange, bloqueado }: Props) {
 
           {subSeccion === "tipos" && (
             <button
+              type="button"
               onClick={() => abrirEdicion()}
               disabled={bloqueado}
-              className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded transition-colors disabled:opacity-50"
+              className="boton-primario"
+              style={{ width: "auto", padding: "6px 16px", fontSize: 12.5 }}
             >
-              + Nuevo tipo de licencia
+              Nuevo tipo de licencia
             </button>
           )}
         </div>

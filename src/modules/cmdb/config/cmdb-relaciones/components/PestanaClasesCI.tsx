@@ -149,12 +149,12 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
       )}
 
       {/* Encabezado y Acciones */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-800">
+          <h2 className="text-base font-bold text-slate-800">
             Clases de Elementos de Configuración (CMDB)
           </h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-xs text-slate-500 mt-0.5">
             Gobierno de clases físicas y lógicas que forman la topología de servicios, atributos obligatorios y participación en procesos.
           </p>
         </div>
@@ -162,7 +162,8 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
           <button
             type="button"
             onClick={() => setModalDiagrama(true)}
-            className="px-3 py-2 border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 text-sm font-medium rounded-md shadow-sm"
+            className="boton-secundario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
             Ver diagrama de clases
           </button>
@@ -170,38 +171,39 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
             type="button"
             disabled={bloqueado}
             onClick={abrirNuevaClaseLogica}
-            className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-md shadow-sm disabled:opacity-50"
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
-            + Clase de CI lógica
+            Clase de CI lógica
           </button>
         </div>
       </div>
 
       {/* Tabla de Clases */}
-      <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden mb-6">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-            <thead className="bg-slate-50 text-slate-700 font-semibold uppercase">
+          <table className="w-full divide-y divide-slate-200 text-left text-[13.5px]">
+            <thead className="bg-slate-50 text-slate-700 font-semibold uppercase text-xs">
               <tr>
-                <th className="px-4 py-3">Estado</th>
-                <th className="px-4 py-3">Clase de Elemento</th>
-                <th className="px-4 py-3 text-center">Tipo de Entidad</th>
-                <th className="px-4 py-3">Atributos CMDB Obligatorios</th>
-                <th className="px-4 py-3">Relaciones Mínimas</th>
-                <th className="px-4 py-3 text-center">Impacto</th>
-                <th className="px-4 py-3 text-center">Auditoría</th>
-                <th className="px-4 py-3 text-right">Acción</th>
+                <th className="px-5 py-3.5 text-center" style={{ width: 100 }}>Estado</th>
+                <th className="px-5 py-3.5">Clase de Elemento</th>
+                <th className="px-5 py-3.5 text-center">Tipo de Entidad</th>
+                <th className="px-5 py-3.5">Atributos CMDB Obligatorios</th>
+                <th className="px-5 py-3.5">Relaciones Mínimas</th>
+                <th className="px-5 py-3.5 text-center">Impacto</th>
+                <th className="px-5 py-3.5 text-center">Auditoría</th>
+                <th className="px-5 py-3.5 text-center" style={{ width: 80 }}>Acción</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {clases.map((clase) => (
                 <tr key={clase.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5 text-center">
                     <button
                       type="button"
                       disabled={bloqueado}
                       onClick={() => handleToggleActiva(clase.id)}
-                      className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
+                      className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold ${
                         clase.activa
                           ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
                           : "bg-slate-100 text-slate-500 hover:bg-slate-200"
@@ -210,40 +212,40 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
                       {clase.activa ? "Activa" : "Inactiva"}
                     </button>
                   </td>
-                  <td className="px-4 py-3 font-medium text-slate-800">
+                  <td className="px-5 py-3.5 font-medium text-slate-800">
                     <div className="flex items-center gap-2">
                       <span
-                        className="w-2.5 h-2.5 rounded-full"
+                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                         style={{ backgroundColor: clase.color_topologia || "#4f46e5" }}
                       ></span>
-                      <span className="font-semibold text-slate-900">{clase.nombre}</span>
+                      <span className="font-bold text-slate-900">{clase.nombre}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-5 py-3.5 text-center">
                     {clase.inventariable ? (
-                      <span className="inline-block px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-medium">
+                      <span className="inline-block px-2.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold text-xs">
                         Física / Inventario
                       </span>
                     ) : (
-                      <span className="inline-block px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 font-medium">
+                      <span className="inline-block px-2.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 font-semibold text-xs">
                         Lógica / Servicio
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-slate-600">
+                  <td className="px-5 py-3.5 text-slate-600">
                     <div className="flex flex-wrap gap-1 max-w-xs">
                       {clase.atributos_obligatorios.map((att) => (
-                        <span key={att} className="px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px]">
+                        <span key={att} className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-xs font-medium">
                           {att.replace("_", " ")}
                         </span>
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-slate-600">
+                  <td className="px-5 py-3.5 text-slate-600">
                     <div className="flex flex-wrap gap-1">
                       {clase.relaciones_minimas && clase.relaciones_minimas.length > 0 ? (
                         clase.relaciones_minimas.map((rel, idx) => (
-                          <span key={idx} className="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-medium">
+                          <span key={idx} className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-medium border border-indigo-100">
                             {rel}
                           </span>
                         ))
@@ -252,17 +254,19 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-5 py-3.5 text-center font-bold">
                     {clase.participa_impacto ? (
-                      <span className="text-emerald-700 font-semibold">Si</span>
+                      <span className="text-emerald-700">Si</span>
                     ) : (
                       <span className="text-slate-400">No</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-center capitalize text-slate-600">
+                  <td className="px-5 py-3.5 text-center capitalize text-slate-600 font-medium">
                     {clase.frecuencia_auditoria || "trimestral"}
                   </td>
-                  <td className="px-4 py-2 text-right"><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar clase de CI" ariaLabel="Editar clase de CI" disabled={bloqueado} onClick={() => abrirEditar(clase)} /></td>
+                  <td className="px-5 py-3.5 text-center">
+                    <BotonIcono variante="normal" icono={<Edit2 size={14} />} titulo="Editar clase de CI" ariaLabel="Editar clase de CI" disabled={bloqueado} onClick={() => abrirEditar(clase)} />
+                  </td>
                 </tr>
               ))}
             </tbody>

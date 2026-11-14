@@ -511,7 +511,7 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
               </button>
               {!soloLectura && (
                 <button className="boton-primario" style={{ width: "auto", padding: "8px 16px", fontSize: 13 }} onClick={abrirFormularioNuevo}>
-                  + Nuevo perfil
+                  Nuevo perfil
                 </button>
               )}
             </div>

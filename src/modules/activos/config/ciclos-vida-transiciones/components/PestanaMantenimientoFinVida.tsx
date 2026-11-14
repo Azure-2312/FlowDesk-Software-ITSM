@@ -162,28 +162,32 @@ export function PestanaMantenimientoFinVida({ datos, onChange, bloqueado }: Prop
       )}
 
       {/* Encabezado */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            Mantenimiento preventivo, garantÃ­as y fin de vida Ãºtil
+            Mantenimiento preventivo, garantías y fin de vida útil
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            Planes periÃ³dicos, emisiÃ³n de RFCs estÃ¡ndar de mantenimiento y polÃ­ticas de obsolescencia anticipada.
+            Planes periódicos, emisión de RFCs estándar de mantenimiento y políticas de obsolescencia anticipada.
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={() => setModalSimulacion12Meses(true)}
-            className="px-3 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded hover:bg-indigo-100"
+            className="boton-secundario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
-            Simular prÃ³ximos 12 meses
+            Simular próximos 12 meses
           </button>
           <button
+            type="button"
             onClick={() => setModalPlan(true)}
             disabled={bloqueado}
-            className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded transition-colors disabled:opacity-50"
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
-            + Nuevo plan preventivo
+            Nuevo plan preventivo
           </button>
         </div>
       </div>

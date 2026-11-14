@@ -511,9 +511,10 @@ textarea.input-base {
 
 .vista-contenedor {
   width: 100%;
-  max-width: 100%;
+  max-width: 1400px;
+  margin: 0 auto 0 0;
   box-sizing: border-box;
-  padding: 20px 28px;
+  padding: 28px 32px;
   flex: 1;
   display: flex;
   flex-direction: column;
