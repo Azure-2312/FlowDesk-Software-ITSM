@@ -267,18 +267,10 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
           <button
             type="button"
             onClick={abrirNuevoModelo}
-            style={{
-              padding: "7px 14px",
-              fontSize: 12.5,
-              fontWeight: 600,
-              backgroundColor: "#16a34a",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 6,
-              cursor: "pointer"
-            }}
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
-            + Nuevo modelo
+            Nuevo modelo
           </button>
         </div>
       </div>

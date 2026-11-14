@@ -139,9 +139,10 @@ export const PestanaEstados: React.FC<PestanaEstadosProps> = ({
           type="button"
           onClick={abrirNuevo}
           disabled={!puedeEditar}
-          className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-lg shadow-xs transition"
+          className="boton-primario"
+          style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
         >
-          + Nuevo estado
+          Nuevo estado
         </button>
       </div>
 

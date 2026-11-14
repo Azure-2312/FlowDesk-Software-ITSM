@@ -380,36 +380,74 @@ function ContenidoInventarioActivos() {
         </div>
       )}
 
-      {/* Selector de Pestaña ITAM */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 20, borderBottom: "1px solid #e2e8f0", paddingBottom: 12 }}>
+      {/* Cabecera General de la Vista */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 12 }}>
+        <div>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+            Inventario de Activos Tecnológicos
+          </h1>
+          <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
+            {pestanaItam === "inventario"
+              ? "Control patrimonial ITIL v4: Identificación por serie, asignación departamental y ciclo de vida de equipamiento físico."
+              : pestanaItam === "tipos"
+              ? "Gobernanza de hardware homologado: Modelado de marcas, modelos, depreciación lineal contable y ciclos de vida útil."
+              : "Gobernanza patrimonial: Matriz de estados autorizados, compuertas de seguridad y control estricto de custodios."}
+          </p>
+        </div>
+        {pestanaItam === "inventario" && vista === "tabla" && (
+          <button
+            type="button"
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+            onClick={abrirNuevo}
+          >
+            Registrar Activo
+          </button>
+        )}
+        {pestanaItam === "tipos" && (
+          <button
+            type="button"
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+            onClick={() => setModalNuevoModelo(true)}
+          >
+            Registrar Modelo Homologado
+          </button>
+        )}
+      </div>
+
+      {/* Selector de Pestañas ITAM (Debajo del Título General) */}
+      <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #e2e8f0", marginBottom: 20, justifyContent: "flex-start", overflowX: "auto" }}>
         <button
           type="button"
           onClick={() => { setPestanaItam("inventario"); setVista("tabla"); }}
           style={{
-            padding: "8px 16px",
-            borderRadius: 6,
-            fontSize: 13,
-            fontWeight: pestanaItam === "inventario" ? 700 : 500,
-            backgroundColor: pestanaItam === "inventario" ? "#2563eb" : "#f1f5f9",
-            color: pestanaItam === "inventario" ? "#ffffff" : "#475569",
+            padding: "10px 16px",
             border: "none",
+            background: "transparent",
+            borderBottom: pestanaItam === "inventario" ? "2px solid #2563eb" : "2px solid transparent",
+            color: pestanaItam === "inventario" ? "#2563eb" : "#64748b",
+            fontWeight: pestanaItam === "inventario" ? 600 : 500,
+            fontSize: 13,
             cursor: "pointer",
+            whiteSpace: "nowrap",
           }}
         >
-          Inventario Operativo (Hardware y Custodia)
+          Inventario Operativo
         </button>
         <button
           type="button"
           onClick={() => setPestanaItam("tipos")}
           style={{
-            padding: "8px 16px",
-            borderRadius: 6,
-            fontSize: 13,
-            fontWeight: pestanaItam === "tipos" ? 700 : 500,
-            backgroundColor: pestanaItam === "tipos" ? "#2563eb" : "#f1f5f9",
-            color: pestanaItam === "tipos" ? "#ffffff" : "#475569",
+            padding: "10px 16px",
             border: "none",
+            background: "transparent",
+            borderBottom: pestanaItam === "tipos" ? "2px solid #2563eb" : "2px solid transparent",
+            color: pestanaItam === "tipos" ? "#2563eb" : "#64748b",
+            fontWeight: pestanaItam === "tipos" ? 600 : 500,
+            fontSize: 13,
             cursor: "pointer",
+            whiteSpace: "nowrap",
           }}
         >
           Tipos, Modelos y Reglas de Depreciación
@@ -418,14 +456,15 @@ function ContenidoInventarioActivos() {
           type="button"
           onClick={() => setPestanaItam("ciclo-vida")}
           style={{
-            padding: "8px 16px",
-            borderRadius: 6,
-            fontSize: 13,
-            fontWeight: pestanaItam === "ciclo-vida" ? 700 : 500,
-            backgroundColor: pestanaItam === "ciclo-vida" ? "#2563eb" : "#f1f5f9",
-            color: pestanaItam === "ciclo-vida" ? "#ffffff" : "#475569",
+            padding: "10px 16px",
             border: "none",
+            background: "transparent",
+            borderBottom: pestanaItam === "ciclo-vida" ? "2px solid #2563eb" : "2px solid transparent",
+            color: pestanaItam === "ciclo-vida" ? "#2563eb" : "#64748b",
+            fontWeight: pestanaItam === "ciclo-vida" ? 600 : 500,
+            fontSize: 13,
             cursor: "pointer",
+            whiteSpace: "nowrap",
           }}
         >
           Ciclo de Vida y Transiciones Autorizadas
@@ -1026,23 +1065,6 @@ function ContenidoInventarioActivos() {
       {/* 4. VISTA PRINCIPAL: TABLA DE ACTIVOS */}
       {vista === "tabla" && (
         <div>
-          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-            <div>
-              <h1>Inventario de Activos Tecnológicos (Hardware y Equipamiento)</h1>
-              <p className="descripcion">
-                Control patrimonial ITIL v4: Identificación por serie, asignación departamental y ciclo de vida de equipamiento físico.
-              </p>
-            </div>
-            <button
-              type="button"
-              className="boton-primario"
-              style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
-              onClick={abrirNuevo}
-            >
-              Registrar Activo
-            </button>
-          </div>
-
           {/* Barra de Filtros y Búsqueda */}
           <div className="barra-filtros" style={{ marginBottom: 16 }}>
             <div style={{ flex: 1, minWidth: 200 }}>
@@ -1223,23 +1245,6 @@ function ContenidoInventarioActivos() {
       {/* 2. SECCIÓN: TIPOS, MODELOS Y REGLAS DE DEPRECIACIÓN */}
       {pestanaItam === "tipos" && (
         <div>
-          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-            <div>
-              <h1>Catálogo Maestro de Tipos, Modelos y Reglas de Depreciación ITAM</h1>
-              <p className="descripcion">
-                Gobernanza de hardware homologado según ITIL v4 e ISO 20000: Modelado de marcas, modelos, cálculo de depreciación lineal contable y ciclos de vida útil.
-              </p>
-            </div>
-            <button
-              type="button"
-              className="boton-primario"
-              style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
-              onClick={() => setModalNuevoModelo(true)}
-            >
-              Registrar Modelo Homologado
-            </button>
-          </div>
-
           <div className="contenedor-tabla" style={{ padding: 20, backgroundColor: "#ffffff", marginBottom: 20 }}>
             <h3 style={{ margin: "0 0 6px 0", fontSize: 15, fontWeight: 700, color: "#0f172a" }}>
               Modelos de Hardware Homologados y Fórmulas Contables
@@ -1305,15 +1310,6 @@ function ContenidoInventarioActivos() {
       {/* 3. SECCIÓN: CICLO DE VIDA Y TRANSICIONES AUTORIZADAS */}
       {pestanaItam === "ciclo-vida" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          <div className="cabecera-pagina">
-            <div>
-              <h1>Matriz Formal de Ciclo de Vida y Transiciones Autorizadas (ITAM)</h1>
-              <p className="descripcion">
-                Gobernanza patrimonial según ITIL v4 e ISO/IEC 20000: Matriz de estados autorizados, compuertas de seguridad y control estricto de custodios.
-              </p>
-            </div>
-          </div>
-
           <div className="contenedor-tabla" style={{ padding: 20, backgroundColor: "#ffffff" }}>
             <h3 style={{ margin: "0 0 6px 0", fontSize: 15, fontWeight: 700, color: "#0f172a" }}>
               Estados Patrimoniales del Inventario

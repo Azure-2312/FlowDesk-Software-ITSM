@@ -132,20 +132,21 @@ export function PestanaCriticidadEntornos({ datos, onChange, bloqueado }: Props)
       )}
 
       {/* Encabezado */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-lg font-bold text-slate-800">
+          <h2 className="text-base font-bold text-slate-800">
             Criticidad, Entornos y Propagación de Impacto
           </h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-xs text-slate-500 mt-1">
             Escala de criticidad con objetivos RTO/RPO, cálculo automático de criticidad efectiva según topología y catálogo de entornos compartidos.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => setSimuladorAbierto(true)}
-            className="px-3 py-2 border border-indigo-600 text-indigo-600 bg-white hover:bg-indigo-50 text-sm font-semibold rounded-md shadow-sm"
+            className="boton-secundario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
             Simular criticidad efectiva
           </button>
@@ -153,7 +154,8 @@ export function PestanaCriticidadEntornos({ datos, onChange, bloqueado }: Props)
             type="button"
             disabled={recalculando}
             onClick={ejecutarRecalculoCMDB}
-            className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-md shadow-sm disabled:opacity-50"
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
             {recalculando ? "Recalculando..." : "Recalcular ahora en CMDB"}
           </button>
@@ -249,43 +251,42 @@ export function PestanaCriticidadEntornos({ datos, onChange, bloqueado }: Props)
       </div>
 
       {/* Escala de Niveles de Criticidad */}
-      <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm space-y-4">
-        <h3 className="text-base font-semibold text-slate-800 border-b pb-2">
+      <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4 mb-6">
+        <h3 className="text-base font-semibold text-slate-800 border-b pb-3">
           Niveles de Criticidad Institucional (Bloqueados de Fábrica)
         </h3>
 
         <div className="overflow-x-auto border border-slate-200 rounded-md">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-            <thead className="bg-slate-50 text-slate-700 font-semibold uppercase">
+          <table className="w-full divide-y divide-slate-200 text-left text-[13.5px]">
+            <thead className="bg-slate-50 text-slate-700 font-semibold uppercase text-xs">
               <tr>
-                <th className="px-4 py-3">Nivel</th>
-                <th className="px-4 py-3 text-center">Peso Numérico</th>
-                <th className="px-4 py-3">Objetivos de Continuidad</th>
-                <th className="px-4 py-3">Criterio de Impacto en Negocio</th>
-                <th className="px-4 py-3 text-right">Acción</th>
+                <th className="px-5 py-3.5">Nivel</th>
+                <th className="px-5 py-3.5 text-center">Peso Numérico</th>
+                <th className="px-5 py-3.5 text-center">Objetivos de Continuidad</th>
+                <th className="px-5 py-3.5">Criterio de Impacto en Negocio</th>
+                <th className="px-5 py-3.5 text-center">Acción</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {niveles.map((n) => (
                 <tr key={n.codigo} className="hover:bg-slate-50">
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full" style={{ backgroundColor: n.color }}></span>
                       <span className="font-bold text-slate-900">{n.nombre}</span>
                       <span className="font-mono text-slate-400">({n.codigo})</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-center font-bold font-mono text-slate-800">
+                  <td className="px-5 py-3.5 text-center font-bold font-mono text-slate-800">
                     {n.peso}
                   </td>
-                  <td className="px-4 py-3 text-slate-600">
-                    <div><strong>RTO:</strong> &le; {n.rto_horas}h</div>
-                    <div><strong>RPO:</strong> &le; {n.rpo_horas}h</div>
+                  <td className="px-5 py-3.5 text-center text-slate-600">
+                    <div><strong>RTO:</strong> &le; {n.rto_horas}h &nbsp;|&nbsp; <strong>RPO:</strong> &le; {n.rpo_horas}h</div>
                   </td>
-                  <td className="px-4 py-3 text-slate-700 max-w-md">
+                  <td className="px-5 py-3.5 text-slate-700 max-w-md">
                     {n.descripcion}
                   </td>
-                  <td className="px-4 py-2 text-right"><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar nivel de criticidad" ariaLabel="Editar nivel de criticidad" disabled={bloqueado} onClick={() => abrirEditarNivel(n)} /></td>
+                  <td className="px-5 py-3.5 text-center"><BotonIcono variante="normal" icono={<Edit2 size={14} />} titulo="Editar nivel de criticidad" ariaLabel="Editar nivel de criticidad" disabled={bloqueado} onClick={() => abrirEditarNivel(n)} /></td>
                 </tr>
               ))}
             </tbody>
@@ -294,8 +295,8 @@ export function PestanaCriticidadEntornos({ datos, onChange, bloqueado }: Props)
       </div>
 
       {/* Catálogo Compartido de Entornos */}
-      <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm space-y-4">
-        <div className="flex items-center justify-between border-b pb-2">
+      <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4 mb-6">
+        <div className="flex items-center justify-between border-b pb-3">
           <div>
             <h3 className="text-base font-semibold text-slate-800">
               Catálogo de Entornos Operacionales
@@ -307,39 +308,39 @@ export function PestanaCriticidadEntornos({ datos, onChange, bloqueado }: Props)
         </div>
 
         <div className="overflow-x-auto border border-slate-200 rounded-md">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-            <thead className="bg-slate-50 text-slate-700 font-semibold uppercase">
+          <table className="w-full divide-y divide-slate-200 text-left text-[13.5px]">
+            <thead className="bg-slate-50 text-slate-700 font-semibold uppercase text-xs">
               <tr>
-                <th className="px-4 py-3">Entorno</th>
-                <th className="px-4 py-3 text-center">Peso de Riesgo</th>
-                <th className="px-4 py-3 text-center">¿Es Productivo?</th>
-                <th className="px-4 py-3 text-right">Acción</th>
+                <th className="px-5 py-3.5">Entorno</th>
+                <th className="px-5 py-3.5 text-center">Peso de Riesgo</th>
+                <th className="px-5 py-3.5 text-center">¿Es Productivo?</th>
+                <th className="px-5 py-3.5 text-center">Acción</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {entornos.map((e) => (
                 <tr key={e.id} className="hover:bg-slate-50">
-                  <td className="px-4 py-3 font-semibold text-slate-800">
+                  <td className="px-5 py-3.5 font-semibold text-slate-800">
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: e.color }}></span>
                       <span>{e.nombre}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-center font-mono font-bold text-slate-700">
+                  <td className="px-5 py-3.5 text-center font-mono font-bold text-slate-700">
                     {e.peso_riesgo}
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-5 py-3.5 text-center">
                     {e.productivo ? (
-                      <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                      <span className="inline-block px-2.5 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200">
                         Productivo
                       </span>
                     ) : (
-                      <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">
+                      <span className="inline-block px-2.5 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-600">
                         No productivo
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-2 text-right"><BotonIcono variante="normal" icono={<Edit2 size={13} />} titulo="Editar entorno" ariaLabel="Editar entorno" disabled={bloqueado} onClick={() => abrirEditarEntorno(e)} /></td>
+                  <td className="px-5 py-3.5 text-center"><BotonIcono variante="normal" icono={<Edit2 size={14} />} titulo="Editar entorno" ariaLabel="Editar entorno" disabled={bloqueado} onClick={() => abrirEditarEntorno(e)} /></td>
                 </tr>
               ))}
             </tbody>

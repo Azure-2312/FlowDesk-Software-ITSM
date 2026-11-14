@@ -181,7 +181,7 @@ export function PestanaTransicionesReglas({ datos, onChange, bloqueado }: Props)
       )}
 
       {/* Barra superior con navegación de vistas */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <div>
           <h3 className="text-base font-bold text-slate-800">
             Transiciones y reglas de ciclo de vida
@@ -191,41 +191,64 @@ export function PestanaTransicionesReglas({ datos, onChange, bloqueado }: Props)
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* Selector de vistas */}
-          <div className="flex rounded-lg border border-slate-300 p-0.5 bg-slate-100 text-xs font-semibold">
+          <div className="flex gap-2">
             <button
+              type="button"
               onClick={() => setVistaActiva("lista")}
-              className={`px-3 py-1 rounded-md transition-colors ${
-                vistaActiva === "lista" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
+              className="boton-secundario"
+              style={{
+                width: "auto",
+                padding: "6px 14px",
+                fontSize: 12.5,
+                backgroundColor: vistaActiva === "lista" ? "#eff6ff" : "transparent",
+                color: vistaActiva === "lista" ? "#2563eb" : "#475569",
+                borderColor: vistaActiva === "lista" ? "#bfdbfe" : "#cbd5e1"
+              }}
             >
               Lista ({transiciones.length})
             </button>
             <button
+              type="button"
               onClick={() => setVistaActiva("matriz")}
-              className={`px-3 py-1 rounded-md transition-colors ${
-                vistaActiva === "matriz" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
+              className="boton-secundario"
+              style={{
+                width: "auto",
+                padding: "6px 14px",
+                fontSize: 12.5,
+                backgroundColor: vistaActiva === "matriz" ? "#eff6ff" : "transparent",
+                color: vistaActiva === "matriz" ? "#2563eb" : "#475569",
+                borderColor: vistaActiva === "matriz" ? "#bfdbfe" : "#cbd5e1"
+              }}
             >
               Matriz Origen x Destino
             </button>
             <button
+              type="button"
               onClick={() => setVistaActiva("diagrama")}
-              className={`px-3 py-1 rounded-md transition-colors ${
-                vistaActiva === "diagrama" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
+              className="boton-secundario"
+              style={{
+                width: "auto",
+                padding: "6px 14px",
+                fontSize: 12.5,
+                backgroundColor: vistaActiva === "diagrama" ? "#eff6ff" : "transparent",
+                color: vistaActiva === "diagrama" ? "#2563eb" : "#475569",
+                borderColor: vistaActiva === "diagrama" ? "#bfdbfe" : "#cbd5e1"
+              }}
             >
               Diagrama de flujo
             </button>
           </div>
 
           <button
+            type="button"
             onClick={() => abrirEdicion()}
             disabled={bloqueado}
-            className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded transition-colors disabled:opacity-50"
+            className="boton-primario"
+            style={{ width: "auto", padding: "6px 16px", fontSize: 12.5 }}
           >
-            + Nueva transición
+            Nueva transición
           </button>
         </div>
       </div>

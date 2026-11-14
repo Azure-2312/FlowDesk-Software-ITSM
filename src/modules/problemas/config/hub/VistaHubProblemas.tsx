@@ -6,20 +6,16 @@ import { FileText, RefreshCw, Network } from "@/shared/components/ui/Iconos";
 
 export default function ProblemasHubPage() {
   return (
-    <div style={{ padding: "24px 28px", minWidth: 1200, backgroundColor: "#f8fafc", minHeight: "100vh" }}>
+    <div style={{ padding: "28px 32px", maxWidth: 1400, margin: "0 auto 0 0", width: "100%", boxSizing: "border-box", backgroundColor: "#f8fafc", minHeight: "100vh" }}>
 
       {/* Cabecera */}
       <div style={{
-        backgroundColor: "#ffffff",
-        padding: "24px 28px",
-        borderRadius: 8,
-        border: "1px solid #e2e8f0",
-        marginBottom: 24
+        marginBottom: 20
       }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 6px 0", color: "#0f172a" }}>
+        <h1 style={{ fontSize: 22, fontWeight: 700, margin: "0 0 6px 0", color: "#0f172a" }}>
           Gestión de Problemas (ITIL 4 / ISO 20000)
         </h1>
-        <p style={{ margin: 0, color: "#64748b", fontSize: 14, maxWidth: 900 }}>
+        <p style={{ margin: 0, color: "#64748b", fontSize: 13.5, lineHeight: 1.5, maxWidth: 900 }}>
           Centro de administración y gobernanza de la práctica de Gestión de Problemas. Reduzca la probabilidad y el impacto de los incidentes identificando sus causas reales o potenciales y gestionando errores conocidos (KEDB).
         </p>
       </div>

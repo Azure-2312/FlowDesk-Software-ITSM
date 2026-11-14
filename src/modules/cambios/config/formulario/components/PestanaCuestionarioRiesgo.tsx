@@ -330,9 +330,9 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
             type="button"
             className="boton-primario"
             onClick={abrirNuevaPregunta}
-            style={{ width: "auto", fontSize: 12, padding: "7px 14px", backgroundColor: "#2563eb" }}
+            style={{ width: "auto", fontSize: 13, padding: "8px 16px" }}
           >
-            + Nueva Pregunta
+            Nueva Pregunta
           </button>
         </div>
 
@@ -352,7 +352,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
               {preguntas.length === 0 ? (
                 <tr>
                   <td colSpan={6} style={{ textAlign: "center", padding: 28, color: "#64748b" }}>
-                    No hay preguntas configuradas. Haz clic en <strong>+ Nueva Pregunta</strong> para agregar la primera.
+                    No hay preguntas configuradas. Haz clic en <strong>Nueva Pregunta</strong> para agregar la primera.
                   </td>
                 </tr>
               ) : (

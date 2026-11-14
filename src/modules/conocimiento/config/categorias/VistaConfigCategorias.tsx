@@ -219,17 +219,9 @@ export default function VistaConfigCategorias() {
         }}
       >
         <div>
-          <div className="flex items-center gap-3">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-              Taxonomía de Conocimiento
-            </span>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-              Taxonomía y Categorías de Conocimiento
-            </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-              ● Configuración Activa
-            </span>
-          </div>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+            Taxonomía y Categorías de Conocimiento
+          </h1>
           <p
             className="subtitulo"
             style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}
@@ -238,8 +230,8 @@ export default function VistaConfigCategorias() {
           </p>
         </div>
 
-        {/* Botones pegados a la derecha del espacio del título: solo iconos, sin palabras */}
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        {/* Botones pegados a la derecha del espacio del título */}
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           {/* Botón Actualizar (Solo Icono) */}
           <button
             type="button"
@@ -277,7 +269,7 @@ export default function VistaConfigCategorias() {
             </svg>
           </button>
 
-          {/* Botón Nueva Categoría (Solo Icono +) */}
+          {/* Botón Nueva Categoría */}
           <button
             type="button"
             onClick={() => {
@@ -286,35 +278,14 @@ export default function VistaConfigCategorias() {
               setNuevoCodigoCorto("");
               setMostrarModalNuevo(true);
             }}
-            title="Nueva Categoría"
-            aria-label="Nueva Categoría"
             className="boton-primario"
             style={{
-              width: 36,
-              height: 36,
-              padding: 0,
-              borderRadius: 6,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#2563eb",
-              border: "1px solid #1d4ed8",
-              cursor: "pointer",
+              width: "auto",
+              padding: "8px 18px",
+              fontSize: 13,
             }}
           >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#ffffff"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
+            Nueva Categoría
           </button>
         </div>
       </div>
@@ -396,10 +367,10 @@ export default function VistaConfigCategorias() {
         </div>
       ) : (
         <div className="contenedor-tabla">
-          <table className="tabla-datos">
+          <table className="tabla-datos" style={{ width: "100%", fontSize: "13.5px" }}>
             <thead>
               <tr>
-                <th style={{ width: 85 }}>Código</th>
+                <th style={{ width: 95, textAlign: "center" }}>Código</th>
                 <th>Nombre de Categoría</th>
                 <th>Descripción</th>
                 <th style={{ textAlign: "center", width: 130 }}>Artículos Activos</th>
@@ -419,7 +390,7 @@ export default function VistaConfigCategorias() {
               ) : (
                 categoriasFiltradas.map((cat) => (
                   <tr key={cat.id_categoria}>
-                    <td style={{ fontWeight: 700, fontFamily: "monospace", fontSize: 12, color: "#2563eb" }}>
+                    <td style={{ textAlign: "center", fontWeight: 700, fontFamily: "monospace", fontSize: 12.5, color: "#2563eb" }}>
                       {cat.codigo_corto || `CAT-${cat.id_categoria}`}
                     </td>
                     <td>

@@ -732,8 +732,8 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(270px, 0.80fr) minmax(380px, 1.20fr)",
-          gap: 12,
+          gridTemplateColumns: "minmax(320px, 400px) minmax(650px, 1fr)",
+          gap: 16,
           minHeight: 680,
           alignItems: "start",
         }}

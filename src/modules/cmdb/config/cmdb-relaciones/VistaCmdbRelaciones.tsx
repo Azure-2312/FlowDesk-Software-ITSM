@@ -207,106 +207,81 @@ export default function CmdbRelacionesConfigPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", width: "100%", boxSizing: "border-box", padding: "32px 48px 48px 48px" }}>
+      <div style={{ maxWidth: 1400, width: "100%", margin: "0 auto 0 0" }}>
         {/* Toast flotante */}
-      {toastMensaje && (
-        <div className="fixed top-4 right-4 z-50 bg-slate-800 text-white px-4 py-2 rounded-md shadow-lg text-sm transition-opacity">
-          {toastMensaje}
+        {toastMensaje && (
+          <div className="fixed top-4 right-4 z-50 bg-slate-800 text-white px-4 py-2 rounded-md shadow-lg text-sm transition-opacity">
+            {toastMensaje}
+          </div>
+        )}
+
+        {/* Encabezado Principal Estandarizado (Con márgenes superiores y laterales) */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: 24,
+          marginBottom: 20
+        }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+              Elementos de Configuración y Relaciones de CMDB
+            </h1>
+            <p style={{ margin: "8px 0 0 0", color: "#64748b", fontSize: 13.5, lineHeight: 1.5 }}>
+              Modelado de clases lógicas y físicas, tipos de enlace topológico, propagación de impacto, integridad y auditoría continua.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, paddingTop: 4 }}>
+            <button
+              type="button"
+              onClick={handleGuardarRelaciones}
+              disabled={guardando || !puedeEditar}
+              className="boton-primario"
+              style={{ padding: "9px 22px", fontSize: 13, width: "auto", fontWeight: 700 }}
+            >
+              {guardando ? "Guardando..." : "Guardar Configuración"}
+            </button>
+          </div>
         </div>
-      )}
 
-      {/* Encabezado Principal Estandarizado ARQ-3 */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div>
-              <div className="flex items-center gap-3">
-                <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">
-                  CMDB ITIL
-                </span>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                  Elementos de Configuración y Relaciones de CMDB
-                </h1>
-              </div>
-              <p className="text-sm text-slate-500 mt-1">
-                Modelado de clases lógicas y físicas, tipos de enlace topológico, propagación de impacto, integridad y auditoría continua.
-              </p>
-              <div className="text-[11px] text-slate-400 mt-1">
-                Última modificación por <span className="font-medium text-slate-600">{autorPublicada || "Administrador"}</span> {fechaPublicada && `el ${new Date(fechaPublicada).toLocaleString()}`}
-              </div>
-            </div>
-
-            {/* Accesos directos y acciones del encabezado */}
-            <div className="flex flex-wrap items-center gap-2">
-              <Link
-                href="/plataforma/activos/configuracion/tipos-modelos-atributos"
-                className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
-              >
-                Tipos y Modelos
-              </Link>
-              <Link
-                href="/plataforma/activos/configuracion/ciclos-vida-transiciones"
-                className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
-              >
-                Ciclos de Vida
-              </Link>
-              <Link
-                href="/plataforma/activos/configuracion/licencias-contratos"
-                className="px-2.5 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
-              >
-                Licencias y Contratos
-              </Link>
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                ● Configuración Activa
-              </span>
+        {/* Navegación horizontal de pestañas */}
+        <div style={{
+          display: "flex",
+          gap: 8,
+          borderBottom: "1px solid #e2e8f0",
+          marginBottom: 28,
+          justifyContent: "flex-start",
+          overflowX: "auto"
+        }}>
+          {PESTANAS.map((pestana) => {
+            const activa = tabActiva === pestana.id;
+            return (
               <button
-                type="button"
-                onClick={handleGuardarRelaciones}
-                disabled={guardando || !puedeEditar}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm flex items-center gap-1.5"
+                key={pestana.id}
+                onClick={() => cambiarTab(pestana.id)}
+                style={{
+                  padding: "12px 18px",
+                  border: "none",
+                  background: "transparent",
+                  borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
+                  color: activa ? "#2563eb" : "#64748b",
+                  fontWeight: activa ? 600 : 500,
+                  fontSize: 13.5,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  transition: "all 0.15s ease",
+                }}
               >
-                {guardando ? "Guardando..." : "Guardar Relaciones CMDB"}
+                {pestana.titulo}
               </button>
-            </div>
-          </div>
-
-          {/* Barra de Pestañas sin números */}
-          <div className="flex space-x-1 border-b border-slate-200 mt-6 overflow-x-auto">
-            {PESTANAS.map((pestana) => {
-              const activa = tabActiva === pestana.id;
-              return (
-                <button
-                  key={pestana.id}
-                  onClick={() => cambiarTab(pestana.id)}
-                  className={`py-2.5 px-4 text-xs font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                    activa
-                      ? "border-indigo-600 text-indigo-600 bg-indigo-50/50"
-                      : "border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300"
-                  }`}
-                >
-                  {pestana.titulo}
-                </button>
-              );
-            })}
-          </div>
+            );
+          })}
         </div>
-      </div>
 
-      {/* Contenido Principal de la Pestaña Activa */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Banner informativo de pestaña */}
-        <div className="bg-white border-l-4 border-indigo-500 p-4 rounded-r-lg shadow-sm border border-slate-200 mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-sm font-bold text-slate-800">{pestanaInfo.titulo}</h2>
-              <p className="text-xs text-slate-600 mt-0.5">{pestanaInfo.descripcion}</p>
-            </div>
-            <div className="text-right text-xs text-slate-400 font-mono">
-              Versión publicada: v{versionPublicada}
-            </div>
-          </div>
-        </div>
+        {/* Contenido Principal de la Pestaña Activa */}
+        <div style={{ width: "100%" }}>
 
         {/* Error o Spinner de Carga */}
         {errorCarga && (
@@ -374,7 +349,7 @@ export default function CmdbRelacionesConfigPage() {
             )}
           </div>
         )}
-      </main>
+        </div>
       </div>
     </div>
   );

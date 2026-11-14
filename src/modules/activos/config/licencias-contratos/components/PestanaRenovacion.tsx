@@ -348,9 +348,10 @@ export function PestanaRenovacion({ datos, onChange, bloqueado }: Props) {
             type="button"
             disabled={bloqueado}
             onClick={abrirNuevoMotivo}
-            className="px-3 py-1.5 text-xs bg-indigo-600 text-white rounded font-semibold hover:bg-indigo-700 disabled:opacity-50"
+            className="boton-primario"
+            style={{ width: "auto", padding: "6px 14px", fontSize: 12.5 }}
           >
-            + Nuevo motivo
+            Nuevo motivo
           </button>
         </div>
 

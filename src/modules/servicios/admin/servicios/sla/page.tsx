@@ -11,8 +11,7 @@ function ContenidoPaginaSla() {
   const tabInicial = subvista === "matriz" ? "matriz" : "tiempos";
 
   return (
-    <div style={{ padding: "20px 28px 80px 28px", minWidth: 1080, backgroundColor: "#f8fafc", minHeight: "100vh" }}>
-
+    <div style={{ backgroundColor: "#f8fafc", minHeight: "100vh", width: "100%" }}>
       <ConfiguracionObjetivosSla pestañaInicial={tabInicial} />
     </div>
   );

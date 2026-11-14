@@ -225,18 +225,10 @@ export const PestanaMatrizAutoridad: React.FC<PestanaMatrizAutoridadProps> = ({
           <button
             type="button"
             onClick={abrirCrearRegla}
-            style={{
-              padding: "7px 14px",
-              fontSize: 12.5,
-              fontWeight: 600,
-              backgroundColor: "#2563eb",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 6,
-              cursor: "pointer"
-            }}
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
-            + Nueva regla
+            Nueva regla
           </button>
         </div>
       </div>

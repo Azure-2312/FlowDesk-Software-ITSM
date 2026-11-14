@@ -273,7 +273,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
             style={{ width: "auto", padding: "6px 14px", fontSize: 13 }}
             onClick={abrirCrear}
           >
-            + Nueva Regla
+            Nueva regla
           </button>
         </div>
       </div>
@@ -298,7 +298,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
             {reglas.length === 0 ? (
               <tr>
                 <td colSpan={9} style={{ textAlign: "center", padding: "30px 0", color: "#64748b" }}>
-                  No hay reglas de umbral configuradas. Pulse "+ Nueva Regla" para definir una.
+                  No hay reglas de umbral configuradas. Haga clic en "Nueva regla" para definir una.
                 </td>
               </tr>
             ) : (

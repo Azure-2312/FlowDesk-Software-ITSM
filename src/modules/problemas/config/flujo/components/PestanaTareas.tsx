@@ -116,9 +116,10 @@ export const PestanaTareas: React.FC<PestanaTareasProps> = ({
             type="button"
             onClick={() => setModalNuevaTarea(true)}
             disabled={!puedeEditar}
-            className="px-3.5 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-lg shadow-xs transition"
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
-            + Nueva tarea
+            Nueva tarea
           </button>
         </div>
 
@@ -189,9 +190,10 @@ export const PestanaTareas: React.FC<PestanaTareasProps> = ({
             type="button"
             onClick={() => setModalNuevoPaquete(true)}
             disabled={!puedeEditar}
-            className="px-3.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition"
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
-            + Nuevo paquete
+            Nuevo paquete
           </button>
         </div>
 

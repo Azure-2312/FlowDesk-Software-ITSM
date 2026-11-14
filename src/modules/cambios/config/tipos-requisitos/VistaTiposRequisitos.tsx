@@ -115,70 +115,46 @@ export default function ConfiguracionTiposRequisitosPage() {
 
   return (
     <div style={{ backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
-      <div style={{ minWidth: 1000, maxWidth: 1400, margin: "0 auto", padding: "20px 24px 32px 24px", flex: 1, width: "100%", boxSizing: "border-box" }}>
-        {/* Encabezado Principal Estandarizado ARQ-2 */}
+      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto 0 0", padding: "28px 32px 32px 32px", flex: 1, boxSizing: "border-box" }}>
+        {/* Encabezado Principal Estandarizado */}
         <div style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 20,
-          backgroundColor: "#ffffff",
-          padding: "18px 24px",
-          borderRadius: 8,
-          border: "1px solid #e2e8f0"
+          alignItems: "flex-start",
+          gap: 16,
+          marginBottom: 16
         }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Flujo ITIL</span>
-              <h1 style={{ margin: 0, fontSize: 21, fontWeight: 800, color: "#0f172a" }}>
-                Tipos de Cambio y Requisitos
-              </h1>
-            </div>
-            <p style={{ margin: "6px 0 0 0", fontSize: 13, color: "#64748b" }}>
+            <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#0f172a" }}>
+              Tipos de Cambio y Requisitos
+            </h1>
+            <p style={{ margin: "6px 0 0 0", fontSize: 13, color: "#64748b", lineHeight: 1.45 }}>
               Gobierno de directrices ITIL v4: tipos normativos, matriz de autoridad, catálogo de modelos estándar y reglas de elevación.
             </p>
-            <div style={{ marginTop: 6, fontSize: 12, color: "#94a3b8" }}>
-              Última modificación {fechaPublicada ? `el ${new Date(fechaPublicada).toLocaleString()}` : "por el Administrador"}
-            </div>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, backgroundColor: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>
-              ● Configuración Activa
-            </span>
             <button
               type="button"
               onClick={handleGuardarConfiguracion}
               disabled={guardando || !puedeEditar}
-              style={{
-                backgroundColor: guardando ? "#93c5fd" : "#2563eb",
-                color: "#ffffff",
-                padding: "8px 16px",
-                borderRadius: 6,
-                border: "none",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: guardando || !puedeEditar ? "not-allowed" : "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)"
-              }}
+              className="boton-primario"
+              style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
           </div>
         </div>
 
-      {/* Selector de Pestañas de 1.3.3.2 */}
+      {/* Selector de Pestañas */}
       <div
         style={{
           display: "flex",
-          borderBottom: "1px solid #cbd5e1",
-          marginBottom: 20,
-          backgroundColor: "#ffffff",
-          borderRadius: "8px 8px 0 0",
-          padding: "4px 8px 0"
+          gap: 8,
+          borderBottom: "1px solid #e2e8f0",
+          marginBottom: 24,
+          justifyContent: "flex-start",
+          overflowX: "auto"
         }}
       >
         {(["tipos", "matriz_autoridad", "modelos_estandar", "reglas_clasificacion"] as TabId[]).map((tab) => {
@@ -190,15 +166,15 @@ export default function ConfiguracionTiposRequisitosPage() {
               type="button"
               onClick={() => setTabActiva(tab)}
               style={{
-                padding: "10px 18px",
+                padding: "10px 16px",
                 fontSize: 13,
-                fontWeight: activa ? 700 : 500,
-                color: activa ? "#2563eb" : "#475569",
+                fontWeight: activa ? 600 : 500,
+                color: activa ? "#2563eb" : "#64748b",
                 border: "none",
-                borderBottom: activa ? "3px solid #2563eb" : "3px solid transparent",
+                borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
                 backgroundColor: "transparent",
                 cursor: "pointer",
-                transition: "all 0.15s ease"
+                whiteSpace: "nowrap"
               }}
             >
               {info.titulo}

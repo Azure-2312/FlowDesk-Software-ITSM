@@ -194,55 +194,25 @@ export default function NotificacionesCalendarioPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-      {/* Encabezado canónico ARQ-4: Configuración de Catálogos */}
-      <header className="bg-white border-b border-slate-200 px-6 py-5">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                Gestión de Cambios &amp; Calendario
-              </span>
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-                {infoPestana.titulo}
-              </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                ● Configuración Activa
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 mt-1 max-w-3xl">
-              {infoPestana.descripcion}
+      {/* Encabezado Corporativo Formal */}
+      <header className="bg-white px-8 pt-7 pb-4 border-b border-slate-100">
+        <div style={{ maxWidth: 1400, width: "100%", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 20 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+              Notificaciones y Calendario de Cambios
+            </h1>
+            <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
+              Gobierno de eventos ITIL v4, alertas multicanal, ventanas de mantenimiento autorizadas y períodos de congelamiento de infraestructura.
             </p>
-            <div className="text-[11px] text-slate-400 mt-1">
-              Última modificación por{" "}
-              <span className="font-medium text-slate-600">
-                {autorPublicada || "Sistema"}
-              </span>{" "}
-              el{" "}
-              <span className="font-mono text-slate-600">
-                {fechaPublicada ? new Date(fechaPublicada).toLocaleString() : "Registro de sistema"}
-              </span>
-            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleImportar}
-              className="px-3 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors"
-              title="Importar configuración JSON"
-            >
-              Importar JSON
-            </button>
-            <button
-              onClick={handleExportar}
-              className="px-3 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors"
-              title="Exportar configuración JSON"
-            >
-              Exportar JSON
-            </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <button
               onClick={handleGuardarConfiguracion}
+              type="button"
               disabled={guardando || deshabilitadoEdicion}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:opacity-50"
+              className="boton-primario"
+              style={{ padding: "8px 18px", fontSize: 13, width: "auto", fontWeight: 700 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
@@ -251,7 +221,7 @@ export default function NotificacionesCalendarioPage() {
 
         {/* Banner de bloqueo concurrente si aplica */}
         {bloqueadoPorOtro && (
-          <div style={{ marginTop: 14, background: "#fee2e2", border: "1px solid #fca5a5", color: "#991b1b", padding: "10px 14px", borderRadius: 6, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ maxWidth: 1400, marginTop: 14, background: "#fee2e2", border: "1px solid #fca5a5", color: "#991b1b", padding: "10px 14px", borderRadius: 6, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span>Esta pestaña está siendo editada actualmente por <strong>{bloqueadoPorOtro}</strong>. Está en modo de solo lectura.</span>
             <button
               onClick={() => alert("Se ha solicitado el control de la sesión de edición al administrador.")}
@@ -263,8 +233,9 @@ export default function NotificacionesCalendarioPage() {
         )}
       </header>
 
-      {/* Navegación horizontal de pestañas (1.3.3.4.1 a 1.3.3.4.6) */}
-      <div style={{ background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0 24px", display: "flex", gap: 8, overflowX: "auto" }}>
+      {/* Navegación horizontal de pestañas */}
+      <div style={{ background: "#ffffff", borderBottom: "1px solid #e2e8f0" }}>
+        <div style={{ maxWidth: 1400, padding: "0 32px", display: "flex", gap: 8, overflowX: "auto" }}>
         {(Object.keys(PESTANAS_INFO) as TabId[]).map((tabKey) => {
           const tab = PESTANAS_INFO[tabKey];
           const activa = tabActiva === tabKey;
@@ -273,22 +244,23 @@ export default function NotificacionesCalendarioPage() {
               key={tabKey}
               onClick={() => setTabActiva(tabKey)}
               style={{
-                padding: "12px 16px",
+                padding: "12px 18px",
                 border: "none",
                 background: "transparent",
                 borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
                 color: activa ? "#2563eb" : "#64748b",
                 fontWeight: activa ? 600 : 500,
-                fontSize: 13,
+                fontSize: 13.5,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
                 transition: "all 0.15s ease"
               }}
             >
-              {tab.numero} {tab.titulo.split(" ")[1]}
+              {tab.titulo}
             </button>
           );
         })}
+        </div>
       </div>
 
       {/* Contenido de la Pestaña Activa */}
@@ -306,7 +278,7 @@ export default function NotificacionesCalendarioPage() {
           </div>
         </div>
       ) : (
-        <div style={{ padding: "24px 28px" }}>
+        <div style={{ maxWidth: 1400, width: "100%", padding: "28px 32px", margin: "0 auto 0 0" }}>
           {tabActiva === "notificaciones" && (
             <PestanaNotificaciones
               config={configSnapshot}

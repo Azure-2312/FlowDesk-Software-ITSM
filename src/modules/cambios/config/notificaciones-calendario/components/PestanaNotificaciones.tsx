@@ -332,23 +332,14 @@ export function PestanaNotificaciones({ config, onChange }: PestanaNotificacione
           <button
             type="button"
             onClick={abrirModalCrear}
+            className="boton-primario"
             style={{
-              padding: "7px 14px",
-              backgroundColor: "#2563eb",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 6,
-              fontSize: 12.5,
-              fontWeight: 700,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+              padding: "8px 16px",
+              fontSize: 13,
+              width: "auto"
             }}
           >
-            <Plus size={15} />
-            Nueva Notificación
+            Nueva notificación
           </button>
         </div>
 
@@ -400,66 +391,63 @@ export function PestanaNotificaciones({ config, onChange }: PestanaNotificacione
                 </div>
               </div>
 
-              {/* Acciones: Activar/Inactivar, Editar, Eliminar */}
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <button
-                  type="button"
-                  onClick={() => alternarActivo(notif.id)}
+              {/* Estado y Acciones: Iconos discretos según estándar de plataforma */}
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span
                   style={{
-                    backgroundColor: notif.activo ? "#16a34a" : "#cbd5e1",
-                    color: "#ffffff",
-                    border: "none",
-                    borderRadius: 12,
-                    padding: "4px 10px",
                     fontSize: 11,
                     fontWeight: 700,
-                    cursor: "pointer",
+                    padding: "3px 8px",
+                    borderRadius: 4,
+                    backgroundColor: notif.activo ? "#dcfce7" : "#fee2e2",
+                    color: notif.activo ? "#166534" : "#991b1b",
+                    border: `1px solid ${notif.activo ? "#bbf7d0" : "#fecaca"}`,
+                    marginRight: 6,
                   }}
-                  title={notif.activo ? "Desactivar notificación" : "Activar notificación"}
                 >
-                  {notif.activo ? "Activo ✓" : "Inactivo"}
-                </button>
+                  {notif.activo ? "Activa" : "Inactiva"}
+                </span>
 
                 <button
                   type="button"
-                  onClick={() => abrirModalEditar(notif)}
-                  style={{
-                    padding: "5px 10px",
-                    borderRadius: 6,
-                    border: "1px solid #cbd5e1",
-                    backgroundColor: "#f8fafc",
-                    color: "#334155",
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 4,
-                  }}
+                  className="boton-accion-icono"
                   title="Editar notificación"
+                  aria-label="Editar notificación"
+                  onClick={() => abrirModalEditar(notif)}
                 >
-                  <Edit2 size={13} /> Editar
+                  <Edit2 size={14} />
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => eliminarNotificacion(notif.id)}
-                  style={{
-                    padding: "5px 10px",
-                    borderRadius: 6,
-                    border: "1px solid #fecaca",
-                    backgroundColor: "#fef2f2",
-                    color: "#dc2626",
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 4,
-                  }}
-                  title="Eliminar notificación"
+                  className="boton-accion-icono"
+                  style={{ color: notif.activo ? "#ea580c" : "#16a34a" }}
+                  title={notif.activo ? "Desactivar notificación" : "Activar notificación"}
+                  aria-label={notif.activo ? "Desactivar notificación" : "Activar notificación"}
+                  onClick={() => alternarActivo(notif.id)}
                 >
-                  <Trash2 size={13} /> Eliminar
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    {notif.activo ? (
+                      <>
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                      </>
+                    ) : (
+                      <polyline points="9 12 12 15 16 10" />
+                    )}
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  className="boton-accion-icono"
+                  style={{ color: "#dc2626" }}
+                  title="Eliminar notificación"
+                  aria-label="Eliminar notificación"
+                  onClick={() => eliminarNotificacion(notif.id)}
+                >
+                  <Trash2 size={14} />
                 </button>
               </div>
             </div>

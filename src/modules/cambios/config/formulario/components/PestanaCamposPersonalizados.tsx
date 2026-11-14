@@ -189,9 +189,9 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
           className="boton-primario"
           onClick={abrirModalCrear}
           disabled={campos.length >= limite}
-          style={{ fontSize: 12, padding: "7px 14px", backgroundColor: "#7c3aed" }}
+          style={{ width: "auto", fontSize: 13, padding: "8px 16px" }}
         >
-          + Nuevo Campo Personalizado
+          Nuevo campo personalizado
         </button>
       </div>
 

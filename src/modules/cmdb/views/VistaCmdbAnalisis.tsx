@@ -209,10 +209,7 @@ export default function VistaCmdbAnalisis() {
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ backgroundColor: "#dbeafe", color: "#1e40af", fontSize: 12, fontWeight: 700, padding: "3px 8px", borderRadius: 4 }}>Topología CMDB</span>
-            <h1 style={{ margin: 0, fontSize: 21, fontWeight: 700, color: "#0f172a" }}>Análisis e Impacto de la CMDB</h1>
-          </div>
+          <h1 style={{ margin: 0, fontSize: 21, fontWeight: 700, color: "#0f172a" }}>Análisis e Impacto de la CMDB</h1>
           <p className="descripcion" style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
             Topología de dependencias en red, análisis de impacto aguas arriba/abajo en fallas y cambios, reconciliación Activo ↔ CI e historial de configuración (ITIL v4).
           </p>
