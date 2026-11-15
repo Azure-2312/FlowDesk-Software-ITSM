@@ -472,6 +472,7 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
     await validarCargaTecnico(idAsignadoInicial);
   }
   const idEstadoInicial = idAsignadoInicial ? 2 : 1; // Asignado (2) o Abierto (1)
+  const idCi = body.id_ci ? Number(body.id_ci) : null;
 
   const nuevoTicket = await transaccion(async (client) => {
     const insert = await client.query(
@@ -479,9 +480,9 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
         codigo_ticket, titulo, descripcion, id_tipo_ticket, id_categoria,
         id_servicio, id_departamento, id_departamento_empresa, canal_comunicacion,
         id_impacto, id_urgencia, id_prioridad, id_estado,
-        id_usuario_solicitante, id_usuario_asignado, fecha_limite_sla, fecha_limite_respuesta_sla, usuario_creacion, campos_adicionales
+        id_usuario_solicitante, id_usuario_asignado, fecha_limite_sla, fecha_limite_respuesta_sla, usuario_creacion, campos_adicionales, id_ci
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20
       ) RETURNING id_ticket`,
       [
         codigoTicket,
@@ -503,6 +504,7 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
         fechaLimiteRespuestaSla,
         sesion.id_usuario,
         JSON.stringify(campos_adicionales || {}),
+        idCi,
       ]
     );
 

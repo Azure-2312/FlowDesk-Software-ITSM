@@ -349,6 +349,12 @@ export interface CatalogosTickets {
   }[];
   servicios?: ServicioCatalogo[];
   departamentos?: DepartamentoTI[];
+  cis?: {
+    id_ci: number;
+    codigo_ci: string;
+    nombre: string;
+    tipo_ci: string;
+  }[];
 }
 
 export interface DepartamentoTI {
@@ -414,6 +420,7 @@ export interface CrearTicketPayload {
   canal_comunicacion?: "PORTAL_WEB" | "CORREO_ELECTRONICO" | "LLAMADA_TELEFONICA" | "CHAT_EN_VIVO" | "SISTEMA_MONITOREO_AUTOMATICO";
   id_impacto: number;
   id_urgencia: number;
+  id_ci?: number | null;
   id_usuario_solicitante?: number | null;
   autoasignar_tecnico?: boolean;
   campos_adicionales?: Record<string, any>;

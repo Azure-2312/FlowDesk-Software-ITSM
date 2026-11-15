@@ -22,8 +22,11 @@ interface Modelo {
 
 const COLORES: Record<string, { bg: string; fg: string }> = {
   BORRADOR: { bg: "#fef3c7", fg: "#92400e" },
+  EN_REVISION: { bg: "#e0f2fe", fg: "#0369a1" },
+  APROBADO: { bg: "#dcfce7", fg: "#166534" },
   PUBLICADO: { bg: "#dcfce7", fg: "#166534" },
   SUSPENDIDO: { bg: "#fee2e2", fg: "#b91c1c" },
+  RETIRADO: { bg: "#e5e7eb", fg: "#374151" },
   ARCHIVADO: { bg: "#e5e7eb", fg: "#374151" },
 };
 
@@ -178,9 +181,9 @@ export default function VistaModelosGestion() {
                     </td>
                     <td>
                       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                        {m.estado !== "PUBLICADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_modelo, "PUBLICADO")}>Publicar</button>}
+                        {m.estado !== "APROBADO" && m.estado !== "PUBLICADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px", backgroundColor: "#f0fdf4", color: "#15803d", borderColor: "#bbf7d0" }} disabled={procesando} onClick={() => cambiarEstado(m.id_modelo, "APROBADO")}>Aprobar</button>}
                         {m.estado !== "SUSPENDIDO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_modelo, "SUSPENDIDO")}>Suspender</button>}
-                        {m.estado !== "ARCHIVADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_modelo, "ARCHIVADO")}>Archivar</button>}
+                        {m.estado !== "RETIRADO" && m.estado !== "ARCHIVADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_modelo, "RETIRADO")}>Retirar</button>}
                       </div>
                     </td>
                   </tr>

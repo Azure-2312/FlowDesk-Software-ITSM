@@ -1,6 +1,18 @@
 import { queryRow } from "@/shared/lib/db";
 import { VALORES_FABRICA_PESTANAS } from "./formularioConfiguracionService";
 
+export async function obtenerCuestionarioConfig() {
+  const confRow = await queryRow<any>(`
+    SELECT snapshot FROM configuracion_modulo_versiones
+    WHERE modulo = 'gestion_de_cambios' AND pantalla = '1.3.3.1' AND pestana = 'cuestionario_riesgo'
+    ORDER BY es_borrador DESC, numero_version DESC
+    LIMIT 1
+  `);
+  return (confRow?.snapshot && Object.keys(confRow.snapshot).length > 0)
+    ? confRow.snapshot
+    : VALORES_FABRICA_PESTANAS.cuestionario_riesgo;
+}
+
 export async function evaluarCuestionarioRiesgo(body: any, puedeSimularBorrador = false) {
   const { respuestas = {}, valores_formulario = {}, config_simulacion = null } = body;
 

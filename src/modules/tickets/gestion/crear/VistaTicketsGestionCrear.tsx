@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, FormEvent, Suspense, ChangeEvent } from "react";
+import { useEffect, useState, useMemo, FormEvent, Suspense, ChangeEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CatalogosTickets, ServicioCatalogo, Usuario } from "@/types";
 import {
@@ -55,6 +55,17 @@ const NIVELES_PRIORIDAD_MAP: Record<number, { nombre: string; color: string; bg:
   5: { nombre: "Prioridad Estándar", color: "#475569", bg: "#f1f5f9" },
 };
 
+function normalizarTipoControl(t?: string): "texto" | "area" | "numero" | "fecha" | "lista" | "casilla" {
+  if (!t) return "texto";
+  const str = String(t).toLowerCase();
+  if (str === "texto_largo" || str === "area" || str === "textarea") return "area";
+  if (str === "numero" || str === "number" || str === "numerico") return "numero";
+  if (str === "fecha" || str === "date") return "fecha";
+  if (str === "lista" || str === "seleccion" || str === "select" || str === "selector") return "lista";
+  if (str === "casilla" || str === "booleano" || str === "checkbox") return "casilla";
+  return "texto";
+}
+
 function deducirPrioridad(nivelImpacto: number, nivelUrgencia: number): { codigo: string; nombre: string; sla: number; color: string } {
   if (nivelImpacto === 3 && nivelUrgencia === 3) return { codigo: "P1", nombre: "Crítica", sla: 4, color: "#dc2626" };
   if (nivelImpacto === 3 && nivelUrgencia === 2) return { codigo: "P2", nombre: "Alta", sla: 8, color: "#ea580c" };
@@ -92,10 +103,11 @@ function ContenidoCrearTicket({
 
   const [catalogos, setCatalogos] = useState<CatalogosTickets | null>(null);
   const [usuarioActual, setUsuarioActual] = useState<Usuario | null>(null);
-  const [camposConfig, setCamposConfig] = useState<Record<string, CampoConfigurado[]>>({
+  const [camposConfig, setCamposConfig] = useState<Record<string, any>>({
     incidente: [],
     solicitud: [],
   });
+  const [camposPersonalizadosDB, setCamposPersonalizadosDB] = useState<any[]>([]);
   // SLA por defecto del administrador, indexados por código de prioridad (P1, P2, P3, P4)
   const [slaObjetivosAdmin, setSlaObjetivosAdmin] = useState<Record<string, { respuesta: number; resolucion: number }>>({
     P1: { respuesta: 1, resolucion: 4 },
@@ -120,8 +132,8 @@ function ContenidoCrearTicket({
   const [justificacion, setJustificacion] = useState("");
   const [fechaLimiteDeseada, setFechaLimiteDeseada] = useState("");
 
-  // Elemento CMDB (Hardware / Software)
-  const [elementoCmdb, setElementoCmdb] = useState("");
+  // Elemento CMDB de configuración vinculado
+  const [idCi, setIdCi] = useState<string>("");
 
   // Registrar a nombre de otro / Selección de Solicitante
   const [perfilesIds, setPerfilesIds] = useState<number[]>([]);
@@ -226,6 +238,19 @@ function ContenidoCrearTicket({
     cargarTodo();
   }, [paramCat, paramServicio, paramTit, tipoInicial]);
 
+  // Cargar campos personalizados según entidad (incidente vs solicitud)
+  useEffect(() => {
+    const entidad = idTipo === 1 ? "incidente" : "solicitud";
+    fetch(`/api/tickets/configuracion/campos-personalizados?entidad=${entidad}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.ok && Array.isArray(d.campos)) {
+          setCamposPersonalizadosDB(d.campos);
+        }
+      })
+      .catch(() => {});
+  }, [idTipo]);
+
   // Al cambiar la categoría grande (Incidente <-> Solicitud)
   function cambiarCategoriaPrincipal(nuevoTipo: number) {
     if (nuevoTipo === idTipo) return;
@@ -236,7 +261,7 @@ function ContenidoCrearTicket({
     setDescripcion("");
     setJustificacion("");
     setFechaLimiteDeseada("");
-    setElementoCmdb("");
+    setIdCi("");
     setEnNombreDeOtroValor("");
 
     if (catalogos?.categorias) {
@@ -318,17 +343,113 @@ function ContenidoCrearTicket({
 
   // Campos del administrador visibles según la prioridad del usuario
   const esIncidente = idTipo === 1;
-  const listaCamposAdmin = esIncidente ? camposConfig.incidente : camposConfig.solicitud;
+
+  // Campos del sistema que se gestionan nativamente en el formulario
+  const CAMPOS_SISTEMA_EXCLUIDOS = useMemo(
+    () =>
+      new Set([
+        "titulo",
+        "categoria_servicio_id",
+        "servicio_id",
+        "descripcion",
+        "urgencia",
+        "impacto",
+        "prioridad",
+        "ci_cmdb",
+        "tipo_activo_cmdb",
+        "archivos_adjuntos",
+        "usuario_afectado_id",
+        "justificacion",
+        "fecha_limite_deseada",
+      ]),
+    []
+  );
+
+  // Unificación de campos: Secciones configuradas + Campos planos previos + Campos personalizados DB
+  const listaCamposAdmin = useMemo(() => {
+    const entidadClave = esIncidente ? "incidente" : "solicitud";
+    const secciones = esIncidente ? camposConfig.secciones_incidente : camposConfig.secciones_solicitud;
+    const camposMap = new Map<string, CampoConfigurado>();
+
+    // 1. Extraer de secciones configuradas si existen
+    if (Array.isArray(secciones) && secciones.length > 0) {
+      secciones.forEach((sec: any) => {
+        (sec.campos || []).forEach((c: any) => {
+          const cod = c.codigo || c.id;
+          if (!cod) return;
+          camposMap.set(cod, {
+            id: cod,
+            etiqueta: (c.etiqueta || "").replace(/\s*\(Opcional\)\s*/gi, "").trim() || cod,
+            descripcion: c.ayuda || c.descripcion,
+            tipo: normalizarTipoControl(c.tipo),
+            habilitado: c.visible !== false,
+            obligatorio: c.obligatorio === "si" || c.obligatorio === true,
+            prioridad_minima: c.prioridad_minima ?? 5,
+            opciones: c.opciones,
+          });
+        });
+      });
+    } else {
+      // Fallback a campos planos
+      const planos = (camposConfig as any)[entidadClave];
+      if (Array.isArray(planos)) {
+        planos.forEach((c: any) => {
+          const cod = c.id || c.codigo;
+          if (!cod) return;
+          camposMap.set(cod, {
+            id: cod,
+            etiqueta: c.etiqueta || cod,
+            descripcion: c.descripcion,
+            tipo: normalizarTipoControl(c.tipo),
+            habilitado: c.habilitado !== false,
+            obligatorio: Boolean(c.obligatorio),
+            prioridad_minima: c.prioridad_minima ?? 5,
+            opciones: c.opciones,
+          });
+        });
+      }
+    }
+
+    // 2. Fusionar campos de campo_personalizado
+    camposPersonalizadosDB.forEach((cp: any) => {
+      const cod = cp.codigo;
+      if (!cod) return;
+      if (!camposMap.has(cod)) {
+        camposMap.set(cod, {
+          id: cod,
+          etiqueta: (cp.etiqueta || "").replace(/\s*\(Opcional\)\s*/gi, "").trim() || cod,
+          descripcion: cp.descripcion,
+          tipo: normalizarTipoControl(cp.tipo),
+          habilitado: cp.activo !== false,
+          obligatorio: cp.obligatorio === "si",
+          prioridad_minima: cp.propiedades?.prioridad_minima ?? 5,
+          opciones: Array.isArray(cp.propiedades?.opciones)
+            ? cp.propiedades.opciones.join(", ")
+            : cp.propiedades?.opciones || "",
+        });
+      }
+    });
+
+    return Array.from(camposMap.values());
+  }, [esIncidente, camposConfig, camposPersonalizadosDB]);
+
   const nivelPrioridadUsuario = Number(usuarioSeleccionado?.nivel_prioridad || usuarioActual?.nivel_prioridad || 5);
   const infoPrioridad = NIVELES_PRIORIDAD_MAP[nivelPrioridadUsuario] || NIVELES_PRIORIDAD_MAP[5];
 
-  const camposVisibles = (listaCamposAdmin || []).filter(
-    (c) => c.habilitado && nivelPrioridadUsuario <= c.prioridad_minima
+  const todosCamposVisibles = useMemo(
+    () => listaCamposAdmin.filter((c: CampoConfigurado) => c.habilitado && nivelPrioridadUsuario <= c.prioridad_minima),
+    [listaCamposAdmin, nivelPrioridadUsuario]
   );
 
   // Verificar si tiene habilitado el campo "en_nombre_de_otro"
-  const campoEnNombreDeOtro = camposVisibles.find((c) => c.id === "en_nombre_de_otro");
+  const campoEnNombreDeOtro = todosCamposVisibles.find((c: CampoConfigurado) => c.id === "en_nombre_de_otro");
   const puedeRegistrarEnNombreDeOtro = Boolean(campoEnNombreDeOtro) || esPersonalTI;
+
+  // Campos adicionales dinámicos visibles (excluyendo en_nombre_de_otro y nativos del sistema)
+  const camposDinamicosVisibles = useMemo(
+    () => todosCamposVisibles.filter((c: CampoConfigurado) => c.id !== "en_nombre_de_otro" && !CAMPOS_SISTEMA_EXCLUIDOS.has(c.id)),
+    [todosCamposVisibles, CAMPOS_SISTEMA_EXCLUIDOS]
+  );
 
   // Categorías de ticket filtradas por tipo y activas en el catálogo
   const categoriasFiltradas = (catalogos?.categorias || []).filter(
@@ -384,8 +505,8 @@ function ContenidoCrearTicket({
   const valCategoria = Boolean(idCategoria);
 
   // Campos dinámicos requeridos faltantes
-  const camposDinamicosFaltantes = camposVisibles.filter((c) => {
-    if (!c.obligatorio || c.id === "en_nombre_de_otro") return false;
+  const camposDinamicosFaltantes = camposDinamicosVisibles.filter((c: CampoConfigurado) => {
+    if (!c.obligatorio) return false;
     const v = camposDinamicos[c.id];
     return v === undefined || v === null || String(v).trim() === "";
   });
@@ -493,8 +614,8 @@ function ContenidoCrearTicket({
     }
 
     // Validar campos dinámicos obligatorios según configuración del administrador
-    for (const campo of camposVisibles) {
-      if (campo.obligatorio && campo.id !== "en_nombre_de_otro") {
+    for (const campo of camposDinamicosVisibles) {
+      if (campo.obligatorio) {
         const valor = camposDinamicos[campo.id];
         if (valor === undefined || valor === null || String(valor).trim() === "") {
           setError(`El campo "${campo.etiqueta}" es obligatorio.`);
@@ -516,8 +637,9 @@ function ContenidoCrearTicket({
         ...camposDinamicos,
       };
 
-      if (elementoCmdb) {
-        payloadCamposAdicionales["elemento_cmdb"] = elementoCmdb;
+      if (idCi) {
+        const ciObj = (catalogos?.cis || []).find((c) => String(c.id_ci) === String(idCi));
+        payloadCamposAdicionales["elemento_cmdb"] = ciObj ? `[${ciObj.codigo_ci}] ${ciObj.nombre}` : idCi;
       }
       if (enNombreDeOtroValor) {
         payloadCamposAdicionales["en_nombre_de_otro_valor"] = enNombreDeOtroValor;
@@ -542,6 +664,7 @@ function ContenidoCrearTicket({
           canal_comunicacion: canalComunicacion,
           id_impacto: esIncidente ? idImpacto : 1,
           id_urgencia: esIncidente ? idUrgencia : 1,
+          id_ci: idCi ? Number(idCi) : null,
           campos_adicionales: payloadCamposAdicionales,
           id_usuario_solicitante: usuarioSeleccionado ? usuarioSeleccionado.id_usuario : undefined,
           autoasignar_tecnico: autoasignarTecnico,
@@ -1278,7 +1401,7 @@ function ContenidoCrearTicket({
             </>
           )}
 
-          {/* Elemento CMDB asignado al usuario solicitante */}
+          {/* Elemento CMDB (Ítems Tecnológicos Hardware / Software) */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
               <label style={{ fontSize: 12.5, fontWeight: 700, color: "#0f172a", margin: 0 }}>
@@ -1291,21 +1414,21 @@ function ContenidoCrearTicket({
             <select
               className="input-base"
               style={{ backgroundColor: "white", fontSize: 12.5 }}
-              value={elementoCmdb}
-              onChange={(e) => setElementoCmdb(e.target.value)}
+              value={idCi}
+              onChange={(e) => setIdCi(e.target.value)}
             >
-              <option value="">Seleccione un ítem asignado (o deje sin seleccionar si no está seguro)...</option>
-              <option value="LAPTOP-LENOVO-T14">Hardware: LAPTOP-LENOVO-T14 (Serie: PF39X1 - En custodia del usuario)</option>
-              <option value="M365-E3">Software: Licencia Microsoft 365 E3 (Asignada)</option>
-              <option value="MON-DELL-P2419H">Periférico: Monitor Dell 24 P2419H (Activo: ACT-0042)</option>
-              <option value="OTRO">Otro elemento o equipo no listado</option>
+              <option value="">Seleccione un ítem tecnológico de la CMDB (o deje en blanco si no aplica)...</option>
+              {(catalogos?.cis || []).map((ci) => (
+                <option key={ci.id_ci} value={ci.id_ci}>
+                  [{ci.codigo_ci}] {ci.nombre} ({ci.tipo_ci})
+                </option>
+              ))}
             </select>
           </div>
 
-          {/* Campos adicionales habilitados para esta prioridad por el administrador */}
-          {camposVisibles
-            .filter((c) => c.id !== "en_nombre_de_otro")
-            .map((c) => {
+          {/* Campos adicionales y personalizados habilitados por el administrador */}
+          {camposDinamicosVisibles
+            .map((c: CampoConfigurado) => {
               const valorActual = camposDinamicos[c.id] ?? "";
 
               return (
@@ -1328,7 +1451,7 @@ function ContenidoCrearTicket({
                       required={c.obligatorio}
                     >
                       <option value="">Seleccione una opción...</option>
-                      {(c.opciones || "").split(",").map((op, idx) => (
+                      {(c.opciones || "").split(",").map((op: string, idx: number) => (
                         <option key={idx} value={op.trim()}>
                           {op.trim()}
                         </option>
@@ -1471,7 +1594,7 @@ function ContenidoCrearTicket({
                 {!esIncidente && fechaLimiteDeseada && !validarFechaNoPasada(fechaLimiteDeseada).valido && <li>La fecha límite deseada no puede ser anterior a la fecha actual.</li>}
                 {!valSlaTicket.valido && <li>{valSlaTicket.mensaje}</li>}
                 {modoRegistro === "otro" && esPersonalTI && !usuarioSeleccionado && <li>Debe seleccionar un colaborador institucional beneficiario del ticket.</li>}
-                {camposDinamicosFaltantes.map((c) => (
+                {camposDinamicosFaltantes.map((c: CampoConfigurado) => (
                   <li key={c.id}>El campo obligatorio &quot;{c.etiqueta}&quot; debe completarse.</li>
                 ))}
               </ul>

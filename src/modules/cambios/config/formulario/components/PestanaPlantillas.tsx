@@ -12,165 +12,209 @@ interface CategoriaCambio {
   activo: boolean;
 }
 
-interface PlantillaRFC {
-  id_plantilla: number;
+interface ModeloEstandar {
+  id_modelo: number;
   codigo: string;
   nombre: string;
   descripcion?: string;
-  tipo_cambio: string;
-  id_categoria?: number | null;
+  categoria_id?: number | null;
   categoria_nombre?: string;
-  campos_prellenados?: any;
-  campos_bloqueados?: string[];
-  pasos_implementacion?: any[];
-  tareas_paquete?: any[];
-  veces_usada: number;
-  activo: boolean;
+  estado: "BORRADOR" | "EN_REVISION" | "APROBADO" | "SUSPENDIDO" | "RETIRADO";
+  version_modelo: number;
+  riesgo_fijo: string;
+  autorizacion_automatica: boolean;
+  lista_elegibilidad: string[];
+  contenido_prellenado: {
+    motivo?: string;
+    plan_implementacion?: string;
+    plan_rollback?: string;
+    plan_pruebas?: string;
+    criterios_exito?: string;
+    requiere_interrupcion?: boolean;
+    duracion_estimada?: string;
+  };
+  veces_usado: number;
+  veces_exitoso: number;
+  tasa_exito_pct: number;
 }
 
 export const PestanaPlantillas: React.FC = () => {
-  const [plantillas, setPlantillas] = useState<PlantillaRFC[]>([]);
+  const [modelos, setModelos] = useState<ModeloEstandar[]>([]);
   const [categorias, setCategorias] = useState<CategoriaCambio[]>([]);
   const [cargando, setCargando] = useState(false);
   const [filtroTexto, setFiltroTexto] = useState("");
   const [filtroCategoria, setFiltroCategoria] = useState<number | "">("");
+  const [filtroEstado, setFiltroEstado] = useState<string>("todos");
 
-  // Modal de Plantilla RFC
+  // Modal Editor de Modelo
   const [modalEditorAbierto, setModalEditorAbierto] = useState(false);
-  const [pestañaModal, setPestañaModal] = useState<"general" | "prellenado" | "pasos" | "vista">("general");
+  const [pestañaModal, setPestañaModal] = useState<"general" | "elegibilidad" | "planes">("general");
   const [errorModal, setErrorModal] = useState("");
   const [guardando, setGuardando] = useState(false);
-  const [plantillaActiva, setPlantillaActiva] = useState<Partial<PlantillaRFC>>({
+  const [nuevaCondicion, setNuevaCondicion] = useState("");
+
+  const [modeloActivo, setModeloActivo] = useState<Partial<ModeloEstandar>>({
     codigo: "",
     nombre: "",
     descripcion: "",
-    tipo_cambio: "NORMAL",
-    id_categoria: null,
-    campos_prellenados: {},
-    campos_bloqueados: [],
-    pasos_implementacion: [],
+    categoria_id: null,
+    estado: "APROBADO",
+    version_modelo: 1,
+    riesgo_fijo: "bajo",
+    autorizacion_automatica: true,
+    lista_elegibilidad: [],
+    contenido_prellenado: {
+      motivo: "",
+      plan_implementacion: "",
+      plan_rollback: "",
+      plan_pruebas: "",
+      criterios_exito: "",
+      requiere_interrupcion: false,
+    },
   });
 
-  const cargarTodo = useCallback(async () => {
+  const cargarDatos = useCallback(async () => {
     setCargando(true);
     try {
-      const [resPlt, resCat] = await Promise.all([
-        fetch("/api/cambios/configuracion/plantillas"),
+      const [resMod, resCat] = await Promise.all([
+        fetch("/api/cambios/configuracion/modelos-estandar"),
         fetch("/api/cambios/configuracion/catalogos?catalogo=categorias_cambio"),
       ]);
 
-      const parseSeguro = async (res: Response) => {
-        try {
-          return JSON.parse(await res.text());
-        } catch {
-          return {};
-        }
-      };
+      const dataMod = await resMod.json().catch(() => ({}));
+      const dataCat = await resCat.json().catch(() => ({}));
 
-      const dataPlt = await parseSeguro(resPlt);
-      const dataCat = await parseSeguro(resCat);
-
-      if (dataPlt.ok && Array.isArray(dataPlt.plantillas)) {
-        setPlantillas(dataPlt.plantillas);
+      if (Array.isArray(dataMod.modelos)) {
+        setModelos(dataMod.modelos);
       }
       if (dataCat.ok && Array.isArray(dataCat.items)) {
         setCategorias(dataCat.items);
       }
     } catch (err) {
-      console.error("Error al cargar plantillas y categorías:", err);
+      console.error("Error al cargar modelos estándar:", err);
     } finally {
       setCargando(false);
     }
   }, []);
 
   useEffect(() => {
-    cargarTodo();
-  }, [cargarTodo]);
+    cargarDatos();
+  }, [cargarDatos]);
 
-  const abrirCrearPlantilla = () => {
-    setPlantillaActiva({
-      codigo: "",
+  const abrirCrearModelo = () => {
+    setModeloActivo({
+      codigo: `mod_${Date.now().toString(36)}`,
       nombre: "",
       descripcion: "",
-      tipo_cambio: "NORMAL",
-      id_categoria: filtroCategoria ? Number(filtroCategoria) : null,
-      campos_prellenados: {
-        motivo: "",
-        plan_implementacion: "",
-        plan_rollback: "",
+      categoria_id: filtroCategoria ? Number(filtroCategoria) : null,
+      estado: "APROBADO",
+      version_modelo: 1,
+      riesgo_fijo: "bajo",
+      autorizacion_automatica: true,
+      lista_elegibilidad: [
+        "El procedimiento se ejecutó con éxito al menos 3 veces de forma controlada.",
+        "Existe plan de rollback probado y verificado.",
+      ],
+      contenido_prellenado: {
+        motivo: "Procedimiento operativo estándar recurrente de bajo riesgo.",
+        plan_implementacion: "1. Notificar inicio de ventana técnica.\n2. Ejecutar procedimiento operativo validado.\n3. Verificar telemetría y salud del servicio.",
+        plan_rollback: "1. Revertir cambios ejecutados.\n2. Restaurar configuración base previa.\n3. Comprobar operatividad normal.",
+        plan_pruebas: "1. Verificación de logs y puertos.\n2. Prueba de humo y conectividad de usuarios.",
+        criterios_exito: "1. Cero alertas críticas en monitoreo.\n2. Servicio restablecido y validado.",
         requiere_interrupcion: false,
       },
-      campos_bloqueados: ["tipo_cambio"],
-      pasos_implementacion: [],
     });
     setPestañaModal("general");
     setErrorModal("");
     setModalEditorAbierto(true);
   };
 
-  const abrirEditarPlantilla = (p: PlantillaRFC) => {
-    setPlantillaActiva(JSON.parse(JSON.stringify(p)));
+  const abrirEditarModelo = (m: ModeloEstandar) => {
+    setModeloActivo(JSON.parse(JSON.stringify(m)));
     setPestañaModal("general");
     setErrorModal("");
     setModalEditorAbierto(true);
   };
 
-  const alternarActivoPlantilla = async (p: PlantillaRFC) => {
+  const cambiarEstadoModelo = async (id: number, transicion: string) => {
     try {
-      const res = await fetch("/api/cambios/configuracion/plantillas", {
+      const res = await fetch("/api/cambios/configuracion/modelos-estandar", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id_plantilla: p.id_plantilla, activo: !p.activo }),
+        body: JSON.stringify({ id_modelo: id, transicion_estado: transicion }),
       });
-      if (res.ok) cargarTodo();
-    } catch (err) {
-      console.error("Error al alternar estado:", err);
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "No se pudo cambiar el estado del modelo.");
+        return;
+      }
+      cargarDatos();
+    } catch (err: any) {
+      alert("Error: " + err.message);
     }
   };
 
-  const eliminarPlantilla = async (p: PlantillaRFC) => {
-    if (!confirm(`¿Desea eliminar la plantilla "${p.nombre}"?`)) return;
+  const eliminarModelo = async (m: ModeloEstandar) => {
+    if (!confirm(`¿Desea eliminar el modelo estándar "${m.nombre}"?`)) return;
     try {
-      const res = await fetch(`/api/cambios/configuracion/plantillas?id_plantilla=${p.id_plantilla}`, {
+      const res = await fetch(`/api/cambios/configuracion/modelos-estandar?id=${m.id_modelo}`, {
         method: "DELETE",
       });
       const data = await res.json();
       if (res.ok) {
-        cargarTodo();
+        cargarDatos();
       } else {
-        alert(data.error || "No se pudo eliminar.");
+        alert(data.error || "No se pudo eliminar el modelo estándar.");
       }
     } catch (err) {
-      console.error("Error al eliminar plantilla:", err);
+      console.error("Error al eliminar modelo estándar:", err);
     }
   };
 
-  const guardarPlantilla = async () => {
-    if (!plantillaActiva.nombre?.trim() || (!plantillaActiva.id_plantilla && !plantillaActiva.codigo?.trim())) {
-      setErrorModal("El nombre y código son obligatorios.");
+  const agregarCondicion = () => {
+    if (!nuevaCondicion.trim()) return;
+    const actuales = modeloActivo.lista_elegibilidad || [];
+    setModeloActivo({
+      ...modeloActivo,
+      lista_elegibilidad: [...actuales, nuevaCondicion.trim()],
+    });
+    setNuevaCondicion("");
+  };
+
+  const quitarCondicion = (idx: number) => {
+    const actuales = modeloActivo.lista_elegibilidad || [];
+    setModeloActivo({
+      ...modeloActivo,
+      lista_elegibilidad: actuales.filter((_, i) => i !== idx),
+    });
+  };
+
+  const guardarModelo = async () => {
+    if (!modeloActivo.nombre?.trim() || (!modeloActivo.id_modelo && !modeloActivo.codigo?.trim())) {
+      setErrorModal("El nombre y código identificador son obligatorios.");
       return;
     }
 
     try {
       setGuardando(true);
       setErrorModal("");
-      const esEdicion = !!plantillaActiva.id_plantilla;
-      const res = await fetch("/api/cambios/configuracion/plantillas", {
+      const esEdicion = !!modeloActivo.id_modelo;
+      const res = await fetch("/api/cambios/configuracion/modelos-estandar", {
         method: esEdicion ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(plantillaActiva),
+        body: JSON.stringify(modeloActivo),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        setErrorModal(data.error || "Error al guardar plantilla.");
+        setErrorModal(data.error || "Error al guardar el modelo estándar.");
         return;
       }
 
       setModalEditorAbierto(false);
-      cargarTodo();
+      cargarDatos();
     } catch (err: any) {
-      setErrorModal(err.message || "Error al conectar.");
+      setErrorModal(err.message || "Error de red al guardar.");
     } finally {
       setGuardando(false);
     }
@@ -179,33 +223,36 @@ export const PestanaPlantillas: React.FC = () => {
   const categoriasPadre = categorias.filter((c) => !c.id_padre);
   const obtenerHijas = (idPadre: number) => categorias.filter((c) => c.id_padre === idPadre);
 
-  const plantillasFiltradas = plantillas.filter((p) => {
+  const modelosFiltrados = modelos.filter((m) => {
+    if (filtroEstado !== "todos" && m.estado !== filtroEstado) {
+      return false;
+    }
     if (filtroCategoria !== "") {
       const catId = Number(filtroCategoria);
       const hijasIds = obtenerHijas(catId).map((h) => h.id_item);
-      const coincide = p.id_categoria === catId || (p.id_categoria ? hijasIds.includes(p.id_categoria) : false);
+      const coincide = m.categoria_id === catId || (m.categoria_id ? hijasIds.includes(m.categoria_id) : false);
       if (!coincide) return false;
     }
     if (!filtroTexto) return true;
     const txt = filtroTexto.toLowerCase();
     return (
-      p.nombre.toLowerCase().includes(txt) ||
-      p.codigo.toLowerCase().includes(txt) ||
-      (p.descripcion && p.descripcion.toLowerCase().includes(txt)) ||
-      (p.categoria_nombre && p.categoria_nombre.toLowerCase().includes(txt))
+      m.nombre.toLowerCase().includes(txt) ||
+      m.codigo.toLowerCase().includes(txt) ||
+      (m.descripcion && m.descripcion.toLowerCase().includes(txt)) ||
+      (m.categoria_nombre && m.categoria_nombre.toLowerCase().includes(txt))
     );
   });
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Cabecera */}
+      {/* Cabecera Informativa */}
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           backgroundColor: "#ffffff",
-          padding: "14px 18px",
+          padding: "16px 20px",
           borderRadius: 8,
           border: "1px solid #e2e8f0",
           flexWrap: "wrap",
@@ -213,21 +260,26 @@ export const PestanaPlantillas: React.FC = () => {
         }}
       >
         <div>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-            Plantillas Predefinidas de Solicitud RFC
-          </h3>
-          <p style={{ fontSize: 12, color: "#64748b", margin: "2px 0 0 0" }}>
-            Agilizan el registro prellenando campos y pasos técnicos (a diferencia de los modelos estándar, las plantillas no confieren preautorización).
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 18 }}>📋</span>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+              Modelos de Cambio Estándar (Preautorizados)
+            </h3>
+          </div>
+          <p style={{ fontSize: 12, color: "#64748b", margin: "4px 0 0 0" }}>
+            Catálogo institucional unificado según directrices ITIL v4. Los modelos en estado <strong>Aprobado</strong> aparecen
+            directamente en el formulario operativo al seleccionar la modalidad <strong>Cambio Estándar</strong>, prellenando
+            automáticamente planes técnicos, pruebas y rollback.
           </p>
         </div>
 
         <button
           type="button"
           className="boton-primario"
-          onClick={abrirCrearPlantilla}
-          style={{ width: "auto", fontSize: 13, padding: "8px 16px" }}
+          onClick={abrirCrearModelo}
+          style={{ width: "auto", fontSize: 13, padding: "8px 16px", backgroundColor: "#16a34a" }}
         >
-          Nueva Plantilla RFC
+          + Nuevo Modelo Estándar
         </button>
       </div>
 
@@ -236,14 +288,14 @@ export const PestanaPlantillas: React.FC = () => {
         <input
           type="text"
           className="input-base"
-          placeholder="Buscar plantilla por nombre, código o contenido..."
+          placeholder="Buscar por nombre, código o descripción..."
           value={filtroTexto}
           onChange={(e) => setFiltroTexto(e.target.value)}
           style={{ maxWidth: 360, fontSize: 12 }}
         />
 
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b" }}>Categoría:</label>
+          <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b" }}>Categoría Técnica:</label>
           <select
             className="input-base"
             value={filtroCategoria}
@@ -267,124 +319,189 @@ export const PestanaPlantillas: React.FC = () => {
           </select>
         </div>
 
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b" }}>Estado:</label>
+          <select
+            className="input-base"
+            value={filtroEstado}
+            onChange={(e) => setFiltroEstado(e.target.value)}
+            style={{ fontSize: 12, minWidth: 140 }}
+          >
+            <option value="todos">Todos los estados</option>
+            <option value="APROBADO">Aprobado</option>
+            <option value="BORRADOR">Borrador</option>
+            <option value="EN_REVISION">En revisión</option>
+            <option value="SUSPENDIDO">Suspendido</option>
+          </select>
+        </div>
+
         <span style={{ marginLeft: "auto", fontSize: 12, color: "#64748b" }}>
-          {plantillasFiltradas.length} plantilla(s) encontradas
+          {modelosFiltrados.length} modelo(s) registrado(s)
         </span>
       </div>
 
-      {/* Tabla de Plantillas */}
+      {/* Tabla de Modelos */}
       <div className="contenedor-tabla">
         {cargando ? (
-          <div style={{ textAlign: "center", padding: 32, color: "#2563eb" }}>Cargando plantillas...</div>
+          <div style={{ textAlign: "center", padding: 32, color: "#2563eb" }}>Cargando catálogo de modelos...</div>
         ) : (
           <table className="tabla">
             <thead>
               <tr>
-                <th>Nombre de la Plantilla</th>
-                <th>Categoría de Cambio</th>
-                <th>Código</th>
-                <th>Tipo Sugerido</th>
-                <th>Descripción</th>
-                <th style={{ width: 70, textAlign: "center" }}>Usos</th>
+                <th>Nombre del Modelo y Código</th>
+                <th>Categoría Técnica</th>
+                <th style={{ width: 110, textAlign: "center" }}>Estado</th>
+                <th style={{ width: 90, textAlign: "center" }}>Riesgo</th>
+                <th style={{ width: 80, textAlign: "center" }}>Usos</th>
+                <th style={{ width: 90, textAlign: "center" }}>% Éxito</th>
                 <th style={{ width: 220, textAlign: "center" }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {plantillasFiltradas.length === 0 ? (
+              {modelosFiltrados.length === 0 ? (
                 <tr>
                   <td colSpan={7} style={{ textAlign: "center", padding: 32, color: "#64748b" }}>
-                    No se encontraron plantillas de cambio configuradas.
+                    No se encontraron modelos de cambio estándar con los filtros aplicados.
                   </td>
                 </tr>
               ) : (
-                plantillasFiltradas.map((p) => (
-                  <tr key={p.id_plantilla} style={{ opacity: p.activo ? 1 : 0.6 }}>
-                    <td style={{ fontWeight: 600, color: "#1e293b" }}>{p.nombre}</td>
-                    <td style={{ fontSize: 12, color: "#334155" }}>
-                      {p.categoria_nombre ? (
-                        <span style={{ padding: "2px 6px", borderRadius: 4, backgroundColor: "#f1f5f9", border: "1px solid #e2e8f0" }}>
-                          {p.categoria_nombre}
-                        </span>
-                      ) : (
-                        <span style={{ color: "#94a3b8", fontStyle: "italic" }}>Sin categoría</span>
-                      )}
-                    </td>
-                    <td style={{ fontFamily: "monospace", fontSize: 11.5, color: "#64748b" }}>{p.codigo}</td>
-                    <td>
-                      <span
-                        className="badge-itil"
-                        style={{
-                          backgroundColor: p.tipo_cambio === "EMERGENCIA" ? "#fee2e2" : p.tipo_cambio === "ESTANDAR" ? "#f1f5f9" : "#eff6ff",
-                          color: p.tipo_cambio === "EMERGENCIA" ? "#991b1b" : p.tipo_cambio === "ESTANDAR" ? "#334155" : "#1d4ed8",
-                          fontSize: 10.5,
-                          fontWeight: 700,
-                        }}
-                      >
-                        {p.tipo_cambio}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: 12, color: "#475569" }}>{p.descripcion || "—"}</td>
-                    <td style={{ textAlign: "center", fontWeight: 700, color: p.veces_usada > 0 ? "#2563eb" : "#94a3b8" }}>
-                      {p.veces_usada}
-                    </td>
-                    <td>
-                      <div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
-                        <button
-                          type="button"
-                          className="boton-mini"
-                          onClick={() => alternarActivoPlantilla(p)}
+                modelosFiltrados.map((m) => {
+                  const esAprobado = m.estado === "APROBADO";
+                  return (
+                    <tr key={m.id_modelo}>
+                      <td>
+                        <strong style={{ color: "#0f172a", display: "block", fontSize: 13 }}>{m.nombre}</strong>
+                        <span style={{ fontFamily: "monospace", fontSize: 11, color: "#64748b" }}>{m.codigo}</span>
+                      </td>
+                      <td style={{ fontSize: 12, color: "#334155" }}>
+                        {m.categoria_nombre ? (
+                          <span style={{ padding: "2px 8px", borderRadius: 4, backgroundColor: "#f1f5f9", border: "1px solid #e2e8f0", fontWeight: 500 }}>
+                            {m.categoria_nombre}
+                          </span>
+                        ) : (
+                          <span style={{ color: "#94a3b8", fontStyle: "italic" }}>Sin categoría</span>
+                        )}
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <span
+                          className="badge-itil"
                           style={{
-                            fontSize: 11,
-                            padding: "4px 8px",
-                            backgroundColor: p.activo ? "#fef2f2" : "#f0fdf4",
-                            color: p.activo ? "#b91c1c" : "#15803d",
-                            border: `1px solid ${p.activo ? "#fecaca" : "#bbf7d0"}`,
-                            fontWeight: 600,
+                            backgroundColor: esAprobado ? "#dcfce7" : m.estado === "SUSPENDIDO" ? "#fee2e2" : "#fef9c3",
+                            color: esAprobado ? "#15803d" : m.estado === "SUSPENDIDO" ? "#991b1b" : "#854d0e",
+                            fontSize: 10.5,
+                            fontWeight: 700,
                           }}
                         >
-                          {p.activo ? "Deshabilitar" : "Habilitar"}
-                        </button>
-                        <button
-                          type="button"
-                          className="boton-mini"
-                          onClick={() => abrirEditarPlantilla(p)}
-                          style={{ fontSize: 11, padding: "4px 8px" }}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          type="button"
-                          className="boton-mini boton-mini-peligro"
-                          onClick={() => eliminarPlantilla(p)}
-                          style={{ fontSize: 11, padding: "4px 8px" }}
-                        >
-                          Eliminar
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                          {m.estado}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: "#16a34a", textTransform: "uppercase" }}>
+                          {m.riesgo_fijo || "bajo"}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: "center", fontWeight: 700, color: m.veces_usado > 0 ? "#2563eb" : "#94a3b8" }}>
+                        {m.veces_usado || 0}
+                      </td>
+                      <td style={{ textAlign: "center", fontWeight: 700, color: (m.tasa_exito_pct || 100) >= 90 ? "#16a34a" : "#dc2626" }}>
+                        {m.tasa_exito_pct || 100}%
+                      </td>
+                      <td>
+                        <div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
+                          {esAprobado ? (
+                            <button
+                              type="button"
+                              className="boton-mini"
+                              onClick={() => cambiarEstadoModelo(m.id_modelo, "suspender")}
+                              style={{
+                                fontSize: 11,
+                                padding: "4px 8px",
+                                backgroundColor: "#fef2f2",
+                                color: "#b91c1c",
+                                border: "1px solid #fecaca",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Suspender
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="boton-mini"
+                              onClick={() => cambiarEstadoModelo(m.id_modelo, "aprobar")}
+                              style={{
+                                fontSize: 11,
+                                padding: "4px 8px",
+                                backgroundColor: "#f0fdf4",
+                                color: "#15803d",
+                                border: "1px solid #bbf7d0",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Aprobar
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            className="boton-mini"
+                            onClick={() => abrirEditarModelo(m)}
+                            style={{ fontSize: 11, padding: "4px 8px" }}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            className="boton-mini boton-mini-peligro"
+                            onClick={() => eliminarModelo(m)}
+                            style={{ fontSize: 11, padding: "4px 8px" }}
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
         )}
       </div>
 
-      {/* Modal Crear / Editar Plantilla RFC */}
+      {/* Modal Editor de Modelo Estándar */}
       {modalEditorAbierto && (
         <div
           className="modal-overlay"
-          style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15,23,42,0.6)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: 16 }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(15,23,42,0.6)",
+            backdropFilter: "blur(4px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: 16,
+          }}
           onClick={() => setModalEditorAbierto(false)}
         >
           <div
             className="modal-contenido"
-            style={{ backgroundColor: "#ffffff", borderRadius: 12, maxWidth: 760, width: "100%", maxHeight: "90vh", display: "flex", flexDirection: "column", overflow: "hidden" }}
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: 12,
+              maxWidth: 820,
+              width: "100%",
+              maxHeight: "92vh",
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-ticket-cabecera">
               <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-                {plantillaActiva.id_plantilla ? `Editar Plantilla: ${plantillaActiva.nombre}` : "Nueva Plantilla RFC"}
+                {modeloActivo.id_modelo ? `Editar Modelo Estándar: ${modeloActivo.nombre}` : "Nuevo Modelo de Cambio Estándar"}
               </h3>
               <button type="button" className="modal-cerrar-boton" onClick={() => setModalEditorAbierto(false)}>
                 ✕
@@ -392,13 +509,12 @@ export const PestanaPlantillas: React.FC = () => {
             </div>
 
             <div className="modal-ticket-cuerpo">
-              {/* Pestañas internas del Editor de Plantilla */}
+              {/* Pestañas internas */}
               <div style={{ display: "flex", gap: 6, borderBottom: "1px solid #e2e8f0" }}>
                 {[
-                  { id: "general", label: "1. Datos Generales" },
-                  { id: "prellenado", label: "2. Valores Prellenados" },
-                  { id: "pasos", label: "3. Pasos y Tareas" },
-                  { id: "vista", label: "4. Vista Previa" },
+                  { id: "general", label: "1. Datos Generales y Categoría" },
+                  { id: "elegibilidad", label: "2. Criterios de Elegibilidad" },
+                  { id: "planes", label: "3. Planes Técnicos y Rollback" },
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -411,8 +527,8 @@ export const PestanaPlantillas: React.FC = () => {
                       cursor: "pointer",
                       fontSize: 12,
                       fontWeight: 700,
-                      color: pestañaModal === tab.id ? "#2563eb" : "#64748b",
-                      borderBottom: `2px solid ${pestañaModal === tab.id ? "#2563eb" : "transparent"}`,
+                      color: pestañaModal === tab.id ? "#16a34a" : "#64748b",
+                      borderBottom: `2px solid ${pestañaModal === tab.id ? "#16a34a" : "transparent"}`,
                     }}
                   >
                     {tab.label}
@@ -420,25 +536,26 @@ export const PestanaPlantillas: React.FC = () => {
                 ))}
               </div>
 
-              {/* Contenido según pestaña interna */}
+              {/* 1. Datos Generales */}
               {pestañaModal === "general" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   <div>
                     <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
-                      Nombre de la Plantilla <span style={{ color: "#dc2626" }}>*</span>
+                      Nombre del Modelo Estándar <span style={{ color: "#dc2626" }}>*</span>
                     </label>
                     <input
                       type="text"
                       className="input-base"
-                      value={plantillaActiva.nombre || ""}
+                      value={modeloActivo.nombre || ""}
                       onChange={(e) => {
                         const v = e.target.value;
-                        setPlantillaActiva({
-                          ...plantillaActiva,
+                        setModeloActivo({
+                          ...modeloActivo,
                           nombre: v,
-                          codigo: plantillaActiva.codigo ? plantillaActiva.codigo : `plt_${v.toLowerCase().replace(/[^a-z0-9]/g, "_").slice(0, 30)}`,
+                          codigo: modeloActivo.codigo ? modeloActivo.codigo : `mod_${v.toLowerCase().replace(/[^a-z0-9]/g, "_").slice(0, 30)}`,
                         });
                       }}
+                      placeholder="p.ej. Reinicio programado de nodo de aplicación"
                       style={{ width: "100%", fontSize: 12.5 }}
                     />
                   </div>
@@ -451,37 +568,37 @@ export const PestanaPlantillas: React.FC = () => {
                       <input
                         type="text"
                         className="input-base"
-                        value={plantillaActiva.codigo || ""}
-                        onChange={(e) => setPlantillaActiva({ ...plantillaActiva, codigo: e.target.value.toLowerCase() })}
-                        disabled={!!plantillaActiva.id_plantilla}
+                        value={modeloActivo.codigo || ""}
+                        onChange={(e) => setModeloActivo({ ...modeloActivo, codigo: e.target.value.toLowerCase() })}
+                        disabled={!!modeloActivo.id_modelo}
                         style={{ width: "100%", fontSize: 12, fontFamily: "monospace" }}
                       />
                     </div>
 
                     <div>
                       <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
-                        Categoría de Cambio
+                        Categoría Técnica Vinculada <span style={{ color: "#dc2626" }}>*</span>
                       </label>
                       <select
                         className="input-base"
-                        value={plantillaActiva.id_categoria || ""}
+                        value={modeloActivo.categoria_id || ""}
                         onChange={(e) =>
-                          setPlantillaActiva({
-                            ...plantillaActiva,
-                            id_categoria: e.target.value ? Number(e.target.value) : null,
+                          setModeloActivo({
+                            ...modeloActivo,
+                            categoria_id: e.target.value ? Number(e.target.value) : null,
                           })
                         }
                         style={{ width: "100%", fontSize: 12 }}
                       >
-                        <option value="">— Sin categoría asignada</option>
+                        <option value="">— Seleccionar categoría técnica</option>
                         {categoriasPadre.map((padre) => {
                           const hijas = obtenerHijas(padre.id_item);
                           return (
                             <React.Fragment key={padre.id_item}>
-                              <option value={padre.id_item}>{padre.nombre}</option>
+                              <option value={padre.id_item} style={{ fontWeight: "bold" }}>📁 {padre.nombre}</option>
                               {hijas.map((h) => (
                                 <option key={h.id_item} value={h.id_item}>
-                                  &nbsp;&nbsp;↳ {padre.nombre} &gt; {h.nombre}
+                                  &nbsp;&nbsp;&nbsp;&nbsp;↳ {h.nombre}
                                 </option>
                               ))}
                             </React.Fragment>
@@ -493,49 +610,106 @@ export const PestanaPlantillas: React.FC = () => {
 
                   <div>
                     <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
-                      Tipo de Cambio Sugerido
-                    </label>
-                    <select
-                      className="input-base"
-                      value={plantillaActiva.tipo_cambio || "NORMAL"}
-                      onChange={(e) => setPlantillaActiva({ ...plantillaActiva, tipo_cambio: e.target.value })}
-                      style={{ width: "100%", fontSize: 12 }}
-                    >
-                      <option value="NORMAL">Normal (Evaluación CAB estándar)</option>
-                      <option value="ESTANDAR">Estándar (Procedimiento rutinario)</option>
-                      <option value="EMERGENCIA">Emergencia (Convocatoria ECAB)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
-                      Descripción o Propósito
+                      Descripción y Alcance Operativo
                     </label>
                     <textarea
                       className="input-base"
                       rows={3}
-                      value={plantillaActiva.descripcion || ""}
-                      onChange={(e) => setPlantillaActiva({ ...plantillaActiva, descripcion: e.target.value })}
+                      value={modeloActivo.descripcion || ""}
+                      onChange={(e) => setModeloActivo({ ...modeloActivo, descripcion: e.target.value })}
+                      placeholder="Describa el alcance de este procedimiento operativo estándar..."
                       style={{ width: "100%", fontSize: 12 }}
                     />
+                  </div>
+
+                  <div style={{ padding: 12, backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 6, fontSize: 12, color: "#166534" }}>
+                    ℹ️ <strong>Riesgo Fijo ITIL v4:</strong> Todo modelo estándar se registra con nivel de riesgo <strong>Bajo</strong> y autorización preaprobada automática.
                   </div>
                 </div>
               )}
 
-              {pestañaModal === "prellenado" && (
+              {/* 2. Criterios de Elegibilidad */}
+              {pestañaModal === "elegibilidad" && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <p style={{ fontSize: 12, color: "#64748b", margin: 0 }}>
+                    Condiciones estrictas que deben verificarse antes de permitir que un solicitante ejecute este cambio bajo la modalidad Estándar sin convocar al comité CAB:
+                  </p>
+
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <input
+                      type="text"
+                      className="input-base"
+                      placeholder="Nueva condición de elegibilidad (ej. Se validó respaldo previo en NAS)..."
+                      value={nuevaCondicion}
+                      onChange={(e) => setNuevaCondicion(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          agregarCondicion();
+                        }
+                      }}
+                      style={{ flex: 1, fontSize: 12 }}
+                    />
+                    <button
+                      type="button"
+                      className="boton-secundario"
+                      onClick={agregarCondicion}
+                      style={{ fontSize: 12, padding: "6px 12px" }}
+                    >
+                      + Agregar Criterio
+                    </button>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 220, overflowY: "auto" }}>
+                    {(modeloActivo.lista_elegibilidad || []).length === 0 ? (
+                      <div style={{ padding: 16, backgroundColor: "#f8fafc", borderRadius: 6, textAlign: "center", color: "#94a3b8", fontSize: 12 }}>
+                        No hay criterios definidos. Se recomienda al menos 1 condición para autorizar el modelo.
+                      </div>
+                    ) : (
+                      modeloActivo.lista_elegibilidad!.map((cond, idx) => (
+                        <div
+                          key={idx}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            backgroundColor: "#f8fafc",
+                            padding: "8px 12px",
+                            borderRadius: 6,
+                            border: "1px solid #e2e8f0",
+                            fontSize: 12,
+                          }}
+                        >
+                          <span style={{ color: "#334155" }}>✅ {cond}</span>
+                          <button
+                            type="button"
+                            onClick={() => quitarCondicion(idx)}
+                            style={{ background: "none", border: "none", color: "#dc2626", cursor: "pointer", fontSize: 14 }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* 3. Planes Técnicos Prellenados */}
+              {pestañaModal === "planes" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   <div>
                     <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
-                      Motivo / Justificación Prellenada
+                      Motivo / Justificación Predefinida <span style={{ color: "#dc2626" }}>*</span>
                     </label>
                     <textarea
                       className="input-base"
                       rows={2}
-                      value={plantillaActiva.campos_prellenados?.motivo || ""}
+                      value={modeloActivo.contenido_prellenado?.motivo || ""}
                       onChange={(e) =>
-                        setPlantillaActiva({
-                          ...plantillaActiva,
-                          campos_prellenados: { ...plantillaActiva.campos_prellenados, motivo: e.target.value },
+                        setModeloActivo({
+                          ...modeloActivo,
+                          contenido_prellenado: { ...modeloActivo.contenido_prellenado, motivo: e.target.value },
                         })
                       }
                       style={{ width: "100%", fontSize: 12 }}
@@ -544,16 +718,72 @@ export const PestanaPlantillas: React.FC = () => {
 
                   <div>
                     <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
-                      Plan de Rollback Predefinido
+                      Plan de Implementación Paso a Paso <span style={{ color: "#dc2626" }}>*</span>
                     </label>
                     <textarea
                       className="input-base"
                       rows={3}
-                      value={plantillaActiva.campos_prellenados?.plan_rollback || ""}
+                      value={modeloActivo.contenido_prellenado?.plan_implementacion || ""}
                       onChange={(e) =>
-                        setPlantillaActiva({
-                          ...plantillaActiva,
-                          campos_prellenados: { ...plantillaActiva.campos_prellenados, plan_rollback: e.target.value },
+                        setModeloActivo({
+                          ...modeloActivo,
+                          contenido_prellenado: { ...modeloActivo.contenido_prellenado, plan_implementacion: e.target.value },
+                        })
+                      }
+                      style={{ width: "100%", fontSize: 12 }}
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
+                        Plan de Pruebas <span style={{ color: "#dc2626" }}>*</span>
+                      </label>
+                      <textarea
+                        className="input-base"
+                        rows={2}
+                        value={modeloActivo.contenido_prellenado?.plan_pruebas || ""}
+                        onChange={(e) =>
+                          setModeloActivo({
+                            ...modeloActivo,
+                            contenido_prellenado: { ...modeloActivo.contenido_prellenado, plan_pruebas: e.target.value },
+                          })
+                        }
+                        style={{ width: "100%", fontSize: 12 }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
+                        Criterios de Éxito <span style={{ color: "#dc2626" }}>*</span>
+                      </label>
+                      <textarea
+                        className="input-base"
+                        rows={2}
+                        value={modeloActivo.contenido_prellenado?.criterios_exito || ""}
+                        onChange={(e) =>
+                          setModeloActivo({
+                            ...modeloActivo,
+                            contenido_prellenado: { ...modeloActivo.contenido_prellenado, criterios_exito: e.target.value },
+                          })
+                        }
+                        style={{ width: "100%", fontSize: 12 }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#1e293b", marginBottom: 4 }}>
+                      Plan de Rollback (Obligatorio ITIL v4) <span style={{ color: "#dc2626" }}>*</span>
+                    </label>
+                    <textarea
+                      className="input-base"
+                      rows={2}
+                      value={modeloActivo.contenido_prellenado?.plan_rollback || ""}
+                      onChange={(e) =>
+                        setModeloActivo({
+                          ...modeloActivo,
+                          contenido_prellenado: { ...modeloActivo.contenido_prellenado, plan_rollback: e.target.value },
                         })
                       }
                       style={{ width: "100%", fontSize: 12 }}
@@ -563,42 +793,19 @@ export const PestanaPlantillas: React.FC = () => {
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <input
                       type="checkbox"
-                      id="plt-interrupcion"
-                      checked={!!plantillaActiva.campos_prellenados?.requiere_interrupcion}
+                      id="mod-interrupcion"
+                      checked={!!modeloActivo.contenido_prellenado?.requiere_interrupcion}
                       onChange={(e) =>
-                        setPlantillaActiva({
-                          ...plantillaActiva,
-                          campos_prellenados: { ...plantillaActiva.campos_prellenados, requiere_interrupcion: e.target.checked },
+                        setModeloActivo({
+                          ...modeloActivo,
+                          contenido_prellenado: { ...modeloActivo.contenido_prellenado, requiere_interrupcion: e.target.checked },
                         })
                       }
                     />
-                    <label htmlFor="plt-interrupcion" style={{ fontSize: 12, color: "#334155" }}>
-                      ¿Predefinir que requiere interrupción del servicio?
+                    <label htmlFor="mod-interrupcion" style={{ fontSize: 12, color: "#334155" }}>
+                      ¿Este procedimiento operativo estándar requiere interrupción o caída de servicio?
                     </label>
                   </div>
-                </div>
-              )}
-
-              {pestañaModal === "pasos" && (
-                <div style={{ padding: 20, backgroundColor: "#f8fafc", borderRadius: 8, textAlign: "center", color: "#64748b" }}>
-                  <p style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Paquete de Tareas Preconfiguradas</p>
-                  <p style={{ fontSize: 11.5, margin: "4px 0 0 0" }}>
-                    Los pasos técnicos registrados aquí se convertirán automáticamente en subtareas de implementación al programar la RFC.
-                  </p>
-                </div>
-              )}
-
-              {pestañaModal === "vista" && (
-                <div style={{ backgroundColor: "#f8fafc", padding: 14, borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12, display: "flex", flexDirection: "column", gap: 6 }}>
-                  <div><strong>Nombre:</strong> {plantillaActiva.nombre || "—"}</div>
-                  <div>
-                    <strong>Categoría:</strong>{" "}
-                    {categorias.find((c) => c.id_item === plantillaActiva.id_categoria)?.nombre || "Sin categoría"}
-                  </div>
-                  <div><strong>Código:</strong> <code>{plantillaActiva.codigo || "—"}</code></div>
-                  <div><strong>Tipo sugerido:</strong> {plantillaActiva.tipo_cambio}</div>
-                  <div><strong>Motivo prellenado:</strong> {plantillaActiva.campos_prellenados?.motivo || "—"}</div>
-                  <div><strong>Rollback prellenado:</strong> {plantillaActiva.campos_prellenados?.plan_rollback || "—"}</div>
                 </div>
               )}
 
@@ -626,11 +833,11 @@ export const PestanaPlantillas: React.FC = () => {
               <button
                 type="button"
                 className="boton-primario"
-                onClick={guardarPlantilla}
+                onClick={guardarModelo}
                 disabled={guardando}
-                style={{ width: "auto", padding: "8px 16px", backgroundColor: "#2563eb" }}
+                style={{ width: "auto", padding: "8px 16px", backgroundColor: "#16a34a" }}
               >
-                {guardando ? "Guardando..." : "Guardar Plantilla"}
+                {guardando ? "Guardando..." : "Guardar Modelo Estándar"}
               </button>
             </div>
           </div>

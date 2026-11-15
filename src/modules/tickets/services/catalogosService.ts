@@ -21,6 +21,7 @@ export async function listarCatalogosTickets(sesion: any) {
     tecnicos,
     servicios,
     departamentos,
+    cis,
   ] = await Promise.all([
     query<TipoTicket>(
       "SELECT * FROM tipo_ticket WHERE estado_registro = true ORDER BY id_tipo_ticket"
@@ -78,6 +79,14 @@ export async function listarCatalogosTickets(sesion: any) {
     sesion.perfilActivo?.id_perfil === 4
       ? query<any>("SELECT * FROM departamento_ti WHERE estado_registro = true AND id_supervisor = $1 ORDER BY id_departamento", [sesion.id_usuario])
       : Promise.resolve([]),
+    query<{
+      id_ci: number;
+      codigo_ci: string;
+      nombre: string;
+      tipo_ci: string;
+    }>(
+      "SELECT id_ci, codigo_ci, nombre, tipo_ci FROM elemento_configuracion WHERE estado_registro = true ORDER BY nombre"
+    ),
   ]);
 
   return {
@@ -91,5 +100,6 @@ export async function listarCatalogosTickets(sesion: any) {
     tecnicos,
     servicios,
     departamentos,
+    cis,
   };
 }

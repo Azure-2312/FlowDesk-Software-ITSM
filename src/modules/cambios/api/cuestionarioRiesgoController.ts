@@ -2,9 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion } from "@/shared/lib/auth";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { COOKIE_SESION } from "@/shared/lib/constants";
-import { evaluarCuestionarioRiesgo } from "@/modules/cambios/services/cuestionarioRiesgoService";
+import { evaluarCuestionarioRiesgo, obtenerCuestionarioConfig } from "@/modules/cambios/services/cuestionarioRiesgoService";
 
 export const dynamic = "force-dynamic";
+
+export async function GET(req: NextRequest) {
+  const token = req.cookies.get(COOKIE_SESION)?.value;
+  const sesion = token ? verificarTokenSesion(token) : null;
+
+  if (!sesion) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
+  try {
+    const data = await obtenerCuestionarioConfig();
+    return NextResponse.json(data);
+  } catch (error: any) {
+    console.error("Error al obtener cuestionario de riesgo:", error);
+    return NextResponse.json({ error: "Error al consultar cuestionario de riesgo" }, { status: 500 });
+  }
+}
 
 export async function POST(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;

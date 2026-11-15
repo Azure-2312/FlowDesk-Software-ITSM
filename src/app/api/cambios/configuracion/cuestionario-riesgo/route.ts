@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { POST } from "@/modules/cambios/api/cuestionarioRiesgoController";
+export { GET, POST } from "@/modules/cambios/api/cuestionarioRiesgoController";

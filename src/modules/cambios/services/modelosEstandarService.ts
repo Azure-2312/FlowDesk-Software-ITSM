@@ -16,8 +16,8 @@ export async function listarModelosEstandar(filtros: FiltrosModelosEstandar) {
     const modelo = await queryRow(`
       SELECT m.*, 
              c.nombre as categoria_nombre,
-             u_prop.nombre_completo as propietario_nombre,
-             u_crea.nombre_completo as creador_nombre
+             TRIM(CONCAT(u_prop.nombres, ' ', u_prop.apellido_paterno)) as propietario_nombre,
+             TRIM(CONCAT(u_crea.nombres, ' ', u_crea.apellido_paterno)) as creador_nombre
       FROM cambio_modelo_estandar m
       LEFT JOIN cambio_catalogo_item c ON m.categoria_id = c.id_item
       LEFT JOIN usuario u_prop ON m.propietario_id = u_prop.id_usuario
@@ -44,8 +44,8 @@ export async function listarModelosEstandar(filtros: FiltrosModelosEstandar) {
   let sql = `
     SELECT m.*, 
            c.nombre as categoria_nombre,
-           u_prop.nombre_completo as propietario_nombre,
-           u_crea.nombre_completo as creador_nombre
+           TRIM(CONCAT(u_prop.nombres, ' ', u_prop.apellido_paterno)) as propietario_nombre,
+           TRIM(CONCAT(u_crea.nombres, ' ', u_crea.apellido_paterno)) as creador_nombre
     FROM cambio_modelo_estandar m
     LEFT JOIN cambio_catalogo_item c ON m.categoria_id = c.id_item
     LEFT JOIN usuario u_prop ON m.propietario_id = u_prop.id_usuario
