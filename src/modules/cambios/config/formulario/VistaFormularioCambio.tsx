@@ -9,7 +9,6 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { ModalVistaPrevia } from "./components/ModalVistaPrevia";
 
 import { PestanaCampos } from "./components/PestanaCampos";
 import { PestanaCamposPersonalizados } from "./components/PestanaCamposPersonalizados";
@@ -59,8 +58,8 @@ const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion
   },
   plantillas: {
     numero: "1.3.3.1.6",
-    titulo: "Plantillas de RFC",
-    descripcion: "Plantillas institucionales con campos prellenados y paquetes de tareas estándar.",
+    titulo: "Modelos de cambio estándar",
+    descripcion: "Catálogo institucional de procedimientos preautorizados con planes técnicos, rollback y criterios de elegibilidad.",
   },
   vista_ticket: {
     numero: "1.3.3.1.7",
@@ -97,7 +96,6 @@ export default function ConfiguracionFormularioCambiosPage() {
   const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
   const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
   const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
-  const [modalVistaPreviaAbierto, setModalVistaPreviaAbierto] = useState<boolean>(false);
   const [versionesHistorial, setVersionesHistorial] = useState<any[]>([]);
   const [rfcsAbiertasAfectadas, setRfcsAbiertasAfectadas] = useState<number>(0);
 
@@ -459,7 +457,6 @@ export default function ConfiguracionFormularioCambiosPage() {
               }}
               camposPersonalizados={camposPersonalizados}
               onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
-              onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
             />
           )}
 
@@ -509,13 +506,6 @@ export default function ConfiguracionFormularioCambiosPage() {
             />
           )}
         </div>
-      )}
-      {modalVistaPreviaAbierto && (
-        <ModalVistaPrevia
-          abierto={modalVistaPreviaAbierto}
-          secciones={configSnapshot.secciones || []}
-          onCerrar={() => setModalVistaPreviaAbierto(false)}
-        />
       )}
       </div>
     </div>

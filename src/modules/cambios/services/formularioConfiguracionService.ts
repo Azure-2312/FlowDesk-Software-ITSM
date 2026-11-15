@@ -557,14 +557,14 @@ export async function publicarConfiguracionFormulario(idUsuario: number, ip: str
 
   // 6. Registro de auditoría
   await query(`
-    INSERT INTO auditoria_sistema (
-      id_usuario, accion, tabla_afectada, registro_id, detalles, ip_origen
+    INSERT INTO log_auditoria_sistema (
+      id_usuario, modulo, accion, descripcion, detalles, direccion_ip
     ) VALUES (
-      $1, 'PUBLICAR_CONFIGURACION_CAMBIOS', 'configuracion_modulo_versiones', $2, $3, $4
+      $1, 'CAMBIOS', 'PUBLICAR_CONFIGURACION_CAMBIOS', $2, $3, $4
     )
   `, [
     idUsuario,
-    nuevaVersion,
+    `Publicación de configuración v${nuevaVersion} (Pantalla ${pantalla}, Pestaña ${pestana})`,
     JSON.stringify({ pantalla, pestana, version: nuevaVersion, motivo, rfcsImpactadas }),
     ip,
   ]);

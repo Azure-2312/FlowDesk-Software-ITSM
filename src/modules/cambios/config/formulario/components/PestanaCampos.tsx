@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { ModalEditarPropiedadesCampo } from "./ModalEditarPropiedadesCampo";
-import { SimuladorCambiosEnVivo } from "./ModalVistaPrevia";
 
 export interface CampoFormulario {
   codigo: string;
@@ -37,7 +36,6 @@ export interface PestanaCamposProps {
   onChangeSecciones: (nuevasSecciones: SeccionFormulario[]) => void;
   camposPersonalizados?: any[];
   onIrACamposPersonalizados?: () => void;
-  onVistaPrevia?: () => void;
   puedeEditar?: boolean;
 }
 
@@ -728,40 +726,8 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
         </div>
       </div>
 
-      {/* Layout de Dos Columnas: Lienzo de Secciones y Campos (Izquierda) + Vista Previa en Vivo (Derecha) */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(320px, 400px) minmax(650px, 1fr)",
-          gap: 16,
-          minHeight: 680,
-          alignItems: "start",
-        }}
-      >
-        {/* Columna Izquierda: Lienzo de Secciones */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 14, minHeight: 600 }}>
-          {seccionesVisiblesEnLienzo.map((sec) => renderizarSeccion(sec, false))}
-        </div>
-
-        {/* Columna Derecha: Vista Previa en Vivo Simulada fijada y con scroll independiente */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            position: "sticky",
-            top: 16,
-            maxHeight: "calc(100vh - 32px)",
-            overflowY: "auto",
-            scrollbarWidth: "thin",
-          }}
-        >
-          <SimuladorCambiosEnVivo
-            secciones={seccionesEfectivas}
-            abierto={true}
-            tipoCambioProp={tipoCambioActivo}
-            onTipoCambioChange={(nuevo) => setTipoCambioActivo(nuevo)}
-          />
-        </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 14, minHeight: 600, width: "100%" }}>
+        {seccionesVisiblesEnLienzo.map((sec) => renderizarSeccion(sec, false))}
       </div>
 
       {/* Modal de Edición de Propiedades del Campo */}

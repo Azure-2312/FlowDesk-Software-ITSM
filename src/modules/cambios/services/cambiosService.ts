@@ -149,6 +149,40 @@ export async function listarAvisosMantenimiento() {
   );
 }
 
+export async function listarAprobadoresEmergencia() {
+  return query<{
+    id_usuario: number;
+    nombre_completo: string;
+    correo_electronico: string;
+    perfil_nombre: string;
+  }>(`
+    SELECT DISTINCT u.id_usuario, TRIM(CONCAT(u.nombres, ' ', u.apellido_paterno)) as nombre_completo, u.correo_electronico, p.nombre as perfil_nombre
+    FROM usuario u
+    JOIN usuario_perfiles up ON u.id_usuario = up.id_usuario
+    JOIN perfiles p ON up.id_perfil = p.id_perfil
+    WHERE u.estado_registro = true 
+      AND up.estado_registro = true
+      AND up.id_perfil IN (1, 4, 7, 8)
+    ORDER BY nombre_completo ASC
+  `);
+}
+
+export async function listarIncidentesParaRelacion() {
+  return query<{
+    id_ticket: number;
+    codigo_ticket: string;
+    titulo: string;
+    id_prioridad: number;
+    fecha_creacion: string;
+  }>(`
+    SELECT id_ticket, codigo_ticket, titulo, id_prioridad, fecha_creacion
+    FROM ticket
+    WHERE estado_registro = true
+    ORDER BY id_ticket DESC
+    LIMIT 100
+  `);
+}
+
 export async function crearCambio(sesion: any, body: any) {
   const config = await queryRow<{
     perfiles_solicitantes: number[];
@@ -164,7 +198,7 @@ export async function crearCambio(sesion: any, body: any) {
   );
 
   const idPerfil = sesion.perfilActivo?.id_perfil || 0;
-  if (!(config?.perfiles_solicitantes || [2, 8]).includes(idPerfil)) {
+  if (idPerfil !== 1 && !(config?.perfiles_solicitantes || [2, 8]).includes(idPerfil)) {
     throw new ErrorDominio("El perfil activo no está habilitado para presentar RFC.", 403);
   }
 
@@ -176,84 +210,256 @@ export async function crearCambio(sesion: any, body: any) {
     id_urgencia,
     id_prioridad,
     justificacion,
+    motivo_cambio,
+    entorno,
+    id_ci_afectado,
+    requiere_interrupcion,
+    id_servicio_afectado,
+    ventana_inicio,
+    ventana_fin,
     plan_implementacion,
     plan_rollback,
     plan_pruebas,
-    ventana_inicio,
-    ventana_fin,
-    id_ci_afectado,
+    criterios_exito,
     id_problema_origen,
     id_incidente_origen,
+    id_modelo_estandar,
+    checklist_elegibilidad,
+    medio_autorizacion_emergencia,
+    id_usuario_autorizador_emergencia,
+    justificacion_urgencia,
+    cuestionario_riesgo,
+    nivel_riesgo,
+    evidencias,
   } = body;
 
-  const vTit = validarTexto(titulo, 5, 150, "El título del cambio", true);
-  if (!vTit.valido) throw new ErrorDominio(vTit.mensaje!);
-
-  const vJust = validarTexto(justificacion, 10, 2000, "La justificación del cambio", true);
-  if (!vJust.valido) throw new ErrorDominio(vJust.mensaje!);
-
-  const vPlan = validarTexto(plan_implementacion, 10, 3000, "El plan de implementación", true);
-  if (!vPlan.valido) throw new ErrorDominio(vPlan.mensaje!);
-
-  if (!tipo_cambio || (config?.exige_rollback !== false && !plan_rollback) || !ventana_inicio || !ventana_fin) {
-    throw new ErrorDominio("Faltan campos obligatorios para registrar la Solicitud de Cambio (RFC).");
-  }
-
-  const vFecha = validarFechaNoPasada(ventana_inicio, "El inicio de la ventana de cambio");
-  if (!vFecha.valido) throw new ErrorDominio(vFecha.mensaje!);
-  if (config?.exige_ci && !id_ci_afectado) throw new ErrorDominio("La configuración RFC requiere seleccionar el CI afectado.");
-  if (config?.exige_plan_pruebas && !String(plan_pruebas || "").trim()) throw new ErrorDominio("La configuración RFC requiere documentar el plan de pruebas.");
-  const inicio = new Date(ventana_inicio).getTime();
-  const fin = new Date(ventana_fin).getTime();
-  if (!Number.isFinite(inicio) || !Number.isFinite(fin) || fin <= inicio) throw new ErrorDominio("La ventana de cambio debe tener fechas válidas y su fin debe ser posterior al inicio.");
-  if ((fin - inicio) / 3600000 > Number(config?.duracion_maxima_horas || 24)) throw new ErrorDominio(`La ventana supera el máximo configurado de ${config?.duracion_maxima_horas || 24} horas.`);
-
-  // Normalización y validación única del tipo de cambio según configuración ITIL
   const tipoNormalizado = String(tipo_cambio || "").toUpperCase();
-  if (!(config?.tipos_rfc || ["ESTANDAR", "NORMAL", "EMERGENCIA"]).includes(tipoNormalizado)) {
-    throw new ErrorDominio("Este tipo de RFC no está habilitado por la configuración del sistema.");
+  if (!["ESTANDAR", "NORMAL", "EMERGENCIA"].includes(tipoNormalizado)) {
+    throw new ErrorDominio("Tipo de RFC no válido según las directrices ITIL v4.");
   }
-  if (tipoNormalizado === "EMERGENCIA" && !config?.permite_emergencia) {
+  if (tipoNormalizado === "EMERGENCIA" && config && config.permite_emergencia === false) {
     throw new ErrorDominio("Las RFC de emergencia están deshabilitadas por configuración.");
   }
 
-  // Validación consolidada de CI: existencia en CMDB y detección de solapamiento de ventanas
-  if (id_ci_afectado) {
-    const ciExiste = await queryRow<{ id_ci: number }>(
-      "SELECT id_ci FROM elemento_configuracion WHERE id_ci = $1 AND estado_registro = true",
-      [id_ci_afectado]
+  if (!ventana_inicio || !ventana_fin) {
+    throw new ErrorDominio("Las fechas de inicio y fin de la ventana de cambio son obligatorias.");
+  }
+  const vFecha = validarFechaNoPasada(ventana_inicio, "El inicio de la ventana de cambio");
+  if (!vFecha.valido) throw new ErrorDominio(vFecha.mensaje!);
+  const inicio = new Date(ventana_inicio).getTime();
+  const fin = new Date(ventana_fin).getTime();
+  if (!Number.isFinite(inicio) || !Number.isFinite(fin) || fin <= inicio) {
+    throw new ErrorDominio("La ventana de cambio debe tener fechas válidas y su fin debe ser posterior al inicio.");
+  }
+  if ((fin - inicio) / 3600000 > Number(config?.duracion_maxima_horas || 24)) {
+    throw new ErrorDominio(`La ventana supera el máximo configurado de ${config?.duracion_maxima_horas || 24} horas.`);
+  }
+
+  if (!id_ci_afectado) {
+    throw new ErrorDominio("Debe seleccionar el elemento de configuración (CI / Activo) afectado.");
+  }
+  const ciExiste = await queryRow<{ id_ci: number; nombre: string }>(
+    "SELECT id_ci, nombre FROM elemento_configuracion WHERE id_ci = $1 AND estado_registro = true",
+    [id_ci_afectado]
+  );
+  if (!ciExiste) {
+    throw new ErrorDominio(`El CI afectado (id ${id_ci_afectado}) no existe o no está activo en la CMDB.`, 404);
+  }
+
+  const solapamientoRow = await queryRow<{ id_cambio: number; codigo_cambio: string; titulo: string }>(
+    `SELECT c.id_cambio, c.codigo_cambio, c.titulo
+     FROM cambio c
+     WHERE c.estado_registro = true
+       AND c.id_ci_afectado = $1
+       AND c.id_estado IN (3, 4, 5)
+       AND c.ventana_inicio < $2
+       AND c.ventana_fin > $3
+     LIMIT 1`,
+    [id_ci_afectado, ventana_fin, ventana_inicio]
+  );
+  if (solapamientoRow) {
+    throw new ErrorDominio(
+      `No se puede registrar el RFC: el CI afectado ya tiene un cambio activo en esa ventana (${solapamientoRow.codigo_cambio} - ${solapamientoRow.titulo}).`,
+      409
     );
-    if (!ciExiste) {
-      throw new ErrorDominio(`El CI afectado (id ${id_ci_afectado}) no existe o no está activo en la CMDB.`, 404);
+  }
+
+  let servicioNombre: string | null = null;
+  if (requiere_interrupcion) {
+    if (!id_servicio_afectado) {
+      throw new ErrorDominio("Debe seleccionar el servicio del catálogo que sufrirá interrupción o caída.");
+    }
+    const servRow = await queryRow<{ id_servicio: number; nombre: string }>(
+      "SELECT id_servicio, nombre FROM servicio_catalogo WHERE id_servicio = $1 AND estado_registro = true",
+      [id_servicio_afectado]
+    );
+    if (!servRow) {
+      throw new ErrorDominio("El servicio seleccionado no existe o no está activo en el catálogo.");
+    }
+    servicioNombre = servRow.nombre;
+  }
+
+  let finalTitulo = "";
+  let finalDescripcion = "";
+  let finalJustificacion = "";
+  let finalPlanImpl = "";
+  let finalPlanRollback = "";
+  let finalPlanPruebas: string | null = null;
+  let finalCriteriosExito: string | null = null;
+  let finalMotivo = "";
+  let finalImpacto = 2;
+  let finalUrgencia = 2;
+  let finalPrioridad = 3;
+  let finalEstado = 2;
+  let autorizadorEmergenciaNombre: string | null = null;
+
+  if (tipoNormalizado === "ESTANDAR") {
+    if (!id_modelo_estandar) {
+      throw new ErrorDominio("Debe seleccionar un Modelo de Cambio Estándar preautorizado.");
+    }
+    const modelo = await queryRow<any>(
+      "SELECT * FROM cambio_modelo_estandar WHERE id_modelo = $1",
+      [id_modelo_estandar]
+    );
+    if (!modelo) {
+      throw new ErrorDominio("El modelo estándar seleccionado no existe en el catálogo de cambios.", 404);
     }
 
-    const solapamientoRow = await queryRow<{ id_cambio: number; codigo_cambio: string; titulo: string }>(
-      `SELECT c.id_cambio, c.codigo_cambio, c.titulo
-       FROM cambio c
-       WHERE c.estado_registro = true
-         AND c.id_ci_afectado = $1
-         AND c.id_estado IN (3, 4, 5)
-         AND c.ventana_inicio < $2
-         AND c.ventana_fin > $3
-       LIMIT 1`,
-      [id_ci_afectado, ventana_fin, ventana_inicio]
-    );
-    if (solapamientoRow) {
-      throw new ErrorDominio(
-        `No se puede registrar el RFC: el CI afectado ya tiene un cambio activo en esa ventana (${solapamientoRow.codigo_cambio} - ${solapamientoRow.titulo}).`,
-        409
-      );
+    const listaElegible = Array.isArray(modelo.lista_elegibilidad) ? modelo.lista_elegibilidad : [];
+    if (listaElegible.length > 0) {
+      const confirmados = typeof checklist_elegibilidad === "object" && checklist_elegibilidad !== null
+        ? checklist_elegibilidad
+        : {};
+      const todasConfirmadas = listaElegible.every((_: any, idx: number) => confirmados[idx] === true);
+      if (!todasConfirmadas) {
+        throw new ErrorDominio("Debe confirmar todas las condiciones de la lista de verificación de elegibilidad.");
+      }
     }
+
+    finalTitulo = (titulo && String(titulo).trim()) || modelo.nombre;
+    finalDescripcion = (descripcion && String(descripcion).trim()) || modelo.descripcion || `[RFC Estándar] ${modelo.nombre}`;
+    finalJustificacion = (justificacion && String(justificacion).trim()) || modelo.contenido_prellenado?.motivo || "Procedimiento estándar preautorizado.";
+    finalPlanImpl = (plan_implementacion && String(plan_implementacion).trim()) || modelo.contenido_prellenado?.plan_implementacion || "Conforme al modelo estándar preautorizado.";
+    finalPlanRollback = (plan_rollback && String(plan_rollback).trim()) || modelo.contenido_prellenado?.plan_rollback || "Conforme al procedimiento estándar preautorizado.";
+    finalPlanPruebas = (plan_pruebas && String(plan_pruebas).trim()) || modelo.contenido_prellenado?.plan_pruebas || "Verificación estándar del servicio.";
+    finalCriteriosExito = (criterios_exito && String(criterios_exito).trim()) || "Funcionamiento operativo validado según modelo estándar.";
+    finalMotivo = (motivo_cambio && String(motivo_cambio).trim()) || modelo.contenido_prellenado?.motivo || "Mantenimiento operativo estándar";
+    finalImpacto = 1;
+    finalUrgencia = 1;
+    finalPrioridad = 4;
+    finalEstado = 3;
+  } else if (tipoNormalizado === "EMERGENCIA") {
+    if (!medio_autorizacion_emergencia || !String(medio_autorizacion_emergencia).trim()) {
+      throw new ErrorDominio("Debe especificar el medio de autorización de la emergencia (llamada, sala de crisis, etc.).");
+    }
+    if (!id_usuario_autorizador_emergencia) {
+      throw new ErrorDominio("Debe seleccionar el aprobador de emergencia que autorizó la intervención.");
+    }
+    const autorizador = await queryRow<{ id_usuario: number; nombre_completo: string }>(
+      `SELECT u.id_usuario, TRIM(CONCAT(u.nombres, ' ', u.apellido_paterno)) as nombre_completo
+       FROM usuario u
+       JOIN usuario_perfiles up ON u.id_usuario = up.id_usuario
+       WHERE u.id_usuario = $1 AND u.estado_registro = true AND up.estado_registro = true AND up.id_perfil IN (1, 4, 7, 8)
+       LIMIT 1`,
+      [id_usuario_autorizador_emergencia]
+    );
+    if (!autorizador) {
+      throw new ErrorDominio("El usuario seleccionado no cuenta con perfil facultado para autorizar cambios de emergencia.", 403);
+    }
+    autorizadorEmergenciaNombre = autorizador.nombre_completo;
+
+    const vUrg = validarTexto(justificacion_urgencia, 10, 2000, "La justificación de urgencia", true);
+    if (!vUrg.valido) throw new ErrorDominio(vUrg.mensaje!);
+
+    if (!id_incidente_origen) {
+      throw new ErrorDominio("Un cambio de emergencia debe asociarse obligatoriamente al incidente origen.");
+    }
+
+    const vTit = validarTexto(titulo, 5, 150, "El título del cambio", true);
+    if (!vTit.valido) throw new ErrorDominio(vTit.mensaje!);
+
+    finalTitulo = titulo.trim();
+    finalDescripcion = (descripcion && String(descripcion).trim()) || `[RFC Emergencia] ${titulo.trim()}`;
+    finalJustificacion = (justificacion && String(justificacion).trim()) || justificacion_urgencia.trim();
+    finalPlanImpl = (plan_implementacion && String(plan_implementacion).trim()) || "Pendiente de regularización post-emergencia";
+    finalPlanRollback = (plan_rollback && String(plan_rollback).trim()) || "Pendiente de regularización post-emergencia";
+    finalPlanPruebas = (plan_pruebas && String(plan_pruebas).trim()) || null;
+    finalCriteriosExito = (criterios_exito && String(criterios_exito).trim()) || null;
+    finalMotivo = (motivo_cambio && String(motivo_cambio).trim()) || "Restablecimiento de servicio ante incidente crítico";
+    finalImpacto = id_impacto ? Math.min(Number(id_impacto), 3) : 3;
+    finalUrgencia = id_urgencia ? Math.min(Number(id_urgencia), 3) : 3;
+    finalPrioridad = id_prioridad || 1;
+    finalEstado = 2;
+  } else {
+    const vTit = validarTexto(titulo, 5, 150, "El título del cambio", true);
+    if (!vTit.valido) throw new ErrorDominio(vTit.mensaje!);
+
+    const vJust = validarTexto(justificacion, 10, 2000, "La justificación de negocio", true);
+    if (!vJust.valido) throw new ErrorDominio(vJust.mensaje!);
+
+    const vPlan = validarTexto(plan_implementacion, 10, 3000, "El plan de implementación", true);
+    if (!vPlan.valido) throw new ErrorDominio(vPlan.mensaje!);
+
+    if (!plan_rollback || !String(plan_rollback).trim()) {
+      throw new ErrorDominio("El plan de rollback es obligatorio para cambios normales.");
+    }
+    if (!plan_pruebas || !String(plan_pruebas).trim()) {
+      throw new ErrorDominio("El plan de pruebas es obligatorio para cambios normales.");
+    }
+    if (!criterios_exito || !String(criterios_exito).trim()) {
+      throw new ErrorDominio("Los criterios de éxito son obligatorios para cambios normales.");
+    }
+    if (!entorno || !String(entorno).trim()) {
+      throw new ErrorDominio("Debe seleccionar el entorno afectado.");
+    }
+    if (!motivo_cambio || !String(motivo_cambio).trim()) {
+      throw new ErrorDominio("Debe seleccionar el motivo del cambio.");
+    }
+
+    finalTitulo = titulo.trim();
+    finalDescripcion = (descripcion && String(descripcion).trim()) || `[RFC Normal] ${titulo.trim()}`;
+    finalJustificacion = justificacion.trim();
+    finalPlanImpl = plan_implementacion.trim();
+    finalPlanRollback = plan_rollback.trim();
+    finalPlanPruebas = plan_pruebas.trim();
+    finalCriteriosExito = criterios_exito.trim();
+    finalMotivo = motivo_cambio.trim();
+    finalImpacto = id_impacto || 2;
+    finalUrgencia = id_urgencia || 2;
+    finalPrioridad = id_prioridad || 3;
+    finalEstado = 2;
   }
 
   const custom = body.campos_personalizados && typeof body.campos_personalizados === "object" ? body.campos_personalizados : {};
   for (const field of config?.campos_personalizados || []) {
     const value = custom[field.clave];
-    if (field.obligatorio && (value === undefined || value === null || String(value).trim() === "")) throw new ErrorDominio(`Completa el campo obligatorio: ${field.etiqueta}.`);
-    if (value !== undefined && field.tipo === "lista" && !(field.opciones || []).includes(String(value))) throw new ErrorDominio(`Valor no válido para ${field.etiqueta}.`);
+    if (field.obligatorio && (value === undefined || value === null || String(value).trim() === "")) {
+      throw new ErrorDominio(`Completa el campo obligatorio: ${field.etiqueta}.`);
+    }
+    if (value !== undefined && field.tipo === "lista" && !(field.opciones || []).includes(String(value))) {
+      throw new ErrorDominio(`Valor no válido para ${field.etiqueta}.`);
+    }
   }
 
-  // Generar código correlativo RFC-YYYY-XXXX
+  const camposAdicionalesCompletos = {
+    ...custom,
+    motivo_cambio: finalMotivo,
+    entorno: entorno || "Producción",
+    criterios_exito: finalCriteriosExito,
+    requiere_interrupcion: Boolean(requiere_interrupcion),
+    id_servicio_afectado: id_servicio_afectado ? Number(id_servicio_afectado) : null,
+    servicio_afectado_nombre: servicioNombre,
+    id_modelo_estandar: id_modelo_estandar ? Number(id_modelo_estandar) : null,
+    checklist_elegibilidad: checklist_elegibilidad || null,
+    medio_autorizacion_emergencia: medio_autorizacion_emergencia || null,
+    id_usuario_autorizador_emergencia: id_usuario_autorizador_emergencia ? Number(id_usuario_autorizador_emergencia) : null,
+    autorizador_emergencia_nombre: autorizadorEmergenciaNombre,
+    justificacion_urgencia: justificacion_urgencia || null,
+    cuestionario_riesgo: cuestionario_riesgo || null,
+    nivel_riesgo: nivel_riesgo || (tipoNormalizado === "ESTANDAR" ? "Bajo" : "Medio"),
+    evidencias: evidencias || null,
+  };
+
   const year = new Date().getFullYear();
   const countRow = await queryRow<{ c: string }>(
     "SELECT COUNT(*) as c FROM cambio WHERE EXTRACT(YEAR FROM fecha_creacion) = $1",
@@ -261,11 +467,6 @@ export async function crearCambio(sesion: any, body: any) {
   );
   const correlativo = String((parseInt(countRow?.c || "0", 10) + 1)).padStart(4, "0");
   const codigo_cambio = `RFC-${year}-${correlativo}`;
-
-  // Estado inicial según ITIL:
-  // ESTANDAR -> id_estado = 3 (Aprobado pre-autorizado)
-  // NORMAL / EMERGENCIA -> id_estado = 2 (En Evaluación CAB)
-  const id_estado = tipoNormalizado === "ESTANDAR" ? 3 : 2;
 
   const insertSql = `
     INSERT INTO cambio (
@@ -297,29 +498,28 @@ export async function crearCambio(sesion: any, body: any) {
 
   const row = await queryRow<{ id_cambio: number; codigo_cambio: string }>(insertSql, [
     codigo_cambio,
-    titulo,
-    descripcion,
+    finalTitulo,
+    finalDescripcion,
     tipoNormalizado,
-    id_impacto || 2,
-    id_urgencia || 2,
-    id_prioridad || 2,
-    id_estado,
-    justificacion,
-    plan_implementacion,
-    plan_rollback,
-    plan_pruebas || null,
+    finalImpacto,
+    finalUrgencia,
+    finalPrioridad,
+    finalEstado,
+    finalJustificacion,
+    finalPlanImpl,
+    finalPlanRollback,
+    finalPlanPruebas,
     ventana_inicio,
     ventana_fin,
-    id_ci_afectado || null,
+    id_ci_afectado,
     id_problema_origen || null,
     id_incidente_origen || null,
     sesion.id_usuario,
     sesion.id_usuario,
     sesion.id_usuario,
-    JSON.stringify(custom),
+    JSON.stringify(camposAdicionalesCompletos),
   ]);
 
-  // Trazabilidad: registrar en CMDB que este cambio afecta al CI.
   if (id_ci_afectado) {
     try {
       await query(
@@ -331,15 +531,13 @@ export async function crearCambio(sesion: any, body: any) {
            $2, $3, $4, true
          )`,
         [
-          `RFC ${codigo_cambio}: ${titulo}`,
+          `RFC ${codigo_cambio}: ${finalTitulo}`,
           id_ci_afectado,
           row?.id_cambio,
           sesion.id_usuario,
         ]
       );
     } catch (error) {
-      // No fallar la creación del RFC si el registro de trazabilidad falla,
-      // pero se consigna para revisión del administrador.
       console.error("Trazabilidad CMDB: no se pudo registrar la actualización del CI:", error);
     }
   }

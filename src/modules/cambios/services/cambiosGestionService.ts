@@ -374,8 +374,11 @@ export async function proponerModelo(idUsuario: number, body: any) {
 }
 
 export async function cambiarEstadoModelo(idModelo: number, estado: string) {
-  const normalizado = String(estado || "").toUpperCase();
-  if (!["BORRADOR", "PUBLICADO", "SUSPENDIDO", "ARCHIVADO"].includes(normalizado)) {
+  let normalizado = String(estado || "").toUpperCase();
+  if (normalizado === "PUBLICADO") normalizado = "APROBADO";
+  if (normalizado === "ARCHIVADO") normalizado = "RETIRADO";
+  
+  if (!["BORRADOR", "EN_REVISION", "APROBADO", "SUSPENDIDO", "RETIRADO"].includes(normalizado)) {
     throw new ErrorDominio("Estado de modelo no válido.");
   }
   const fila = await queryRow<any>(

@@ -1,0 +1,22 @@
+import { NextRequest, NextResponse } from "next/server";
+import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { listarIncidentesParaRelacion } from "@/modules/cambios/services/cambiosService";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(req: NextRequest) {
+  const token = req.cookies.get(COOKIE_SESION)?.value;
+  const sesion = token ? verificarTokenSesion(token) : null;
+
+  if (!sesion) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
+  try {
+    const incidentes = await listarIncidentesParaRelacion();
+    return NextResponse.json({ incidentes });
+  } catch (error) {
+    console.error("Error al listar incidentes para relacionar:", error);
+    return NextResponse.json({ error: "Error al consultar incidentes" }, { status: 500 });
+  }
+}

@@ -24,13 +24,6 @@ export {
 } from "./services/camposPersonalizadosService";
 
 export {
-  listarPlantillasCambio,
-  crearPlantillaCambio,
-  actualizarPlantillaCambio,
-  eliminarPlantillaCambio,
-} from "./services/plantillasService";
-
-export {
   listarModelosEstandar,
   crearModeloEstandar,
   actualizarModeloEstandar,
