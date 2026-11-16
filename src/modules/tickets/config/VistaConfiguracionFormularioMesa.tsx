@@ -1,16 +1,22 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { PestanaCamposMesa } from "./formulario/components/PestanaCamposMesa";
+import { PestanaCamposMesa, PestanaCamposMesaHandle } from "./formulario/components/PestanaCamposMesa";
 import { PestanaCamposPersonalizadosMesa } from "./formulario/components/PestanaCamposPersonalizadosMesa";
-import { PestanaNivelesSolicitante } from "./formulario/components/PestanaNivelesSolicitante";
+import { PestanaNivelesSolicitante, PestanaNivelesSolicitanteHandle } from "./formulario/components/PestanaNivelesSolicitante";
 
 export interface VistaConfiguracionFormularioMesaProps {
   tipo: "incidente" | "solicitud";
 }
 
 function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormularioMesaProps) {
+  const camposMesaRef = useRef<PestanaCamposMesaHandle | null>(null);
+  const nivelesRef = useRef<PestanaNivelesSolicitanteHandle | null>(null);
+  const [guardando, setGuardando] = useState(false);
+  const [mensajeGlobal, setMensajeGlobal] = useState<string | null>(null);
+  const [errorGlobal, setErrorGlobal] = useState<string | null>(null);
+
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const [tabActiva, setTabActiva] = useState<"campos" | "personalizados" | "niveles_solicitante">(
@@ -29,10 +35,31 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
     ? "Estructura, obligatoriedad, distribución de ancho y orden de los campos del formulario de reporte de incidentes y fallas técnicas."
     : "Estructura, obligatoriedad, distribución de ancho y orden de los campos del formulario de requerimiento de servicios y accesos.";
 
+  const handleGuardarConfiguracion = async () => {
+    setGuardando(true);
+    setMensajeGlobal(null);
+    setErrorGlobal(null);
+
+    try {
+      // Guardar de manera coordinada la configuración de todas las pestañas
+      await Promise.all([
+        camposMesaRef.current ? camposMesaRef.current.guardarConfiguracion() : Promise.resolve(),
+        nivelesRef.current ? nivelesRef.current.guardarConfiguracion() : Promise.resolve(),
+      ]);
+
+      setMensajeGlobal("Toda la configuración del formulario (campos y niveles de solicitante) se guardó exitosamente.");
+      setTimeout(() => setMensajeGlobal(null), 4500);
+    } catch (err: any) {
+      setErrorGlobal(err.message || "Ocurrió un error al persistir la configuración completa.");
+    } finally {
+      setGuardando(false);
+    }
+  };
+
   return (
     <div className="vista-contenedor">
-      {/* Cabecera Principal */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
+      {/* Cabecera Principal con Botón Guardar Configuración (solo texto) */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 16 }}>
         <div>
           <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
             {titulo}
@@ -41,7 +68,36 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
             {descripcion}
           </p>
         </div>
+
+        <button
+          type="button"
+          className="boton-primario"
+          onClick={handleGuardarConfiguracion}
+          disabled={guardando}
+          style={{
+            width: "auto",
+            flexShrink: 0,
+            padding: "8px 20px",
+            fontSize: 13,
+            fontWeight: 600,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {guardando ? "Guardando..." : "Guardar Configuración"}
+        </button>
       </div>
+
+      {/* Alertas globales de guardado */}
+      {mensajeGlobal && (
+        <div style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", color: "#166534", padding: "10px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600, marginBottom: 16 }}>
+          ✓ {mensajeGlobal}
+        </div>
+      )}
+      {errorGlobal && (
+        <div className="mensaje-error" style={{ marginBottom: 16 }}>
+          ✕ {errorGlobal}
+        </div>
+      )}
 
       {/* Selector de Pestañas Homogéneo */}
       <div
@@ -109,14 +165,23 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
         </button>
       </div>
 
-      {/* Contenido según pestaña */}
-      {tabActiva === "campos" ? (
-        <PestanaCamposMesa tipo={tipo} />
-      ) : tabActiva === "personalizados" ? (
+      {/* Contenido persistente de pestañas: se mantienen montadas para no perder cambios en memoria */}
+      <div style={{ display: tabActiva === "campos" ? "block" : "none" }}>
+        <PestanaCamposMesa
+          ref={camposMesaRef}
+          tipo={tipo}
+        />
+      </div>
+
+      <div style={{ display: tabActiva === "personalizados" ? "block" : "none" }}>
         <PestanaCamposPersonalizadosMesa tipo={tipo} />
-      ) : (
-        <PestanaNivelesSolicitante />
-      )}
+      </div>
+
+      <div style={{ display: tabActiva === "niveles_solicitante" ? "block" : "none" }}>
+        <PestanaNivelesSolicitante
+          ref={nivelesRef}
+        />
+      </div>
     </div>
   );
 }

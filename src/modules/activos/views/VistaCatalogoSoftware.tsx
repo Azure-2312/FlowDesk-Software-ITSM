@@ -116,7 +116,7 @@ export default function VistaCatalogoSoftware() {
             onClick={() => setMostrarForm((v) => !v)}
             style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
-            {mostrarForm ? "Cancelar" : "+ Agregar Software"}
+            {mostrarForm ? "Cancelar" : "Agregar Software"}
           </button>
           <button
             type="button"

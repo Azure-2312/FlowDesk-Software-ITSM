@@ -334,18 +334,23 @@ const SECCIONES_INICIALES_SOLICITUD: SeccionMesa[] = [
   },
 ];
 
-interface PestanaCamposMesaProps {
-  tipo: "incidente" | "solicitud";
+export interface PestanaCamposMesaHandle {
+  guardarConfiguracion: () => Promise<void>;
 }
 
-export const PestanaCamposMesa: React.FC<PestanaCamposMesaProps> = ({ tipo }) => {
-  const [secciones, setSecciones] = useState<SeccionMesa[]>(
-    tipo === "incidente" ? SECCIONES_INICIALES_INCIDENTE : SECCIONES_INICIALES_SOLICITUD
-  );
-  const [seccionesColapsadas, setSeccionesColapsadas] = useState<Record<string, boolean>>({});
-  const [filtro, setFiltro] = useState<"todos" | "obligatorios" | "ocultos">("todos");
-  const [campoEditando, setCampoEditando] = useState<{ seccionId: string; campo: CampoMesa } | null>(null);
-  const [arrastrando, setArrastrando] = useState<{ seccionId: string; index: number } | null>(null);
+export interface PestanaCamposMesaProps {
+  tipo: "incidente" | "solicitud";
+  onEstadoGuardandoChange?: (guardando: boolean) => void;
+}
+
+export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, PestanaCamposMesaProps>(
+  ({ tipo, onEstadoGuardandoChange }, ref) => {
+    const [secciones, setSecciones] = useState<SeccionMesa[]>(
+      tipo === "incidente" ? SECCIONES_INICIALES_INCIDENTE : SECCIONES_INICIALES_SOLICITUD
+    );
+    const [seccionesColapsadas, setSeccionesColapsadas] = useState<Record<string, boolean>>({});
+    const [campoEditando, setCampoEditando] = useState<{ seccionId: string; campo: CampoMesa } | null>(null);
+    const [arrastrando, setArrastrando] = useState<{ seccionId: string; index: number } | null>(null);
 
   // Estados interactivos para el simulador
   const [vistaPreviaModo, setVistaPreviaModo] = useState<"formulario" | "ticket">("formulario");
@@ -493,8 +498,9 @@ export const PestanaCamposMesa: React.FC<PestanaCamposMesaProps> = ({ tipo }) =>
   };
 
   // Guardar configuración completa en el servidor
-  const guardarConfiguracion = async () => {
+  const guardarConfiguracion = React.useCallback(async () => {
     setGuardando(true);
+    onEstadoGuardandoChange?.(true);
     setError(null);
     setMensajeExito(null);
 
@@ -539,20 +545,16 @@ export const PestanaCamposMesa: React.FC<PestanaCamposMesaProps> = ({ tipo }) =>
       setError("Error de red al guardar la configuración.");
     } finally {
       setGuardando(false);
+      onEstadoGuardandoChange?.(false);
     }
-  };
+  }, [secciones, tipo, onEstadoGuardandoChange]);
 
-  const totalCampos = useMemo(
-    () => secciones.reduce((acc, s) => acc + s.campos.length, 0),
-    [secciones]
-  );
-  const totalVisibles = useMemo(
-    () => secciones.reduce((acc, s) => acc + s.campos.filter((c) => c.visible).length, 0),
-    [secciones]
-  );
-  const totalObligatorios = useMemo(
-    () => secciones.reduce((acc, s) => acc + s.campos.filter((c) => c.visible && c.obligatorio === "si").length, 0),
-    [secciones]
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      guardarConfiguracion,
+    }),
+    [guardarConfiguracion]
   );
 
   const nivelSimuladoObj = useMemo(
@@ -575,120 +577,6 @@ export const PestanaCamposMesa: React.FC<PestanaCamposMesaProps> = ({ tipo }) =>
       )}
       {error && <div className="mensaje-error">{error}</div>}
 
-      {/* Nota de Información Automática del Usuario */}
-      <div
-        style={{
-          padding: "10px 14px",
-          backgroundColor: "#eff6ff",
-          border: "1px solid #bfdbfe",
-          borderRadius: 8,
-          fontSize: 12.5,
-          color: "#1e40af",
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="16" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12.01" y2="8" />
-        </svg>
-        <span>
-          <strong>Información Automática:</strong> La sede física, departamento de la empresa, correo corporativo y teléfono no se piden al solicitante; el sistema los mapea directamente de su ficha institucional al momento de reportar.
-        </span>
-      </div>
-
-      {/* Barra de Filtros y Estadísticas */}
-      <div
-        className="tarjeta"
-        style={{
-          padding: "12px 18px",
-          backgroundColor: "#ffffff",
-          border: "1px solid #e2e8f0",
-          borderRadius: 8,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 12,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "#0f172a" }}>
-            Formulario: {tipo === "incidente" ? "Registro de Incidente" : "Registro de Solicitud"}
-          </span>
-          <span style={{ fontSize: 12, color: "#64748b" }}>
-            · {totalVisibles} de {totalCampos} campos visibles ({totalObligatorios} obligatorios estrictos)
-          </span>
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button
-            type="button"
-            onClick={() => setFiltro("todos")}
-            style={{
-              padding: "4px 10px",
-              borderRadius: 5,
-              fontSize: 12,
-              fontWeight: filtro === "todos" ? 700 : 500,
-              backgroundColor: filtro === "todos" ? "#0f172a" : "#f1f5f9",
-              color: filtro === "todos" ? "#ffffff" : "#475569",
-              border: "1px solid #cbd5e1",
-              cursor: "pointer",
-            }}
-          >
-            Todos
-          </button>
-          <button
-            type="button"
-            onClick={() => setFiltro("obligatorios")}
-            style={{
-              padding: "4px 10px",
-              borderRadius: 5,
-              fontSize: 12,
-              fontWeight: filtro === "obligatorios" ? 700 : 500,
-              backgroundColor: filtro === "obligatorios" ? "#0f172a" : "#f1f5f9",
-              color: filtro === "obligatorios" ? "#ffffff" : "#475569",
-              border: "1px solid #cbd5e1",
-              cursor: "pointer",
-            }}
-          >
-            Solo Obligatorios
-          </button>
-          <button
-            type="button"
-            onClick={() => setFiltro("ocultos")}
-            style={{
-              padding: "4px 10px",
-              borderRadius: 5,
-              fontSize: 12,
-              fontWeight: filtro === "ocultos" ? 700 : 500,
-              backgroundColor: filtro === "ocultos" ? "#0f172a" : "#f1f5f9",
-              color: filtro === "ocultos" ? "#ffffff" : "#475569",
-              border: "1px solid #cbd5e1",
-              cursor: "pointer",
-            }}
-          >
-            Solo Ocultos
-          </button>
-          <button
-            type="button"
-            className="boton-primario"
-            onClick={guardarConfiguracion}
-            disabled={guardando}
-            style={{
-              padding: "6px 16px",
-              fontSize: 12.5,
-              fontWeight: 600,
-              marginLeft: 8,
-            }}
-          >
-            {guardando ? "Guardando..." : "Guardar Distribución"}
-          </button>
-        </div>
-      </div>
-
       {/* Grid de 2 Columnas: Izquierda Lienzo de Campos / Derecha Simulador en Vivo */}
       <div
         style={{
@@ -702,11 +590,6 @@ export const PestanaCamposMesa: React.FC<PestanaCamposMesaProps> = ({ tipo }) =>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {secciones.map((sec) => {
             const estaColapsada = Boolean(seccionesColapsadas[sec.id]);
-            const camposFiltrados = sec.campos.filter((c) => {
-              if (filtro === "obligatorios") return c.visible && c.obligatorio === "si";
-              if (filtro === "ocultos") return !c.visible;
-              return true;
-            });
 
             return (
               <div
@@ -767,7 +650,7 @@ export const PestanaCamposMesa: React.FC<PestanaCamposMesaProps> = ({ tipo }) =>
                 {/* Lista de Campos con Drag and Drop */}
                 {!estaColapsada && (
                   <div style={{ padding: "8px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
-                    {camposFiltrados.map((campo, idx) => (
+                    {sec.campos.map((campo, idx) => (
                       <div
                         key={campo.codigo}
                         draggable
@@ -1846,4 +1729,6 @@ export const PestanaCamposMesa: React.FC<PestanaCamposMesaProps> = ({ tipo }) =>
       />
     </div>
   );
-};
+});
+
+PestanaCamposMesa.displayName = "PestanaCamposMesa";

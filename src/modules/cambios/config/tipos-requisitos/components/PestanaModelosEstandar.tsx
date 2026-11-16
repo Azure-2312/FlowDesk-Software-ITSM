@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface ModeloEstandar {
   id_modelo: number;
@@ -276,8 +277,9 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
       </div>
 
       {/* Tabla de Modelos */}
-      <div style={{ backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #cbd5e1", overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5, textAlign: "left" }}>
+      <div style={{ backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #cbd5e1", padding: 8 }}>
+        <TablaDobleScroll>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5, textAlign: "left", minWidth: 950 }}>
           <thead>
             <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #cbd5e1" }}>
               <th style={{ padding: "10px 14px", color: "#475569" }}>Nombre y Código</th>
@@ -429,6 +431,7 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
             )}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Editor Modal de Modelo con 9 Pestañas Internas */}

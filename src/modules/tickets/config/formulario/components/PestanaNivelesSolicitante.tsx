@@ -87,12 +87,17 @@ const NIVELES_LISTA = [
   { id: 5, codigo: "EST", nombre: "Nivel 5 — Estándar", descripcion: "Colaboradores Generales / Todo el personal", color: "#475569", bg: "#f1f5f9", borde: "#cbd5e1" },
 ];
 
-export const PestanaNivelesSolicitante: React.FC = () => {
-  const [configNiveles, setConfigNiveles] = useState<ConfiguracionNiveles>(CONFIG_PREDETERMINADA_NIVELES);
-  const [nivelSeleccionado, setNivelSeleccionado] = useState<number>(4); // Por defecto Operativo (Técnicos)
-  const [guardando, setGuardando] = useState<boolean>(false);
-  const [mensajeExito, setMensajeExito] = useState<string | null>(null);
-  const [errorGuardado, setErrorGuardado] = useState<string | null>(null);
+export interface PestanaNivelesSolicitanteHandle {
+  guardarConfiguracion: () => Promise<void>;
+}
+
+export const PestanaNivelesSolicitante = React.forwardRef<PestanaNivelesSolicitanteHandle, {}>(
+  (_, ref) => {
+    const [configNiveles, setConfigNiveles] = useState<ConfiguracionNiveles>(CONFIG_PREDETERMINADA_NIVELES);
+    const [nivelSeleccionado, setNivelSeleccionado] = useState<number>(4); // Por defecto Operativo (Técnicos)
+    const [guardando, setGuardando] = useState<boolean>(false);
+    const [mensajeExito, setMensajeExito] = useState<string | null>(null);
+    const [errorGuardado, setErrorGuardado] = useState<string | null>(null);
 
   // Cargar configuración guardada de base de datos
   useEffect(() => {
@@ -130,7 +135,7 @@ export const PestanaNivelesSolicitante: React.FC = () => {
     });
   };
 
-  const guardarConfiguracion = async () => {
+  const guardarConfiguracion = React.useCallback(async () => {
     try {
       setGuardando(true);
       setErrorGuardado(null);
@@ -155,16 +160,25 @@ export const PestanaNivelesSolicitante: React.FC = () => {
       setMensajeExito("Matriz de privilegios por nivel guardada exitosamente en el sistema.");
       setTimeout(() => setMensajeExito(null), 4000);
     } catch (err: any) {
-      setErrorGuardado(err.message || "Error al guardar la configuración");
+      setErrorGuardado(err.message || "Error al guardar la configuración de niveles");
+      throw err;
     } finally {
       setGuardando(false);
     }
-  };
+  }, [configNiveles]);
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      guardarConfiguracion,
+    }),
+    [guardarConfiguracion]
+  );
 
   const restaurarValoresPorDefecto = () => {
     if (confirm("¿Deseas restaurar todas las reglas de niveles a los valores predeterminados de fábrica ITIL 4?")) {
       setConfigNiveles(CONFIG_PREDETERMINADA_NIVELES);
-      setMensajeExito("Valores predeterminados restaurados. Recuerda presionar 'Guardar Cambios' para persistir.");
+      setMensajeExito("Valores predeterminados restaurados en pantalla. Recuerda presionar 'Guardar Configuración' en la cabecera para persistir los cambios.");
     }
   };
 
@@ -203,15 +217,6 @@ export const PestanaNivelesSolicitante: React.FC = () => {
             style={{ fontSize: 12, padding: "7px 12px" }}
           >
             Restaurar Valores de Fábrica
-          </button>
-          <button
-            type="button"
-            onClick={guardarConfiguracion}
-            disabled={guardando}
-            className="boton-primario"
-            style={{ fontSize: 12, padding: "7px 16px" }}
-          >
-            {guardando ? "Guardando..." : "Guardar Privilegios"}
           </button>
         </div>
       </div>
@@ -575,4 +580,6 @@ export const PestanaNivelesSolicitante: React.FC = () => {
       </div>
     </div>
   );
-};
+});
+
+PestanaNivelesSolicitante.displayName = "PestanaNivelesSolicitante";

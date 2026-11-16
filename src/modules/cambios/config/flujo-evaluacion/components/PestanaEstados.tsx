@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Plus, Edit2, Trash2, ArrowUp, ArrowDown, Lock, CheckCircle2, AlertCircle } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface EstadoConfig {
   id: string;
@@ -166,18 +167,14 @@ export const PestanaEstados: React.FC<PestanaEstadosProps> = ({ snapshot, onChan
           style={{
             backgroundColor: "#2563eb",
             color: "#ffffff",
-            padding: "8px 16px",
+            padding: "8px 18px",
             borderRadius: "6px",
             border: "none",
             fontWeight: 600,
             fontSize: "0.85rem",
-            cursor: disabled ? "not-allowed" : "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px"
+            cursor: disabled ? "not-allowed" : "pointer"
           }}
         >
-          <Plus size={16} />
           Nuevo Estado
         </button>
       </div>
@@ -207,8 +204,9 @@ export const PestanaEstados: React.FC<PestanaEstadosProps> = ({ snapshot, onChan
       </div>
 
       {/* Tabla de estados */}
-      <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
+      <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "8px" }}>
+        <TablaDobleScroll>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left", minWidth: 1000 }}>
           <thead>
             <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
               <th style={{ padding: "10px 12px", width: "70px" }}>Orden</th>
@@ -347,6 +345,7 @@ export const PestanaEstados: React.FC<PestanaEstadosProps> = ({ snapshot, onChan
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Modal de edición/creación */}

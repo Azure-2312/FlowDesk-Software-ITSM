@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 export interface ObjetivoTiempoProblema {
   id_objetivo: number;
@@ -64,18 +65,9 @@ export const PestanaObjetivosTiempo: React.FC<PestanaObjetivosTiempoProps> = ({
     }
   };
 
-  const handleGuardar = async () => {
-    try {
-      setGuardando(true);
-      setMensajeExito("");
-      await onActualizarObjetivos(listaObjetivos);
-      setMensajeExito("Metas operativas OLA actualizadas exitosamente.");
-    } catch (err: any) {
-      alert(err.message || "Error al actualizar metas OLA");
-    } finally {
-      setGuardando(false);
-    }
-  };
+  React.useEffect(() => {
+    onActualizarObjetivos(listaObjetivos);
+  }, [listaObjetivos, onActualizarObjetivos]);
 
   return (
     <div className="space-y-6">
@@ -116,19 +108,12 @@ export const PestanaObjetivosTiempo: React.FC<PestanaObjetivosTiempoProps> = ({
           >
             Vista previa de medidores
           </button>
-          <button
-            type="button"
-            onClick={handleGuardar}
-            disabled={guardando || !puedeEditar}
-            className="px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-lg shadow-xs transition"
-          >
-            {guardando ? "Guardando..." : "Guardar metas OLA"}
-          </button>
         </div>
       </div>
 
       {/* Tabla de Metas OLA por Prioridad */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+        <TablaDobleScroll minWidth={850}>
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
@@ -223,6 +208,7 @@ export const PestanaObjetivosTiempo: React.FC<PestanaObjetivosTiempoProps> = ({
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Bloque Informativo sobre Integración con 1.2.4 */}

@@ -77,7 +77,7 @@ Las organizaciones de hoy se encuentran atrapadas en una encrucijada: o contrata
 |    Detección temprana de errores en tiempo de compilación. Código 100% tipado, sin "any" laxos.   |
 |                                                                                                    |
 | 3. ARQUITECTURA VERTICAL SLICE POR DOMINIO                                                         |
-|    17 módulos autónomos con contratos públicos estrictos (index.ts y ui.ts). Cero código espagueti.|
+|    16 módulos autónomos con contratos públicos estrictos (index.ts y ui.ts). Cero código espagueti.|
 |                                                                                                    |
 | 4. MODELO RELACIONAL C PURO EN POSTGRESQL                                                          |
 |    Integridad referencial, claves foráneas, restricciones de chequeo y aislamiento ACID estricto.  |
@@ -749,9 +749,9 @@ El Administrador es la máxima autoridad técnica y funcional sobre la plataform
 
 ---
 
-## 4. Análisis Detallado de los 17 Módulos de Dominio del Sistema
+## 4. Análisis Detallado de los 16 Módulos de Dominio del Sistema
 
-FlowDesk ITSM se estructura bajo una arquitectura **Vertical Slice** compuesta por 17 módulos de dominio independientes. Cada módulo encapsula su lógica de negocio, controladores HTTP, servicios de persistencia, vistas de cliente y contratos públicos.
+FlowDesk ITSM se estructura bajo una arquitectura **Vertical Slice** compuesta por 16 módulos de dominio independientes. Cada módulo encapsula su lógica de negocio, controladores HTTP, servicios de persistencia, vistas de cliente y contratos públicos.
 
 ```text
 src/modules/
@@ -761,7 +761,6 @@ src/modules/
 ├── conocimiento/     # Base de Conocimiento Corporativo y Publicaciones KCS
 ├── identidades/      # Usuarios, Autenticación, Roles y Credenciales
 ├── incidentes/       # Restauración de Interrupciones y Clasificación de Fallas
-├── notificaciones/   # Motor de Avisos en Pantalla y Notificaciones por Correo
 ├── operacion/        # Paneles de Control Unificados, Turnos y Monitoreo
 ├── organizacion/     # Sedes, Departamentos, Centros de Costos y Grupos
 ├── plataforma/       # Shell Global, Navegación, Preferencias y Layouts
@@ -1089,63 +1088,64 @@ FlowDesk adopta el patrón de **Rebanadas Verticales por Dominio**. Cada uno de 
 ### 6.2. Mapa Completo de la Jerarquía de Directorios del Repositorio
 
 ```text
-SISTEMA DE TICKETS/
-├── src/                                  # Código fuente de la plataforma
-│   ├── app/                              # Rutas del App Router de Next.js 14
-│   │   ├── (public)/                     # Rutas públicas sin autenticación
-│   │   │   ├── login/                    # Pantalla de inicio de sesión
-│   │   │   └── recuperar-clave/          # Flujo de recuperación de credenciales
-│   │   ├── api/                          # 209 Route Handlers (Endpoints REST)
-│   │   │   ├── admin/                    # Endpoints administrativos
-│   │   │   ├── auth/                     # Endpoints de login, logout y captcha
-│   │   │   ├── cambios/                  # Endpoints del módulo de cambios y CAB
-│   │   │   ├── cmdb/                     # Endpoints de CIs y relaciones
-│   │   │   ├── incidentes/               # Endpoints especializados de incidentes
-│   │   │   ├── solicitudes/              # Endpoints especializados de solicitudes
-│   │   │   ├── tickets/                  # Endpoints del núcleo de tickets
-│   │   │   └── ...                       # Endpoints del resto de dominios
-│   │   ├── plataforma/                   # 312 Páginas operativas autenticadas
-│   │   │   ├── admin/                    # Pantallas de gobernanza y configuración
-│   │   │   ├── cambios/                  # Pantallas de gestión de cambios y calendario
-│   │   │   ├── cmdb/                     # Pantallas de inventario CI y topología
-│   │   │   ├── conocimiento/             # Pantallas de base de conocimiento
-│   │   │   ├── incidentes/               # Pantallas especializadas de incidentes
-│   │   │   ├── solicitudes/              # Pantallas especializadas de solicitudes
-│   │   │   ├── operacion/paneles/        # Los 10 paneles de rol unificados
-│   │   │   └── ...                       # Pantallas del resto de módulos
-│   │   ├── layout.tsx                    # Layout raíz HTML y proveedores de tema
-│   │   ├── not-found.tsx                 # Manejador amigable 404
-│   │   └── globals.css                   # Variables CSS y estilos base Tailwind
-│   ├── modules/                          # Los 17 Módulos Vertical Slice
-│   │   ├── activos/                      # (94 archivos TS/TSX - Lourdes)
-│   │   ├── cambios/                      # (134 archivos TS/TSX - Nain)
-│   │   ├── cmdb/                         # (34 archivos TS/TSX - Nain)
-│   │   ├── conocimiento/                 # (29 archivos TS/TSX - Alexis / Darhien)
-│   │   ├── identidades/                  # (22 archivos TS/TSX - Junior)
-│   │   ├── incidentes/                   # (12 archivos TS/TSX - Miguel)
-│   │   ├── notificaciones/               # (6 archivos TS/TSX - Miguel)
-│   │   ├── operacion/                    # (34 archivos TS/TSX - Miguel)
-│   │   ├── organizacion/                 # (32 archivos TS/TSX - Junior)
-│   │   ├── plataforma/                   # (29 archivos TS/TSX - Miguel)
-│   │   ├── problemas/                    # (94 archivos TS/TSX - Alexis / Darhien)
-│   │   ├── proveedores/                  # (6 archivos TS/TSX - Junior)
-│   │   ├── reportes/                     # (24 archivos TS/TSX - Miguel)
-│   │   ├── seguridad/                    # (36 archivos TS/TSX - Junior)
-│   │   ├── servicios/                    # (33 archivos TS/TSX - Lourdes)
-│   │   ├── solicitudes/                  # (14 archivos TS/TSX - Miguel)
-│   │   └── tickets/                      # (60 archivos TS/TSX - Miguel)
-│   ├── shared/                           # Infraestructura transversal (Nodo hoja)
-│   │   ├── components/                   # Componentes visuales genéricos
-│   │   ├── lib/                          # db.ts, auth.ts, sla.ts, security.ts, menu.ts
-│   │   └── types/                        # Tipos globales de TypeScript
-│   └── middleware.ts                     # Interceptor perimetral de cookies HTTP
-├── db/                                   # Persistencia relacional en PostgreSQL
-│   ├── schema.sql                        # DDL maestro inicial
-│   ├── seed.sql                          # Datos iniciales canónicos
-│   └── migrations/                       # 40 scripts incrementales versionados
-├── scripts/                              # Automatizaciones de prueba y verificación
-│   └── test_e2e_lifecycle.js             # Suite E2E oficial de 30 pruebas ITIL 4
-└── DOCUMENTACIÓN/                        # Suite canónica de documentación técnica
+FlowDesk/
+├── public/                                   # Archivos estáticos (logos, favicon, imágenes) fuera de src/
+├── src/                                      # Código fuente de la plataforma
+│   ├── app/                                  # Rutas del App Router de Next.js 14
+│   │   ├── 403/                              # Pantalla de acceso denegado (Forbidden)
+│   │   ├── login/                            # Pantalla de inicio de sesión (/login)
+│   │   ├── api/                              # 209 Route Handlers (Endpoints REST)
+│   │   │   ├── admin/                        # Endpoints administrativos
+│   │   │   ├── auth/                         # Endpoints de login, logout y captcha
+│   │   │   ├── cambios/                      # Endpoints del módulo de cambios y CAB
+│   │   │   ├── cmdb/                         # Endpoints de CIs y relaciones
+│   │   │   ├── incidentes/                   # Endpoints especializados de incidentes
+│   │   │   ├── solicitudes/                  # Endpoints especializados de solicitudes
+│   │   │   ├── tickets/                      # Endpoints del núcleo de tickets
+│   │   │   └── ...                           # Endpoints del resto de dominios
+│   │   ├── plataforma/                       # 312 Páginas operativas autenticadas
+│   │   │   ├── admin/                        # Pantallas de gobernanza y configuración
+│   │   │   ├── cambios/                      # Pantallas de gestión de cambios y calendario
+│   │   │   ├── cmdb/                         # Pantallas de inventario CI y topología
+│   │   │   ├── conocimiento/                 # Pantallas de base de conocimiento
+│   │   │   ├── incidentes/                   # Pantallas especializadas de incidentes
+│   │   │   ├── solicitudes/                  # Pantallas especializadas de solicitudes
+│   │   │   ├── operacion/paneles/            # Los 10 paneles de rol unificados
+│   │   │   └── ...                           # Pantallas del resto de módulos
+│   │   ├── globals.css                       # Variables CSS y estilos base
+│   │   ├── layout.tsx                        # Layout raíz HTML y proveedores de tema
+│   │   ├── not-found.tsx                     # Manejador amigable 404
+│   │   └── page.tsx                          # Raíz del sitio (redirección a /login)
+│   ├── modules/                              # Los 16 Módulos Vertical Slice
+│   │   ├── activos/                          # (94 archivos TS/TSX - Lourdes)
+│   │   ├── cambios/                          # (134 archivos TS/TSX - Nain)
+│   │   ├── cmdb/                             # (34 archivos TS/TSX - Nain)
+│   │   ├── conocimiento/                     # (29 archivos TS/TSX - Alexis / Darhien)
+│   │   ├── identidades/                      # (22 archivos TS/TSX - Junior)
+│   │   ├── incidentes/                       # (12 archivos TS/TSX - Miguel)
+│   │   ├── operacion/                        # (34 archivos TS/TSX - Miguel)
+│   │   ├── organizacion/                     # (32 archivos TS/TSX - Junior)
+│   │   ├── plataforma/                       # (29 archivos TS/TSX - Miguel)
+│   │   ├── problemas/                        # (94 archivos TS/TSX - Alexis / Darhien)
+│   │   ├── proveedores/                      # (6 archivos TS/TSX - Junior)
+│   │   ├── reportes/                         # (24 archivos TS/TSX - Miguel)
+│   │   ├── seguridad/                        # (36 archivos TS/TSX - Junior)
+│   │   ├── servicios/                        # (33 archivos TS/TSX - Lourdes)
+│   │   ├── solicitudes/                      # (14 archivos TS/TSX - Miguel)
+│   │   └── tickets/                          # (60 archivos TS/TSX - Miguel)
+│   ├── shared/                               # Infraestructura transversal (Nodo hoja)
+│   │   ├── components/                       # Componentes visuales genéricos
+│   │   ├── lib/                              # db.ts, auth.ts, sla.ts, security.ts, menu.ts
+│   │   └── types/                            # Tipos comunes de TypeScript
+│   ├── types/                                # Tipos globales de TypeScript (index.ts)
+│   └── middleware.ts                         # Interceptor perimetral de cookies HTTP
+├── db/                                       # Persistencia relacional en PostgreSQL
+│   ├── schema.sql                            # DDL maestro inicial
+│   ├── seed.sql                              # Datos iniciales canónicos
+│   └── migrations/                           # 48 scripts incrementales versionados
+├── scripts/                                  # Automatizaciones de prueba y verificación
+│   └── test_e2e_lifecycle.js                 # Suite E2E oficial de 30 pruebas ITIL 4
+└── DOCUMENTACIÓN/                            # Suite canónica de documentación técnica
 ```
 
 ---

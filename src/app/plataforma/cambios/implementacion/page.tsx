@@ -1,5 +1,7 @@
-import VistaTecnicoCambiosImplementacion from "@/modules/cambios/views/tecnico/VistaTecnicoCambiosImplementacion";
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import VistaCambiosImplementacion from "@/modules/cambios/views/VistaCambiosImplementacion";
 
-export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoCambiosImplementacion />;
+export default async function PaginaCambiosImplementacion() {
+  await exigirMenuPagina("/plataforma/cambios/implementacion");
+  return <VistaCambiosImplementacion />;
 }

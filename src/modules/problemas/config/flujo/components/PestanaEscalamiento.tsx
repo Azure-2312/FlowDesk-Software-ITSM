@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { BotonIcono } from "@/shared/components/ui/BotonIcono";
 import { Edit2, Trash2 } from "@/shared/components/ui/Iconos";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 export interface ReglaEscalamiento {
   id_escalamiento: number;
@@ -154,6 +155,7 @@ export const PestanaEscalamiento: React.FC<PestanaEscalamientoProps> = ({
 
       {/* Tabla de Reglas de Escalamiento */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+        <TablaDobleScroll minWidth={850}>
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
@@ -233,6 +235,7 @@ export const PestanaEscalamiento: React.FC<PestanaEscalamientoProps> = ({
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Modal Editor */}

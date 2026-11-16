@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface CategoriaCambio {
   id_item: number;
@@ -279,7 +280,7 @@ export const PestanaPlantillas: React.FC = () => {
           onClick={abrirCrearModelo}
           style={{ width: "auto", fontSize: 13, padding: "8px 16px", backgroundColor: "#16a34a" }}
         >
-          + Nuevo Modelo Estándar
+          Nuevo Modelo Estándar
         </button>
       </div>
 
@@ -345,19 +346,20 @@ export const PestanaPlantillas: React.FC = () => {
         {cargando ? (
           <div style={{ textAlign: "center", padding: 32, color: "#2563eb" }}>Cargando catálogo de modelos...</div>
         ) : (
-          <table className="tabla">
-            <thead>
-              <tr>
-                <th>Nombre del Modelo y Código</th>
-                <th>Categoría Técnica</th>
-                <th style={{ width: 110, textAlign: "center" }}>Estado</th>
-                <th style={{ width: 90, textAlign: "center" }}>Riesgo</th>
-                <th style={{ width: 80, textAlign: "center" }}>Usos</th>
-                <th style={{ width: 90, textAlign: "center" }}>% Éxito</th>
-                <th style={{ width: 220, textAlign: "center" }}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TablaDobleScroll>
+            <table className="tabla" style={{ minWidth: 900 }}>
+              <thead>
+                <tr>
+                  <th>Nombre del Modelo y Código</th>
+                  <th>Categoría Técnica</th>
+                  <th style={{ width: 110, textAlign: "center" }}>Estado</th>
+                  <th style={{ width: 90, textAlign: "center" }}>Riesgo</th>
+                  <th style={{ width: 80, textAlign: "center" }}>Usos</th>
+                  <th style={{ width: 90, textAlign: "center" }}>% Éxito</th>
+                  <th style={{ width: 220, textAlign: "center" }}>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
               {modelosFiltrados.length === 0 ? (
                 <tr>
                   <td colSpan={7} style={{ textAlign: "center", padding: 32, color: "#64748b" }}>
@@ -465,6 +467,7 @@ export const PestanaPlantillas: React.FC = () => {
               )}
             </tbody>
           </table>
+          </TablaDobleScroll>
         )}
       </div>
 

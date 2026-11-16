@@ -1,5 +1,7 @@
-import VistaTecnicoProblemasGrupo from "@/modules/problemas/views/tecnico/VistaTecnicoProblemasGrupo";
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import VistaProblemasGrupo from "@/modules/problemas/views/VistaProblemasGrupo";
 
-export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoProblemasGrupo />;
+export default async function PaginaProblemasGrupo() {
+  await exigirMenuPagina("/plataforma/problemas/grupo");
+  return <VistaProblemasGrupo />;
 }

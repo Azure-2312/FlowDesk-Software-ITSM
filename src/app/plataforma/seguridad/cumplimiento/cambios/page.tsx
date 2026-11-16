@@ -1,4 +1,4 @@
-import VistaCambiosIrregulares from "@/modules/cambios/views/auditor/VistaCambiosIrregulares";
+import VistaCambiosIrregulares from "@/modules/cambios/views/VistaCambiosIrregulares";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

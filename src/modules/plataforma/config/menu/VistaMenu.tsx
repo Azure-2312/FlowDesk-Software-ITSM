@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { OpcionMenuAdmin, Perfil } from "@/types";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface FormularioOpcionMenu {
   id_opcion_menu: number | null;
@@ -382,15 +383,15 @@ export default function PaginaOpcionesMenu() {
       ) : (
         /* VISTA DE TABLA PRINCIPAL DE OPCIONES DE MENÚ */
         <div>
-          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
-            <div>
+          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 18 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <h1>Estructura del Menú Lateral</h1>
               <p>
                 Jerarquía del menú del sistema (hasta 3 niveles de profundidad) y asignación de permisos por perfil.
               </p>
             </div>
-            <button className="boton-primario" style={{ width: "auto", padding: "8px 18px", fontSize: 13 }} onClick={abrirFormularioNuevo}>
-              Nueva opción
+            <button className="boton-primario" style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }} onClick={abrirFormularioNuevo}>
+              Nueva Opción
             </button>
           </div>
 
@@ -404,7 +405,8 @@ export default function PaginaOpcionesMenu() {
             </div>
           ) : (
             <div className="contenedor-tabla">
-              <table className="tabla">
+              <TablaDobleScroll minWidth={950}>
+              <table className="tabla" style={{ minWidth: 950 }}>
                 <thead>
                   <tr>
                     <th>Nombre</th>
@@ -505,6 +507,7 @@ export default function PaginaOpcionesMenu() {
                   ))}
                 </tbody>
               </table>
+              </TablaDobleScroll>
             </div>
           )}
         </div>

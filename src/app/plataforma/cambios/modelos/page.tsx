@@ -1,4 +1,4 @@
-import VistaModelosCambio from "@/modules/cambios/views/aprobador/VistaModelosCambio";
+import VistaModelosCambio from "@/modules/cambios/views/VistaModelosCambio";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

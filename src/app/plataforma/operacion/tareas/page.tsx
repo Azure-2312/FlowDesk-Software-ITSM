@@ -1,5 +1,5 @@
-import VistaTecnicoTareas from "@/modules/operacion/agenda/VistaTecnicoTareas";
+import VistaTareasOperativas from "@/modules/operacion/agenda/VistaTareasOperativas";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoTareas />;
+  return <VistaTareasOperativas />;
 }

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { VistaCatalogoServicios } from "@/modules/servicios/admin/servicios/page";
+import { VistaCatalogoServicios } from "@/modules/servicios/config/servicios/page";
 
 export default function PaginaAdminServiciosCrear() {
   return (

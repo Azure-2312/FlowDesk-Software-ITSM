@@ -1,4 +1,4 @@
-import VistaMuestreo from "@/modules/seguridad/views/auditor/VistaMuestreo";
+import VistaMuestreo from "@/modules/seguridad/views/VistaMuestreo";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

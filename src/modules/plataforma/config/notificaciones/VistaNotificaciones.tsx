@@ -368,18 +368,39 @@ function ContenidoConfiguracionNotificaciones({
   return (
     <div className="vista-contenedor">
       {/* Cabecera Principal */}
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, margin: "0 0 6px 0", color: "#0f172a" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 20, flexWrap: "nowrap" }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 6px 0", color: "#0f172a" }}>
             {pestana === "contacto"
               ? "Configuración de Contacto y Canales Institucionales"
               : "Comunicaciones y Notificaciones"}
           </h1>
-          <p className="subtitulo" style={{ margin: 0, fontSize: 13.5, color: "#64748b" }}>
+          <p className="subtitulo" style={{ margin: 0, fontSize: 13, color: "#64748b", lineHeight: 1.45, maxWidth: 900 }}>
             {pestana === "contacto"
               ? "Administre las vías de comunicación y contacto oficiales de la entidad (WhatsApp, SMS, Slack, Microsoft Teams y medios personalizados). Los datos configurados rigen a nivel empresarial para todos los procesos del servicio."
               : "Configure el diseño visual institucional, logotipos corporativos y plantillas de correo electrónico para los avisos del sistema."}
           </p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          {pestana === "contacto" && (
+            <button
+              type="button"
+              className="boton-secundario"
+              onClick={() => setModalNuevoMedioAbierto(true)}
+              style={{ width: "auto", padding: "8px 16px", fontSize: 13, flexShrink: 0 }}
+            >
+              Agregar medio
+            </button>
+          )}
+          <button
+            type="button"
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 20px", fontSize: 13, flexShrink: 0 }}
+            onClick={pestana === "contacto" ? guardarConfiguracionContacto : guardarPlantillas}
+            disabled={guardando || cargando}
+          >
+            {guardando ? "Guardando..." : "Guardar Configuración"}
+          </button>
         </div>
       </div>
 
@@ -400,25 +421,14 @@ function ContenidoConfiguracionNotificaciones({
       ) : pestana === "contacto" ? (
         /* PESTAÑA: CONFIGURACIÓN DE CONTACTO */
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          {/* Barra de Acciones Superior */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-            <div>
-              <h2 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 2px 0", color: "#0f172a" }}>
-                Medios y Canales de Contacto Corporativos
-              </h2>
-              <p style={{ margin: 0, fontSize: 12.5, color: "#64748b" }}>
-                Configure los parámetros técnicos de cada medio o añada nuevos canales de soporte según las necesidades de la entidad.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className="boton-primario"
-              onClick={() => setModalNuevoMedioAbierto(true)}
-              style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
-            >
-              + Agregar otro medio de contacto
-            </button>
+          {/* Subtítulo de sección */}
+          <div style={{ marginBottom: 4 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 2px 0", color: "#0f172a" }}>
+              Medios y Canales de Contacto Corporativos
+            </h2>
+            <p style={{ margin: 0, fontSize: 12.5, color: "#64748b" }}>
+              Configure los parámetros técnicos de cada medio o añada nuevos canales de soporte según las necesidades de la entidad.
+            </p>
           </div>
 
           {/* Cuadrícula de Medios de Contacto */}
@@ -516,19 +526,6 @@ function ContenidoConfiguracionNotificaciones({
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Botón de Guardar al fondo */}
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10, paddingTop: 16, borderTop: "1px solid #e2e8f0" }}>
-            <button
-              type="button"
-              className="boton-primario"
-              style={{ width: "auto", padding: "11px 28px", fontSize: 13.5 }}
-              onClick={guardarConfiguracionContacto}
-              disabled={guardando || cargando}
-            >
-              {guardando ? "Guardando..." : "Guardar Configuración de Contacto"}
-            </button>
           </div>
         </div>
       ) : (
@@ -630,19 +627,6 @@ function ContenidoConfiguracionNotificaciones({
                   }))
                 }
               />
-            </div>
-
-            {/* Botón de Guardar al fondo */}
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 20, paddingTop: 16, borderTop: "1px solid #e2e8f0" }}>
-              <button
-                type="button"
-                className="boton-primario"
-                style={{ width: "auto", padding: "10px 24px", fontSize: 13 }}
-                onClick={guardarPlantillas}
-                disabled={guardando || cargando}
-              >
-                {guardando ? "Guardando..." : "Guardar Plantillas de Correo"}
-              </button>
             </div>
           </div>
 

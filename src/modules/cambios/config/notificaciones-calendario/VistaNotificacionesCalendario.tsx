@@ -81,8 +81,10 @@ export default function NotificacionesCalendarioPage() {
   const [guardando, setGuardando] = useState<boolean>(false);
   const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
 
-  // Snapshot activo de la pestaña
+  // Snapshot activo de la pestaña y tracking de pestañas modificadas
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
+  const [snapshotsPorTab, setSnapshotsPorTab] = useState<Record<string, any>>({});
+  const [tabsModificadas, setTabsModificadas] = useState<Set<string>>(new Set());
 
   // Catálogos auxiliares (usuarios, departamentos, servicios, CI)
   const [catalogoUsuarios, setCatalogoUsuarios] = useState<any[]>([]);
@@ -115,6 +117,10 @@ export default function NotificacionesCalendarioPage() {
       // Cargar snapshot activo
       const snapshotCargado = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
       setConfigSnapshot(snapshotCargado);
+      setSnapshotsPorTab((prev) => ({
+        ...prev,
+        [tabActiva]: prev[tabActiva] !== undefined ? prev[tabActiva] : snapshotCargado,
+      }));
     } catch (err: any) {
       console.error(err);
       setErrorCarga(err.message || "Error al conectar con el servidor");
@@ -127,25 +133,39 @@ export default function NotificacionesCalendarioPage() {
     cargarDatos();
   }, [cargarDatos]);
 
-  // Guardar configuración directa
+  const actualizarSnapshotPestana = (nuevoSnap: any, pestanaId: string = tabActiva) => {
+    setConfigSnapshot(nuevoSnap);
+    setSnapshotsPorTab((prev) => ({ ...prev, [pestanaId]: nuevoSnap }));
+    setTabsModificadas((prev) => new Set(prev).add(pestanaId));
+  };
+
+  // Guardar configuración directa coordinada
   const handleGuardarConfiguracion = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: `Actualización de calendario en pestaña ${PESTANAS_INFO[tabActiva].titulo}`,
-          impacto_resumen: `Guardado directo de pestaña ${PESTANAS_INFO[tabActiva].titulo}`
-        })
-      });
+      const tabsAGuardar = tabsModificadas.size > 0 ? Array.from(tabsModificadas) : [tabActiva];
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al guardar la configuración");
+      for (const tId of tabsAGuardar) {
+        const snap = snapshotsPorTab[tId] || (tId === tabActiva ? configSnapshot : null);
+        if (!snap) continue;
 
-      alert("Configuración guardada exitosamente.");
+        const res = await fetch("/api/cambios/configuracion/notificaciones-calendario/configuracion", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pestana: tId,
+            snapshot: snap,
+            motivo: `Actualización de calendario en pestaña ${PESTANAS_INFO[tId as TabId]?.titulo || tId}`,
+            impacto_resumen: `Guardado directo de pestaña ${PESTANAS_INFO[tId as TabId]?.titulo || tId}`
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Error al guardar la configuración en pestaña ${tId}`);
+      }
+
+      setTabsModificadas(new Set());
+      alert("Configuración de notificaciones y calendario guardada exitosamente.");
       await cargarDatos();
     } catch (err: any) {
       alert("Error al guardar: " + err.message);
@@ -192,12 +212,17 @@ export default function NotificacionesCalendarioPage() {
   const deshabilitadoEdicion = !!bloqueadoPorOtro;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-      {/* Encabezado Corporativo Formal */}
-      <header className="bg-white px-8 pt-7 pb-4 border-b border-slate-100">
-        <div style={{ maxWidth: 1400, width: "100%", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 20 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
+    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f8fafc" }}>
+      <div style={{ padding: "28px 32px 32px 32px", flex: 1, width: "100%", maxWidth: 1400, margin: "0 auto", boxSizing: "border-box" }}>
+        {/* Encabezado Corporativo Formal Estandarizado */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: 16,
+          marginBottom: 16
+        }}>
+          <div>
             <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
               Notificaciones y Calendario de Cambios
             </h1>
@@ -206,13 +231,13 @@ export default function NotificacionesCalendarioPage() {
             </p>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <button
               onClick={handleGuardarConfiguracion}
               type="button"
               disabled={guardando || deshabilitadoEdicion}
               className="boton-primario"
-              style={{ padding: "8px 18px", fontSize: 13, width: "auto", fontWeight: 700 }}
+              style={{ padding: "8px 18px", fontSize: 13, width: "auto", fontWeight: 700, flexShrink: 0 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
@@ -221,7 +246,7 @@ export default function NotificacionesCalendarioPage() {
 
         {/* Banner de bloqueo concurrente si aplica */}
         {bloqueadoPorOtro && (
-          <div style={{ maxWidth: 1400, marginTop: 14, background: "#fee2e2", border: "1px solid #fca5a5", color: "#991b1b", padding: "10px 14px", borderRadius: 6, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ marginBottom: 16, background: "#fee2e2", border: "1px solid #fca5a5", color: "#991b1b", padding: "10px 14px", borderRadius: 6, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span>Esta pestaña está siendo editada actualmente por <strong>{bloqueadoPorOtro}</strong>. Está en modo de solo lectura.</span>
             <button
               onClick={() => alert("Se ha solicitado el control de la sesión de edición al administrador.")}
@@ -231,107 +256,112 @@ export default function NotificacionesCalendarioPage() {
             </button>
           </div>
         )}
-      </header>
 
-      {/* Navegación horizontal de pestañas */}
-      <div style={{ background: "#ffffff", borderBottom: "1px solid #e2e8f0" }}>
-        <div style={{ maxWidth: 1400, padding: "0 32px", display: "flex", gap: 8, overflowX: "auto" }}>
-        {(Object.keys(PESTANAS_INFO) as TabId[]).map((tabKey) => {
-          const tab = PESTANAS_INFO[tabKey];
-          const activa = tabActiva === tabKey;
-          return (
-            <button
-              key={tabKey}
-              onClick={() => setTabActiva(tabKey)}
-              style={{
-                padding: "12px 18px",
-                border: "none",
-                background: "transparent",
-                borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
-                color: activa ? "#2563eb" : "#64748b",
-                fontWeight: activa ? 600 : 500,
-                fontSize: 13.5,
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                transition: "all 0.15s ease"
-              }}
-            >
-              {tab.titulo}
-            </button>
-          );
-        })}
+        {/* Navegación horizontal de pestañas */}
+        <div style={{
+          display: "flex",
+          gap: 8,
+          borderBottom: "1px solid #e2e8f0",
+          marginBottom: 24,
+          justifyContent: "flex-start",
+          overflowX: "auto",
+          scrollbarWidth: "none"
+        }}>
+          {(Object.keys(PESTANAS_INFO) as TabId[]).map((tabKey) => {
+            const tab = PESTANAS_INFO[tabKey];
+            const activa = tabActiva === tabKey;
+            return (
+              <button
+                key={tabKey}
+                onClick={() => setTabActiva(tabKey)}
+                style={{
+                  padding: "10px 16px",
+                  border: "none",
+                  background: "transparent",
+                  borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
+                  color: activa ? "#2563eb" : "#64748b",
+                  fontWeight: activa ? 600 : 500,
+                  fontSize: 13,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  transition: "all 0.15s ease"
+                }}
+              >
+                {tab.titulo}
+              </button>
+            );
+          })}
         </div>
-      </div>
 
-      {/* Contenido de la Pestaña Activa */}
-      {cargando ? (
-        <div style={{ padding: 40, textAlign: "center", color: "#64748b" }}>
-          Cargando configuración del submódulo...
-        </div>
-      ) : errorCarga ? (
-        <div style={{ padding: 40, textAlign: "center", color: "#b91c1c" }}>
-          Error: {errorCarga}
-          <div style={{ marginTop: 12 }}>
-            <button onClick={cargarDatos} style={{ padding: "6px 14px", background: "#2563eb", color: "#ffffff", border: "none", borderRadius: 4, cursor: "pointer" }}>
-              Reintentar
-            </button>
+        {/* Contenido de la Pestaña Activa */}
+        {cargando ? (
+          <div style={{ padding: 40, textAlign: "center", color: "#64748b" }}>
+            Cargando configuración del submódulo...
           </div>
-        </div>
-      ) : (
-        <div style={{ maxWidth: 1400, width: "100%", padding: "28px 32px", margin: "0 auto 0 0" }}>
-          {tabActiva === "notificaciones" && (
-            <PestanaNotificaciones
-              config={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
-              usuarios={catalogoUsuarios}
-              departamentos={catalogoDepartamentos}
-            />
-          )}
+        ) : errorCarga ? (
+          <div style={{ padding: 40, textAlign: "center", color: "#b91c1c" }}>
+            Error: {errorCarga}
+            <div style={{ marginTop: 12 }}>
+              <button onClick={cargarDatos} style={{ padding: "6px 14px", background: "#2563eb", color: "#ffffff", border: "none", borderRadius: 4, cursor: "pointer" }}>
+                Reintentar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div style={{ display: tabActiva === "notificaciones" ? "block" : "none" }}>
+              <PestanaNotificaciones
+                config={snapshotsPorTab["notificaciones"] || configSnapshot}
+                onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "notificaciones")}
+                usuarios={catalogoUsuarios}
+                departamentos={catalogoDepartamentos}
+              />
+            </div>
 
-          {tabActiva === "ventanas_mantenimiento" && (
-            <PestanaVentanasMantenimiento
-              config={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
-              servicios={catalogoServicios}
-              departamentos={catalogoDepartamentos}
-            />
-          )}
+            <div style={{ display: tabActiva === "ventanas_mantenimiento" ? "block" : "none" }}>
+              <PestanaVentanasMantenimiento
+                config={snapshotsPorTab["ventanas_mantenimiento"] || configSnapshot}
+                onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "ventanas_mantenimiento")}
+                servicios={catalogoServicios}
+                departamentos={catalogoDepartamentos}
+              />
+            </div>
 
-          {tabActiva === "periodos_congelamiento" && (
-            <PestanaPeriodosCongelamiento
-              config={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
-              servicios={catalogoServicios}
-              ciList={catalogoCI}
-              departamentos={catalogoDepartamentos}
-            />
-          )}
+            <div style={{ display: tabActiva === "periodos_congelamiento" ? "block" : "none" }}>
+              <PestanaPeriodosCongelamiento
+                config={snapshotsPorTab["periodos_congelamiento"] || configSnapshot}
+                onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "periodos_congelamiento")}
+                servicios={catalogoServicios}
+                ciList={catalogoCI}
+                departamentos={catalogoDepartamentos}
+              />
+            </div>
 
-          {tabActiva === "feriados" && (
-            <PestanaFeriados
-              config={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
-            />
-          )}
+            <div style={{ display: tabActiva === "feriados" ? "block" : "none" }}>
+              <PestanaFeriados
+                config={snapshotsPorTab["feriados"] || configSnapshot}
+                onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "feriados")}
+              />
+            </div>
 
-          {tabActiva === "conflictos_capacidad" && (
-            <PestanaConflictosCapacidad
-              config={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
-              servicios={catalogoServicios}
-              ciList={catalogoCI}
-              usuarios={catalogoUsuarios}
-            />
-          )}
+            <div style={{ display: tabActiva === "conflictos_capacidad" ? "block" : "none" }}>
+              <PestanaConflictosCapacidad
+                config={snapshotsPorTab["conflictos_capacidad"] || configSnapshot}
+                onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "conflictos_capacidad")}
+                servicios={catalogoServicios}
+                ciList={catalogoCI}
+                usuarios={catalogoUsuarios}
+              />
+            </div>
 
-          {tabActiva === "presentacion_calendario" && (
-            <PestanaPresentacionCalendario
-              config={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
-            />
-          )}
-        </div>
-      )}
+            <div style={{ display: tabActiva === "presentacion_calendario" ? "block" : "none" }}>
+              <PestanaPresentacionCalendario
+                config={snapshotsPorTab["presentacion_calendario"] || configSnapshot}
+                onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "presentacion_calendario")}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
-import VistaTecnicoProblemasAsignados from "@/modules/problemas/views/tecnico/VistaTecnicoProblemasAsignados";
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import VistaProblemasAsignados from "@/modules/problemas/views/VistaProblemasAsignados";
 
-export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoProblemasAsignados />;
+export default async function PaginaProblemasAsignados() {
+  await exigirMenuPagina("/plataforma/problemas/asignados");
+  return <VistaProblemasAsignados />;
 }

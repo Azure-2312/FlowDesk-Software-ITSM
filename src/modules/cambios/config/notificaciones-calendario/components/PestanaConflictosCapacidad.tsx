@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Play, AlertTriangle, AlertCircle, CheckCircle2, Clock, Sliders, X, Check } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface PestanaConflictosCapacidadProps {
   config: any;
@@ -89,9 +90,9 @@ export function PestanaConflictosCapacidad({ config, onChange, servicios, ciList
         </div>
         <button
           onClick={() => { setModalSimuladorAbierto(true); setSimResultado(null); }}
-          style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 16px", background: "#2563eb", color: "#ffffff", border: "none", borderRadius: 6, fontWeight: 600, fontSize: 13, cursor: "pointer" }}
+          style={{ padding: "8px 16px", background: "#2563eb", color: "#ffffff", border: "none", borderRadius: 6, fontWeight: 600, fontSize: 13, cursor: "pointer" }}
         >
-          <Play size={14} /> Simulador de Conflictos
+          Simulador de Conflictos
         </button>
       </div>
 
@@ -148,8 +149,9 @@ export function PestanaConflictosCapacidad({ config, onChange, servicios, ciList
       </div>
 
       {/* Tabla de Reglas de Conflicto */}
-      <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, textAlign: "left" }}>
+      <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 8 }}>
+        <TablaDobleScroll>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, textAlign: "left", minWidth: 880 }}>
           <thead style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
             <tr>
               <th style={{ padding: "10px 14px", fontWeight: 600, color: "#475569" }}>Conflicto y Criterio</th>
@@ -279,6 +281,7 @@ export function PestanaConflictosCapacidad({ config, onChange, servicios, ciList
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Modal Simulador de Conflictos */}
@@ -373,11 +376,12 @@ export function PestanaConflictosCapacidad({ config, onChange, servicios, ciList
 
             <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
               <button
+                type="button"
                 disabled={simulando}
                 onClick={ejecutarSimulador}
-                style={{ padding: "8px 18px", background: simulando ? "#94a3b8" : "#2563eb", color: "#ffffff", border: "none", borderRadius: 6, fontWeight: 600, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
+                style={{ padding: "8px 18px", background: simulando ? "#94a3b8" : "#2563eb", color: "#ffffff", border: "none", borderRadius: 6, fontWeight: 600, fontSize: 13, cursor: "pointer" }}
               >
-                <Play size={14} /> {simulando ? "Calculando conflictos..." : "Ejecutar Simulación"}
+                {simulando ? "Calculando conflictos..." : "Ejecutar Simulación"}
               </button>
             </div>
 

@@ -48,8 +48,8 @@ export default function PaginaSeguridadLogs() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-        <div>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h1>Log de Seguridad y Control de Accesos</h1>
           <p>
             Trazabilidad ISO/IEC 27001 y SOX: Registro inmutable de intentos de inicio de sesión, mitigación de fuerza bruta y auditoría de direcciones IP.
@@ -61,7 +61,7 @@ export default function PaginaSeguridadLogs() {
           disabled={cargando}
           title="Actualizar log de seguridad"
           aria-label="Actualizar log de seguridad"
-          style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "6px 8px" }}
+          style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 10px", flexShrink: 0 }}
         >
           <svg
             width="14"
@@ -145,8 +145,8 @@ export default function PaginaSeguridadLogs() {
           <p style={{ margin: 0, color: "#64748b" }}>No se encontraron eventos de seguridad con los filtros aplicados.</p>
         </div>
       ) : (
-        <div className="contenedor-tabla">
-          <table className="tabla-datos">
+        <div className="contenedor-tabla" style={{ overflowX: "auto" }}>
+          <table className="tabla-datos" style={{ minWidth: 800 }}>
             <thead>
               <tr>
                 <th>ID</th>

@@ -234,14 +234,13 @@ export default function VistaSaludSistema() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Salud del sistema</h1>
-        <p>Estado de la base de datos, conexiones y volumen de información.</p>
-      </div>
-
-      <div style={{ marginBottom: 16 }}>
-        <button type="button" className="boton-secundario" onClick={cargar} style={{ width: "auto" }} disabled={cargando}>
-          {cargando ? "Verificando..." : "Verificar de nuevo"}
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 20 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1>Salud del sistema</h1>
+          <p>Estado de la base de datos, conexiones y volumen de información.</p>
+        </div>
+        <button type="button" className="boton-primario" onClick={cargar} style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }} disabled={cargando}>
+          {cargando ? "Verificando..." : "Verificar Estado"}
         </button>
       </div>
 
@@ -282,7 +281,8 @@ export default function VistaSaludSistema() {
 
           <div className="tarjeta-formulario">
             <h2>Volumen de información</h2>
-            <table className="tabla-datos">
+            <div style={{ overflowX: "auto" }}>
+              <table className="tabla-datos" style={{ minWidth: 600 }}>
               <thead>
                 <tr>
                   <th>Entidad</th>
@@ -299,8 +299,9 @@ export default function VistaSaludSistema() {
               </tbody>
             </table>
           </div>
-        </>
-      ) : null}
+        </div>
+      </>
+    ) : null}
 
       {aviso && (
         <p
@@ -341,7 +342,8 @@ export default function VistaSaludSistema() {
         ) : tareas.length === 0 ? (
           <p>No hay tareas programadas registradas.</p>
         ) : (
-          <table className="tabla-datos">
+          <div style={{ overflowX: "auto" }}>
+            <table className="tabla-datos" style={{ minWidth: 750 }}>
             <thead>
               <tr>
                 <th>Nombre</th>
@@ -385,6 +387,7 @@ export default function VistaSaludSistema() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
@@ -410,7 +413,8 @@ export default function VistaSaludSistema() {
         ) : correos.length === 0 ? (
           <p>La cola de correo está vacía.</p>
         ) : (
-          <table className="tabla-datos">
+          <div style={{ overflowX: "auto" }}>
+            <table className="tabla-datos" style={{ minWidth: 750 }}>
             <thead>
               <tr>
                 <th>Destinatario</th>
@@ -456,6 +460,7 @@ export default function VistaSaludSistema() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>

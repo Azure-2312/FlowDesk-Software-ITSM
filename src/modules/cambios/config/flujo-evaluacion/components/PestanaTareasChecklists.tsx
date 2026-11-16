@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Plus, Edit2, Trash2, CheckSquare, Layers, CheckCircle2, AlertTriangle, ArrowRight } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface TareaCatalogo {
   id: string;
@@ -167,18 +168,14 @@ export const PestanaTareasChecklists: React.FC<PestanaTareasChecklistsProps> = (
             style={{
               backgroundColor: "#2563eb",
               color: "#ffffff",
-              padding: "8px 16px",
+              padding: "8px 18px",
               borderRadius: "6px",
               border: "none",
               fontWeight: 600,
               fontSize: "0.85rem",
-              cursor: disabled ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
+              cursor: disabled ? "not-allowed" : "pointer"
             }}
           >
-            <Plus size={16} />
             Nueva Tarea
           </button>
         )}
@@ -190,18 +187,14 @@ export const PestanaTareasChecklists: React.FC<PestanaTareasChecklistsProps> = (
             style={{
               backgroundColor: "#2563eb",
               color: "#ffffff",
-              padding: "8px 16px",
+              padding: "8px 18px",
               borderRadius: "6px",
               border: "none",
               fontWeight: 600,
               fontSize: "0.85rem",
-              cursor: disabled ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
+              cursor: disabled ? "not-allowed" : "pointer"
             }}
           >
-            <Plus size={16} />
             Nuevo Ítem Go/No-Go
           </button>
         )}
@@ -280,8 +273,9 @@ export const PestanaTareasChecklists: React.FC<PestanaTareasChecklistsProps> = (
 
       {/* SECCIÓN A: CATÁLOGO DE TAREAS */}
       {seccionActiva === "catalogo" && (
-        <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
+        <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "8px" }}>
+          <TablaDobleScroll>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left", minWidth: 900 }}>
             <thead>
               <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
                 <th style={{ padding: "10px 12px" }}>Tarea / Código</th>
@@ -356,6 +350,7 @@ export const PestanaTareasChecklists: React.FC<PestanaTareasChecklistsProps> = (
               ))}
             </tbody>
           </table>
+          </TablaDobleScroll>
         </div>
       )}
 
@@ -397,59 +392,61 @@ export const PestanaTareasChecklists: React.FC<PestanaTareasChecklistsProps> = (
             El resultado <strong>Go</strong> autoriza el paso a 'En ejecución' solo si todos los ítems obligatorios están marcados y firmados. En caso de <strong>No-Go</strong>, se devuelve la RFC a 'Autorizado' para su reprogramación.
           </p>
 
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
-            <thead>
-              <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
-                <th style={{ padding: "8px 12px", width: "40px" }}>#</th>
-                <th style={{ padding: "8px 12px" }}>Ítem de Validación Go / No-Go</th>
-                <th style={{ padding: "8px 12px" }}>Responsable</th>
-                <th style={{ padding: "8px 12px" }}>Evidencia Adjunta</th>
-                <th style={{ padding: "8px 12px" }}>Obligatorio</th>
-                <th style={{ padding: "8px 12px", textAlign: "right" }}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {goNoGo.map((item, idx) => (
-                <tr key={item.id} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                  <td style={{ padding: "8px 12px", color: "#94a3b8", fontWeight: 600 }}>{idx + 1}</td>
-                  <td style={{ padding: "8px 12px", fontWeight: 500, color: "#1e293b" }}>{item.texto}</td>
-                  <td style={{ padding: "8px 12px", color: "#475569", textTransform: "capitalize" }}>{item.responsable_rol}</td>
-                  <td style={{ padding: "8px 12px" }}>
-                    {item.evidencia_requerida ? (
-                      <span style={{ color: "#d97706", fontWeight: 600, fontSize: "0.75rem" }}>Exigida</span>
-                    ) : (
-                      <span style={{ color: "#94a3b8", fontSize: "0.75rem" }}>No</span>
-                    )}
-                  </td>
-                  <td style={{ padding: "8px 12px" }}>
-                    {item.obligatorio ? (
-                      <span style={{ color: "#16a34a", fontWeight: 700, fontSize: "0.75rem" }}>Bloqueante Go</span>
-                    ) : (
-                      <span style={{ color: "#64748b", fontSize: "0.75rem" }}>Recomendado</span>
-                    )}
-                  </td>
-                  <td style={{ padding: "8px 12px", textAlign: "right" }}>
-                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "6px" }}>
-                      <button
-                        onClick={() => { setItemGngEnEdicion({ ...item }); setModalItemGngAbierto(true); }}
-                        disabled={disabled}
-                        style={{ padding: "4px 8px", backgroundColor: "#f1f5f9", border: "1px solid #cbd5e1", borderRadius: "4px", cursor: "pointer", color: "#334155" }}
-                      >
-                        <Edit2 size={13} />
-                      </button>
-                      <button
-                        onClick={() => handleEliminarGng(item.id)}
-                        disabled={disabled}
-                        style={{ padding: "4px 8px", backgroundColor: "#fee2e2", border: "1px solid #fca5a5", borderRadius: "4px", cursor: "pointer", color: "#b91c1c" }}
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-                  </td>
+          <TablaDobleScroll>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left", minWidth: 800 }}>
+              <thead>
+                <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
+                  <th style={{ padding: "8px 12px", width: "40px" }}>#</th>
+                  <th style={{ padding: "8px 12px" }}>Ítem de Validación Go / No-Go</th>
+                  <th style={{ padding: "8px 12px" }}>Responsable</th>
+                  <th style={{ padding: "8px 12px" }}>Evidencia Adjunta</th>
+                  <th style={{ padding: "8px 12px" }}>Obligatorio</th>
+                  <th style={{ padding: "8px 12px", textAlign: "right" }}>Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {goNoGo.map((item, idx) => (
+                  <tr key={item.id} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                    <td style={{ padding: "8px 12px", color: "#94a3b8", fontWeight: 600 }}>{idx + 1}</td>
+                    <td style={{ padding: "8px 12px", fontWeight: 500, color: "#1e293b" }}>{item.texto}</td>
+                    <td style={{ padding: "8px 12px", color: "#475569", textTransform: "capitalize" }}>{item.responsable_rol}</td>
+                    <td style={{ padding: "8px 12px" }}>
+                      {item.evidencia_requerida ? (
+                        <span style={{ color: "#d97706", fontWeight: 600, fontSize: "0.75rem" }}>Exigida</span>
+                      ) : (
+                        <span style={{ color: "#94a3b8", fontSize: "0.75rem" }}>No</span>
+                      )}
+                    </td>
+                    <td style={{ padding: "8px 12px" }}>
+                      {item.obligatorio ? (
+                        <span style={{ color: "#16a34a", fontWeight: 700, fontSize: "0.75rem" }}>Bloqueante Go</span>
+                      ) : (
+                        <span style={{ color: "#64748b", fontSize: "0.75rem" }}>Recomendado</span>
+                      )}
+                    </td>
+                    <td style={{ padding: "8px 12px", textAlign: "right" }}>
+                      <div style={{ display: "flex", justifyContent: "flex-end", gap: "6px" }}>
+                        <button
+                          onClick={() => { setItemGngEnEdicion({ ...item }); setModalItemGngAbierto(true); }}
+                          disabled={disabled}
+                          style={{ padding: "4px 8px", backgroundColor: "#f1f5f9", border: "1px solid #cbd5e1", borderRadius: "4px", cursor: "pointer", color: "#334155" }}
+                        >
+                          <Edit2 size={13} />
+                        </button>
+                        <button
+                          onClick={() => handleEliminarGng(item.id)}
+                          disabled={disabled}
+                          style={{ padding: "4px 8px", backgroundColor: "#fee2e2", border: "1px solid #fca5a5", borderRadius: "4px", cursor: "pointer", color: "#b91c1c" }}
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TablaDobleScroll>
         </div>
       )}
 

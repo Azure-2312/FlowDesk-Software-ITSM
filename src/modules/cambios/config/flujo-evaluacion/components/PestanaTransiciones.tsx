@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Plus, Edit2, Trash2, Eye, ShieldCheck, CheckCircle2, AlertTriangle, ArrowRight, Grid, Network, ListFilter } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface TransicionConfig {
   id: string;
@@ -202,10 +203,7 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({ snapsh
             <button
               onClick={() => setVista("lista")}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "6px 12px",
+                padding: "6px 14px",
                 fontSize: "0.8rem",
                 fontWeight: 600,
                 border: "none",
@@ -214,16 +212,12 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({ snapsh
                 cursor: "pointer"
               }}
             >
-              <ListFilter size={14} />
               Lista
             </button>
             <button
               onClick={() => setVista("matriz")}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "6px 12px",
+                padding: "6px 14px",
                 fontSize: "0.8rem",
                 fontWeight: 600,
                 border: "none",
@@ -232,16 +226,12 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({ snapsh
                 cursor: "pointer"
               }}
             >
-              <Grid size={14} />
               Matriz
             </button>
             <button
               onClick={() => setVista("diagrama")}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "6px 12px",
+                padding: "6px 14px",
                 fontSize: "0.8rem",
                 fontWeight: 600,
                 border: "none",
@@ -250,7 +240,6 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({ snapsh
                 cursor: "pointer"
               }}
             >
-              <Network size={14} />
               Diagrama
             </button>
           </div>
@@ -262,17 +251,13 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({ snapsh
               backgroundColor: "#f8fafc",
               border: "1px solid #cbd5e1",
               color: "#1e293b",
-              padding: "8px 14px",
+              padding: "8px 16px",
               borderRadius: "6px",
               fontWeight: 600,
               fontSize: "0.85rem",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
+              cursor: "pointer"
             }}
           >
-            <ShieldCheck size={16} style={{ color: "#2563eb" }} />
             Validar Flujo
           </button>
 
@@ -283,18 +268,14 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({ snapsh
             style={{
               backgroundColor: "#2563eb",
               color: "#ffffff",
-              padding: "8px 16px",
+              padding: "8px 18px",
               borderRadius: "6px",
               border: "none",
               fontWeight: 600,
               fontSize: "0.85rem",
-              cursor: disabled ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
+              cursor: disabled ? "not-allowed" : "pointer"
             }}
           >
-            <Plus size={16} />
             Nueva Transición
           </button>
         </div>
@@ -330,8 +311,9 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({ snapsh
 
       {/* VISTA 1: LISTA */}
       {vista === "lista" && (
-        <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
+        <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "10px" }}>
+          <TablaDobleScroll>
+            <table style={{ width: "100%", minWidth: "1080px", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
             <thead>
               <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
                 <th style={{ padding: "10px 12px", width: "40px" }}>#</th>
@@ -446,68 +428,71 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({ snapsh
               ))}
             </tbody>
           </table>
+          </TablaDobleScroll>
         </div>
       )}
 
       {/* VISTA 2: MATRIZ ORIGEN X DESTINO */}
       {vista === "matriz" && (
-        <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "16px", overflowX: "auto" }}>
+        <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "16px" }}>
           <p style={{ fontSize: "0.8rem", color: "#64748b", marginTop: 0, marginBottom: "12px" }}>
             Filas = Estado de Origen · Columnas = Estado de Destino. Haga clic en una celda para ver las transiciones configuradas entre ambos estados.
           </p>
-          <table style={{ borderCollapse: "collapse", fontSize: "0.75rem", textAlign: "center" }}>
-            <thead>
-              <tr>
-                <th style={{ padding: "8px", border: "1px solid #cbd5e1", backgroundColor: "#f8fafc", textAlign: "left" }}>Origen \ Destino</th>
-                {estados.map(e => (
-                  <th key={e.id} style={{ padding: "8px 6px", border: "1px solid #cbd5e1", backgroundColor: "#f8fafc", maxWidth: "90px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={e.nombre}>
-                    {e.nombre}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {estados.map(orig => (
-                <tr key={orig.id}>
-                  <td style={{ padding: "8px", border: "1px solid #cbd5e1", backgroundColor: "#f8fafc", textAlign: "left", fontWeight: 600 }}>
-                    {orig.nombre}
-                  </td>
-                  {estados.map(dest => {
-                    const transQueConectan = transicionesFiltradas.filter(t => t.origen.includes(orig.id) && t.destino === dest.id);
-                    const tiene = transQueConectan.length > 0;
-                    return (
-                      <td
-                        key={dest.id}
-                        style={{
-                          padding: "6px",
-                          border: "1px solid #cbd5e1",
-                          backgroundColor: tiene ? "#eff6ff" : orig.id === dest.id ? "#f8fafc" : "#ffffff",
-                          cursor: tiene ? "pointer" : "default"
-                        }}
-                        onClick={() => {
-                          if (tiene) {
-                            abrirModalEditar(transQueConectan[0]);
-                          }
-                        }}
-                      >
-                        {tiene ? (
-                          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                            {transQueConectan.map(tc => (
-                              <span key={tc.id} style={{ padding: "2px 4px", borderRadius: "3px", backgroundColor: tc.color || "#2563eb", color: "#ffffff", fontSize: "0.65rem", fontWeight: 600 }}>
-                                {tc.nombre}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <span style={{ color: "#cbd5e1" }}>-</span>
-                        )}
-                      </td>
-                    );
-                  })}
+          <TablaDobleScroll>
+            <table style={{ borderCollapse: "collapse", fontSize: "0.75rem", textAlign: "center", minWidth: "900px" }}>
+              <thead>
+                <tr>
+                  <th style={{ padding: "8px", border: "1px solid #cbd5e1", backgroundColor: "#f8fafc", textAlign: "left" }}>Origen \ Destino</th>
+                  {estados.map(e => (
+                    <th key={e.id} style={{ padding: "8px 6px", border: "1px solid #cbd5e1", backgroundColor: "#f8fafc", maxWidth: "90px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={e.nombre}>
+                      {e.nombre}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {estados.map(orig => (
+                  <tr key={orig.id}>
+                    <td style={{ padding: "8px", border: "1px solid #cbd5e1", backgroundColor: "#f8fafc", textAlign: "left", fontWeight: 600 }}>
+                      {orig.nombre}
+                    </td>
+                    {estados.map(dest => {
+                      const transQueConectan = transicionesFiltradas.filter(t => t.origen.includes(orig.id) && t.destino === dest.id);
+                      const tiene = transQueConectan.length > 0;
+                      return (
+                        <td
+                          key={dest.id}
+                          style={{
+                            padding: "6px",
+                            border: "1px solid #cbd5e1",
+                            backgroundColor: tiene ? "#eff6ff" : orig.id === dest.id ? "#f8fafc" : "#ffffff",
+                            cursor: tiene ? "pointer" : "default"
+                          }}
+                          onClick={() => {
+                            if (tiene) {
+                              abrirModalEditar(transQueConectan[0]);
+                            }
+                          }}
+                        >
+                          {tiene ? (
+                            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                              {transQueConectan.map(tc => (
+                                <span key={tc.id} style={{ padding: "2px 4px", borderRadius: "3px", backgroundColor: tc.color || "#2563eb", color: "#ffffff", fontSize: "0.65rem", fontWeight: 600 }}>
+                                  {tc.nombre}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span style={{ color: "#cbd5e1" }}>-</span>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TablaDobleScroll>
         </div>
       )}
 

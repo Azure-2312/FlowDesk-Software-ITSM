@@ -223,12 +223,24 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
     .join("");
 
   return (
-    <div className="vista-contenedor" style={{ maxWidth: 740 }}>
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Mi Perfil de Usuario</h1>
-        <p>
-          Gestión de información personal, credenciales de acceso corporativas y roles asignados.
-        </p>
+    <div className="vista-contenedor" style={{ maxWidth: 1400 }}>
+      {/* Cabecera de Página con Botón de Guardar en la Esquina Superior Derecha */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 20 }}>
+        <div>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 4px 0", color: "#0f172a" }}>Mi Perfil de Usuario</h1>
+          <p className="descripcion" style={{ margin: 0, fontSize: 13, color: "#64748b" }}>
+            Gestión de información personal, credenciales de acceso corporativas y roles asignados.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={manejarGuardarDatos}
+          className="boton-primario"
+          style={{ width: "auto", padding: "8px 20px", fontSize: 13, flexShrink: 0 }}
+          disabled={guardandoDatos}
+        >
+          {guardandoDatos ? "Guardando..." : "Guardar Cambios"}
+        </button>
       </div>
 
       {exito && (
@@ -248,7 +260,7 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
         </div>
       )}
 
-      {/* Encabezado de perfil */}
+      {/* Encabezado de perfil (Ficha de Colaborador) */}
       <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 18 }}>
         <div
           style={{
@@ -282,209 +294,214 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
         </div>
       </div>
 
-      {/* Formulario 1: Datos Personales */}
-      <div style={{ marginBottom: 20, backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
-        <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Datos personales</h2>
-        <p className="descripcion">Actualiza tu nombre, apellidos y teléfono de contacto.</p>
+      {/* Distribución en 2 Columnas para aprovechar todo el ancho de pantalla */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 20, alignItems: "start" }}>
+        {/* Formulario 1: Datos Personales */}
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
+          <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Datos personales</h2>
+          <p className="descripcion">Actualiza tu nombre, apellidos y teléfono de contacto.</p>
 
-        {errorDatos && <div className="mensaje-error">{errorDatos}</div>}
+          {errorDatos && <div className="mensaje-error">{errorDatos}</div>}
 
-        <form onSubmit={manejarGuardarDatos}>
-          <div className="formulario-grid">
-            <div className="campo">
-              <label>DNI</label>
-              <input value={usuario.dni} disabled title="El DNI es tu identificador único y no se puede modificar" />
+          <form onSubmit={manejarGuardarDatos}>
+            <div className="formulario-grid">
+              <div className="campo">
+                <label>DNI</label>
+                <input value={usuario.dni} disabled title="El DNI es tu identificador único y no se puede modificar" />
+              </div>
+
+              <div className="campo">
+                <label>Correo electrónico</label>
+                <input value={usuario.correo_electronico} disabled title="El correo electrónico es tu credencial de acceso" />
+              </div>
+
+              <div className="campo">
+                <label>Nombres *</label>
+                <input
+                  value={nombres}
+                  maxLength={100}
+                  onChange={(e) => setNombres(e.target.value)}
+                  required
+                />
+                {nombres.length > 0 && (() => {
+                  const v = validarNombre(nombres, "El nombre", true);
+                  return v.valido ? (
+                    <AlertaCampo exito="Nombre válido." />
+                  ) : (
+                    <AlertaCampo error={v.mensaje} />
+                  );
+                })()}
+              </div>
+
+              <div className="campo">
+                <label>Apellido paterno *</label>
+                <input
+                  value={apellidoPaterno}
+                  maxLength={100}
+                  onChange={(e) => setApellidoPaterno(e.target.value)}
+                  required
+                />
+                {apellidoPaterno.length > 0 && (() => {
+                  const v = validarNombre(apellidoPaterno, "El apellido paterno", true);
+                  return v.valido ? (
+                    <AlertaCampo exito="Apellido paterno válido." />
+                  ) : (
+                    <AlertaCampo error={v.mensaje} />
+                  );
+                })()}
+              </div>
+
+              <div className="campo">
+                <label>Apellido materno</label>
+                <input
+                  value={apellidoMaterno}
+                  maxLength={100}
+                  onChange={(e) => setApellidoMaterno(e.target.value)}
+                />
+                {apellidoMaterno.length > 0 && (() => {
+                  const v = validarNombre(apellidoMaterno, "El apellido materno", false);
+                  return v.valido ? (
+                    <AlertaCampo exito="Apellido materno válido." />
+                  ) : (
+                    <AlertaCampo error={v.mensaje} />
+                  );
+                })()}
+              </div>
+
+              <div className="campo">
+                <label>Celular</label>
+                <input
+                  value={celular}
+                  maxLength={9}
+                  onChange={(e) => setCelular(e.target.value.replace(/\D/g, "").slice(0, 9))}
+                  placeholder="Ej. 999999999"
+                />
+                {celular.length > 0 && (
+                  celular.length < 9 ? (
+                    <AlertaCampo error={`El celular debe tener 9 dígitos numéricos (has ingresado ${celular.length} de 9).`} />
+                  ) : !celular.startsWith("9") ? (
+                    <AlertaCampo error="El celular debe iniciar con 9." />
+                  ) : (
+                    <AlertaCampo exito="Número de celular válido (9 dígitos)." />
+                  )
+                )}
+              </div>
             </div>
 
-            <div className="campo">
-              <label>Correo electrónico</label>
-              <input value={usuario.correo_electronico} disabled title="El correo electrónico es tu credencial de acceso" />
+            <div style={{ marginTop: 16 }}>
+              <button
+                type="submit"
+                className="boton-primario"
+                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+                disabled={guardandoDatos}
+              >
+                {guardandoDatos ? "Guardando..." : "Guardar datos personales"}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Formulario 2: Seguridad y Cambio de Contraseña */}
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
+          <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Seguridad y contraseña</h2>
+          <p className="descripcion">Cambia tu contraseña de acceso periódicamente para mayor seguridad.</p>
+
+          {errorClave && <div className="mensaje-error">{errorClave}</div>}
+
+          <form onSubmit={manejarCambiarClave}>
+            <div className="formulario-grid">
+              <div className="campo campo-ancho">
+                <label>Contraseña actual *</label>
+                <input
+                  type="password"
+                  value={claveActual}
+                  onChange={(e) => setClaveActual(e.target.value)}
+                  placeholder="Ingresa tu contraseña actual"
+                  required
+                />
+              </div>
+
+              <div className="campo">
+                <label>Nueva contraseña *</label>
+                <input
+                  type="password"
+                  value={claveNueva}
+                  onChange={(e) => setClaveNueva(e.target.value)}
+                  placeholder="Mínimo 8 caracteres"
+                  required
+                />
+              </div>
+
+              <div className="campo">
+                <label>Confirmar nueva contraseña *</label>
+                <input
+                  type="password"
+                  value={claveConfirmacion}
+                  onChange={(e) => setClaveConfirmacion(e.target.value)}
+                  placeholder="Repite la nueva contraseña"
+                  required
+                />
+                {claveConfirmacion.length > 0 && (
+                  <span
+                    style={{
+                      fontSize: 11,
+                      marginTop: 4,
+                      display: "block",
+                      fontWeight: 500,
+                      color: clavesCoinciden ? "#059669" : "#dc2626",
+                    }}
+                  >
+                    {clavesCoinciden ? "Las contraseñas coinciden" : "Las contraseñas no coinciden"}
+                  </span>
+                )}
+              </div>
+
+              {/* Checklist de requisitos de seguridad en tiempo real */}
+              <div className="lista-requisitos-clave campo campo-ancho" style={{ margin: "4px 0" }}>
+                <div className={`requisito-item ${tieneLongitud ? "requisito-valido" : "requisito-invalido"}`}>
+                  <span className="requisito-punto" /> Mínimo 8 caracteres
+                </div>
+                <div className={`requisito-item ${tieneMayuscula ? "requisito-valido" : "requisito-invalido"}`}>
+                  <span className="requisito-punto" /> Al menos una letra mayúscula (A-Z)
+                </div>
+                <div className={`requisito-item ${tieneMinuscula ? "requisito-valido" : "requisito-invalido"}`}>
+                  <span className="requisito-punto" /> Al menos una letra minúscula (a-z)
+                </div>
+                <div className={`requisito-item ${tieneNumero ? "requisito-valido" : "requisito-invalido"}`}>
+                  <span className="requisito-punto" /> Al menos un número (0-9)
+                </div>
+                <div className={`requisito-item ${tieneSimbolo ? "requisito-valido" : "requisito-invalido"}`}>
+                  <span className="requisito-punto" /> Al menos un signo o carácter especial (!@#$%...)
+                </div>
+              </div>
             </div>
 
-            <div className="campo">
-              <label>Nombres *</label>
-              <input
-                value={nombres}
-                maxLength={100}
-                onChange={(e) => setNombres(e.target.value)}
-                required
-              />
-              {nombres.length > 0 && (() => {
-                const v = validarNombre(nombres, "El nombre", true);
-                return v.valido ? (
-                  <AlertaCampo exito="Nombre válido." />
-                ) : (
-                  <AlertaCampo error={v.mensaje} />
-                );
-              })()}
+            <div style={{ marginTop: 16 }}>
+              <button
+                type="submit"
+                className="boton-primario"
+                style={{
+                  width: "auto",
+                  padding: "8px 18px",
+                  fontSize: 13,
+                  backgroundColor: !cumpleTodosRequisitos || !clavesCoinciden || !claveActual ? "#9ca3af" : "#1e40af",
+                  cursor: !cumpleTodosRequisitos || !clavesCoinciden || !claveActual ? "not-allowed" : "pointer"
+                }}
+                disabled={!cumpleTodosRequisitos || !clavesCoinciden || !claveActual || guardandoClave}
+              >
+                {guardandoClave ? "Actualizando..." : "Actualizar contraseña"}
+              </button>
             </div>
-
-            <div className="campo">
-              <label>Apellido paterno *</label>
-              <input
-                value={apellidoPaterno}
-                maxLength={100}
-                onChange={(e) => setApellidoPaterno(e.target.value)}
-                required
-              />
-              {apellidoPaterno.length > 0 && (() => {
-                const v = validarNombre(apellidoPaterno, "El apellido paterno", true);
-                return v.valido ? (
-                  <AlertaCampo exito="Apellido paterno válido." />
-                ) : (
-                  <AlertaCampo error={v.mensaje} />
-                );
-              })()}
-            </div>
-
-            <div className="campo">
-              <label>Apellido materno</label>
-              <input
-                value={apellidoMaterno}
-                maxLength={100}
-                onChange={(e) => setApellidoMaterno(e.target.value)}
-              />
-              {apellidoMaterno.length > 0 && (() => {
-                const v = validarNombre(apellidoMaterno, "El apellido materno", false);
-                return v.valido ? (
-                  <AlertaCampo exito="Apellido materno válido." />
-                ) : (
-                  <AlertaCampo error={v.mensaje} />
-                );
-              })()}
-            </div>
-
-            <div className="campo">
-              <label>Celular</label>
-              <input
-                value={celular}
-                maxLength={9}
-                onChange={(e) => setCelular(e.target.value.replace(/\D/g, "").slice(0, 9))}
-                placeholder="Ej. 999999999"
-              />
-              {celular.length > 0 && (
-                celular.length < 9 ? (
-                  <AlertaCampo error={`El celular debe tener 9 dígitos numéricos (has ingresado ${celular.length} de 9).`} />
-                ) : !celular.startsWith("9") ? (
-                  <AlertaCampo error="El celular debe iniciar con 9." />
-                ) : (
-                  <AlertaCampo exito="Número de celular válido (9 dígitos)." />
-                )
-              )}
-            </div>
-          </div>
-
-          <div style={{ marginTop: 16 }}>
-            <button
-              type="submit"
-              className="boton-primario"
-              style={{ width: "auto" }}
-              disabled={guardandoDatos}
-            >
-              {guardandoDatos ? "Guardando..." : "Guardar cambios personales"}
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
 
-      {/* Formulario 2: Seguridad y Cambio de Contraseña */}
-      <div style={{ marginBottom: 20, backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
-        <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Seguridad y contraseña</h2>
-        <p className="descripcion">Cambia tu contraseña de acceso periódicamente para mayor seguridad.</p>
-
-        {errorClave && <div className="mensaje-error">{errorClave}</div>}
-
-        <form onSubmit={manejarCambiarClave}>
-          <div className="formulario-grid">
-            <div className="campo campo-ancho">
-              <label>Contraseña actual *</label>
-              <input
-                type="password"
-                value={claveActual}
-                onChange={(e) => setClaveActual(e.target.value)}
-                placeholder="Ingresa tu contraseña actual"
-                required
-              />
-            </div>
-
-            <div className="campo">
-              <label>Nueva contraseña *</label>
-              <input
-                type="password"
-                value={claveNueva}
-                onChange={(e) => setClaveNueva(e.target.value)}
-                placeholder="Mínimo 8 caracteres"
-                required
-              />
-            </div>
-
-            <div className="campo">
-              <label>Confirmar nueva contraseña *</label>
-              <input
-                type="password"
-                value={claveConfirmacion}
-                onChange={(e) => setClaveConfirmacion(e.target.value)}
-                placeholder="Repite la nueva contraseña"
-                required
-              />
-              {claveConfirmacion.length > 0 && (
-                <span
-                  style={{
-                    fontSize: 11,
-                    marginTop: 4,
-                    display: "block",
-                    fontWeight: 500,
-                    color: clavesCoinciden ? "#059669" : "#dc2626",
-                  }}
-                >
-                  {clavesCoinciden ? "Las contraseñas coinciden" : "Las contraseñas no coinciden"}
-                </span>
-              )}
-            </div>
-
-            {/* Checklist de requisitos de seguridad en tiempo real */}
-            <div className="lista-requisitos-clave campo campo-ancho" style={{ margin: "4px 0" }}>
-              <div className={`requisito-item ${tieneLongitud ? "requisito-valido" : "requisito-invalido"}`}>
-                <span className="requisito-punto" /> Mínimo 8 caracteres
-              </div>
-              <div className={`requisito-item ${tieneMayuscula ? "requisito-valido" : "requisito-invalido"}`}>
-                <span className="requisito-punto" /> Al menos una letra mayúscula (A-Z)
-              </div>
-              <div className={`requisito-item ${tieneMinuscula ? "requisito-valido" : "requisito-invalido"}`}>
-                <span className="requisito-punto" /> Al menos una letra minúscula (a-z)
-              </div>
-              <div className={`requisito-item ${tieneNumero ? "requisito-valido" : "requisito-invalido"}`}>
-                <span className="requisito-punto" /> Al menos un número (0-9)
-              </div>
-              <div className={`requisito-item ${tieneSimbolo ? "requisito-valido" : "requisito-invalido"}`}>
-                <span className="requisito-punto" /> Al menos un signo o carácter especial (!@#$%...)
-              </div>
-            </div>
-          </div>
-
-          <div style={{ marginTop: 16 }}>
-            <button
-              type="submit"
-              className="boton-primario"
-              style={{
-                width: "auto",
-                backgroundColor: !cumpleTodosRequisitos || !clavesCoinciden || !claveActual ? "#9ca3af" : "#1e40af",
-                cursor: !cumpleTodosRequisitos || !clavesCoinciden || !claveActual ? "not-allowed" : "pointer"
-              }}
-              disabled={!cumpleTodosRequisitos || !clavesCoinciden || !claveActual || guardandoClave}
-            >
-              {guardandoClave ? "Actualizando..." : "Actualizar contraseña"}
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* Sección 3: Mis Roles y Permisos */}
-      <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
+      {/* Sección 3: Mis Roles y Permisos (Full width debajo) */}
+      <div style={{ marginTop: 20, backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
         <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Tus roles asignados</h2>
         <p className="descripcion">Los perfiles que tienes habilitados en tu usuario:</p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 12 }}>
           {perfiles.map((p) => (
             <div
               key={p.id_perfil}

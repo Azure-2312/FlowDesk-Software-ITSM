@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { PUT } from "@/modules/problemas/api/admin/flujoReaperturaController";
+export { PUT } from "@/modules/problemas/api/config/flujoReaperturaController";

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface ReglaUmbral {
   id_regla: number;
@@ -280,6 +281,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
 
       {/* Tabla de Reglas */}
       <div className="contenedor-tabla">
+        <TablaDobleScroll minWidth={950}>
         <table className="tabla">
           <thead>
             <tr>
@@ -416,6 +418,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
             )}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* MODAL: CREAR / EDITAR REGLA DE UMBRAL */}

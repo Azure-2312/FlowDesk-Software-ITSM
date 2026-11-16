@@ -1,5 +1,5 @@
-import VistaTecnicoActivosConteos from "@/modules/activos/views/tecnico/VistaTecnicoActivosConteos";
+import VistaActivosConteos from "@/modules/activos/views/VistaActivosConteos";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoActivosConteos />;
+  return <VistaActivosConteos />;
 }

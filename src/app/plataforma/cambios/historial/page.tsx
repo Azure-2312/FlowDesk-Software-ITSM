@@ -1,5 +1,7 @@
-import VistaTecnicoCambiosHistorial from "@/modules/cambios/views/tecnico/VistaTecnicoCambiosHistorial";
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import VistaCambiosHistorial from "@/modules/cambios/views/VistaCambiosHistorial";
 
-export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoCambiosHistorial />;
+export default async function PaginaCambiosHistorial() {
+  await exigirMenuPagina("/plataforma/cambios/historial");
+  return <VistaCambiosHistorial />;
 }

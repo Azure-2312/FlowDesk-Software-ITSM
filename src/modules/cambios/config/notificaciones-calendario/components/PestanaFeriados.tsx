@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Plus, Edit2, Trash2, Sun, Download, Upload, AlertCircle, X, Check } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface PestanaFeriadosProps {
   config: any;
@@ -232,28 +233,29 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
         <div style={{ display: "flex", gap: 10 }}>
           <button
             onClick={exportarCsv}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 12, fontWeight: 500, color: "#334155", cursor: "pointer" }}
+            style={{ padding: "7px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 12, fontWeight: 500, color: "#334155", cursor: "pointer" }}
           >
-            <Download size={13} /> Exportar CSV
+            Exportar CSV
           </button>
           <button
             onClick={() => { setModalCsvAbierto(true); setCsvTexto(""); setCsvError(null); setCsvResultado(null); }}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 12, fontWeight: 500, color: "#334155", cursor: "pointer" }}
+            style={{ padding: "7px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 12, fontWeight: 500, color: "#334155", cursor: "pointer" }}
           >
-            <Upload size={13} /> Importar CSV
+            Importar CSV
           </button>
           <button
             onClick={() => abrirEditor()}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", background: "#059669", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, color: "#ffffff", cursor: "pointer" }}
+            style={{ padding: "7px 14px", background: "#059669", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, color: "#ffffff", cursor: "pointer" }}
           >
-            <Plus size={13} /> Nuevo Feriado
+            Nuevo Feriado
           </button>
         </div>
       </div>
 
       {/* Tabla de Feriados */}
-      <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, textAlign: "left" }}>
+      <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 8 }}>
+        <TablaDobleScroll>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, textAlign: "left", minWidth: 900 }}>
           <thead style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
             <tr>
               <th style={{ padding: "10px 14px", fontWeight: 600, color: "#475569" }}>Fecha / Rango</th>
@@ -328,9 +330,9 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
                       <div style={{ display: "flex", justifyContent: "flex-end", gap: 6 }}>
                         <button
                           onClick={() => abrirEditor(f)}
-                          style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8", padding: "4px 8px", borderRadius: 4, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 11 }}
+                          style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8", padding: "4px 8px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 500 }}
                         >
-                          <Edit2 size={12} /> Editar
+                          Editar
                         </button>
                         <button
                           onClick={() => eliminarFeriado(f.id)}
@@ -347,6 +349,7 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
             )}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Modal Editor de Feriado */}

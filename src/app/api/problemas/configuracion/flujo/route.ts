@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET, POST } from "@/modules/problemas/api/admin/flujoController";
+export { GET, POST } from "@/modules/problemas/api/config/flujoController";

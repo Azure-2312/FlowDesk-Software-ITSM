@@ -1,4 +1,4 @@
-import FormularioServicioConfig from "@/modules/servicios/admin/servicios/[id]/formulario/ui";
+import FormularioServicioConfig from "@/modules/servicios/config/servicios/[id]/formulario/ui";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

@@ -1,4 +1,4 @@
-import VistaDelegacionAprobaciones from "@/modules/solicitudes/views/gestor-area/VistaDelegacionAprobaciones";
+import VistaDelegacionAprobaciones from "@/modules/solicitudes/views/VistaDelegacionAprobaciones";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

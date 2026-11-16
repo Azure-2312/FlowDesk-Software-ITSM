@@ -120,8 +120,10 @@ export default function CmdbRelacionesConfigPage() {
   const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
   const [puedeEditar, setPuedeEditar] = useState<boolean>(true);
 
-  // Snapshot de datos de la pestaña actual
+  // Snapshot de datos de la pestaña actual y tracking de pestañas modificadas
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
+  const [snapshotsPorTab, setSnapshotsPorTab] = useState<Record<string, any>>({});
+  const [tabsModificadas, setTabsModificadas] = useState<Set<string>>(new Set());
 
   // Toast
   const [toastMensaje, setToastMensaje] = useState<string | null>(null);
@@ -151,6 +153,10 @@ export default function CmdbRelacionesConfigPage() {
 
         const snapshotActual = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
         setConfigSnapshot(snapshotActual);
+        setSnapshotsPorTab((prev) => ({
+          ...prev,
+          [tabActiva]: prev[tabActiva] !== undefined ? prev[tabActiva] : snapshotActual,
+        }));
 
         if (data.bloqueo && !data.bloqueo.bloqueado_por_mi) {
           setBloqueadoPorOtro(data.bloqueo.usuario_nombre);
@@ -173,31 +179,39 @@ export default function CmdbRelacionesConfigPage() {
   }, [cargarDatos]);
 
   // Manejador de cambio de datos en los componentes hijos
-  const handleSnapshotChange = (nuevosDatos: any) => {
+  const handleSnapshotChange = (nuevosDatos: any, pestanaId: string = tabActiva) => {
     setConfigSnapshot(nuevosDatos);
+    setSnapshotsPorTab((prev) => ({ ...prev, [pestanaId]: nuevosDatos }));
+    setTabsModificadas((prev) => new Set(prev).add(pestanaId));
   };
 
   // Guardar y Aplicar Relaciones CMDB Directamente
   const handleGuardarRelaciones = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/cmdb/configuracion/relaciones/configuracion", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: `Actualización de relaciones CMDB (${pestanaInfo.titulo})`,
-          diff: { tipo: "modificacion_cmdb", pestana: tabActiva }
-        })
-      });
+      const tabsAGuardar = tabsModificadas.size > 0 ? Array.from(tabsModificadas) : [tabActiva];
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Error al guardar la configuración.");
+      for (const tId of tabsAGuardar) {
+        const snap = snapshotsPorTab[tId] || (tId === tabActiva ? configSnapshot : null);
+        if (!snap) continue;
+        const res = await fetch("/api/cmdb/configuracion/relaciones/configuracion", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pestana: tId,
+            snapshot: snap,
+            motivo: `Actualización de relaciones CMDB en pestaña ${tId}`,
+            diff: { tipo: "modificacion_cmdb", pestana: tId }
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || `Error al guardar configuración en pestaña ${tId}`);
+        }
       }
 
-      mostrarToast(data.mensaje || "Configuración de CMDB y relaciones guardada exitosamente.");
+      setTabsModificadas(new Set());
+      mostrarToast("Configuración de CMDB y relaciones guardada exitosamente.");
       cargarDatos();
     } catch (err: any) {
       mostrarToast(err.message || "Error al guardar la configuración.");
@@ -305,48 +319,48 @@ export default function CmdbRelacionesConfigPage() {
           </div>
         ) : (
           <div>
-            {tabActiva === "clases_ci" && (
+            <div style={{ display: tabActiva === "clases_ci" ? "block" : "none" }}>
               <PestanaClasesCI
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["clases_ci"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "clases_ci")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
-            {tabActiva === "tipos_relacion" && (
+            </div>
+            <div style={{ display: tabActiva === "tipos_relacion" ? "block" : "none" }}>
               <PestanaTiposRelacion
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["tipos_relacion"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "tipos_relacion")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
-            {tabActiva === "criticidad_entornos" && (
+            </div>
+            <div style={{ display: tabActiva === "criticidad_entornos" ? "block" : "none" }}>
               <PestanaCriticidadEntornos
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["criticidad_entornos"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "criticidad_entornos")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
-            {tabActiva === "reglas_integridad" && (
+            </div>
+            <div style={{ display: tabActiva === "reglas_integridad" ? "block" : "none" }}>
               <PestanaReglasIntegridad
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["reglas_integridad"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "reglas_integridad")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
-            {tabActiva === "fuentes_atributos_protegidos" && (
+            </div>
+            <div style={{ display: tabActiva === "fuentes_atributos_protegidos" ? "block" : "none" }}>
               <PestanaFuentesAtributosProtegidos
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["fuentes_atributos_protegidos"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "fuentes_atributos_protegidos")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
-            {tabActiva === "auditoria_lineas_base" && (
+            </div>
+            <div style={{ display: tabActiva === "auditoria_lineas_base" ? "block" : "none" }}>
               <PestanaAuditoriaLineasBase
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["auditoria_lineas_base"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "auditoria_lineas_base")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
+            </div>
           </div>
         )}
         </div>

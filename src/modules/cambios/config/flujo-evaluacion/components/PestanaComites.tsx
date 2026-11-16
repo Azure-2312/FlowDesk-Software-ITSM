@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Plus, Edit2, Trash2, Users, Play, ShieldAlert, CheckCircle2, Clock, Calendar, FileText } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface MiembroComite {
   id_usuario: number;
@@ -254,17 +255,13 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
               backgroundColor: "#f8fafc",
               border: "1px solid #cbd5e1",
               color: "#1e293b",
-              padding: "8px 14px",
+              padding: "8px 16px",
               borderRadius: "6px",
               fontWeight: 600,
               fontSize: "0.85rem",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
+              cursor: "pointer"
             }}
           >
-            <Play size={15} style={{ color: "#2563eb" }} />
             Probar Quórum
           </button>
         </div>
@@ -415,23 +412,20 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
             style={{
               backgroundColor: "#2563eb",
               color: "#ffffff",
-              padding: "6px 12px",
+              padding: "6px 14px",
               borderRadius: "6px",
               border: "none",
               fontWeight: 600,
               fontSize: "0.8rem",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
+              cursor: "pointer"
             }}
           >
-            <Plus size={14} />
             Agregar Miembro
           </button>
         </div>
 
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
+        <TablaDobleScroll>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left", minWidth: 800 }}>
           <thead>
             <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
               <th style={{ padding: "8px 12px" }}>Usuario</th>
@@ -497,6 +491,7 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Parámetros de reunión (Solo CAB) o ECAB */}

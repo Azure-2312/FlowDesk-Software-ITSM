@@ -47,6 +47,8 @@ export default function ConfiguracionTiposRequisitosPage() {
 
   // Snapshot activo
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
+  const [snapshotsPorTab, setSnapshotsPorTab] = useState<Record<string, any>>({});
+  const [tabsModificadas, setTabsModificadas] = useState<Set<string>>(new Set());
 
   // Cargar datos de la pestaña activa
   const cargarDatos = useCallback(async () => {
@@ -66,6 +68,10 @@ export default function ConfiguracionTiposRequisitosPage() {
 
       const snap = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
       setConfigSnapshot(snap);
+      setSnapshotsPorTab((prev) => ({
+        ...prev,
+        [tabActiva]: prev[tabActiva] !== undefined ? prev[tabActiva] : snap,
+      }));
     } catch (err: any) {
       setErrorCarga(err.message || "Error al cargar configuración");
     } finally {
@@ -77,33 +83,47 @@ export default function ConfiguracionTiposRequisitosPage() {
     cargarDatos();
   }, [cargarDatos]);
 
+  const actualizarSnapshotPestana = (nuevoSnap: any, pestanaId: string = tabActiva) => {
+    setConfigSnapshot(nuevoSnap);
+    setSnapshotsPorTab((prev) => ({ ...prev, [pestanaId]: nuevoSnap }));
+    setTabsModificadas((prev) => new Set(prev).add(pestanaId));
+  };
+
   // Guardar y Aplicar Configuración Directamente
   const handleGuardarConfiguracion = async () => {
     try {
       setGuardando(true);
-      const resBorrador = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "guardar_borrador",
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: "Guardado directo de tipos y requisitos"
-        })
-      });
-      if (!resBorrador.ok) throw new Error("Error al guardar la configuración");
+      const tabsAGuardar = tabsModificadas.size > 0 ? Array.from(tabsModificadas) : [tabActiva];
 
-      // Auto-publicar para persistir en activo
-      await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          motivo: "Actualización de tipos y requisitos de cambio",
-          impacto_resumen: `Publicación en Submódulo 1.3.3.2 (${PESTANAS_INFO[tabActiva].titulo})`
-        })
-      });
+      for (const tId of tabsAGuardar) {
+        const snap = snapshotsPorTab[tId] || (tId === tabActiva ? configSnapshot : null);
+        if (!snap) continue;
 
+        const resBorrador = await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            accion: "guardar_borrador",
+            pestana: tId,
+            snapshot: snap,
+            motivo: `Guardado directo de tipos y requisitos en pestaña ${tId}`
+          })
+        });
+        if (!resBorrador.ok) throw new Error(`Error al guardar configuración en pestaña ${tId}`);
+
+        // Auto-publicar para persistir en activo
+        await fetch("/api/cambios/configuracion/tipos-requisitos/configuracion", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pestana: tId,
+            motivo: "Actualización de tipos y requisitos de cambio",
+            impacto_resumen: `Publicación en Submódulo 1.3.3.2 (${PESTANAS_INFO[tId as TabId]?.titulo || tId})`
+          })
+        });
+      }
+
+      setTabsModificadas(new Set());
       alert("Tipos y requisitos de cambio guardados exitosamente.");
       await cargarDatos();
     } catch (err: any) {
@@ -139,7 +159,7 @@ export default function ConfiguracionTiposRequisitosPage() {
               onClick={handleGuardarConfiguracion}
               disabled={guardando || !puedeEditar}
               className="boton-primario"
-              style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+              style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
@@ -194,42 +214,42 @@ export default function ConfiguracionTiposRequisitosPage() {
         </div>
       ) : (
         <div>
-          {tabActiva === "tipos" && (
+          <div style={{ display: tabActiva === "tipos" ? "block" : "none" }}>
             <PestanaTiposCambio
-              config={configSnapshot}
+              config={snapshotsPorTab["tipos"] || configSnapshot}
               onChange={(nuevo) => {
-                setConfigSnapshot(nuevo);
+                actualizarSnapshotPestana(nuevo, "tipos");
               }}
               onIrAMatrizAutoridad={() => setTabActiva("matriz_autoridad")}
             />
-          )}
+          </div>
 
-          {tabActiva === "matriz_autoridad" && (
+          <div style={{ display: tabActiva === "matriz_autoridad" ? "block" : "none" }}>
             <PestanaMatrizAutoridad
-              config={configSnapshot}
+              config={snapshotsPorTab["matriz_autoridad"] || configSnapshot}
               onChange={(nuevo) => {
-                setConfigSnapshot(nuevo);
+                actualizarSnapshotPestana(nuevo, "matriz_autoridad");
               }}
             />
-          )}
+          </div>
 
-          {tabActiva === "modelos_estandar" && (
+          <div style={{ display: tabActiva === "modelos_estandar" ? "block" : "none" }}>
             <PestanaModelosEstandar
-              config={configSnapshot}
+              config={snapshotsPorTab["modelos_estandar"] || configSnapshot}
               onChange={(nuevo) => {
-                setConfigSnapshot(nuevo);
+                actualizarSnapshotPestana(nuevo, "modelos_estandar");
               }}
             />
-          )}
+          </div>
 
-          {tabActiva === "reglas_clasificacion" && (
+          <div style={{ display: tabActiva === "reglas_clasificacion" ? "block" : "none" }}>
             <PestanaReglasClasificacion
-              config={configSnapshot}
+              config={snapshotsPorTab["reglas_clasificacion"] || configSnapshot}
               onChange={(nuevo) => {
-                setConfigSnapshot(nuevo);
+                actualizarSnapshotPestana(nuevo, "reglas_clasificacion");
               }}
             />
-          )}
+          </div>
         </div>
       )}
       </div>

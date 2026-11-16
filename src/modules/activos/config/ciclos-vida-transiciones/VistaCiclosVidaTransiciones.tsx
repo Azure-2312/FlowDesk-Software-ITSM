@@ -120,8 +120,10 @@ export default function CiclosVidaTransicionesPage() {
   const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
   const [puedeEditar, setPuedeEditar] = useState<boolean>(true);
 
-  // Snapshot de datos de la pestaña actual
+  // Snapshot de datos de la pestaña actual y tracking de pestañas modificadas
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
+  const [snapshotsPorTab, setSnapshotsPorTab] = useState<Record<string, any>>({});
+  const [tabsModificadas, setTabsModificadas] = useState<Set<string>>(new Set());
 
   // Toast
   const [toastMensaje, setToastMensaje] = useState<string | null>(null);
@@ -151,6 +153,10 @@ export default function CiclosVidaTransicionesPage() {
 
         const snapshotActual = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
         setConfigSnapshot(snapshotActual);
+        setSnapshotsPorTab((prev) => ({
+          ...prev,
+          [tabActiva]: prev[tabActiva] !== undefined ? prev[tabActiva] : snapshotActual,
+        }));
 
         if (data.bloqueo && !data.bloqueo.bloqueado_por_mi) {
           setBloqueadoPorOtro(data.bloqueo.usuario_nombre);
@@ -173,31 +179,39 @@ export default function CiclosVidaTransicionesPage() {
   }, [cargarDatos]);
 
   // Manejador de cambio de datos en los componentes hijos
-  const handleSnapshotChange = (nuevosDatos: any) => {
+  const handleSnapshotChange = (nuevosDatos: any, pestanaId: string = tabActiva) => {
     setConfigSnapshot(nuevosDatos);
+    setSnapshotsPorTab((prev) => ({ ...prev, [pestanaId]: nuevosDatos }));
+    setTabsModificadas((prev) => new Set(prev).add(pestanaId));
   };
 
   // Guardar y Aplicar Ciclos de Vida Directamente
   const handleGuardarCiclosVida = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: `Guardado y aplicación de ciclos de vida en ${pestanaInfo.titulo}`,
-          diff: { tipo: "modificacion_general", pestana: tabActiva }
-        })
-      });
+      const tabsAGuardar = tabsModificadas.size > 0 ? Array.from(tabsModificadas) : [tabActiva];
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Error al guardar la configuración.");
+      for (const tId of tabsAGuardar) {
+        const snap = snapshotsPorTab[tId] || (tId === tabActiva ? configSnapshot : null);
+        if (!snap) continue;
+        const res = await fetch("/api/activos/configuracion/ciclos-vida-transiciones/configuracion", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pestana: tId,
+            snapshot: snap,
+            motivo: `Guardado y aplicación de ciclos de vida en pestaña ${tId}`,
+            diff: { tipo: "modificacion_general", pestana: tId }
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || `Error al guardar configuración en pestaña ${tId}`);
+        }
       }
 
-      mostrarToast(data.mensaje || "Ciclos de vida y transiciones guardados exitosamente.");
+      setTabsModificadas(new Set());
+      mostrarToast("Ciclos de vida y transiciones guardados exitosamente.");
       cargarDatos();
     } catch (err: any) {
       mostrarToast(err.message || "Error al guardar la configuración.");
@@ -343,48 +357,48 @@ export default function CiclosVidaTransicionesPage() {
           </div>
         ) : (
           <div>
-            {tabActiva === "ciclos_estados" && (
+            <div style={{ display: tabActiva === "ciclos_estados" ? "block" : "none" }}>
               <PestanaCiclosEstados
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["ciclos_estados"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "ciclos_estados")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "transiciones_reglas" && (
+            </div>
+            <div style={{ display: tabActiva === "transiciones_reglas" ? "block" : "none" }}>
               <PestanaTransicionesReglas
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["transiciones_reglas"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "transiciones_reglas")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "asignacion_custodia" && (
+            </div>
+            <div style={{ display: tabActiva === "asignacion_custodia" ? "block" : "none" }}>
               <PestanaAsignacionCustodia
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["asignacion_custodia"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "asignacion_custodia")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "adquisicion_recepcion" && (
+            </div>
+            <div style={{ display: tabActiva === "adquisicion_recepcion" ? "block" : "none" }}>
               <PestanaAdquisicionRecepcion
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["adquisicion_recepcion"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "adquisicion_recepcion")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "mantenimiento_fin_vida" && (
+            </div>
+            <div style={{ display: tabActiva === "mantenimiento_fin_vida" ? "block" : "none" }}>
               <PestanaMantenimientoFinVida
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["mantenimiento_fin_vida"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "mantenimiento_fin_vida")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "baja_disposicion" && (
+            </div>
+            <div style={{ display: tabActiva === "baja_disposicion" ? "block" : "none" }}>
               <PestanaBajaDisposicion
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["baja_disposicion"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "baja_disposicion")}
                 bloqueado={estaBloqueado}
               />
-            )}
+            </div>
           </div>
         )}
         </div>

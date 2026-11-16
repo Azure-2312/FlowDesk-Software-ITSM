@@ -1,3 +1,7 @@
-import PaginaCrearRFC from "@/app/plataforma/cambios/gestion/crear/page";
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import VistaCambiosGestionCrear from "@/modules/cambios/gestion/crear/VistaCambiosGestionCrear";
 
-export default PaginaCrearRFC;
+export default async function PaginaCambiosNuevo() {
+  await exigirMenuPagina("/plataforma/cambios/nuevo");
+  return <VistaCambiosGestionCrear />;
+}

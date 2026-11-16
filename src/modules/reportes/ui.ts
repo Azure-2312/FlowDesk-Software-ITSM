@@ -11,7 +11,7 @@ export { default as VistaInformesAuditoria } from "./views/VistaInformesAuditori
 export { default as VistaProductividad } from "./views/VistaProductividad";
 export { default as VistaReportesActivos } from "./views/VistaReportesActivos";
 export { default as VistaReportesCambios } from "./views/VistaReportesCambios";
-export { default as VistaReportesAprobador } from "./views/VistaReportesAprobador";
+export { default as VistaReportesAprobaciones } from "./views/VistaReportesAprobaciones";
 export { default as VistaReportesProblemas } from "./views/VistaReportesProblemas";
 export { default as VistaReportesArea } from "./views/VistaReportesArea";
 export { default as VistaReportesDisenador } from "./views/VistaReportesDisenador";

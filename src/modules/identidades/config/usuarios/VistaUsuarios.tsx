@@ -10,6 +10,7 @@ import {
   validarCelular,
 } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 type ModoVista = "tabla" | "crear" | "editar" | "resumen";
 
@@ -1181,15 +1182,15 @@ export default function PaginaUsuarios() {
         </div>
       )}
 
-      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-        <div>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h1>Usuarios</h1>
           <p>
             Administración de usuarios, perfiles asignados y generación de credenciales corporativas.
           </p>
         </div>
-        <button className="boton-primario" style={{ width: "auto" }} onClick={abrirFormularioNuevo}>
-          Nuevo usuario
+        <button className="boton-primario" style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }} onClick={abrirFormularioNuevo}>
+          Nuevo Usuario
         </button>
       </div>
 
@@ -1197,7 +1198,8 @@ export default function PaginaUsuarios() {
         <p className="descripcion">Cargando usuarios...</p>
       ) : (
         <div className="contenedor-tabla">
-          <table className="tabla-datos">
+          <TablaDobleScroll minWidth={1080}>
+          <table className="tabla-datos" style={{ minWidth: 1080 }}>
           <thead>
             <tr>
               <th>DNI</th>
@@ -1335,6 +1337,7 @@ export default function PaginaUsuarios() {
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
         </div>
       )}
     </div>

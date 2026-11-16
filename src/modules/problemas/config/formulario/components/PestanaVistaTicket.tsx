@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface ElementoCabecera {
   id: string;
@@ -71,21 +71,12 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
     setListaPestanas(nuevas);
   };
 
-  const handleGuardarCambios = async () => {
-    try {
-      setGuardando(true);
-      setMensajeExito("");
-      await onActualizarVista({
-        cabecera: listaCabecera,
-        pestanas: listaPestanas,
-      });
-      setMensajeExito("Estructura visual del ticket de problema guardada en el borrador.");
-    } catch (err: any) {
-      alert(err.message || "Error al actualizar la vista del ticket");
-    } finally {
-      setGuardando(false);
-    }
-  };
+  useEffect(() => {
+    onActualizarVista({
+      cabecera: listaCabecera,
+      pestanas: listaPestanas,
+    });
+  }, [listaCabecera, listaPestanas, onActualizarVista]);
 
   return (
     <div className="space-y-6">
@@ -117,14 +108,6 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
             className="px-3.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition"
           >
             Vista previa con ejemplo
-          </button>
-          <button
-            type="button"
-            onClick={handleGuardarCambios}
-            disabled={guardando || !puedeEditar}
-            className="px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-lg shadow-xs transition"
-          >
-            {guardando ? "Guardando..." : "Guardar cambios"}
           </button>
         </div>
       </div>

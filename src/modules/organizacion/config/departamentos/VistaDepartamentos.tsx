@@ -5,6 +5,7 @@ import Link from "next/link";
 import { DepartamentoTI, UsuarioConPerfiles } from "@/types";
 import { validarCodigo, validarTexto, validarNumeroPositivo } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface TecnicoDepto {
   id_tecnico_detalle: number;
@@ -585,7 +586,8 @@ export default function PaginaAdminDepartamentos() {
             </div>
           ) : (
             <div className="contenedor-tabla">
-              <table className="tabla">
+              <TablaDobleScroll minWidth={980}>
+              <table className="tabla" style={{ minWidth: 980 }}>
                 <thead>
                   <tr>
                     <th>Técnico Especialista</th>
@@ -639,6 +641,7 @@ export default function PaginaAdminDepartamentos() {
                   ))}
                 </tbody>
               </table>
+              </TablaDobleScroll>
             </div>
           )}
           <div className="tarjeta-formulario" style={{display:"flex",gap:10,alignItems:"end",flexWrap:"wrap",marginTop:16}}>
@@ -653,14 +656,14 @@ export default function PaginaAdminDepartamentos() {
       {vista === "tabla" && (
         <div>
           {/* Cabecera Principal */}
-          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-            <div>
+          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <h1>Departamentos y Grupos de Soporte de TI</h1>
               <p>
                 Estructura organizacional y áreas resolutoras de TI (ITIL 4 / COBIT 2019): unidades operativas, jefaturas responsables y acuerdos de nivel operativo (OLA).
               </p>
             </div>
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
               <Link href="/plataforma/organizacion/tecnicos" className="boton-secundario" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", padding: "8px 14px", fontSize: 13 }}>
                 Ver plantilla de técnicos
               </Link>
@@ -735,7 +738,8 @@ export default function PaginaAdminDepartamentos() {
             </div>
           ) : (
             <div className="contenedor-tabla">
-              <table className="tabla">
+              <TablaDobleScroll minWidth={980}>
+              <table className="tabla" style={{ minWidth: 980 }}>
                 <thead>
                   <tr>
                     <th>Código</th>
@@ -830,6 +834,7 @@ export default function PaginaAdminDepartamentos() {
                   ))}
                 </tbody>
               </table>
+              </TablaDobleScroll>
             </div>
           )}
         </div>

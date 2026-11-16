@@ -60,28 +60,17 @@ export const PestanaMayores: React.FC<PestanaMayoresProps> = ({
   const [guardando, setGuardando] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
 
-  const handleGuardar = async () => {
-    try {
-      setGuardando(true);
-      setMensajeExito("");
-
-      await onActualizarConfig({
-        aplicar_paquete_tareas: aplicarPaquete,
-        exigir_revision_cierre: exigirRevision,
-        plazo_revision_dias: plazoDias,
-        notificar_direccion_al_detectar: notifDetectar,
-        notificar_direccion_al_cerrar: notifCerrar,
-        generar_informe_pdf: generarPdf,
-        plantilla_preguntas: preguntas,
-      });
-
-      setMensajeExito("Gobernanza de problemas mayores guardada con éxito.");
-    } catch (err: any) {
-      alert(err.message || "Error al actualizar");
-    } finally {
-      setGuardando(false);
-    }
-  };
+  React.useEffect(() => {
+    onActualizarConfig({
+      aplicar_paquete_tareas: aplicarPaquete,
+      exigir_revision_cierre: exigirRevision,
+      plazo_revision_dias: plazoDias,
+      notificar_direccion_al_detectar: notifDetectar,
+      notificar_direccion_al_cerrar: notifCerrar,
+      generar_informe_pdf: generarPdf,
+      plantilla_preguntas: preguntas,
+    });
+  }, [aplicarPaquete, exigirRevision, plazoDias, notifDetectar, notifCerrar, generarPdf, preguntas, onActualizarConfig]);
 
   return (
     <div className="space-y-6">
@@ -112,14 +101,6 @@ export const PestanaMayores: React.FC<PestanaMayoresProps> = ({
             className="px-3.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition"
           >
             Probar criterios
-          </button>
-          <button
-            type="button"
-            onClick={handleGuardar}
-            disabled={guardando || !puedeEditar}
-            className="px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-lg shadow-xs transition"
-          >
-            {guardando ? "Guardando..." : "Guardar gobernanza"}
           </button>
         </div>
       </div>

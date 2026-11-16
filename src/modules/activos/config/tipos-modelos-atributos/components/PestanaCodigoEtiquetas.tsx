@@ -133,10 +133,9 @@ export function PestanaCodigoEtiquetas({ datos, onChange, bloqueado }: Props) {
                 type="button"
                 className="boton-mini"
                 onClick={generarEjemplos}
-                style={{ fontSize: 11, display: "inline-flex", alignItems: "center", gap: 4 }}
+                style={{ fontSize: 11, padding: "4px 8px" }}
               >
-                <RefreshCw size={12} />
-                <span>Probar Formato</span>
+                Probar Formato
               </button>
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>

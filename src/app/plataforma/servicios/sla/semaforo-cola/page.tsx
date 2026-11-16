@@ -1,5 +1,5 @@
-import VistaTecnicoSlaSemaforo from "@/modules/servicios/views/tecnico/VistaTecnicoSlaSemaforo";
+import VistaSlaSemaforo from "@/modules/servicios/views/VistaSlaSemaforo";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoSlaSemaforo />;
+  return <VistaSlaSemaforo />;
 }

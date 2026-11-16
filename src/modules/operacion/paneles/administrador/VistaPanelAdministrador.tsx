@@ -182,8 +182,8 @@ export default function VistaPanelAdministrador() {
   return (
     <div className="vista-contenedor" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       {/* Cabecera del Administrador */}
-      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-        <div>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Administración del Sistema & Seguridad ITIL
           </span>
@@ -195,12 +195,10 @@ export default function VistaPanelAdministrador() {
         <button
           type="button"
           onClick={cargarPanel}
-          className="boton-secundario"
-          style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer" }}
-          title="Actualizar panel"
+          className="boton-primario"
+          style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
         >
-          <RefreshCw size={14} />
-          Actualizar
+          Actualizar Panel
         </button>
       </div>
 

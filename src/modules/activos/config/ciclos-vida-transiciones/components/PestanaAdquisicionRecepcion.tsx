@@ -152,7 +152,7 @@ export function PestanaAdquisicionRecepcion({ datos, onChange, bloqueado }: Prop
             disabled={bloqueado}
             className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded transition-colors disabled:opacity-50"
           >
-            + Vincular servicio de catálogo
+            Vincular servicio de catálogo
           </button>
         </div>
       </div>
