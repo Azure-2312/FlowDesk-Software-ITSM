@@ -1,5 +1,5 @@
-import VistaTecnicoMesaPendientes from "@/modules/tickets/views/tecnico/VistaTecnicoMesaPendientes";
+import VistaMesaPendientes from "@/modules/tickets/views/VistaMesaPendientes";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoMesaPendientes />;
+  return <VistaMesaPendientes />;
 }

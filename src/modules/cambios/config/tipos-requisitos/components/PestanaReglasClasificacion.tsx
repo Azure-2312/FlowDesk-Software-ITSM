@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface ReglaClasificacion {
   id: string;
@@ -237,8 +238,9 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
       </div>
 
       {/* Tabla de Reglas */}
-      <div style={{ backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #cbd5e1", overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5, textAlign: "left" }}>
+      <div style={{ backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #cbd5e1", padding: 8 }}>
+        <TablaDobleScroll>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5, textAlign: "left", minWidth: 950 }}>
           <thead>
             <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #cbd5e1" }}>
               <th style={{ padding: "10px 14px", color: "#475569", width: 70 }}>Orden</th>
@@ -379,6 +381,7 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Modal de Edición de Regla de Clasificación */}

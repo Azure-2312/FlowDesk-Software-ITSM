@@ -214,8 +214,8 @@ export default function GobiernoConocimiento() {
   return (
     <div className="vista-contenedor">
       {/* Cabecera Principal */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
-        <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
             Gobierno de la Base de Conocimiento
           </h1>
@@ -223,17 +223,15 @@ export default function GobiernoConocimiento() {
             Supervise el ciclo editorial de artículos técnicos, audite la trazabilidad y configure las políticas de redacción y compuertas de publicación del autoservicio.
           </p>
         </div>
-        {pestañaActiva === "politicas" && (
-          <button
-            type="button"
-            className="boton-primario"
-            onClick={guardarPoliticasKCS}
-            disabled={guardandoPoliticas}
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
-          >
-            {guardandoPoliticas ? "Guardando..." : "Guardar Configuración"}
-          </button>
-        )}
+        <button
+          type="button"
+          className="boton-primario"
+          onClick={guardarPoliticasKCS}
+          disabled={guardandoPoliticas}
+          style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+        >
+          {guardandoPoliticas ? "Guardando..." : "Guardar Configuración"}
+        </button>
       </div>
 
       {/* Navegación por Pestañas */}
@@ -404,8 +402,8 @@ export default function GobiernoConocimiento() {
               No se encontraron artículos con los filtros aplicados.
             </div>
           ) : (
-            <div className="contenedor-tabla">
-              <table className="tabla-datos" style={{ width: "100%", fontSize: "13.5px" }}>
+            <div className="contenedor-tabla" style={{ overflowX: "auto" }}>
+              <table className="tabla-datos" style={{ minWidth: 950, width: "100%", fontSize: "13.5px" }}>
                 <thead>
                   <tr>
                     <th style={{ textAlign: "center", width: 95 }}>Código</th>
@@ -894,16 +892,6 @@ export default function GobiernoConocimiento() {
                 </div>
               </div>
             </div>
-
-            <button
-              type="button"
-              className="boton-primario"
-              onClick={guardarPoliticasKCS}
-              disabled={guardandoPoliticas}
-              style={{ padding: "10px 20px", alignSelf: "flex-start", fontSize: 13 }}
-            >
-              {guardandoPoliticas ? "Guardando..." : "Guardar Configuración"}
-            </button>
           </div>
         </div>
       )}

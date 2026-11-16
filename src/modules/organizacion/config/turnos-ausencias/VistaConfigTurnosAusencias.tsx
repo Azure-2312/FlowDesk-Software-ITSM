@@ -201,16 +201,19 @@ export default function VistaConfigTurnosAusencias() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
-        <div>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 18 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h1>Gestión de Turnos y Ausencias</h1>
           <p>Turnos operativos (Mañana, Tarde, Noche, Guardias 24x7) y registro de ausencias con designación de técnico de reemplazo.</p>
         </div>
-        <div style={{ display: "flex", gap: 10 }}>
-          <button type="button" className="boton-secundario" style={{ width: "auto" }} onClick={() => setModalAbierto(true)}>
-            Registrar ausencia con reemplazo
-          </button>
-        </div>
+        <button
+          type="button"
+          className="boton-primario"
+          style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+          onClick={() => setModalAbierto(true)}
+        >
+          Registrar Ausencia
+        </button>
       </div>
 
       {ok && <div style={{ background: "#ecfdf5", border: "1px solid #a7f3d0", color: "#065f46", padding: "10px 14px", borderRadius: 8, marginBottom: 16, fontSize: 13 }}>{ok}</div>}
@@ -242,8 +245,8 @@ export default function VistaConfigTurnosAusencias() {
         ) : eventos.length === 0 ? (
           <div style={{ padding: 20, textAlign: "center", color: "#64748b", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 10 }}>Sin turnos registrados.</div>
         ) : (
-          <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 10, overflow: "hidden" }}>
-            <table className="tabla">
+          <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 10, overflowX: "auto" }}>
+            <table className="tabla" style={{ minWidth: 650 }}>
               <thead>
                 <tr>
                   <th>Fecha</th>
@@ -289,8 +292,8 @@ export default function VistaConfigTurnosAusencias() {
         ) : ausencias.length === 0 ? (
           <div style={{ padding: 20, textAlign: "center", color: "#64748b", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 10 }}>Sin ausencias registradas.</div>
         ) : (
-          <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 10, overflow: "hidden" }}>
-            <table className="tabla">
+          <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 10, overflowX: "auto" }}>
+            <table className="tabla" style={{ minWidth: 650 }}>
               <thead>
                 <tr>
                   <th>Técnico</th>

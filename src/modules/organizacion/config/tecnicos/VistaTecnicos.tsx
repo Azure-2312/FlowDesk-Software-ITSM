@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { DepartamentoTI, TecnicoConCarga, UsuarioConPerfiles } from "@/types";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 type ModoVista = "tabla" | "enrolar" | "editar";
 
@@ -682,8 +683,8 @@ export default function PaginaAdminTecnicos() {
       {/* 3. VISTA PRINCIPAL: TABLA DE TÉCNICOS */}
       {vista === "tabla" && (
         <div>
-          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-            <div>
+          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <h1>Gestión de Especialistas Técnicos (Capacidad y Carga WIP)</h1>
               <p>
                 Gobierno de recursos resolutores (ITIL 4 / ISO 20000): nivelación de soporte (Tier 1/2/3), límites de saturación (WIP) y disponibilidad operativa.
@@ -692,10 +693,10 @@ export default function PaginaAdminTecnicos() {
             <button
               type="button"
               className="boton-primario"
-              style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
+              style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
               onClick={abrirEnrolar}
             >
-              + Enrolar Nuevo Técnico
+              Enrolar Nuevo Técnico
             </button>
           </div>
 
@@ -788,7 +789,8 @@ export default function PaginaAdminTecnicos() {
             </div>
           ) : (
             <div className="contenedor-tabla">
-              <table className="tabla">
+              <TablaDobleScroll minWidth={1050}>
+              <table className="tabla" style={{ minWidth: 1050 }}>
                 <thead>
                   <tr>
                     <th>Especialista Técnico</th>
@@ -880,13 +882,14 @@ export default function PaginaAdminTecnicos() {
                   })}
                 </tbody>
               </table>
+              </TablaDobleScroll>
             </div>
           )}
 
           {/* SECCIÓN MÍNIMA: AUSENCIAS Y LICENCIAS OPERATIVAS (1.4.3) */}
           <div style={{ marginTop: 36, borderTop: "2px solid #e2e8f0", paddingTop: 24, paddingBottom: 30 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>
-              <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, flexWrap: "nowrap", gap: 16 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#0f172a" }}>
                   Ausencias y Licencias Operativas
                 </h2>
@@ -898,10 +901,10 @@ export default function PaginaAdminTecnicos() {
                 <button
                   type="button"
                   className="boton-primario"
-                  style={{ width: "auto", padding: "7px 14px", fontSize: 13 }}
+                  style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
                   onClick={abrirNuevaAusencia}
                 >
-                  + Registrar ausencia
+                  Registrar Ausencia
                 </button>
               )}
             </div>
@@ -1025,7 +1028,8 @@ export default function PaginaAdminTecnicos() {
               </div>
             ) : (
               <div className="contenedor-tabla">
-                <table className="tabla">
+                <TablaDobleScroll minWidth={800}>
+                <table className="tabla" style={{ minWidth: 800 }}>
                   <thead>
                     <tr>
                       <th>Técnico</th>
@@ -1127,6 +1131,7 @@ export default function PaginaAdminTecnicos() {
                     })}
                   </tbody>
                 </table>
+                </TablaDobleScroll>
               </div>
             )}
           </div>

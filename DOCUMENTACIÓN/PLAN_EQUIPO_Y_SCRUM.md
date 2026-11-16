@@ -68,7 +68,7 @@ src/
 
 Principios no negociables: `src/app` no contiene lógica; la lógica vive en `src/modules/<modulo>/`; `shared` nunca importa módulos; cada módulo expone contrato público; las consolas de rol delegan el dominio.
 
-### 2.2. Los 17 módulos actuales
+### 2.2. Los 16 módulos de dominio actuales
 | # | Módulo | Archivos* | Contrato | Dominio | Dueño |
 | --: | :--- | --: | :--- | :--- | :--- |
 | 1 | `tickets` | 52 | `index.ts` + `ui.ts` | Núcleo ITSM congelado y configuración de formularios/vistas de ticket. | Miguel |
@@ -78,17 +78,17 @@ Principios no negociables: `src/app` no contiene lógica; la lógica vive en `sr
 | 5 | `problemas` | 94 | `index.ts` | Problemas, RCA, KEDB, configuración del proceso. | Alexis |
 | 6 | `seguridad` | 36 | `index.ts` | Login, JWT, sesiones, captcha, recuperación. | Junior |
 | 7 | `plataforma` | 29 | `index.ts` | Salud, mantenimiento, logs, auditoría, menú, notificaciones y parámetros. | Miguel |
-| 8 | `perfiles` | 135 | Subcarpetas por rol | Consolas de rol: solo UI y alcance del perfil. | Compartido por subcarpeta |
-| 9 | `servicios` | 33 | `index.ts` + `ui.ts` | Catálogo, categorías, SLA, matriz de prioridad y workflow. | Lourdes |
-| 10 | `operacion` | 34 | `index.ts` | Eventos operativos y resiliencia. | Miguel |
-| 11 | `activos` | 94 | `index.ts` | ITAM/SAM: inventario, licencias, contratos, bajas. | Lourdes |
-| 12 | `cmdb` | 34 | `index.ts` | SACM: CIs, relaciones, líneas base, exactitud, análisis. | Nain |
-| 13 | `proveedores` | 6 | `index.ts` | Proveedores y contratos. | Junior |
-| 14 | `identidades` | 22 | `index.ts` | Usuarios, perfiles RBAC, credenciales. | Junior |
-| 15 | `organizacion` | 32 | `index.ts` | Departamentos, técnicos, colaboradores, ausencias. | Junior |
-| 16 | `conocimiento` | 29 | `index.ts` | Base de conocimiento, configuración editorial y flujo editorial. | Alexis |
-| 17 | `reportes` | 24 | `index.ts` + `ui.ts` | 9 reportes centralizados e indicadores. | Miguel |
+| 8 | `servicios` | 33 | `index.ts` + `ui.ts` | Catálogo, categorías, SLA, matriz de prioridad y workflow. | Lourdes |
+| 9 | `operacion` | 34 | `index.ts` | Eventos operativos, resiliencia y paneles unificados por rol. | Miguel |
+| 10 | `activos` | 94 | `index.ts` | ITAM/SAM: inventario, licencias, contratos, bajas. | Lourdes |
+| 11 | `cmdb` | 34 | `index.ts` | SACM: CIs, relaciones, líneas base, exactitud, análisis. | Nain |
+| 12 | `proveedores` | 6 | `index.ts` | Proveedores y contratos. | Junior |
+| 13 | `identidades` | 22 | `index.ts` | Usuarios, perfiles RBAC, credenciales. | Junior |
+| 14 | `organizacion` | 32 | `index.ts` | Departamentos, técnicos, colaboradores, ausencias. | Junior |
+| 15 | `conocimiento` | 29 | `index.ts` | Base de conocimiento, configuración editorial y flujo editorial. | Alexis |
+| 16 | `reportes` | 24 | `index.ts` + `ui.ts` | 9 reportes centralizados e indicadores. | Miguel |
 \* Conteo referencial al 2026-10-19; dimensiona, no reparte carga.
+*(Nota arquitectónica: el antiguo módulo temporal `perfiles` fue modularizado en `operacion/paneles/*` y en sus dominios canónicos).*
 
 ### 2.3. Contratos públicos
 | Módulo | Servidor | UI | Observación |
@@ -135,7 +135,7 @@ El contrato de `tickets` incluye `listarTickets`, `crearTicket`, `obtenerDetalle
 4. Las rutas de rol no tienen alias: se usa `/plataforma/perfiles/<rol>/*`.
 5. La ficha RBAC vive en `identidades` (`/admin/perfiles`, `/api/identidades/perfiles`), no en `perfiles`.
 6. `cmdb` es módulo independiente; se une a `activos` por dato (`elemento_configuracion.id_activo`), no por código.
-7. Son **17 módulos**; no se agregan sin decisión de arquitectura.
+7. Son **16 módulos** en `src/modules/`; las consolas por perfil se unificaron en `operacion/paneles/*` y módulos canónicos.
 
 ---
 

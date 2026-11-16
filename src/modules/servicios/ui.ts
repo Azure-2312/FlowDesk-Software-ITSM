@@ -8,4 +8,3 @@
 // =====================================================================
 
 export { default as VistaCatalogoServicios } from "./catalogo/VistaCatalogoServicios";
-export { default as VistaTecnicoCatalogo } from "./catalogo-tecnico/VistaTecnicoCatalogo";

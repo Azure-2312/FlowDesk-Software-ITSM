@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Plus, Edit2, Trash2, ArrowUp, ArrowDown, Eye, CheckCircle2, Clock, HelpCircle, FileText } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface PreguntaPir {
   id: string;
@@ -141,17 +142,13 @@ export const PestanaPir: React.FC<PestanaPirProps> = ({ snapshot, onChange, disa
               backgroundColor: "#f8fafc",
               border: "1px solid #cbd5e1",
               color: "#1e293b",
-              padding: "8px 14px",
+              padding: "8px 16px",
               borderRadius: "6px",
               fontWeight: 600,
               fontSize: "0.85rem",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
+              cursor: "pointer"
             }}
           >
-            <Eye size={15} style={{ color: "#2563eb" }} />
             Vista Previa de la PIR
           </button>
 
@@ -162,18 +159,14 @@ export const PestanaPir: React.FC<PestanaPirProps> = ({ snapshot, onChange, disa
               style={{
                 backgroundColor: "#2563eb",
                 color: "#ffffff",
-                padding: "8px 16px",
+                padding: "8px 18px",
                 borderRadius: "6px",
                 border: "none",
                 fontWeight: 600,
                 fontSize: "0.85rem",
-                cursor: disabled ? "not-allowed" : "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px"
+                cursor: disabled ? "not-allowed" : "pointer"
               }}
             >
-              <Plus size={16} />
               Agregar Pregunta
             </button>
           )}
@@ -236,8 +229,9 @@ export const PestanaPir: React.FC<PestanaPirProps> = ({ snapshot, onChange, disa
 
       {/* SECCIÓN 1: CUESTIONARIO DE PREGUNTAS */}
       {seccionActiva === "preguntas" && (
-        <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
+        <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "8px" }}>
+          <TablaDobleScroll>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left", minWidth: 800 }}>
             <thead>
               <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
                 <th style={{ padding: "10px 12px", width: "70px" }}>Orden</th>
@@ -323,17 +317,19 @@ export const PestanaPir: React.FC<PestanaPirProps> = ({ snapshot, onChange, disa
               ))}
             </tbody>
           </table>
+          </TablaDobleScroll>
         </div>
       )}
 
       {/* SECCIÓN 2: MATRIZ DE OBLIGATORIEDAD CONSOLIDADA */}
       {seccionActiva === "obligatoriedad" && (
-        <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "16px", overflowX: "auto" }}>
+        <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "16px" }}>
           <p style={{ fontSize: "0.8rem", color: "#64748b", marginTop: 0, marginBottom: "14px" }}>
             Directriz ITIL 4: Los cambios Normales y de Emergencia exigen revisión PIR al 100%. Para cambios Estándar, se exige PIR solo si el resultado no es exitoso o mediante muestreo probabilístico configurable.
           </p>
 
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
+          <TablaDobleScroll>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left", minWidth: 700 }}>
             <thead>
               <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
                 <th style={{ padding: "8px 12px" }}>Tipo de Cambio</th>
@@ -374,6 +370,7 @@ export const PestanaPir: React.FC<PestanaPirProps> = ({ snapshot, onChange, disa
               ))}
             </tbody>
           </table>
+          </TablaDobleScroll>
         </div>
       )}
 

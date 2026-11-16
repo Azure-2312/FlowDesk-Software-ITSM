@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Plus, Edit2, Copy, Trash2, Snowflake, Download, Upload, AlertTriangle, AlertCircle, X, Check } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface PestanaPeriodosCongelamientoProps {
   config: any;
@@ -156,28 +157,29 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
         <div style={{ display: "flex", gap: 10 }}>
           <button
             onClick={exportarCsv}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, fontWeight: 500, color: "#334155", cursor: "pointer" }}
+            style={{ padding: "8px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, fontWeight: 500, color: "#334155", cursor: "pointer" }}
           >
-            <Download size={14} /> Exportar CSV
+            Exportar CSV
           </button>
           <button
             onClick={() => { setModalCsvAbierto(true); setCsvTexto(""); setCsvError(null); setCsvResultado(null); }}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, fontWeight: 500, color: "#334155", cursor: "pointer" }}
+            style={{ padding: "8px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, fontWeight: 500, color: "#334155", cursor: "pointer" }}
           >
-            <Upload size={14} /> Importar CSV
+            Importar CSV
           </button>
           <button
             onClick={() => abrirEditor()}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#dc2626", border: "none", borderRadius: 6, fontSize: 13, fontWeight: 600, color: "#ffffff", cursor: "pointer" }}
+            style={{ padding: "8px 16px", background: "#dc2626", border: "none", borderRadius: 6, fontSize: 13, fontWeight: 600, color: "#ffffff", cursor: "pointer" }}
           >
-            <Plus size={15} /> Nuevo Período
+            Nuevo Período
           </button>
         </div>
       </div>
 
       {/* Tabla de Períodos */}
-      <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, textAlign: "left" }}>
+      <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 8 }}>
+        <TablaDobleScroll>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, textAlign: "left", minWidth: 1000 }}>
           <thead style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
             <tr>
               <th style={{ padding: "10px 14px", fontWeight: 600, color: "#475569" }}>Nombre y Severidad</th>
@@ -272,9 +274,9 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
                       <div style={{ display: "flex", justifyContent: "flex-end", gap: 6 }}>
                         <button
                           onClick={() => abrirEditor(p)}
-                          style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8", padding: "4px 8px", borderRadius: 4, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 11 }}
+                          style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8", padding: "4px 8px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 500 }}
                         >
-                          <Edit2 size={12} /> Editar
+                          Editar
                         </button>
                         <button
                           onClick={() => duplicarPeriodo(p)}
@@ -298,6 +300,7 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
             )}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Modal Editor de Período */}

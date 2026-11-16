@@ -78,8 +78,10 @@ export default function FlujoEvaluacionPage() {
   const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
   const [puedeEditar, setPuedeEditar] = useState<boolean>(true);
 
-  // Snapshot activo de la pestaña
+  // Snapshot activo de la pestaña y tracking de pestañas modificadas
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
+  const [snapshotsPorTab, setSnapshotsPorTab] = useState<Record<string, any>>({});
+  const [tabsModificadas, setTabsModificadas] = useState<Set<string>>(new Set());
 
   // Catálogos auxiliares (usuarios, departamentos)
   const [catalogoUsuarios, setCatalogoUsuarios] = useState<any[]>([]);
@@ -107,6 +109,10 @@ export default function FlujoEvaluacionPage() {
 
       const snap = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
       setConfigSnapshot(snap);
+      setSnapshotsPorTab((prev) => ({
+        ...prev,
+        [tabActiva]: prev[tabActiva] !== undefined ? prev[tabActiva] : snap,
+      }));
     } catch (err: any) {
       setErrorCarga(err.message || "Error al cargar configuración");
     } finally {
@@ -118,22 +124,36 @@ export default function FlujoEvaluacionPage() {
     cargarDatos();
   }, [cargarDatos]);
 
-  // Guardar y Aplicar Cambios Directamente
+  const actualizarSnapshotPestana = (nuevoSnap: any, pestanaId: string = tabActiva) => {
+    setConfigSnapshot(nuevoSnap);
+    setSnapshotsPorTab((prev) => ({ ...prev, [pestanaId]: nuevoSnap }));
+    setTabsModificadas((prev) => new Set(prev).add(pestanaId));
+  };
+
+  // Guardar y Aplicar Cambios Directamente de forma coordinada
   const handleGuardarCambios = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/configuracion", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: "Actualización de configuración de flujo",
-          impacto_resumen: "Publicación de configuración de flujo y auditoría"
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al guardar configuración");
+      const tabsAGuardar = tabsModificadas.size > 0 ? Array.from(tabsModificadas) : [tabActiva];
+
+      for (const tId of tabsAGuardar) {
+        const snap = snapshotsPorTab[tId] || (tId === tabActiva ? configSnapshot : null);
+        if (!snap) continue;
+        const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/configuracion", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pestana: tId,
+            snapshot: snap,
+            motivo: `Actualización de configuración de flujo en pestaña ${tId}`,
+            impacto_resumen: "Publicación de configuración de flujo y auditoría"
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Error al guardar configuración en pestaña ${tId}`);
+      }
+
+      setTabsModificadas(new Set());
       alert("Flujo de evaluación y autorización guardado exitosamente.");
       await cargarDatos();
     } catch (err: any) {
@@ -171,7 +191,7 @@ export default function FlujoEvaluacionPage() {
               onClick={handleGuardarCambios}
               disabled={guardando || deshabilitadoEdicion}
               className="boton-primario"
-              style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+              style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
@@ -241,73 +261,73 @@ export default function FlujoEvaluacionPage() {
         </div>
       ) : (
         <div>
-          {tabActiva === "estados" && (
+          <div style={{ display: tabActiva === "estados" ? "block" : "none" }}>
             <PestanaEstados
-              snapshot={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
+              snapshot={snapshotsPorTab["estados"] || configSnapshot}
+              onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "estados")}
               disabled={deshabilitadoEdicion}
             />
-          )}
+          </div>
 
-          {tabActiva === "transiciones" && (
+          <div style={{ display: tabActiva === "transiciones" ? "block" : "none" }}>
             <PestanaTransiciones
-              snapshot={configSnapshot}
-              estadosDisponibles={configSnapshot.estados}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
+              snapshot={snapshotsPorTab["transiciones"] || configSnapshot}
+              estadosDisponibles={(snapshotsPorTab["transiciones"] || configSnapshot).estados}
+              onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "transiciones")}
               disabled={deshabilitadoEdicion}
             />
-          )}
+          </div>
 
-          {tabActiva === "etapas_aprobacion" && (
+          <div style={{ display: tabActiva === "etapas_aprobacion" ? "block" : "none" }}>
             <PestanaEtapasAprobacion
-              snapshot={configSnapshot}
+              snapshot={snapshotsPorTab["etapas_aprobacion"] || configSnapshot}
               catalogoUsuarios={catalogoUsuarios}
               catalogoDepartamentos={catalogoDepartamentos}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
+              onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "etapas_aprobacion")}
               disabled={deshabilitadoEdicion}
             />
-          )}
+          </div>
 
-          {tabActiva === "comites" && (
+          <div style={{ display: tabActiva === "comites" ? "block" : "none" }}>
             <PestanaComites
-              snapshot={configSnapshot}
+              snapshot={snapshotsPorTab["comites"] || configSnapshot}
               catalogoUsuarios={catalogoUsuarios}
-              onChange={(nuevo) => setConfigSnapshot({ comites: nuevo })}
+              onChange={(nuevo) => actualizarSnapshotPestana({ comites: nuevo }, "comites")}
               disabled={deshabilitadoEdicion}
             />
-          )}
+          </div>
 
-          {tabActiva === "plazos_escalamiento" && (
+          <div style={{ display: tabActiva === "plazos_escalamiento" ? "block" : "none" }}>
             <PestanaPlazosEscalamiento
-              snapshot={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
+              snapshot={snapshotsPorTab["plazos_escalamiento"] || configSnapshot}
+              onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "plazos_escalamiento")}
               disabled={deshabilitadoEdicion}
             />
-          )}
+          </div>
 
-          {tabActiva === "tareas_checklists" && (
+          <div style={{ display: tabActiva === "tareas_checklists" ? "block" : "none" }}>
             <PestanaTareasChecklists
-              snapshot={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
+              snapshot={snapshotsPorTab["tareas_checklists"] || configSnapshot}
+              onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "tareas_checklists")}
               disabled={deshabilitadoEdicion}
             />
-          )}
+          </div>
 
-          {tabActiva === "implementacion_cierre" && (
+          <div style={{ display: tabActiva === "implementacion_cierre" ? "block" : "none" }}>
             <PestanaImplementacionCierre
-              snapshot={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
+              snapshot={snapshotsPorTab["implementacion_cierre"] || configSnapshot}
+              onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "implementacion_cierre")}
               disabled={deshabilitadoEdicion}
             />
-          )}
+          </div>
 
-          {tabActiva === "pir" && (
+          <div style={{ display: tabActiva === "pir" ? "block" : "none" }}>
             <PestanaPir
-              snapshot={configSnapshot}
-              onChange={(nuevo) => setConfigSnapshot(nuevo)}
+              snapshot={snapshotsPorTab["pir"] || configSnapshot}
+              onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "pir")}
               disabled={deshabilitadoEdicion}
             />
-          )}
+          </div>
         </div>
       )}
       </div>

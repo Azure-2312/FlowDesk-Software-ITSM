@@ -1,5 +1,7 @@
-import VistaTecnicoCambiosCalendario from "@/modules/cambios/views/tecnico/VistaTecnicoCambiosCalendario";
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import VistaCambiosCalendario from "@/modules/cambios/views/VistaCambiosCalendario";
 
-export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoCambiosCalendario />;
+export default async function PaginaCambiosCalendario() {
+  await exigirMenuPagina("/plataforma/cambios/calendario");
+  return <VistaCambiosCalendario />;
 }

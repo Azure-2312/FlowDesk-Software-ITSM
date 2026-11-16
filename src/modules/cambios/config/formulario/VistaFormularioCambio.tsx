@@ -87,8 +87,10 @@ export default function ConfiguracionFormularioCambiosPage() {
   const [puedePublicar, setPuedePublicar] = useState<boolean>(true);
   const [puedeEditar, setPuedeEditar] = useState<boolean>(true);
 
-  // Datos específicos de pestañas
+  // Datos específicos de pestañas y tracking de modificaciones
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
+  const [snapshotsPorTab, setSnapshotsPorTab] = useState<Record<string, any>>({});
+  const [tabsModificadas, setTabsModificadas] = useState<Set<string>>(new Set());
   const [camposPersonalizados, setCamposPersonalizados] = useState<any[]>([]);
   const [limiteCampos, setLimiteCampos] = useState<number>(30);
 
@@ -120,7 +122,12 @@ export default function ConfiguracionFormularioCambiosPage() {
         setFechaPublicada(dataConfig.fecha_publicacion || "");
         setAutorPublicada(dataConfig.autor_publicacion || "");
         setHayBorrador(dataConfig.tiene_borrador);
-        setConfigSnapshot(dataConfig.configuracion || {});
+        const snap = dataConfig.configuracion || {};
+        setConfigSnapshot(snap);
+        setSnapshotsPorTab((prev) => ({
+          ...prev,
+          [tabActiva]: prev[tabActiva] !== undefined ? prev[tabActiva] : snap,
+        }));
 
         if (dataConfig.bloqueo?.en_edicion_por_otro) {
           setBloqueadoPorOtro(dataConfig.bloqueo.usuario_bloqueo?.nombre);
@@ -147,31 +154,46 @@ export default function ConfiguracionFormularioCambiosPage() {
     cargarDatos();
   }, [cargarDatos]);
 
+  const actualizarSnapshotPestana = (nuevaConfig: any, pestanaId: string = tabActiva) => {
+    setConfigSnapshot(nuevaConfig);
+    setSnapshotsPorTab((prev) => ({ ...prev, [pestanaId]: nuevaConfig }));
+    setTabsModificadas((prev) => new Set(prev).add(pestanaId));
+    setHayBorrador(true);
+  };
+
   // --------------------------------------------------------------------------
   // 4. ACCIONES DE PERSISTENCIA: Borradores, publicación formal y restauración
   // --------------------------------------------------------------------------
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/cambios/configuracion/formulario/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pantalla: "1.3.3.1",
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: `Guardado de borrador en pestaña ${tabActiva}`,
-        }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setHayBorrador(true);
-        alert("Borrador guardado exitosamente.");
-      } else {
-        alert(data.error || "No se pudo guardar el borrador.");
+      const tabsAGuardar = tabsModificadas.size > 0 ? Array.from(tabsModificadas) : [tabActiva];
+
+      for (const tId of tabsAGuardar) {
+        const snap = snapshotsPorTab[tId] || (tId === tabActiva ? configSnapshot : null);
+        if (!snap) continue;
+        const res = await fetch("/api/cambios/configuracion/formulario/configuracion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pantalla: "1.3.3.1",
+            pestana: tId,
+            snapshot: snap,
+            motivo: `Guardado de borrador en pestaña ${tId}`,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || `No se pudo guardar el borrador en ${tId}.`);
+        }
       }
-    } catch (err) {
+
+      setTabsModificadas(new Set());
+      setHayBorrador(true);
+      alert("Configuración de cambios guardada exitosamente.");
+    } catch (err: any) {
       console.error("Error al guardar borrador:", err);
+      alert(err.message || "Error al guardar borrador.");
     } finally {
       setGuardando(false);
     }
@@ -370,7 +392,7 @@ export default function ConfiguracionFormularioCambiosPage() {
             onClick={handleGuardarBorrador}
             disabled={guardando}
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+            style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
           >
             {guardando ? "Guardando..." : "Guardar Configuración"}
           </button>
@@ -448,63 +470,60 @@ export default function ConfiguracionFormularioCambiosPage() {
         </div>
       ) : (
         <div>
-          {tabActiva === "campos" && (
+          <div style={{ display: tabActiva === "campos" ? "block" : "none" }}>
             <PestanaCampos
-              secciones={configSnapshot.secciones || []}
+              secciones={snapshotsPorTab["campos"]?.secciones || configSnapshot.secciones || []}
               onChangeSecciones={(nuevas) => {
-                setConfigSnapshot({ ...configSnapshot, secciones: nuevas });
-                setHayBorrador(true);
+                const actual = snapshotsPorTab["campos"] || configSnapshot;
+                actualizarSnapshotPestana({ ...actual, secciones: nuevas }, "campos");
               }}
               camposPersonalizados={camposPersonalizados}
               onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
             />
-          )}
+          </div>
 
-          {tabActiva === "campos_personalizados" && (
+          <div style={{ display: tabActiva === "campos_personalizados" ? "block" : "none" }}>
             <PestanaCamposPersonalizados
               campos={camposPersonalizados}
               limite={limiteCampos}
               onRecargar={cargarDatos}
             />
-          )}
+          </div>
 
-          {tabActiva === "catalogos" && (
+          <div style={{ display: tabActiva === "catalogos" ? "block" : "none" }}>
             <PestanaCatalogos />
-          )}
+          </div>
 
-          {tabActiva === "cuestionario_riesgo" && (
+          <div style={{ display: tabActiva === "cuestionario_riesgo" ? "block" : "none" }}>
             <PestanaCuestionarioRiesgo
-              config={configSnapshot}
+              config={snapshotsPorTab["cuestionario_riesgo"] || configSnapshot}
               onChangeConfig={(nueva) => {
-                setConfigSnapshot(nueva);
-                setHayBorrador(true);
+                actualizarSnapshotPestana(nueva, "cuestionario_riesgo");
               }}
             />
-          )}
+          </div>
 
-          {tabActiva === "prioridad" && (
+          <div style={{ display: tabActiva === "prioridad" ? "block" : "none" }}>
             <PestanaPrioridad
-              config={configSnapshot}
+              config={snapshotsPorTab["prioridad"] || configSnapshot}
               onChangeConfig={(nueva) => {
-                setConfigSnapshot(nueva);
-                setHayBorrador(true);
+                actualizarSnapshotPestana(nueva, "prioridad");
               }}
             />
-          )}
+          </div>
 
-          {tabActiva === "plantillas" && (
+          <div style={{ display: tabActiva === "plantillas" ? "block" : "none" }}>
             <PestanaPlantillas />
-          )}
+          </div>
 
-          {tabActiva === "vista_ticket" && (
+          <div style={{ display: tabActiva === "vista_ticket" ? "block" : "none" }}>
             <PestanaVistaTicket
-              config={configSnapshot}
+              config={snapshotsPorTab["vista_ticket"] || configSnapshot}
               onChangeConfig={(nueva) => {
-                setConfigSnapshot(nueva);
-                setHayBorrador(true);
+                actualizarSnapshotPestana(nueva, "vista_ticket");
               }}
             />
-          )}
+          </div>
         </div>
       )}
       </div>

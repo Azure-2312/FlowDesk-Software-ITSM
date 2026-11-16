@@ -14,7 +14,7 @@ export { default as ProblemasWorkspace } from "./components/ProblemasWorkspace";
 export { default as VistaProblemas } from "./views/VistaProblemas";
 export { default as VistaKedb } from "./views/VistaKedb";
 export { default as VistaProblemaDetalle } from "./views/VistaProblemaDetalle";
-export { default as VistaPanelGestorProblemas } from "./views/VistaPanelGestorProblemas";
+export { default as VistaPanelProblemas } from "./views/VistaPanelProblemas";
 export { default as VistaAnalisisProblemas } from "./views/VistaAnalisisProblemas";
 export { default as VistaAsignacionProblemas } from "./views/VistaAsignacionProblemas";
 export { default as VistaCambiosProblemas } from "./views/VistaCambiosProblemas";

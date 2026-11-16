@@ -1,5 +1,5 @@
-import VistaTecnicoPanel from "@/modules/operacion/paneles/tecnico/VistaTecnicoPanel";
+import VistaPanelTecnico from "@/modules/operacion/paneles/tecnico/VistaPanelTecnico";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoPanel />;
+  return <VistaPanelTecnico />;
 }

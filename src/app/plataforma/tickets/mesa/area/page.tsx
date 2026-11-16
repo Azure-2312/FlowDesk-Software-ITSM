@@ -1,5 +1,5 @@
-import VistaTecnicoMesaArea from "@/modules/tickets/views/tecnico/VistaTecnicoMesaArea";
+import VistaMesaArea from "@/modules/tickets/views/VistaMesaArea";
 
 export default function PaginaTecnicoRoute() {
-  return <VistaTecnicoMesaArea />;
+  return <VistaMesaArea />;
 }

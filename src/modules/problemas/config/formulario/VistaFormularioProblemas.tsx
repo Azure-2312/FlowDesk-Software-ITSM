@@ -164,32 +164,55 @@ export default function ConfiguracionFormularioPage() {
     return {};
   };
 
-  // Guardar Borrador
+  // Guardar Borrador / Configuración de Todas las Pestañas de Forma Unificada
   const handleGuardarBorrador = async () => {
     try {
       setGuardando(true);
-      const payloadDatos = construirSnapshot();
 
-      const res = await fetch("/api/problemas/configuracion/configuracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "guardar_borrador",
-          pestana: tabActiva,
-          snapshot: payloadDatos,
-          motivo: `Guardado de borrador en pestaña ${tabActiva}`,
+      const peticiones = [
+        // 1. Campos
+        fetch("/api/problemas/configuracion/configuracion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            accion: "guardar_borrador",
+            pestana: "campos",
+            snapshot: { secciones: seccionesFormulario },
+            motivo: "Actualización de campos de formulario de problemas",
+          }),
         }),
-      });
+        // 2. Vista Ticket
+        fetch("/api/problemas/configuracion/configuracion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            accion: "guardar_borrador",
+            pestana: "vista_ticket",
+            snapshot: { cabecera: elementosCabecera, pestanas: pestanasTicket },
+            motivo: "Actualización de diseño de ticket de problemas",
+          }),
+        }),
+        // 3. Matriz de Prioridad
+        fetch("/api/problemas/configuracion/matriz-prioridad", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            config: configMatriz,
+            celdas_problemas: celdasProblemas,
+          }),
+        }),
+      ];
 
-      const resData = await res.json();
-      if (!res.ok || !resData.ok) {
-        throw new Error(resData.error || "No se pudo guardar el borrador");
+      const respuestas = await Promise.all(peticiones);
+      const fallida = respuestas.some((r) => !r.ok);
+      if (fallida) {
+        throw new Error("No se pudo guardar la configuración completa.");
       }
 
       setHayBorrador(true);
-      alert("Borrador guardado exitosamente.");
+      alert("Configuración de formulario de problemas guardada exitosamente.");
     } catch (err: any) {
-      alert(err.message || "Error al guardar borrador");
+      alert(err.message || "Error al guardar configuración");
     } finally {
       setGuardando(false);
     }
@@ -414,7 +437,7 @@ export default function ConfiguracionFormularioPage() {
             onClick={handleGuardarBorrador}
             disabled={guardando}
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+            style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
           >
             {guardando ? "Guardando..." : "Guardar Configuración"}
           </button>
@@ -480,9 +503,9 @@ export default function ConfiguracionFormularioPage() {
           </button>
         </div>
       ) : (
-          /* Renderizado de la pestaña seleccionada */
+          /* Renderizado de la pestaña seleccionada con montaje persistente */
           <div>
-            {tabActiva === "campos" && (
+            <div style={{ display: tabActiva === "campos" ? "block" : "none" }}>
               <PestanaCampos
                 secciones={seccionesFormulario}
                 onChangeSecciones={(nuevas) => {
@@ -494,17 +517,17 @@ export default function ConfiguracionFormularioPage() {
                 onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
                 puedeEditar={puedeEditar}
               />
-            )}
+            </div>
 
-            {tabActiva === "campos_personalizados" && (
+            <div style={{ display: tabActiva === "campos_personalizados" ? "block" : "none" }}>
               <PestanaCamposPersonalizados
                 campos={camposPersonalizados}
                 limite={limiteCampos}
                 onRecargar={cargarDatos}
               />
-            )}
+            </div>
 
-            {tabActiva === "listas_catalogos" && (
+            <div style={{ display: tabActiva === "listas_catalogos" ? "block" : "none" }}>
               <PestanaListasCatalogos
                 catalogos={catalogosData}
                 puedeEditar={puedeEditar}
@@ -552,32 +575,24 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
               />
-            )}
+            </div>
 
-            {tabActiva === "matriz_prioridad" && (
+            <div style={{ display: tabActiva === "matriz_prioridad" ? "block" : "none" }}>
               <PestanaPrioridad
                 prioridades={prioridadesData}
                 celdasCompartidas={celdasCompartidas}
                 celdasProblemas={celdasProblemas}
                 config={configMatriz}
                 puedeEditar={puedeEditar}
-                onGuardar={async (nuevaConfig, celdasProblemasActualizadas) => {
-                  const res = await fetch("/api/problemas/configuracion/matriz-prioridad", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      config: nuevaConfig,
-                      celdas_problemas: celdasProblemasActualizadas,
-                    }),
-                  });
-                  const r = await res.json();
-                  if (!res.ok || !r.ok) throw new Error(r.error || "No se pudo guardar la matriz de prioridad");
-                  await cargarDatos();
+                onGuardar={(nuevaConfig, celdasProblemasActualizadas) => {
+                  setConfigMatriz(nuevaConfig);
+                  setCeldasProblemas(celdasProblemasActualizadas);
+                  setHayBorrador(true);
                 }}
               />
-            )}
+            </div>
 
-            {tabActiva === "plantillas" && (
+            <div style={{ display: tabActiva === "plantillas" ? "block" : "none" }}>
               <PestanaPlantillas
                 plantillas={plantillasData}
                 puedeEditar={puedeEditar}
@@ -610,9 +625,9 @@ export default function ConfiguracionFormularioPage() {
                   cargarDatos();
                 }}
               />
-            )}
+            </div>
 
-            {tabActiva === "vista_ticket" && (
+            <div style={{ display: tabActiva === "vista_ticket" ? "block" : "none" }}>
               <PestanaVistaTicket
                 cabecera={elementosCabecera}
                 pestanas={pestanasTicket}
@@ -620,10 +635,10 @@ export default function ConfiguracionFormularioPage() {
                 onActualizarVista={async (datos) => {
                   setElementosCabecera(datos.cabecera);
                   setPestanasTicket(datos.pestanas);
-                  await handleGuardarBorrador();
+                  setHayBorrador(true);
                 }}
               />
-            )}
+            </div>
           </div>
         )}
       {modalVistaPreviaAbierto && (

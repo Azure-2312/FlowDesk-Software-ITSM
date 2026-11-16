@@ -70,22 +70,29 @@ La carpeta `src/shared/` proporciona infraestructura técnica común (pool de ba
 A continuación se detalla la función, orden y contenido de cada directorio de la raíz del proyecto:
 
 ```text
-SISTEMA DE TICKETS/
+FlowDesk/
+├── public/                       # Archivos estáticos (logos, imágenes, favicon) fuera de src/
 ├── src/                          # Código fuente de la aplicación
 │   ├── app/                      # Enrutador App Router de Next.js 14
-│   │   ├── (public)/             # Rutas públicas (login, recuperación de clave)
+│   │   ├── 403/                  # Pantalla de acceso denegado (Forbidden)
+│   │   ├── login/                # Pantalla de inicio de sesión (/login)
 │   │   ├── api/                  # 209 Route Handlers (HTTP REST)
 │   │   ├── plataforma/           # 312 Páginas autenticadas de la aplicación
+│   │   ├── globals.css           # Estilos base y variables CSS globales
 │   │   ├── layout.tsx            # Shell HTML raíz con proveedores de estado
 │   │   ├── not-found.tsx         # Pantalla amigable 404
-│   │   └── globals.css           # Estilos base y variables CSS
-│   ├── modules/                  # 17 Módulos de Dominio (Vertical Slices)
+│   │   └── page.tsx              # Raíz del sitio (redirección a /login)
+│   ├── modules/                  # 16 Módulos de Dominio (Vertical Slices)
 │   ├── shared/                   # Infraestructura transversal compartida
+│   │   ├── lib/                  # db.ts, auth.ts, api-auth.ts, capacidades.ts, menu.ts
+│   │   ├── components/           # Componentes UI globales (Sidebar, Navbar, Tabla, Modales)
+│   │   └── types/                # Tipos TypeScript compartidos
+│   ├── types/                    # Tipos globales TypeScript (index.ts)
 │   └── middleware.ts             # Interceptor perimetral de cookies de sesión
 ├── db/                           # Persistencia relacional PostgreSQL
 │   ├── schema.sql                # DDL inicial histórico
 │   ├── seed.sql                  # Datos semilla de perfiles, menú, categorías y catálogos
-│   └── migrations/               # 40 scripts SQL incrementales versionados
+│   └── migrations/               # 48 scripts SQL incrementales versionados
 ├── scripts/                      # Automatizaciones de desarrollo, pruebas y despliegue
 │   └── test_e2e_lifecycle.js     # Suite oficial E2E de 30 pruebas ITIL 4
 └── DOCUMENTACIÓN/                # Suite canónica de documentación técnica y ágil
@@ -93,7 +100,7 @@ SISTEMA DE TICKETS/
 
 ---
 
-## 3. Desglose en Profundidad de los 17 Módulos de Dominio
+## 3. Desglose en Profundidad de los 16 Módulos de Dominio
 
 ### 3.1. Módulo: `tickets` (Motor Core Transaccional)
 - **Ubicación:** `src/modules/tickets` (60 archivos TS/TSX).
@@ -241,10 +248,11 @@ SISTEMA DE TICKETS/
 - **Dueño Responsable:** Miguel.
 - **Propósito:** Administración transversal del ecosistema FlowDesk. Gestiona la salud de los servicios de base de datos y cache, los registros de auditoría inmutable de cambios de estado, el catálogo dinámico de opciones de menú, la asignación de visibilidad de pantallas por perfil (`opciones_menu_perfiles`), las reglas de retención de datos y las políticas de notificación global.
 
-### 3.17. Módulo: `perfiles` (Consolas de Rol Especializadas)
-- **Ubicación:** `src/modules/perfiles` (135 archivos TS/TSX).
-- **Propósito:** Capa de ensamblaje visual por rol. Contiene las subcarpetas operativas para cada rol (`administrador`, `tecnico`, `solicitante`, `supervisor`, `gestor-area`, `auditor`, `aprobador`, `gestor-cambios`).
-- **Regla de Diseño Estricta:** Las consolas de perfil solo resuelven alcance y composición de pantallas; delegan toda la lógica de negocio a los contratos de los módulos de dominio correspondientes (`@/modules/<dominio>`), impidiendo la duplicación de código.
+> ### 💡 Unificación de Consolas por Perfil
+> La plataforma no cuenta con un módulo independiente `src/modules/perfiles`. Las consolas y paneles de los 10 roles fueron modularizados en sus dominios canónicos:
+> - Los paneles de aterrizaje canónicos de cada rol residen en `src/modules/operacion/paneles/*`.
+> - La configuración y asignación de perfiles reside en `src/modules/identidades/config/perfiles/`.
+> - Las vistas especializadas por rol (ej. auditoría forense, dictamen CAB, mesa resolutora) pertenecen a sus respectivos módulos dueños (`seguridad`, `cambios`, `tickets`, `problemas`), evitando duplicación y respetando la arquitectura Vertical Slice.
 
 ---
 

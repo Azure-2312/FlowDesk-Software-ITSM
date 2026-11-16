@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface LogItem {
   id_log: number;
@@ -83,26 +84,21 @@ export default function PaginaAuditoriaSistema() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-        <div>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h1>Bitácora de Auditoría Integral del Sistema (Audit Trail)</h1>
           <p className="subtitulo">
             Registro cronológico inmutable de todas las acciones de configuración, modificaciones de parámetros, SLAs, altas y eventos de seguridad ejecutados en la plataforma.
           </p>
         </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
           <button
             type="button"
             className="boton-secundario"
             onClick={exportarCSV}
             disabled={logs.length === 0}
-            style={{ fontSize: 13, padding: "8px 12px", display: "inline-flex", alignItems: "center", gap: 6 }}
+            style={{ fontSize: 13, padding: "8px 14px", width: "auto" }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
             Exportar CSV
           </button>
           <button
@@ -209,8 +205,8 @@ export default function PaginaAuditoriaSistema() {
         </div>
       ) : (
         <div className="contenedor-tabla">
-          <div style={{ overflowX: "auto" }}>
-            <table className="tabla-datos">
+          <TablaDobleScroll minWidth={980}>
+          <table className="tabla-datos" style={{ minWidth: 980 }}>
               <thead>
                 <tr>
                   <th style={{ width: 140 }}>Fecha y Hora</th>
@@ -288,7 +284,7 @@ export default function PaginaAuditoriaSistema() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </TablaDobleScroll>
         </div>
       )}
 

@@ -1,4 +1,4 @@
-import VistaHistorialDecisiones from "@/modules/solicitudes/views/gestor-area/VistaHistorialDecisiones";
+import VistaHistorialDecisiones from "@/modules/solicitudes/views/VistaHistorialDecisiones";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

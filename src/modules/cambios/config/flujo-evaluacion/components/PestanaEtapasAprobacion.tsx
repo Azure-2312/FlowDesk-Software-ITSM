@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Plus, Edit2, Trash2, Shield, Play, Lock, CheckCircle2, AlertTriangle, Users, Clock } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface EtapaConfig {
   id: string;
@@ -209,17 +210,13 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
               backgroundColor: "#f8fafc",
               border: "1px solid #cbd5e1",
               color: "#1e293b",
-              padding: "8px 14px",
+              padding: "8px 16px",
               borderRadius: "6px",
               fontWeight: 600,
               fontSize: "0.85rem",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
+              cursor: "pointer"
             }}
           >
-            <Play size={15} style={{ color: "#2563eb" }} />
             Simulador de Etapas
           </button>
 
@@ -229,18 +226,14 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
             style={{
               backgroundColor: "#2563eb",
               color: "#ffffff",
-              padding: "8px 16px",
+              padding: "8px 18px",
               borderRadius: "6px",
               border: "none",
               fontWeight: 600,
               fontSize: "0.85rem",
-              cursor: disabled ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
+              cursor: disabled ? "not-allowed" : "pointer"
             }}
           >
-            <Plus size={16} />
             Nueva Etapa
           </button>
         </div>
@@ -329,8 +322,9 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
       </div>
 
       {/* Tabla de catálogo de etapas */}
-      <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
+      <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "8px" }}>
+        <TablaDobleScroll>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left", minWidth: 1000 }}>
           <thead>
             <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
               <th style={{ padding: "10px 12px", width: "40px" }}>#</th>
@@ -412,6 +406,7 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* MODAL SIMULADOR DE ETAPAS */}

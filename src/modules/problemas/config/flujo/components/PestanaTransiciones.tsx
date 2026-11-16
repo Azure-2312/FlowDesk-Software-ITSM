@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { BotonIcono } from "@/shared/components/ui/BotonIcono";
 import { Edit2, Trash2 } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 import { EstadoProblema } from "./PestanaEstados";
 
 export interface TransicionProblema {
@@ -204,8 +205,9 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({
             </span>
           </div>
 
-          <div className="overflow-x-auto text-xs border border-slate-200 rounded-xl">
-            <table className="w-full text-center border-collapse">
+          <div className="text-xs border border-slate-200 rounded-xl p-2 bg-white">
+            <TablaDobleScroll>
+              <table className="w-full text-center border-collapse" style={{ minWidth: 700 }}>
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200">
                   <th className="p-2.5 text-left font-bold text-slate-700 bg-slate-100/70 border-r border-slate-200 min-w-[140px]">
@@ -293,6 +295,7 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({
                 ))}
               </tbody>
             </table>
+            </TablaDobleScroll>
           </div>
         </div>
       )}

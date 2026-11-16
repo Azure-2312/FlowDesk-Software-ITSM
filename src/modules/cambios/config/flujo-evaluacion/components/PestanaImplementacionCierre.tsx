@@ -126,17 +126,13 @@ export const PestanaImplementacionCierre: React.FC<PestanaImplementacionCierrePr
             backgroundColor: "#f8fafc",
             border: "1px solid #cbd5e1",
             color: "#1e293b",
-            padding: "8px 14px",
+            padding: "8px 16px",
             borderRadius: "6px",
             fontWeight: 600,
             fontSize: "0.85rem",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px"
+            cursor: "pointer"
           }}
         >
-          <Eye size={15} style={{ color: "#2563eb" }} />
           Vista Previa de Modales de Cierre
         </button>
       </div>

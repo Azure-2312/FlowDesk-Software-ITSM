@@ -92,9 +92,9 @@ El sistema opera bajo un modelo de Control de Acceso Basado en Roles (**RBAC**) 
 
 ---
 
-## 5. Los 17 Módulos de Dominio
+## 5. Los 16 Módulos de Dominio
 
-La lógica de negocio se encuentra particionada en 17 módulos de dominio independientes bajo el directorio `src/modules/`:
+La lógica de negocio se encuentra particionada en 16 módulos de dominio independientes bajo el directorio `src/modules/`:
 
 | # | Módulo | Directorio | Dominio y Responsabilidad Funcional | Dueño en el Equipo |
 | --: | :--- | :--- | :--- | :--- |
@@ -114,7 +114,8 @@ La lógica de negocio se encuentra particionada en 17 módulos de dominio indepe
 | 14 | **proveedores** | `src/modules/proveedores` | Directorio de contratistas tecnológicos, contratos de soporte externo (UC) y evaluación continua. | Junior |
 | 15 | **cambios** | `src/modules/cambios` | Solicitudes de Cambio (RFC), matriz de autoridad CAB/ECAB, calendario y ventanas freeze. | Nain |
 | 16 | **cmdb** | `src/modules/cmdb` | Configuración SACM, catálogo de CIs, topología de dependencias e impacto en cascada. | Nain |
-| 17 | **perfiles** | `src/modules/perfiles` | Vistas y componentes específicos de alcance por perfil (integrados con los módulos base). | Compartido |
+
+> **Nota sobre consolas por perfil:** Las pantallas operativas y paneles unificados para cada perfil convergen en `src/modules/operacion/paneles/*`, mientras que la administración de roles y permisos reside en `src/modules/identidades/config/perfiles/`.
 
 ---
 
@@ -173,15 +174,19 @@ El cambio de estado de un bien patrimonial en `src/modules/activos` actualiza de
 ## 8. Estructura del Repositorio
 
 ```text
-SISTEMA DE TICKETS/
+FlowDesk/
+├── public/                       # Archivos estáticos (logos, imágenes, favicon) fuera de src/
 ├── src/
 │   ├── app/                      # Cascarones delgados de presentación y endpoints HTTP
+│   │   ├── 403/                  # Pantalla de acceso denegado (Forbidden)
+│   │   ├── login/                # Portal público de autenticación institucional
 │   │   ├── api/                  # 209 Route Handlers (route.ts) que reexportan desde módulos
 │   │   ├── plataforma/           # 312 Páginas (page.tsx) protegidas bajo el layout común
-│   │   ├── login/                # Portal público de autenticación institucional
+│   │   ├── globals.css           # Estilos base y variables CSS globales
 │   │   ├── layout.tsx            # Shell raíz de la plataforma
-│   │   └── not-found.tsx         # Manejador de rutas inexistentes 404
-│   ├── modules/                  # 17 Módulos de Dominio (Vertical Slices independientes)
+│   │   ├── not-found.tsx         # Manejador de rutas inexistentes 404
+│   │   └── page.tsx              # Raíz del sitio (redirección a /login)
+│   ├── modules/                  # 16 Módulos de Dominio (Vertical Slices independientes)
 │   │   ├── <modulo>/
 │   │   │   ├── index.ts          # Contrato público de SERVIDOR (servicios, tipos y validaciones)
 │   │   │   ├── ui.ts             # Contrato público de CLIENTE (componentes UI exportados)
@@ -194,11 +199,12 @@ SISTEMA DE TICKETS/
 │   │   ├── lib/                  # db.ts, auth.ts, api-auth.ts, page-auth.ts, menu.ts, errores.ts
 │   │   ├── components/           # Componentes UI globales (Sidebar, Navbar, Tabla, Modales, Alertas)
 │   │   └── types/                # Tipos TypeScript comunes del sistema
+│   ├── types/                    # Tipos globales TypeScript (index.ts)
 │   └── middleware.ts             # Protección perimetral de cookies de sesión
 ├── db/                           # Esquema relacional y migraciones
 │   ├── schema.sql                # Esquema base de la plataforma
 │   ├── seed.sql                  # Datos semilla de catálogos, perfiles, menú y usuarios demo
-│   └── migrations/               # 40 migraciones SQL incrementales versionadas
+│   └── migrations/               # 48 migraciones SQL incrementales versionadas
 ├── scripts/                      # Herramientas de mantenimiento y suites de prueba E2E
 │   └── test_e2e_lifecycle.js     # Suite oficial con 30 pruebas automatizadas ITIL 4
 └── DOCUMENTACIÓN/                # Paquete canónico de documentación técnica y de gestión

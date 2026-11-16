@@ -164,8 +164,10 @@ export default function TiposModelosAtributosPage({
   const [guardando, setGuardando] = useState<boolean>(false);
   const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
 
-  // Snapshot de datos de la pestaña actual
+  // Snapshot de datos de la pestaña actual y tracking de pestañas modificadas
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
+  const [snapshotsPorTab, setSnapshotsPorTab] = useState<Record<string, any>>({});
+  const [tabsModificadas, setTabsModificadas] = useState<Set<string>>(new Set());
 
   // Toast
   const [toastMensaje, setToastMensaje] = useState<string | null>(null);
@@ -195,6 +197,10 @@ export default function TiposModelosAtributosPage({
 
         const snapshotActual = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
         setConfigSnapshot(snapshotActual);
+        setSnapshotsPorTab((prev) => ({
+          ...prev,
+          [tabActiva]: prev[tabActiva] !== undefined ? prev[tabActiva] : snapshotActual,
+        }));
 
         if (data.bloqueo && !data.bloqueo.bloqueado_por_mi) {
           setBloqueadoPorOtro(data.bloqueo.usuario_nombre);
@@ -217,31 +223,39 @@ export default function TiposModelosAtributosPage({
   }, [cargarDatos]);
 
   // Manejador de cambio de datos en los componentes hijos
-  const handleSnapshotChange = (nuevosDatos: any) => {
+  const handleSnapshotChange = (nuevosDatos: any, pestanaId: string = tabActiva) => {
     setConfigSnapshot(nuevosDatos);
+    setSnapshotsPorTab((prev) => ({ ...prev, [pestanaId]: nuevosDatos }));
+    setTabsModificadas((prev) => new Set(prev).add(pestanaId));
   };
 
-  // Guardar configuración directa
+  // Guardar configuración directa coordinada
   const handleGuardarConfiguracion = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/activos/configuracion/tipos-modelos-atributos/configuracion", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: `Actualización de catálogo en pestaña ${pestanaInfo.titulo}`,
-          diff: { tipo: "modificacion_general", pestana: tabActiva }
-        })
-      });
+      const tabsAGuardar = tabsModificadas.size > 0 ? Array.from(tabsModificadas) : [tabActiva];
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Error al guardar la configuración.");
+      for (const tId of tabsAGuardar) {
+        const snap = snapshotsPorTab[tId] || (tId === tabActiva ? configSnapshot : null);
+        if (!snap) continue;
+        const res = await fetch("/api/activos/configuracion/tipos-modelos-atributos/configuracion", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pestana: tId,
+            snapshot: snap,
+            motivo: `Actualización de catálogo en pestaña ${tId}`,
+            diff: { tipo: "modificacion_general", pestana: tId }
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || `Error al guardar configuración en pestaña ${tId}`);
+        }
       }
 
-      mostrarToast(data.mensaje || "Configuración guardada exitosamente.");
+      setTabsModificadas(new Set());
+      mostrarToast("Configuración guardada exitosamente.");
       cargarDatos();
     } catch (err: any) {
       mostrarToast(err.message || "Error al guardar la configuración.");
@@ -439,69 +453,69 @@ export default function TiposModelosAtributosPage({
           </div>
         ) : (
           <div>
-            {tabActiva === "clases_tipos" && (
+            <div style={{ display: tabActiva === "clases_tipos" ? "block" : "none" }}>
               <PestanaClasesTipos
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["clases_tipos"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "clases_tipos")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "fabricantes_modelos" && (
+            </div>
+            <div style={{ display: tabActiva === "fabricantes_modelos" ? "block" : "none" }}>
               <PestanaFabricantesModelos
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["fabricantes_modelos"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "fabricantes_modelos")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "atributos" && (
+            </div>
+            <div style={{ display: tabActiva === "atributos" ? "block" : "none" }}>
               <PestanaAtributosTipo
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["atributos"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "atributos")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "formulario_activo" && (
+            </div>
+            <div style={{ display: tabActiva === "formulario_activo" ? "block" : "none" }}>
               <PestanaFormularioActivo
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["formulario_activo"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "formulario_activo")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "codigo_etiquetas" && (
+            </div>
+            <div style={{ display: tabActiva === "codigo_etiquetas" ? "block" : "none" }}>
               <PestanaCodigoEtiquetas
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["codigo_etiquetas"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "codigo_etiquetas")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "ubicaciones" && (
+            </div>
+            <div style={{ display: tabActiva === "ubicaciones" ? "block" : "none" }}>
               <PestanaUbicaciones
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["ubicaciones"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "ubicaciones")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "catalogos_auxiliares" && (
+            </div>
+            <div style={{ display: tabActiva === "catalogos_auxiliares" ? "block" : "none" }}>
               <PestanaCatalogosAuxiliares
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["catalogos_auxiliares"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "catalogos_auxiliares")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "ficha_listado" && (
+            </div>
+            <div style={{ display: tabActiva === "ficha_listado" ? "block" : "none" }}>
               <PestanaFichaListado
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["ficha_listado"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "ficha_listado")}
                 bloqueado={estaBloqueado}
               />
-            )}
-            {tabActiva === "importacion_inventario" && (
+            </div>
+            <div style={{ display: tabActiva === "importacion_inventario" ? "block" : "none" }}>
               <PestanaImportacionInventario
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["importacion_inventario"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "importacion_inventario")}
                 bloqueado={estaBloqueado}
               />
-            )}
+            </div>
           </div>
         )}
         </div>

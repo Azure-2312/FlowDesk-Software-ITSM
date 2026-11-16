@@ -22,6 +22,7 @@ export default function DepartamentosEmpresa() {
   const [descripcion, setDescripcion] = useState("");
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   async function cargar() {
     try {
@@ -128,119 +129,131 @@ export default function DepartamentosEmpresa() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina">
-        <div>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h1>Departamentos empresariales</h1>
           <p className="subtitulo">
             Unidades del cliente, como Finanzas, Legal o Ventas. Se usan para asignar colaboradores y limitar la supervisión del Gestor de Área.
           </p>
         </div>
+        <button
+          type="button"
+          className="boton-primario"
+          style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+          onClick={() => setMostrarFormulario(!mostrarFormulario)}
+        >
+          {mostrarFormulario ? "Cerrar Formulario" : "Nuevo Departamento"}
+        </button>
       </div>
 
-      <form
-        className="tarjeta-formulario"
-        onSubmit={guardar}
-        style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 12, maxWidth: 850, marginBottom: 20 }}
-      >
-        <div>
-          <label style={{ display: "block", marginBottom: 4, fontWeight: 600, fontSize: 13 }}>Código *</label>
-          <input
-            className="input-base"
-            maxLength={20}
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-            placeholder="FIN"
-            required
-          />
-          {codigo.length > 0 && (() => {
-            const v = validarCodigo(codigo, 2, 20, "El código");
-            return v.valido ? <AlertaCampo exito="Código válido." /> : <AlertaCampo error={v.mensaje} />;
-          })()}
-        </div>
+      {mostrarFormulario && (
+        <form
+          className="tarjeta-formulario"
+          onSubmit={guardar}
+          style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 12, maxWidth: 850, marginBottom: 20 }}
+        >
+          <div>
+            <label style={{ display: "block", marginBottom: 4, fontWeight: 600, fontSize: 13 }}>Código *</label>
+            <input
+              className="input-base"
+              maxLength={20}
+              value={codigo}
+              onChange={(e) => setCodigo(e.target.value.toUpperCase())}
+              placeholder="FIN"
+              required
+            />
+            {codigo.length > 0 && (() => {
+              const v = validarCodigo(codigo, 2, 20, "El código");
+              return v.valido ? <AlertaCampo exito="Código válido." /> : <AlertaCampo error={v.mensaje} />;
+            })()}
+          </div>
 
-        <div>
-          <label style={{ display: "block", marginBottom: 4, fontWeight: 600, fontSize: 13 }}>Nombre *</label>
-          <input
-            className="input-base"
-            maxLength={100}
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            placeholder="Finanzas"
-            required
-          />
-          {nombre.length > 0 && (() => {
-            const v = validarTexto(nombre, 2, 100, "El nombre", true);
-            return v.valido ? <AlertaCampo exito="Nombre válido." /> : <AlertaCampo error={v.mensaje} />;
-          })()}
-        </div>
+          <div>
+            <label style={{ display: "block", marginBottom: 4, fontWeight: 600, fontSize: 13 }}>Nombre *</label>
+            <input
+              className="input-base"
+              maxLength={100}
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              placeholder="Finanzas"
+              required
+            />
+            {nombre.length > 0 && (() => {
+              const v = validarTexto(nombre, 2, 100, "El nombre", true);
+              return v.valido ? <AlertaCampo exito="Nombre válido." /> : <AlertaCampo error={v.mensaje} />;
+            })()}
+          </div>
 
-        <div style={{ gridColumn: "1 / -1" }}>
-          <label style={{ display: "block", marginBottom: 4, fontWeight: 600, fontSize: 13 }}>Descripción</label>
-          <input
-            className="input-base"
-            maxLength={255}
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-            placeholder="Descripción opcional del área corporativa"
-          />
-        </div>
+          <div style={{ gridColumn: "1 / -1" }}>
+            <label style={{ display: "block", marginBottom: 4, fontWeight: 600, fontSize: 13 }}>Descripción</label>
+            <input
+              className="input-base"
+              maxLength={255}
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              placeholder="Descripción opcional del área corporativa"
+            />
+          </div>
 
-        <div style={{ gridColumn: "1 / -1" }}>
-          {error && <p role="alert" className="mensaje-error" style={{ marginBottom: 10 }}>{error}</p>}
-          {ok && <p role="status" style={{ color: "#15803d", marginBottom: 10, fontWeight: 600 }}>{ok}</p>}
-          <button className="boton-primario">Crear departamento</button>
-        </div>
-      </form>
+          <div style={{ gridColumn: "1 / -1" }}>
+            {error && <p role="alert" className="mensaje-error" style={{ marginBottom: 10 }}>{error}</p>}
+            {ok && <p role="status" style={{ color: "#15803d", marginBottom: 10, fontWeight: 600 }}>{ok}</p>}
+            <button className="boton-primario" style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}>Guardar Departamento</button>
+          </div>
+        </form>
+      )}
 
       <div className="tarjeta-formulario">
         <h2>Unidades configuradas</h2>
         {items.length === 0 ? (
           <p>Aún no hay departamentos. Añade los que use esta organización.</p>
         ) : (
-          <table className="tabla-datos">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Departamento</th>
-                <th>Colaboradores</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((d) => (
-                <tr key={d.id_departamento_empresa}>
-                  <td>{d.codigo}</td>
-                  <td>{d.nombre}</td>
-                  <td>{d.colaboradores}</td>
-                  <td>
-                    <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${d.estado_registro ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-500"}`}>
-                      {d.estado_registro ? "Activo" : "Inactivo"}
-                    </span>
-                  </td>
-                  <td>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <BotonIcono
-                        variante="normal"
-                        icono={<Edit2 size={13} />}
-                        titulo={`Editar departamento "${d.nombre}"`}
-                        ariaLabel={`Editar departamento "${d.nombre}"`}
-                        onClick={() => editar(d)}
-                      />
-                      <button
-                        type="button"
-                        className="boton-mini"
-                        style={{ padding: "4px 8px", fontSize: 11.5 }}
-                        onClick={() => alternar(d)}
-                      >
-                        {d.estado_registro ? "Inactivar" : "Activar"}
-                      </button>
-                    </div>
-                  </td>
+          <div style={{ overflowX: "auto" }}>
+            <table className="tabla-datos" style={{ minWidth: 700 }}>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Departamento</th>
+                  <th>Colaboradores</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {items.map((d) => (
+                  <tr key={d.id_departamento_empresa}>
+                    <td>{d.codigo}</td>
+                    <td>{d.nombre}</td>
+                    <td>{d.colaboradores}</td>
+                    <td>
+                      <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${d.estado_registro ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-500"}`}>
+                        {d.estado_registro ? "Activo" : "Inactivo"}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <BotonIcono
+                          variante="normal"
+                          icono={<Edit2 size={13} />}
+                          titulo={`Editar departamento "${d.nombre}"`}
+                          ariaLabel={`Editar departamento "${d.nombre}"`}
+                          onClick={() => editar(d)}
+                        />
+                        <button
+                          type="button"
+                          className="boton-mini"
+                          style={{ padding: "4px 8px", fontSize: 11.5 }}
+                          onClick={() => alternar(d)}
+                        >
+                          {d.estado_registro ? "Inactivar" : "Activar"}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

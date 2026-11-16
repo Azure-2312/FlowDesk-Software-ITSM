@@ -1,1 +1,1 @@
-export { GET, PUT } from "@/modules/cambios/api/admin/rfcConfigController";
+export { GET, PUT } from "@/modules/cambios/api/config/rfcConfigController";

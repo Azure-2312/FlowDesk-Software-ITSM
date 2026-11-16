@@ -301,7 +301,7 @@ export function PestanaRenovacion({ datos, onChange, bloqueado }: Props) {
               onClick={abrirNuevoRango}
               className="px-2.5 py-1 text-xs bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded font-semibold border border-indigo-200 disabled:opacity-50"
             >
-              + Agregar rango
+              Agregar rango
             </button>
           </div>
 

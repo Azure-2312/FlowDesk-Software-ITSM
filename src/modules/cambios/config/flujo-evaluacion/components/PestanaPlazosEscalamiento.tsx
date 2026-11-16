@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Plus, Edit2, Trash2, Clock, Play, AlertCircle, ShieldAlert, CheckCircle2, ArrowRight } from "@/shared/components/ui/Iconos";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface PlazoPrioridad {
   prioridad_id: string;
@@ -181,28 +182,25 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
             backgroundColor: "#f8fafc",
             border: "1px solid #cbd5e1",
             color: "#1e293b",
-            padding: "8px 14px",
+            padding: "8px 16px",
             borderRadius: "6px",
             fontWeight: 600,
             fontSize: "0.85rem",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px"
+            cursor: "pointer"
           }}
         >
-          <Play size={15} style={{ color: "#2563eb" }} />
           Simular Escalamiento
         </button>
       </div>
 
       {/* Matriz de Plazos por Prioridad */}
-      <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "16px", overflowX: "auto" }}>
+      <div style={{ backgroundColor: "#ffffff", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "16px" }}>
         <h3 style={{ fontSize: "0.95rem", fontWeight: 700, color: "#1e293b", margin: "0 0 12px 0" }}>
           Matriz Institucional de Plazos por Prioridad (Horas)
         </h3>
 
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
+        <TablaDobleScroll>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left", minWidth: 700 }}>
           <thead>
             <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
               <th style={{ padding: "10px 12px" }}>Nivel de Prioridad</th>
@@ -263,6 +261,7 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Parámetros Adicionales de Vigencia y Cómputo */}
@@ -349,23 +348,20 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
             style={{
               backgroundColor: "#2563eb",
               color: "#ffffff",
-              padding: "6px 12px",
+              padding: "6px 14px",
               borderRadius: "6px",
               border: "none",
               fontWeight: 600,
               fontSize: "0.8rem",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
+              cursor: disabled ? "not-allowed" : "pointer"
             }}
           >
-            <Plus size={14} />
             Nueva Regla
           </button>
         </div>
 
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left" }}>
+        <TablaDobleScroll>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "left", minWidth: 850 }}>
           <thead>
             <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
               <th style={{ padding: "8px 12px" }}>Regla / Umbral</th>
@@ -430,6 +426,7 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* MODAL SIMULADOR DE ESCALAMIENTO */}

@@ -121,14 +121,9 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
     });
   };
 
-  const manejarGuardar = async () => {
-    try {
-      setGuardando(true);
-      await onGuardar(configLocal, celdasLocal);
-    } finally {
-      setGuardando(false);
-    }
-  };
+  useEffect(() => {
+    onGuardar(configLocal, celdasLocal);
+  }, [configLocal, celdasLocal, onGuardar]);
 
   const renderMatriz = (celdas: any[], editable: boolean, prefijo: string) => (
     <div style={{ display: "grid", gridTemplateColumns: "120px repeat(3, 1fr)", gap: 8, maxWidth: 680 }}>
@@ -413,21 +408,6 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Acción de guardado */}
-      {puedeEditar && (
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button
-            type="button"
-            className="boton-primario"
-            onClick={manejarGuardar}
-            disabled={guardando}
-            style={{ fontSize: 12.5, padding: "9px 18px", backgroundColor: "#16a34a" }}
-          >
-            {guardando ? "Guardando..." : "Guardar matriz y opciones de prioridad"}
-          </button>
-        </div>
-      )}
     </div>
   );
 };

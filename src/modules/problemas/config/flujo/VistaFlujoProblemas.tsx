@@ -134,7 +134,7 @@ export default function FlujoProblemasPage() {
 
   return (
     <div style={{ width: "100%", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
-      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto 0 0", padding: "28px 32px 32px 32px", flex: 1, boxSizing: "border-box" }}>
+      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto", padding: "28px 32px 32px 32px", flex: 1, boxSizing: "border-box" }}>
         {/* Encabezado Principal Estandarizado */}
         <div style={{
           display: "flex",
@@ -159,7 +159,7 @@ export default function FlujoProblemasPage() {
               onClick={handleGuardarFlujo}
               disabled={guardando || !puedeEditar}
               className="boton-primario"
-              style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+              style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
@@ -173,7 +173,8 @@ export default function FlujoProblemasPage() {
         borderBottom: "1px solid #e2e8f0",
         marginBottom: 24,
         justifyContent: "flex-start",
-        overflowX: "auto"
+        overflowX: "auto",
+        scrollbarWidth: "none"
       }}>
         {[
           { id: "estados", label: "Estados" },
@@ -228,7 +229,7 @@ export default function FlujoProblemasPage() {
         </div>
       ) : (
           <div>
-            {tabActiva === "estados" && (
+            <div style={{ display: tabActiva === "estados" ? "block" : "none" }}>
               <PestanaEstados
                 estados={estados}
                 puedeEditar={puedeEditar}
@@ -261,9 +262,9 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
               />
-            )}
+            </div>
 
-            {tabActiva === "transiciones" && (
+            <div style={{ display: tabActiva === "transiciones" ? "block" : "none" }}>
               <PestanaTransiciones
                 estados={estados}
                 transiciones={transiciones}
@@ -298,9 +299,9 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
               />
-            )}
+            </div>
 
-            {tabActiva === "asignacion" && (
+            <div style={{ display: tabActiva === "asignacion" ? "block" : "none" }}>
               <PestanaAsignacion
                 reglas={reglasAsignacion}
                 departamentos={departamentos}
@@ -334,26 +335,19 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
               />
-            )}
+            </div>
 
-            {tabActiva === "objetivos" && (
+            <div style={{ display: tabActiva === "objetivos" ? "block" : "none" }}>
               <PestanaObjetivosTiempo
                 objetivos={objetivosTiempo}
                 puedeEditar={puedeEditar}
                 onActualizarObjetivos={async (nuevos) => {
-                  const res = await fetch("/api/problemas/configuracion/flujo/objetivos", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ objetivos: nuevos }),
-                  });
-                  const r = await res.json();
-                  if (!r.ok) throw new Error(r.error);
-                  cargarDatos();
+                  setObjetivosTiempo(nuevos);
                 }}
               />
-            )}
+            </div>
 
-            {tabActiva === "escalamiento" && (
+            <div style={{ display: tabActiva === "escalamiento" ? "block" : "none" }}>
               <PestanaEscalamiento
                 reglas={reglasEscalamiento}
                 puedeEditar={puedeEditar}
@@ -386,28 +380,21 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
               />
-            )}
+            </div>
 
-            {tabActiva === "reapertura" && (
+            <div style={{ display: tabActiva === "reapertura" ? "block" : "none" }}>
               <PestanaReapertura
                 config={configReapertura}
                 estados={estados}
                 perfiles={perfiles}
                 puedeEditar={puedeEditar}
                 onActualizarConfig={async (nuevos) => {
-                  const res = await fetch("/api/problemas/configuracion/flujo/reapertura", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(nuevos),
-                  });
-                  const r = await res.json();
-                  if (!r.ok) throw new Error(r.error);
-                  cargarDatos();
+                  setConfigReapertura((prev: any) => ({ ...prev, ...nuevos }));
                 }}
               />
-            )}
+            </div>
 
-            {tabActiva === "tareas" && (
+            <div style={{ display: tabActiva === "tareas" ? "block" : "none" }}>
               <PestanaTareas
                 tareas={tareas}
                 paquetes={paquetesTareas}
@@ -432,26 +419,19 @@ export default function FlujoProblemasPage() {
                   cargarDatos();
                 }}
               />
-            )}
+            </div>
 
-            {tabActiva === "mayores" && (
+            <div style={{ display: tabActiva === "mayores" ? "block" : "none" }}>
               <PestanaMayores
                 criterios={criteriosMayor}
                 config={configMayor}
                 perfiles={perfiles}
                 puedeEditar={puedeEditar}
                 onActualizarConfig={async (nuevos) => {
-                  const res = await fetch("/api/problemas/configuracion/flujo/mayores", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(nuevos),
-                  });
-                  const r = await res.json();
-                  if (!r.ok) throw new Error(r.error);
-                  cargarDatos();
+                  setConfigMayor((prev: any) => ({ ...prev, ...nuevos }));
                 }}
               />
-            )}
+            </div>
           </div>
         )}
       </div>

@@ -271,6 +271,51 @@ function ContenidoConfiguracionVistasTickets({
     }
   }
 
+  async function guardarConfiguracionTotal() {
+    setGuardando(true);
+    setError(null);
+    setMensajeExito(null);
+    try {
+      const [resVistas, resEstados] = await Promise.all([
+        fetch("/api/operacion/configuracion", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            clave: "vistas_ticket_perfil",
+            valor: vistas,
+            descripcion: "Políticas de visibilidad y acceso a tipos de ticket y secciones por perfil y usuario",
+          }),
+        }),
+        fetch("/api/operacion/configuracion", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            clave: "flujo_estados_acciones",
+            valor: flujoEstados,
+            descripcion: "Parámetros y compuertas de la máquina de estados y ciclo de vida de tickets",
+          }),
+        }),
+      ]);
+
+      const [dataVistas, dataEstados] = await Promise.all([resVistas.json(), resEstados.json()]);
+      if (!resVistas.ok) {
+        setError(dataVistas.error || "No se pudo guardar la configuración de vistas.");
+        return;
+      }
+      if (!resEstados.ok) {
+        setError(dataEstados.error || "No se pudo guardar la configuración de flujo.");
+        return;
+      }
+
+      setMensajeExito("Configuración de visibilidad y flujo de estados guardada exitosamente.");
+      setTimeout(() => setMensajeExito(null), 4000);
+    } catch {
+      setError("Error de conexión al guardar configuración.");
+    } finally {
+      setGuardando(false);
+    }
+  }
+
   const usuariosFiltrados = useMemo(() => {
     if (!busquedaUsuario.trim()) return usuarios;
     const q = busquedaUsuario.toLowerCase();
@@ -349,11 +394,20 @@ function ContenidoConfiguracionVistasTickets({
   return (
     <div className="vista-contenedor">
       {!ocultarCabecera && (
-        <div className="cabecera-pagina">
-          <div>
+        <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <h1>{infoEncabezado.titulo}</h1>
             <p className="subtitulo">{infoEncabezado.subtitulo}</p>
           </div>
+          <button
+            type="button"
+            className="boton-primario"
+            style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+            onClick={guardarConfiguracionTotal}
+            disabled={guardando || cargando}
+          >
+            {guardando ? "Guardando..." : "Guardar Configuración"}
+          </button>
         </div>
       )}
 
@@ -1204,73 +1258,6 @@ function ContenidoConfiguracionVistasTickets({
           </div>
         </div>
       )}
-
-      {/* BARRA INFERIOR DE FINALIZACIÓN Y GUARDADO */}
-      <div
-        className="contenedor-tabla"
-        style={{
-          marginTop: 24,
-          padding: "20px 24px",
-          backgroundColor: "#ffffff",
-          border: "1px solid #cbd5e1",
-          borderRadius: 8,
-          display: "flex",
-          flexDirection: "column",
-          gap: 14,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 16,
-          }}
-        >
-          <div>
-            <strong style={{ fontSize: 14, color: "#0f172a", display: "block" }}>
-              Finalizar y Guardar Configuración
-            </strong>
-            <span style={{ fontSize: 12.5, color: "#64748b" }}>
-              {pestanaPrincipal === "vistas"
-                ? `Guarde para persistir la configuración de visibilidad y permisos para ${nombreSujeto}.`
-                : "Guarde para persistir las reglas del ciclo de vida, reaperturas y pausas de SLA."}
-            </span>
-          </div>
-          <button
-            type="button"
-            className="boton-primario"
-            style={{ width: "auto", minWidth: 240, padding: "12px 28px", fontSize: 13.5, fontWeight: 700 }}
-            onClick={pestanaPrincipal === "vistas" ? guardarCambiosVistas : guardarCambiosFlujoEstados}
-            disabled={guardando || cargando}
-          >
-            {guardando ? "Guardando..." : "Guardar Configuración"}
-          </button>
-        </div>
-
-        {mensajeExito && (
-          <div
-            style={{
-              backgroundColor: "#f0fdf4",
-              border: "1px solid #bbf7d0",
-              color: "#166534",
-              padding: "10px 14px",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 500,
-            }}
-          >
-            {mensajeExito}
-          </div>
-        )}
-
-        {error && (
-          <div className="mensaje-error" style={{ margin: 0 }}>
-            {error}
-          </div>
-        )}
-      </div>
     </div>
   );
 }

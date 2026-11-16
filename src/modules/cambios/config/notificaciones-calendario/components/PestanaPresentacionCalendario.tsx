@@ -94,9 +94,9 @@ export function PestanaPresentacionCalendario({ config, onChange }: PestanaPrese
         </div>
         <button
           onClick={() => setModalPreviaAbierto(true)}
-          style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 16px", background: "#2563eb", color: "#ffffff", border: "none", borderRadius: 6, fontWeight: 600, fontSize: 13, cursor: "pointer" }}
+          style={{ padding: "8px 16px", background: "#2563eb", color: "#ffffff", border: "none", borderRadius: 6, fontWeight: 600, fontSize: 13, cursor: "pointer" }}
         >
-          <Eye size={14} /> Vista Previa del Calendario
+          Vista Previa del Calendario
         </button>
       </div>
 

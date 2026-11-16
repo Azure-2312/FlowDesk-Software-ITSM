@@ -4,8 +4,8 @@
 export { default as WidgetTicketDeflection } from "./components/WidgetTicketDeflection";
 export { default as ModalVincularArticuloTicket } from "./components/ModalVincularArticuloTicket";
 
-export { default as VistaHelpCenterSolicitante } from "./views/VistaHelpCenterSolicitante";
-export { default as VistaMetricasKcsSupervisor } from "./views/VistaMetricasKcsSupervisor";
+export { default as VistaHelpCenter } from "./views/VistaHelpCenter";
+export { default as VistaMetricasKcs } from "./views/VistaMetricasKcs";
 
 export { default as VistaConfigCategorias } from "./config/categorias/VistaConfigCategorias";
 export { default as VistaConfigWorkflowEditorial } from "./config/workflow-editorial/VistaConfigWorkflowEditorial";

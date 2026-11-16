@@ -423,14 +423,14 @@ export function PestanaTransicionesReglas({ datos, onChange, bloqueado }: Props)
                 onClick={() => setZoomDiagrama((z) => Math.max(0.7, z - 0.1))}
                 className="px-2 py-1 text-xs border border-slate-300 rounded hover:bg-slate-100"
               >
-                - Zoom
+                Alejar
               </button>
               <span className="text-xs font-mono">{Math.round(zoomDiagrama * 100)}%</span>
               <button
                 onClick={() => setZoomDiagrama((z) => Math.min(1.5, z + 0.1))}
                 className="px-2 py-1 text-xs border border-slate-300 rounded hover:bg-slate-100"
               >
-                + Zoom
+                Acercar
               </button>
               <button
                 onClick={() => mostrarToast("Diagrama SVG exportado exitosamente.")}

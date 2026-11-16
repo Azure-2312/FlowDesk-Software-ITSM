@@ -1,4 +1,4 @@
-import VistaAprobacionesNegocio from "@/modules/solicitudes/views/gestor-area/VistaAprobacionesNegocio";
+import VistaAprobacionesNegocio from "@/modules/solicitudes/views/VistaAprobacionesNegocio";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

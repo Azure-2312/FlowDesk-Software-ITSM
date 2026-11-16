@@ -53,8 +53,8 @@ export default function VistaPreferenciasNotificacion() {
     setPreferencias((prev) => (prev ? { ...prev, [clave]: !prev[clave] } : prev));
   }
 
-  async function guardar(e: FormEvent) {
-    e.preventDefault();
+  async function guardar(e?: FormEvent) {
+    if (e) e.preventDefault();
     if (!preferencias) return;
     setGuardando(true);
     setError(null);
@@ -81,10 +81,21 @@ export default function VistaPreferenciasNotificacion() {
   }
 
   return (
-    <div className="vista-contenedor" style={{ maxWidth: 740 }}>
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Preferencias de notificación</h1>
-        <p>Elige qué avisos quieres recibir y por qué canal.</p>
+    <div className="vista-contenedor" style={{ maxWidth: 1400, width: "100%" }}>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 20 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1>Preferencias de notificación</h1>
+          <p>Elige qué avisos quieres recibir y por qué canal.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => guardar()}
+          className="boton-primario"
+          style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+          disabled={guardando || !preferencias}
+        >
+          {guardando ? "Guardando..." : "Guardar Preferencias"}
+        </button>
       </div>
 
       {exito && (
@@ -99,78 +110,77 @@ export default function VistaPreferenciasNotificacion() {
         <div className="mensaje-error">{error}</div>
       ) : preferencias ? (
         <form onSubmit={guardar}>
-          <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20, marginBottom: 20 }}>
-            <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Canal preferido</h2>
-            <p className="descripcion">Por dónde quieres recibir los avisos del sistema.</p>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 8 }}>
-              {[
-                { valor: "CORREO", texto: "Correo electrónico" },
-                { valor: "PLATAFORMA", texto: "Solo en la plataforma" },
-                { valor: "AMBOS", texto: "Correo y plataforma" },
-              ].map((op) => (
-                <label
-                  key={op.valor}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "8px 12px",
-                    border: preferencias.canal_preferido === op.valor ? "1px solid #2563eb" : "1px solid #cbd5e1",
-                    borderRadius: 8,
-                    fontSize: 13,
-                    cursor: "pointer",
-                    backgroundColor: preferencias.canal_preferido === op.valor ? "#eff6ff" : "#ffffff",
-                  }}
-                >
-                  <input
-                    type="radio"
-                    name="canal"
-                    value={op.valor}
-                    checked={preferencias.canal_preferido === op.valor}
-                    onChange={() => setPreferencias({ ...preferencias, canal_preferido: op.valor })}
-                  />
-                  {op.texto}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
-            <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Tipos de aviso</h2>
-            <p className="descripcion">Activa o desactiva cada categoría.</p>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}>
-              {INTERRUPTORES.map((item) => {
-                const activo = Boolean(preferencias[item.clave]);
-                return (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 20, alignItems: "start" }}>
+            <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
+              <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Canal preferido</h2>
+              <p className="descripcion">Por dónde quieres recibir los avisos del sistema.</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}>
+                {[
+                  { valor: "CORREO", texto: "Correo electrónico institucional" },
+                  { valor: "PLATAFORMA", texto: "Solo en la plataforma (campana de avisos)" },
+                  { valor: "AMBOS", texto: "Correo institucional y plataforma" },
+                ].map((op) => (
                   <label
-                    key={String(item.clave)}
+                    key={op.valor}
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 12,
+                      gap: 10,
                       padding: "12px 14px",
-                      backgroundColor: "#f9fafb",
-                      border: "1px solid #e5e7eb",
+                      border: preferencias.canal_preferido === op.valor ? "1px solid #2563eb" : "1px solid #e5e7eb",
                       borderRadius: 8,
+                      fontSize: 13,
                       cursor: "pointer",
+                      backgroundColor: preferencias.canal_preferido === op.valor ? "#eff6ff" : "#f9fafb",
                     }}
                   >
-                    <span>
-                      <strong style={{ fontSize: 13.5, color: "#0f172a" }}>{item.titulo}</strong>
-                      <span style={{ display: "block", fontSize: 12, color: "#6b7280", marginTop: 2 }}>{item.detalle}</span>
+                    <input
+                      type="radio"
+                      name="canal"
+                      value={op.valor}
+                      checked={preferencias.canal_preferido === op.valor}
+                      onChange={() => setPreferencias({ ...preferencias, canal_preferido: op.valor })}
+                      style={{ width: 16, height: 16 }}
+                    />
+                    <span style={{ fontWeight: preferencias.canal_preferido === op.valor ? 600 : 400, color: "#0f172a" }}>
+                      {op.texto}
                     </span>
-                    <input type="checkbox" checked={activo} onChange={() => alternar(item.clave)} style={{ width: 18, height: 18 }} />
                   </label>
-                );
-              })}
+                ))}
+              </div>
             </div>
 
-            <div style={{ marginTop: 18 }}>
-              <button type="submit" className="boton-primario" style={{ width: "auto" }} disabled={guardando}>
-                {guardando ? "Guardando..." : "Guardar preferencias"}
-              </button>
+            <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
+              <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Tipos de aviso</h2>
+              <p className="descripcion">Activa o desactiva cada categoría de evento.</p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}>
+                {INTERRUPTORES.map((item) => {
+                  const activo = Boolean(preferencias[item.clave]);
+                  return (
+                    <label
+                      key={String(item.clave)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: 12,
+                        padding: "12px 14px",
+                        backgroundColor: "#f9fafb",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: 8,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <span>
+                        <strong style={{ fontSize: 13.5, color: "#0f172a" }}>{item.titulo}</strong>
+                        <span style={{ display: "block", fontSize: 12, color: "#6b7280", marginTop: 2 }}>{item.detalle}</span>
+                      </span>
+                      <input type="checkbox" checked={activo} onChange={() => alternar(item.clave)} style={{ width: 18, height: 18 }} />
+                    </label>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </form>

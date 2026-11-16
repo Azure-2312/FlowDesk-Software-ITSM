@@ -138,7 +138,7 @@ export default function RelacionesProblemasPage() {
 
   return (
     <div style={{ width: "100%", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
-      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto 0 0", padding: "28px 32px 32px 32px", flex: 1, boxSizing: "border-box" }}>
+      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto", padding: "28px 32px 32px 32px", flex: 1, boxSizing: "border-box" }}>
         {/* Encabezado Principal Estandarizado */}
         <div style={{
           display: "flex",
@@ -163,7 +163,7 @@ export default function RelacionesProblemasPage() {
               onClick={handleGuardarRelaciones}
               disabled={guardando || !puedeEditar}
               className="boton-primario"
-              style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
+              style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
@@ -177,7 +177,8 @@ export default function RelacionesProblemasPage() {
         borderBottom: "1px solid #e2e8f0",
         marginBottom: 24,
         justifyContent: "flex-start",
-        overflowX: "auto"
+        overflowX: "auto",
+        scrollbarWidth: "none"
       }}>
         {tabs.map((tab) => {
           const activa = tabActiva === tab.id;
@@ -230,55 +231,55 @@ export default function RelacionesProblemasPage() {
         </div>
       ) : (
         <div>
-          {tabActiva === "umbral" && (
+          <div style={{ display: tabActiva === "umbral" ? "block" : "none" }}>
             <PestanaUmbral
               reglas={reglasUmbral}
               catalogos={catalogosAuxiliares}
               onActualizar={cargarDatos}
               onMarcarModificado={marcarModificado}
             />
-          )}
+          </div>
 
-          {tabActiva === "incidentes" && (
+          <div style={{ display: tabActiva === "incidentes" ? "block" : "none" }}>
             <PestanaIncidentesVinculados
               config={configIncidentes}
               onChange={setConfigIncidentes}
               onMarcarModificado={marcarModificado}
             />
-          )}
+          </div>
 
-          {tabActiva === "kedb" && (
+          <div style={{ display: tabActiva === "kedb" ? "block" : "none" }}>
             <PestanaKedb
               config={configKedb}
               onChange={setConfigKedb}
               onMarcarModificado={marcarModificado}
             />
-          )}
+          </div>
 
-          {tabActiva === "rfc" && (
+          <div style={{ display: tabActiva === "rfc" ? "block" : "none" }}>
             <PestanaRfc
               config={configRfc}
               onChange={setConfigRfc}
               onMarcarModificado={marcarModificado}
             />
-          )}
+          </div>
 
-          {tabActiva === "conocimiento" && (
+          <div style={{ display: tabActiva === "conocimiento" ? "block" : "none" }}>
             <PestanaConocimiento
               config={configConocimiento}
               onChange={setConfigConocimiento}
               onMarcarModificado={marcarModificado}
             />
-          )}
+          </div>
 
-          {tabActiva === "cmdb" && (
+          <div style={{ display: tabActiva === "cmdb" ? "block" : "none" }}>
             <PestanaCmdb
               config={configCmdb}
               clasesDisponibles={catalogosAuxiliares.clasesCI || []}
               onChange={setConfigCmdb}
               onMarcarModificado={marcarModificado}
             />
-          )}
+          </div>
         </div>
       )}
       </div>

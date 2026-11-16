@@ -1,4 +1,4 @@
-import { GestionCategorias } from "@/modules/servicios/admin/servicios/GestionCategorias";
+import { GestionCategorias } from "@/modules/servicios/config/servicios/GestionCategorias";
 
 export default function PaginaAdminServiciosCategorias() {
   return (

@@ -60,7 +60,7 @@ export default function VistaInformesAuditoria() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/reportes/auditor?_t=${Date.now()}`);
+      const res = await fetch(`/api/reportes/auditoria?_t=${Date.now()}`);
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar los informes.");
@@ -79,7 +79,7 @@ export default function VistaInformesAuditoria() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/reportes/auditor", {
+      const res = await fetch("/api/reportes/auditoria", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ titulo, periodo, hallazgos, recomendaciones }),
@@ -101,7 +101,7 @@ export default function VistaInformesAuditoria() {
   async function cambiarEstado(idInforme: number, estado: string) {
     setError(null);
     try {
-      const res = await fetch("/api/reportes/auditor", {
+      const res = await fetch("/api/reportes/auditoria", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_informe: idInforme, estado }),

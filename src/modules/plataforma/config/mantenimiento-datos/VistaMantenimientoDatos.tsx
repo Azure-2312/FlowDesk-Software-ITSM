@@ -72,8 +72,8 @@ export default function PaginaMantenimientoPurgaDatos() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina">
-        <div>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h1>Mantenimiento, Optimización y Purga Histórica de Datos</h1>
           <p className="subtitulo">
             Herramientas para archivar y purgar de manera segura tickets antiguos cerrados (ej. mayores a 5 años) para optimizar el rendimiento y espacio de almacenamiento de la base de datos PostgreSQL.
@@ -89,7 +89,7 @@ export default function PaginaMantenimientoPurgaDatos() {
 
       {error && <div className="mensaje-error" style={{ marginBottom: 16 }}>{error}</div>}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 20 }}>
         {/* Parámetros de Retención */}
         <div className="contenedor-tabla" style={{ padding: 22, backgroundColor: "#ffffff" }}>
           <h3 style={{ margin: "0 0 8px 0", fontSize: 15, fontWeight: 700, color: "#0f172a" }}>

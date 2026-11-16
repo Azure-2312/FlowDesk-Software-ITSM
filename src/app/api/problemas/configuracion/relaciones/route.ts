@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { GET, POST } from "@/modules/problemas/api/admin/relacionesController";
+export { GET, POST } from "@/modules/problemas/api/config/relacionesController";

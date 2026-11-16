@@ -4,6 +4,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { PerfilConOpciones, OpcionMenuAdmin } from "@/types";
 import VistaConfigPermisos from "@/modules/identidades/config/permisos/VistaConfigPermisos";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface FormularioPerfil {
   id_perfil: number | null;
@@ -494,14 +495,14 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
       ) : (
         /* VISTA DE TABLA PRINCIPAL DE PERFILES */
         <div>
-          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
-            <div>
+          <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 18 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <h1>Perfiles y Permisos (RBAC)</h1>
               <p>
                 Catálogo de roles del sistema, asignación de permisos de acceso a las opciones del menú y gobierno de privilegios.
               </p>
             </div>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
               <button
                 className="boton-secundario"
                 style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
@@ -510,8 +511,8 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
                 Matriz de capacidades
               </button>
               {!soloLectura && (
-                <button className="boton-primario" style={{ width: "auto", padding: "8px 16px", fontSize: 13 }} onClick={abrirFormularioNuevo}>
-                  Nuevo perfil
+                <button className="boton-primario" style={{ width: "auto", padding: "8px 18px", fontSize: 13 }} onClick={abrirFormularioNuevo}>
+                  Nuevo Perfil
                 </button>
               )}
             </div>
@@ -527,7 +528,8 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
             </div>
           ) : (
             <div className="contenedor-tabla">
-              <table className="tabla">
+              <TablaDobleScroll minWidth={900}>
+              <table className="tabla" style={{ minWidth: 900 }}>
                 <thead>
                   <tr>
                     <th>#</th>
@@ -621,6 +623,7 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
                   })}
                 </tbody>
               </table>
+              </TablaDobleScroll>
             </div>
           )}
         </div>

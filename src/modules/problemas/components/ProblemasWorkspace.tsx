@@ -9,6 +9,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 // ----------------------------------------------------------------------------
 // 1. MODELO DE DATOS: Estructura de Problema, estado, causa raíz y KEDB
@@ -79,10 +80,10 @@ export default function ProblemasWorkspace({
         backgroundColor: "#f8fafc",
         width: "100%",
         boxSizing: "border-box",
-        padding: "32px 48px 48px 48px",
+        padding: "28px 32px 32px 32px",
       }}
     >
-      <div style={{ maxWidth: 1400, width: "100%", margin: "0 auto 0 0" }}>
+      <div style={{ maxWidth: 1400, width: "100%", margin: "0 auto" }}>
         {/* Encabezado Principal */}
         <div
           style={{
@@ -103,7 +104,7 @@ export default function ProblemasWorkspace({
                 letterSpacing: "-0.01em",
               }}
             >
-              {soloKedb ? "Errores conocidos (KEDB)" : "Gestión de problemas"}
+              {soloKedb ? "Errores conocidos (KEDB)" : "Historial de problemas"}
             </h1>
             <p
               style={{
@@ -113,31 +114,11 @@ export default function ProblemasWorkspace({
                 lineHeight: 1.5,
               }}
             >
-              Investiga causas raíz, relaciona incidentes y publica workarounds para reducir recurrencias.
+              {soloKedb
+                ? "Catálogo de soluciones temporales documentadas para acelerar la resolución de incidentes."
+                : "Bitácora y trazabilidad de problemas investigados, causas raíz documentadas y soluciones temporales (workarounds)."}
             </p>
           </div>
-
-          {puedeCrear && !soloKedb && (
-            <Link
-              href="/plataforma/problemas/nuevo"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                padding: "8px 20px",
-                fontSize: 13,
-                fontWeight: 600,
-                textDecoration: "none",
-                borderRadius: 6,
-                backgroundColor: "#2563eb",
-                color: "#ffffff",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                whiteSpace: "nowrap",
-                transition: "background-color 0.15s ease",
-              }}
-            >
-              Nuevo problema
-            </Link>
-          )}
         </div>
 
         {error && (
@@ -185,6 +166,7 @@ export default function ProblemasWorkspace({
               boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
             }}
           >
+            <TablaDobleScroll minWidth={950}>
             <table
               className="tabla-datos"
               style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}
@@ -408,6 +390,7 @@ export default function ProblemasWorkspace({
                 })}
               </tbody>
             </table>
+            </TablaDobleScroll>
           </div>
         )}
       </div>

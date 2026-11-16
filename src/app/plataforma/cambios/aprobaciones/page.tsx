@@ -1,4 +1,4 @@
-import VistaAprobacionesCambios from "@/modules/cambios/views/aprobador/VistaAprobacionesCambios";
+import VistaAprobacionesCambios from "@/modules/cambios/views/VistaAprobacionesCambios";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

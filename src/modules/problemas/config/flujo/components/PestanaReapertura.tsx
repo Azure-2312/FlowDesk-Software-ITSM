@@ -51,31 +51,20 @@ export const PestanaReapertura: React.FC<PestanaReaperturaProps> = ({
   const [guardando, setGuardando] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
 
-  const handleGuardar = async () => {
-    try {
-      setGuardando(true);
-      setMensajeExito("");
-
-      await onActualizarConfig({
-        permitir_reapertura: permitir,
-        ventana_dias_resuelto: diasResuelto,
-        ventana_dias_cerrado: diasCerrado,
-        perfiles_autorizados: perfilesSel,
-        estado_destino_id: estadoDestino,
-        motivo_obligatorio: motivoOblig,
-        max_reaperturas: maxReap,
-        reinicio_relojes: relojes,
-        estrategia_asignacion: asignacion,
-        motivos_catalogo: motivos,
-      });
-
-      setMensajeExito("Parámetros de reapertura actualizados con éxito.");
-    } catch (err: any) {
-      alert(err.message || "Error al actualizar");
-    } finally {
-      setGuardando(false);
-    }
-  };
+  React.useEffect(() => {
+    onActualizarConfig({
+      permitir_reapertura: permitir,
+      ventana_dias_resuelto: diasResuelto,
+      ventana_dias_cerrado: diasCerrado,
+      perfiles_autorizados: perfilesSel,
+      estado_destino_id: estadoDestino,
+      motivo_obligatorio: motivoOblig,
+      max_reaperturas: maxReap,
+      reinicio_relojes: relojes,
+      estrategia_asignacion: asignacion,
+      motivos_catalogo: motivos,
+    });
+  }, [permitir, diasResuelto, diasCerrado, perfilesSel, estadoDestino, motivoOblig, maxReap, relojes, asignacion, motivos, onActualizarConfig]);
 
   const handleAgregarMotivo = () => {
     if (!nuevoMotivo.trim()) return;
@@ -104,15 +93,6 @@ export const PestanaReapertura: React.FC<PestanaReaperturaProps> = ({
             Controla las condiciones, ventanas temporales y motivos bajo los cuales un problema cerrado puede reanudarse.
           </p>
         </div>
-
-        <button
-          type="button"
-          onClick={handleGuardar}
-          disabled={guardando || !puedeEditar}
-          className="px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-lg shadow-xs transition"
-        >
-          {guardando ? "Guardando..." : "Guardar política"}
-        </button>
       </div>
 
       <div className="grid grid-cols-2 gap-6 items-start text-xs">

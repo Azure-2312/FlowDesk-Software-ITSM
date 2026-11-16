@@ -1,4 +1,4 @@
-import VistaCabEmergencia from "@/modules/cambios/views/aprobador/VistaCabEmergencia";
+import VistaCabEmergencia from "@/modules/cambios/views/VistaCabEmergencia";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 

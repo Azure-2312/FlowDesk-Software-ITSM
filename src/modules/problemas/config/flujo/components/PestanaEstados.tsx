@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { BotonIcono } from "@/shared/components/ui/BotonIcono";
 import { Edit2, Trash2 } from "@/shared/components/ui/Iconos";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 export interface EstadoProblema {
   id_estado: number;
@@ -148,6 +149,7 @@ export const PestanaEstados: React.FC<PestanaEstadosProps> = ({
 
       {/* Tabla de Estados */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+        <TablaDobleScroll minWidth={950}>
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
@@ -275,6 +277,7 @@ export const PestanaEstados: React.FC<PestanaEstadosProps> = ({
             ))}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Modal Alta / Edición de Estado */}

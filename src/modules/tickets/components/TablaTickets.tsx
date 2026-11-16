@@ -4,6 +4,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Ticket, CatalogosTickets, DepartamentoTI } from "@/types";
 import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface Props {
   vista: "mios" | "bandeja" | "asignados" | "resueltos" | "todos" | "asignar" | "departamento" | "auditoria" | "aprobaciones";
@@ -240,54 +241,31 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
   return (
     <div className="vista-contenedor">
       {/* Cabecera de Página */}
-      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-        <div>
-          <h1>{titulo}</h1>
-          <p className="subtitulo">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 16, flexWrap: "nowrap" }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 4px 0", color: "#0f172a" }}>{titulo}</h1>
+          <p className="subtitulo" style={{ margin: 0, fontSize: 13, color: "#64748b", maxWidth: 900 }}>
             {descripcion}
           </p>
         </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
           <button
             type="button"
             className="boton-primario"
             onClick={abrirModalFiltros}
-            style={{ width: "auto", display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 16px", fontSize: 13 }}
+            style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-            </svg>
-            <span>Filtrar</span>
-            {filtrosActivosCount > 0 && (
-              <span
-                style={{
-                  backgroundColor: "#ffffff",
-                  color: "#2563eb",
-                  borderRadius: "999px",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  padding: "1px 6px",
-                  marginLeft: 2,
-                }}
-              >
-                {filtrosActivosCount}
-              </span>
-            )}
+            {filtrosActivosCount > 0 ? `Filtrar (${filtrosActivosCount})` : "Filtrar"}
           </button>
 
           <button
-            className="boton-mini"
+            type="button"
+            className="boton-secundario"
             onClick={cargarTickets}
             disabled={cargando}
-            title="Actualizar lista de tickets"
-            aria-label="Actualizar lista de tickets"
-            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 10px" }}
+            style={{ width: "auto", padding: "8px 14px", fontSize: 13, flexShrink: 0 }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="23 4 23 10 17 10" />
-              <polyline points="1 20 1 14 7 14" />
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-            </svg>
+            Actualizar
           </button>
         </div>
       </div>
@@ -373,8 +351,8 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
         </div>
       ) : (
         <div className="contenedor-tabla">
-          <div style={{ overflowX: "auto" }}>
-            <table className="tabla-datos">
+          <TablaDobleScroll>
+            <table className="tabla-datos" style={{ width: "100%", minWidth: 1080 }}>
               <thead>
                 <tr>
                   <th style={{ width: 110 }}>Código</th>
@@ -464,7 +442,7 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
                 ))}
               </tbody>
             </table>
-          </div>
+          </TablaDobleScroll>
         </div>
       )}
 

@@ -119,8 +119,10 @@ export default function LicenciasContratosConfigPage() {
   const [guardando, setGuardando] = useState<boolean>(false);
   const [bloqueadoPorOtro, setBloqueadoPorOtro] = useState<string | undefined>(undefined);
 
-  // Snapshot de datos de la pestaña actual
+  // Snapshot de datos de la pestaña actual y tracking de pestañas modificadas
   const [configSnapshot, setConfigSnapshot] = useState<any>({});
+  const [snapshotsPorTab, setSnapshotsPorTab] = useState<Record<string, any>>({});
+  const [tabsModificadas, setTabsModificadas] = useState<Set<string>>(new Set());
 
   // Toast
   const [toastMensaje, setToastMensaje] = useState<string | null>(null);
@@ -150,6 +152,10 @@ export default function LicenciasContratosConfigPage() {
 
         const snapshotActual = data.borrador?.snapshot || data.version_publicada?.snapshot || {};
         setConfigSnapshot(snapshotActual);
+        setSnapshotsPorTab((prev) => ({
+          ...prev,
+          [tabActiva]: prev[tabActiva] !== undefined ? prev[tabActiva] : snapshotActual,
+        }));
 
         if (data.bloqueo && !data.bloqueo.bloqueado_por_mi) {
           setBloqueadoPorOtro(data.bloqueo.usuario_nombre);
@@ -172,31 +178,39 @@ export default function LicenciasContratosConfigPage() {
   }, [cargarDatos]);
 
   // Manejador de cambio de datos en los componentes hijos
-  const handleSnapshotChange = (nuevosDatos: any) => {
+  const handleSnapshotChange = (nuevosDatos: any, pestanaId: string = tabActiva) => {
     setConfigSnapshot(nuevosDatos);
+    setSnapshotsPorTab((prev) => ({ ...prev, [pestanaId]: nuevosDatos }));
+    setTabsModificadas((prev) => new Set(prev).add(pestanaId));
   };
 
-  // Guardar configuración directa
+  // Guardar configuración directa coordinada
   const handleGuardarConfiguracion = async () => {
     try {
       setGuardando(true);
-      const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pestana: tabActiva,
-          snapshot: configSnapshot,
-          motivo: `Actualización de licencias y contratos en pestaña ${pestanaInfo.titulo}`,
-          diff: { tipo: "modificacion_general", pestana: tabActiva }
-        })
-      });
+      const tabsAGuardar = tabsModificadas.size > 0 ? Array.from(tabsModificadas) : [tabActiva];
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Error al guardar la configuración.");
+      for (const tId of tabsAGuardar) {
+        const snap = snapshotsPorTab[tId] || (tId === tabActiva ? configSnapshot : null);
+        if (!snap) continue;
+        const res = await fetch("/api/activos/configuracion/licencias-contratos/configuracion", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pestana: tId,
+            snapshot: snap,
+            motivo: `Actualización de licencias y contratos en pestaña ${tId}`,
+            diff: { tipo: "modificacion_general", pestana: tId }
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || `Error al guardar configuración en pestaña ${tId}`);
+        }
       }
 
-      mostrarToast(data.mensaje || "Configuración guardada exitosamente.");
+      setTabsModificadas(new Set());
+      mostrarToast("Configuración guardada exitosamente.");
       cargarDatos();
     } catch (err: any) {
       mostrarToast(err.message || "Error al guardar la configuración.");
@@ -352,48 +366,48 @@ export default function LicenciasContratosConfigPage() {
           </div>
         ) : (
           <div>
-            {tabActiva === "tipos_licencia_metricas" && (
+            <div style={{ display: tabActiva === "tipos_licencia_metricas" ? "block" : "none" }}>
               <PestanaTiposLicencia
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["tipos_licencia_metricas"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "tipos_licencia_metricas")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
-            {tabActiva === "tipos_contrato_proveedores" && (
+            </div>
+            <div style={{ display: tabActiva === "tipos_contrato_proveedores" ? "block" : "none" }}>
               <PestanaTiposContrato
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["tipos_contrato_proveedores"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "tipos_contrato_proveedores")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
-            {tabActiva === "formulario_licencia_contrato" && (
+            </div>
+            <div style={{ display: tabActiva === "formulario_licencia_contrato" ? "block" : "none" }}>
               <PestanaFormularioLicenciaContrato
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["formulario_licencia_contrato"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "formulario_licencia_contrato")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
-            {tabActiva === "cumplimiento_sobreuso" && (
+            </div>
+            <div style={{ display: tabActiva === "cumplimiento_sobreuso" ? "block" : "none" }}>
               <PestanaCumplimientoSobreuso
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["cumplimiento_sobreuso"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "cumplimiento_sobreuso")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
-            {tabActiva === "alertas_vencimiento_garantia" && (
+            </div>
+            <div style={{ display: tabActiva === "alertas_vencimiento_garantia" ? "block" : "none" }}>
               <PestanaAlertasVencimiento
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["alertas_vencimiento_garantia"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "alertas_vencimiento_garantia")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
-            {tabActiva === "renovacion" && (
+            </div>
+            <div style={{ display: tabActiva === "renovacion" ? "block" : "none" }}>
               <PestanaRenovacion
-                datos={configSnapshot}
-                onChange={handleSnapshotChange}
+                datos={snapshotsPorTab["renovacion"] || configSnapshot}
+                onChange={(d) => handleSnapshotChange(d, "renovacion")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
-            )}
+            </div>
           </div>
         )}
         </div>
