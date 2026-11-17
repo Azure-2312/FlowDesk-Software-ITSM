@@ -80,7 +80,7 @@ export default function ProblemasWorkspace({
         backgroundColor: "#f8fafc",
         width: "100%",
         boxSizing: "border-box",
-        padding: "28px 32px 32px 32px",
+        padding: "24px 32px",
       }}
     >
       <div style={{ maxWidth: 1400, width: "100%", margin: "0 auto" }}>

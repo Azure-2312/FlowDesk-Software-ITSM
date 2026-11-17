@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface Problema {
   id_problema: number;
@@ -79,8 +80,8 @@ export default function VistaAsignacionProblemas() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Asignación de problemas</h1>
-        <p>Reparte los problemas de mi área mientras no exista un Gestor de Problemas dedicado.</p>
+        <h1>Bandeja y asignación de problemas</h1>
+        <p>Distribución de responsables y áreas técnicas para expedientes de problemas en investigación.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -90,38 +91,40 @@ export default function VistaAsignacionProblemas() {
         <p>Cargando...</p>
       ) : problemas.length === 0 ? (
         <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
-          No hay problemas registrados en mi área.
+          No hay problemas pendientes de asignación.
         </div>
       ) : (
         <div className="tarjeta-formulario">
-          <table className="tabla-datos">
-            <thead>
-              <tr><th>Código</th><th>Título</th><th>Prioridad</th><th>Responsable actual</th><th>Asignar a</th></tr>
-            </thead>
-            <tbody>
-              {problemas.map((p) => (
-                <tr key={p.id_problema}>
-                  <td><strong>{p.codigo_problema}</strong></td>
-                  <td>{p.titulo}</td>
-                  <td>{p.prioridad_nombre ?? "—"}</td>
-                  <td>{p.asignado_nombre ?? "Sin asignar"}</td>
-                  <td>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <select
-                        value={seleccion[p.id_problema] ?? ""}
-                        onChange={(e) => setSeleccion((s) => ({ ...s, [p.id_problema]: e.target.value }))}
-                        style={{ padding: "6px 8px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }}
-                      >
-                        <option value="">Selecciona...</option>
-                        {tecnicos.map((t) => <option key={t.id_usuario} value={t.id_usuario}>{t.nombre}</option>)}
-                      </select>
-                      <button className="boton-primario" style={{ width: "auto" }} onClick={() => asignar(p.id_problema)}>Asignar</button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TablaDobleScroll minWidth={850}>
+            <table className="tabla-datos">
+              <thead>
+                <tr><th>Código</th><th>Título</th><th>Prioridad</th><th>Responsable actual</th><th>Asignar a</th></tr>
+              </thead>
+              <tbody>
+                {problemas.map((p) => (
+                  <tr key={p.id_problema}>
+                    <td><strong>{p.codigo_problema}</strong></td>
+                    <td>{p.titulo}</td>
+                    <td>{p.prioridad_nombre ?? "—"}</td>
+                    <td>{p.asignado_nombre ?? "Sin asignar"}</td>
+                    <td>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <select
+                          value={seleccion[p.id_problema] ?? ""}
+                          onChange={(e) => setSeleccion((s) => ({ ...s, [p.id_problema]: e.target.value }))}
+                          style={{ padding: "6px 8px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }}
+                        >
+                          <option value="">Selecciona...</option>
+                          {tecnicos.map((t) => <option key={t.id_usuario} value={t.id_usuario}>{t.nombre}</option>)}
+                        </select>
+                        <button className="boton-primario" style={{ width: "auto" }} onClick={() => asignar(p.id_problema)}>Asignar</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TablaDobleScroll>
         </div>
       )}
     </div>

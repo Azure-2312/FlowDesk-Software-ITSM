@@ -13,7 +13,7 @@ import PresentadorGestorArea from "@/modules/tickets/presentadores/PresentadorGe
 import PresentadorAprobador from "@/modules/tickets/presentadores/PresentadorAprobador";
 import PresentadorRfcEvaluador from "@/modules/tickets/presentadores/PresentadorRfcEvaluador";
 import PresentadorActivoGestor from "@/modules/tickets/presentadores/PresentadorActivoGestor";
-import PresentadorProblemaGestor from "@/modules/tickets/presentadores/PresentadorProblemaGestor";
+import PresentadorProblema from "@/modules/tickets/presentadores/PresentadorProblema";
 
 interface Props {
   idTicket: number;
@@ -463,7 +463,7 @@ export default function ModalDetalleTicket({ idTicket, apiBase = "/api/tickets",
           )}
 
           {arquetipo === "GESTOR_PROBLEMAS" && (
-            <PresentadorProblemaGestor
+            <PresentadorProblema
               ticket={ticket}
               comentarios={comentarios}
               catalogos={catalogos}

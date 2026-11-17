@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface ConfigRfc {
   exigir_rfc_para_pendiente_cambio: boolean;
@@ -123,7 +124,7 @@ export function PestanaRfc({ config, onChange, onMarcarModificado }: Props) {
           Campos que se transfieren automáticamente al pulsar "Crear RFC desde problema":
         </p>
 
-        <div className="contenedor-tabla">
+        <TablaDobleScroll minWidth={600}>
           <table className="tabla" style={{ fontSize: 12.5 }}>
             <thead>
               <tr>
@@ -148,7 +149,7 @@ export function PestanaRfc({ config, onChange, onMarcarModificado }: Props) {
               ))}
             </tbody>
           </table>
-        </div>
+        </TablaDobleScroll>
       </div>
 
       {/* AUTOMATIZACIONES Y RETORNO TRAS RESULTADO DE LA RFC */}

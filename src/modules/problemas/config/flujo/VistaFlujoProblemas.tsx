@@ -134,7 +134,7 @@ export default function FlujoProblemasPage() {
 
   return (
     <div style={{ width: "100%", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
-      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto", padding: "28px 32px 32px 32px", flex: 1, boxSizing: "border-box" }}>
+      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto", padding: "24px 32px", flex: 1, boxSizing: "border-box" }}>
         {/* Encabezado Principal Estandarizado */}
         <div style={{
           display: "flex",

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 export interface TareaCatalogo {
   id_tarea: number;
@@ -123,7 +124,7 @@ export const PestanaTareas: React.FC<PestanaTareasProps> = ({
           </button>
         </div>
 
-        <div className="overflow-x-auto text-xs">
+        <TablaDobleScroll minWidth={700}>
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
@@ -171,7 +172,7 @@ export const PestanaTareas: React.FC<PestanaTareasProps> = ({
               ))}
             </tbody>
           </table>
-        </div>
+        </TablaDobleScroll>
       </div>
 
       {/* SECCIÓN B: Paquetes de Tareas */}

@@ -1,7 +1,7 @@
 import { exigirMenuPagina } from "@/shared/lib/page-auth";
-import VistaProblemasCandidatos from "@/modules/problemas/views/VistaProblemasCandidatos";
+import VistaCandidatosProblemas from "@/modules/problemas/views/VistaCandidatosProblemas";
 
 export default async function PaginaProblemasCandidatos() {
   await exigirMenuPagina("/plataforma/problemas/candidatos");
-  return <VistaProblemasCandidatos />;
+  return <VistaCandidatosProblemas />;
 }

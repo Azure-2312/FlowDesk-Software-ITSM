@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface CampoPersonalizado {
   id_campo: number;
@@ -225,7 +226,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
       </div>
 
       {/* Tabla de Campos Personalizados */}
-      <div className="contenedor-tabla">
+      <TablaDobleScroll minWidth={850}>
         <table className="tabla">
           <thead>
             <tr>
@@ -299,7 +300,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
             )}
           </tbody>
         </table>
-      </div>
+      </TablaDobleScroll>
 
       {/* Modal Asistente de 5 Pasos para Nuevo Campo Personalizado */}
       {modalAsistenteAbierto && (
