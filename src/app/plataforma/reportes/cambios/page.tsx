@@ -1,7 +1,30 @@
-import { exigirMenuPagina } from "@/shared/lib/page-auth";
-import { VistaReportesCambios } from "@/modules/reportes/ui";
+import { exigirVistaPagina } from "@/shared/lib/vistas";
+import PestanasVista from "@/shared/components/ui/PestanasVista";
+import { VistaReportesCambios, VistaReportesProblemas } from "@/modules/reportes/ui";
 
-export default async function PaginaReportesCambios() {
-  await exigirMenuPagina("/plataforma/reportes/cambios");
-  return <VistaReportesCambios />;
+interface PageProps {
+  searchParams?: Promise<{ vista?: string }> | { vista?: string };
+}
+
+export default async function PaginaReportesCambiosYProblemas({ searchParams }: PageProps) {
+  const resolvedParams = searchParams ? await searchParams : undefined;
+  const { vistaActiva, vistasPermitidas } = await exigirVistaPagina(
+    "/plataforma/reportes/cambios",
+    resolvedParams?.vista
+  );
+
+  return (
+    <div className="space-y-4">
+      {vistasPermitidas.length > 1 && (
+        <div className="bg-white px-6 pt-4 rounded-xl border border-slate-200 shadow-sm">
+          <PestanasVista
+            vistas={vistasPermitidas}
+            vistaActiva={vistaActiva}
+            urlBase="/plataforma/reportes/cambios"
+          />
+        </div>
+      )}
+      {vistaActiva === "problemas" ? <VistaReportesProblemas /> : <VistaReportesCambios />}
+    </div>
+  );
 }
