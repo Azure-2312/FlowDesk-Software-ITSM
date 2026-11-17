@@ -26,16 +26,16 @@ export default function RedireccionRutasLegadasAdmin({ params }: Props) {
   }
 
   if (ruta.startsWith("procesos/problemas/formulario")) {
-    redirect("/plataforma/problemas/configuracion/formulario");
+    redirect("/plataforma/problemas/configuracion?vista=campos");
   }
   if (ruta.startsWith("procesos/problemas/flujo")) {
-    redirect("/plataforma/problemas/configuracion/flujo");
+    redirect("/plataforma/problemas/configuracion");
   }
   if (ruta.startsWith("procesos/problemas/relaciones")) {
-    redirect("/plataforma/problemas/configuracion/relaciones");
+    redirect("/plataforma/problemas/configuracion");
   }
   if (ruta.startsWith("procesos/problemas")) {
-    redirect("/plataforma/problemas/configuracion/formulario");
+    redirect("/plataforma/problemas/configuracion");
   }
 
   if (ruta.startsWith("procesos/incidentes")) {

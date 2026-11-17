@@ -87,7 +87,7 @@ export default function PresentadorProblema({
         }}
       >
         <strong style={{ fontSize: 12.5, color: "#1e293b", textTransform: "uppercase" }}>
-          Metodologia de Diagnostico (5 Porques / Ishikawa - RN-37)
+          Metodologia de Diagnostico (5 Porques / Linea de tiempo - RN-37)
         </strong>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, fontSize: 12 }}>

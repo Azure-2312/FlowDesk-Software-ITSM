@@ -51,7 +51,7 @@ export default function VistaProblemasCrear() {
         return;
       }
 
-      router.push("/plataforma/problemas/historial");
+      router.push("/plataforma/problemas/bandeja?vista=historial");
     } catch {
       setError("Error de conexión al registrar el problema.");
     } finally {
@@ -81,7 +81,7 @@ export default function VistaProblemasCrear() {
             if (typeof window !== "undefined" && window.history.length > 1) {
               router.back();
             } else {
-              router.push("/plataforma/problemas/historial");
+              router.push("/plataforma/problemas/bandeja?vista=historial");
             }
           }}
           className="boton-secundario"
@@ -199,7 +199,7 @@ export default function VistaProblemasCrear() {
               }}
             >
               <option value="5_porques">5 Porqués</option>
-              <option value="ishikawa">Diagrama de Ishikawa</option>
+              <option value="linea_tiempo">Línea de tiempo</option>
               <option value="arbol_fallas">Árbol de Fallas (FTA)</option>
               <option value="otro">Análisis Técnico Libre</option>
             </select>
@@ -213,7 +213,7 @@ export default function VistaProblemasCrear() {
               if (typeof window !== "undefined" && window.history.length > 1) {
                 router.back();
               } else {
-                router.push("/plataforma/problemas/historial");
+                router.push("/plataforma/problemas/bandeja?vista=historial");
               }
             }}
             className="boton-secundario"

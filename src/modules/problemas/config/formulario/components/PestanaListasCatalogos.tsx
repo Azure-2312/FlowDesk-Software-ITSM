@@ -40,7 +40,7 @@ const CATALOGOS_DEF = [
   { id: "origenes", nombre: "Orígenes", desc: "Procedencia del problema e indicadores KPI" },
   { id: "causas_raiz", nombre: "Categorías de causa raíz", desc: "Taxonomía técnica de la falla de origen" },
   { id: "codigos_cierre", nombre: "Códigos de cierre", desc: "Condiciones de solución definitiva y éxito" },
-  { id: "metodos_analisis", nombre: "Métodos de análisis", desc: "Metodologías (5 Porqués, Ishikawa, etc.)" },
+  { id: "metodos_analisis", nombre: "Métodos de análisis", desc: "Metodologías (5 Porqués, Línea de tiempo, etc.)" },
   { id: "motivos_espera", nombre: "Motivos de espera", desc: "Causales de pausa en relojes de atención" },
   { id: "motivos_cancelacion", nombre: "Motivos de cancelación", desc: "Justificaciones de anulación del ticket" },
 ];

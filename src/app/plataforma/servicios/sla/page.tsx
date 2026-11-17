@@ -12,6 +12,7 @@ import VistaEscalamientosSla from "@/modules/servicios/views/VistaEscalamientosS
 import VistaIncumplimientosSla from "@/modules/servicios/views/VistaIncumplimientosSla";
 import VistaSlaObjetivos from "@/modules/servicios/views/VistaSlaObjetivos";
 import VistaSlaSemaforo from "@/modules/servicios/views/VistaSlaSemaforo";
+import VistaObjetivosProblemas from "@/modules/problemas/views/VistaObjetivosProblemas";
 
 interface Props {
   searchParams?: {
@@ -45,6 +46,7 @@ export default async function PaginaMonitorSla({ searchParams }: Props) {
         {vistaActiva === "objetivos" && <VistaSlaObjetivos />}
         {vistaActiva === "mi-cola" && <VistaSlaSemaforo alcanceInicial="mios" />}
         {vistaActiva === "grupo" && <VistaSlaSemaforo alcanceInicial="area" />}
+        {vistaActiva === "problemas" && <VistaObjetivosProblemas />}
       </div>
     </div>
   );

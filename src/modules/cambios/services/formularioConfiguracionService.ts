@@ -116,7 +116,7 @@ export const VALORES_FABRICA_PESTANAS: Record<string, any> = {
         color: "#9333ea",
         orden: 8,
         campos: [
-          { codigo: "causa_raiz_tecnica", etiqueta: "Causa raíz técnica de la falla de origen", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: false, ancho: "completo", placeholder: "Análisis 5 Porqués o Ishikawa de la falla...", ayuda: "Explicación técnica del origen del fallo.", reglas: [] },
+          { codigo: "causa_raiz_tecnica", etiqueta: "Causa raíz técnica de la falla de origen", tipo: "area_enriquecida", visible: true, obligatorio: "si", bloqueado: false, ancho: "completo", placeholder: "Análisis 5 Porqués o Línea de tiempo de la falla...", ayuda: "Explicación técnica del origen del fallo.", reglas: [] },
           { codigo: "tiempo_downtime_real", etiqueta: "Tiempo real de indisponibilidad del servicio (minutos)", tipo: "numero", visible: true, obligatorio: "si", bloqueado: false, ancho: "1/2", placeholder: "0", ayuda: "Minutos de caída real del servicio.", reglas: [] },
           { codigo: "incidente_colateral", etiqueta: "¿Provocó incidentes secundarios no deseados?", tipo: "booleano", visible: true, obligatorio: "si", bloqueado: false, ancho: "1/2", ayuda: "Indica si generó fallas adicionales.", reglas: [] },
           { codigo: "ticket_problema_preventivo", etiqueta: "Ticket de Problema preventivo asociado (#PRB)", tipo: "buscador_ticket", visible: true, obligatorio: "no", bloqueado: false, ancho: "completo", ayuda: "Ticket de gestión de problemas para erradicar causa raíz.", reglas: [] },
