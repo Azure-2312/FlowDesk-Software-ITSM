@@ -14,13 +14,13 @@ export default function PaginaTickets() {
     2: "/plataforma/incidentes/asignados",
     3: "/plataforma/solicitudes/mios",
     4: "/plataforma/tickets/gestion/todos",
-    5: "/plataforma/solicitudes/aprobaciones",
+    5: "/plataforma/aprobaciones",
     6: "/plataforma/incidentes/todos",
-    7: "/plataforma/solicitudes/aprobaciones",
+    7: "/plataforma/aprobaciones",
     8: "/plataforma/cambios",
     9: "/plataforma/activos",
     10: "/plataforma/problemas",
   };
 
-  redirect(destinosPorPerfil[sesion.perfilActivo?.id_perfil] ?? "/plataforma/dashboard");
+  redirect(destinosPorPerfil[sesion.perfilActivo?.id_perfil] ?? "/plataforma/inicio");
 }

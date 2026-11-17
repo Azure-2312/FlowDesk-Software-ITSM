@@ -20,8 +20,8 @@ export default async function PaginaSolicitudDetalle() {
     rutaLista = "/plataforma/solicitudes/departamento";
     etiquetaVolver = "Volver a Solicitudes del departamento";
   } else if (idPerfil === 7) {
-    rutaLista = "/plataforma/solicitudes/aprobaciones";
-    etiquetaVolver = "Volver a Aprobaciones";
+    rutaLista = "/plataforma/aprobaciones";
+    etiquetaVolver = "Volver a Mis aprobaciones";
   }
 
   return (

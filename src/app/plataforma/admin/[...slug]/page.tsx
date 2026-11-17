@@ -62,5 +62,5 @@ export default function RedireccionRutasLegadasAdmin({ params }: Props) {
     redirect("/plataforma/organizacion/tecnicos");
   }
 
-  redirect("/plataforma/dashboard");
+  redirect("/plataforma/inicio");
 }
