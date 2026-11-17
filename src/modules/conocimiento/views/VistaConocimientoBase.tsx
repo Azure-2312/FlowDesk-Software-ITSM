@@ -88,7 +88,7 @@ export default function PaginaBaseConocimiento() {
           </p>
         </div>
         <Link
-          href="/plataforma/conocimiento/nuevo"
+          href="/plataforma/conocimiento/crear"
           className="boton-primario"
           style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
         >

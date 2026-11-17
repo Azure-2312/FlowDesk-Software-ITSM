@@ -47,7 +47,7 @@ export default function PaginaMisArticulos() {
 
         <div style={{ display: "flex", gap: 10 }}>
           <Link
-            href="/plataforma/conocimiento/nuevo"
+            href="/plataforma/conocimiento/crear"
             style={{
               padding: "8px 16px",
               backgroundColor: "#2563eb",
@@ -107,7 +107,7 @@ export default function PaginaMisArticulos() {
             Aporta conocimiento y procedimientos para enriquecer la base de conocimiento del equipo.
           </p>
           <Link
-            href="/plataforma/conocimiento/nuevo"
+            href="/plataforma/conocimiento/crear"
             style={{
               display: "inline-block",
               padding: "8px 16px",
