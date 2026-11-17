@@ -90,7 +90,7 @@ export default function VistaPanelAprobador() {
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
-            href="/plataforma/cambios/cab/agenda"
+            href="/plataforma/cambios/cab"
             className="boton-primario"
             style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
@@ -124,10 +124,10 @@ export default function VistaPanelAprobador() {
               <div style={{ color: "#6b7280", marginTop: 4 }}>
                 {fechaHora(data.proximaReunion.fecha_reunion)} · {data.proximaReunion.tipo}
               </div>
-              <Link href="/plataforma/cambios/cab/agenda" className="boton-secundario" style={{ display: "inline-block", marginTop: 10, textDecoration: "none" }}>Ver agenda</Link>
+              <Link href="/plataforma/cambios/cab" className="boton-secundario" style={{ display: "inline-block", marginTop: 10, textDecoration: "none" }}>Ver agenda</Link>
             </div>
           ) : (
-            <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>No hay reuniones programadas. <Link href="/plataforma/cambios/cab/agenda">Programar</Link></p>
+            <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>No hay reuniones programadas. <Link href="/plataforma/cambios/cab">Programar</Link></p>
           )}
         </div>
 

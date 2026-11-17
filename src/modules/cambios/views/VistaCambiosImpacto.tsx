@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export default function PaginaCambiosImpacto() {
+interface VistaCambiosImpactoProps {
+  tipoImpacto?: "equipo" | "servicios";
+}
+
+export default function PaginaCambiosImpacto({ tipoImpacto = "servicios" }: VistaCambiosImpactoProps) {
   const [cambios, setCambios] = useState<any[]>([]);
   const [cargando, setCargando] = useState(true);
   const [enterados, setEnterados] = useState<Set<number>>(new Set());
@@ -51,10 +55,12 @@ export default function PaginaCambiosImpacto() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <div>
           <h1 style={{ fontSize: 21, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-            Cambios que Afectan mis Servicios
+            {tipoImpacto === "equipo" ? "Cambios que Afectan a mi Equipo" : "Cambios que Afectan mis Servicios"}
           </h1>
           <p style={{ fontSize: 13, color: "#64748b", margin: "6px 0 0" }}>
-            Notificación preventiva de intervenciones de infraestructura que pueden generar incidentes o consultas de usuarios ({cambios.length} cambios programados).
+            {tipoImpacto === "equipo"
+              ? `Notificación preventiva de intervenciones que pueden afectar las tareas de mi equipo (${cambios.length} cambios programados).`
+              : `Notificación preventiva de intervenciones de infraestructura que pueden generar incidentes o consultas de usuarios (${cambios.length} cambios programados).`}
           </p>
         </div>
 

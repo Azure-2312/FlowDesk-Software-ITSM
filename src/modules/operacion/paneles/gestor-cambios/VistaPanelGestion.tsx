@@ -99,7 +99,7 @@ export default function VistaPanelGestion() {
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
-            href="/plataforma/cambios/gestion/crear"
+            href="/plataforma/cambios/nuevo"
             className="boton-primario"
             style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
@@ -130,9 +130,9 @@ export default function VistaPanelGestion() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/cambios/gestion/evaluacion" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Bandeja de evaluación</Link>
-            <Link href="/plataforma/cambios/gestion/autorizaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Autorizaciones</Link>
-            <Link href="/plataforma/cambios/gestion/conflictos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Conflictos y capacidad</Link>
+            <Link href="/plataforma/cambios/gestion?vista=por-evaluar" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Bandeja de evaluación</Link>
+            <Link href="/plataforma/cambios/gestion?vista=aprobacion" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Autorizaciones</Link>
+            <Link href="/plataforma/cambios/gestion/calendario" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Calendario y programación</Link>
             <Link href="/plataforma/cambios/gestion/pir" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Revisión post-implementación</Link>
           </div>
         </div>

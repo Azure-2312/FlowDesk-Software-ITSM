@@ -1,8 +1,7 @@
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
 import VistaPir from "@/modules/cambios/views/gestion/VistaPir";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
 
-export default function PaginaPir() {
-  exigirCapacidadPagina(CAPACIDADES.CAMBIOS_GESTIONAR);
+export default async function PaginaPir() {
+  await exigirMenuPagina("/plataforma/cambios/gestion/pir");
   return <VistaPir />;
 }

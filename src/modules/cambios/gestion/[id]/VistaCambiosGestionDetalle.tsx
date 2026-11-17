@@ -94,7 +94,7 @@ export default function PaginaDetalleTicketRFC() {
         <div style={{ backgroundColor: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: 20, color: "#991b1b", maxWidth: 500, margin: "0 auto" }}>
           <h3 style={{ margin: "0 0 8px 0", fontSize: 16 }}>Error al abrir la RFC</h3>
           <p style={{ margin: "0 0 16px 0", fontSize: 13 }}>{error || "El ticket solicitado no existe."}</p>
-          <Link href="/plataforma/cambios/gestion/todos" className="boton-primario" style={{ fontSize: 12, textDecoration: "none" }}>
+          <Link href="/plataforma/cambios/gestion?vista=historial" className="boton-primario" style={{ fontSize: 12, textDecoration: "none" }}>
             Volver al Historial de Cambios
           </Link>
         </div>
@@ -116,7 +116,7 @@ export default function PaginaDetalleTicketRFC() {
         <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
           <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
           <span>›</span>
-          <Link href="/plataforma/cambios/gestion/todos" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
+          <Link href="/plataforma/cambios/gestion?vista=historial" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
           <span>›</span>
           <span style={{ color: "#0f172a", fontWeight: 700, fontFamily: "monospace" }}>{cambio.codigo_cambio}</span>
         </div>
@@ -137,7 +137,7 @@ export default function PaginaDetalleTicketRFC() {
       <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
         <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
         <span>›</span>
-        <Link href="/plataforma/cambios/gestion/todos" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
+        <Link href="/plataforma/cambios/gestion?vista=historial" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
         <span>›</span>
         <span style={{ color: "#0f172a", fontWeight: 700, fontFamily: "monospace" }}>{cambio.codigo_cambio}</span>
       </div>
@@ -233,7 +233,7 @@ export default function PaginaDetalleTicketRFC() {
           {/* Barra de Acciones del Ticket (Sección 5.2) */}
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <Link
-              href="/plataforma/cambios/gestion/cab"
+              href="/plataforma/cambios/cab?vista=dictamen"
               className="boton-secundario"
               style={{ fontSize: 12, textDecoration: "none" }}
             >

@@ -251,7 +251,7 @@ export default function NotificacionesCalendarioPage() {
           overflowX: "auto",
           scrollbarWidth: "none"
         }}>
-          {(Object.keys(PESTANAS_INFO) as TabId[]).map((tabKey) => {
+          {(["ventanas_mantenimiento", "periodos_congelamiento", "feriados"] as TabId[]).map((tabKey) => {
             const tab = PESTANAS_INFO[tabKey];
             const activa = tabActiva === tabKey;
             return (

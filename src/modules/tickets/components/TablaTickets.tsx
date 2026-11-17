@@ -439,7 +439,7 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
                           } else if (t.tipo_codigo === "PROBLEMA") {
                             router.push("/plataforma/problemas");
                           } else if (t.tipo_codigo === "CAMBIO" || t.tipo_codigo?.startsWith("CAMBIO") || t.tipo_nombre?.includes("RFC") || t.codigo_ticket?.startsWith("RFC")) {
-                            router.push("/plataforma/cambios/gestion/todos");
+                            router.push("/plataforma/cambios/gestion?vista=historial");
                           } else {
                             setTicketSeleccionadoId(t.id_ticket);
                           }
