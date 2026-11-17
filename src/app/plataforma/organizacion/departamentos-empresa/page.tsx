@@ -1,8 +1,7 @@
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
 import VistaDepartamentosEmpresa from "@/modules/organizacion/config/departamentos-empresa/VistaDepartamentosEmpresa";
 
-export default function PaginaAdminDepartamentosEmpresa() {
-  exigirCapacidadPagina(CAPACIDADES.ADMIN_ORGANIZACION);
+export default async function PaginaAdminDepartamentosEmpresa() {
+  await exigirMenuPagina("/plataforma/organizacion/departamentos-empresa");
   return <VistaDepartamentosEmpresa />;
 }
