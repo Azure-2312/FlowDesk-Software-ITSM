@@ -7,7 +7,7 @@ import {
   cerrarMayor,
   declararMayor,
   listarMayores,
-} from "@/modules/problemas/services/gestorProblemasService";
+} from "@/modules/problemas/services/gestionProblemasService";
 
 export const dynamic = "force-dynamic";
 

@@ -5,7 +5,7 @@ import { sesionConCapacidad } from "@/shared/lib/api-auth";
 import {
   crearArticuloDesdeProblema,
   listarConocimiento,
-} from "@/modules/problemas/services/gestorProblemasService";
+} from "@/modules/problemas/services/gestionProblemasService";
 
 export const dynamic = "force-dynamic";
 

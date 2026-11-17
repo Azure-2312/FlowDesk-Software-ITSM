@@ -17,7 +17,7 @@ interface Problema {
   asignado_nombre: string | null;
 }
 
-export default function VistaProblemasMayores() {
+export default function VistaAprobacionesProblemas() {
   const [items, setItems] = useState<Problema[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);

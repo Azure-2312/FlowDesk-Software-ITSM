@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { BotonIcono } from "@/shared/components/ui/BotonIcono";
 import { Edit2, Trash2 } from "@/shared/components/ui/Iconos";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface PlantillaProblema {
   id_plantilla: number;
@@ -158,7 +159,8 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
 
       {/* Tabla de Plantillas */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-        <table className="w-full text-left border-collapse text-xs">
+        <TablaDobleScroll minWidth={750}>
+          <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
               <th className="py-3 px-4">Nombre de Plantilla</th>
@@ -240,6 +242,7 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
             )}
           </tbody>
         </table>
+        </TablaDobleScroll>
       </div>
 
       {/* Editor Modal de Plantilla en 4 Pestañas Internas (Sección 6.5) */}

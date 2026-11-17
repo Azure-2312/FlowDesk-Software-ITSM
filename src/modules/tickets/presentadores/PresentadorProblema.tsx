@@ -4,7 +4,7 @@ import React from "react";
 import { PropsVistaPresentadorTicket } from "@/modules/tickets/ticket-detail/tipos";
 import PanelInfraestructuraCi from "@/modules/tickets/ticket-detail/secciones/PanelInfraestructuraCi";
 
-export default function PresentadorProblemaGestor({
+export default function PresentadorProblema({
   ticket,
   comentarios,
   onElevarAProblema,

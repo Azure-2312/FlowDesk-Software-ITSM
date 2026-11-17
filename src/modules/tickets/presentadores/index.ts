@@ -9,4 +9,4 @@ export { default as PresentadorAprobador } from "./PresentadorAprobador";
 export { default as PresentadorRfcEvaluador } from "./PresentadorRfcEvaluador";
 export { default as PresentadorRfcAprobador } from "./PresentadorRfcAprobador";
 export { default as PresentadorActivoGestor } from "./PresentadorActivoGestor";
-export { default as PresentadorProblemaGestor } from "./PresentadorProblemaGestor";
+export { default as PresentadorProblema } from "./PresentadorProblema";

@@ -2,10 +2,10 @@ import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 
 /**
- * Servicio del perfil Gestor de Problemas (perfil 10).
- * Cubre panel, asignación, identificación proactiva (candidatos y recurrentes),
- * análisis de causa raíz, problemas mayores, RFC derivadas, conocimiento
- * derivado, objetivos de tiempo y reportes.
+ * Servicio de dominio de Gestión de Problemas (ITIL v4 / ISO 20000).
+ * Cubre panel operativo, asignación de responsables, identificación proactiva (candidatos y recurrentes),
+ * análisis de causa raíz, comités de problemas mayores y PIR, RFC derivadas, conocimiento
+ * derivado, objetivos de tiempo OLA y reportes gerenciales.
  */
 
 const ESTADO_CASE = `CASE p.id_estado

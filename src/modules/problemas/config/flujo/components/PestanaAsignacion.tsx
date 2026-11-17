@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { BotonIcono } from "@/shared/components/ui/BotonIcono";
 import { Edit2, Trash2 } from "@/shared/components/ui/Iconos";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 export interface ReglaAsignacion {
   id_regla: number;
@@ -155,7 +156,8 @@ export const PestanaAsignacion: React.FC<PestanaAsignacionProps> = ({
             </span>
           </div>
 
-          <table className="w-full text-left border-collapse text-xs">
+          <TablaDobleScroll minWidth={700}>
+            <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
                 <th className="py-3 px-3">Prioridad</th>
@@ -231,7 +233,8 @@ export const PestanaAsignacion: React.FC<PestanaAsignacionProps> = ({
                 </tr>
               ))}
             </tbody>
-          </table>
+            </table>
+          </TablaDobleScroll>
         </div>
 
         {/* Panel Lateral: Simulador de Asignación (4/12 cols) */}

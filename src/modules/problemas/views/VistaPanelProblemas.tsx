@@ -146,10 +146,10 @@ export default function VistaPanelProblemas() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/problemas/gestion/asignacion" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Bandeja y asignación</Link>
-            <Link href="/plataforma/problemas/gestion/candidatos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Candidatos a problema</Link>
-            <Link href="/plataforma/problemas/gestion/analisis" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Análisis de causa raíz</Link>
-            <Link href="/plataforma/problemas/gestion/mayores" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Problemas mayores</Link>
+            <Link href="/plataforma/problemas/asignacion" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Bandeja y asignación</Link>
+            <Link href="/plataforma/problemas/candidatos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Candidatos a problema</Link>
+            <Link href="/plataforma/problemas/analisis" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Análisis de causa raíz</Link>
+            <Link href="/plataforma/problemas/mayores" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Problemas mayores</Link>
           </div>
         </div>
 

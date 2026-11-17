@@ -17,4 +17,4 @@ export {
   type DecisionRfc,
 } from "./presentadores/PresentadorRfcAprobador";
 
-export { default as PresentadorProblemaGestor } from "./presentadores/PresentadorProblemaGestor";
+export { default as PresentadorProblema } from "./presentadores/PresentadorProblema";

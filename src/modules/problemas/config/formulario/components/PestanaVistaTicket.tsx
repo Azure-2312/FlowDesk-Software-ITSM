@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface ElementoCabecera {
   id: string;
@@ -168,7 +169,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
           Bloque 2 — Gobernanza de las 12 Pestañas Funcionales
         </span>
 
-        <div className="overflow-x-auto">
+        <TablaDobleScroll minWidth={750}>
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
@@ -243,7 +244,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
               ))}
             </tbody>
           </table>
-        </div>
+        </TablaDobleScroll>
       </div>
 
       {/* BLOQUE 3 Y 4: Panel Lateral y Barra de Acciones */}

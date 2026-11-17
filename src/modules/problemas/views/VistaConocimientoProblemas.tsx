@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface Articulo {
   id_articulo: number;
@@ -128,19 +129,21 @@ export default function VistaConocimientoProblemas() {
         ) : pendientes.length === 0 ? (
           <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>No hay problemas resueltos sin artículo.</p>
         ) : (
-          <table className="tabla-datos">
-            <thead><tr><th>Código</th><th>Título</th><th>Estado</th><th>KEDB</th></tr></thead>
-            <tbody>
-              {pendientes.map((p) => (
-                <tr key={p.id_problema}>
-                  <td><strong>{p.codigo_problema}</strong></td>
-                  <td>{p.titulo}</td>
-                  <td>{p.estado_nombre}</td>
-                  <td>{p.es_error_conocido ? "Sí" : "No"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TablaDobleScroll minWidth={650}>
+            <table className="tabla-datos">
+              <thead><tr><th>Código</th><th>Título</th><th>Estado</th><th>KEDB</th></tr></thead>
+              <tbody>
+                {pendientes.map((p) => (
+                  <tr key={p.id_problema}>
+                    <td><strong>{p.codigo_problema}</strong></td>
+                    <td>{p.titulo}</td>
+                    <td>{p.estado_nombre}</td>
+                    <td>{p.es_error_conocido ? "Sí" : "No"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TablaDobleScroll>
         )}
       </div>
 
@@ -149,20 +152,22 @@ export default function VistaConocimientoProblemas() {
         {articulos.length === 0 ? (
           <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>Aún no hay artículos derivados de problemas.</p>
         ) : (
-          <table className="tabla-datos">
-            <thead><tr><th>Código</th><th>Título</th><th>Estado</th><th>Problema</th><th>Creado</th></tr></thead>
-            <tbody>
-              {articulos.map((a) => (
-                <tr key={a.id_articulo}>
-                  <td><strong>{a.codigo_articulo}</strong></td>
-                  <td>{a.titulo}</td>
-                  <td>{a.estado_editorial ?? "—"}</td>
-                  <td>{a.codigo_problema ?? "—"}</td>
-                  <td>{fecha(a.fecha_creacion)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TablaDobleScroll minWidth={750}>
+            <table className="tabla-datos">
+              <thead><tr><th>Código</th><th>Título</th><th>Estado</th><th>Problema</th><th>Creado</th></tr></thead>
+              <tbody>
+                {articulos.map((a) => (
+                  <tr key={a.id_articulo}>
+                    <td><strong>{a.codigo_articulo}</strong></td>
+                    <td>{a.titulo}</td>
+                    <td>{a.estado_editorial ?? "—"}</td>
+                    <td>{a.codigo_problema ?? "—"}</td>
+                    <td>{fecha(a.fecha_creacion)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TablaDobleScroll>
         )}
       </div>
     </div>

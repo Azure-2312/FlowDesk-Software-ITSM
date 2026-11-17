@@ -411,7 +411,7 @@ export default function ConfiguracionFormularioPage() {
 
   return (
     <div style={{ width: "100%", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
-      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto 0 0", padding: "28px 32px 32px 32px", flex: 1, boxSizing: "border-box" }}>
+      <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto", padding: "24px 32px", flex: 1, boxSizing: "border-box" }}>
 
       {/* Encabezado Principal de la Pantalla */}
       <div style={{

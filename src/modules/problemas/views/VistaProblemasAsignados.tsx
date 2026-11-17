@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface ProblemaItem {
   id_problema: number;
@@ -145,85 +146,87 @@ export default function PaginaProblemasAsignados() {
 
       {!cargando && !error && problemas.length > 0 && (
         <div style={{ backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #e2e8f0", overflow: "hidden" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-            <thead>
-              <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
-                <th style={{ padding: "12px 16px", fontWeight: 600 }}>ID</th>
-                <th style={{ padding: "12px 16px", fontWeight: 600 }}>Título</th>
-                <th style={{ padding: "12px 16px", fontWeight: 600 }}>Prioridad</th>
-                <th style={{ padding: "12px 16px", fontWeight: 600 }}>Estado</th>
-                <th style={{ padding: "12px 16px", fontWeight: 600 }}>Incidentes</th>
-                <th style={{ padding: "12px 16px", fontWeight: 600 }}>KEDB</th>
-                <th style={{ padding: "12px 16px", fontWeight: 600, textAlign: "right" }}>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {problemas.map((p) => (
-                <tr key={p.id_problema} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                  <td style={{ padding: "12px 16px", fontWeight: 600, color: "#2563eb" }}>
-                    {p.codigo_problema}
-                  </td>
-                  <td style={{ padding: "12px 16px", color: "#1e293b", fontWeight: 500, maxWidth: 300 }}>
-                    {p.titulo}
-                  </td>
-                  <td style={{ padding: "12px 16px" }}>
-                    <span
-                      style={{
-                        padding: "2px 8px",
-                        borderRadius: 4,
-                        fontSize: 11.5,
-                        fontWeight: 700,
-                        backgroundColor: "#f1f5f9",
-                        color: "#334155",
-                      }}
-                    >
-                      {p.prioridad_nombre || "Media"}
-                    </span>
-                  </td>
-                  <td style={{ padding: "12px 16px" }}>
-                    <span
-                      style={{
-                        padding: "2px 8px",
-                        borderRadius: 4,
-                        fontSize: 11.5,
-                        fontWeight: 600,
-                        backgroundColor: "#eff6ff",
-                        color: "#1e40af",
-                      }}
-                    >
-                      {p.estado_nombre}
-                    </span>
-                  </td>
-                  <td style={{ padding: "12px 16px", color: "#475569" }}>
-                    {p.incidentes_asociados?.length || 0} incidentes
-                  </td>
-                  <td style={{ padding: "12px 16px" }}>
-                    {p.es_error_conocido ? (
-                      <span style={{ color: "#16a34a", fontWeight: 600, fontSize: 12 }}>Publicado en KEDB</span>
-                    ) : (
-                      <span style={{ color: "#94a3b8", fontSize: 12 }}>Sin KEDB</span>
-                    )}
-                  </td>
-                  <td style={{ padding: "12px 16px", textAlign: "right" }}>
-                    <Link
-                      href={`/plataforma/problemas/kedb`}
-                      style={{
-                        padding: "4px 10px",
-                        backgroundColor: "#f8fafc",
-                        border: "1px solid #cbd5e1",
-                        borderRadius: 4,
-                        fontSize: 12,
-                        color: "#1e293b",
-                        textDecoration: "none",
-                      }}
-                    >
-                      Ver
-                    </Link>
-                  </td>
+          <TablaDobleScroll minWidth={900}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+              <thead>
+                <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
+                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Código</th>
+                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Título</th>
+                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Prioridad</th>
+                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Estado</th>
+                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Incidentes</th>
+                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>KEDB</th>
+                  <th style={{ padding: "12px 16px", fontWeight: 600, textAlign: "right" }}>Acción</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {problemas.map((p) => (
+                  <tr key={p.id_problema} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                    <td style={{ padding: "12px 16px", fontWeight: 600, color: "#2563eb" }}>
+                      {p.codigo_problema}
+                    </td>
+                    <td style={{ padding: "12px 16px", color: "#1e293b", fontWeight: 500, maxWidth: 300 }}>
+                      {p.titulo}
+                    </td>
+                    <td style={{ padding: "12px 16px" }}>
+                      <span
+                        style={{
+                          padding: "2px 8px",
+                          borderRadius: 4,
+                          fontSize: 11.5,
+                          fontWeight: 700,
+                          backgroundColor: "#f1f5f9",
+                          color: "#334155",
+                        }}
+                      >
+                        {p.prioridad_nombre || "Media"}
+                      </span>
+                    </td>
+                    <td style={{ padding: "12px 16px" }}>
+                      <span
+                        style={{
+                          padding: "2px 8px",
+                          borderRadius: 4,
+                          fontSize: 11.5,
+                          fontWeight: 600,
+                          backgroundColor: "#eff6ff",
+                          color: "#1e40af",
+                        }}
+                      >
+                        {p.estado_nombre}
+                      </span>
+                    </td>
+                    <td style={{ padding: "12px 16px", color: "#475569" }}>
+                      {p.incidentes_asociados?.length || 0} incidentes
+                    </td>
+                    <td style={{ padding: "12px 16px" }}>
+                      {p.es_error_conocido ? (
+                        <span style={{ color: "#16a34a", fontWeight: 600, fontSize: 12 }}>Publicado en KEDB</span>
+                      ) : (
+                        <span style={{ color: "#94a3b8", fontSize: 12 }}>Sin KEDB</span>
+                      )}
+                    </td>
+                    <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                      <Link
+                        href={`/plataforma/problemas/${p.id_problema}`}
+                        style={{
+                          padding: "4px 10px",
+                          backgroundColor: "#f8fafc",
+                          border: "1px solid #cbd5e1",
+                          borderRadius: 4,
+                          fontSize: 12,
+                          color: "#1e293b",
+                          textDecoration: "none",
+                        }}
+                      >
+                        Ver detalle
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TablaDobleScroll>
         </div>
       )}
     </div>

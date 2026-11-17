@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface ConfigKedb {
   req_workaround: boolean;
@@ -592,7 +593,8 @@ export function PestanaKedb({ config, onChange, onMarcarModificado }: Props) {
               Define la obligatoriedad y presencia de cada atributo en el catálogo KEDB.
             </p>
 
-            <table className="tabla" style={{ fontSize: 12.5 }}>
+            <TablaDobleScroll minWidth={550}>
+              <table className="tabla" style={{ fontSize: 12.5 }}>
               <thead>
                 <tr>
                   <th>Código</th>
@@ -622,6 +624,7 @@ export function PestanaKedb({ config, onChange, onMarcarModificado }: Props) {
                 ))}
               </tbody>
             </table>
+          </TablaDobleScroll>
 
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
               <button

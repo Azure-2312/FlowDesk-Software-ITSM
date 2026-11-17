@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface ConfigConocimiento {
   generar_al_publicar_ke: boolean;
@@ -135,7 +136,7 @@ export function PestanaConocimiento({ config, onChange, onMarcarModificado }: Pr
           </button>
         </div>
 
-        <div className="contenedor-tabla">
+        <TablaDobleScroll minWidth={650}>
           <table className="tabla" style={{ fontSize: 12.5 }}>
             <thead>
               <tr>
@@ -184,7 +185,7 @@ export function PestanaConocimiento({ config, onChange, onMarcarModificado }: Pr
               </tr>
             </tbody>
           </table>
-        </div>
+        </TablaDobleScroll>
       </div>
 
       {/* GOBERNANZA DE REVISIÓN Y OBLIGATORIEDAD DE CIERRE */}

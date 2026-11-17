@@ -1,8 +1,7 @@
-import VistaProblemasMayores from "@/modules/problemas/views/VistaProblemasMayores";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import VistaMayoresProblemas from "@/modules/problemas/views/VistaMayoresProblemas";
 
-export default function PaginaProblemasMayores() {
-  exigirCapacidadPagina(CAPACIDADES.PROBLEMAS_VER);
-  return <VistaProblemasMayores />;
+export default async function PaginaMayoresProblemas() {
+  await exigirMenuPagina("/plataforma/problemas/mayores");
+  return <VistaMayoresProblemas />;
 }

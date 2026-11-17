@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface Cambio {
   id_cambio: number;
@@ -172,22 +173,24 @@ export default function VistaCambiosProblemas() {
         ) : cambios.length === 0 ? (
           <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>Aún no hay solicitudes de cambio derivadas de problemas.</p>
         ) : (
-          <table className="tabla-datos">
-            <thead>
-              <tr><th>Código</th><th>Título</th><th>Tipo</th><th>Problema</th><th>Creada</th></tr>
-            </thead>
-            <tbody>
-              {cambios.map((c) => (
-                <tr key={c.id_cambio}>
-                  <td><strong>{c.codigo_cambio}</strong></td>
-                  <td>{c.titulo}</td>
-                  <td>{c.tipo_cambio ?? "—"}</td>
-                  <td>{c.codigo_problema ?? "—"}</td>
-                  <td>{fecha(c.fecha_creacion)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TablaDobleScroll minWidth={750}>
+            <table className="tabla-datos">
+              <thead>
+                <tr><th>Código</th><th>Título</th><th>Tipo</th><th>Problema</th><th>Creada</th></tr>
+              </thead>
+              <tbody>
+                {cambios.map((c) => (
+                  <tr key={c.id_cambio}>
+                    <td><strong>{c.codigo_cambio}</strong></td>
+                    <td>{c.titulo}</td>
+                    <td>{c.tipo_cambio ?? "—"}</td>
+                    <td>{c.codigo_problema ?? "—"}</td>
+                    <td>{fecha(c.fecha_creacion)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TablaDobleScroll>
         )}
       </div>
     </div>

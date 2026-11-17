@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Ticket, SesionUsuario, Problema, ErrorConocido } from "@/types";
-import { PresentadorProblemaGestor } from "@/modules/tickets/ui";
+import { PresentadorProblema } from "@/modules/tickets/ui";
 
 type ProblemaDetalle = Problema & { errores_conocidos?: ErrorConocido[] };
 
@@ -60,8 +60,8 @@ export default function VistaProblemaDetalle() {
         <div style={{ backgroundColor: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: 20, color: "#991b1b", maxWidth: 520, margin: "0 auto" }}>
           <h3 style={{ margin: "0 0 8px 0", fontSize: 16 }}>Error al abrir el problema</h3>
           <p style={{ margin: "0 0 16px 0", fontSize: 13 }}>{error || "El problema solicitado no existe."}</p>
-          <Link href="/plataforma/problemas" className="boton-primario" style={{ fontSize: 12, textDecoration: "none" }}>
-            Volver a Gestión de problemas
+          <Link href="/plataforma/problemas/historial" className="boton-primario" style={{ fontSize: 12, textDecoration: "none" }}>
+            Volver a Historial de problemas
           </Link>
         </div>
       </div>
@@ -100,7 +100,7 @@ export default function VistaProblemaDetalle() {
     <div className="vista-contenedor" style={{ paddingBottom: 60 }}>
       {/* Breadcrumb */}
       <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/plataforma/problemas" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de problemas</Link>
+        <Link href="/plataforma/problemas/historial" style={{ color: "#64748b", textDecoration: "none" }}>Historial de problemas</Link>
         <span>›</span>
         <span style={{ color: "#0f172a", fontWeight: 700, fontFamily: "monospace" }}>{problema.codigo_problema}</span>
       </div>
@@ -154,7 +154,7 @@ export default function VistaProblemaDetalle() {
             if (typeof window !== "undefined" && window.history.length > 1) {
               router.back();
             } else {
-              router.push("/plataforma/problemas");
+              router.push("/plataforma/problemas/historial");
             }
           }}
         >
@@ -163,7 +163,7 @@ export default function VistaProblemaDetalle() {
       </div>
 
       {/* Detalle reutilizando el presentador del Gestor de Problemas */}
-      <PresentadorProblemaGestor
+      <PresentadorProblema
         ticket={problemaComoTicket}
         comentarios={[]}
         catalogos={null}
@@ -172,7 +172,7 @@ export default function VistaProblemaDetalle() {
         onEnviarComentario={async () => {}}
         ejecutandoAccion={false}
         enviandoComentario={false}
-        onCerrarModal={() => router.push("/plataforma/problemas")}
+        onCerrarModal={() => router.push("/plataforma/problemas/historial")}
         onActualizado={() => void cargar()}
       />
 

@@ -60,7 +60,7 @@ export default function VistaProblemasCrear() {
   }
 
   return (
-    <div style={{ padding: "28px 32px", maxWidth: 900, margin: "0 auto" }}>
+    <div style={{ padding: "24px 32px", maxWidth: 900, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
@@ -81,13 +81,13 @@ export default function VistaProblemasCrear() {
             if (typeof window !== "undefined" && window.history.length > 1) {
               router.back();
             } else {
-              router.push("/plataforma/problemas");
+              router.push("/plataforma/problemas/historial");
             }
           }}
           className="boton-secundario"
           style={{ width: "auto", fontSize: 12.5, padding: "8px 16px" }}
         >
-          Volver a Problemas
+          Volver a Historial
         </button>
       </div>
 
