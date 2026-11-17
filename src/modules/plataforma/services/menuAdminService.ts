@@ -1,6 +1,7 @@
 import { query, transaccion } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { OpcionMenuAdmin } from "@/types";
+import { obtenerRegistroVistas } from "@/shared/lib/vistas";
 
 export async function listarOpcionesMenuAdmin() {
   const opciones = await query<Omit<OpcionMenuAdmin, "perfiles_ids">>(
@@ -18,12 +19,28 @@ export async function listarOpcionesMenuAdmin() {
      WHERE estado_registro = true`
   );
 
-  const resultado: OpcionMenuAdmin[] = opciones.map((op) => ({
-    ...op,
-    perfiles_ids: permisos
-      .filter((p) => p.id_opcion_menu === op.id_opcion_menu)
-      .map((p) => p.id_perfil),
-  }));
+  let vistasPermisos: { id_opcion_menu: number; id_perfil: number; vista: string }[] = [];
+  try {
+    vistasPermisos = await query<{ id_opcion_menu: number; id_perfil: number; vista: string }>(
+      `SELECT id_opcion_menu, id_perfil, vista
+       FROM opciones_menu_vistas_perfiles
+       WHERE estado_registro = true`
+    );
+  } catch {
+    // Si la tabla aún no contiene datos
+  }
+
+  const resultado: OpcionMenuAdmin[] = opciones.map((op) => {
+    const regVistas = op.url_menu ? obtenerRegistroVistas(op.url_menu) : undefined;
+    return {
+      ...op,
+      perfiles_ids: permisos
+        .filter((p) => p.id_opcion_menu === op.id_opcion_menu)
+        .map((p) => p.id_perfil),
+      vistas: regVistas ? regVistas.vistas.map(v => ({ codigo: v.codigo, etiqueta: v.etiqueta })) : [],
+      vistas_perfiles: vistasPermisos.filter((vp) => vp.id_opcion_menu === op.id_opcion_menu),
+    };
+  });
 
   return { opciones: resultado };
 }

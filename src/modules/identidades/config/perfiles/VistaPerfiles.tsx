@@ -11,6 +11,7 @@ interface FormularioPerfil {
   nombre: string;
   descripcion: string;
   opciones_ids: number[];
+  vistas_por_opcion?: Record<number, string[]>;
 }
 
 const FORMULARIO_VACIO: FormularioPerfil = {
@@ -18,6 +19,7 @@ const FORMULARIO_VACIO: FormularioPerfil = {
   nombre: "",
   descripcion: "",
   opciones_ids: [],
+  vistas_por_opcion: {},
 };
 
 export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: boolean }) {
@@ -66,11 +68,24 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
   }
 
   function abrirFormularioEditar(perfil: PerfilConOpciones) {
+    const vistasMap: Record<number, string[]> = {};
+    opcionesMenu.forEach((op) => {
+      if (op.vistas_perfiles) {
+        const deEstePerfil = op.vistas_perfiles
+          .filter((vp: { id_perfil: number; vista: string }) => vp.id_perfil === perfil.id_perfil)
+          .map((vp: { id_perfil: number; vista: string }) => vp.vista);
+        if (deEstePerfil.length > 0) {
+          vistasMap[op.id_opcion_menu] = deEstePerfil;
+        }
+      }
+    });
+
     setFormulario({
       id_perfil: perfil.id_perfil,
       nombre: perfil.nombre,
       descripcion: perfil.descripcion ?? "",
       opciones_ids: perfil.opciones_ids ?? [],
+      vistas_por_opcion: vistasMap,
     });
     setError(null);
     setMostrarFormulario(true);
@@ -167,13 +182,33 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
     setFormulario((prev) => ({
       ...prev,
       opciones_ids: [],
+      vistas_por_opcion: {},
     }));
+  }
+
+  function alternarVistaEnFormulario(idOpcion: number, codigoVista: string) {
+    setFormulario((prev) => {
+      const mapa = { ...(prev.vistas_por_opcion || {}) };
+      const actuales = mapa[idOpcion] ? [...mapa[idOpcion]] : [];
+      if (actuales.includes(codigoVista)) {
+        mapa[idOpcion] = actuales.filter((c) => c !== codigoVista);
+      } else {
+        mapa[idOpcion] = [...actuales, codigoVista];
+      }
+      return {
+        ...prev,
+        vistas_por_opcion: mapa,
+      };
+    });
   }
 
   function renderizarNodo(nodo: NodoPermisoTree) {
     const marcado = formulario.opciones_ids.includes(nodo.id_opcion_menu);
     const tieneHijos = nodo.hijos.length > 0;
     const esNivel1 = nodo.id_padre === null;
+    const vistasDisponibles = nodo.vistas || [];
+    const tieneVistas = vistasDisponibles.length > 0;
+    const vistasSeleccionadas = formulario.vistas_por_opcion?.[nodo.id_opcion_menu] || (marcado ? vistasDisponibles.map((v: { codigo: string; etiqueta: string }) => v.codigo) : []);
 
     return (
       <div key={nodo.id_opcion_menu} style={{ marginLeft: esNivel1 ? 0 : 20, marginTop: 4 }}>
@@ -198,6 +233,54 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
           <span>{nodo.nombre}</span>
           <span style={{ fontSize: 11, color: "#94a3b8" }}>({nodo.url_menu || "carpeta"})</span>
         </label>
+
+        {/* Casillas anidadas para vistas / pestañas con permiso propio (N1) */}
+        {marcado && tieneVistas && (
+          <div
+            style={{
+              marginLeft: 26,
+              marginTop: 4,
+              marginBottom: 6,
+              padding: "6px 12px",
+              backgroundColor: "#f8fafc",
+              border: "1px dashed #cbd5e1",
+              borderRadius: 6,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 12,
+            }}
+          >
+            <span style={{ fontSize: 11, fontWeight: 600, color: "#64748b", width: "100%" }}>
+              Pestañas permitidas (Vistas N1):
+            </span>
+            {vistasDisponibles.map((v: { codigo: string; etiqueta: string }) => {
+              const estaVistaMarcada = vistasSeleccionadas.includes(v.codigo);
+              return (
+                <label
+                  key={v.codigo}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    fontSize: 12,
+                    color: estaVistaMarcada ? "#1e293b" : "#94a3b8",
+                    cursor: soloLectura ? "default" : "pointer",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={estaVistaMarcada}
+                    onChange={() => alternarVistaEnFormulario(nodo.id_opcion_menu, v.codigo)}
+                    disabled={soloLectura}
+                    style={{ accentColor: "#0284c7", width: 14, height: 14 }}
+                  />
+                  <span>{v.etiqueta}</span>
+                </label>
+              );
+            })}
+          </div>
+        )}
+
         {tieneHijos && (
           <div style={{ marginLeft: 8, paddingLeft: 12, borderLeft: "1px solid #e2e8f0" }}>
             {nodo.hijos.map((hijo) => renderizarNodo(hijo))}
