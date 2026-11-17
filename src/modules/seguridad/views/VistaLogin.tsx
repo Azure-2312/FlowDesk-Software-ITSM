@@ -7,28 +7,27 @@
 
 "use client";
 
-import { useState, useEffect, useRef, FormEvent, ClipboardEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { PerfilBasico } from "@/types";
 import { validarCorreo } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
-type Modo = "login" | "recuperar-correo" | "recuperar-codigo" | "recuperar-nueva-clave";
 type PasoLogin = "credenciales" | "seleccionar-perfil";
 
 export default function PaginaLogin() {
   const router = useRouter();
 
   // --------------------------------------------------------------------------
-  // 1. ESTADOS LOCALES: Modo de autenticación, credenciales y multi-perfil
+  // 1. ESTADOS LOCALES: Credenciales y multi-perfil
   // --------------------------------------------------------------------------
-  const [modo, setModo] = useState<Modo>("login");
   const [pasoLogin, setPasoLogin] = useState<PasoLogin>("credenciales");
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
   const [cargando, setCargando] = useState(false);
   const [errorLogin, setErrorLogin] = useState<string | null>(null);
   const [mensajeExitoLogin, setMensajeExitoLogin] = useState<string | null>(null);
+  const [mostrarModalOlvideClave, setMostrarModalOlvideClave] = useState(false);
 
   // Datos para selección de múltiples perfiles
   const [tokenPreSesion, setTokenPreSesion] = useState("");
@@ -47,94 +46,6 @@ export default function PaginaLogin() {
   // Estados de Alerta de Bloqueo por Fuerza Bruta
   const [mostrarModalAlertaBloqueo, setMostrarModalAlertaBloqueo] = useState(false);
   const [cuentaBloqueadaDefinitivo, setCuentaBloqueadaDefinitivo] = useState(false);
-
-  // --------------------------------------------------------------------------
-  // 3. RECUPERACIÓN DE CLAVE: Código OTP de 6 dígitos y temporizadores
-  // --------------------------------------------------------------------------
-  const [correoRecup, setCorreoRecup] = useState("");
-  const [tokenSesionRecup, setTokenSesionRecup] = useState("");
-  const [expiraCodigoMs, setExpiraCodigoMs] = useState<number | null>(null);
-  const [expiraSesionMs, setExpiraSesionMs] = useState<number | null>(null);
-  const [segundosCodigo, setSegundosCodigo] = useState(60);
-  const [segundosSesion, setSegundosSesion] = useState(180);
-  const [digitos, setDigitos] = useState<string[]>(["", "", "", "", "", ""]);
-  const inputsOtpRef = useRef<(HTMLInputElement | null)[]>([]);
-
-  // Nueva contraseña
-  const [nuevaClave, setNuevaClave] = useState("");
-  const [repetirClave, setRepetirClave] = useState("");
-  const [enviandoRecup, setEnviandoRecup] = useState(false);
-  const [errorRecup, setErrorRecup] = useState<string | null>(null);
-  const [avisoReenvio, setAvisoReenvio] = useState<string | null>(null);
-
-  // Validación de formato de correo corporativo o Gmail en tiempo real
-  const regexCorreoRecup = /^[a-zA-Z0-9._%+-]+@(systemticket\.pe|gmail\.com)$/i;
-  const esCorreoRecupValido = regexCorreoRecup.test(correoRecup.trim());
-
-  // Validación de requisitos de nueva contraseña
-  const tieneLongitud = nuevaClave.length >= 8;
-  const tieneMayuscula = /[A-Z]/.test(nuevaClave);
-  const tieneMinuscula = /[a-z]/.test(nuevaClave);
-  const tieneNumero = /\d/.test(nuevaClave);
-  const tieneSimbolo = /[\W_]/.test(nuevaClave);
-  const cumpleTodosRequisitos =
-    tieneLongitud && tieneMayuscula && tieneMinuscula && tieneNumero && tieneSimbolo;
-  const clavesCoinciden =
-    nuevaClave.length > 0 && repetirClave.length > 0 && nuevaClave === repetirClave;
-
-  // Temporizador regresivo sincronizado con el servidor (1 min código, 3 min sesión)
-  useEffect(() => {
-    if (modo === "login" || !expiraSesionMs) return;
-
-    const actualizar = () => {
-      const ahora = Date.now();
-
-      // Temporizador global de sesión (máximo 3 minutos)
-      const restanteSesion = Math.max(0, Math.ceil((expiraSesionMs - ahora) / 1000));
-      setSegundosSesion(restanteSesion);
-
-      if (restanteSesion <= 0) {
-        alert(
-          "El tiempo máximo de 3 minutos para restablecer tu contraseña ha expirado. Por motivos de seguridad, debes reiniciar el proceso."
-        );
-        resetearRecuperacion();
-        return;
-      }
-
-      // Temporizador de validez del código (1 minuto)
-      if (expiraCodigoMs) {
-        const restanteCodigo = Math.max(0, Math.ceil((expiraCodigoMs - ahora) / 1000));
-        setSegundosCodigo(restanteCodigo);
-      }
-    };
-
-    actualizar();
-    const intervalo = setInterval(actualizar, 1000);
-    return () => clearInterval(intervalo);
-  }, [modo, expiraSesionMs, expiraCodigoMs]);
-
-  function resetearRecuperacion() {
-    setModo("login");
-    setCorreoRecup("");
-    setTokenSesionRecup("");
-    setExpiraCodigoMs(null);
-    setExpiraSesionMs(null);
-    setSegundosCodigo(60);
-    setSegundosSesion(180);
-    setDigitos(["", "", "", "", "", ""]);
-    setNuevaClave("");
-    setRepetirClave("");
-    setErrorRecup(null);
-    setAvisoReenvio(null);
-  }
-
-  function iniciarRecuperacion() {
-    setErrorLogin(null);
-    setMensajeExitoLogin(null);
-    setErrorRecup(null);
-    setCorreoRecup(correo.trim());
-    setModo("recuperar-correo");
-  }
 
   async function cargarNuevoCaptcha() {
     setCargandoCaptcha(true);
@@ -266,216 +177,9 @@ export default function PaginaLogin() {
     }
   }
 
-  // ---------- Flujo de Recuperación Paso 1: Enviar Código ----------
-  async function manejarEnviarCodigo(e: FormEvent) {
-    e.preventDefault();
-    if (!esCorreoRecupValido) return;
 
-    setErrorRecup(null);
-    setAvisoReenvio(null);
-    setEnviandoRecup(true);
 
-    try {
-      const res = await fetch("/api/auth/recuperar-clave/solicitar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ correo: correoRecup }),
-      });
 
-      const datos = await res.json();
-
-      if (!res.ok) {
-        setErrorRecup(datos.error ?? "No se pudo enviar el código de recuperación");
-        return;
-      }
-
-      setTokenSesionRecup(datos.token_sesion);
-      setExpiraCodigoMs(datos.expira_codigo_ms || Date.now() + 60 * 1000);
-      setExpiraSesionMs(datos.expira_sesion_ms || Date.now() + 180 * 1000);
-      setSegundosCodigo(datos.segundos_codigo || 60);
-      setSegundosSesion(datos.segundos_sesion || 180);
-      setDigitos(["", "", "", "", "", ""]);
-      setModo("recuperar-codigo");
-
-      setTimeout(() => {
-        inputsOtpRef.current[0]?.focus();
-      }, 100);
-    } catch {
-      setErrorRecup("Error de conexión al enviar el código. Intenta de nuevo.");
-    } finally {
-      setEnviandoRecup(false);
-    }
-  }
-
-  // Reenviar código (habilitado luego de 1 minuto)
-  async function manejarReenviarCodigo() {
-    if (segundosCodigo > 0 || enviandoRecup) return;
-
-    setErrorRecup(null);
-    setAvisoReenvio(null);
-    setEnviandoRecup(true);
-
-    try {
-      const res = await fetch("/api/auth/recuperar-clave/solicitar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ correo: correoRecup }),
-      });
-
-      const datos = await res.json();
-
-      if (!res.ok) {
-        setErrorRecup(datos.error ?? "No se pudo reenviar el código");
-        return;
-      }
-
-      setTokenSesionRecup(datos.token_sesion);
-      setExpiraCodigoMs(datos.expira_codigo_ms || Date.now() + 60 * 1000);
-      setSegundosCodigo(datos.segundos_codigo || 60);
-      setDigitos(["", "", "", "", "", ""]);
-      setAvisoReenvio("Se ha enviado un nuevo código a tu correo");
-      inputsOtpRef.current[0]?.focus();
-    } catch {
-      setErrorRecup("Error de conexión al reenviar código");
-    } finally {
-      setEnviandoRecup(false);
-    }
-  }
-
-  // ---------- Manejo de los 6 rectángulos OTP ----------
-  function manejarCambioDigito(index: number, valor: string) {
-    const caracter = valor.replace(/[^a-zA-Z0-9]/g, "").slice(-1).toUpperCase();
-    const nuevosDigitos = [...digitos];
-    nuevosDigitos[index] = caracter;
-    setDigitos(nuevosDigitos);
-    setErrorRecup(null);
-
-    // Si escribió un caracter, saltar automáticamente al siguiente recuadro
-    if (caracter && index < 5) {
-      inputsOtpRef.current[index + 1]?.focus();
-    }
-  }
-
-  function manejarKeyDownDigito(index: number, e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Backspace") {
-      if (!digitos[index] && index > 0) {
-        inputsOtpRef.current[index - 1]?.focus();
-      }
-    } else if (e.key === "ArrowLeft" && index > 0) {
-      inputsOtpRef.current[index - 1]?.focus();
-    } else if (e.key === "ArrowRight" && index < 5) {
-      inputsOtpRef.current[index + 1]?.focus();
-    }
-  }
-
-  function manejarPasteDigito(e: ClipboardEvent<HTMLInputElement>) {
-    e.preventDefault();
-    const textoPegado = e.clipboardData
-      .getData("text")
-      .replace(/[^a-zA-Z0-9]/g, "")
-      .toUpperCase()
-      .slice(0, 6);
-
-    if (!textoPegado) return;
-
-    const nuevos = ["", "", "", "", "", ""];
-    for (let i = 0; i < textoPegado.length; i++) {
-      nuevos[i] = textoPegado[i];
-    }
-    setDigitos(nuevos);
-
-    const proximoIndex = Math.min(textoPegado.length, 5);
-    inputsOtpRef.current[proximoIndex]?.focus();
-  }
-
-  const codigoCompleto = digitos.join("");
-  const codigoCompletoListo = digitos.every((d) => d.trim().length === 1);
-
-  // ---------- Flujo de Recuperación Paso 2: Verificar Código ----------
-  async function manejarVerificarCodigo(e: FormEvent) {
-    e.preventDefault();
-    if (!codigoCompletoListo) return;
-
-    setErrorRecup(null);
-    setEnviandoRecup(true);
-
-    try {
-      const res = await fetch("/api/auth/recuperar-clave/verificar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token_sesion: tokenSesionRecup,
-          codigo: codigoCompleto,
-        }),
-      });
-
-      const datos = await res.json();
-
-      if (!res.ok) {
-        setErrorRecup(datos.error ?? "Código inválido");
-        if (datos.sesion_expirada) {
-          setTimeout(resetearRecuperacion, 2500);
-        }
-        return;
-      }
-
-      setModo("recuperar-nueva-clave");
-    } catch {
-      setErrorRecup("Error al verificar el código");
-    } finally {
-      setEnviandoRecup(false);
-    }
-  }
-
-  // ---------- Flujo de Recuperación Paso 3: Guardar Nueva Contraseña ----------
-  async function manejarGuardarNuevaClave(e: FormEvent) {
-    e.preventDefault();
-    if (!cumpleTodosRequisitos || !clavesCoinciden) return;
-
-    setErrorRecup(null);
-    setEnviandoRecup(true);
-
-    try {
-      const res = await fetch("/api/auth/recuperar-clave/cambiar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token_sesion: tokenSesionRecup,
-          codigo: codigoCompleto,
-          clave_nueva: nuevaClave,
-        }),
-      });
-
-      const datos = await res.json();
-
-      if (!res.ok) {
-        setErrorRecup(datos.error ?? "No se pudo actualizar la contraseña");
-        if (datos.sesion_expirada) {
-          setTimeout(resetearRecuperacion, 2500);
-        }
-        return;
-      }
-
-      // Éxito: volver directo al login con mensaje verde
-      resetearRecuperacion();
-      setCorreo(correoRecup);
-      setClave("");
-      setMensajeExitoLogin(
-        "¡Tu contraseña ha sido actualizada con éxito! Ya puedes iniciar sesión."
-      );
-    } catch {
-      setErrorRecup("Error de conexión al cambiar la contraseña");
-    } finally {
-      setEnviandoRecup(false);
-    }
-  }
-
-  // Formato para temporizador de 3 minutos (MM:SS)
-  const formatearMinutosSegundos = (totalSegundos: number) => {
-    const mins = Math.floor(totalSegundos / 60);
-    const segs = totalSegundos % 60;
-    return `${mins.toString().padStart(2, "0")}:${segs.toString().padStart(2, "0")}`;
-  };
 
   // ==========================================
   // VISTA: SELECCIÓN DE MÚLTIPLES PERFILES
@@ -508,283 +212,6 @@ export default function PaginaLogin() {
             disabled={cargando}
           >
             Volver
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ========================================================
-  // VISTA: RECUPERACIÓN - PASO 1 (INGRESAR CORREO GMAIL)
-  // ========================================================
-  if (modo === "recuperar-correo") {
-    return (
-      <div className="pagina-login">
-        <div className="tarjeta-recuperacion">
-          <h1>Recuperar contraseña</h1>
-          <p className="subtitulo">
-            Ingresa tu correo corporativo (@systemticket.pe) o Gmail para recibir un código de verificación de 6 dígitos.
-          </p>
-
-          {errorRecup && <div className="mensaje-error">{errorRecup}</div>}
-
-          <form onSubmit={manejarEnviarCodigo}>
-            <div className="campo">
-              <label htmlFor="correoRecup">Correo electrónico *</label>
-              <input
-                id="correoRecup"
-                type="email"
-                placeholder="ejemplo@systemticket.pe o @gmail.com"
-                value={correoRecup}
-                onChange={(e) => {
-                  setCorreoRecup(e.target.value);
-                  setErrorRecup(null);
-                }}
-                required
-                autoFocus
-              />
-              {correoRecup.trim().length > 0 && !esCorreoRecupValido && (
-                <AlertaCampo error="El correo debe terminar en @systemticket.pe o @gmail.com" />
-              )}
-            </div>
-
-            <div style={{ marginTop: 20 }}>
-              <button
-                type="submit"
-                className="boton-primario"
-                disabled={!esCorreoRecupValido || enviandoRecup}
-                style={{
-                  opacity: !esCorreoRecupValido || enviandoRecup ? 0.6 : 1,
-                  cursor: !esCorreoRecupValido || enviandoRecup ? "not-allowed" : "pointer",
-                }}
-              >
-                {enviandoRecup ? "Enviando código..." : "Enviar código"}
-              </button>
-            </div>
-          </form>
-
-          <button
-            type="button"
-            className="boton-texto"
-            onClick={resetearRecuperacion}
-            disabled={enviandoRecup}
-            style={{ marginTop: 16, width: "100%", textAlign: "center" }}
-          >
-            Volver al inicio de sesión
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ========================================================
-  // VISTA: RECUPERACIÓN - PASO 2 (6 RECTÁNGULOS DE CÓDIGO)
-  // ========================================================
-  if (modo === "recuperar-codigo") {
-    return (
-      <div className="pagina-login">
-        <div className="tarjeta-recuperacion">
-          {/* Temporizador Global en la esquina superior derecha */}
-          <div className="temporizador-flotante" title="Tiempo total disponible para completar el cambio de clave">
-            {formatearMinutosSegundos(segundosSesion)}
-          </div>
-
-          <h1>Verificación de código</h1>
-          <p className="subtitulo" style={{ paddingRight: 60 }}>
-            Hemos enviado un código a <strong>{correoRecup}</strong>. Ingresa los 6 caracteres.
-          </p>
-
-          {avisoReenvio && (
-            <div
-              style={{
-                backgroundColor: "#ecfdf5",
-                border: "1px solid #a7f3d0",
-                color: "#065f46",
-                padding: "8px 12px",
-                borderRadius: 6,
-                fontSize: 12,
-                marginBottom: 12,
-              }}
-            >
-              {avisoReenvio}
-            </div>
-          )}
-
-          {errorRecup && <div className="mensaje-error">{errorRecup}</div>}
-
-          <form onSubmit={manejarVerificarCodigo}>
-            {/* 6 Rectángulos verticales de entrada */}
-            <div className="grid-otp-6" onPaste={manejarPasteDigito}>
-              {digitos.map((digito, idx) => (
-                <input
-                  key={idx}
-                  ref={(el) => {
-                    inputsOtpRef.current[idx] = el;
-                  }}
-                  type="text"
-                  maxLength={1}
-                  className="input-otp-box"
-                  value={digito}
-                  onChange={(e) => manejarCambioDigito(idx, e.target.value)}
-                  onKeyDown={(e) => manejarKeyDownDigito(idx, e)}
-                  autoFocus={idx === 0}
-                />
-              ))}
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <button
-                type="submit"
-                className="boton-primario"
-                disabled={!codigoCompletoListo || enviandoRecup}
-                style={{
-                  opacity: !codigoCompletoListo || enviandoRecup ? 0.6 : 1,
-                  cursor: !codigoCompletoListo || enviandoRecup ? "not-allowed" : "pointer",
-                }}
-              >
-                {enviandoRecup ? "Verificando..." : "Cambiar contraseña"}
-              </button>
-
-              {/* Botón de reenvío: solo se habilita tras 1 minuto */}
-              <button
-                type="button"
-                className="boton-texto"
-                onClick={manejarReenviarCodigo}
-                disabled={segundosCodigo > 0 || enviandoRecup}
-                style={{
-                  fontSize: 12,
-                  color: segundosCodigo > 0 ? "#9ca3af" : "#2563eb",
-                  cursor: segundosCodigo > 0 ? "not-allowed" : "pointer",
-                  textAlign: "center",
-                }}
-              >
-                {segundosCodigo > 0
-                  ? `Reenviar código en ${segundosCodigo}s`
-                  : "Reenviar código nuevo"}
-              </button>
-            </div>
-          </form>
-
-          <button
-            type="button"
-            className="boton-texto"
-            onClick={resetearRecuperacion}
-            disabled={enviandoRecup}
-            style={{ marginTop: 12, width: "100%", textAlign: "center", fontSize: 12 }}
-          >
-            Cancelar y volver al inicio
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ========================================================
-  // VISTA: RECUPERACIÓN - PASO 3 (NUEVA CONTRASEÑA)
-  // ========================================================
-  if (modo === "recuperar-nueva-clave") {
-    return (
-      <div className="pagina-login">
-        <div className="tarjeta-recuperacion">
-          {/* Temporizador Global en la esquina superior derecha */}
-          <div className="temporizador-flotante" title="Tiempo total disponible">
-            {formatearMinutosSegundos(segundosSesion)}
-          </div>
-
-          <h1>Nueva contraseña</h1>
-          <p className="subtitulo" style={{ paddingRight: 60 }}>
-            Crea una contraseña segura para tu usuario.
-          </p>
-
-          {errorRecup && <div className="mensaje-error">{errorRecup}</div>}
-
-          <form onSubmit={manejarGuardarNuevaClave}>
-            <div className="campo">
-              <label htmlFor="nuevaClave">Nueva contraseña *</label>
-              <input
-                id="nuevaClave"
-                type="password"
-                value={nuevaClave}
-                onChange={(e) => {
-                  setNuevaClave(e.target.value);
-                  setErrorRecup(null);
-                }}
-                placeholder="Ingresa tu nueva contraseña"
-                required
-                autoFocus
-              />
-            </div>
-
-            <div className="campo">
-              <label htmlFor="repetirClave">Repetir nueva contraseña *</label>
-              <input
-                id="repetirClave"
-                type="password"
-                value={repetirClave}
-                onChange={(e) => {
-                  setRepetirClave(e.target.value);
-                  setErrorRecup(null);
-                }}
-                placeholder="Repite exactamente la contraseña"
-                required
-              />
-              {repetirClave.length > 0 && (
-                <span
-                  style={{
-                    fontSize: 11,
-                    marginTop: 4,
-                    display: "block",
-                    fontWeight: 500,
-                    color: clavesCoinciden ? "#059669" : "#dc2626",
-                  }}
-                >
-                  {clavesCoinciden ? "Las contraseñas coinciden" : "Las contraseñas no coinciden"}
-                </span>
-              )}
-            </div>
-
-            {/* Checklist de requisitos de seguridad en tiempo real */}
-            <div className="lista-requisitos-clave">
-              <div className={`requisito-item ${tieneLongitud ? "requisito-valido" : "requisito-invalido"}`}>
-                <span className="requisito-punto" /> Mínimo 8 caracteres
-              </div>
-              <div className={`requisito-item ${tieneMayuscula ? "requisito-valido" : "requisito-invalido"}`}>
-                <span className="requisito-punto" /> Al menos una letra mayúscula (A-Z)
-              </div>
-              <div className={`requisito-item ${tieneMinuscula ? "requisito-valido" : "requisito-invalido"}`}>
-                <span className="requisito-punto" /> Al menos una letra minúscula (a-z)
-              </div>
-              <div className={`requisito-item ${tieneNumero ? "requisito-valido" : "requisito-invalido"}`}>
-                <span className="requisito-punto" /> Al menos un número (0-9)
-              </div>
-              <div className={`requisito-item ${tieneSimbolo ? "requisito-valido" : "requisito-invalido"}`}>
-                <span className="requisito-punto" /> Al menos un signo o símbolo especial (!@#$%...)
-              </div>
-            </div>
-
-            <div style={{ marginTop: 20 }}>
-              <button
-                type="submit"
-                className="boton-primario"
-                disabled={!cumpleTodosRequisitos || !clavesCoinciden || enviandoRecup}
-                style={{
-                  opacity: !cumpleTodosRequisitos || !clavesCoinciden || enviandoRecup ? 0.6 : 1,
-                  cursor: !cumpleTodosRequisitos || !clavesCoinciden || enviandoRecup ? "not-allowed" : "pointer",
-                }}
-              >
-                {enviandoRecup ? "Guardando contraseña..." : "Guardar nueva contraseña"}
-              </button>
-            </div>
-          </form>
-
-          <button
-            type="button"
-            className="boton-texto"
-            onClick={resetearRecuperacion}
-            disabled={enviandoRecup}
-            style={{ marginTop: 12, width: "100%", textAlign: "center", fontSize: 12 }}
-          >
-            Cancelar y volver al inicio
           </button>
         </div>
       </div>
@@ -868,7 +295,7 @@ export default function PaginaLogin() {
             <button
               type="button"
               className="link-olvide-clave"
-              onClick={iniciarRecuperacion}
+              onClick={() => setMostrarModalOlvideClave(true)}
             >
               ¿Olvidaste tu contraseña?
             </button>
@@ -996,7 +423,7 @@ export default function PaginaLogin() {
                   style={{ backgroundColor: "#2563eb", width: "100%", justifyContent: "center" }}
                   onClick={() => {
                     setMostrarModalAlertaBloqueo(false);
-                    iniciarRecuperacion();
+                    setMostrarModalOlvideClave(true);
                   }}
                 >
                   Restablecer mi contraseña ahora
@@ -1008,6 +435,43 @@ export default function PaginaLogin() {
                   onClick={() => setMostrarModalAlertaBloqueo(false)}
                 >
                   Entendido, volver a intentar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de información de restablecimiento institucional (N2/N6) */}
+        {mostrarModalOlvideClave && (
+          <div className="modal-bloqueo-fondo">
+            <div className="modal-bloqueo-tarjeta" style={{ maxWidth: 440 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", marginBottom: 12 }}>
+                Restablecimiento de Contraseña
+              </h2>
+              <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.5, marginBottom: 16 }}>
+                Por políticas de seguridad del sistema ITSM, las contraseñas no se gestionan a través de correo electrónico externo.
+              </p>
+              <div
+                style={{
+                  backgroundColor: "#eff6ff",
+                  border: "1px solid #bfdbfe",
+                  borderRadius: 8,
+                  padding: 12,
+                  marginBottom: 16,
+                  fontSize: 12.5,
+                  color: "#1e40af",
+                }}
+              >
+                Solicite al <strong>Administrador del Sistema</strong> o a la <strong>Mesa de Ayuda</strong> la emisión de una contraseña temporal de acceso. Deberá cambiarla al iniciar sesión.
+              </div>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button
+                  type="button"
+                  className="boton-primario"
+                  style={{ width: "auto" }}
+                  onClick={() => setMostrarModalOlvideClave(false)}
+                >
+                  Entendido
                 </button>
               </div>
             </div>

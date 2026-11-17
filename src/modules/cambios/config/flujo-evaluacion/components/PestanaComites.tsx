@@ -597,13 +597,11 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
                 Canal de Convocatoria Inmediata
               </label>
               <select
-                value={ecabConfig.canal_convocatoria_inmediata || "notificacion_y_correo"}
+                value={ecabConfig.canal_convocatoria_inmediata || "in_app"}
                 onChange={e => actualizarComite({ canal_convocatoria_inmediata: e.target.value })}
                 style={{ width: "100%", padding: "6px 8px", border: "1px solid #cbd5e1", borderRadius: "4px", fontSize: "0.8rem" }}
               >
-                <option value="notificacion_y_correo">Notificación Push y Correo</option>
-                <option value="sms_whatsapp">SMS / WhatsApp y Correo</option>
-                <option value="todos">Todos los canales concurrentes</option>
+                <option value="in_app">Notificación interna en el sistema (In-App)</option>
               </select>
             </div>
 

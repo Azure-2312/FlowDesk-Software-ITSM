@@ -1057,7 +1057,7 @@ export default function VistaCambiosGestionCrear() {
                     <>
                       <option value="Llamada telefónica">Llamada telefónica</option>
                       <option value="Sala de crisis / War Room">Sala de crisis / War Room</option>
-                      <option value="Mensajería instantánea (Teams/Slack/WhatsApp)">Mensajería instantánea (Teams/Slack/WhatsApp)</option>
+                      <option value="Mensajería instantánea institucional">Mensajería instantánea institucional</option>
                       <option value="Correo electrónico urgente">Correo electrónico urgente</option>
                       <option value="Aprobación verbal presencial">Aprobación verbal presencial</option>
                     </>

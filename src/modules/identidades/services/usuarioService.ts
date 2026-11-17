@@ -112,8 +112,8 @@ export async function crearUsuario(body: any, idUsuarioSesion: number) {
       const insertados = await client.query<{ id_usuario: number }>(
         `INSERT INTO usuario
            (dni, nombres, apellido_paterno, apellido_materno, celular,
-            correo_personal, correo_electronico, clave, id_departamento_empresa, nivel_prioridad, usuario_creacion, estado_registro)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, true)
+            correo_personal, correo_electronico, clave, id_departamento_empresa, nivel_prioridad, usuario_creacion, estado_registro, debe_cambiar_clave)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, true, true)
          RETURNING id_usuario`,
         [
           dni.trim(),
