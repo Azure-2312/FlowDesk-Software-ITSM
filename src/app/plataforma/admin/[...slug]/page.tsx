@@ -56,10 +56,10 @@ export default function RedireccionRutasLegadasAdmin({ params }: Props) {
     redirect("/plataforma/organizacion/departamentos-empresa");
   }
   if (ruta.startsWith("departamentos")) {
-    redirect("/plataforma/organizacion/departamentos");
+    redirect("/plataforma/organizacion/grupos-ti");
   }
   if (ruta.startsWith("tecnicos")) {
-    redirect("/plataforma/organizacion/tecnicos");
+    redirect("/plataforma/organizacion/grupos-ti?vista=tecnicos");
   }
 
   redirect("/plataforma/inicio");

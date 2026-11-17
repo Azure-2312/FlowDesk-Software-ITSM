@@ -664,7 +664,7 @@ export default function PaginaAdminDepartamentos() {
               </p>
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
-              <Link href="/plataforma/organizacion/tecnicos" className="boton-secundario" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", padding: "8px 14px", fontSize: 13 }}>
+              <Link href="/plataforma/organizacion/grupos-ti?vista=tecnicos" className="boton-secundario" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", padding: "8px 14px", fontSize: 13 }}>
                 Ver plantilla de técnicos
               </Link>
               <button type="button" className="boton-primario" onClick={abrirCrear} style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}>
