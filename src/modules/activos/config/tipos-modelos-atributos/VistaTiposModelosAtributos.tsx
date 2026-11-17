@@ -5,23 +5,15 @@ import React, { useEffect, useState, useCallback } from "react";
 import { PestanaClasesTipos } from "./components/PestanaClasesTipos";
 import { PestanaFabricantesModelos } from "./components/PestanaFabricantesModelos";
 import { PestanaAtributosTipo } from "./components/PestanaAtributosTipo";
-import { PestanaFormularioActivo } from "./components/PestanaFormularioActivo";
-import { PestanaCodigoEtiquetas } from "./components/PestanaCodigoEtiquetas";
 import { PestanaUbicaciones } from "./components/PestanaUbicaciones";
 import { PestanaCatalogosAuxiliares } from "./components/PestanaCatalogosAuxiliares";
-import { PestanaFichaListado } from "./components/PestanaFichaListado";
-import { PestanaImportacionInventario } from "./components/PestanaImportacionInventario";
 
 type TabId =
   | "clases_tipos"
   | "fabricantes_modelos"
   | "atributos"
-  | "formulario_activo"
-  | "codigo_etiquetas"
   | "ubicaciones"
-  | "catalogos_auxiliares"
-  | "ficha_listado"
-  | "importacion_inventario";
+  | "catalogos_auxiliares";
 
 interface PestanaMetadata {
   id: TabId;
@@ -50,18 +42,6 @@ const PESTANAS: PestanaMetadata[] = [
     descripcion: "Esquema dinámico de especificaciones técnicas por clase y tipo con banderas de unicidad y confidencialidad."
   },
   {
-    id: "formulario_activo",
-    numero: "1.5.1.4",
-    titulo: "Formulario del activo",
-    descripcion: "Estructura por secciones A-G, campos obligatorios condicionales, anchos de grilla y campos bloqueados."
-  },
-  {
-    id: "codigo_etiquetas",
-    numero: "1.5.1.5",
-    titulo: "Código de activo y etiquetas",
-    descripcion: "Constructor del código patrimonial por tokens, alcance correlativo y diseño de etiquetas físicas con código QR."
-  },
-  {
     id: "ubicaciones",
     numero: "1.5.1.6",
     titulo: "Ubicaciones",
@@ -72,18 +52,6 @@ const PESTANAS: PestanaMetadata[] = [
     numero: "1.5.1.7",
     titulo: "Listas y catálogos auxiliares",
     descripcion: "Listas maestras para condición física, monedas base, adquisición, tipos de documento y centros de costo."
-  },
-  {
-    id: "ficha_listado",
-    numero: "1.5.1.8",
-    titulo: "Ficha del activo y listado",
-    descripcion: "Configuración de la cabecera fija, 11 pestañas de la ficha, panel lateral y columnas del inventario."
-  },
-  {
-    id: "importacion_inventario",
-    numero: "1.5.1.9",
-    titulo: "Importación e inventario físico",
-    descripcion: "Perfiles de carga masiva, validación en seco (Dry Run), campañas de auditoría física y generación de actas."
   }
 ];
 
@@ -91,35 +59,38 @@ const TAB_POR_SLUG: Record<string, TabId> = {
   "clases-tipos": "clases_tipos",
   "fabricantes": "fabricantes_modelos",
   "atributos": "atributos",
-  "formulario": "formulario_activo",
-  "codigo-etiquetas": "codigo_etiquetas",
   "ubicaciones": "ubicaciones",
   "catalogos": "catalogos_auxiliares",
-  "ficha-listado": "ficha_listado",
-  "importacion": "importacion_inventario",
 };
 
 const SLUG_POR_TAB: Record<TabId, string> = {
   clases_tipos: "clases-tipos",
   fabricantes_modelos: "fabricantes",
   atributos: "atributos",
-  formulario_activo: "formulario",
-  codigo_etiquetas: "codigo-etiquetas",
   ubicaciones: "ubicaciones",
   catalogos_auxiliares: "catalogos",
-  ficha_listado: "ficha-listado",
-  importacion_inventario: "importacion",
 };
 
 export default function TiposModelosAtributosPage({
   vistaInicial,
+  vistaActivaN1,
 }: {
   vistaInicial?: string;
+  vistaActivaN1?: string;
 } = {}) {
-  const [tabActiva, setTabActiva] = useState<TabId>(
-    vistaInicial && TAB_POR_SLUG[vistaInicial] ? TAB_POR_SLUG[vistaInicial] : "clases_tipos"
+  const getTabInicial = (): TabId => {
+    if (vistaActivaN1 === "fabricantes-modelos") return "fabricantes_modelos";
+    if (vistaActivaN1 === "ubicaciones") return "ubicaciones";
+    if (vistaActivaN1 === "listas") return "catalogos_auxiliares";
+    if (vistaActivaN1 === "tipos-atributos") return "clases_tipos";
+    if (vistaInicial && TAB_POR_SLUG[vistaInicial]) return TAB_POR_SLUG[vistaInicial];
+    return "clases_tipos";
+  };
+
+  const [tabActiva, setTabActiva] = useState<TabId>(getTabInicial());
+  const [vistaExclusiva, setVistaExclusiva] = useState<string | null>(
+    vistaActivaN1 && vistaActivaN1 !== "tipos-atributos" ? vistaActivaN1 : vistaInicial || null
   );
-  const [vistaExclusiva, setVistaExclusiva] = useState<string | null>(vistaInicial || null);
   const [cargando, setCargando] = useState<boolean>(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
@@ -474,20 +445,6 @@ export default function TiposModelosAtributosPage({
                 bloqueado={estaBloqueado}
               />
             </div>
-            <div style={{ display: tabActiva === "formulario_activo" ? "block" : "none" }}>
-              <PestanaFormularioActivo
-                datos={snapshotsPorTab["formulario_activo"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "formulario_activo")}
-                bloqueado={estaBloqueado}
-              />
-            </div>
-            <div style={{ display: tabActiva === "codigo_etiquetas" ? "block" : "none" }}>
-              <PestanaCodigoEtiquetas
-                datos={snapshotsPorTab["codigo_etiquetas"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "codigo_etiquetas")}
-                bloqueado={estaBloqueado}
-              />
-            </div>
             <div style={{ display: tabActiva === "ubicaciones" ? "block" : "none" }}>
               <PestanaUbicaciones
                 datos={snapshotsPorTab["ubicaciones"] || configSnapshot}
@@ -499,20 +456,6 @@ export default function TiposModelosAtributosPage({
               <PestanaCatalogosAuxiliares
                 datos={snapshotsPorTab["catalogos_auxiliares"] || configSnapshot}
                 onChange={(d) => handleSnapshotChange(d, "catalogos_auxiliares")}
-                bloqueado={estaBloqueado}
-              />
-            </div>
-            <div style={{ display: tabActiva === "ficha_listado" ? "block" : "none" }}>
-              <PestanaFichaListado
-                datos={snapshotsPorTab["ficha_listado"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "ficha_listado")}
-                bloqueado={estaBloqueado}
-              />
-            </div>
-            <div style={{ display: tabActiva === "importacion_inventario" ? "block" : "none" }}>
-              <PestanaImportacionInventario
-                datos={snapshotsPorTab["importacion_inventario"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "importacion_inventario")}
                 bloqueado={estaBloqueado}
               />
             </div>

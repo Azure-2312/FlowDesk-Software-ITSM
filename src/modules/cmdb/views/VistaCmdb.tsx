@@ -1156,7 +1156,7 @@ export default function PaginaMapaCMDB() {
                 Análisis e Impacto
               </Link>
               <Link
-                href="/plataforma/activos/configuracion/cmdb-relaciones"
+                href="/plataforma/cmdb/configuracion?vista=relaciones"
                 className="boton-secundario"
                 style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center" }}
               >
