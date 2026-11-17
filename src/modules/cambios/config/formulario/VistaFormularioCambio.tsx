@@ -68,11 +68,21 @@ const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion
   },
 };
 
-export default function ConfiguracionFormularioCambiosPage() {
+interface VistaFormularioCambioProps {
+  pestanaFija?: "campos" | "catalogos" | "cuestionario_riesgo";
+}
+
+export default function ConfiguracionFormularioCambiosPage({ pestanaFija }: VistaFormularioCambioProps = {}) {
   // --------------------------------------------------------------------------
   // 2. ESTADOS LOCALES: Control de versión, autoría, borrador y modales
   // --------------------------------------------------------------------------
-  const [tabActiva, setTabActiva] = useState<TabId>("campos");
+  const [tabActiva, setTabActiva] = useState<TabId>(pestanaFija || "campos");
+
+  useEffect(() => {
+    if (pestanaFija) {
+      setTabActiva(pestanaFija);
+    }
+  }, [pestanaFija]);
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
@@ -422,7 +432,8 @@ export default function ConfiguracionFormularioCambiosPage() {
         </div>
       )}
 
-      {/* Selector de las 7 Pestañas */}
+      {/* Selector de las 7 Pestañas (solo si no es pestaña fija) */}
+      {!pestanaFija && (
       <div
         style={{
           display: "flex",
@@ -458,6 +469,7 @@ export default function ConfiguracionFormularioCambiosPage() {
           );
         })}
       </div>
+      )}
 
       {/* Contenido de la Pestaña Activa */}
       {cargando ? (

@@ -33,8 +33,18 @@ const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion
   }
 };
 
-export default function ConfiguracionTiposRequisitosPage() {
-  const [tabActiva, setTabActiva] = useState<TabId>("tipos");
+interface VistaTiposRequisitosProps {
+  pestanaFija?: TabId;
+}
+
+export default function ConfiguracionTiposRequisitosPage({ pestanaFija }: VistaTiposRequisitosProps = {}) {
+  const [tabActiva, setTabActiva] = useState<TabId>(pestanaFija || "tipos");
+
+  useEffect(() => {
+    if (pestanaFija) {
+      setTabActiva(pestanaFija);
+    }
+  }, [pestanaFija]);
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
@@ -167,6 +177,8 @@ export default function ConfiguracionTiposRequisitosPage() {
         </div>
 
       {/* Selector de Pestañas */}
+      {/* Selector de Pestañas (solo si no es pestaña fija) */}
+      {!pestanaFija && (
       <div
         style={{
           display: "flex",
@@ -202,6 +214,7 @@ export default function ConfiguracionTiposRequisitosPage() {
           );
         })}
       </div>
+      )}
 
       {/* Contenido Principal de la Pestaña Activa */}
       {cargando ? (

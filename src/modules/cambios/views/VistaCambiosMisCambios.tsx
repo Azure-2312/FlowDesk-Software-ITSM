@@ -275,7 +275,7 @@ export default function PaginaMisCambios() {
                   </td>
                   <td style={{ padding: "12px 16px", textAlign: "right" }}>
                     <Link
-                      href="/plataforma/cambios/implementacion"
+                      href="/plataforma/cambios/mis-cambios?vista=por-implementar"
                       style={{
                         padding: "4px 10px",
                         backgroundColor: "#f8fafc",

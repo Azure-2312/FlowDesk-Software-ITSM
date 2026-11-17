@@ -10,19 +10,19 @@ export default function RedireccionRutasLegadasAdmin({ params }: Props) {
   const ruta = params.slug.join("/");
 
   if (ruta.startsWith("procesos/cambios/formulario")) {
-    redirect("/plataforma/cambios/configuracion/formulario");
+    redirect("/plataforma/cambios/configuracion?vista=campos");
   }
   if (ruta.startsWith("procesos/cambios/flujo-evaluacion")) {
-    redirect("/plataforma/cambios/configuracion/flujo-evaluacion");
+    redirect("/plataforma/cambios/cab?vista=miembros");
   }
   if (ruta.startsWith("procesos/cambios/notificaciones-calendario")) {
-    redirect("/plataforma/cambios/configuracion/notificaciones-calendario");
+    redirect("/plataforma/cambios/configuracion?vista=calendario");
   }
   if (ruta.startsWith("procesos/cambios/tipos-requisitos")) {
-    redirect("/plataforma/cambios/configuracion/tipos-requisitos");
+    redirect("/plataforma/cambios/configuracion?vista=autoridad");
   }
   if (ruta.startsWith("procesos/cambios")) {
-    redirect("/plataforma/cambios/configuracion/formulario");
+    redirect("/plataforma/cambios/configuracion");
   }
 
   if (ruta.startsWith("procesos/problemas/formulario")) {

@@ -656,7 +656,7 @@ export default function VistaCambiosGestionCrear() {
 
       setMensajeExito(`Solicitud de cambio registrada exitosamente con código ${data.codigo_cambio}.`);
       setTimeout(() => {
-        router.push("/plataforma/cambios/gestion/todos");
+        router.push("/plataforma/cambios/gestion?vista=historial");
       }, 1600);
     } catch {
       setError("Error de conexión al registrar la solicitud de cambio.");
@@ -718,7 +718,7 @@ export default function VistaCambiosGestionCrear() {
             if (typeof window !== "undefined" && window.history.length > 1) {
               router.back();
             } else {
-              router.push("/plataforma/cambios/gestion/todos");
+              router.push("/plataforma/cambios/gestion?vista=historial");
             }
           }}
           className="boton-secundario"
@@ -1635,7 +1635,7 @@ export default function VistaCambiosGestionCrear() {
               if (typeof window !== "undefined" && window.history.length > 1) {
                 router.back();
               } else {
-                router.push("/plataforma/cambios/gestion/todos");
+                router.push("/plataforma/cambios/gestion?vista=historial");
               }
             }}
             className="boton-secundario"

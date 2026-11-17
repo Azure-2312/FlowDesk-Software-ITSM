@@ -1,7 +1,32 @@
-import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import { exigirVistaPagina } from "@/shared/lib/vistas";
+import PestanasVista from "@/shared/components/ui/PestanasVista";
 import VistaCambiosGestionCalendario from "@/modules/cambios/gestion/calendario/VistaCambiosGestionCalendario";
+import VistaProgramacion from "@/modules/cambios/views/gestion/VistaProgramacion";
 
-export default async function PaginaCambiosGestionCalendario() {
-  await exigirMenuPagina("/plataforma/cambios/gestion/calendario");
-  return <VistaCambiosGestionCalendario />;
+interface PageProps {
+  searchParams?: Promise<{ vista?: string }> | { vista?: string };
+}
+
+export default async function PaginaCambiosGestionCalendario({ searchParams }: PageProps) {
+  const resolvedParams = searchParams ? await searchParams : undefined;
+  const { vistaActiva, vistasPermitidas } = await exigirVistaPagina(
+    "/plataforma/cambios/gestion/calendario",
+    resolvedParams?.vista
+  );
+
+  return (
+    <div className="space-y-4">
+      {vistasPermitidas.length > 1 && (
+        <div className="bg-white px-6 pt-4 rounded-xl border border-slate-200 shadow-sm">
+          <PestanasVista
+            vistas={vistasPermitidas}
+            vistaActiva={vistaActiva}
+            urlBase="/plataforma/cambios/gestion/calendario"
+          />
+        </div>
+      )}
+      {vistaActiva === "calendario" && <VistaCambiosGestionCalendario />}
+      {vistaActiva === "programacion" && <VistaProgramacion />}
+    </div>
+  );
 }

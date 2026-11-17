@@ -42,7 +42,7 @@ export default function VistaCambios() {
             Formulario estructurado con plan de implementaci\u00f3n, an\u00e1lisis de riesgos y plan de contingencia (rollback).
           </p>
           <Link
-            href="/plataforma/cambios/gestion/crear"
+            href="/plataforma/cambios/nuevo"
             className="boton-mini"
             style={{ textDecoration: "none", display: "inline-block", backgroundColor: "#f1f5f9", color: "#1e293b", borderColor: "#cbd5e1" }}
           >
@@ -56,7 +56,7 @@ export default function VistaCambios() {
             Bandeja del Comit\u00e9 Asesor de Cambios (Change Advisory Board) con regla de autoexclusi\u00f3n para aprobadores.
           </p>
           <Link
-            href="/plataforma/cambios/gestion/cab"
+            href="/plataforma/cambios/cab?vista=dictamen"
             className="boton-mini"
             style={{ textDecoration: "none", display: "inline-block", backgroundColor: "#f1f5f9", color: "#1e293b", borderColor: "#cbd5e1" }}
           >
@@ -84,7 +84,7 @@ export default function VistaCambios() {
             Auditor\u00eda de todos los cambios registrados, evaluaci\u00f3n post-implementaci\u00f3n (PIR) y lecciones aprendidas.
           </p>
           <Link
-            href="/plataforma/cambios/gestion/todos"
+            href="/plataforma/cambios/gestion?vista=historial"
             className="boton-mini"
             style={{ textDecoration: "none", display: "inline-block", backgroundColor: "#f1f5f9", color: "#1e293b", borderColor: "#cbd5e1" }}
           >
