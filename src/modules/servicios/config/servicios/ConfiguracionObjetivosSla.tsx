@@ -46,10 +46,17 @@ interface MotivoEspera {
 
 interface ConfiguracionObjetivosSlaProps {
   pestañaInicial?: "tiempos" | "matriz";
+  pestanaFija?: "tiempos" | "matriz";
 }
 
-export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" }: ConfiguracionObjetivosSlaProps) {
-  const [pestañaActiva, setPestañaActiva] = useState<"tiempos" | "matriz">(pestañaInicial);
+export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos", pestanaFija }: ConfiguracionObjetivosSlaProps) {
+  const [pestañaActiva, setPestañaActiva] = useState<"tiempos" | "matriz">(pestanaFija || pestañaInicial);
+
+  useEffect(() => {
+    if (pestanaFija) {
+      setPestañaActiva(pestanaFija);
+    }
+  }, [pestanaFija]);
   const [prioridades, setPrioridades] = useState<PrioridadSla[]>([]);
   const [objetivosOla, setObjetivosOla] = useState<ObjetivoOla[]>([]);
   const [politicaSla, setPoliticaSla] = useState<PoliticaSla>({
@@ -224,52 +231,54 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos" 
       </div>
 
       {/* Selector de Pestañas SLA */}
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          borderBottom: "1px solid #e2e8f0",
-          marginBottom: 24,
-          justifyContent: "flex-start",
-          overflowX: "auto",
-          scrollbarWidth: "none"
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => setPestañaActiva("tiempos")}
+      {!pestanaFija && (
+        <div
           style={{
-            padding: "10px 16px",
-            fontSize: 13,
-            fontWeight: pestañaActiva === "tiempos" ? 600 : 500,
-            color: pestañaActiva === "tiempos" ? "#2563eb" : "#64748b",
-            borderBottom: pestañaActiva === "tiempos" ? "2px solid #2563eb" : "2px solid transparent",
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
+            display: "flex",
+            gap: 8,
+            borderBottom: "1px solid #e2e8f0",
+            marginBottom: 24,
+            justifyContent: "flex-start",
+            overflowX: "auto",
+            scrollbarWidth: "none"
           }}
         >
-          Objetivos de Tiempo y Métricas SLA
-        </button>
-        <button
-          type="button"
-          onClick={() => setPestañaActiva("matriz")}
-          style={{
-            padding: "10px 16px",
-            fontSize: 13,
-            fontWeight: pestañaActiva === "matriz" ? 600 : 500,
-            color: pestañaActiva === "matriz" ? "#2563eb" : "#64748b",
-            borderBottom: pestañaActiva === "matriz" ? "2px solid #2563eb" : "2px solid transparent",
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-          }}
-        >
-          Matriz Institucional de Prioridad (Impacto x Urgencia)
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={() => setPestañaActiva("tiempos")}
+            style={{
+              padding: "10px 16px",
+              fontSize: 13,
+              fontWeight: pestañaActiva === "tiempos" ? 600 : 500,
+              color: pestañaActiva === "tiempos" ? "#2563eb" : "#64748b",
+              borderBottom: pestañaActiva === "tiempos" ? "2px solid #2563eb" : "2px solid transparent",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Objetivos de Tiempo y Métricas SLA
+          </button>
+          <button
+            type="button"
+            onClick={() => setPestañaActiva("matriz")}
+            style={{
+              padding: "10px 16px",
+              fontSize: 13,
+              fontWeight: pestañaActiva === "matriz" ? 600 : 500,
+              color: pestañaActiva === "matriz" ? "#2563eb" : "#64748b",
+              borderBottom: pestañaActiva === "matriz" ? "2px solid #2563eb" : "2px solid transparent",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Matriz Institucional de Prioridad (Impacto x Urgencia)
+          </button>
+        </div>
+      )}
 
       <div style={{ display: pestañaActiva === "matriz" ? "block" : "none" }}>
         <MatrizPrioridadSla
