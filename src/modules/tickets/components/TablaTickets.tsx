@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Ticket, CatalogosTickets, DepartamentoTI } from "@/types";
 import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
 import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface Props {
-  vista: "mios" | "bandeja" | "asignados" | "resueltos" | "todos" | "asignar" | "departamento" | "auditoria" | "aprobaciones";
+  vista: "mios" | "bandeja" | "asignados" | "departamento" | "resueltos" | "todos";
   titulo: string;
   descripcion: string;
   tipoInicial?: string; // "1" = Incidente, "2" = Solicitud, etc.
@@ -18,6 +18,7 @@ interface Props {
 
 export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, tipoFijo, rutaDetalleBase }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [catalogos, setCatalogos] = useState<CatalogosTickets | null>(null);
   const [departamentos, setDepartamentos] = useState<DepartamentoTI[]>([]);
@@ -65,6 +66,16 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
   useEffect(() => {
     cargarCatalogosYDeptos();
   }, []);
+
+  const abrirId = searchParams?.get("abrir");
+  useEffect(() => {
+    if (abrirId) {
+      const idNum = parseInt(abrirId, 10);
+      if (!Number.isNaN(idNum) && idNum > 0) {
+        setTicketSeleccionadoId(idNum);
+      }
+    }
+  }, [abrirId]);
 
   async function cargarTickets() {
     setCargando(true);

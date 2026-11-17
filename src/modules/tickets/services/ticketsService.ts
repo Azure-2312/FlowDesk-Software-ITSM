@@ -126,8 +126,6 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
       condiciones.push(`t.id_departamento = $${paramIdx++}`);
       params.push(parseInt(idDepartamento, 10));
     }
-  } else if (vista === "auditoria") {
-    // Auditoría integral: sin filtros restrictivos
   }
 
   // Si el perfil activo es Solicitante (id_perfil 3), SOLO puede ver sus propios tickets

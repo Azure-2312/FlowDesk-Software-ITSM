@@ -10,12 +10,12 @@ export default function PaginaTickets() {
   if (!sesion) redirect("/login");
 
   const destinosPorPerfil: Record<number, string> = {
-    1: "/plataforma/tickets/gestion/todos",
-    2: "/plataforma/incidentes/asignados",
+    1: "/plataforma/incidentes/bandeja?vista=todos",
+    2: "/plataforma/incidentes/bandeja?vista=asignados",
     3: "/plataforma/solicitudes/mios",
-    4: "/plataforma/tickets/gestion/todos",
+    4: "/plataforma/incidentes/bandeja?vista=todos",
     5: "/plataforma/aprobaciones",
-    6: "/plataforma/incidentes/todos",
+    6: "/plataforma/incidentes/bandeja?vista=todos",
     7: "/plataforma/aprobaciones",
     8: "/plataforma/cambios",
     9: "/plataforma/activos",

@@ -6,11 +6,11 @@ export default async function PaginaSolicitudesCrear() {
 
   let rutaLista = "/plataforma/solicitudes/mios";
   if ([1, 4, 6].includes(idPerfil)) {
-    rutaLista = "/plataforma/solicitudes";
+    rutaLista = "/plataforma/solicitudes/bandeja?vista=todos";
   } else if (idPerfil === 2) {
-    rutaLista = "/plataforma/solicitudes/asignados";
+    rutaLista = "/plataforma/solicitudes/bandeja?vista=asignados";
   } else if (idPerfil === 5) {
-    rutaLista = "/plataforma/solicitudes/departamento";
+    rutaLista = "/plataforma/solicitudes/bandeja?vista=departamento";
   }
 
   return (
