@@ -1,0 +1,228 @@
+id_opcion_menu,nombre,url_menu,"Administrador (ID 1)","Tecnico (ID 2)","Solicitante (ID 3)","Supervisor (ID 4)","Gestor de Area (ID 5)","Auditor (ID 6)","Aprobador (ID 7)","Gestor de Cambios (ID 8)","Gestor de Activos y Configuracion (ID 9)","Gestor de Problemas (ID 10)"
+21001,"Mi trabajo","",1,1,1,1,1,1,1,1,1,1
+21002,"Aprobaciones","",0,0,0,0,1,0,1,0,0,0
+21003,"Delegación de aprobaciones","/plataforma/solicitudes/area/delegacion",0,0,0,0,1,0,0,0,0,0
+21004,"Delegaciones","/plataforma/seguridad/delegaciones",0,0,0,0,0,0,1,0,0,0
+21005,"Historial de aprobaciones de mi área","/plataforma/solicitudes/area/historial",0,0,0,0,1,0,0,0,0,0
+21006,"Historial de aprobaciones y dictámenes","/plataforma/seguridad/historial-aprobaciones",0,0,0,0,0,0,1,0,0,0
+21007,"Panel de activos y CMDB","/plataforma/operacion/paneles/gestor-activos",0,0,0,0,0,0,0,0,1,0
+21008,"Equipo","",0,0,0,1,0,0,0,0,0,0
+21009,"Ausencias y guardias del equipo","/plataforma/operacion/equipo/ausencias",0,0,0,1,0,0,0,0,0,0
+21010,"Vistas y respuestas compartidas","/plataforma/operacion/equipo/vistas",0,0,0,1,0,0,0,0,0,0
+21011,"Panel de auditoría","/plataforma/operacion/paneles/auditor",0,0,0,0,0,1,0,0,0,0
+21012,"Panel de gestión de cambios","/plataforma/operacion/paneles/gestor-cambios",0,0,0,0,0,0,0,1,0,0
+21013,"Panel de gestión de problemas","/plataforma/operacion/paneles/gestor-problemas",0,0,0,0,0,0,0,0,0,1
+21014,"Panel de supervisión","/plataforma/operacion/paneles/supervisor",0,0,0,1,0,0,0,0,0,0
+21015,"Panel del aprobador","/plataforma/operacion/paneles/aprobador",0,0,0,0,0,0,1,0,0,0
+21016,"Panel del área","/plataforma/operacion/paneles/gestor-area",0,0,0,0,1,0,0,0,0,0
+21017,"Panel del técnico","/plataforma/operacion/paneles/tecnico",0,1,0,0,0,0,0,0,0,0
+21018,"Mi agenda y disponibilidad","/plataforma/operacion/agenda",0,1,0,0,0,0,0,0,0,0
+21019,"Mi desempeño","/plataforma/operacion/desempeno",0,1,0,0,0,0,0,0,0,0
+21020,"Mis tareas","/plataforma/operacion/tareas",0,1,0,0,0,0,0,0,0,0
+21021,"Panel de administración","/plataforma/operacion/paneles/administrador",1,0,0,0,0,0,0,0,0,0
+21022,"Panel del solicitante","/plataforma/operacion/paneles/solicitante",0,0,1,0,0,0,0,0,0,0
+21023,"Mesa de Servicio","",1,1,1,1,1,1,1,0,0,0
+21024,"Operacion de la mesa","",1,1,1,1,1,1,0,0,0,0
+21044,"SLA","",0,1,0,1,0,0,0,0,0,0
+21045,"Escalamientos y riesgos de SLA","/plataforma/servicios/sla/escalamientos",0,0,0,1,0,0,0,0,0,0
+21046,"Incumplimientos y causas","/plataforma/servicios/sla/incumplimientos",0,0,0,1,0,0,0,0,0,0
+21047,"Objetivos de tiempo vigentes","/plataforma/servicios/sla/objetivos",0,1,0,1,0,0,0,0,0,0
+21048,"Semaforo de SLA de mi cola","/plataforma/servicios/sla/semaforo-cola",0,1,0,0,0,0,0,0,0,0
+21049,"Semaforo de SLA del grupo","/plataforma/servicios/sla/semaforo-grupo",0,0,0,1,0,0,0,0,0,0
+21059,"Cambios","",1,1,0,1,1,1,1,1,0,0
+21060,"Mis cambios","",0,1,0,1,1,0,0,0,0,0
+21061,"Aprobaciones técnicas de RFC","/plataforma/cambios/aprobaciones/tecnicas",0,0,0,1,0,0,0,0,0,0
+21062,"Calendario de mis cambios","/plataforma/cambios/calendario",0,1,0,0,0,0,0,0,0,0
+21063,"Cambios con interrupción para mi área","/plataforma/cambios/impacto/interrupciones",0,0,0,0,1,0,0,0,0,0
+21064,"Cambios por implementar","/plataforma/cambios/implementacion",0,1,0,0,0,0,0,0,0,0
+21065,"Cambios que afectan a mi equipo","/plataforma/cambios/impacto/equipo",0,0,0,1,0,0,0,0,0,0
+21066,"Cambios que afectan mis servicios","/plataforma/cambios/impacto/servicios",0,1,0,0,0,0,0,0,0,0
+21067,"Historial de mis cambios","/plataforma/cambios/historial",0,1,0,0,0,0,0,0,0,0
+21068,"Mis cambios","/plataforma/cambios/mis-cambios",0,1,0,0,0,0,0,0,0,0
+21069,"Programación de implementaciones del equipo","/plataforma/cambios/programacion",0,0,0,1,0,0,0,0,0,0
+21070,"Registrar solicitud RFC","/plataforma/cambios/nuevo",0,1,0,0,0,0,0,0,0,0
+21071,"Calendario de cambios","/plataforma/cambios/gestion/calendario",0,0,0,1,1,0,1,1,0,0
+21072,"Gestión","",0,0,0,0,0,0,0,1,0,0
+21073,"Bandeja de RFC por evaluar","/plataforma/cambios/gestion/evaluacion",0,0,0,0,0,0,0,1,0,0
+21074,"Conflictos y capacidad","/plataforma/cambios/gestion/conflictos",0,0,0,0,0,0,0,1,0,0
+21075,"Modelos de cambio estándar","/plataforma/cambios/gestion/modelos",0,0,0,0,0,0,0,1,0,0
+21076,"Programación de cambios autorizados","/plataforma/cambios/gestion/programacion",0,0,0,0,0,0,0,1,0,0
+21077,"Revisión post-implementación","/plataforma/cambios/gestion/pir",0,0,0,0,0,0,0,1,0,0
+21078,"Seguimiento de ejecución","/plataforma/cambios/gestion/ejecucion",0,0,0,0,0,0,0,1,0,0
+21079,"Seguimiento de etapas de aprobación","/plataforma/cambios/gestion/autorizaciones",0,0,0,0,0,0,0,1,0,0
+21080,"Historial de cambios","/plataforma/cambios/gestion/todos",0,0,0,0,0,1,0,1,0,0
+21081,"CAB","",0,0,0,0,0,0,1,1,0,0
+21082,"Agenda y actas","/plataforma/cambios/cab/agenda",0,0,0,0,0,0,1,0,0,0
+21083,"Comité de emergencia (ECAB)","/plataforma/cambios/cab/emergencia",0,0,0,0,0,0,1,0,0,0
+21084,"Convocatoria, agenda y actas","/plataforma/cambios/cab/agenda",0,0,0,0,0,0,0,1,0,0
+21085,"Dictamen colegiado (CAB)","/plataforma/cambios/gestion/cab",0,0,0,0,0,0,1,1,0,0
+21086,"Solicitar un cambio","/plataforma/cambios/gestion/crear",0,0,0,0,1,0,0,1,0,0
+21087,"Aprobaciones","",0,0,0,0,1,0,1,0,0,0
+21088,"Aprobación de negocio de cambios","/plataforma/cambios/aprobaciones/negocio",0,0,0,0,1,0,0,0,0,0
+21089,"Aprobaciones de cambios","/plataforma/cambios/aprobaciones",0,0,0,0,0,0,1,0,0,0
+21090,"Modelos de cambio estándar","/plataforma/cambios/modelos",0,0,0,0,0,0,1,0,0,0
+21091,"Problemas","",1,1,0,1,0,1,1,0,0,1
+21092,"Análisis de causa raíz","/plataforma/problemas/analisis",0,0,0,0,0,0,0,0,0,1
+21093,"Bandeja y asignación","/plataforma/problemas/asignacion",0,0,0,1,0,0,0,0,0,0
+21094,"Bandeja y asignación","/plataforma/problemas/asignacion",0,0,0,0,0,0,0,0,0,1
+21095,"Candidatos a problema","/plataforma/problemas/candidatos",0,0,0,0,0,0,0,0,0,1
+21096,"Candidatos a problema","/plataforma/problemas/candidatos",0,1,0,0,0,0,0,0,0,0
+21097,"Conocimiento derivado","/plataforma/problemas/conocimiento",0,0,0,0,0,0,0,0,0,1
+21098,"Errores conocidos (KEDB)","/plataforma/problemas/kedb",0,1,0,0,0,0,0,0,0,0
+21099,"Errores conocidos (KEDB)","/plataforma/problemas/kedb",0,0,0,1,0,0,0,0,0,1
+21100,"Incidentes recurrentes","/plataforma/problemas/recurrentes",0,0,0,0,0,0,0,0,0,1
+21101,"Objetivos de tiempo","/plataforma/problemas/objetivos",0,0,0,0,0,0,0,0,0,1
+21102,"Problemas asignados a mí","/plataforma/problemas/asignados",0,1,0,0,0,0,0,0,0,0
+21103,"Problemas de mi grupo","/plataforma/problemas/grupo",0,1,0,0,0,0,0,0,0,0
+21104,"Problemas mayores y comités","/plataforma/problemas/mayores",0,0,0,0,0,0,0,0,0,1
+21105,"Registrar problema","/plataforma/problemas/crear",0,1,0,0,0,0,0,0,0,1
+21106,"Historial de problemas","/plataforma/problemas/historial",0,0,0,1,0,1,0,0,0,1
+21107,"Aprobación de riesgo y cierre","/plataforma/problemas/aprobaciones",0,0,0,0,0,0,1,0,0,0
+21108,"Solicitudes de cambio derivadas","/plataforma/problemas/cambios",0,0,0,0,0,0,0,0,0,1
+21109,"Activos y CMDB","",1,1,1,1,1,1,1,0,1,0
+21110,"Inventario","",1,1,1,1,1,1,0,0,1,0
+21111,"Activos de mi área","/plataforma/activos/area",0,0,0,0,1,0,0,0,0,0
+21112,"Asignación, custodia y actas","/plataforma/activos/asignaciones",0,0,0,0,0,0,0,0,1,0
+21113,"Importación masiva","/plataforma/activos/importacion",0,0,0,0,0,0,0,0,1,0
+21114,"Inventario de activos","/plataforma/activos/inventario",1,0,0,1,0,1,0,0,1,0
+21115,"Inventario físico (campañas)","/plataforma/activos/inventario-fisico",0,0,0,0,0,0,0,0,1,0
+21116,"Inventario físico en campo","/plataforma/activos/conteos",0,1,0,0,0,0,0,0,0,0
+21117,"Inventario operativo","/plataforma/activos/inventario-operativo",0,1,0,0,0,0,0,0,0,0
+21118,"Mis activos","/plataforma/activos/mis-activos",0,0,1,0,0,0,0,0,0,0
+21119,"Recepción de adquisiciones","/plataforma/activos/recepcion",0,0,0,0,0,0,0,0,1,0
+21120,"Bajas y disposición","",0,0,0,1,0,1,1,0,1,0
+21121,"Aprobación de bajas de mi área","/plataforma/activos/bajas/aprobacion",0,0,0,1,0,0,0,0,0,0
+21122,"Consulta de bajas","/plataforma/activos/bajas/consulta",0,0,0,0,0,1,0,0,0,0
+21123,"Gestión de bajas","/plataforma/activos/bajas",0,0,0,0,0,0,0,0,1,0
+21124,"Bajas y renovaciones por monto","/plataforma/activos/bajas/renovaciones",0,0,0,0,0,0,1,0,0,0
+21125,"Mantenimiento","",0,1,0,0,0,0,0,0,1,0
+21126,"Mantenimiento y garantías","/plataforma/activos/mantenimiento",0,0,0,0,0,0,0,0,1,0
+21127,"Mantenimiento y reparaciones","/plataforma/activos/reparaciones",0,1,0,0,0,0,0,0,0,0
+21128,"Licencias","",0,1,0,1,0,1,0,0,1,0
+21129,"Catálogo de software autorizado","/plataforma/activos/licencias/catalogo-software",0,0,0,0,0,0,0,0,1,0
+21130,"Consultar licencias","/plataforma/activos/licencias/consulta",0,1,0,0,0,0,0,0,0,0
+21131,"Cumplimiento y sobreuso","/plataforma/activos/licencias/cumplimiento",0,0,0,0,0,0,0,0,1,0
+21132,"Licencias de software","/plataforma/activos/licencias",0,0,0,1,0,1,0,0,0,0
+21133,"CMDB","",0,1,0,0,0,1,0,0,1,0
+21134,"Actualizaciones de CMDB desde cambios","/plataforma/cmdb/actualizaciones",0,0,0,0,0,0,0,0,1,0
+21135,"Análisis e impacto","/plataforma/cmdb/analisis",0,0,0,0,0,0,0,0,1,0
+21136,"Calidad y auditoría de CMDB","/plataforma/cmdb/auditoria",0,0,0,0,0,0,0,0,1,0
+21137,"Inexactitudes reportadas","/plataforma/cmdb/inexactitudes",0,0,0,0,0,0,0,0,1,0
+21138,"Líneas base","/plataforma/cmdb/lineas-base",0,0,0,0,0,0,0,0,1,0
+21139,"Mapa de topología","/plataforma/cmdb/topologia",0,0,0,0,0,0,0,0,1,0
+21140,"Mapa de topología CMDB","/plataforma/cmdb/topologia",0,1,0,0,0,0,0,0,0,0
+21141,"Modelado de clases CI","/plataforma/cmdb/tipos",0,0,0,0,0,0,0,0,1,0
+21142,"Resultados de auditorías de CMDB","/plataforma/cmdb/auditoria/resultados",0,0,0,0,0,1,0,0,0,0
+21143,"Proveedores y contratos","",0,0,0,0,1,0,0,0,1,0
+21144,"Contratos y cobertura","/plataforma/activos/contratos",0,0,0,0,0,0,0,0,1,0
+21145,"Licencias y contratos de mi departamento","/plataforma/activos/contratos-area",0,0,0,0,1,0,0,0,0,0
+21146,"Proveedores","/plataforma/activos/proveedores",0,0,0,0,0,0,0,0,1,0
+21147,"Renovaciones y vencimientos","/plataforma/activos/renovaciones",0,0,0,0,0,0,0,0,1,0
+21148,"Catálogos","",1,0,0,0,0,0,0,0,1,0
+21149,"Ciclos de vida y reglas de transición","/plataforma/activos/configuracion/ciclos-vida-transiciones",1,0,0,0,0,0,0,0,0,0
+21150,"Fabricantes y modelos","/plataforma/activos/configuracion/tipos-modelos-atributos/fabricantes",0,0,0,0,0,0,0,0,1,0
+21151,"Licencias y contratos","/plataforma/activos/configuracion/licencias-contratos",1,0,0,0,0,0,0,0,0,0
+21152,"Listas auxiliares","/plataforma/activos/configuracion/tipos-modelos-atributos/catalogos",0,0,0,0,0,0,0,0,1,0
+21153,"Tipos de elementos de configuración y relaciones de CMDB","/plataforma/activos/configuracion/cmdb-relaciones",1,0,0,0,0,0,0,0,0,0
+21154,"Tipos, modelos y atributos","/plataforma/activos/configuracion/tipos-modelos-atributos",1,0,0,0,0,0,0,0,0,0
+21155,"Ubicaciones","/plataforma/activos/configuracion/tipos-modelos-atributos/ubicaciones",0,0,0,0,0,0,0,0,1,0
+21156,"Conocimiento","",1,1,1,1,1,0,0,0,0,0
+21157,"Base de conocimiento","/plataforma/conocimiento/base",0,0,1,1,1,0,0,0,0,0
+21158,"Consultar base de conocimiento","/plataforma/conocimiento/base",0,1,0,0,0,0,0,0,0,0
+21159,"Crear artículo","/plataforma/conocimiento/nuevo",0,1,0,0,0,0,0,0,0,0
+21160,"Mis artículos","/plataforma/conocimiento/mis-articulos",0,1,0,0,0,0,0,0,0,0
+21161,"Revisión y publicación de artículos","/plataforma/conocimiento/publicacion",0,0,0,1,0,0,0,0,0,0
+21162,"Revisiones pendientes","/plataforma/conocimiento/revisiones",0,1,0,0,0,0,0,0,0,0
+21163,"Catálogo de Servicios","",1,1,0,0,0,0,0,0,0,0
+21164,"Catálogo de servicios","/plataforma/servicios/catalogo",0,1,0,0,0,0,0,0,0,0
+21165,"Configuración de categorías","/plataforma/servicios/configuracion/categorias",1,0,0,0,0,0,0,0,0,0
+21166,"Crear servicio","/plataforma/servicios/configuracion/crear",1,0,0,0,0,0,0,0,0,0
+21167,"Objetivos SLA","/plataforma/servicios/configuracion/sla",1,0,0,0,0,0,0,0,0,0
+21168,"Servicios de incidentes","/plataforma/servicios/configuracion/incidentes",1,0,0,0,0,0,0,0,0,0
+21169,"Servicios de solicitudes","/plataforma/servicios/configuracion/solicitudes",1,0,0,0,0,0,0,0,0,0
+21170,"Operación","",1,0,0,1,0,0,0,0,0,0
+21171,"Disponibilidad, capacidad y continuidad","/plataforma/operacion/resiliencia",0,0,0,1,0,0,0,0,0,0
+21172,"Eventos y alertas","/plataforma/operacion/eventos",0,0,0,1,0,0,0,0,0,0
+21173,"Eventos y resiliencia","/plataforma/operacion/eventos-resiliencia",1,0,0,0,0,0,0,0,0,0
+21174,"Reportes","",1,0,0,1,1,1,1,1,1,1
+21175,"Indicadores operativos y SLA","/plataforma/reportes/operativos",1,0,0,1,0,1,0,0,0,0
+21176,"Informes de auditoría","/plataforma/reportes/auditoria",0,0,0,0,0,1,0,0,0,0
+21177,"Productividad individual","/plataforma/reportes/productividad",0,0,0,1,0,0,0,0,0,0
+21178,"Reportes de activos","/plataforma/reportes/activos",0,0,0,0,0,0,0,0,1,0
+21179,"Reportes de cambios","/plataforma/reportes/cambios",0,0,0,0,0,0,0,1,0,0
+21180,"Reportes de decisiones","/plataforma/reportes/decisiones",0,0,0,0,0,0,1,0,0,0
+21181,"Reportes de problemas","/plataforma/reportes/problemas",0,0,0,0,0,0,0,0,0,1
+21182,"Reportes del área","/plataforma/reportes/area",0,0,0,0,1,0,0,0,0,0
+21183,"Tableros","/plataforma/reportes/tableros",1,0,0,0,0,1,0,0,0,0
+21186,"Flujo de atención y aprobaciones","/plataforma/solicitudes/configuracion/flujo",1,0,0,0,0,0,0,0,0,0
+21187,"Flujo de estados y acciones","/plataforma/incidentes/configuracion/flujo",1,0,0,0,0,0,0,0,0,0
+21191,"Configuración de formulario","/plataforma/cambios/configuracion/formulario",1,0,0,0,0,0,0,0,0,0
+21192,"Feriados","/plataforma/cambios/configuracion/notificaciones-calendario",0,0,0,0,0,0,0,1,0,0
+21193,"Flujo de evaluación, autorización y revisión posterior","/plataforma/cambios/configuracion/flujo-evaluacion",1,0,0,0,0,0,0,0,0,0
+21194,"Notificaciones de cambios","/plataforma/cambios/configuracion/notificaciones-calendario",1,0,0,0,0,0,0,0,0,0
+21195,"Períodos de congelamiento","/plataforma/cambios/configuracion/notificaciones-calendario",0,0,0,0,0,0,0,1,0,0
+21196,"Tipos de cambio y requisitos","/plataforma/cambios/configuracion/tipos-requisitos",1,0,0,0,0,0,0,0,0,0
+21197,"Ventanas de mantenimiento","/plataforma/cambios/configuracion/notificaciones-calendario",0,0,0,0,0,0,0,1,0,0
+21199,"Configuración de formulario","/plataforma/problemas/configuracion/formulario",1,0,0,0,0,0,0,0,0,0
+21200,"Flujo de investigación y seguimiento","/plataforma/problemas/configuracion/flujo",1,0,0,0,0,0,0,0,0,0
+21201,"Relación con incidentes, errores conocidos y conocimiento","/plataforma/problemas/configuracion/relaciones",1,0,0,0,0,0,0,0,0,0
+21202,"Categorías, responsables y reglas de publicación y revisión","/plataforma/conocimiento/configuracion",1,0,0,0,0,0,0,0,0,0
+21204,"Departamentos empresariales","/plataforma/organizacion/departamentos-empresa",1,0,0,0,0,0,0,0,0,0
+21205,"Departamentos y grupos resolutores de TI","/plataforma/organizacion/departamentos",1,0,0,0,0,0,0,0,0,0
+21206,"Supervisores","/plataforma/organizacion/departamentos/supervisores",1,0,0,0,0,0,0,0,0,0
+21207,"Técnicos y niveles de soporte","/plataforma/organizacion/tecnicos",1,0,0,0,0,0,0,0,0,0
+21208,"Identidades","",1,0,0,0,0,1,0,0,0,0
+21209,"Gestión de usuarios","/plataforma/seguridad/usuarios",1,0,0,0,0,0,0,0,0,0
+21210,"Perfiles y permisos","/plataforma/seguridad/perfiles",1,0,0,0,0,1,0,0,0,0
+21211,"Menú y notificaciones","",1,0,0,0,0,0,0,0,0,0
+21212,"Configuración de contacto","/plataforma/operacion/notificaciones/contacto",1,0,0,0,0,0,0,0,0,0
+21213,"Estructura del menú","/plataforma/operacion/menu",1,0,0,0,0,0,0,0,0,0
+21214,"Plantillas de correo y otros canales","/plataforma/operacion/notificaciones/plantillas",1,0,0,0,0,0,0,0,0,0
+21215,"Plataforma","",1,0,0,0,0,1,0,0,0,0
+21216,"Cumplimiento","",0,0,0,0,0,1,0,0,0,0
+21217,"Cambios sin autorización o fuera de ventana","/plataforma/seguridad/cumplimiento/cambios",0,0,0,0,0,1,0,0,0,0
+21218,"Muestreo de auditoría","/plataforma/seguridad/muestreo",0,0,0,0,0,1,0,0,0,0
+21219,"Segregación de funciones","/plataforma/seguridad/cumplimiento/sod",0,0,0,0,0,1,0,0,0,0
+21220,"Auditoría de cambios de configuración","/plataforma/seguridad/auditoria-sistema",1,0,0,0,0,1,0,0,0,0
+21221,"Registros de seguridad y autenticación","/plataforma/seguridad/seguridad-logs",1,0,0,0,0,1,0,0,0,0
+21222,"Recertificación de accesos","/plataforma/seguridad/accesos/recertificacion",0,0,0,0,0,1,0,0,0,0
+21223,"Retención y mantenimiento de datos","/plataforma/operacion/mantenimiento-datos",1,0,0,0,0,1,0,0,0,0
+21224,"Salud del sistema","/plataforma/operacion/salud-sistema",1,0,0,0,0,0,0,0,0,0
+21225,"Mi cuenta","",1,1,1,1,1,1,1,1,1,1
+21226,"Mi perfil y seguridad","/plataforma/mi-cuenta/perfil",1,1,1,1,1,1,1,1,1,1
+21227,"Preferencias de notificación","/plataforma/mi-cuenta/notificaciones",1,1,1,1,1,1,1,1,1,1
+21228,"Incidentes","",1,1,1,1,1,1,0,0,0,0
+21229,"Solicitudes","",1,1,1,1,1,1,1,0,0,0
+21230,"Todos los incidentes","/plataforma/incidentes",0,0,0,1,0,1,0,0,0,0
+21231,"Mis incidentes","/plataforma/incidentes/mios",0,0,1,0,1,0,0,0,0,0
+21232,"Incidentes asignados a mi","/plataforma/incidentes/asignados",0,1,0,0,0,0,0,0,0,0
+21233,"Bandeja de incidentes","/plataforma/incidentes/bandeja",0,1,0,1,0,0,0,0,0,0
+21234,"Incidentes resueltos","/plataforma/incidentes/resueltos",0,1,0,1,0,1,0,0,0,0
+21235,"Incidentes de mi departamento","/plataforma/incidentes/departamento",0,0,0,0,1,0,0,0,0,0
+21236,"Registrar incidente","/plataforma/incidentes/crear",0,1,1,0,0,0,0,0,0,0
+21237,"Catalogo de incidentes","/plataforma/incidentes/catalogo",0,0,1,0,0,0,0,0,0,0
+21238,"Incidentes mayores","/plataforma/incidentes/mayores",0,0,0,1,0,0,0,0,0,0
+21239,"Sala de crisis (incidente mayor)","/plataforma/incidentes/sala-crisis",0,1,0,0,0,0,0,0,0,0
+21240,"Configuración del formulario","/plataforma/incidentes/configuracion",1,0,0,0,0,0,0,0,0,0
+21241,"Todas las solicitudes","/plataforma/solicitudes",0,0,0,1,0,1,0,0,0,0
+21242,"Mis solicitudes","/plataforma/solicitudes/mios",0,0,1,0,1,0,1,0,0,0
+21243,"Solicitudes asignadas a mi","/plataforma/solicitudes/asignados",0,1,0,0,0,0,0,0,0,0
+21244,"Bandeja de solicitudes","/plataforma/solicitudes/bandeja",0,1,0,1,0,0,0,0,0,0
+21245,"Solicitudes resueltas","/plataforma/solicitudes/resueltos",0,1,0,1,0,1,0,0,0,0
+21246,"Solicitudes de mi departamento","/plataforma/solicitudes/departamento",0,0,0,0,1,0,0,0,0,0
+21247,"Registrar solicitud","/plataforma/solicitudes/crear",0,1,1,0,0,0,0,0,0,0
+21248,"Catalogo de solicitudes","/plataforma/solicitudes/catalogo",0,0,1,0,1,0,0,0,0,0
+21249,"Aprobaciones de solicitudes","/plataforma/solicitudes/aprobaciones",0,0,0,0,1,0,0,0,0,0
+21250,"Configuración del formulario","/plataforma/solicitudes/configuracion",1,0,0,0,0,0,0,0,0,0
+21251,"Centro de asignacion","/plataforma/tickets/gestion/asignar",0,0,0,1,0,0,0,0,0,0
+21252,"Colaboradores de mi area","/plataforma/tickets/gestion/colaboradores",0,0,0,0,1,0,0,0,0,0
+21253,"Bandeja consolidada de pendientes","/plataforma/tickets/gestion/bandeja",0,0,0,1,0,0,0,0,0,0
+21254,"Historial consolidado de resueltos","/plataforma/tickets/gestion/resueltos",0,0,0,1,0,1,0,0,0,0
+21255,"Tickets de mi departamento","/plataforma/tickets/gestion/departamento",0,0,0,0,1,0,0,0,0,0
+21256,"Todos los tickets","/plataforma/tickets/gestion/todos",0,0,0,1,0,1,0,0,0,0
+21257,"Registrar ticket para un usuario","/plataforma/tickets/gestion/crear",0,0,0,1,1,0,0,0,0,0
+21258,"Auditoria de tickets","/plataforma/tickets/gestion/auditoria",1,0,0,1,0,1,0,0,0,0
+21259,"Avisos de servicio","/plataforma/avisos/mantenimientos",0,0,1,0,0,0,0,0,0,0
+21260,"Busqueda avanzada de tickets","/plataforma/tickets/mesa/buscar",0,1,0,0,0,0,0,0,0,0
+21261,"Historial de mis tickets","/plataforma/tickets/gestion/mios",0,1,0,0,0,0,0,0,0,0
+21264,"Organización","",1,0,0,0,0,0,0,0,0,0
