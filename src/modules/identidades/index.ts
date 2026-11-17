@@ -15,8 +15,6 @@ export {
 
 export { desbloquearUsuario } from "./services/usuarioDetalleDesbloquearService";
 
-export { enviarCredenciales } from "./services/enviarCredencialesService";
-
 export { listarPerfiles, crearPerfil } from "./services/perfilService";
 
 export { actualizarPerfil, alternarEstadoPerfil } from "./services/perfilDetalleService";

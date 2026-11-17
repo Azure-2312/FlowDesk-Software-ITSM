@@ -34,18 +34,6 @@ interface TareaProgramada {
   activo: boolean;
 }
 
-interface CorreoEnCola {
-  id_correo: number;
-  destinatario: string;
-  asunto: string;
-  plantilla: string | null;
-  estado: string;
-  intentos: number;
-  ultimo_error: string | null;
-  creado_en: string;
-  enviado_en: string | null;
-}
-
 function Tarjeta({ titulo, valor, detalle }: { titulo: string; valor: string; detalle?: string }) {
   return (
     <div className="tarjeta-formulario" style={{ margin: 0 }}>
@@ -69,20 +57,6 @@ function coloresEstadoTarea(estado: string | null) {
     case "exitoso":
       return { backgroundColor: "#dcfce7", color: "#166534" };
     case "advertencia":
-      return { backgroundColor: "#fef3c7", color: "#92400e" };
-    case "fallido":
-      return { backgroundColor: "#fee2e2", color: "#991b1b" };
-    default:
-      return { backgroundColor: "#e5e7eb", color: "#374151" };
-  }
-}
-
-/** Colores de la insignia según el estado de un correo en cola. */
-function coloresEstadoCorreo(estado: string) {
-  switch (estado) {
-    case "enviado":
-      return { backgroundColor: "#dcfce7", color: "#166534" };
-    case "pendiente":
       return { backgroundColor: "#fef3c7", color: "#92400e" };
     case "fallido":
       return { backgroundColor: "#fee2e2", color: "#991b1b" };
@@ -118,11 +92,6 @@ export default function VistaSaludSistema() {
   const [cargandoTareas, setCargandoTareas] = useState(true);
   const [errorTareas, setErrorTareas] = useState<string | null>(null);
   const [tareaEnCurso, setTareaEnCurso] = useState<number | null>(null);
-
-  const [correos, setCorreos] = useState<CorreoEnCola[]>([]);
-  const [cargandoCorreos, setCargandoCorreos] = useState(true);
-  const [errorCorreos, setErrorCorreos] = useState<string | null>(null);
-  const [correoEnCurso, setCorreoEnCurso] = useState<number | null>(null);
 
   const [aviso, setAviso] = useState<string | null>(null);
 
@@ -162,24 +131,6 @@ export default function VistaSaludSistema() {
     }
   }
 
-  async function cargarCorreos() {
-    setCargandoCorreos(true);
-    setErrorCorreos(null);
-    try {
-      const res = await fetch(`/api/operacion/salud-sistema/correo?_t=${Date.now()}`);
-      const data = await res.json();
-      if (res.ok) {
-        setCorreos(data);
-      } else {
-        setErrorCorreos(data.error ?? "No se pudo obtener la cola de correo.");
-      }
-    } catch {
-      setErrorCorreos("Error de conexión al consultar la cola de correo.");
-    } finally {
-      setCargandoCorreos(false);
-    }
-  }
-
   async function ejecutarTarea(idTarea: number) {
     setTareaEnCurso(idTarea);
     setAviso(null);
@@ -203,33 +154,9 @@ export default function VistaSaludSistema() {
     }
   }
 
-  async function reintentarCorreo(idCorreo: number) {
-    setCorreoEnCurso(idCorreo);
-    setAviso(null);
-    try {
-      const res = await fetch(`/api/operacion/salud-sistema/correo`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id_correo: idCorreo }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setAviso(`Correo a "${data.destinatario}" reenviado correctamente.`);
-        await cargarCorreos();
-      } else {
-        setAviso(data.error ?? "No se pudo reintentar el envío del correo.");
-      }
-    } catch {
-      setAviso("Error de conexión al reintentar el correo.");
-    } finally {
-      setCorreoEnCurso(null);
-    }
-  }
-
   useEffect(() => {
     cargar();
     cargarTareas();
-    cargarCorreos();
   }, []);
 
   return (
@@ -382,79 +309,6 @@ export default function VistaSaludSistema() {
                     >
                       {tareaEnCurso === t.id_tarea ? "Ejecutando..." : "Ejecutar ahora"}
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          </div>
-        )}
-      </div>
-
-      {/* Cola de correo y notificaciones */}
-      <div className="tarjeta-formulario" style={{ marginTop: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <h2 style={{ margin: 0 }}>Cola de correo y notificaciones</h2>
-          <button
-            type="button"
-            className="boton-secundario"
-            style={{ width: "auto" }}
-            onClick={cargarCorreos}
-            disabled={cargandoCorreos}
-          >
-            {cargandoCorreos ? "Actualizando..." : "Actualizar"}
-          </button>
-        </div>
-
-        {cargandoCorreos && correos.length === 0 ? (
-          <p>Cargando la cola de correo...</p>
-        ) : errorCorreos ? (
-          <p role="alert" className="mensaje-error">{errorCorreos}</p>
-        ) : correos.length === 0 ? (
-          <p>La cola de correo está vacía.</p>
-        ) : (
-          <div style={{ overflowX: "auto" }}>
-            <table className="tabla-datos" style={{ minWidth: 750 }}>
-            <thead>
-              <tr>
-                <th>Destinatario</th>
-                <th>Asunto</th>
-                <th>Estado</th>
-                <th style={{ textAlign: "right" }}>Intentos</th>
-                <th style={{ textAlign: "right" }}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {correos.map((c) => (
-                <tr key={c.id_correo}>
-                  <td>{c.destinatario}</td>
-                  <td>
-                    <div>{c.asunto}</div>
-                    {c.plantilla && (
-                      <div style={{ fontSize: 12, color: "#6b7280" }}>Plantilla: {c.plantilla}</div>
-                    )}
-                    {c.estado === "fallido" && c.ultimo_error && (
-                      <div style={{ fontSize: 12, color: "#991b1b" }}>{c.ultimo_error}</div>
-                    )}
-                  </td>
-                  <td>
-                    <Insignia texto={c.estado} colores={coloresEstadoCorreo(c.estado)} />
-                  </td>
-                  <td style={{ textAlign: "right" }}>{c.intentos}</td>
-                  <td style={{ textAlign: "right" }}>
-                    {c.estado === "fallido" ? (
-                      <button
-                        type="button"
-                        className="boton-secundario"
-                        style={{ width: "auto", padding: "4px 10px", fontSize: 12 }}
-                        onClick={() => reintentarCorreo(c.id_correo)}
-                        disabled={correoEnCurso === c.id_correo}
-                      >
-                        {correoEnCurso === c.id_correo ? "Reintentando..." : "Reintentar"}
-                      </button>
-                    ) : (
-                      <span style={{ fontSize: 12, color: "#9ca3af" }}>—</span>
-                    )}
                   </td>
                 </tr>
               ))}

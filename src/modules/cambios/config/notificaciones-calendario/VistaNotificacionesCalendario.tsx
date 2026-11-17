@@ -3,27 +3,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 
-import { PestanaNotificaciones } from "./components/PestanaNotificaciones";
 import { PestanaVentanasMantenimiento } from "./components/PestanaVentanasMantenimiento";
 import { PestanaPeriodosCongelamiento } from "./components/PestanaPeriodosCongelamiento";
 import { PestanaFeriados } from "./components/PestanaFeriados";
 import { PestanaConflictosCapacidad } from "./components/PestanaConflictosCapacidad";
-import { PestanaPresentacionCalendario } from "./components/PestanaPresentacionCalendario";
 
 type TabId = 
-  | "notificaciones" 
   | "ventanas_mantenimiento" 
   | "periodos_congelamiento" 
   | "feriados" 
-  | "conflictos_capacidad" 
-  | "presentacion_calendario";
+  | "conflictos_capacidad";
 
 const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion: string }> = {
-  notificaciones: {
-    numero: "1.3.3.4.1",
-    titulo: "Notificaciones",
-    descripcion: "32 eventos de dominio ITIL v4, canales, destinatarios, comunicados de interrupción y horas de silencio."
-  },
   ventanas_mantenimiento: {
     numero: "1.3.3.4.2",
     titulo: "Ventanas de mantenimiento",
@@ -43,11 +34,6 @@ const PESTANAS_INFO: Record<TabId, { numero: string; titulo: string; descripcion
     numero: "1.3.3.4.5",
     titulo: "Conflictos y capacidad",
     descripcion: "Reglas de solapamiento de CIs, servicios, implementadores, tolerancias y simulador de disponibilidad."
-  },
-  presentacion_calendario: {
-    numero: "1.3.3.4.6",
-    titulo: "Presentación del calendario",
-    descripcion: "Configuración visual de 5.1.2: criterios cromáticos, vistas, capas, tooltips y suscripción ICS."
   }
 };
 
@@ -55,13 +41,11 @@ const MAPA_VISTAS_TABS: Record<string, TabId> = {
   feriados: "feriados",
   congelamiento: "periodos_congelamiento",
   ventanas: "ventanas_mantenimiento",
-  notificaciones: "notificaciones",
   conflictos: "conflictos_capacidad",
-  presentacion: "presentacion_calendario",
 };
 
 function resolverTab(vistaParam: string | null): TabId {
-  return (vistaParam && MAPA_VISTAS_TABS[vistaParam]) || "notificaciones";
+  return (vistaParam && MAPA_VISTAS_TABS[vistaParam]) || "ventanas_mantenimiento";
 }
 
 export default function NotificacionesCalendarioPage() {
@@ -309,15 +293,6 @@ export default function NotificacionesCalendarioPage() {
           </div>
         ) : (
           <div>
-            <div style={{ display: tabActiva === "notificaciones" ? "block" : "none" }}>
-              <PestanaNotificaciones
-                config={snapshotsPorTab["notificaciones"] || configSnapshot}
-                onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "notificaciones")}
-                usuarios={catalogoUsuarios}
-                departamentos={catalogoDepartamentos}
-              />
-            </div>
-
             <div style={{ display: tabActiva === "ventanas_mantenimiento" ? "block" : "none" }}>
               <PestanaVentanasMantenimiento
                 config={snapshotsPorTab["ventanas_mantenimiento"] || configSnapshot}
@@ -351,13 +326,6 @@ export default function NotificacionesCalendarioPage() {
                 servicios={catalogoServicios}
                 ciList={catalogoCI}
                 usuarios={catalogoUsuarios}
-              />
-            </div>
-
-            <div style={{ display: tabActiva === "presentacion_calendario" ? "block" : "none" }}>
-              <PestanaPresentacionCalendario
-                config={snapshotsPorTab["presentacion_calendario"] || configSnapshot}
-                onChange={(nuevo) => actualizarSnapshotPestana(nuevo, "presentacion_calendario")}
               />
             </div>
           </div>

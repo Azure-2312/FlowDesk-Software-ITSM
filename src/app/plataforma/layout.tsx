@@ -14,6 +14,7 @@ import MenuLateral from "@/shared/components/layout/MenuLateral";
 import BarraLateral from "@/shared/components/layout/BarraLateral";
 import BotonLogout from "@/shared/components/layout/BotonLogout";
 import SelectorPerfil from "@/shared/components/layout/SelectorPerfil";
+import CampanaNotificaciones from "@/shared/components/layout/CampanaNotificaciones";
 
 // ----------------------------------------------------------------------------
 // 1. UTILIDAD DE AVATAR: Extrae iniciales del nombre para el círculo visual
@@ -52,9 +53,12 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
         <div className="barra-lateral-contenido">
           {/* Encabezado institucional y conmutador de perfil activo */}
           <div className="barra-lateral-cabecera">
-            <div className="marca-fila">
+            <div className="marca-fila" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
               <span className="marca-titulo">Sistema de tickets</span>
-              <SelectorPerfil perfiles={sesion.perfiles} perfilActivo={sesion.perfilActivo} />
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <CampanaNotificaciones />
+                <SelectorPerfil perfiles={sesion.perfiles} perfilActivo={sesion.perfilActivo} />
+              </div>
             </div>
           </div>
           {/* Árbol jerárquico de navegación por dominios ITIL */}

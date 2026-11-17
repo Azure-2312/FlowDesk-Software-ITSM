@@ -27,10 +27,3 @@ export type { DatosActualizarCuenta, ResultadoActualizarCuenta } from "./miCuent
 
 export { cambiarPerfil } from "./cambiarPerfilService";
 export type { ResultadoCambiarPerfil } from "./cambiarPerfilService";
-
-export {
-  solicitarRecuperacionClave,
-  verificarCodigoRecuperacion,
-  cambiarClaveRecuperacion,
-} from "./recuperacionClaveService";
-export type { ResultadoRecuperacion, DatosCambiarClaveRecuperacion } from "./recuperacionClaveService";

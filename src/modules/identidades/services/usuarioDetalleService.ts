@@ -134,7 +134,8 @@ export async function actualizarUsuario(idUsuario: number, body: any, contexto: 
              celular = $5, correo_personal = $6, correo_electronico = $7,
              clave = COALESCE($8, clave),
              id_departamento_empresa = $9, nivel_prioridad = $10,
-             usuario_modificacion = $11, fecha_modificacion = now()
+             usuario_modificacion = $11, fecha_modificacion = now(),
+             debe_cambiar_clave = CASE WHEN $8 IS NOT NULL THEN true ELSE debe_cambiar_clave END
          WHERE id_usuario = $12`,
         [
           dni.trim(),

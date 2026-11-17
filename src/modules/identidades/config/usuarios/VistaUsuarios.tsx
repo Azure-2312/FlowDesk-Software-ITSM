@@ -79,15 +79,12 @@ export default function PaginaUsuarios() {
 
   // Estados de proceso
   const [guardando, setGuardando] = useState(false);
-  const [enviandoCorreoCredenciales, setEnviandoCorreoCredenciales] = useState(false);
-  const [correoCredencialesEnviado, setCorreoCredencialesEnviado] = useState(false);
   const [mostrarClaveEnResumen, setMostrarClaveEnResumen] = useState(false);
   const [copiadoCorreo, setCopiadoCorreo] = useState(false);
   const [copiadoClave, setCopiadoClave] = useState(false);
 
   // Mensajes y alertas
   const [error, setError] = useState<string | null>(null);
-  const [errorEnvioCorreo, setErrorEnvioCorreo] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
 
   function mostrarNotificacion(msj: string) {
@@ -126,8 +123,6 @@ export default function PaginaUsuarios() {
     setFormulario(FORMULARIO_VACIO);
     setResumenNuevoUsuario(null);
     setError(null);
-    setErrorEnvioCorreo(null);
-    setCorreoCredencialesEnviado(false);
     setMostrarClaveEnResumen(false);
     setCopiadoCorreo(false);
     setCopiadoClave(false);
@@ -158,7 +153,6 @@ export default function PaginaUsuarios() {
     setVista("tabla");
     setFormulario(FORMULARIO_VACIO);
     setError(null);
-    setErrorEnvioCorreo(null);
   }
 
   function alternarPerfilEnFormulario(idPerfil: number) {
@@ -274,7 +268,6 @@ export default function PaginaUsuarios() {
         perfiles: perfilesNombres,
       });
 
-      setCorreoCredencialesEnviado(false);
       setVista("resumen");
     } catch {
       setError("Error de conexión al generar las credenciales. Intenta de nuevo.");
@@ -357,49 +350,12 @@ export default function PaginaUsuarios() {
     }
   }
 
-  // ---------- RESUMEN: Enviar Credenciales al Correo Personal ----------
-  async function manejarEnviarCredencialesPorCorreo() {
-    if (!resumenNuevoUsuario) return;
-
-    setEnviandoCorreoCredenciales(true);
-    setErrorEnvioCorreo(null);
-
-    try {
-      const respuesta = await fetch("/api/usuarios/enviar-credenciales", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          correo_personal: resumenNuevoUsuario.correo_personal,
-          correo_corporativo: resumenNuevoUsuario.correo_corporativo,
-          clave_temporal: resumenNuevoUsuario.clave_generada,
-          nombres: resumenNuevoUsuario.nombres,
-          perfiles: resumenNuevoUsuario.perfiles,
-        }),
-      });
-
-      const datos = await respuesta.json();
-
-      if (!respuesta.ok) {
-        setErrorEnvioCorreo(datos.error ?? "No se pudo enviar el correo de credenciales");
-        return;
-      }
-
-      setCorreoCredencialesEnviado(true);
-      mostrarNotificacion(`Credenciales enviadas a ${resumenNuevoUsuario.correo_personal}`);
-    } catch {
-      setErrorEnvioCorreo("Error de conexión al enviar el correo con credenciales");
-    } finally {
-      setEnviandoCorreoCredenciales(false);
-    }
-  }
-
   // ---------- RESUMEN: Finalizar y volver a la tabla ----------
   function finalizarCreacionUsuario() {
     setResumenNuevoUsuario(null);
     setFormulario(FORMULARIO_VACIO);
     setVista("tabla");
     setError(null);
-    setErrorEnvioCorreo(null);
     mostrarNotificacion("Usuario dado de alta exitosamente");
     cargarDatos();
   }
@@ -845,53 +801,28 @@ export default function PaginaUsuarios() {
         </div>
 
         {/* Alerta de error de envío si ocurrió */}
-        {errorEnvioCorreo && (
-          <div className="mensaje-error" style={{ marginBottom: 16 }}>
-            {errorEnvioCorreo}
-          </div>
-        )}
+        {/* Aviso de credencial temporal única vez (N6) */}
+        <div style={{
+          backgroundColor: "#eff6ff",
+          border: "1px solid #bfdbfe",
+          color: "#1e40af",
+          padding: "12px 16px",
+          borderRadius: 8,
+          marginBottom: 16,
+          fontSize: 13,
+        }}>
+          <strong>Contraseña temporal generada:</strong> Se muestra una única vez en pantalla. Cópiela y compártala con el usuario por un canal seguro interno. El usuario deberá cambiarla obligatoriamente en su primer inicio de sesión.
+        </div>
 
-        {/* Confirmación de correo enviado */}
-        {correoCredencialesEnviado && (
-          <div style={{
-            backgroundColor: "#ecfdf5",
-            border: "1px solid #a7f3d0",
-            color: "#065f46",
-            padding: "12px 16px",
-            borderRadius: 8,
-            marginBottom: 16,
-            fontSize: 13,
-            fontWeight: 500,
-          }}>
-            Credenciales enviadas exitosamente al correo personal: <strong>{resumenNuevoUsuario.correo_personal}</strong>
-          </div>
-        )}
-
-        {/* Botones de acción debajo del resumen */}
+        {/* Botón de acción debajo del resumen */}
         <div style={{ display: "flex", gap: 12, justifyContent: "flex-end", borderTop: "1px solid #e2e8f0", paddingTop: 18 }}>
           <button
             type="button"
             className="boton-primario"
-            onClick={manejarEnviarCredencialesPorCorreo}
-            disabled={enviandoCorreoCredenciales}
-            style={{
-              width: "auto",
-              backgroundColor: correoCredencialesEnviado ? "#059669" : "#2563eb",
-            }}
-          >
-            {enviandoCorreoCredenciales
-              ? "Enviando credenciales..."
-              : correoCredencialesEnviado
-              ? "Reenviar credenciales"
-              : "Enviar credenciales"}
-          </button>
-          <button
-            type="button"
-            className="boton-secundario"
             onClick={finalizarCreacionUsuario}
             style={{ width: "auto" }}
           >
-            Finalizar
+            Finalizar y volver a la tabla
           </button>
         </div>
       </div>

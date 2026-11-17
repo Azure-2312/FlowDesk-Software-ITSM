@@ -139,8 +139,6 @@ export function PestanaAlertasVencimiento({ datos, onChange, bloqueado }: Props)
   });
   const [formItem, setFormItem] = useState<Partial<ReglaAlertaItem>>({});
   const [diasInput, setDiasInput] = useState<string>("");
-  const [modalPrueba, setModalPrueba] = useState(false);
-  const [correoPrueba, setCorreoPrueba] = useState("");
   const [toastMensaje, setToastMensaje] = useState<string | null>(null);
 
   const mostrarToast = (msg: string) => {
@@ -185,16 +183,6 @@ export function PestanaAlertasVencimiento({ datos, onChange, bloqueado }: Props)
     mostrarToast("Alertas restauradas a valores estándar de fábrica");
   };
 
-  const enviarPrueba = () => {
-    if (!correoPrueba.trim()) {
-      mostrarToast("Ingrese un correo destinatario válido");
-      return;
-    }
-    setModalPrueba(false);
-    mostrarToast(`Notificación de prueba enviada exitosamente a ${correoPrueba}`);
-    setCorreoPrueba("");
-  };
-
   const alternarDestinatario = (rol: string) => {
     const actuales = formItem.destinatarios || [];
     if (actuales.includes(rol)) {
@@ -224,13 +212,6 @@ export function PestanaAlertasVencimiento({ datos, onChange, bloqueado }: Props)
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setModalPrueba(true)}
-            className="px-3 py-2 border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 text-sm font-medium rounded-md shadow-sm"
-          >
-            Enviar alerta de prueba
-          </button>
           <button
             type="button"
             disabled={bloqueado}
@@ -471,48 +452,6 @@ export function PestanaAlertasVencimiento({ datos, onChange, bloqueado }: Props)
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-sm font-semibold"
               >
                 Guardar cambios
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Envío de Alerta de Prueba */}
-      {modalPrueba && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
-            <h3 className="text-base font-bold text-slate-800 border-b pb-2">
-              Enviar Alerta de Prueba
-            </h3>
-            <p className="text-xs text-slate-500">
-              Verifique la recepción y el formato de las plantillas de notificación enviando una simulación al correo electrónico indicado.
-            </p>
-            <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">
-                Correo destinatario del usuario técnico
-              </label>
-              <input
-                type="email"
-                value={correoPrueba}
-                onChange={(e) => setCorreoPrueba(e.target.value)}
-                placeholder="ejemplo@organizacion.com"
-                className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-            <div className="flex justify-end gap-2 pt-3">
-              <button
-                type="button"
-                onClick={() => setModalPrueba(false)}
-                className="px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-700 hover:bg-slate-50"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={enviarPrueba}
-                className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-semibold"
-              >
-                Disparar prueba
               </button>
             </div>
           </div>
