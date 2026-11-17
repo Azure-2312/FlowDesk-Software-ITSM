@@ -122,7 +122,7 @@ export default function VistaPanelArea() {
             <Link href="/plataforma/aprobaciones?tipo=solicitud" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Mis aprobaciones de solicitudes</Link>
             <Link href="/plataforma/aprobaciones?tipo=cambio-negocio" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Aprobación de negocio de cambios</Link>
             <Link href="/plataforma/incidentes/bandeja?vista=departamento" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Tickets de mi departamento</Link>
-            <Link href="/plataforma/reportes/area" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Reportes del área</Link>
+            <Link href="/plataforma/reportes/operativos?vista=area" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Reportes del área</Link>
           </div>
         </div>
 

@@ -115,7 +115,7 @@ export default function VistaPanelAuditoria() {
             <Link href="/plataforma/seguridad/cumplimiento/sod" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Segregación de funciones</Link>
             <Link href="/plataforma/seguridad/cumplimiento/cambios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Cambios sin autorización</Link>
             <Link href="/plataforma/cmdb/cis" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Elementos de configuración (CMDB)</Link>
-            <Link href="/plataforma/reportes/auditoria" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Informes de auditoría</Link>
+            <Link href="/plataforma/reportes/operativos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Indicadores operativos y SLA</Link>
           </div>
         </div>
 
