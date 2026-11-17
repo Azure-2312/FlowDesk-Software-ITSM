@@ -85,10 +85,10 @@ function ContenidoCrearTicket({
   rutaDetalleBase,
   rutaLista,
 }: {
-  tipoFijo?: 1 | 2;
+  tipoFijo: 1 | 2;
   rutaDetalleBase?: string;
   rutaLista?: string;
-} = {}) {
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -338,8 +338,8 @@ function ContenidoCrearTicket({
     setEnNombreDeOtroValor("");
   }
 
-  // Detección de rol de personal técnico o de soporte
-  const esPersonalTI = perfilesIds.some((id) => [1, 2, 4, 8].includes(id));
+  // Detección de rol de personal técnico o de soporte / gestor autorizado
+  const esPersonalTI = perfilesIds.some((id) => [1, 2, 4, 5, 8].includes(id));
 
   // Campos del administrador visibles según la prioridad del usuario
   const esIncidente = idTipo === 1;
@@ -741,128 +741,6 @@ function ContenidoCrearTicket({
           {rutaLista ? "Volver al Listado" : "Volver"}
         </button>
       </div>
-
-      {/* 1.1 DOS CATEGORÍAS CON ICONOS GRANDES Y BREVE DEFINICIÓN */}
-      {!tipoFijo && (
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: 16,
-          marginBottom: 24,
-        }}
-      >
-        {/* Tarjeta 1: INCIDENTE */}
-        <div
-          onClick={() => cambiarCategoriaPrincipal(1)}
-          style={{
-            backgroundColor: "#ffffff",
-            border: idTipo === 1 ? "2.5px solid #ea580c" : "1px solid #e2e8f0",
-            borderRadius: 12,
-            padding: "20px 22px",
-            cursor: "pointer",
-            boxShadow: idTipo === 1 ? "0 4px 12px rgba(234, 88, 12, 0.12)" : "0 1px 3px rgba(0,0,0,0.03)",
-            transition: "all 0.15s ease",
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 16,
-            position: "relative",
-          }}
-        >
-          {/* Icono Grande de Incidente */}
-          <div
-            style={{
-              width: 54,
-              height: 54,
-              borderRadius: 12,
-              backgroundColor: idTipo === 1 ? "#fff7ed" : "#f8fafc",
-              color: idTipo === 1 ? "#ea580c" : "#64748b",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-          </div>
-
-          <div style={{ flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: idTipo === 1 ? "#c2410c" : "#0f172a", margin: 0 }}>
-                Incidente
-              </h2>
-              {idTipo === 1 && (
-                <span style={{ fontSize: 10.5, fontWeight: 700, backgroundColor: "#ffedd5", color: "#9a3412", padding: "2px 8px", borderRadius: 10 }}>
-                  Seleccionado
-                </span>
-              )}
-            </div>
-            <p style={{ fontSize: 12.5, color: "#64748b", margin: 0, lineHeight: 1.5 }}>
-              Reporte de fallas, averías técnicas, caídas de red o interrupciones no planificadas que impiden tu trabajo.
-            </p>
-          </div>
-        </div>
-
-        {/* Tarjeta 2: SOLICITUD DE SERVICIO */}
-        <div
-          onClick={() => cambiarCategoriaPrincipal(2)}
-          style={{
-            backgroundColor: "#ffffff",
-            border: idTipo === 2 ? "2.5px solid #2563eb" : "1px solid #e2e8f0",
-            borderRadius: 12,
-            padding: "20px 22px",
-            cursor: "pointer",
-            boxShadow: idTipo === 2 ? "0 4px 12px rgba(37, 99, 235, 0.12)" : "0 1px 3px rgba(0,0,0,0.03)",
-            transition: "all 0.15s ease",
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 16,
-            position: "relative",
-          }}
-        >
-          {/* Icono Grande de Solicitud */}
-          <div
-            style={{
-              width: 54,
-              height: 54,
-              borderRadius: 12,
-              backgroundColor: idTipo === 2 ? "#eff6ff" : "#f8fafc",
-              color: idTipo === 2 ? "#2563eb" : "#64748b",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-              <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-              <path d="m9 14 2 2 4-4" />
-            </svg>
-          </div>
-
-          <div style={{ flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: idTipo === 2 ? "#1d4ed8" : "#0f172a", margin: 0 }}>
-                Solicitud de Servicio
-              </h2>
-              {idTipo === 2 && (
-                <span style={{ fontSize: 10.5, fontWeight: 700, backgroundColor: "#dbeafe", color: "#1e40af", padding: "2px 8px", borderRadius: 10 }}>
-                  Seleccionado
-                </span>
-              )}
-            </div>
-            <p style={{ fontSize: 12.5, color: "#64748b", margin: 0, lineHeight: 1.5 }}>
-              Petición de nuevo equipamiento, creación de usuarios y accesos, licencias de software o peticiones estándar de TI.
-            </p>
-          </div>
-        </div>
-      </div>
-      )}
 
       {/* ========================================================================= */}
       {/* FORMULARIO OFICIAL CORRESPONDIENTE (ESTRUCTURA IDÉNTICA A LA VISTA PREVIA)*/}
@@ -1729,10 +1607,10 @@ export default function PaginaCrearTicket({
   rutaDetalleBase,
   rutaLista,
 }: {
-  tipoFijo?: 1 | 2;
+  tipoFijo: 1 | 2;
   rutaDetalleBase?: string;
   rutaLista?: string;
-} = {}) {
+}) {
   return (
     <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Cargando formulario...</div>}>
       <ContenidoCrearTicket tipoFijo={tipoFijo} rutaDetalleBase={rutaDetalleBase} rutaLista={rutaLista} />

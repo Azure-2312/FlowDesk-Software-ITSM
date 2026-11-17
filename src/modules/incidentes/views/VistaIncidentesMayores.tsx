@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
+import Link from "next/link";
 
 interface Incidente {
   id_incidente_mayor: number;
@@ -158,6 +159,13 @@ export default function VistaIncidentesMayores() {
                   <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 999, backgroundColor: im.estado === "ABIERTO" ? "#fee2e2" : im.estado === "MITIGADO" ? "#fef3c7" : "#dcfce7", color: im.estado === "ABIERTO" ? "#b91c1c" : im.estado === "MITIGADO" ? "#92400e" : "#166534" }}>
                     {im.estado}
                   </span>
+                  <Link
+                    href={`/plataforma/incidentes/mayores?vista=sala-crisis&abrir=${im.id_incidente_mayor}`}
+                    className="boton-secundario"
+                    style={{ width: "auto", textDecoration: "none" }}
+                  >
+                    Sala de crisis
+                  </Link>
                   <button className="boton-secundario" style={{ width: "auto" }} onClick={() => comunicar(im.id_incidente_mayor)}>Comunicar</button>
                   {im.estado !== "CERRADO" && (
                     <>

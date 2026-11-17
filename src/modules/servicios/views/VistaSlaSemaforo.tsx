@@ -4,8 +4,8 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { Ticket } from "@/types";
 
-export default function PaginaSlaSemaforo() {
-  const [alcance, setAlcance] = useState<"mios" | "area">("mios");
+export default function PaginaSlaSemaforo({ alcanceInicial = "mios" }: { alcanceInicial?: "mios" | "area" } = {}) {
+  const [alcance, setAlcance] = useState<"mios" | "area">(alcanceInicial);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);

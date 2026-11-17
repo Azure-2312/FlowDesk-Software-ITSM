@@ -6,11 +6,11 @@ export default async function PaginaIncidentesCrear() {
 
   let rutaLista = "/plataforma/incidentes/mios";
   if ([1, 4, 6].includes(idPerfil)) {
-    rutaLista = "/plataforma/incidentes";
+    rutaLista = "/plataforma/incidentes/bandeja?vista=todos";
   } else if (idPerfil === 2) {
-    rutaLista = "/plataforma/incidentes/asignados";
+    rutaLista = "/plataforma/incidentes/bandeja?vista=asignados";
   } else if (idPerfil === 5) {
-    rutaLista = "/plataforma/incidentes/departamento";
+    rutaLista = "/plataforma/incidentes/bandeja?vista=departamento";
   }
 
   return (

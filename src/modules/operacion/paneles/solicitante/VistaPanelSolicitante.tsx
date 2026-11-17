@@ -156,7 +156,7 @@ export default function VistaPanelSolicitante() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/tickets/gestion/crear" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Registrar un ticket</Link>
+            <Link href="/plataforma/incidentes/crear" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Registrar un incidente</Link>
             <Link href="/plataforma/tickets/catalogo?tipo=incidente" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Reportar un incidente</Link>
             <Link href="/plataforma/tickets/catalogo?tipo=solicitud" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Pedir un servicio</Link>
             <Link href="/plataforma/tickets" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Ver todos mis tickets</Link>
