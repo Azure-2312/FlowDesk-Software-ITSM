@@ -139,7 +139,7 @@ export default function PaginaLogin() {
         return;
       }
 
-      router.push("/plataforma/dashboard");
+      router.push("/plataforma/inicio");
       router.refresh();
     } catch {
       setErrorLogin("Error de conexión. Intenta de nuevo.");
@@ -168,7 +168,7 @@ export default function PaginaLogin() {
         return;
       }
 
-      router.push("/plataforma/dashboard");
+      router.push("/plataforma/inicio");
       router.refresh();
     } catch {
       setErrorLogin("Error de conexión. Intenta de nuevo.");

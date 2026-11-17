@@ -54,7 +54,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
           {/* Encabezado institucional y conmutador de perfil activo */}
           <div className="barra-lateral-cabecera">
             <div className="marca-fila" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
-              <span className="marca-titulo">Sistema de tickets</span>
+              <Link href="/plataforma/inicio" className="marca-titulo" style={{ textDecoration: "none", color: "inherit" }}>Sistema de tickets</Link>
               <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <CampanaNotificaciones />
                 <SelectorPerfil perfiles={sesion.perfiles} perfilActivo={sesion.perfilActivo} />

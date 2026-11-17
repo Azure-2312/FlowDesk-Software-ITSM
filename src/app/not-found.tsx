@@ -92,7 +92,7 @@ export default function Pagina404NoEncontrada() {
           </button>
 
           <Link
-            href="/plataforma/dashboard"
+            href="/plataforma/inicio"
             className="boton-primario"
             style={{
               display: "inline-flex",
