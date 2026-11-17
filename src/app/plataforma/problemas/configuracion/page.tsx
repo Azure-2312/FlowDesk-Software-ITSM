@@ -1,0 +1,31 @@
+import { exigirVistaPagina } from "@/shared/lib/vistas";
+import PestanasVista from "@/shared/components/ui/PestanasVista";
+import VistaFormularioProblemas from "@/modules/problemas/config/formulario/VistaFormularioProblemas";
+
+interface PageProps {
+  searchParams?: Promise<{ vista?: string }> | { vista?: string };
+}
+
+export default async function PaginaProblemasConfiguracion({ searchParams }: PageProps) {
+  const resolvedParams = searchParams ? await searchParams : undefined;
+  const { vistaActiva, vistasPermitidas } = await exigirVistaPagina(
+    "/plataforma/problemas/configuracion",
+    resolvedParams?.vista
+  );
+
+  return (
+    <div className="space-y-4">
+      {vistasPermitidas.length > 1 && (
+        <div className="bg-white px-6 pt-4 rounded-xl border border-slate-200 shadow-sm">
+          <PestanasVista
+            vistas={vistasPermitidas}
+            vistaActiva={vistaActiva}
+            urlBase="/plataforma/problemas/configuracion"
+          />
+        </div>
+      )}
+      {vistaActiva === "campos" && <VistaFormularioProblemas pestanaFija="campos" />}
+      {vistaActiva === "listas" && <VistaFormularioProblemas pestanaFija="listas_catalogos" />}
+    </div>
+  );
+}

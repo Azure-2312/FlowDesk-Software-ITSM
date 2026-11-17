@@ -18,8 +18,18 @@ type TabId =
   | "plantillas"
   | "vista_ticket";
 
-export default function ConfiguracionFormularioPage() {
-  const [tabActiva, setTabActiva] = useState<TabId>("campos");
+interface VistaFormularioProblemasProps {
+  pestanaFija?: "campos" | "listas_catalogos";
+}
+
+export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormularioProblemasProps = {}) {
+  const [tabActiva, setTabActiva] = useState<TabId>(pestanaFija || "campos");
+
+  useEffect(() => {
+    if (pestanaFija) {
+      setTabActiva(pestanaFija);
+    }
+  }, [pestanaFija]);
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
@@ -444,7 +454,8 @@ export default function ConfiguracionFormularioPage() {
         </div>
       </div>
 
-      {/* Selector de las 6 Pestañas Reglamentarias */}
+      {/* Selector de Pestañas (solo si no es fija) */}
+      {!pestanaFija && (
       <div style={{
         display: "flex",
         gap: 8,
@@ -484,6 +495,7 @@ export default function ConfiguracionFormularioPage() {
           );
         })}
       </div>
+      )}
 
       {/* Estados de Pantalla: Cargando / Error / Contenido */}
       {cargando ? (
