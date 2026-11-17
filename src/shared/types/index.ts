@@ -63,6 +63,8 @@ export interface OpcionMenuAdmin extends OpcionMenuPlana {
   nombre_padre: string | null;
   perfiles_ids: number[];
   estado_registro: boolean;
+  vistas?: { codigo: string; etiqueta: string }[];
+  vistas_perfiles?: { id_perfil: number; vista: string }[];
 }
 
 export interface PerfilBasico {

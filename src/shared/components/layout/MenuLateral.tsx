@@ -106,11 +106,11 @@ export default function Menu({ opciones, nivel = 1 }: Props) {
         // se iluminen al mismo tiempo (ej: artículos vs categorías).
         const navegable = !tieneHijos && Boolean(opcion.url_menu);
         const urlBase = opcion.url_menu ? opcion.url_menu.split("?")[0] : "";
-        const coincideExacto = opcion.url_menu === pathname;
+        const coincideExacto = urlBase === pathname;
         const hayHermanoConCoincidenciaMasEspecifica = opciones.some((otra) => {
           if (otra.id_opcion_menu === opcion.id_opcion_menu || !otra.url_menu) return false;
           const otraBase = otra.url_menu.split("?")[0];
-          if (otra.url_menu === pathname || otraBase === pathname) return true;
+          if (otraBase === pathname) return true;
           return otraBase.length > urlBase.length && pathname.startsWith(otraBase + "/");
         });
 

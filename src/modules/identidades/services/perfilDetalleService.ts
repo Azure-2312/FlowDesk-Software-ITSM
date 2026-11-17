@@ -62,6 +62,40 @@ export async function actualizarPerfil(idPerfil: number, body: any) {
         );
       }
     }
+
+    // Sincronizar permisos por vista (N1)
+    if (body.vistas_por_opcion && typeof body.vistas_por_opcion === "object") {
+      for (const [idOpStr, vistasList] of Object.entries(body.vistas_por_opcion)) {
+        const idOpcion = Number(idOpStr);
+        if (!Array.isArray(vistasList)) continue;
+
+        if (vistasList.length === 0) {
+          await client.query(
+            `UPDATE opciones_menu_vistas_perfiles
+             SET estado_registro = false
+             WHERE id_perfil = $1 AND id_opcion_menu = $2`,
+            [idPerfil, idOpcion]
+          );
+        } else {
+          await client.query(
+            `UPDATE opciones_menu_vistas_perfiles
+             SET estado_registro = false
+             WHERE id_perfil = $1 AND id_opcion_menu = $2 AND vista <> ALL($3::varchar[])`,
+            [idPerfil, idOpcion, vistasList]
+          );
+
+          for (const v of vistasList) {
+            await client.query(
+              `INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro)
+               VALUES ($1, $2, $3, true)
+               ON CONFLICT (id_opcion_menu, id_perfil, vista)
+               DO UPDATE SET estado_registro = true`,
+              [idOpcion, idPerfil, v]
+            );
+          }
+        }
+      }
+    }
   });
 
   return { ok: true };
