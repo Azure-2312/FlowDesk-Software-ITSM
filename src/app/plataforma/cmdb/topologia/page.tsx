@@ -1,5 +1,7 @@
-import VistaCmdb from "@/modules/cmdb/views/VistaCmdb";
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import VistaActivosMapa from "@/modules/cmdb/views/VistaActivosMapa";
 
-export default function PaginaCmdb() {
-  return <VistaCmdb />;
+export default async function PaginaTopologiaCmdb() {
+  await exigirMenuPagina("/plataforma/cmdb/topologia");
+  return <VistaActivosMapa />;
 }

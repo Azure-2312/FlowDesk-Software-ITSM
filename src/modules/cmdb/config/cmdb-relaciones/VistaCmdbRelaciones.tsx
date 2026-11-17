@@ -5,18 +5,10 @@ import Link from "next/link";
 
 import { PestanaClasesCI } from "./components/PestanaClasesCI";
 import { PestanaTiposRelacion } from "./components/PestanaTiposRelacion";
-import { PestanaCriticidadEntornos } from "./components/PestanaCriticidadEntornos";
-import { PestanaReglasIntegridad } from "./components/PestanaReglasIntegridad";
-import { PestanaFuentesAtributosProtegidos } from "./components/PestanaFuentesAtributosProtegidos";
-import { PestanaAuditoriaLineasBase } from "./components/PestanaAuditoriaLineasBase";
 
 type TabId =
   | "clases_ci"
-  | "tipos_relacion"
-  | "criticidad_entornos"
-  | "reglas_integridad"
-  | "fuentes_atributos_protegidos"
-  | "auditoria_lineas_base";
+  | "tipos_relacion";
 
 interface PestanaMetadata {
   id: TabId;
@@ -37,58 +29,45 @@ const PESTANAS: PestanaMetadata[] = [
     numero: "1.5.4.2",
     titulo: "Tipos de relación",
     descripcion: "Catálogo de relaciones topológicas ITIL, dirección de propagación de fallos, matriz de clases permitidas y simulador."
-  },
-  {
-    id: "criticidad_entornos",
-    numero: "1.5.4.3",
-    titulo: "Criticidad y entornos",
-    descripcion: "Escala de criticidad con RTO/RPO, motor de cálculo de criticidad efectiva por topología y entornos operacionales."
-  },
-  {
-    id: "reglas_integridad",
-    numero: "1.5.4.4",
-    titulo: "Reglas de integridad",
-    descripcion: "Controles de coherencia topológica, prevención de CI huérfanos, validación de ciclos y diagnóstico en vivo."
-  },
-  {
-    id: "fuentes_atributos_protegidos",
-    numero: "1.5.4.5",
-    titulo: "Fuentes y atributos protegidos",
-    descripcion: "Jerarquía de fuentes de datos autorizadas, reconciliación y bloqueo de modificaciones sin cambio formal (RFC)."
-  },
-  {
-    id: "auditoria_lineas_base",
-    numero: "1.5.4.6",
-    titulo: "Auditoría de CMDB y líneas base",
-    descripcion: "Campañas de verificación de exactitud, metas institucionales y snapshots inmutables para comparación histórica."
   }
 ];
 
 const TAB_POR_SLUG: Record<string, TabId> = {
   "clases-ci": "clases_ci",
+  "clases": "clases_ci",
   "relaciones": "tipos_relacion",
-  "criticidad": "criticidad_entornos",
-  "integridad": "reglas_integridad",
-  "fuentes": "fuentes_atributos_protegidos",
-  "lineas-base": "auditoria_lineas_base",
 };
 
 const SLUG_POR_TAB: Record<TabId, string> = {
-  clases_ci: "clases-ci",
+  clases_ci: "clases",
   tipos_relacion: "relaciones",
-  criticidad_entornos: "criticidad",
-  reglas_integridad: "integridad",
-  fuentes_atributos_protegidos: "fuentes",
-  auditoria_lineas_base: "lineas-base",
 };
 
-export default function CmdbRelacionesConfigPage() {
-  const [tabActiva, setTabActiva] = useState<TabId>("clases_ci");
+export default function CmdbRelacionesConfigPage({
+  pestanaFija,
+}: {
+  pestanaFija?: TabId | string;
+} = {}) {
+  const tabInicial: TabId = pestanaFija && TAB_POR_SLUG[pestanaFija]
+    ? TAB_POR_SLUG[pestanaFija]
+    : pestanaFija === "tipos_relacion" || pestanaFija === "relaciones"
+    ? "tipos_relacion"
+    : "clases_ci";
+
+  const [tabActiva, setTabActiva] = useState<TabId>(tabInicial);
   const [cargando, setCargando] = useState<boolean>(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
   // Control de enlaces profundos (?vista=)
   useEffect(() => {
+    if (pestanaFija) {
+      if (pestanaFija === "tipos_relacion" || pestanaFija === "relaciones") {
+        setTabActiva("tipos_relacion");
+      } else {
+        setTabActiva("clases_ci");
+      }
+      return;
+    }
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const vistaParam = params.get("vista");
@@ -96,7 +75,7 @@ export default function CmdbRelacionesConfigPage() {
         setTabActiva(TAB_POR_SLUG[vistaParam]);
       }
     }
-  }, []);
+  }, [pestanaFija]);
 
   const cambiarTab = (nuevaTab: TabId) => {
     setTabActiva(nuevaTab);
@@ -261,38 +240,40 @@ export default function CmdbRelacionesConfigPage() {
         </div>
 
         {/* Navegación horizontal de pestañas */}
-        <div style={{
-          display: "flex",
-          gap: 8,
-          borderBottom: "1px solid #e2e8f0",
-          marginBottom: 28,
-          justifyContent: "flex-start",
-          overflowX: "auto"
-        }}>
-          {PESTANAS.map((pestana) => {
-            const activa = tabActiva === pestana.id;
-            return (
-              <button
-                key={pestana.id}
-                onClick={() => cambiarTab(pestana.id)}
-                style={{
-                  padding: "12px 18px",
-                  border: "none",
-                  background: "transparent",
-                  borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
-                  color: activa ? "#2563eb" : "#64748b",
-                  fontWeight: activa ? 600 : 500,
-                  fontSize: 13.5,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  transition: "all 0.15s ease",
-                }}
-              >
-                {pestana.titulo}
-              </button>
-            );
-          })}
-        </div>
+        {!pestanaFija && (
+          <div style={{
+            display: "flex",
+            gap: 8,
+            borderBottom: "1px solid #e2e8f0",
+            marginBottom: 28,
+            justifyContent: "flex-start",
+            overflowX: "auto"
+          }}>
+            {PESTANAS.map((pestana) => {
+              const activa = tabActiva === pestana.id;
+              return (
+                <button
+                  key={pestana.id}
+                  onClick={() => cambiarTab(pestana.id)}
+                  style={{
+                    padding: "12px 18px",
+                    border: "none",
+                    background: "transparent",
+                    borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
+                    color: activa ? "#2563eb" : "#64748b",
+                    fontWeight: activa ? 600 : 500,
+                    fontSize: 13.5,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  {pestana.titulo}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Contenido Principal de la Pestaña Activa */}
         <div style={{ width: "100%" }}>
@@ -330,34 +311,6 @@ export default function CmdbRelacionesConfigPage() {
               <PestanaTiposRelacion
                 datos={snapshotsPorTab["tipos_relacion"] || configSnapshot}
                 onChange={(d) => handleSnapshotChange(d, "tipos_relacion")}
-                bloqueado={Boolean(bloqueadoPorOtro)}
-              />
-            </div>
-            <div style={{ display: tabActiva === "criticidad_entornos" ? "block" : "none" }}>
-              <PestanaCriticidadEntornos
-                datos={snapshotsPorTab["criticidad_entornos"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "criticidad_entornos")}
-                bloqueado={Boolean(bloqueadoPorOtro)}
-              />
-            </div>
-            <div style={{ display: tabActiva === "reglas_integridad" ? "block" : "none" }}>
-              <PestanaReglasIntegridad
-                datos={snapshotsPorTab["reglas_integridad"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "reglas_integridad")}
-                bloqueado={Boolean(bloqueadoPorOtro)}
-              />
-            </div>
-            <div style={{ display: tabActiva === "fuentes_atributos_protegidos" ? "block" : "none" }}>
-              <PestanaFuentesAtributosProtegidos
-                datos={snapshotsPorTab["fuentes_atributos_protegidos"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "fuentes_atributos_protegidos")}
-                bloqueado={Boolean(bloqueadoPorOtro)}
-              />
-            </div>
-            <div style={{ display: tabActiva === "auditoria_lineas_base" ? "block" : "none" }}>
-              <PestanaAuditoriaLineasBase
-                datos={snapshotsPorTab["auditoria_lineas_base"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "auditoria_lineas_base")}
                 bloqueado={Boolean(bloqueadoPorOtro)}
               />
             </div>
