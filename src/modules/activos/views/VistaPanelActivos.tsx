@@ -91,11 +91,11 @@ export default function VistaPanelActivos() {
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
-            href="/plataforma/activos/recepcion"
+            href="/plataforma/activos/inventario"
             className="boton-primario"
             style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
-            Recepción de Activos
+            Inventario de Activos
           </Link>
           <button
             type="button"
@@ -122,10 +122,10 @@ export default function VistaPanelActivos() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/activos/importacion" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Importación masiva</Link>
+            <Link href="/plataforma/activos/inventario?vista=importar" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Importación masiva</Link>
             <Link href="/plataforma/activos/asignaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Asignaciones y actas</Link>
-            <Link href="/plataforma/activos/licencias/cumplimiento" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Cumplimiento de licencias</Link>
-            <Link href="/plataforma/cmdb/auditoria" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Auditoría de CMDB</Link>
+            <Link href="/plataforma/activos/licencias" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Licencias de software</Link>
+            <Link href="/plataforma/activos/contratos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Contratos y proveedores</Link>
           </div>
         </div>
 

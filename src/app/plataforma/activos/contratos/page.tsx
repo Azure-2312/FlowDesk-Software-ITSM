@@ -1,8 +1,41 @@
+import { exigirVistaPagina } from "@/shared/lib/vistas";
+import PestanasVista from "@/shared/components/ui/PestanasVista";
 import VistaContratos from "@/modules/activos/views/VistaContratos";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
-import { exigirCapacidadPagina } from "@/shared/lib/page-auth";
+import VistaContratosArea from "@/modules/activos/views/VistaContratosArea";
+import VistaRenovaciones from "@/modules/activos/views/VistaRenovaciones";
+import VistaProveedores from "@/modules/proveedores/views/VistaProveedores";
+import { CAPACIDADES, tieneCapacidad } from "@/shared/lib/capacidades";
 
-export default function PaginaContratos() {
-  exigirCapacidadPagina(CAPACIDADES.PROVEEDORES_GESTIONAR);
-  return <VistaContratos />;
+interface PageProps {
+  searchParams?: Promise<{ vista?: string }> | { vista?: string };
+}
+
+export default async function PaginaContratos({ searchParams }: PageProps) {
+  const resolvedParams = searchParams ? await searchParams : undefined;
+  const { vistaActiva, vistasPermitidas, idPerfil } = await exigirVistaPagina(
+    "/plataforma/activos/contratos",
+    resolvedParams?.vista
+  );
+
+  return (
+    <div className="space-y-4">
+      {vistasPermitidas.length > 1 && (
+        <div className="bg-white px-6 pt-4 rounded-xl border border-slate-200 shadow-sm">
+          <PestanasVista
+            vistas={vistasPermitidas}
+            vistaActiva={vistaActiva}
+            urlBase="/plataforma/activos/contratos"
+          />
+        </div>
+      )}
+      {vistaActiva === "contratos" && <VistaContratos />}
+      {vistaActiva === "mi-area" && <VistaContratosArea />}
+      {vistaActiva === "renovaciones" && <VistaRenovaciones />}
+      {vistaActiva === "proveedores" && (
+        <VistaProveedores
+          puedeEditar={tieneCapacidad(idPerfil, CAPACIDADES.PROVEEDORES_GESTIONAR)}
+        />
+      )}
+    </div>
+  );
 }
