@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export default function PaginaRevisionesPendientes() {
+export default function VistaConocimientoRevisiones({
+  vista = "publicacion",
+}: {
+  vista?: "publicacion" | "pendientes";
+} = {}) {
   const [articulos, setArticulos] = useState<any[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,15 +34,21 @@ export default function PaginaRevisionesPendientes() {
     cargarRevisiones();
   }, []);
 
+  const esPublicacion = vista === "publicacion";
+
   return (
     <div style={{ padding: "24px 32px", maxWidth: 1300, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-            Revisiones de conocimiento pendientes
+            {esPublicacion
+              ? "Revisión y publicación de artículos"
+              : "Revisiones de conocimiento pendientes"}
           </h1>
           <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
-            Artículos redactados por el equipo a la espera de validación técnica y aprobación editorial ({articulos.length} pendientes)
+            {esPublicacion
+              ? `Artículos listos para dictamen editorial final y publicación en la base de conocimiento (${articulos.length} pendientes)`
+              : `Artículos redactados por el equipo a la espera de validación técnica (${articulos.length} pendientes)`}
           </p>
         </div>
 
