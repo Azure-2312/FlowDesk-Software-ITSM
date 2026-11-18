@@ -1,0 +1,406 @@
+id_opcion_menu,opcion_menu,url_menu,orden,id_padre,id_perfil,perfil,vista
+21001,"Mi trabajo",,1,,1,"Administrador",
+21001,"Mi trabajo",,1,,2,"Tecnico",
+21001,"Mi trabajo",,1,,3,"Solicitante",
+21001,"Mi trabajo",,1,,4,"Supervisor",
+21001,"Mi trabajo",,1,,5,"Gestor de Area",
+21001,"Mi trabajo",,1,,6,"Auditor",
+21001,"Mi trabajo",,1,,7,"Aprobador",
+21001,"Mi trabajo",,1,,8,"Gestor de Cambios",
+21001,"Mi trabajo",,1,,9,"Gestor de Activos y Configuracion",
+21001,"Mi trabajo",,1,,10,"Gestor de Problemas",
+21023,"Mesa de Servicio",,2,,1,"Administrador",
+21023,"Mesa de Servicio",,2,,2,"Tecnico",
+21023,"Mesa de Servicio",,2,,3,"Solicitante",
+21023,"Mesa de Servicio",,2,,4,"Supervisor",
+21023,"Mesa de Servicio",,2,,5,"Gestor de Area",
+21023,"Mesa de Servicio",,2,,6,"Auditor",
+21023,"Mesa de Servicio",,2,,7,"Aprobador",
+21059,"Cambios",,3,,1,"Administrador",
+21059,"Cambios",,3,,2,"Tecnico",
+21059,"Cambios",,3,,4,"Supervisor",
+21059,"Cambios",,3,,5,"Gestor de Area",
+21059,"Cambios",,3,,6,"Auditor",
+21059,"Cambios",,3,,7,"Aprobador",
+21059,"Cambios",,3,,8,"Gestor de Cambios",
+21091,"Problemas",,4,,1,"Administrador",
+21091,"Problemas",,4,,2,"Tecnico",
+21091,"Problemas",,4,,4,"Supervisor",
+21091,"Problemas",,4,,6,"Auditor",
+21091,"Problemas",,4,,7,"Aprobador",
+21091,"Problemas",,4,,10,"Gestor de Problemas",
+21109,"Activos y CMDB",,5,,1,"Administrador",
+21109,"Activos y CMDB",,5,,2,"Tecnico",
+21109,"Activos y CMDB",,5,,3,"Solicitante",
+21109,"Activos y CMDB",,5,,4,"Supervisor",
+21109,"Activos y CMDB",,5,,5,"Gestor de Area",
+21109,"Activos y CMDB",,5,,6,"Auditor",
+21109,"Activos y CMDB",,5,,7,"Aprobador",
+21109,"Activos y CMDB",,5,,9,"Gestor de Activos y Configuracion",
+21156,"Conocimiento",,6,,1,"Administrador",
+21156,"Conocimiento",,6,,2,"Tecnico",
+21156,"Conocimiento",,6,,3,"Solicitante",
+21156,"Conocimiento",,6,,4,"Supervisor",
+21156,"Conocimiento",,6,,5,"Gestor de Area",
+21163,"Catálogo de Servicios",,7,,1,"Administrador",
+21163,"Catálogo de Servicios",,7,,2,"Tecnico",
+21163,"Catálogo de Servicios",,7,,3,"Solicitante",
+21163,"Catálogo de Servicios",,7,,4,"Supervisor",
+21163,"Catálogo de Servicios",,7,,5,"Gestor de Area",
+21174,"Reportes",,9,,1,"Administrador",
+21174,"Reportes",,9,,4,"Supervisor",
+21174,"Reportes",,9,,5,"Gestor de Area",
+21174,"Reportes",,9,,6,"Auditor",
+21174,"Reportes",,9,,7,"Aprobador",
+21174,"Reportes",,9,,8,"Gestor de Cambios",
+21174,"Reportes",,9,,9,"Gestor de Activos y Configuracion",
+21174,"Reportes",,9,,10,"Gestor de Problemas",
+21264,"Organización",,10,,1,"Administrador",
+21215,"Plataforma",,11,,1,"Administrador",
+21215,"Plataforma",,11,,6,"Auditor",
+21225,"Mi cuenta",,12,,1,"Administrador",
+21225,"Mi cuenta",,12,,2,"Tecnico",
+21225,"Mi cuenta",,12,,3,"Solicitante",
+21225,"Mi cuenta",,12,,4,"Supervisor",
+21225,"Mi cuenta",,12,,5,"Gestor de Area",
+21225,"Mi cuenta",,12,,6,"Auditor",
+21225,"Mi cuenta",,12,,7,"Aprobador",
+21225,"Mi cuenta",,12,,8,"Gestor de Cambios",
+21225,"Mi cuenta",,12,,9,"Gestor de Activos y Configuracion",
+21225,"Mi cuenta",,12,,10,"Gestor de Problemas",
+21022,"Inicio",/plataforma/inicio,1,21001,1,"Administrador",administrador
+21022,"Inicio",/plataforma/inicio,1,21001,1,"Administrador",aprobador
+21022,"Inicio",/plataforma/inicio,1,21001,1,"Administrador",area
+21022,"Inicio",/plataforma/inicio,1,21001,1,"Administrador",auditor
+21022,"Inicio",/plataforma/inicio,1,21001,1,"Administrador",gestion-activos
+21022,"Inicio",/plataforma/inicio,1,21001,1,"Administrador",gestion-cambios
+21022,"Inicio",/plataforma/inicio,1,21001,1,"Administrador",gestion-problemas
+21022,"Inicio",/plataforma/inicio,1,21001,1,"Administrador",solicitante
+21022,"Inicio",/plataforma/inicio,1,21001,1,"Administrador",supervisor
+21022,"Inicio",/plataforma/inicio,1,21001,1,"Administrador",tecnico
+21022,"Inicio",/plataforma/inicio,1,21001,2,"Tecnico",solicitante
+21022,"Inicio",/plataforma/inicio,1,21001,2,"Tecnico",tecnico
+21022,"Inicio",/plataforma/inicio,1,21001,3,"Solicitante",solicitante
+21022,"Inicio",/plataforma/inicio,1,21001,4,"Supervisor",solicitante
+21022,"Inicio",/plataforma/inicio,1,21001,4,"Supervisor",supervisor
+21022,"Inicio",/plataforma/inicio,1,21001,4,"Supervisor",tecnico
+21022,"Inicio",/plataforma/inicio,1,21001,5,"Gestor de Area",area
+21022,"Inicio",/plataforma/inicio,1,21001,5,"Gestor de Area",solicitante
+21022,"Inicio",/plataforma/inicio,1,21001,6,"Auditor",auditor
+21022,"Inicio",/plataforma/inicio,1,21001,6,"Auditor",solicitante
+21022,"Inicio",/plataforma/inicio,1,21001,7,"Aprobador",aprobador
+21022,"Inicio",/plataforma/inicio,1,21001,7,"Aprobador",solicitante
+21022,"Inicio",/plataforma/inicio,1,21001,8,"Gestor de Cambios",gestion-cambios
+21022,"Inicio",/plataforma/inicio,1,21001,8,"Gestor de Cambios",solicitante
+21022,"Inicio",/plataforma/inicio,1,21001,9,"Gestor de Activos y Configuracion",gestion-activos
+21022,"Inicio",/plataforma/inicio,1,21001,9,"Gestor de Activos y Configuracion",solicitante
+21022,"Inicio",/plataforma/inicio,1,21001,10,"Gestor de Problemas",gestion-problemas
+21022,"Inicio",/plataforma/inicio,1,21001,10,"Gestor de Problemas",solicitante
+21020,"Mis tareas",/plataforma/operacion/tareas,2,21001,2,"Tecnico",
+21249,"Mis aprobaciones",/plataforma/aprobaciones,3,21001,1,"Administrador",historial
+21249,"Mis aprobaciones",/plataforma/aprobaciones,3,21001,1,"Administrador",historial-area
+21249,"Mis aprobaciones",/plataforma/aprobaciones,3,21001,1,"Administrador",pendientes
+21249,"Mis aprobaciones",/plataforma/aprobaciones,3,21001,4,"Supervisor",pendientes
+21249,"Mis aprobaciones",/plataforma/aprobaciones,3,21001,5,"Gestor de Area",historial-area
+21249,"Mis aprobaciones",/plataforma/aprobaciones,3,21001,5,"Gestor de Area",pendientes
+21249,"Mis aprobaciones",/plataforma/aprobaciones,3,21001,7,"Aprobador",historial
+21249,"Mis aprobaciones",/plataforma/aprobaciones,3,21001,7,"Aprobador",pendientes
+21004,"Delegaciones",/plataforma/seguridad/delegaciones,4,21001,1,"Administrador",
+21004,"Delegaciones",/plataforma/seguridad/delegaciones,4,21001,5,"Gestor de Area",
+21004,"Delegaciones",/plataforma/seguridad/delegaciones,4,21001,7,"Aprobador",
+21265,"Notificaciones",/plataforma/notificaciones,5,21001,1,"Administrador",
+21265,"Notificaciones",/plataforma/notificaciones,5,21001,2,"Tecnico",
+21265,"Notificaciones",/plataforma/notificaciones,5,21001,3,"Solicitante",
+21265,"Notificaciones",/plataforma/notificaciones,5,21001,4,"Supervisor",
+21265,"Notificaciones",/plataforma/notificaciones,5,21001,5,"Gestor de Area",
+21265,"Notificaciones",/plataforma/notificaciones,5,21001,6,"Auditor",
+21265,"Notificaciones",/plataforma/notificaciones,5,21001,7,"Aprobador",
+21265,"Notificaciones",/plataforma/notificaciones,5,21001,8,"Gestor de Cambios",
+21265,"Notificaciones",/plataforma/notificaciones,5,21001,9,"Gestor de Activos y Configuracion",
+21265,"Notificaciones",/plataforma/notificaciones,5,21001,10,"Gestor de Problemas",
+21228,"Incidentes",,1,21023,1,"Administrador",
+21228,"Incidentes",,1,21023,2,"Tecnico",
+21228,"Incidentes",,1,21023,3,"Solicitante",
+21228,"Incidentes",,1,21023,4,"Supervisor",
+21228,"Incidentes",,1,21023,5,"Gestor de Area",
+21228,"Incidentes",,1,21023,6,"Auditor",
+21229,"Solicitudes",,2,21023,1,"Administrador",
+21229,"Solicitudes",,2,21023,2,"Tecnico",
+21229,"Solicitudes",,2,21023,3,"Solicitante",
+21229,"Solicitudes",,2,21023,4,"Supervisor",
+21229,"Solicitudes",,2,21023,5,"Gestor de Area",
+21229,"Solicitudes",,2,21023,6,"Auditor",
+21229,"Solicitudes",,2,21023,7,"Aprobador",
+21251,"Centro de asignacion",/plataforma/tickets/gestion/asignar,3,21023,4,"Supervisor",
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,1,"Administrador",grupo
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,1,"Administrador",incumplimientos
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,1,"Administrador",mi-cola
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,1,"Administrador",objetivos
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,1,"Administrador",problemas
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,1,"Administrador",riesgo
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,2,"Tecnico",mi-cola
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,2,"Tecnico",objetivos
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,4,"Supervisor",grupo
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,4,"Supervisor",incumplimientos
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,4,"Supervisor",objetivos
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,4,"Supervisor",riesgo
+21045,"Monitor de SLA",/plataforma/servicios/sla,4,21023,10,"Gestor de Problemas",problemas
+21070,"Solicitar cambio",/plataforma/cambios/nuevo,1,21059,1,"Administrador",
+21070,"Solicitar cambio",/plataforma/cambios/nuevo,1,21059,2,"Tecnico",
+21070,"Solicitar cambio",/plataforma/cambios/nuevo,1,21059,5,"Gestor de Area",
+21070,"Solicitar cambio",/plataforma/cambios/nuevo,1,21059,8,"Gestor de Cambios",
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,1,"Administrador",afectan-area
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,1,"Administrador",afectan-equipo
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,1,"Administrador",afectan-servicios
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,1,"Administrador",en-tramite
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,1,"Administrador",historial
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,1,"Administrador",por-implementar
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,2,"Tecnico",afectan-servicios
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,2,"Tecnico",en-tramite
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,2,"Tecnico",historial
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,2,"Tecnico",por-implementar
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,4,"Supervisor",afectan-equipo
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,5,"Gestor de Area",afectan-area
+21068,"Mis cambios",/plataforma/cambios/mis-cambios,2,21059,8,"Gestor de Cambios",en-tramite
+21073,"Gestión de cambios",/plataforma/cambios/gestion,3,21059,1,"Administrador",aprobacion
+21073,"Gestión de cambios",/plataforma/cambios/gestion,3,21059,1,"Administrador",ejecucion
+21073,"Gestión de cambios",/plataforma/cambios/gestion,3,21059,1,"Administrador",historial
+21073,"Gestión de cambios",/plataforma/cambios/gestion,3,21059,1,"Administrador",por-evaluar
+21073,"Gestión de cambios",/plataforma/cambios/gestion,3,21059,6,"Auditor",historial
+21073,"Gestión de cambios",/plataforma/cambios/gestion,3,21059,8,"Gestor de Cambios",aprobacion
+21073,"Gestión de cambios",/plataforma/cambios/gestion,3,21059,8,"Gestor de Cambios",ejecucion
+21073,"Gestión de cambios",/plataforma/cambios/gestion,3,21059,8,"Gestor de Cambios",historial
+21073,"Gestión de cambios",/plataforma/cambios/gestion,3,21059,8,"Gestor de Cambios",por-evaluar
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,1,"Administrador",agenda
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,1,"Administrador",dictamen
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,1,"Administrador",emergencia
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,1,"Administrador",miembros
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,7,"Aprobador",agenda
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,7,"Aprobador",dictamen
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,7,"Aprobador",emergencia
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,8,"Gestor de Cambios",agenda
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,8,"Gestor de Cambios",dictamen
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,8,"Gestor de Cambios",emergencia
+21082,"CAB y ECAB",/plataforma/cambios/cab,4,21059,8,"Gestor de Cambios",miembros
+21071,"Calendario de cambios",/plataforma/cambios/gestion/calendario,5,21059,1,"Administrador",calendario
+21071,"Calendario de cambios",/plataforma/cambios/gestion/calendario,5,21059,1,"Administrador",programacion
+21071,"Calendario de cambios",/plataforma/cambios/gestion/calendario,5,21059,2,"Tecnico",calendario
+21071,"Calendario de cambios",/plataforma/cambios/gestion/calendario,5,21059,4,"Supervisor",calendario
+21071,"Calendario de cambios",/plataforma/cambios/gestion/calendario,5,21059,4,"Supervisor",programacion
+21071,"Calendario de cambios",/plataforma/cambios/gestion/calendario,5,21059,5,"Gestor de Area",calendario
+21071,"Calendario de cambios",/plataforma/cambios/gestion/calendario,5,21059,7,"Aprobador",calendario
+21071,"Calendario de cambios",/plataforma/cambios/gestion/calendario,5,21059,8,"Gestor de Cambios",calendario
+21071,"Calendario de cambios",/plataforma/cambios/gestion/calendario,5,21059,8,"Gestor de Cambios",programacion
+21090,"Modelos de cambio estándar",/plataforma/cambios/modelos,6,21059,1,"Administrador",administracion
+21090,"Modelos de cambio estándar",/plataforma/cambios/modelos,6,21059,1,"Administrador",consulta
+21090,"Modelos de cambio estándar",/plataforma/cambios/modelos,6,21059,2,"Tecnico",consulta
+21090,"Modelos de cambio estándar",/plataforma/cambios/modelos,6,21059,7,"Aprobador",consulta
+21090,"Modelos de cambio estándar",/plataforma/cambios/modelos,6,21059,8,"Gestor de Cambios",administracion
+21090,"Modelos de cambio estándar",/plataforma/cambios/modelos,6,21059,8,"Gestor de Cambios",consulta
+21077,"Revisión post-implementación",/plataforma/cambios/gestion/pir,7,21059,1,"Administrador",
+21077,"Revisión post-implementación",/plataforma/cambios/gestion/pir,7,21059,8,"Gestor de Cambios",
+21191,"Configuración de cambios",/plataforma/cambios/configuracion,8,21059,1,"Administrador",autoridad
+21191,"Configuración de cambios",/plataforma/cambios/configuracion,8,21059,1,"Administrador",calendario
+21191,"Configuración de cambios",/plataforma/cambios/configuracion,8,21059,1,"Administrador",campos
+21191,"Configuración de cambios",/plataforma/cambios/configuracion,8,21059,1,"Administrador",listas
+21191,"Configuración de cambios",/plataforma/cambios/configuracion,8,21059,1,"Administrador",riesgo
+21191,"Configuración de cambios",/plataforma/cambios/configuracion,8,21059,8,"Gestor de Cambios",autoridad
+21191,"Configuración de cambios",/plataforma/cambios/configuracion,8,21059,8,"Gestor de Cambios",calendario
+21191,"Configuración de cambios",/plataforma/cambios/configuracion,8,21059,8,"Gestor de Cambios",campos
+21191,"Configuración de cambios",/plataforma/cambios/configuracion,8,21059,8,"Gestor de Cambios",listas
+21191,"Configuración de cambios",/plataforma/cambios/configuracion,8,21059,8,"Gestor de Cambios",riesgo
+21105,"Registrar problema",/plataforma/problemas/crear,1,21091,1,"Administrador",
+21105,"Registrar problema",/plataforma/problemas/crear,1,21091,2,"Tecnico",
+21105,"Registrar problema",/plataforma/problemas/crear,1,21091,10,"Gestor de Problemas",
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,1,"Administrador",asignados
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,1,"Administrador",grupo
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,1,"Administrador",historial
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,1,"Administrador",sin-asignar
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,2,"Tecnico",asignados
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,2,"Tecnico",grupo
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,4,"Supervisor",historial
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,4,"Supervisor",sin-asignar
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,6,"Auditor",historial
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,10,"Gestor de Problemas",asignados
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,10,"Gestor de Problemas",grupo
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,10,"Gestor de Problemas",historial
+21093,"Bandeja de problemas",/plataforma/problemas/bandeja,2,21091,10,"Gestor de Problemas",sin-asignar
+21095,"Candidatos a problema",/plataforma/problemas/candidatos,3,21091,1,"Administrador",propuestos
+21095,"Candidatos a problema",/plataforma/problemas/candidatos,3,21091,1,"Administrador",recurrentes
+21095,"Candidatos a problema",/plataforma/problemas/candidatos,3,21091,2,"Tecnico",propuestos
+21095,"Candidatos a problema",/plataforma/problemas/candidatos,3,21091,10,"Gestor de Problemas",propuestos
+21095,"Candidatos a problema",/plataforma/problemas/candidatos,3,21091,10,"Gestor de Problemas",recurrentes
+21098,"Errores conocidos",/plataforma/problemas/kedb,4,21091,1,"Administrador",
+21098,"Errores conocidos",/plataforma/problemas/kedb,4,21091,2,"Tecnico",
+21098,"Errores conocidos",/plataforma/problemas/kedb,4,21091,4,"Supervisor",
+21098,"Errores conocidos",/plataforma/problemas/kedb,4,21091,10,"Gestor de Problemas",
+21199,"Configuración de problemas",/plataforma/problemas/configuracion,5,21091,1,"Administrador",campos
+21199,"Configuración de problemas",/plataforma/problemas/configuracion,5,21091,1,"Administrador",listas
+21199,"Configuración de problemas",/plataforma/problemas/configuracion,5,21091,10,"Gestor de Problemas",campos
+21199,"Configuración de problemas",/plataforma/problemas/configuracion,5,21091,10,"Gestor de Problemas",listas
+21110,"Activos",,1,21109,1,"Administrador",
+21110,"Activos",,1,21109,2,"Tecnico",
+21110,"Activos",,1,21109,3,"Solicitante",
+21110,"Activos",,1,21109,4,"Supervisor",
+21110,"Activos",,1,21109,5,"Gestor de Area",
+21110,"Activos",,1,21109,6,"Auditor",
+21110,"Activos",,1,21109,9,"Gestor de Activos y Configuracion",
+21133,"CMDB",,2,21109,1,"Administrador",
+21133,"CMDB",,2,21109,2,"Tecnico",
+21133,"CMDB",,2,21109,6,"Auditor",
+21133,"CMDB",,2,21109,9,"Gestor de Activos y Configuracion",
+21114,"Inventario de activos",/plataforma/activos/inventario,1,21110,1,"Administrador",importar
+21114,"Inventario de activos",/plataforma/activos/inventario,1,21110,1,"Administrador",mi-area
+21114,"Inventario de activos",/plataforma/activos/inventario,1,21110,1,"Administrador",operativo
+21114,"Inventario de activos",/plataforma/activos/inventario,1,21110,1,"Administrador",todos
+21114,"Inventario de activos",/plataforma/activos/inventario,1,21110,2,"Tecnico",operativo
+21114,"Inventario de activos",/plataforma/activos/inventario,1,21110,4,"Supervisor",todos
+21114,"Inventario de activos",/plataforma/activos/inventario,1,21110,5,"Gestor de Area",mi-area
+21114,"Inventario de activos",/plataforma/activos/inventario,1,21110,6,"Auditor",todos
+21114,"Inventario de activos",/plataforma/activos/inventario,1,21110,9,"Gestor de Activos y Configuracion",importar
+21114,"Inventario de activos",/plataforma/activos/inventario,1,21110,9,"Gestor de Activos y Configuracion",todos
+21118,"Mis activos",/plataforma/activos/mis-activos,2,21110,1,"Administrador",
+21118,"Mis activos",/plataforma/activos/mis-activos,2,21110,3,"Solicitante",
+21112,"Asignación, custodia y actas",/plataforma/activos/asignaciones,3,21110,1,"Administrador",
+21112,"Asignación, custodia y actas",/plataforma/activos/asignaciones,3,21110,9,"Gestor de Activos y Configuracion",
+21126,"Mantenimiento y garantías",/plataforma/activos/mantenimiento,4,21110,1,"Administrador",garantias
+21126,"Mantenimiento y garantías",/plataforma/activos/mantenimiento,4,21110,1,"Administrador",reparaciones
+21126,"Mantenimiento y garantías",/plataforma/activos/mantenimiento,4,21110,2,"Tecnico",reparaciones
+21126,"Mantenimiento y garantías",/plataforma/activos/mantenimiento,4,21110,9,"Gestor de Activos y Configuracion",garantias
+21132,"Licencias de software",/plataforma/activos/licencias,5,21110,1,"Administrador",catalogo-software
+21132,"Licencias de software",/plataforma/activos/licencias,5,21110,1,"Administrador",consulta
+21132,"Licencias de software",/plataforma/activos/licencias,5,21110,1,"Administrador",licencias
+21132,"Licencias de software",/plataforma/activos/licencias,5,21110,2,"Tecnico",consulta
+21132,"Licencias de software",/plataforma/activos/licencias,5,21110,4,"Supervisor",licencias
+21132,"Licencias de software",/plataforma/activos/licencias,5,21110,6,"Auditor",licencias
+21132,"Licencias de software",/plataforma/activos/licencias,5,21110,9,"Gestor de Activos y Configuracion",catalogo-software
+21144,"Contratos y proveedores",/plataforma/activos/contratos,6,21110,1,"Administrador",contratos
+21144,"Contratos y proveedores",/plataforma/activos/contratos,6,21110,1,"Administrador",mi-area
+21144,"Contratos y proveedores",/plataforma/activos/contratos,6,21110,1,"Administrador",proveedores
+21144,"Contratos y proveedores",/plataforma/activos/contratos,6,21110,1,"Administrador",renovaciones
+21144,"Contratos y proveedores",/plataforma/activos/contratos,6,21110,5,"Gestor de Area",mi-area
+21144,"Contratos y proveedores",/plataforma/activos/contratos,6,21110,9,"Gestor de Activos y Configuracion",contratos
+21144,"Contratos y proveedores",/plataforma/activos/contratos,6,21110,9,"Gestor de Activos y Configuracion",proveedores
+21144,"Contratos y proveedores",/plataforma/activos/contratos,6,21110,9,"Gestor de Activos y Configuracion",renovaciones
+21123,"Bajas de activos",/plataforma/activos/bajas,7,21110,1,"Administrador",consulta
+21123,"Bajas de activos",/plataforma/activos/bajas,7,21110,1,"Administrador",gestion
+21123,"Bajas de activos",/plataforma/activos/bajas,7,21110,6,"Auditor",consulta
+21123,"Bajas de activos",/plataforma/activos/bajas,7,21110,9,"Gestor de Activos y Configuracion",gestion
+21154,"Configuración de activos",/plataforma/activos/configuracion,8,21110,1,"Administrador",fabricantes-modelos
+21154,"Configuración de activos",/plataforma/activos/configuracion,8,21110,1,"Administrador",listas
+21154,"Configuración de activos",/plataforma/activos/configuracion,8,21110,1,"Administrador",tipos-atributos
+21154,"Configuración de activos",/plataforma/activos/configuracion,8,21110,1,"Administrador",ubicaciones
+21154,"Configuración de activos",/plataforma/activos/configuracion,8,21110,9,"Gestor de Activos y Configuracion",fabricantes-modelos
+21154,"Configuración de activos",/plataforma/activos/configuracion,8,21110,9,"Gestor de Activos y Configuracion",listas
+21154,"Configuración de activos",/plataforma/activos/configuracion,8,21110,9,"Gestor de Activos y Configuracion",ubicaciones
+21266,"CIs",/plataforma/cmdb/cis,1,21133,1,"Administrador",
+21266,"CIs",/plataforma/cmdb/cis,1,21133,2,"Tecnico",
+21266,"CIs",/plataforma/cmdb/cis,1,21133,6,"Auditor",
+21266,"CIs",/plataforma/cmdb/cis,1,21133,9,"Gestor de Activos y Configuracion",
+21139,"Topología y relaciones",/plataforma/cmdb/topologia,2,21133,1,"Administrador",
+21139,"Topología y relaciones",/plataforma/cmdb/topologia,2,21133,2,"Tecnico",
+21139,"Topología y relaciones",/plataforma/cmdb/topologia,2,21133,9,"Gestor de Activos y Configuracion",
+21135,"Análisis de impacto",/plataforma/cmdb/analisis,3,21133,1,"Administrador",
+21135,"Análisis de impacto",/plataforma/cmdb/analisis,3,21133,9,"Gestor de Activos y Configuracion",
+21141,"Configuración de CMDB",/plataforma/cmdb/configuracion,4,21133,1,"Administrador",clases
+21141,"Configuración de CMDB",/plataforma/cmdb/configuracion,4,21133,1,"Administrador",relaciones
+21141,"Configuración de CMDB",/plataforma/cmdb/configuracion,4,21133,9,"Gestor de Activos y Configuracion",clases
+21157,"Base de conocimiento",/plataforma/conocimiento/base,1,21156,1,"Administrador",
+21157,"Base de conocimiento",/plataforma/conocimiento/base,1,21156,2,"Tecnico",
+21157,"Base de conocimiento",/plataforma/conocimiento/base,1,21156,3,"Solicitante",
+21157,"Base de conocimiento",/plataforma/conocimiento/base,1,21156,4,"Supervisor",
+21157,"Base de conocimiento",/plataforma/conocimiento/base,1,21156,5,"Gestor de Area",
+21159,"Crear artículo",/plataforma/conocimiento/crear,2,21156,1,"Administrador",
+21159,"Crear artículo",/plataforma/conocimiento/crear,2,21156,2,"Tecnico",
+21160,"Mis artículos",/plataforma/conocimiento/mis-articulos,3,21156,1,"Administrador",
+21160,"Mis artículos",/plataforma/conocimiento/mis-articulos,3,21156,2,"Tecnico",
+21161,"Revisión y publicación",/plataforma/conocimiento/publicacion,4,21156,1,"Administrador",pendientes
+21161,"Revisión y publicación",/plataforma/conocimiento/publicacion,4,21156,1,"Administrador",publicacion
+21161,"Revisión y publicación",/plataforma/conocimiento/publicacion,4,21156,2,"Tecnico",pendientes
+21161,"Revisión y publicación",/plataforma/conocimiento/publicacion,4,21156,4,"Supervisor",pendientes
+21161,"Revisión y publicación",/plataforma/conocimiento/publicacion,4,21156,4,"Supervisor",publicacion
+21202,"Configuración de conocimiento",/plataforma/conocimiento/configuracion,5,21156,1,"Administrador",articulos
+21202,"Configuración de conocimiento",/plataforma/conocimiento/configuracion,5,21156,1,"Administrador",politicas
+21164,"Catálogo de servicios",/plataforma/servicios/catalogo,1,21163,1,"Administrador",administrar-incidentes
+21164,"Catálogo de servicios",/plataforma/servicios/catalogo,1,21163,1,"Administrador",administrar-solicitudes
+21164,"Catálogo de servicios",/plataforma/servicios/catalogo,1,21163,1,"Administrador",categorias
+21164,"Catálogo de servicios",/plataforma/servicios/catalogo,1,21163,1,"Administrador",crear
+21164,"Catálogo de servicios",/plataforma/servicios/catalogo,1,21163,1,"Administrador",explorar
+21164,"Catálogo de servicios",/plataforma/servicios/catalogo,1,21163,2,"Tecnico",explorar
+21164,"Catálogo de servicios",/plataforma/servicios/catalogo,1,21163,3,"Solicitante",explorar
+21164,"Catálogo de servicios",/plataforma/servicios/catalogo,1,21163,4,"Supervisor",explorar
+21164,"Catálogo de servicios",/plataforma/servicios/catalogo,1,21163,5,"Gestor de Area",explorar
+21167,"Objetivos SLA y matriz de prioridad",/plataforma/servicios/configuracion/sla,2,21163,1,"Administrador",matriz
+21167,"Objetivos SLA y matriz de prioridad",/plataforma/servicios/configuracion/sla,2,21163,1,"Administrador",tiempos
+21175,"Indicadores operativos y SLA",/plataforma/reportes/operativos,1,21174,1,"Administrador",area
+21175,"Indicadores operativos y SLA",/plataforma/reportes/operativos,1,21174,1,"Administrador",operativo
+21175,"Indicadores operativos y SLA",/plataforma/reportes/operativos,1,21174,4,"Supervisor",area
+21175,"Indicadores operativos y SLA",/plataforma/reportes/operativos,1,21174,4,"Supervisor",operativo
+21175,"Indicadores operativos y SLA",/plataforma/reportes/operativos,1,21174,5,"Gestor de Area",area
+21175,"Indicadores operativos y SLA",/plataforma/reportes/operativos,1,21174,6,"Auditor",operativo
+21179,"Reportes de cambios y problemas",/plataforma/reportes/cambios,2,21174,1,"Administrador",cambios
+21179,"Reportes de cambios y problemas",/plataforma/reportes/cambios,2,21174,1,"Administrador",problemas
+21179,"Reportes de cambios y problemas",/plataforma/reportes/cambios,2,21174,8,"Gestor de Cambios",cambios
+21179,"Reportes de cambios y problemas",/plataforma/reportes/cambios,2,21174,10,"Gestor de Problemas",problemas
+21178,"Reportes de activos",/plataforma/reportes/activos,3,21174,1,"Administrador",
+21178,"Reportes de activos",/plataforma/reportes/activos,3,21174,9,"Gestor de Activos y Configuracion",
+21177,"Productividad individual",/plataforma/reportes/productividad,4,21174,1,"Administrador",
+21177,"Productividad individual",/plataforma/reportes/productividad,4,21174,4,"Supervisor",
+21209,"Gestión de usuarios",/plataforma/seguridad/usuarios,1,21215,1,"Administrador",
+21210,"Perfiles y permisos",/plataforma/seguridad/perfiles,2,21215,1,"Administrador",
+21210,"Perfiles y permisos",/plataforma/seguridad/perfiles,2,21215,6,"Auditor",
+21220,"Auditoría y accesos",/plataforma/seguridad/auditoria-sistema,3,21215,1,"Administrador",accesos
+21220,"Auditoría y accesos",/plataforma/seguridad/auditoria-sistema,3,21215,1,"Administrador",configuracion
+21220,"Auditoría y accesos",/plataforma/seguridad/auditoria-sistema,3,21215,6,"Auditor",accesos
+21220,"Auditoría y accesos",/plataforma/seguridad/auditoria-sistema,3,21215,6,"Auditor",configuracion
+21226,"Mi perfil y seguridad",/plataforma/mi-cuenta/perfil,1,21225,1,"Administrador",
+21226,"Mi perfil y seguridad",/plataforma/mi-cuenta/perfil,1,21225,2,"Tecnico",
+21226,"Mi perfil y seguridad",/plataforma/mi-cuenta/perfil,1,21225,3,"Solicitante",
+21226,"Mi perfil y seguridad",/plataforma/mi-cuenta/perfil,1,21225,4,"Supervisor",
+21226,"Mi perfil y seguridad",/plataforma/mi-cuenta/perfil,1,21225,5,"Gestor de Area",
+21226,"Mi perfil y seguridad",/plataforma/mi-cuenta/perfil,1,21225,6,"Auditor",
+21226,"Mi perfil y seguridad",/plataforma/mi-cuenta/perfil,1,21225,7,"Aprobador",
+21226,"Mi perfil y seguridad",/plataforma/mi-cuenta/perfil,1,21225,8,"Gestor de Cambios",
+21226,"Mi perfil y seguridad",/plataforma/mi-cuenta/perfil,1,21225,9,"Gestor de Activos y Configuracion",
+21226,"Mi perfil y seguridad",/plataforma/mi-cuenta/perfil,1,21225,10,"Gestor de Problemas",
+21236,"Registrar incidente",/plataforma/incidentes/crear,1,21228,2,"Tecnico",
+21236,"Registrar incidente",/plataforma/incidentes/crear,1,21228,3,"Solicitante",
+21231,"Mis incidentes",/plataforma/incidentes/mios,2,21228,3,"Solicitante",
+21231,"Mis incidentes",/plataforma/incidentes/mios,2,21228,5,"Gestor de Area",
+21233,"Bandeja de incidentes",/plataforma/incidentes/bandeja,3,21228,1,"Administrador",todos
+21233,"Bandeja de incidentes",/plataforma/incidentes/bandeja,3,21228,2,"Tecnico",asignados
+21233,"Bandeja de incidentes",/plataforma/incidentes/bandeja,3,21228,2,"Tecnico",bandeja
+21233,"Bandeja de incidentes",/plataforma/incidentes/bandeja,3,21228,2,"Tecnico",resueltos
+21233,"Bandeja de incidentes",/plataforma/incidentes/bandeja,3,21228,4,"Supervisor",bandeja
+21233,"Bandeja de incidentes",/plataforma/incidentes/bandeja,3,21228,4,"Supervisor",resueltos
+21233,"Bandeja de incidentes",/plataforma/incidentes/bandeja,3,21228,4,"Supervisor",todos
+21233,"Bandeja de incidentes",/plataforma/incidentes/bandeja,3,21228,5,"Gestor de Area",departamento
+21233,"Bandeja de incidentes",/plataforma/incidentes/bandeja,3,21228,6,"Auditor",resueltos
+21233,"Bandeja de incidentes",/plataforma/incidentes/bandeja,3,21228,6,"Auditor",todos
+21238,"Incidentes mayores",/plataforma/incidentes/mayores,5,21228,1,"Administrador",listado
+21238,"Incidentes mayores",/plataforma/incidentes/mayores,5,21228,1,"Administrador",sala-crisis
+21238,"Incidentes mayores",/plataforma/incidentes/mayores,5,21228,2,"Tecnico",sala-crisis
+21238,"Incidentes mayores",/plataforma/incidentes/mayores,5,21228,4,"Supervisor",listado
+21240,"Configuración de incidentes",/plataforma/incidentes/configuracion,6,21228,1,"Administrador",campos
+21240,"Configuración de incidentes",/plataforma/incidentes/configuracion,6,21228,1,"Administrador",reglas
+21247,"Registrar solicitud",/plataforma/solicitudes/crear,1,21229,2,"Tecnico",
+21247,"Registrar solicitud",/plataforma/solicitudes/crear,1,21229,3,"Solicitante",
+21242,"Mis solicitudes",/plataforma/solicitudes/mios,2,21229,3,"Solicitante",
+21242,"Mis solicitudes",/plataforma/solicitudes/mios,2,21229,5,"Gestor de Area",
+21242,"Mis solicitudes",/plataforma/solicitudes/mios,2,21229,7,"Aprobador",
+21244,"Bandeja de solicitudes",/plataforma/solicitudes/bandeja,3,21229,1,"Administrador",todos
+21244,"Bandeja de solicitudes",/plataforma/solicitudes/bandeja,3,21229,2,"Tecnico",asignados
+21244,"Bandeja de solicitudes",/plataforma/solicitudes/bandeja,3,21229,2,"Tecnico",bandeja
+21244,"Bandeja de solicitudes",/plataforma/solicitudes/bandeja,3,21229,2,"Tecnico",resueltos
+21244,"Bandeja de solicitudes",/plataforma/solicitudes/bandeja,3,21229,4,"Supervisor",bandeja
+21244,"Bandeja de solicitudes",/plataforma/solicitudes/bandeja,3,21229,4,"Supervisor",resueltos
+21244,"Bandeja de solicitudes",/plataforma/solicitudes/bandeja,3,21229,4,"Supervisor",todos
+21244,"Bandeja de solicitudes",/plataforma/solicitudes/bandeja,3,21229,5,"Gestor de Area",departamento
+21244,"Bandeja de solicitudes",/plataforma/solicitudes/bandeja,3,21229,6,"Auditor",resueltos
+21244,"Bandeja de solicitudes",/plataforma/solicitudes/bandeja,3,21229,6,"Auditor",todos
+21250,"Configuración de solicitudes",/plataforma/solicitudes/configuracion,5,21229,1,"Administrador",campos
+21250,"Configuración de solicitudes",/plataforma/solicitudes/configuracion,5,21229,1,"Administrador",reglas
+21204,"Departamentos empresariales",/plataforma/organizacion/departamentos-empresa,1,21264,1,"Administrador",
+21205,"Grupos y técnicos de TI",/plataforma/organizacion/grupos-ti,2,21264,1,"Administrador",grupos
+21205,"Grupos y técnicos de TI",/plataforma/organizacion/grupos-ti,2,21264,1,"Administrador",supervisores
+21205,"Grupos y técnicos de TI",/plataforma/organizacion/grupos-ti,2,21264,1,"Administrador",tecnicos

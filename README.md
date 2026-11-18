@@ -22,7 +22,7 @@ FlowDesk ITSM resuelve estos problemas estructurales proporcionando:
 1. **Un Portal Único de Autoservicio:** Los usuarios finales disponen de un catálogo visual interactivo de servicios clasificados por categorías, con búsqueda predictiva y formularios dinámicos validados en tiempo real.
 2. **Despacho Técnico Inteligente y Equitativo:** Los tickets se dirigen automáticamente a grupos resolutores especializados (N1, N2, N3), balanceando la carga según turnos laborales, guardias y ausencias médicas o vacaciones del personal técnico.
 3. **Cumplimiento Estricto de SLAs con Temporización Hábil:** Cálculo automático de tiempos límite de primera respuesta y resolución que descuenta rigurosamente fines de semana y feriados oficiales, emitiendo alertas preventivas al 75% y 80% de consumo del tiempo antes de que ocurra una brecha de servicio.
-4. **Erradicación Definitiva de Fallas Recurrentes:** Módulo dedicado de Gestión de Problemas con metodología de los 5 Porqués, diagramas causa-efecto (Ishikawa) y Base de Datos de Errores Conocidos (KEDB) con soluciones temporales (*workarounds*) indexadas para los técnicos.
+4. **Erradicación Definitiva de Fallas Recurrentes:** Módulo dedicado de Gestión de Problemas con metodología de los 5 Porqués, análisis de línea de tiempo y Base de Datos de Errores Conocidos (KEDB) con soluciones temporales (*workarounds*) indexadas para los técnicos.
 5. **Control de Cambios Colegiado sin Colisiones:** Matriz de evaluación de riesgo, verificación automática contra ventanas de congelamiento (*freeze*) y panel virtual para el Comité Asesor de Cambios (CAB) con registro de votación formal y planes de contingencia (*rollback*) obligatorios.
 6. **Gobierno de Activos y Licenciamiento SAM:** Inventario físico de equipos con número de serie, marca, modelo y custodio asignado, junto a un semáforo de cumplimiento SAM que previene la sobreasignación de licencias de software.
 7. **Visión Topológica de Infraestructura (CMDB):** Grafo interactivo de dependencias entre Elementos de Configuración (CIs) que permite simular la caída de un servidor o switch y predecir qué servicios de negocio se verán afectados aguas abajo (*downstream*).
@@ -37,16 +37,13 @@ El repositorio cuenta con métricas consolidadas verificables directamente en la
 | Métrica del Repositorio | Valor Verificado | Fuente de Verificación Técnica |
 | :--- | :---: | :--- |
 | **Perfiles Oficiales RBAC** | **10** | Tabla `perfiles` en PostgreSQL |
-| **Módulos de Dominio Independientes** | **17** | Directorios en `src/modules/` |
-| **Opciones de Menú Activas** | **230** | Tabla `opciones_menu` (`estado_registro = true`) |
-| **Filas de Visibilidad de Menú** | **393** | Tabla `opciones_menu_perfiles` |
-| **Route Handlers de API** | **209** | Archivos `route.ts` bajo `src/app/api/` |
-| **Páginas del Sistema** | **312** | Archivos `page.tsx` bajo `src/app/plataforma/` |
-| **Total de Páginas Compiladas** | **335** | Salida oficial de `npm run build` |
-| **Tablas Base en Esquema Público** | **132** | `information_schema.tables` (`table_schema = 'public'`) |
-| **Vistas Relacionales Compatibles** | **1** | `vista_ticket` (Modelo C plano) |
-| **Capacidades Semánticas RBAC** | **71** | Constante `CAPACIDADES` en `src/shared/lib/capacidades.ts` |
-| **Suite de Pruebas E2E ITIL 4** | **30 / 30** | Script oficial `scripts/test_e2e_lifecycle.js` (100% éxito) |
+| **Opciones de Menú Activas** | **73** | Tabla `opciones_menu` (11 raíces, 4 sub-agrupadores, 58 pantallas) |
+| **Pantallas con Vistas N1** | **32** | Registro `REGISTRO_VISTAS` (107 vistas totales con permiso propio) |
+| **Filas de Visibilidad de Menú** | **405** | Tabla `opciones_menu_perfiles` y `opciones_menu_vistas_perfiles` |
+| **Páginas bajo /plataforma** | **68** | 58 pantallas de menú + 10 rutas permitidas sin menú |
+| **Tablas Base en Esquema Público** | **133** | `information_schema.tables` (`table_schema = 'public'`, R6 preservado) |
+| **Capacidades Semánticas RBAC** | **56** | Constante `CAPACIDADES` en `src/shared/lib/capacidades.ts` |
+| **Canales de Notificación** | **Solo In-App** | Centro de Notificaciones unificado (#21265) |
 
 ---
 
