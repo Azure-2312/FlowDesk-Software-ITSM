@@ -1,15 +1,15 @@
 // ============================================================================
-// PANTALLA OFICIAL DE INICIO (N3 - FASE 3)
+// PANTALLA OFICIAL DE INICIO (DASHBOARD 1 A 1 POR PERFIL ACTIVO)
 // ============================================================================
-// Unifica los 10 paneles de rol y reemplaza Tableros (#21183) eliminando
-// redirecciones obsoletas. Renderiza pestañas de cambio de panel si el
-// usuario posee múltiples vistas concedidas según sus perfiles activos.
+// Carga directamente el panel operacional correspondiente al perfil activo del
+// usuario (sin pestañas de rol). Para alternar de perspectiva operacional, el
+// usuario utiliza el conmutador de perfil ("Cambiar perfil") en el menú.
 // ============================================================================
 
-import { exigirVistaPagina } from "@/shared/lib/vistas";
-import PestanasVista from "@/shared/components/ui/PestanasVista";
+import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import { obtenerVistaPorDefecto } from "@/shared/lib/vistas";
 
-// Importación de los 10 paneles existentes (sin reescritura)
+// Importación de los 10 paneles existentes
 import VistaPanelSolicitante from "@/modules/operacion/paneles/solicitante/VistaPanelSolicitante";
 import VistaPanelTecnico from "@/modules/operacion/paneles/tecnico/VistaPanelTecnico";
 import VistaPanelSupervisor from "@/modules/operacion/paneles/supervisor/VistaPanelSupervisor";
@@ -21,41 +21,25 @@ import VistaPanelProblemas from "@/modules/problemas/views/VistaPanelProblemas";
 import VistaPanelAuditoria from "@/modules/operacion/paneles/auditor/VistaPanelAuditoria";
 import VistaPanelAdministrador from "@/modules/operacion/paneles/administrador/VistaPanelAdministrador";
 
-interface Props {
-  searchParams?: { vista?: string; [key: string]: string | string[] | undefined };
-}
+export default async function PaginaInicio() {
+  // 1. Guard de pantalla por catálogo de menú
+  const { idPerfil } = await exigirMenuPagina("/plataforma/inicio");
 
-export default async function PaginaInicio({ searchParams }: Props) {
-  // 1. Guard de pantalla y resolución segura de vista activa (infraestructura N1)
-  const { vistaActiva, vistasPermitidas } = await exigirVistaPagina(
-    "/plataforma/inicio",
-    searchParams?.vista
-  );
+  // 2. Resolver el panel 1 a 1 según el perfil activo (sin pestañas superiores)
+  const vistaActiva = obtenerVistaPorDefecto("/plataforma/inicio", idPerfil);
 
   return (
-    <div className="space-y-4">
-      {vistasPermitidas.length > 1 && (
-        <div className="bg-white px-6 pt-4 rounded-xl border border-slate-200 shadow-sm">
-          <PestanasVista
-            vistas={vistasPermitidas}
-            vistaActiva={vistaActiva}
-            urlBase="/plataforma/inicio"
-          />
-        </div>
-      )}
-
-      <div>
-        {vistaActiva === "solicitante" && <VistaPanelSolicitante />}
-        {vistaActiva === "tecnico" && <VistaPanelTecnico />}
-        {vistaActiva === "supervisor" && <VistaPanelSupervisor />}
-        {vistaActiva === "aprobador" && <VistaPanelAprobador />}
-        {vistaActiva === "area" && <VistaPanelArea />}
-        {vistaActiva === "gestion-activos" && <VistaPanelActivos />}
-        {vistaActiva === "gestion-cambios" && <VistaPanelGestion />}
-        {vistaActiva === "gestion-problemas" && <VistaPanelProblemas />}
-        {vistaActiva === "auditor" && <VistaPanelAuditoria />}
-        {vistaActiva === "administrador" && <VistaPanelAdministrador />}
-      </div>
+    <div>
+      {vistaActiva === "solicitante" && <VistaPanelSolicitante />}
+      {vistaActiva === "tecnico" && <VistaPanelTecnico />}
+      {vistaActiva === "supervisor" && <VistaPanelSupervisor />}
+      {vistaActiva === "aprobador" && <VistaPanelAprobador />}
+      {vistaActiva === "area" && <VistaPanelArea />}
+      {vistaActiva === "gestion-activos" && <VistaPanelActivos />}
+      {vistaActiva === "gestion-cambios" && <VistaPanelGestion />}
+      {vistaActiva === "gestion-problemas" && <VistaPanelProblemas />}
+      {vistaActiva === "auditor" && <VistaPanelAuditoria />}
+      {vistaActiva === "administrador" && <VistaPanelAdministrador />}
     </div>
   );
 }
