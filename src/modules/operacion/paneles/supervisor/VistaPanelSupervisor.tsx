@@ -83,10 +83,10 @@ export default function VistaPanelSupervisor() {
   if (!data) return null;
 
   const alertas = [
-    { texto: "Incidentes mayores abiertos", valor: data.alertas.incidentes_mayores, href: "/plataforma/tickets/incidentes-mayores" },
+    { texto: "Incidentes mayores abiertos", valor: data.alertas.incidentes_mayores, href: "/plataforma/incidentes/mayores" },
     { texto: "P1/P2 sin asignar", valor: data.alertas.p1p2_sin_asignar, href: "/plataforma/tickets/gestion/asignar" },
     { texto: "Aprobaciones de RFC pendientes", valor: data.alertas.aprobaciones_pendientes, href: "/plataforma/aprobaciones?tipo=cambio-tecnica" },
-    { texto: "Técnicos sobrecargados", valor: data.alertas.tecnicos_sobrecargados, href: "/plataforma/tickets/gestion/tecnicos" },
+    { texto: "Técnicos sobrecargados", valor: data.alertas.tecnicos_sobrecargados, href: "/plataforma/organizacion/grupos-ti?vista=tecnicos" },
   ];
 
   return (
@@ -144,8 +144,8 @@ export default function VistaPanelSupervisor() {
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <Link href="/plataforma/tickets/gestion/asignar" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Centro de asignación</Link>
-            <Link href="/plataforma/tickets/gestion/tecnicos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Monitoreo de técnicos</Link>
-            <Link href="/plataforma/tickets/incidentes-mayores" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Declarar incidente mayor</Link>
+            <Link href="/plataforma/organizacion/grupos-ti?vista=tecnicos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Monitoreo de técnicos</Link>
+            <Link href="/plataforma/incidentes/mayores" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Declarar incidente mayor</Link>
           </div>
         </div>
       </div>

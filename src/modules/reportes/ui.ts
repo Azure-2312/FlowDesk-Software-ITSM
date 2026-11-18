@@ -1,18 +1,16 @@
 // =====================================================================
-// Contrato de UI del modulo reportes.
+// Contrato de UI del módulo reportes.
 //
-// Todas las pantallas de reportes, de cualquier perfil o dominio, viven
-// aqui. Las rutas publicas se exponen bajo /plataforma/reportes/{pantalla}
-// y las paginas legadas redirigen a ellas.
+// 4 pantallas canónicas de reportes (Fase 11):
+// - Indicadores operativos y SLA (#21175, vistas operativo, area)
+// - Productividad individual (#21177)
+// - Reportes de activos (#21178)
+// - Reportes de cambios y problemas (#21179, vistas cambios, problemas)
 // =====================================================================
 
 export { default as VistaReportesOperativos } from "./views/VistaReportesOperativos";
-export { default as VistaInformesAuditoria } from "./views/VistaInformesAuditoria";
+export { default as VistaReportesArea } from "./views/VistaReportesArea";
 export { default as VistaProductividad } from "./views/VistaProductividad";
 export { default as VistaReportesActivos } from "./views/VistaReportesActivos";
 export { default as VistaReportesCambios } from "./views/VistaReportesCambios";
-export { default as VistaReportesAprobaciones } from "./views/VistaReportesAprobaciones";
 export { default as VistaReportesProblemas } from "./views/VistaReportesProblemas";
-export { default as VistaReportesArea } from "./views/VistaReportesArea";
-export { default as VistaReportesDisenador } from "./views/VistaReportesDisenador";
-export { default as VistaReportesGerenciales } from "./views/VistaReportesGerenciales";

@@ -15,8 +15,6 @@ export { default as VistaTiposRequisitos } from "./config/tipos-requisitos/Vista
 export { default as VistaFlujoEvaluacion } from "./config/flujo-evaluacion/VistaFlujoEvaluacion";
 export { default as VistaNotificacionesCalendario } from "./config/notificaciones-calendario/VistaNotificacionesCalendario";
 
-export { default as VistaCambios } from "./views/VistaCambios";
-export { default as VistaAvisosMantenimiento } from "./views/VistaAvisosMantenimiento";
 export { default as VistaCambiosGestionCab } from "./gestion/cab/VistaCambiosGestionCab";
 export { default as VistaCambiosGestionCalendario } from "./gestion/calendario/VistaCambiosGestionCalendario";
 export { default as VistaCambiosGestionCrear } from "./gestion/crear/VistaCambiosGestionCrear";
