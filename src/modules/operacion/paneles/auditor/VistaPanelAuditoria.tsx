@@ -112,8 +112,8 @@ export default function VistaPanelAuditoria() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/seguridad/cumplimiento/sod" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Segregación de funciones</Link>
-            <Link href="/plataforma/seguridad/cumplimiento/cambios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Cambios sin autorización</Link>
+            <Link href="/plataforma/seguridad/perfiles" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Perfiles y permisos</Link>
+            <Link href="/plataforma/seguridad/auditoria-sistema" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Auditoría y accesos</Link>
             <Link href="/plataforma/cmdb/cis" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Elementos de configuración (CMDB)</Link>
             <Link href="/plataforma/reportes/operativos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Indicadores operativos y SLA</Link>
           </div>
