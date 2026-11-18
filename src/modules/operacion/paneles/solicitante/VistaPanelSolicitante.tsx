@@ -157,11 +157,11 @@ export default function VistaPanelSolicitante() {
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <Link href="/plataforma/incidentes/crear" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Registrar un incidente</Link>
-            <Link href="/plataforma/tickets/catalogo?tipo=incidente" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Reportar un incidente</Link>
-            <Link href="/plataforma/tickets/catalogo?tipo=solicitud" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Pedir un servicio</Link>
-            <Link href="/plataforma/tickets" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Ver todos mis tickets</Link>
+            <Link href="/plataforma/servicios/catalogo?vista=explorar&tipo=incidente" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Reportar un incidente</Link>
+            <Link href="/plataforma/servicios/catalogo?vista=explorar&tipo=solicitud" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Pedir un servicio</Link>
+            <Link href="/plataforma/incidentes/mios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Ver mis incidentes</Link>
             <Link href="/plataforma/activos/mis-activos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Mis activos asignados</Link>
-            <Link href="/plataforma/conocimiento" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Base de conocimiento</Link>
+            <Link href="/plataforma/conocimiento/base" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Base de conocimiento</Link>
           </div>
         </div>
       </div>

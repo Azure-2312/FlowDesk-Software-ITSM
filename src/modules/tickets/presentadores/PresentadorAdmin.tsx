@@ -49,20 +49,20 @@ export default function VistaTicketAdministrador({
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <Link
-            href="/plataforma/tickets/configuracion/vistas"
+            href="/plataforma/incidentes/configuracion"
             onClick={onCerrarModal}
             className="boton-mini"
             style={{ fontSize: 11.5, textDecoration: "none", padding: "6px 10px" }}
           >
-            Configurar Vistas
+            Configuración de Incidentes
           </Link>
           <Link
-            href="/plataforma/tickets/configuracion/formularios"
+            href="/plataforma/solicitudes/configuracion"
             onClick={onCerrarModal}
             className="boton-mini"
             style={{ fontSize: 11.5, textDecoration: "none", padding: "6px 10px" }}
           >
-            Configurar Formularios
+            Configuración de Solicitudes
           </Link>
         </div>
       </div>

@@ -114,7 +114,7 @@ export default function PaginaDetalleTicketRFC() {
     return (
       <div className="vista-contenedor" style={{ paddingBottom: 60 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
-          <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
+          <Link href="/plataforma/cambios/gestion" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
           <span>›</span>
           <Link href="/plataforma/cambios/gestion?vista=historial" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
           <span>›</span>
@@ -135,7 +135,7 @@ export default function PaginaDetalleTicketRFC() {
     <div className="vista-contenedor" style={{ paddingBottom: 60 }}>
       {/* 1. Breadcrumb */}
       <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b", marginBottom: 12 }}>
-        <Link href="/plataforma/cambios" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
+        <Link href="/plataforma/cambios/gestion" style={{ color: "#64748b", textDecoration: "none" }}>Gestión de cambios</Link>
         <span>›</span>
         <Link href="/plataforma/cambios/gestion?vista=historial" style={{ color: "#64748b", textDecoration: "none" }}>Historial consolidado</Link>
         <span>›</span>

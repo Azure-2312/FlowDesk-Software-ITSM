@@ -17,8 +17,7 @@ export function obtenerSesionPagina(): SesionUsuario {
 }
 
 /**
- * @deprecated Preferir `exigirCapacidadPagina`. Se mantiene por compatibilidad
- * mientras se migran las paginas restantes.
+ * Exige que la sesión del usuario tenga uno de los perfiles indicados.
  */
 export function exigirPerfilPagina(perfiles: number[]) {
   const sesion = obtenerSesionPagina();

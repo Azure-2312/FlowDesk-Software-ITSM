@@ -159,7 +159,7 @@ export default function VistaConocimientoDetalle() {
             El artículo solicitado no existe o fue retirado de la base de conocimiento.
           </p>
           <Link
-            href="/plataforma/conocimiento"
+            href="/plataforma/conocimiento/base"
             style={{
               padding: "8px 16px",
               backgroundColor: "#2563eb",
