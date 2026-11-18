@@ -566,7 +566,7 @@ export default function PaginaAdminDepartamentos() {
               </p>
             </div>
             <Link
-              href="/plataforma/organizacion/tecnicos"
+              href="/plataforma/organizacion/grupos-ti?vista=tecnicos"
               className="boton-primario"
               style={{ width: "auto", padding: "8px 16px", fontSize: 13, textDecoration: "none" }}
             >

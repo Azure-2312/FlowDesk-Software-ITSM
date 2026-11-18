@@ -101,23 +101,23 @@ const ACCESOS_RAPIDOS = [
     bgColor: "#eef2ff",
   },
   {
-    href: "/plataforma/operacion/menu",
-    titulo: "Estructura del menú",
-    descripcion: "Jerarquía y opciones visibles por perfil",
+    href: "/plataforma/organizacion/departamentos-empresa",
+    titulo: "Departamentos empresariales",
+    descripcion: "Estructura organizativa y jefaturas",
     icono: Layers,
     color: "#0891b2",
     bgColor: "#ecfeff",
   },
   {
-    href: "/plataforma/operacion/salud-sistema",
-    titulo: "Salud del sistema",
-    descripcion: "Conexiones PostgreSQL, cola y tareas",
+    href: "/plataforma/organizacion/grupos-ti",
+    titulo: "Grupos y técnicos de TI",
+    descripcion: "Equipos resolutores, niveles y supervisores",
     icono: Database,
     color: "#059669",
     bgColor: "#f0fdf4",
   },
   {
-    href: "/plataforma/seguridad/seguridad-logs",
+    href: "/plataforma/seguridad/auditoria-sistema?vista=accesos",
     titulo: "Registros de seguridad",
     descripcion: "Auditoría de eventos y bitácora de accesos",
     icono: ShieldAlert,
@@ -299,7 +299,7 @@ export default function VistaPanelAdministrador() {
               </p>
             </div>
             <Link
-              href="/plataforma/seguridad/seguridad-logs"
+              href="/plataforma/seguridad/auditoria-sistema?vista=accesos"
               style={{ fontSize: 12, fontWeight: 600, color: "#2563eb", textDecoration: "none", whiteSpace: "nowrap" }}
             >
               Ver todos →
