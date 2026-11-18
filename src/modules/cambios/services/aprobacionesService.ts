@@ -88,6 +88,7 @@ export async function listarCambiosPendientes(idUsuario: number) {
      LEFT JOIN elemento_configuracion ci ON ci.id_ci = c.id_ci_afectado
      LEFT JOIN usuario us ON us.id_usuario = c.id_usuario_solicitante
      WHERE c.estado_registro = true AND c.id_estado = 2
+       AND c.id_usuario_solicitante <> $1
        AND NOT EXISTS (SELECT 1 FROM cambio_aprobacion ca
                        WHERE ca.id_cambio = c.id_cambio AND ca.id_usuario_aprobador = $1 AND ca.estado_registro = true)
      ORDER BY c.ventana_inicio ASC`,
@@ -107,11 +108,14 @@ export async function resolverCambio(idUsuario: number, idCambio: number, decisi
   }
   if (comentarioFinal.length < 3) throw new ErrorDominio("El comentario de la decisión es obligatorio.");
 
-  const cambio = await queryRow<{ id_estado: number }>(
-    `SELECT id_estado FROM cambio WHERE id_cambio = $1 AND estado_registro = true`,
+  const cambio = await queryRow<{ id_estado: number; id_usuario_solicitante: number }>(
+    `SELECT id_estado, id_usuario_solicitante FROM cambio WHERE id_cambio = $1 AND estado_registro = true`,
     [idCambio]
   );
   if (!cambio) throw new ErrorDominio("El cambio no existe.", 404);
+  if (cambio.id_usuario_solicitante === idUsuario) {
+    throw new ErrorDominio("Violación de Segregación de Funciones (SoD): El solicitante no puede aprobar su propio cambio.", 403);
+  }
 
   const existente = await queryRow<{ existe: boolean }>(
     `SELECT EXISTS (SELECT 1 FROM cambio_aprobacion WHERE id_cambio = $1 AND id_usuario_aprobador = $2 AND estado_registro = true) AS existe`,

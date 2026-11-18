@@ -545,7 +545,7 @@ export default function PaginaUsuarios() {
                 );
               })()}
               <span style={{ fontSize: 11, color: "#64748b", marginTop: 4, display: "block" }}>
-                A este correo se le enviarán las credenciales de acceso al registrarse el usuario
+                Correo de contacto personal para la ficha de identidad del colaborador
               </span>
             </div>
 
