@@ -104,6 +104,9 @@ export interface DatosProblema {
   id_ci_afectado?: unknown;
   id_departamento?: unknown;
   id_ticket_origen?: unknown;
+  causa_raiz?: string;
+  workaround?: string;
+  es_error_conocido?: boolean;
 }
 
 export async function crearProblema(body: DatosProblema, sesion: SesionProblema) {
@@ -117,6 +120,9 @@ export async function crearProblema(body: DatosProblema, sesion: SesionProblema)
     id_ci_afectado,
     id_departamento,
     id_ticket_origen,
+    causa_raiz,
+    workaround,
+    es_error_conocido,
   } = body;
 
   let idDepartamentoFinal: number;
@@ -189,6 +195,9 @@ export async function crearProblema(body: DatosProblema, sesion: SesionProblema)
   const correlativo = String(parseInt(countRow?.c || "0", 10) + 1).padStart(4, "0");
   const codigo_problema = `PRB-${year}-${correlativo}`;
 
+  const esError = Boolean(es_error_conocido || causa_raiz || workaround);
+  const estadoFinal = esError ? 4 : 1; // 4 = Error Conocido (KEDB), 1 = Registrado
+
   const row = await queryRow<{ id_problema: number; codigo_problema: string }>(
     `
       INSERT INTO problema (
@@ -203,22 +212,29 @@ export async function crearProblema(body: DatosProblema, sesion: SesionProblema)
         id_ci_afectado,
         id_usuario_asignado,
         id_departamento,
+        causa_raiz,
+        workaround,
+        es_error_conocido,
         usuario_creacion
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, 1, $7, $8, $9, $10, $11
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
       ) RETURNING id_problema, codigo_problema
     `,
     [
       codigo_problema,
       titulo,
       descripcion,
-      id_impacto || 2,
-      id_urgencia || 2,
-      id_prioridad || 2,
+      Number(id_impacto) || 2,
+      Number(id_urgencia) || 2,
+      Number(id_prioridad) || 2,
+      estadoFinal,
       metodo_analisis || "5_WHYS",
       id_ci_afectado || null,
       sesion.idUsuario,
       idDepartamentoFinal,
+      causa_raiz?.trim() || null,
+      workaround?.trim() || null,
+      esError,
       sesion.idUsuario,
     ]
   );

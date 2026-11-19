@@ -170,7 +170,7 @@ export const CATALOGO_EVENTOS_NOTIFICACION: Record<CodigoEventoNotificacion, Eve
     construirMensaje: (p) => ({
       titulo: `Problema #${p.problemaId || ""} registrado en investigación`,
       mensaje: `Se ha registrado el problema "${p.tituloProblema || ""}" para análisis de causa raíz.`,
-      urlDestino: `/plataforma/problemas/bandeja?abrir=${p.problemaId || ""}`,
+      urlDestino: `/plataforma/problemas/${p.problemaId || ""}`,
     }),
   },
 

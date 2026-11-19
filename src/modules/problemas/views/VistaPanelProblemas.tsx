@@ -146,7 +146,7 @@ export default function VistaPanelProblemas() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/problemas/bandeja" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Bandeja de problemas</Link>
+            <Link href="/plataforma/problemas/mios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Mis problemas</Link>
             <Link href="/plataforma/problemas/candidatos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Candidatos a problema</Link>
             <Link href="/plataforma/problemas/crear" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Registrar problema</Link>
             <Link href="/plataforma/problemas/kedb" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Errores conocidos (KEDB)</Link>

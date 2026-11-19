@@ -317,6 +317,32 @@ export default function VistaCambiosGestionCrear() {
         const isoFin = d.toISOString().slice(0, 16);
         setVentanaInicio(isoIni);
         setVentanaFin(isoFin);
+
+        // Lectura de URL query params para preselección de modelo estándar
+        if (typeof window !== "undefined") {
+          const sp = new URLSearchParams(window.location.search);
+          const tipoParam = sp.get("tipo");
+          const modParam = sp.get("modelo");
+          if (tipoParam === "ESTANDAR" || modParam) {
+            setTipoCambio("ESTANDAR");
+            if (modParam) {
+              setModeloSeleccionadoId(Number(modParam));
+              const mod = (resModelos?.modelos || []).find((m: any) => m.id_modelo === Number(modParam));
+              if (mod) {
+                setTitulo(mod.nombre);
+                setDescripcion(mod.descripcion || "");
+                if (mod.contenido_prellenado) {
+                  const cp = mod.contenido_prellenado;
+                  if (cp.motivo) setMotivoCambio(cp.motivo);
+                  if (cp.plan_implementacion) setPlanImplementacion(cp.plan_implementacion);
+                  if (cp.plan_rollback) setPlanRollback(cp.plan_rollback);
+                  if (cp.plan_pruebas) setPlanPruebas(cp.plan_pruebas);
+                  if (cp.criterios_exito) setCriteriosExito(cp.criterios_exito);
+                }
+              }
+            }
+          }
+        }
       } catch (err: any) {
         setError("Error al cargar dependencias del formulario de cambios.");
       } finally {
