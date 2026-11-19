@@ -6,14 +6,27 @@ import { Usuario, Perfil } from "@/types";
 import { validarNombre, validarCelular } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
+interface DetalleTecnico {
+  nivel_soporte: number;
+  especialidad_principal: string | null;
+  capacidad_maxima_tickets: number | null;
+  estado_operativo: string | null;
+  departamento_nombre: string | null;
+}
+
 interface Props {
-  datosIniciales?: { usuario: Usuario; perfiles: Perfil[] } | null;
+  datosIniciales?: {
+    usuario: Usuario;
+    perfiles: Perfil[];
+    detalleTecnico?: DetalleTecnico | null;
+  } | null;
 }
 
 export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(datosIniciales?.usuario ?? null);
   const [perfiles, setPerfiles] = useState<Perfil[]>(datosIniciales?.perfiles ?? []);
+  const [detalleTecnico, setDetalleTecnico] = useState<DetalleTecnico | null>(datosIniciales?.detalleTecnico ?? null);
   const [cargando, setCargando] = useState(!datosIniciales?.usuario);
 
   // Formulario de datos personales
@@ -53,6 +66,7 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
       if (res.ok && data.usuario) {
         setUsuario(data.usuario);
         setPerfiles(data.perfiles ?? []);
+        setDetalleTecnico(data.detalleTecnico ?? null);
         setNombres(data.usuario.nombres || "");
         setApellidoPaterno(data.usuario.apellido_paterno || "");
         setApellidoMaterno(data.usuario.apellido_materno || "");
@@ -284,15 +298,114 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
             {usuario.nombres} {usuario.apellido_paterno} {usuario.apellido_materno ?? ""}
           </h2>
           <p style={{ fontSize: 13, color: "#6b7280", marginBottom: 6 }}>{usuario.correo_electronico}</p>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
             {perfiles.map((p) => (
               <span key={p.id_perfil} className="chip-perfil">
                 {p.nombre}
               </span>
             ))}
+            {(detalleTecnico || perfiles.some((p) => p.id_perfil === 2)) && (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  backgroundColor: "#eff6ff",
+                  color: "#1d4ed8",
+                  border: "1px solid #bfdbfe",
+                  padding: "3px 10px",
+                  borderRadius: 999,
+                }}
+              >
+                🛠️ Técnico Nivel {detalleTecnico?.nivel_soporte ?? 2}
+              </span>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Tarjeta de Acreditación y Nivel de Soporte Técnico (si aplica) */}
+      {(detalleTecnico || perfiles.some((p) => p.id_perfil === 2)) && (
+        <div
+          style={{
+            backgroundColor: "#f8fafc",
+            border: "1px solid #cbd5e1",
+            borderRadius: 8,
+            padding: "16px 20px",
+            marginBottom: 20,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 16,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 8,
+                backgroundColor: "#2563eb",
+                color: "#ffffff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 22,
+                flexShrink: 0,
+              }}
+            >
+              🛡️
+            </div>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#64748b", letterSpacing: "0.5px" }}>
+                Acreditación Operativa ITIL v4
+              </div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginTop: 2 }}>
+                Soporte Técnico · Nivel {detalleTecnico?.nivel_soporte ?? 2} (
+                {(detalleTecnico?.nivel_soporte ?? 2) === 1
+                  ? "Mesa de Ayuda / Primer Contacto"
+                  : (detalleTecnico?.nivel_soporte ?? 2) === 2
+                  ? "Soporte Especializado de Segundo Nivel"
+                  : "Ingeniería de Infraestructura / Nivel 3"}
+                )
+              </div>
+              <div style={{ fontSize: 12.5, color: "#475569", marginTop: 3 }}>
+                <strong>Especialidad:</strong> {detalleTecnico?.especialidad_principal || "Resolución de incidentes y requerimientos técnicos"}
+                {detalleTecnico?.departamento_nombre && ` · ${detalleTecnico.departamento_nombre}`}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 11, color: "#64748b" }}>Capacidad Concurrente</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>
+                {detalleTecnico?.capacidad_maxima_tickets ?? 10} tickets max.
+              </div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 11, color: "#64748b" }}>Estado Operativo</div>
+              <span
+                style={{
+                  display: "inline-block",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  backgroundColor: "#ecfdf5",
+                  color: "#065f46",
+                  padding: "3px 8px",
+                  borderRadius: 4,
+                  marginTop: 2,
+                }}
+              >
+                ● {detalleTecnico?.estado_operativo || "DISPONIBLE"}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Distribución en 2 Columnas para aprovechar todo el ancho de pantalla */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 20, alignItems: "start" }}>

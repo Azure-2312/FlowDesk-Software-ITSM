@@ -91,7 +91,12 @@ export async function obtenerDatosEquipoTrabajo(idUsuario: number): Promise<Dato
       `SELECT u.id_usuario,
               CONCAT(u.nombres, ' ', u.apellido_paterno) AS nombre_completo,
               u.correo_electronico AS correo,
-              u.cargo
+              COALESCE((
+                SELECT p.nombre FROM usuario_perfiles up
+                JOIN perfiles p ON p.id_perfil = up.id_perfil
+                WHERE up.id_usuario = u.id_usuario AND up.estado_registro = true
+                LIMIT 1
+              ), 'Especialista Técnico') AS cargo
        FROM usuario u
        WHERE u.id_departamento = $1 AND u.estado_registro = true
        ORDER BY u.nombres ASC`,

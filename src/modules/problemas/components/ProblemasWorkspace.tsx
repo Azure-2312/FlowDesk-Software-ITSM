@@ -20,6 +20,11 @@ type Problema = {
   titulo: string;
   descripcion: string;
   estado_nombre: string;
+  id_impacto?: number;
+  impacto_nombre?: string;
+  id_urgencia?: number;
+  urgencia_nombre?: string;
+  metodo_analisis?: string | null;
   causa_raiz?: string | null;
   workaround?: string | null;
   es_error_conocido: boolean;
@@ -249,6 +254,21 @@ export default function ProblemasWorkspace({
                     style={{
                       padding: "12px 18px",
                       textAlign: "center",
+                      width: 140,
+                      fontWeight: 700,
+                      color: "#475569",
+                      fontSize: 11.5,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Severidad / Método
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 18px",
+                      textAlign: "center",
                       width: 110,
                       fontWeight: 700,
                       color: "#475569",
@@ -259,6 +279,21 @@ export default function ProblemasWorkspace({
                     }}
                   >
                     Incidentes
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 18px",
+                      textAlign: "center",
+                      width: 170,
+                      fontWeight: 700,
+                      color: "#475569",
+                      fontSize: 11.5,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Acción
                   </th>
                 </tr>
               </thead>
@@ -367,6 +402,14 @@ export default function ProblemasWorkspace({
                           <span style={{ fontStyle: "italic" }}>Sin solución provisional</span>
                         )}
                       </td>
+                      <td style={{ padding: "14px 18px", textAlign: "center", fontSize: 11.5 }}>
+                        <div style={{ color: "#334155" }}>
+                          Imp: <strong>{p.impacto_nombre || (p.id_impacto === 3 ? "Alto" : p.id_impacto === 1 ? "Bajo" : "Medio")}</strong> · Urg: <strong>{p.urgencia_nombre || (p.id_urgencia === 3 ? "Alta" : p.id_urgencia === 1 ? "Baja" : "Media")}</strong>
+                        </div>
+                        <div style={{ color: "#64748b", fontSize: 10.5, marginTop: 2 }}>
+                          {p.metodo_analisis || "5_porques"}
+                        </div>
+                      </td>
                       <td style={{ padding: "14px 18px", textAlign: "center" }}>
                         <span
                           style={{
@@ -384,6 +427,27 @@ export default function ProblemasWorkspace({
                         >
                           {p.incidentes_asociados?.length || 0}
                         </span>
+                      </td>
+                      <td style={{ padding: "14px 18px", textAlign: "center" }}>
+                        <Link
+                          href={`/plataforma/problemas/crear?titulo=${encodeURIComponent(p.titulo)}&descripcion=${encodeURIComponent(
+                            `${p.descripcion}\n\n[Causa Raíz Documentada]: ${p.causa_raiz || "N/A"}\n[Solución Temporal (Workaround)]: ${p.workaround || "N/A"}`
+                          )}&impacto=${p.id_impacto || 2}&urgencia=${p.id_urgencia || 2}&metodo=${encodeURIComponent(p.metodo_analisis || "5_porques")}`}
+                          style={{
+                            display: "inline-block",
+                            padding: "6px 12px",
+                            backgroundColor: "#eff6ff",
+                            color: "#1d4ed8",
+                            border: "1px solid #bfdbfe",
+                            borderRadius: 6,
+                            fontSize: 12,
+                            fontWeight: 600,
+                            textDecoration: "none",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          ⚡ Usar plantilla
+                        </Link>
                       </td>
                     </tr>
                   );

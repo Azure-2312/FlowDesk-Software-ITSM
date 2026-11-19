@@ -1148,20 +1148,6 @@ export default function PaginaMapaCMDB() {
               </p>
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <Link
-                href="/plataforma/cmdb/analisis"
-                className="boton-secundario"
-                style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center" }}
-              >
-                Análisis e Impacto
-              </Link>
-              <Link
-                href="/plataforma/cmdb/configuracion?vista=relaciones"
-                className="boton-secundario"
-                style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center" }}
-              >
-                Configuración y Reglas
-              </Link>
               <button
                 type="button"
                 className="boton-primario"

@@ -364,13 +364,59 @@ export async function proponerModelo(idUsuario: number, body: any) {
   );
   if (existe?.existe) throw new ErrorDominio("Ya existe un modelo con ese código.", 409);
 
+  const contenidoPrellenado = {
+    titulo: body.titulo?.trim() || String(body.nombre).trim(),
+    motivo: body.motivo?.trim() || body.descripcion?.trim() || "Procedimiento operativo estándar",
+    justificacion: body.justificacion?.trim() || "Cambio rutinario preaprobado bajo modelo estándar.",
+    entorno: body.entorno || "Producción",
+    impacto: body.impacto || "Bajo",
+    urgencia: body.urgencia || "Baja",
+    plan_implementacion: body.plan_implementacion?.trim() || "1. Notificar inicio de ventana.\n2. Ejecutar procedimiento operativo estándar.\n3. Verificar conectividad y logs.",
+    plan_rollback: body.plan_rollback?.trim() || "Restaurar estado previo desde backup o reiniciar servicios afectados.",
+    plan_pruebas: body.plan_pruebas?.trim() || "Ejecutar pruebas funcionales de salud del servicio (health check).",
+    criterios_exito: body.criterios_exito?.trim() || "Servicio operativo y sin alertas críticas.",
+    duracion_estimada: body.duracion_estimada?.trim() || "30m",
+  };
+
+  const entornosPermitidos = Array.isArray(body.entornos_permitidos) && body.entornos_permitidos.length > 0
+    ? body.entornos_permitidos
+    : [body.entorno ? String(body.entorno).toLowerCase() : "produccion"];
+
+  const listaElegibilidad = Array.isArray(body.lista_elegibilidad) && body.lista_elegibilidad.length > 0
+    ? body.lista_elegibilidad
+    : [
+        "El servicio cuenta con ventana operativa autorizada.",
+        "Existe respaldo reciente previo a la ejecución.",
+        "El procedimiento se ejecuta en los tiempos previstos sin afectar SLAs."
+      ];
+
+  const estado = body.estado ? String(body.estado).toUpperCase() : "APROBADO";
+  const riesgoFijo = (body.riesgo_fijo || "bajo").toLowerCase();
+  const anticipacionHoras = Number(body.anticipacion_horas) || 24;
+
   const fila = await queryRow<any>(
-    `INSERT INTO cambio_modelo_estandar (codigo, nombre, descripcion, estado, version_modelo, autorizacion_automatica, usuario_creacion)
-     VALUES ($1, $2, $3, 'BORRADOR', '1.0', false, $4)
-     RETURNING id_modelo, codigo, nombre, estado`,
-    [codigo, String(body.nombre).trim(), body.descripcion ?? null, idUsuario]
+    `INSERT INTO cambio_modelo_estandar (
+      codigo, nombre, descripcion, estado, version_modelo, autorizacion_automatica,
+      riesgo_fijo, entornos_permitidos, anticipacion_horas, lista_elegibilidad,
+      contenido_prellenado, campos_bloqueados, usuario_creacion
+    )
+    VALUES ($1, $2, $3, $4, 1, true, $5, $6::jsonb, $7, $8::jsonb, $9::jsonb, $10::jsonb, $11)
+    RETURNING id_modelo, codigo, nombre, estado`,
+    [
+      codigo,
+      String(body.nombre).trim(),
+      body.descripcion?.trim() || null,
+      estado,
+      riesgoFijo,
+      JSON.stringify(entornosPermitidos),
+      anticipacionHoras,
+      JSON.stringify(listaElegibilidad),
+      JSON.stringify(contenidoPrellenado),
+      JSON.stringify(["plan_implementacion", "plan_rollback"]),
+      idUsuario
+    ]
   );
-  return { mensaje: "Modelo propuesto (borrador).", modelo: fila };
+  return { mensaje: "Modelo de cambio estándar registrado exitosamente.", modelo: fila };
 }
 
 export async function cambiarEstadoModelo(idModelo: number, estado: string) {

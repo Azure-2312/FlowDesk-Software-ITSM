@@ -1,23 +1,71 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-/**
- * Vista canónica para registrar un nuevo problema de investigación ITIL v4.
- * Componente agnóstico a perfiles: el acceso se gobierna mediante la matriz
- * de capacidades institucionales y las opciones del menú lateral.
- */
-export default function VistaProblemasCrear() {
+interface ErrorConocidoItem {
+  id_problema: number;
+  codigo_problema: string;
+  titulo: string;
+  descripcion: string;
+  id_impacto: number;
+  id_urgencia: number;
+  metodo_analisis: string | null;
+  causa_raiz: string | null;
+  workaround: string | null;
+}
+
+function FormularioProblemasCrear() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [titulo, setTitulo] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-  const [idImpacto, setIdImpacto] = useState(2);
-  const [idUrgencia, setIdUrgencia] = useState(2);
-  const [metodoAnalisis, setMetodoAnalisis] = useState("5_porques");
+  const [titulo, setTitulo] = useState(searchParams.get("titulo") || "");
+  const [descripcion, setDescripcion] = useState(searchParams.get("descripcion") || "");
+  const [idImpacto, setIdImpacto] = useState<number>(Number(searchParams.get("impacto")) || 2);
+  const [idUrgencia, setIdUrgencia] = useState<number>(Number(searchParams.get("urgencia")) || 2);
+  const [metodoAnalisis, setMetodoAnalisis] = useState(searchParams.get("metodo") || "5_porques");
+
+  const [listaKedb, setListaKedb] = useState<ErrorConocidoItem[]>([]);
+  const [cargandoKedb, setCargandoKedb] = useState(false);
+  const [idKedbSeleccionado, setIdKedbSeleccionado] = useState<string>("");
+
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Cargar errores conocidos para permitir prellenado directo en el formulario
+  useEffect(() => {
+    async function cargarKedb() {
+      setCargandoKedb(true);
+      try {
+        const res = await fetch("/api/problemas?kedb=true");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) setListaKedb(data);
+        }
+      } catch (err) {
+        console.error("Error al cargar KEDB:", err);
+      } finally {
+        setCargandoKedb(false);
+      }
+    }
+    cargarKedb();
+  }, []);
+
+  function aplicarPlantillaKedb(idStr: string) {
+    setIdKedbSeleccionado(idStr);
+    if (!idStr) return;
+
+    const encontrado = listaKedb.find((k) => String(k.id_problema) === idStr);
+    if (!encontrado) return;
+
+    setTitulo(encontrado.titulo);
+    setDescripcion(
+      `${encontrado.descripcion}\n\n[Causa Raíz Documentada]: ${encontrado.causa_raiz || "N/A"}\n[Solución Temporal (Workaround)]: ${encontrado.workaround || "N/A"}`
+    );
+    setIdImpacto(encontrado.id_impacto || 2);
+    setIdUrgencia(encontrado.id_urgencia || 2);
+    setMetodoAnalisis(encontrado.metodo_analisis || "5_porques");
+  }
 
   async function registrarProblema(e: React.FormEvent) {
     e.preventDefault();
@@ -91,6 +139,57 @@ export default function VistaProblemasCrear() {
         </button>
       </div>
 
+      {/* Banner / Selector de Prellenado desde KEDB */}
+      <div
+        style={{
+          backgroundColor: "#eff6ff",
+          border: "1px solid #bfdbfe",
+          borderRadius: 8,
+          padding: "14px 18px",
+          marginBottom: 20,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 16,
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: 20 }}>⚡</span>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af" }}>
+              Prellenar formulario desde Error Conocido (KEDB)
+            </div>
+            <div style={{ fontSize: 12, color: "#3b82f6" }}>
+              Selecciona un artículo documentado para autocompletar síntomas, severidad y causas.
+            </div>
+          </div>
+        </div>
+
+        <select
+          value={idKedbSeleccionado}
+          onChange={(e) => aplicarPlantillaKedb(e.target.value)}
+          disabled={cargandoKedb || listaKedb.length === 0}
+          style={{
+            padding: "8px 12px",
+            border: "1px solid #93c5fd",
+            borderRadius: 6,
+            fontSize: 12.5,
+            backgroundColor: "#ffffff",
+            color: "#1e3a8a",
+            fontWeight: 600,
+            maxWidth: 340,
+          }}
+        >
+          <option value="">-- Seleccionar Error Conocido --</option>
+          {listaKedb.map((k) => (
+            <option key={k.id_problema} value={k.id_problema}>
+              {k.codigo_problema} - {k.titulo.substring(0, 45)}...
+            </option>
+          ))}
+        </select>
+      </div>
+
       {error && (
         <div style={{ padding: 14, backgroundColor: "#fef2f2", color: "#991b1b", borderRadius: 6, marginBottom: 20 }}>
           {error}
@@ -127,7 +226,7 @@ export default function VistaProblemasCrear() {
             placeholder="Describe detalladamente los síntomas, alcance y condiciones en las que se manifiesta el problema..."
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
-            rows={5}
+            rows={6}
             style={{
               width: "100%",
               padding: "9px 12px",
@@ -232,5 +331,13 @@ export default function VistaProblemasCrear() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function VistaProblemasCrear() {
+  return (
+    <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Cargando formulario...</div>}>
+      <FormularioProblemasCrear />
+    </Suspense>
   );
 }
