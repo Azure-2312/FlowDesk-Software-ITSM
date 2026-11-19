@@ -20,13 +20,6 @@ interface PanelSolicitante {
     fecha_creacion: string;
     fecha_limite_sla: string | null;
   }[];
-  activos: {
-    codigo_patrimonial: string | null;
-    tipo_activo: string | null;
-    marca: string | null;
-    modelo: string | null;
-    estado_activo: string | null;
-  }[];
   articulos: { id_articulo: number; titulo: string }[];
 }
 
@@ -160,31 +153,14 @@ export default function VistaPanelSolicitante() {
             <Link href="/plataforma/servicios/catalogo?vista=explorar&tipo=incidente" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Reportar un incidente</Link>
             <Link href="/plataforma/servicios/catalogo?vista=explorar&tipo=solicitud" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Pedir un servicio</Link>
             <Link href="/plataforma/incidentes/mios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Ver mis incidentes</Link>
-            <Link href="/plataforma/activos/mis-activos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Mis activos asignados</Link>
             <Link href="/plataforma/conocimiento/base" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Base de conocimiento</Link>
           </div>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
+      <div>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
-          <h2>Mis activos</h2>
-          {data.activos.length === 0 ? (
-            <p>No tienes activos asignados.</p>
-          ) : (
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>
-              {data.activos.map((a) => (
-                <li key={a.codigo_patrimonial ?? `${a.tipo_activo}-${a.modelo}`} style={{ fontSize: 13 }}>
-                  <strong>{a.codigo_patrimonial ?? "Sin código"}</strong> · {[a.tipo_activo, a.marca, a.modelo].filter(Boolean).join(" ")}
-                  <div style={{ fontSize: 12, color: "#6b7280" }}>{a.estado_activo ?? "—"}</div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
-          <h2>Guías que pueden ayudarte</h2>
+          <h2>Guías que pueden ayudarte (Autoservicio)</h2>
           {data.articulos.length === 0 ? (
             <p>No hay artículos publicados todavía.</p>
           ) : (

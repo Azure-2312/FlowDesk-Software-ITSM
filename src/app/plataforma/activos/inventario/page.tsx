@@ -4,6 +4,7 @@ import VistaInventarioActivos from "@/modules/activos/views/VistaInventarioActiv
 import VistaActivosArea from "@/modules/activos/views/VistaActivosArea";
 import VistaActivosInventario from "@/modules/activos/views/VistaActivosInventario";
 import VistaImportacionActivos from "@/modules/activos/views/VistaImportacionActivos";
+import VistaAsignacionesActivos from "@/modules/activos/views/VistaAsignacionesActivos";
 
 interface PageProps {
   searchParams?: Promise<{ vista?: string }> | { vista?: string };
@@ -30,6 +31,7 @@ export default async function PaginaInventarioActivos({ searchParams }: PageProp
       {vistaActiva === "todos" && <VistaInventarioActivos />}
       {vistaActiva === "mi-area" && <VistaActivosArea />}
       {vistaActiva === "operativo" && <VistaActivosInventario />}
+      {vistaActiva === "asignaciones" && <VistaAsignacionesActivos />}
       {vistaActiva === "importar" && <VistaImportacionActivos />}
     </div>
   );

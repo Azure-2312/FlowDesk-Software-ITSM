@@ -137,6 +137,7 @@ function ContenidoCrearTicket({
 
   // Registrar a nombre de otro / Selección de Solicitante
   const [perfilesIds, setPerfilesIds] = useState<number[]>([]);
+  const [idPerfilActivo, setIdPerfilActivo] = useState<number | null>(null);
   const [modoRegistro, setModoRegistro] = useState<"propio" | "otro">("propio");
   const [busquedaUsuario, setBusquedaUsuario] = useState("");
   const [usuariosEncontrados, setUsuariosEncontrados] = useState<UsuarioItemBusqueda[]>([]);
@@ -177,6 +178,14 @@ function ContenidoCrearTicket({
 
         if (resUser.perfiles) {
           setPerfilesIds(resUser.perfiles.map((p: any) => p.id_perfil));
+        }
+
+        if (resUser.perfilActivo?.id_perfil) {
+          setIdPerfilActivo(resUser.perfilActivo.id_perfil);
+          // Si el perfil activo es Técnico (2), forzar registro a nombre del usuario afectado (multirol ITIL)
+          if (resUser.perfilActivo.id_perfil === 2) {
+            setModoRegistro("otro");
+          }
         }
 
         if (resConfig.configuracion?.valor) {
@@ -793,30 +802,36 @@ function ContenidoCrearTicket({
                 <label style={{ fontSize: 12.5, fontWeight: 700, color: "#1e40af", margin: 0 }}>
                   Solicitante / Beneficiario del Ticket
                 </label>
-                {esPersonalTI && (
-                  <div style={{ display: "flex", gap: 14 }}>
-                    <label style={{ fontSize: 12, color: "#1e3a8a", display: "inline-flex", alignItems: "center", gap: 4, cursor: "pointer", fontWeight: modoRegistro === "propio" ? 700 : 500 }}>
-                      <input
-                        type="radio"
-                        name="modoRegistro"
-                        checked={modoRegistro === "propio"}
-                        onChange={() => {
-                          setModoRegistro("propio");
-                          deseleccionarUsuario();
-                        }}
-                      />
-                      A mi nombre ({usuarioActual?.nombres || "Personal TI"})
-                    </label>
-                    <label style={{ fontSize: 12, color: "#1e3a8a", display: "inline-flex", alignItems: "center", gap: 4, cursor: "pointer", fontWeight: modoRegistro === "otro" ? 700 : 500 }}>
-                      <input
-                        type="radio"
-                        name="modoRegistro"
-                        checked={modoRegistro === "otro"}
-                        onChange={() => setModoRegistro("otro")}
-                      />
-                      En nombre de un usuario institucional
-                    </label>
-                  </div>
+                {idPerfilActivo === 2 ? (
+                  <span style={{ fontSize: 12, color: "#1e40af", backgroundColor: "#dbeafe", padding: "4px 10px", borderRadius: 4, fontWeight: 600 }}>
+                    Perfil Técnico: Registro a nombre del usuario afectado (Para requerimientos personales, conmute al perfil Solicitante)
+                  </span>
+                ) : (
+                  esPersonalTI && (
+                    <div style={{ display: "flex", gap: 14 }}>
+                      <label style={{ fontSize: 12, color: "#1e3a8a", display: "inline-flex", alignItems: "center", gap: 4, cursor: "pointer", fontWeight: modoRegistro === "propio" ? 700 : 500 }}>
+                        <input
+                          type="radio"
+                          name="modoRegistro"
+                          checked={modoRegistro === "propio"}
+                          onChange={() => {
+                            setModoRegistro("propio");
+                            deseleccionarUsuario();
+                          }}
+                        />
+                        A mi nombre ({usuarioActual?.nombres || "Personal TI"})
+                      </label>
+                      <label style={{ fontSize: 12, color: "#1e3a8a", display: "inline-flex", alignItems: "center", gap: 4, cursor: "pointer", fontWeight: modoRegistro === "otro" ? 700 : 500 }}>
+                        <input
+                          type="radio"
+                          name="modoRegistro"
+                          checked={modoRegistro === "otro"}
+                          onChange={() => setModoRegistro("otro")}
+                        />
+                        En nombre de un usuario institucional
+                      </label>
+                    </div>
+                  )
                 )}
               </div>
 

@@ -71,7 +71,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
         <div className="barra-lateral-pie">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
             <Link
-              href="/plataforma/mi-cuenta"
+              href="/plataforma/mi-cuenta/perfil"
               className="boton-perfil-sidebar"
               title={`Mi perfil: ${sesion.nombres}`}
               style={{

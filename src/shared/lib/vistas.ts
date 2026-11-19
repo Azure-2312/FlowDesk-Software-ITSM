@@ -131,12 +131,12 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     idOpcion: 21045,
     urlBase: "/plataforma/servicios/sla",
     nombre: "Monitor de SLA",
-    vistaPorDefecto: "riesgo",
+    vistaPorDefecto: "mi-cola",
     vistas: [
+      { codigo: "mi-cola", etiqueta: "Mi cola", idsLegados: [21048] },
+      { codigo: "objetivos", etiqueta: "Objetivos de SLA", idsLegados: [21047] },
       { codigo: "riesgo", etiqueta: "En riesgo", idsLegados: [21045] },
       { codigo: "incumplimientos", etiqueta: "Incumplimientos", idsLegados: [21046] },
-      { codigo: "objetivos", etiqueta: "Objetivos vigentes", idsLegados: [21047] },
-      { codigo: "mi-cola", etiqueta: "Mi cola", idsLegados: [21048] },
       { codigo: "grupo", etiqueta: "Grupo", idsLegados: [21049] },
       { codigo: "problemas", etiqueta: "Problemas", idsLegados: [21101] },
     ],
@@ -270,9 +270,10 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     nombre: "Inventario de activos",
     vistaPorDefecto: "todos",
     vistas: [
+      { codigo: "operativo", etiqueta: "Inventario operativo", idsLegados: [21117] },
+      { codigo: "asignaciones", etiqueta: "Asignaciones y custodia", idsLegados: [21118] },
       { codigo: "todos", etiqueta: "Todos", idsLegados: [21114] },
       { codigo: "mi-area", etiqueta: "Activos de mi área", idsLegados: [21111] },
-      { codigo: "operativo", etiqueta: "Inventario operativo", idsLegados: [21117] },
       { codigo: "importar", etiqueta: "Importación masiva", idsLegados: [21113] },
     ],
   },
@@ -485,6 +486,14 @@ export function obtenerVistaPorDefecto(urlBase: string, idPerfil?: number): stri
       case 10: return "gestion-problemas";
       default: return "solicitante";
     }
+  }
+
+  if (pantalla.urlBase === "/plataforma/servicios/sla" && idPerfil === 2) {
+    return "mi-cola";
+  }
+
+  if (pantalla.urlBase === "/plataforma/activos/inventario" && idPerfil === 2) {
+    return "operativo";
   }
 
   return pantalla.vistaPorDefecto;
