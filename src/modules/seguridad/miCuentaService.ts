@@ -1,4 +1,4 @@
-import { query } from "@/shared/lib/db";
+import { query, queryRow } from "@/shared/lib/db";
 import { compararClave, crearTokenSesion, hashearClave, validarFortalezaClave } from "./authService";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { validarNombre, validarCelular } from "@/shared/lib/validaciones";
@@ -25,7 +25,22 @@ export async function obtenerMiCuenta(idUsuario: number) {
     [idUsuario]
   );
 
-  return { usuario: usuarios[0], perfiles };
+  const detalleTecnico = await queryRow<{
+    nivel_soporte: number;
+    especialidad_principal: string | null;
+    capacidad_maxima_tickets: number | null;
+    estado_operativo: string | null;
+    departamento_nombre: string | null;
+  }>(
+    `SELECT td.nivel_soporte, td.especialidad_principal, td.capacidad_maxima_tickets, td.estado_operativo,
+            d.nombre AS departamento_nombre
+     FROM tecnico_detalle td
+     LEFT JOIN departamento_ti d ON td.id_departamento = d.id_departamento
+     WHERE td.id_usuario = $1 AND td.estado_registro = true LIMIT 1`,
+    [idUsuario]
+  );
+
+  return { usuario: usuarios[0], perfiles, detalleTecnico: detalleTecnico ?? null };
 }
 
 /** Datos personales y (opcionalmente) credenciales para actualizar la cuenta. */

@@ -159,8 +159,14 @@ function ContenidoCatalogo({
   const paramTipo = searchParams.get("tipo");
   const paramCat = searchParams.get("categoria");
 
-  const esSolicitud = tipoFijo ? tipoFijo === 2 : paramTipo === "solicitud" || paramTipo === "2";
-  const idTipoFiltro = esSolicitud ? 2 : 1;
+  const [tipoActivo, setTipoActivo] = useState<1 | 2>(() => {
+    if (tipoFijo) return tipoFijo;
+    if (paramTipo === "solicitud" || paramTipo === "2") return 2;
+    return 1;
+  });
+
+  const esSolicitud = tipoActivo === 2;
+  const idTipoFiltro = tipoActivo;
 
   // --------------------------------------------------------------------------
   // 2. ESTADOS LOCALES: Categorías, servicios, selección activa y filtros
@@ -262,9 +268,9 @@ function ContenidoCatalogo({
   return (
     <div className="vista-contenedor" style={{ maxWidth: 1200, margin: "0 auto", paddingBottom: 60 }}>
       {/* Cabecera Principal */}
-      <div style={{ marginBottom: 24 }}>
+      <div style={{ marginBottom: 20 }}>
         <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
-          Catálogo de Servicios & Autoservicio (ITIL v4)
+          Catálogo Unificado de Prestaciones TI (ITIL v4)
         </span>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
           {esSolicitud ? "Catálogo de Solicitudes de Servicio" : "Catálogo de Incidentes"}
@@ -275,6 +281,103 @@ function ContenidoCatalogo({
             : "Explora las categorías y servicios oficiales para el reporte de incidentes técnicos e interrupciones del servicio."}
         </p>
       </div>
+
+      {/* Selector de Catálogo (Incidentes vs Solicitudes) */}
+      {!tipoFijo && (
+        <div style={{ display: "flex", gap: 12, marginBottom: 22, flexWrap: "wrap" }}>
+          <button
+            type="button"
+            onClick={() => {
+              setTipoActivo(1);
+              setCategoriaSeleccionada(null);
+            }}
+            style={{
+              flex: "1 1 240px",
+              padding: "12px 18px",
+              borderRadius: 10,
+              fontWeight: 700,
+              fontSize: 13.5,
+              cursor: "pointer",
+              border: tipoActivo === 1 ? "2px solid #ef4444" : "1px solid #e2e8f0",
+              backgroundColor: tipoActivo === 1 ? "#fef2f2" : "#ffffff",
+              color: tipoActivo === 1 ? "#991b1b" : "#475569",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              boxShadow: tipoActivo === 1 ? "0 2px 4px rgba(239, 68, 68, 0.12)" : "0 1px 2px rgba(0,0,0,0.03)",
+              transition: "all 0.15s ease",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 18 }}>⚠️</span>
+              <div style={{ textAlign: "left" }}>
+                <div>Catálogo de Incidentes</div>
+                <div style={{ fontSize: 11.5, fontWeight: 400, color: tipoActivo === 1 ? "#b91c1c" : "#64748b" }}>
+                  Fallas, degradaciones e interrupciones
+                </div>
+              </div>
+            </div>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                backgroundColor: tipoActivo === 1 ? "#fee2e2" : "#f1f5f9",
+                color: tipoActivo === 1 ? "#991b1b" : "#64748b",
+                padding: "3px 8px",
+                borderRadius: 999,
+              }}
+            >
+              {categorias.filter((c) => c.id_tipo_ticket === 1).length} categorías
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setTipoActivo(2);
+              setCategoriaSeleccionada(null);
+            }}
+            style={{
+              flex: "1 1 240px",
+              padding: "12px 18px",
+              borderRadius: 10,
+              fontWeight: 700,
+              fontSize: 13.5,
+              cursor: "pointer",
+              border: tipoActivo === 2 ? "2px solid #2563eb" : "1px solid #e2e8f0",
+              backgroundColor: tipoActivo === 2 ? "#eff6ff" : "#ffffff",
+              color: tipoActivo === 2 ? "#1e40af" : "#475569",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              boxShadow: tipoActivo === 2 ? "0 2px 4px rgba(37, 99, 235, 0.12)" : "0 1px 2px rgba(0,0,0,0.03)",
+              transition: "all 0.15s ease",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 18 }}>📋</span>
+              <div style={{ textAlign: "left" }}>
+                <div>Catálogo de Solicitudes</div>
+                <div style={{ fontSize: 11.5, fontWeight: 400, color: tipoActivo === 2 ? "#1d4ed8" : "#64748b" }}>
+                  Requerimientos, accesos y prestaciones
+                </div>
+              </div>
+            </div>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                backgroundColor: tipoActivo === 2 ? "#dbeafe" : "#f1f5f9",
+                color: tipoActivo === 2 ? "#1e40af" : "#64748b",
+                padding: "3px 8px",
+                borderRadius: 999,
+              }}
+            >
+              {categorias.filter((c) => c.id_tipo_ticket === 2).length} categorías
+            </span>
+          </button>
+        </div>
+      )}
 
       {cargando ? (
         <div style={{ padding: 40, textAlign: "center", color: "#2563eb", fontWeight: 600 }}>

@@ -44,7 +44,25 @@ export default function VistaModelosGestion() {
   const [ok, setOk] = useState<string | null>(null);
   const [procesando, setProcesando] = useState(false);
   const [mostrarForm, setMostrarForm] = useState(false);
-  const [form, setForm] = useState({ codigo: "", nombre: "", descripcion: "" });
+  const [form, setForm] = useState({
+    codigo: "",
+    nombre: "",
+    titulo: "",
+    descripcion: "",
+    justificacion: "",
+    motivo: "Mantenimiento preventivo",
+    entorno: "Producción",
+    riesgo_fijo: "bajo",
+    impacto: "Bajo",
+    urgencia: "Baja",
+    duracion_estimada: "30m",
+    anticipacion_horas: 24,
+    plan_implementacion: "",
+    plan_rollback: "",
+    plan_pruebas: "",
+    criterios_exito: "",
+    estado: "APROBADO",
+  });
 
   async function cargar() {
     setCargando(true);
@@ -76,8 +94,26 @@ export default function VistaModelosGestion() {
       const json = await res.json();
       if (!res.ok) setError(json.error ?? "No se pudo proponer el modelo.");
       else {
-        setOk(json.mensaje ?? "Modelo propuesto.");
-        setForm({ codigo: "", nombre: "", descripcion: "" });
+        setOk(json.mensaje ?? "Modelo de cambio estándar registrado.");
+        setForm({
+          codigo: "",
+          nombre: "",
+          titulo: "",
+          descripcion: "",
+          justificacion: "",
+          motivo: "Mantenimiento preventivo",
+          entorno: "Producción",
+          riesgo_fijo: "bajo",
+          impacto: "Bajo",
+          urgencia: "Baja",
+          duracion_estimada: "30m",
+          anticipacion_horas: 24,
+          plan_implementacion: "",
+          plan_rollback: "",
+          plan_pruebas: "",
+          criterios_exito: "",
+          estado: "APROBADO",
+        });
         setMostrarForm(false);
         await cargar();
       }
@@ -128,25 +164,221 @@ export default function VistaModelosGestion() {
       </div>
 
       {mostrarForm && (
-        <div className="tarjeta-formulario" style={{ marginBottom: 20 }}>
-          <h2>Propuesta de modelo (borrador)</h2>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <label style={{ fontSize: 12, color: "#374151" }}>
-              Código
-              <input type="text" value={form.codigo} onChange={(e) => setForm((p) => ({ ...p, codigo: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8, minWidth: 180 }} />
-            </label>
-            <label style={{ fontSize: 12, color: "#374151", flex: "1 1 280px" }}>
-              Nombre
-              <input type="text" value={form.nombre} onChange={(e) => setForm((p) => ({ ...p, nombre: e.target.value }))} style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }} />
-            </label>
+        <div className="tarjeta-formulario" style={{ marginBottom: 24, padding: 24, backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 12, boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, borderBottom: "1px solid #f1f5f9", paddingBottom: 12 }}>
+            <div>
+              <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0f172a", margin: 0 }}>Crear Modelo de Cambio Estándar</h2>
+              <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0 0" }}>Define la plantilla completa con los mismos parámetros y planes técnicos requeridos por un ticket de cambio normal.</p>
+            </div>
+            <span style={{ fontSize: 12, fontWeight: 600, color: "#0369a1", backgroundColor: "#e0f2fe", padding: "4px 10px", borderRadius: 999 }}>
+              Preaprobado ITIL v4
+            </span>
           </div>
-          <label style={{ fontSize: 12, color: "#374151", display: "block", marginTop: 10 }}>
-            Descripción
-            <textarea rows={3} value={form.descripcion} onChange={(e) => setForm((p) => ({ ...p, descripcion: e.target.value }))} style={{ display: "block", width: "100%", marginTop: 4, padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }} />
-          </label>
-          <button className="boton-primario" style={{ width: "auto", marginTop: 10 }} disabled={procesando} onClick={proponer}>
-            {procesando ? "Guardando..." : "Registrar propuesta"}
-          </button>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Fila 1: Código, Nombre y Título sugerido */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Código Identificador *
+                <input
+                  type="text"
+                  placeholder="ej. MOD_REINICIO_APP"
+                  value={form.codigo}
+                  onChange={(e) => setForm((p) => ({ ...p, codigo: e.target.value.toUpperCase() }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }}
+                />
+              </label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Nombre del Modelo *
+                <input
+                  type="text"
+                  placeholder="ej. Reinicio preventivo de microservicio"
+                  value={form.nombre}
+                  onChange={(e) => setForm((p) => ({ ...p, nombre: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }}
+                />
+              </label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Título Sugerido del Ticket
+                <input
+                  type="text"
+                  placeholder="ej. RFC Estándar - Reinicio en horario valle"
+                  value={form.titulo}
+                  onChange={(e) => setForm((p) => ({ ...p, titulo: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }}
+                />
+              </label>
+            </div>
+
+            {/* Fila 2: Descripción y Justificación */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Descripción del Procedimiento *
+                <textarea
+                  rows={2}
+                  placeholder="Detalla qué realiza este cambio y cuándo aplica..."
+                  value={form.descripcion}
+                  onChange={(e) => setForm((p) => ({ ...p, descripcion: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }}
+                />
+              </label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Justificación / Motivo del Cambio *
+                <textarea
+                  rows={2}
+                  placeholder="Motivo técnico del procedimiento (ej. Mantenimiento rutinario para liberar memoria)..."
+                  value={form.justificacion}
+                  onChange={(e) => setForm((p) => ({ ...p, justificacion: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }}
+                />
+              </label>
+            </div>
+
+            {/* Fila 3: Parámetros técnicos: Entorno, Riesgo, Impacto, Urgencia, Duración y Anticipación */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, backgroundColor: "#f8fafc", padding: 12, borderRadius: 8 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Entorno Objetivo
+                <select
+                  value={form.entorno}
+                  onChange={(e) => setForm((p) => ({ ...p, entorno: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "7px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13 }}
+                >
+                  <option value="Producción">Producción</option>
+                  <option value="Preproducción">Preproducción</option>
+                  <option value="Staging">Staging</option>
+                  <option value="Pruebas">Pruebas / QA</option>
+                  <option value="Desarrollo">Desarrollo</option>
+                </select>
+              </label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Nivel de Riesgo Fijo
+                <select
+                  value={form.riesgo_fijo}
+                  onChange={(e) => setForm((p) => ({ ...p, riesgo_fijo: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "7px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13 }}
+                >
+                  <option value="bajo">Bajo (Estándar)</option>
+                  <option value="medio">Medio</option>
+                  <option value="alto">Alto</option>
+                </select>
+              </label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Impacto Predeterminado
+                <select
+                  value={form.impacto}
+                  onChange={(e) => setForm((p) => ({ ...p, impacto: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "7px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13 }}
+                >
+                  <option value="Bajo">Bajo (Localizado)</option>
+                  <option value="Medio">Medio (Un departamento)</option>
+                  <option value="Alto">Alto (Múltiples servicios)</option>
+                  <option value="Crítico">Crítico (Toda la organización)</option>
+                </select>
+              </label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Urgencia Predeterminada
+                <select
+                  value={form.urgencia}
+                  onChange={(e) => setForm((p) => ({ ...p, urgencia: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "7px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13 }}
+                >
+                  <option value="Baja">Baja</option>
+                  <option value="Media">Media</option>
+                  <option value="Alta">Alta</option>
+                  <option value="Crítica">Crítica</option>
+                </select>
+              </label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Duración Estimada
+                <input
+                  type="text"
+                  placeholder="ej. 30m, 1h"
+                  value={form.duracion_estimada}
+                  onChange={(e) => setForm((p) => ({ ...p, duracion_estimada: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "7px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13 }}
+                />
+              </label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Anticipación (Horas)
+                <input
+                  type="number"
+                  min={1}
+                  value={form.anticipacion_horas}
+                  onChange={(e) => setForm((p) => ({ ...p, anticipacion_horas: Number(e.target.value) }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "7px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13 }}
+                />
+              </label>
+            </div>
+
+            {/* Fila 4: Planes de Implementación y Rollback (Requeridos para cambios) */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Plan de Implementación (Paso a Paso) *
+                <textarea
+                  rows={4}
+                  placeholder={"1. Ejecutar verificación previa de servicios.\n2. Aplicar cambio o reinicio seguro.\n3. Monitorear logs de inicialización."}
+                  value={form.plan_implementacion}
+                  onChange={(e) => setForm((p) => ({ ...p, plan_implementacion: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13, fontFamily: "monospace" }}
+                />
+              </label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Plan de Contingencia / Rollback *
+                <textarea
+                  rows={4}
+                  placeholder={"1. En caso de timeout, detener proceso.\n2. Restaurar binarios o configuración anterior.\n3. Confirmar estabilización del nodo."}
+                  value={form.plan_rollback}
+                  onChange={(e) => setForm((p) => ({ ...p, plan_rollback: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13, fontFamily: "monospace" }}
+                />
+              </label>
+            </div>
+
+            {/* Fila 5: Plan de Pruebas y Criterios de Éxito */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Plan de Pruebas / Verificación *
+                <textarea
+                  rows={3}
+                  placeholder="Verificar endpoint /healthz, ping a base de datos y respuesta en menos de 200ms."
+                  value={form.plan_pruebas}
+                  onChange={(e) => setForm((p) => ({ ...p, plan_pruebas: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }}
+                />
+              </label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
+                Criterios de Éxito
+                <textarea
+                  rows={3}
+                  placeholder="El microservicio responde código HTTP 200 y cero errores 5xx en los logs durante 15 minutos."
+                  value={form.criterios_exito}
+                  onChange={(e) => setForm((p) => ({ ...p, criterios_exito: e.target.value }))}
+                  style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }}
+                />
+              </label>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 18, borderTop: "1px solid #f1f5f9", paddingTop: 14 }}>
+            <button
+              type="button"
+              className="boton-secundario"
+              style={{ width: "auto" }}
+              disabled={procesando}
+              onClick={() => setMostrarForm(false)}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className="boton-primario"
+              style={{ width: "auto" }}
+              disabled={procesando || !form.codigo.trim() || !form.nombre.trim()}
+              onClick={proponer}
+            >
+              {procesando ? "Guardando..." : "Guardar Modelo Estándar"}
+            </button>
+          </div>
         </div>
       )}
 

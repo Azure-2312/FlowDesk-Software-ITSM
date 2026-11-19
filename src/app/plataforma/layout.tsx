@@ -56,7 +56,6 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
             <div className="marca-fila" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
               <Link href="/plataforma/inicio" className="marca-titulo" style={{ textDecoration: "none", color: "inherit" }}>Sistema de tickets</Link>
               <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <CampanaNotificaciones />
                 <SelectorPerfil perfiles={sesion.perfiles} perfilActivo={sesion.perfilActivo} />
               </div>
             </div>
@@ -112,7 +111,10 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
                 </span>
               </span>
             </Link>
-            <BotonLogout compacto={true} />
+            <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
+              <CampanaNotificaciones />
+              <BotonLogout compacto={true} />
+            </div>
           </div>
         </div>
       </BarraLateral>

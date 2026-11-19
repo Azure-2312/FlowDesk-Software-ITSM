@@ -88,7 +88,7 @@ export default function CampanaNotificaciones() {
         type="button"
         onClick={() => setAbierto((prev) => !prev)}
         style={{
-          background: "transparent",
+          background: abierto ? "#1e293b" : "transparent",
           border: "none",
           cursor: "pointer",
           position: "relative",
@@ -96,8 +96,9 @@ export default function CampanaNotificaciones() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: abierto ? "#2563eb" : "#64748b",
+          color: abierto ? "#60a5fa" : "#cbd5e1",
           borderRadius: 6,
+          transition: "all 0.15s ease",
         }}
         title="Notificaciones del sistema"
         aria-label="Notificaciones del sistema"
@@ -136,14 +137,14 @@ export default function CampanaNotificaciones() {
         <div
           style={{
             position: "absolute",
-            top: "calc(100% + 8px)",
-            right: 0,
+            bottom: "calc(100% + 10px)",
+            left: 0,
             width: 360,
             maxHeight: 480,
             backgroundColor: "#ffffff",
             border: "1px solid #e2e8f0",
             borderRadius: 10,
-            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+            boxShadow: "0 -10px 25px -5px rgba(0, 0, 0, 0.15), 0 -8px 10px -6px rgba(0, 0, 0, 0.1)",
             zIndex: 9999,
             display: "flex",
             flexDirection: "column",
