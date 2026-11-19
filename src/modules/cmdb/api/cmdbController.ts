@@ -64,9 +64,9 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  // Administrador (1) o Gestor de Activos (9)
+  // Administrador (1), Técnico (2) o Gestor de Activos (9)
   const perfilId = sesion.perfilActivo.id_perfil;
-  if (perfilId !== 9) {
+  if (![1, 2, 9].includes(perfilId)) {
     return NextResponse.json({ error: "No autorizado para modificar CIs de la CMDB" }, { status: 403 });
   }
 

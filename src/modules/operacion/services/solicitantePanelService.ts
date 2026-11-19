@@ -43,21 +43,6 @@ export async function obtenerPanelSolicitante(idUsuario: number) {
     [idUsuario]
   );
 
-  const activos = await query<{
-    codigo_patrimonial: string | null;
-    tipo_activo: string | null;
-    marca: string | null;
-    modelo: string | null;
-    estado_activo: string | null;
-  }>(
-    `SELECT codigo_patrimonial, tipo_activo, marca, modelo, estado_activo
-     FROM activo
-     WHERE estado_registro = true AND id_usuario_custodio = $1
-     ORDER BY fecha_creacion DESC
-     LIMIT 5`,
-    [idUsuario]
-  );
-
   const articulos = await query<{ id_articulo: number; titulo: string }>(
     `SELECT id_articulo, titulo
      FROM articulo_conocimiento
@@ -74,7 +59,6 @@ export async function obtenerPanelSolicitante(idUsuario: number) {
       vencidos: kpis?.vencidos ?? 0,
     },
     ticketsRecientes,
-    activos,
     articulos,
   };
 }
