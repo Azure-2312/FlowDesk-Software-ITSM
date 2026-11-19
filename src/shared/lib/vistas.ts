@@ -213,31 +213,7 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     ],
   },
 
-  // 14. #21090 Modelos de cambio estándar
-  "/plataforma/cambios/modelos": {
-    idOpcion: 21090,
-    urlBase: "/plataforma/cambios/modelos",
-    nombre: "Modelos de cambio estándar",
-    vistaPorDefecto: "consulta",
-    vistas: [
-      { codigo: "consulta", etiqueta: "Consulta", idsLegados: [21090] },
-      { codigo: "administracion", etiqueta: "Administración", idsLegados: [21075] },
-    ],
-  },
 
-  // 15. #21093 Bandeja de problemas
-  "/plataforma/problemas/bandeja": {
-    idOpcion: 21093,
-    urlBase: "/plataforma/problemas/bandeja",
-    nombre: "Bandeja de problemas",
-    vistaPorDefecto: "sin-asignar",
-    vistas: [
-      { codigo: "sin-asignar", etiqueta: "Sin asignar", idsLegados: [21093, 21094] },
-      { codigo: "asignados", etiqueta: "Asignados a mí", idsLegados: [21102] },
-      { codigo: "grupo", etiqueta: "De mi grupo", idsLegados: [21103] },
-      { codigo: "historial", etiqueta: "Historial", idsLegados: [21106] },
-    ],
-  },
 
   // 16. #21095 Candidatos a problema
   "/plataforma/problemas/candidatos": {

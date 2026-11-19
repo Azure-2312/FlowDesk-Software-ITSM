@@ -99,7 +99,7 @@ function FormularioProblemasCrear() {
         return;
       }
 
-      router.push("/plataforma/problemas/bandeja?vista=historial");
+      router.push("/plataforma/problemas/mios");
     } catch {
       setError("Error de conexión al registrar el problema.");
     } finally {
@@ -129,13 +129,13 @@ function FormularioProblemasCrear() {
             if (typeof window !== "undefined" && window.history.length > 1) {
               router.back();
             } else {
-              router.push("/plataforma/problemas/bandeja?vista=historial");
+              router.push("/plataforma/problemas/mios");
             }
           }}
           className="boton-secundario"
           style={{ width: "auto", fontSize: 12.5, padding: "8px 16px" }}
         >
-          Volver a Historial
+          Volver a Mis problemas
         </button>
       </div>
 
@@ -312,7 +312,7 @@ function FormularioProblemasCrear() {
               if (typeof window !== "undefined" && window.history.length > 1) {
                 router.back();
               } else {
-                router.push("/plataforma/problemas/bandeja?vista=historial");
+                router.push("/plataforma/problemas/mios");
               }
             }}
             className="boton-secundario"
