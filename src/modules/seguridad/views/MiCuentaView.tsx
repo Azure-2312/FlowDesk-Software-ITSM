@@ -14,6 +14,106 @@ interface DetalleTecnico {
   departamento_nombre: string | null;
 }
 
+const CONFIG_PRIORIDAD_SOLICITANTE: Record<
+  number,
+  {
+    nombre: string;
+    corto: string;
+    categoria: string;
+    descripcion: string;
+    colorFondo: string;
+    colorTexto: string;
+    borde: string;
+  }
+> = {
+  1: {
+    nombre: "Nivel 1: Prioridad VIP",
+    corto: "VIP",
+    categoria: "Alta Dirección y Presidencia",
+    descripcion: "Atención prioritaria inmediata con canal de escalamiento preferente y resolución crítica.",
+    colorFondo: "#fee2e2",
+    colorTexto: "#991b1b",
+    borde: "#fca5a5",
+  },
+  2: {
+    nombre: "Nivel 2: Prioridad Ejecutiva",
+    corto: "Ejecutiva",
+    categoria: "Gerencias y Subgerencias",
+    descripcion: "Atención ejecutiva con resolución de alta prioridad y tiempos acelerados.",
+    colorFondo: "#ffedd5",
+    colorTexto: "#9a3412",
+    borde: "#fdba74",
+  },
+  3: {
+    nombre: "Nivel 3: Prioridad Preferente",
+    corto: "Preferente",
+    categoria: "Jefaturas y Coordinaciones de Área",
+    descripcion: "Atención prioritaria intermedia para líderes funcionales y coordinadores.",
+    colorFondo: "#fef3c7",
+    colorTexto: "#92400e",
+    borde: "#fcd34d",
+  },
+  4: {
+    nombre: "Nivel 4: Prioridad Técnica",
+    corto: "Técnica",
+    categoria: "Especialistas y Analistas Operativos",
+    descripcion: "Atención especializada para personal técnico operativo y sistemas de soporte continuo.",
+    colorFondo: "#e0e7ff",
+    colorTexto: "#3730a3",
+    borde: "#a5b4fc",
+  },
+  5: {
+    nombre: "Nivel 5: Prioridad Estándar",
+    corto: "Estándar",
+    categoria: "Colaboradores y Usuarios Generales",
+    descripcion: "Atención regular estándar según los acuerdos de nivel de servicio (SLA) institucional.",
+    colorFondo: "#f1f5f9",
+    colorTexto: "#475569",
+    borde: "#cbd5e1",
+  },
+};
+
+const CONFIG_NIVEL_TECNICO: Record<
+  number,
+  {
+    codigo: "N1" | "N2" | "N3";
+    nombre: string;
+    rolSoporte: string;
+    descripcion: string;
+    colorFondo: string;
+    colorTexto: string;
+    borde: string;
+  }
+> = {
+  1: {
+    codigo: "N1",
+    nombre: "Técnico Nivel 1 (N1)",
+    rolSoporte: "Mesa de Ayuda / Primer Contacto",
+    descripcion: "Recepción, triage, diagnóstico y atención de incidentes frecuentes y solicitudes de servicio.",
+    colorFondo: "#eff6ff",
+    colorTexto: "#1d4ed8",
+    borde: "#bfdbfe",
+  },
+  2: {
+    codigo: "N2",
+    nombre: "Técnico Nivel 2 (N2)",
+    rolSoporte: "Soporte Especializado de Segundo Nivel",
+    descripcion: "Atención avanzada en estaciones de trabajo, redes locales, accesos y soporte a aplicativos.",
+    colorFondo: "#f0fdf4",
+    colorTexto: "#15803d",
+    borde: "#bbf7d0",
+  },
+  3: {
+    codigo: "N3",
+    nombre: "Técnico Nivel 3 (N3)",
+    rolSoporte: "Ingeniería de Infraestructura y Tercer Nivel",
+    descripcion: "Especialistas senior de servidores, bases de datos, redes corporativas y problemas de raíz.",
+    colorFondo: "#faf5ff",
+    colorTexto: "#6b21a8",
+    borde: "#e9d5ff",
+  },
+};
+
 interface Props {
   datosIniciales?: {
     usuario: Usuario;
@@ -229,6 +329,21 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
     );
   }
 
+  const nivelPrioridad = Number(usuario.nivel_prioridad || 5);
+  const prioridadInfo =
+    CONFIG_PRIORIDAD_SOLICITANTE[nivelPrioridad] || CONFIG_PRIORIDAD_SOLICITANTE[5];
+
+  const nivelTecnico = Number(detalleTecnico?.nivel_soporte || 2);
+  const tecnicoInfo =
+    CONFIG_NIVEL_TECNICO[nivelTecnico] || CONFIG_NIVEL_TECNICO[2];
+
+  const tienePerfilSolicitante = perfiles.some(
+    (p) => p.id_perfil === 3 || p.nombre.toLowerCase().includes("solicitante")
+  );
+  const tienePerfilTecnico =
+    perfiles.some((p) => p.id_perfil === 2 || p.nombre.toLowerCase().includes("tecnic")) ||
+    Boolean(detalleTecnico);
+
   const iniciales = nombres
     .trim()
     .split(/\s+/)
@@ -299,12 +414,63 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
           </h2>
           <p style={{ fontSize: 13, color: "#6b7280", marginBottom: 6 }}>{usuario.correo_electronico}</p>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-            {perfiles.map((p) => (
-              <span key={p.id_perfil} className="chip-perfil">
-                {p.nombre}
-              </span>
-            ))}
-            {(detalleTecnico || perfiles.some((p) => p.id_perfil === 2)) && (
+            {perfiles.map((p) => {
+              const esSolicitante = p.id_perfil === 3 || p.nombre.toLowerCase().includes("solicitante");
+              const esTecnico = p.id_perfil === 2 || p.nombre.toLowerCase().includes("tecnic");
+
+              if (esSolicitante) {
+                return (
+                  <span
+                    key={p.id_perfil}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      backgroundColor: prioridadInfo.colorFondo,
+                      color: prioridadInfo.colorTexto,
+                      border: `1px solid ${prioridadInfo.borde}`,
+                      padding: "3px 10px",
+                      borderRadius: 999,
+                    }}
+                    title={`Solicitante con prioridad: ${prioridadInfo.nombre}`}
+                  >
+                    📌 Solicitante · Prioridad {prioridadInfo.corto}
+                  </span>
+                );
+              }
+
+              if (esTecnico) {
+                return (
+                  <span
+                    key={p.id_perfil}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      backgroundColor: tecnicoInfo.colorFondo,
+                      color: tecnicoInfo.colorTexto,
+                      border: `1px solid ${tecnicoInfo.borde}`,
+                      padding: "3px 10px",
+                      borderRadius: 999,
+                    }}
+                    title={`Técnico con acreditación ITIL: Nivel ${nivelTecnico} (${tecnicoInfo.codigo})`}
+                  >
+                    🛠️ Técnico · Nivel {nivelTecnico} ({tecnicoInfo.codigo})
+                  </span>
+                );
+              }
+
+              return (
+                <span key={p.id_perfil} className="chip-perfil">
+                  {p.nombre}
+                </span>
+              );
+            })}
+            {detalleTecnico && !perfiles.some((p) => p.id_perfil === 2 || p.nombre.toLowerCase().includes("tecnic")) && (
               <span
                 style={{
                   display: "inline-flex",
@@ -312,22 +478,113 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
                   gap: 4,
                   fontSize: 11.5,
                   fontWeight: 700,
-                  backgroundColor: "#eff6ff",
-                  color: "#1d4ed8",
-                  border: "1px solid #bfdbfe",
+                  backgroundColor: tecnicoInfo.colorFondo,
+                  color: tecnicoInfo.colorTexto,
+                  border: `1px solid ${tecnicoInfo.borde}`,
                   padding: "3px 10px",
                   borderRadius: 999,
                 }}
               >
-                🛠️ Técnico Nivel {detalleTecnico?.nivel_soporte ?? 2}
+                🛠️ Técnico · Nivel {nivelTecnico} ({tecnicoInfo.codigo})
               </span>
             )}
           </div>
         </div>
       </div>
 
-      {/* Tarjeta de Acreditación y Nivel de Soporte Técnico (si aplica) */}
-      {(detalleTecnico || perfiles.some((p) => p.id_perfil === 2)) && (
+      {/* Tarjeta de Acreditación y Nivel de Prioridad de Solicitante */}
+      {tienePerfilSolicitante && (
+        <div
+          style={{
+            backgroundColor: "#f8fafc",
+            border: "1px solid #cbd5e1",
+            borderRadius: 8,
+            padding: "16px 20px",
+            marginBottom: 20,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 16,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 8,
+                backgroundColor: prioridadInfo.colorTexto,
+                color: "#ffffff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 22,
+                flexShrink: 0,
+              }}
+            >
+              📌
+            </div>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#64748b", letterSpacing: "0.5px" }}>
+                Nivel de Prioridad del Solicitante · Mesa de Servicios
+              </div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginTop: 2, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <span>Prioridad {prioridadInfo.corto}</span>
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    padding: "2px 8px",
+                    borderRadius: 999,
+                    backgroundColor: prioridadInfo.colorFondo,
+                    color: prioridadInfo.colorTexto,
+                    border: `1px solid ${prioridadInfo.borde}`,
+                  }}
+                >
+                  Nivel {nivelPrioridad}
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>
+                  — {prioridadInfo.categoria}
+                </span>
+              </div>
+              <div style={{ fontSize: 12.5, color: "#475569", marginTop: 3 }}>
+                <strong>Alcance del servicio:</strong> {prioridadInfo.descripcion}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 11, color: "#64748b" }}>Nivel Institucional</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: prioridadInfo.colorTexto }}>
+                Nivel {nivelPrioridad} ({prioridadInfo.corto})
+              </div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 11, color: "#64748b" }}>Atención en Mesa</div>
+              <span
+                style={{
+                  display: "inline-block",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  backgroundColor: prioridadInfo.colorFondo,
+                  color: prioridadInfo.colorTexto,
+                  padding: "3px 8px",
+                  borderRadius: 4,
+                  marginTop: 2,
+                  border: `1px solid ${prioridadInfo.borde}`,
+                }}
+              >
+                ● {prioridadInfo.corto.toUpperCase()}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tarjeta de Acreditación y Nivel de Soporte Técnico */}
+      {tienePerfilTecnico && (
         <div
           style={{
             backgroundColor: "#f8fafc",
@@ -361,16 +618,26 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
             </div>
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#64748b", letterSpacing: "0.5px" }}>
-                Acreditación Operativa ITIL v4
+                Acreditación Operativa ITIL v4 · Soporte Técnico
               </div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginTop: 2 }}>
-                Soporte Técnico · Nivel {detalleTecnico?.nivel_soporte ?? 2} (
-                {(detalleTecnico?.nivel_soporte ?? 2) === 1
-                  ? "Mesa de Ayuda / Primer Contacto"
-                  : (detalleTecnico?.nivel_soporte ?? 2) === 2
-                  ? "Soporte Especializado de Segundo Nivel"
-                  : "Ingeniería de Infraestructura / Nivel 3"}
-                )
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginTop: 2, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <span>Técnico Nivel {nivelTecnico}</span>
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    padding: "2px 8px",
+                    borderRadius: 999,
+                    backgroundColor: tecnicoInfo.colorFondo,
+                    color: tecnicoInfo.colorTexto,
+                    border: `1px solid ${tecnicoInfo.borde}`,
+                  }}
+                >
+                  {tecnicoInfo.codigo}
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>
+                  — {tecnicoInfo.rolSoporte}
+                </span>
               </div>
               <div style={{ fontSize: 12.5, color: "#475569", marginTop: 3 }}>
                 <strong>Especialidad:</strong> {detalleTecnico?.especialidad_principal || "Resolución de incidentes y requerimientos técnicos"}
@@ -380,6 +647,12 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
           </div>
 
           <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 11, color: "#64748b" }}>Nivel Operativo</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: tecnicoInfo.colorTexto }}>
+                Nivel {nivelTecnico} ({tecnicoInfo.codigo})
+              </div>
+            </div>
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: 11, color: "#64748b" }}>Capacidad Concurrente</div>
               <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>
@@ -615,28 +888,70 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
         <p className="descripcion">Los perfiles que tienes habilitados en tu usuario:</p>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 12 }}>
-          {perfiles.map((p) => (
-            <div
-              key={p.id_perfil}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "10px 14px",
-                backgroundColor: "#f9fafb",
-                border: "1px solid #e5e7eb",
-                borderRadius: 8,
-              }}
-            >
-              <div>
-                <strong>{p.nombre}</strong>
-                <p style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>
-                  {p.descripcion || "Acceso estándar según el catálogo de roles"}
-                </p>
+          {perfiles.map((p) => {
+            const esSolicitante = p.id_perfil === 3 || p.nombre.toLowerCase().includes("solicitante");
+            const esTecnico = p.id_perfil === 2 || p.nombre.toLowerCase().includes("tecnic");
+
+            return (
+              <div
+                key={p.id_perfil}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "12px 16px",
+                  backgroundColor: "#f9fafb",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 8,
+                  gap: 12,
+                }}
+              >
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    <strong style={{ fontSize: 14, color: "#0f172a" }}>{p.nombre}</strong>
+                    {esSolicitante && (
+                      <span
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 700,
+                          backgroundColor: prioridadInfo.colorFondo,
+                          color: prioridadInfo.colorTexto,
+                          border: `1px solid ${prioridadInfo.borde}`,
+                          padding: "1px 7px",
+                          borderRadius: 4,
+                        }}
+                      >
+                        Prioridad {prioridadInfo.corto} (Nivel {nivelPrioridad})
+                      </span>
+                    )}
+                    {esTecnico && (
+                      <span
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 700,
+                          backgroundColor: tecnicoInfo.colorFondo,
+                          color: tecnicoInfo.colorTexto,
+                          border: `1px solid ${tecnicoInfo.borde}`,
+                          padding: "1px 7px",
+                          borderRadius: 4,
+                        }}
+                      >
+                        Nivel {nivelTecnico} ({tecnicoInfo.codigo})
+                      </span>
+                    )}
+                  </div>
+                  <p style={{ fontSize: 12, color: "#6b7280", margin: "4px 0 0 0" }}>
+                    {esSolicitante
+                      ? `Prioridad asignada: ${prioridadInfo.nombre} — ${prioridadInfo.descripcion}`
+                      : esTecnico
+                      ? `Nivel de soporte operativo: ${tecnicoInfo.nombre} — ${tecnicoInfo.descripcion}`
+                      : p.descripcion || "Acceso estándar según el catálogo de roles institucional."}
+                  </p>
+                </div>
+                <span className="badge-activo" style={{ flexShrink: 0 }}>Asignado</span>
               </div>
-              <span className="badge-activo">Asignado</span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
