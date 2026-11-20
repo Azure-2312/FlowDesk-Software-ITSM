@@ -14,10 +14,14 @@ export interface Usuario {
   departamento_nombre?: string | null;
   id_departamento_empresa?: number | null;
   departamento_empresa_nombre?: string | null;
+  departamento_empresa_codigo?: string | null;
+  departamento_ti_nombre?: string | null;
+  departamento_ti_codigo?: string | null;
   estado_registro: boolean;
   intentos_fallidos?: number;
   cuenta_bloqueada?: boolean;
   nivel_prioridad?: number;
+  foto_perfil?: string | null;
 }
 
 // Un usuario tal como se muestra en el mantenimiento de Usuarios,

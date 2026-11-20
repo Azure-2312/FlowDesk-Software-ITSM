@@ -17,7 +17,10 @@ export async function GET(req: NextRequest) {
 
   try {
     const data = await obtenerMiCuenta(sesion.id_usuario);
-    return NextResponse.json(data);
+    return NextResponse.json({
+      ...data,
+      perfilActivo: sesion.perfilActivo || sesion.perfiles?.[0] || null,
+    });
   } catch (err) {
     if (!(err instanceof ErrorDominio)) console.error("Error al obtener la cuenta:", err);
     const { error, status } = respuestaError(err, "Error al consultar la cuenta");
@@ -35,13 +38,15 @@ export async function PUT(req: NextRequest) {
 
     const respuesta = NextResponse.json(resultado.payload);
 
-    respuesta.cookies.set(COOKIE_SESION, resultado.tokenSesion, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 8,
-    });
+    if (resultado.tokenSesion) {
+      respuesta.cookies.set(COOKIE_SESION, resultado.tokenSesion, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 8,
+      });
+    }
 
     return respuesta;
   } catch (err) {

@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Usuario, Perfil } from "@/types";
-import { validarNombre, validarCelular } from "@/shared/lib/validaciones";
-import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 interface DetalleTecnico {
   nivel_soporte: number;
@@ -114,29 +112,39 @@ const CONFIG_NIVEL_TECNICO: Record<
   },
 };
 
+interface PerfilActivoInfo {
+  id_perfil: number;
+  nombre: string;
+}
+
 interface Props {
   datosIniciales?: {
     usuario: Usuario;
     perfiles: Perfil[];
     detalleTecnico?: DetalleTecnico | null;
+    perfilActivo?: PerfilActivoInfo;
   } | null;
+  perfilActivo?: PerfilActivoInfo;
 }
 
-export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
+export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerfilActivo }: Props = {}) {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [usuario, setUsuario] = useState<Usuario | null>(datosIniciales?.usuario ?? null);
   const [perfiles, setPerfiles] = useState<Perfil[]>(datosIniciales?.perfiles ?? []);
   const [detalleTecnico, setDetalleTecnico] = useState<DetalleTecnico | null>(datosIniciales?.detalleTecnico ?? null);
+  const [perfilActivo, setPerfilActivo] = useState<PerfilActivoInfo | null>(
+    datosIniciales?.perfilActivo || propsPerfilActivo || null
+  );
   const [cargando, setCargando] = useState(!datosIniciales?.usuario);
 
-  // Formulario de datos personales
-  const [nombres, setNombres] = useState(datosIniciales?.usuario?.nombres || "");
-  const [apellidoPaterno, setApellidoPaterno] = useState(datosIniciales?.usuario?.apellido_paterno || "");
-  const [apellidoMaterno, setApellidoMaterno] = useState(datosIniciales?.usuario?.apellido_materno || "");
-  const [celular, setCelular] = useState(datosIniciales?.usuario?.celular || "");
-  const [guardandoDatos, setGuardandoDatos] = useState(false);
+  // Foto de perfil
+  const [fotoPerfil, setFotoPerfil] = useState<string | null>(datosIniciales?.usuario?.foto_perfil ?? null);
+  const [subiendoFoto, setSubiendoFoto] = useState(false);
+  const [errorFoto, setErrorFoto] = useState<string | null>(null);
 
-  // Formulario de cambio de clave
+  // Formulario de cambio de clave (Único editable junto a la foto de perfil)
   const [claveActual, setClaveActual] = useState("");
   const [claveNueva, setClaveNueva] = useState("");
   const [claveConfirmacion, setClaveConfirmacion] = useState("");
@@ -154,7 +162,6 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
     claveNueva.length > 0 && claveConfirmacion.length > 0 && claveNueva === claveConfirmacion;
 
   // Alertas
-  const [errorDatos, setErrorDatos] = useState<string | null>(null);
   const [errorClave, setErrorClave] = useState<string | null>(null);
   const [exito, setExito] = useState<string | null>(null);
 
@@ -167,13 +174,11 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
         setUsuario(data.usuario);
         setPerfiles(data.perfiles ?? []);
         setDetalleTecnico(data.detalleTecnico ?? null);
-        setNombres(data.usuario.nombres || "");
-        setApellidoPaterno(data.usuario.apellido_paterno || "");
-        setApellidoMaterno(data.usuario.apellido_materno || "");
-        setCelular(data.usuario.celular || "");
+        if (data.perfilActivo) setPerfilActivo(data.perfilActivo);
+        if (data.usuario.foto_perfil) setFotoPerfil(data.usuario.foto_perfil);
       }
     } catch {
-      setErrorDatos("No se pudo cargar la información de tu perfil de usuario");
+      setErrorFoto("No se pudo cargar la información de tu perfil de usuario");
     } finally {
       setCargando(false);
     }
@@ -190,61 +195,87 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
     setTimeout(() => setExito(null), 4000);
   }
 
-  async function manejarGuardarDatos(e: FormEvent) {
-    e.preventDefault();
-    setErrorDatos(null);
+  // Manejo de subida de foto de perfil
+  async function manejarSeleccionarFoto(e: ChangeEvent<HTMLInputElement>) {
+    const archivo = e.target.files?.[0];
+    if (!archivo) return;
 
-    const vNom = validarNombre(nombres, "El nombre", true);
-    if (!vNom.valido) {
-      setErrorDatos(vNom.mensaje!);
-      return;
-    }
-    const vPat = validarNombre(apellidoPaterno, "El apellido paterno", true);
-    if (!vPat.valido) {
-      setErrorDatos(vPat.mensaje!);
-      return;
-    }
-    const vMat = validarNombre(apellidoMaterno, "El apellido materno", false);
-    if (!vMat.valido) {
-      setErrorDatos(vMat.mensaje!);
-      return;
-    }
-    const vCel = validarCelular(celular, false);
-    if (!vCel.valido) {
-      setErrorDatos(vCel.mensaje!);
+    if (!archivo.type.startsWith("image/")) {
+      setErrorFoto("El archivo seleccionado debe ser una imagen (PNG, JPG o WebP).");
       return;
     }
 
-    setGuardandoDatos(true);
+    if (archivo.size > 5 * 1024 * 1024) {
+      setErrorFoto("La imagen seleccionada supera el límite máximo permitido de 5 MB.");
+      return;
+    }
 
+    setErrorFoto(null);
+    setSubiendoFoto(true);
+
+    const lector = new FileReader();
+    lector.onload = async () => {
+      const dataUrl = lector.result as string;
+      try {
+        const res = await fetch("/api/mi-cuenta", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ foto_perfil: dataUrl }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setErrorFoto(data.error || "No se pudo actualizar la foto de perfil");
+          return;
+        }
+
+        setFotoPerfil(dataUrl);
+        if (usuario) {
+          setUsuario({ ...usuario, foto_perfil: dataUrl });
+        }
+        mostrarExito("¡Foto de perfil actualizada con éxito!");
+      } catch {
+        setErrorFoto("Error al conectarse con el servidor para subir la foto.");
+      } finally {
+        setSubiendoFoto(false);
+      }
+    };
+    lector.onerror = () => {
+      setErrorFoto("Error al procesar el archivo de imagen.");
+      setSubiendoFoto(false);
+    };
+    lector.readAsDataURL(archivo);
+  }
+
+  async function manejarEliminarFoto() {
+    if (!confirm("¿Deseas quitar tu foto de perfil actual?")) return;
+
+    setErrorFoto(null);
+    setSubiendoFoto(true);
     try {
       const res = await fetch("/api/mi-cuenta", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombres,
-          apellido_paterno: apellidoPaterno,
-          apellido_materno: apellidoMaterno,
-          celular,
-        }),
+        body: JSON.stringify({ foto_perfil: null }),
       });
       const data = await res.json();
-
       if (!res.ok) {
-        setErrorDatos(data.error ?? "No se pudieron guardar los datos");
+        setErrorFoto(data.error || "No se pudo quitar la foto de perfil");
         return;
       }
 
-      mostrarExito("Tus datos personales se han actualizado correctamente");
-      await cargarDatos();
-      router.refresh();
+      setFotoPerfil(null);
+      if (usuario) {
+        setUsuario({ ...usuario, foto_perfil: null });
+      }
+      mostrarExito("Foto de perfil eliminada.");
     } catch {
-      setErrorDatos("Error de conexión al actualizar datos");
+      setErrorFoto("Error de conexión al eliminar la foto.");
     } finally {
-      setGuardandoDatos(false);
+      setSubiendoFoto(false);
     }
   }
 
+  // Cambio de contraseña
   async function manejarCambiarClave(e: FormEvent) {
     e.preventDefault();
     setErrorClave(null);
@@ -266,10 +297,6 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nombres,
-          apellido_paterno: apellidoPaterno,
-          apellido_materno: apellidoMaterno,
-          celular,
           clave_actual: claveActual,
           clave_nueva: claveNueva,
         }),
@@ -305,7 +332,7 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
       <div className="vista-contenedor" style={{ maxWidth: 640, backgroundColor: "#ffffff", padding: 24, borderRadius: 8, border: "1px solid #e2e8f0" }}>
         <h2 style={{ fontSize: 18, fontWeight: 700, margin: "0 0 8px 0", color: "#0f172a" }}>Mi perfil</h2>
         <p className="descripcion" style={{ color: "#64748b" }}>
-          {errorDatos || "No se pudo encontrar tu información de usuario o la sesión requiere sincronización."}
+          No se pudo encontrar tu información de usuario o la sesión requiere sincronización.
         </p>
         <div style={{ marginTop: 16, display: "flex", gap: 10 }}>
           <button
@@ -329,6 +356,17 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
     );
   }
 
+  // Discriminación del rol activo actual en la sesión
+  const esTecnicoActivo = Boolean(
+    perfilActivo?.id_perfil === 2 ||
+    perfilActivo?.nombre?.toLowerCase().includes("tecnic")
+  );
+
+  const esSolicitanteActivo = Boolean(
+    perfilActivo?.id_perfil === 3 ||
+    perfilActivo?.nombre?.toLowerCase().includes("solicitante")
+  );
+
   const nivelPrioridad = Number(usuario.nivel_prioridad || 5);
   const prioridadInfo =
     CONFIG_PRIORIDAD_SOLICITANTE[nivelPrioridad] || CONFIG_PRIORIDAD_SOLICITANTE[5];
@@ -337,39 +375,28 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
   const tecnicoInfo =
     CONFIG_NIVEL_TECNICO[nivelTecnico] || CONFIG_NIVEL_TECNICO[2];
 
-  const tienePerfilSolicitante = perfiles.some(
-    (p) => p.id_perfil === 3 || p.nombre.toLowerCase().includes("solicitante")
-  );
-  const tienePerfilTecnico =
-    perfiles.some((p) => p.id_perfil === 2 || p.nombre.toLowerCase().includes("tecnic")) ||
-    Boolean(detalleTecnico);
-
-  const iniciales = nombres
+  const iniciales = (usuario.nombres || "")
     .trim()
     .split(/\s+/)
     .slice(0, 2)
     .map((p) => p[0]?.toUpperCase() ?? "")
     .join("");
 
+  // Determinación del área / departamento según el perfil activo
+  const areaTrabajo = esTecnicoActivo
+    ? (detalleTecnico?.departamento_nombre || usuario.departamento_ti_nombre || usuario.departamento_empresa_nombre || "Mesa de Ayuda y Triaje (Nivel 1)")
+    : (usuario.departamento_empresa_nombre || usuario.departamento_ti_nombre || "Finanzas / Área General");
+
+  const idEmpresarial = `EMP-${String(usuario.id_usuario).padStart(4, "0")}`;
+
   return (
     <div className="vista-contenedor" style={{ maxWidth: 1400 }}>
-      {/* Cabecera de Página con Botón de Guardar en la Esquina Superior Derecha */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 20 }}>
-        <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 4px 0", color: "#0f172a" }}>Mi Perfil de Usuario</h1>
-          <p className="descripcion" style={{ margin: 0, fontSize: 13, color: "#64748b" }}>
-            Gestión de información personal, credenciales de acceso corporativas y roles asignados.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={manejarGuardarDatos}
-          className="boton-primario"
-          style={{ width: "auto", padding: "8px 20px", fontSize: 13, flexShrink: 0 }}
-          disabled={guardandoDatos}
-        >
-          {guardandoDatos ? "Guardando..." : "Guardar Cambios"}
-        </button>
+      {/* Cabecera de Página informativa */}
+      <div style={{ marginBottom: 20 }}>
+        <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 4px 0", color: "#0f172a" }}>Mi Perfil de Usuario</h1>
+        <p className="descripcion" style={{ margin: 0, fontSize: 13, color: "#64748b" }}>
+          Ficha institucional del colaborador, información empresarial y seguridad de credenciales.
+        </p>
       </div>
 
       {exito && (
@@ -389,570 +416,455 @@ export default function PaginaMiCuenta({ datosIniciales }: Props = {}) {
         </div>
       )}
 
-      {/* Encabezado de perfil (Ficha de Colaborador) */}
-      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 18 }}>
+      {errorFoto && (
         <div
           style={{
-            width: 52,
-            height: 52,
-            borderRadius: "50%",
-            backgroundColor: "#2563eb",
-            color: "white",
-            fontSize: 18,
-            fontWeight: 700,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
+            backgroundColor: "#fef2f2",
+            border: "1px solid #fecaca",
+            color: "#991b1b",
+            padding: "12px 16px",
+            borderRadius: 8,
+            marginBottom: 20,
+            fontSize: 13,
+            fontWeight: 500,
           }}
         >
-          {iniciales}
+          {errorFoto}
         </div>
-        <div>
-          <h2 style={{ fontSize: 17, marginBottom: 2, color: "#0f172a" }}>
-            {usuario.nombres} {usuario.apellido_paterno} {usuario.apellido_materno ?? ""}
-          </h2>
-          <p style={{ fontSize: 13, color: "#6b7280", marginBottom: 6 }}>{usuario.correo_electronico}</p>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-            {perfiles.map((p) => {
-              const esSolicitante = p.id_perfil === 3 || p.nombre.toLowerCase().includes("solicitante");
-              const esTecnico = p.id_perfil === 2 || p.nombre.toLowerCase().includes("tecnic");
+      )}
 
-              if (esSolicitante) {
-                return (
-                  <span
-                    key={p.id_perfil}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                      fontSize: 11.5,
-                      fontWeight: 700,
-                      backgroundColor: prioridadInfo.colorFondo,
-                      color: prioridadInfo.colorTexto,
-                      border: `1px solid ${prioridadInfo.borde}`,
-                      padding: "3px 10px",
-                      borderRadius: 999,
-                    }}
-                    title={`Solicitante con prioridad: ${prioridadInfo.nombre}`}
-                  >
-                    📌 Solicitante · Prioridad {prioridadInfo.corto}
-                  </span>
-                );
-              }
+      {/* Input oculto para subir foto de perfil */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        style={{ display: "none" }}
+        onChange={manejarSeleccionarFoto}
+      />
 
-              if (esTecnico) {
-                return (
-                  <span
-                    key={p.id_perfil}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                      fontSize: 11.5,
-                      fontWeight: 700,
-                      backgroundColor: tecnicoInfo.colorFondo,
-                      color: tecnicoInfo.colorTexto,
-                      border: `1px solid ${tecnicoInfo.borde}`,
-                      padding: "3px 10px",
-                      borderRadius: 999,
-                    }}
-                    title={`Técnico con acreditación ITIL: Nivel ${nivelTecnico} (${tecnicoInfo.codigo})`}
-                  >
-                    🛠️ Técnico · Nivel {nivelTecnico} ({tecnicoInfo.codigo})
-                  </span>
-                );
-              }
+      {/* Encabezado de perfil (Ficha de Colaborador con Foto de Perfil interactiva y Etiquetas de Roles) */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 20,
+          marginBottom: 20,
+          backgroundColor: "#ffffff",
+          border: "1px solid #e2e8f0",
+          borderRadius: 8,
+          padding: 20,
+          flexWrap: "wrap",
+        }}
+      >
+        {/* Contenedor de Foto de Perfil con Acciones */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <div
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: "50%",
+              overflow: "hidden",
+              backgroundColor: "#2563eb",
+              color: "white",
+              fontSize: 22,
+              fontWeight: 700,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "3px solid #e2e8f0",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.06)",
+              position: "relative",
+            }}
+          >
+            {fotoPerfil ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={fotoPerfil}
+                alt="Foto de perfil"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <span>{iniciales}</span>
+            )}
+          </div>
 
-              return (
-                <span key={p.id_perfil} className="chip-perfil">
-                  {p.nombre}
-                </span>
-              );
-            })}
-            {detalleTecnico && !perfiles.some((p) => p.id_perfil === 2 || p.nombre.toLowerCase().includes("tecnic")) && (
-              <span
+          <div style={{ display: "flex", gap: 6 }}>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={subiendoFoto}
+              style={{
+                fontSize: 11,
+                padding: "3px 8px",
+                borderRadius: 4,
+                border: "1px solid #cbd5e1",
+                backgroundColor: "#f8fafc",
+                color: "#1e293b",
+                cursor: subiendoFoto ? "wait" : "pointer",
+                fontWeight: 600,
+              }}
+              title="Subir o cambiar foto de perfil"
+            >
+              {subiendoFoto ? "Cargando..." : "📷 Cambiar foto"}
+            </button>
+            {fotoPerfil && (
+              <button
+                type="button"
+                onClick={manejarEliminarFoto}
+                disabled={subiendoFoto}
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 4,
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  backgroundColor: tecnicoInfo.colorFondo,
-                  color: tecnicoInfo.colorTexto,
-                  border: `1px solid ${tecnicoInfo.borde}`,
-                  padding: "3px 10px",
-                  borderRadius: 999,
+                  fontSize: 11,
+                  padding: "3px 8px",
+                  borderRadius: 4,
+                  border: "1px solid #fecaca",
+                  backgroundColor: "#fef2f2",
+                  color: "#dc2626",
+                  cursor: subiendoFoto ? "wait" : "pointer",
+                  fontWeight: 600,
                 }}
+                title="Quitar foto de perfil"
               >
-                🛠️ Técnico · Nivel {nivelTecnico} ({tecnicoInfo.codigo})
-              </span>
+                ✕ Quitar
+              </button>
             )}
           </div>
         </div>
+
+        {/* Información personal del colaborador y etiquetas de roles asignados */}
+        <div style={{ flex: 1, minWidth: 260 }}>
+          <h2 style={{ fontSize: 18, margin: "0 0 2px 0", color: "#0f172a" }}>
+            {usuario.nombres} {usuario.apellido_paterno} {usuario.apellido_materno ?? ""}
+          </h2>
+          <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 8px 0" }}>{usuario.correo_electronico}</p>
+
+          {/* Etiquetas simples de roles asignados debajo del nombre y correo */}
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+            {perfiles.map((p) => {
+              const esActivo = perfilActivo?.id_perfil === p.id_perfil;
+              return (
+                <span
+                  key={p.id_perfil}
+                  className="chip-perfil"
+                  style={
+                    esActivo
+                      ? {
+                          backgroundColor: "#1e40af",
+                          color: "#ffffff",
+                          borderColor: "#1e3a8a",
+                          fontWeight: 700,
+                        }
+                      : undefined
+                  }
+                  title={esActivo ? "Perfil activo actualmente en la sesión" : `Rol asignado: ${p.nombre}`}
+                >
+                  {esActivo ? `● ${p.nombre} (Activo)` : p.nombre}
+                </span>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
-      {/* Tarjeta de Acreditación y Nivel de Prioridad de Solicitante */}
-      {tienePerfilSolicitante && (
-        <div
-          style={{
-            backgroundColor: "#f8fafc",
-            border: "1px solid #cbd5e1",
-            borderRadius: 8,
-            padding: "16px 20px",
-            marginBottom: 20,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 16,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
+      {/* Grid de 2 Columnas: Datos Empresariales y Datos Personales (Solo Lectura) */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 20, alignItems: "start", marginBottom: 20 }}>
+        
+        {/* SECCIÓN: DATOS EMPRESARIALES */}
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+            <h2 style={{ fontSize: 16, margin: 0, color: "#0f172a", display: "flex", alignItems: "center", gap: 8 }}>
+              <span>🏢</span> Datos empresariales
+            </h2>
+            <span
               style={{
-                width: 44,
-                height: 44,
-                borderRadius: 8,
-                backgroundColor: prioridadInfo.colorTexto,
-                color: "#ffffff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 22,
-                flexShrink: 0,
+                fontSize: 11,
+                fontWeight: 600,
+                color: "#475569",
+                backgroundColor: "#f1f5f9",
+                padding: "2px 8px",
+                borderRadius: 4,
+                border: "1px solid #e2e8f0",
               }}
             >
-              📌
-            </div>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#64748b", letterSpacing: "0.5px" }}>
-                Nivel de Prioridad del Solicitante · Mesa de Servicios
-              </div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginTop: 2, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <span>Prioridad {prioridadInfo.corto}</span>
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    padding: "2px 8px",
-                    borderRadius: 999,
-                    backgroundColor: prioridadInfo.colorFondo,
-                    color: prioridadInfo.colorTexto,
-                    border: `1px solid ${prioridadInfo.borde}`,
-                  }}
-                >
-                  Nivel {nivelPrioridad}
-                </span>
-                <span style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>
-                  — {prioridadInfo.categoria}
-                </span>
-              </div>
-              <div style={{ fontSize: 12.5, color: "#475569", marginTop: 3 }}>
-                <strong>Alcance del servicio:</strong> {prioridadInfo.descripcion}
-              </div>
-            </div>
+              Ficha Institucional
+            </span>
           </div>
+          <p className="descripcion" style={{ marginBottom: 16 }}>
+            Adscripción organizacional y configuración operativa asignada en la empresa.
+          </p>
 
-          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 11, color: "#64748b" }}>Nivel Institucional</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: prioridadInfo.colorTexto }}>
-                Nivel {nivelPrioridad} ({prioridadInfo.corto})
-              </div>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 11, color: "#64748b" }}>Atención en Mesa</div>
-              <span
-                style={{
-                  display: "inline-block",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  backgroundColor: prioridadInfo.colorFondo,
-                  color: prioridadInfo.colorTexto,
-                  padding: "3px 8px",
-                  borderRadius: 4,
-                  marginTop: 2,
-                  border: `1px solid ${prioridadInfo.borde}`,
-                }}
-              >
-                ● {prioridadInfo.corto.toUpperCase()}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Tarjeta de Acreditación y Nivel de Soporte Técnico */}
-      {tienePerfilTecnico && (
-        <div
-          style={{
-            backgroundColor: "#f8fafc",
-            border: "1px solid #cbd5e1",
-            borderRadius: 8,
-            padding: "16px 20px",
-            marginBottom: 20,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 16,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 8,
-                backgroundColor: "#2563eb",
-                color: "#ffffff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 22,
-                flexShrink: 0,
-              }}
-            >
-              🛡️
-            </div>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#64748b", letterSpacing: "0.5px" }}>
-                Acreditación Operativa ITIL v4 · Soporte Técnico
-              </div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginTop: 2, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <span>Técnico Nivel {nivelTecnico}</span>
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    padding: "2px 8px",
-                    borderRadius: 999,
-                    backgroundColor: tecnicoInfo.colorFondo,
-                    color: tecnicoInfo.colorTexto,
-                    border: `1px solid ${tecnicoInfo.borde}`,
-                  }}
-                >
-                  {tecnicoInfo.codigo}
-                </span>
-                <span style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>
-                  — {tecnicoInfo.rolSoporte}
-                </span>
-              </div>
-              <div style={{ fontSize: 12.5, color: "#475569", marginTop: 3 }}>
-                <strong>Especialidad:</strong> {detalleTecnico?.especialidad_principal || "Resolución de incidentes y requerimientos técnicos"}
-                {detalleTecnico?.departamento_nombre && ` · ${detalleTecnico.departamento_nombre}`}
-              </div>
-            </div>
-          </div>
-
-          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 11, color: "#64748b" }}>Nivel Operativo</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: tecnicoInfo.colorTexto }}>
-                Nivel {nivelTecnico} ({tecnicoInfo.codigo})
-              </div>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 11, color: "#64748b" }}>Capacidad Concurrente</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>
-                {detalleTecnico?.capacidad_maxima_tickets ?? 10} tickets max.
-              </div>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 11, color: "#64748b" }}>Estado Operativo</div>
-              <span
-                style={{
-                  display: "inline-block",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  backgroundColor: "#ecfdf5",
-                  color: "#065f46",
-                  padding: "3px 8px",
-                  borderRadius: 4,
-                  marginTop: 2,
-                }}
-              >
-                ● {detalleTecnico?.estado_operativo || "DISPONIBLE"}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Distribución en 2 Columnas para aprovechar todo el ancho de pantalla */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 20, alignItems: "start" }}>
-        {/* Formulario 1: Datos Personales */}
-        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
-          <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Datos personales</h2>
-          <p className="descripcion">Actualiza tu nombre, apellidos y teléfono de contacto.</p>
-
-          {errorDatos && <div className="mensaje-error">{errorDatos}</div>}
-
-          <form onSubmit={manejarGuardarDatos}>
-            <div className="formulario-grid">
-              <div className="campo">
-                <label>DNI</label>
-                <input value={usuario.dni} disabled title="El DNI es tu identificador único y no se puede modificar" />
-              </div>
-
-              <div className="campo">
-                <label>Correo electrónico</label>
-                <input value={usuario.correo_electronico} disabled title="El correo electrónico es tu credencial de acceso" />
-              </div>
-
-              <div className="campo">
-                <label>Nombres *</label>
-                <input
-                  value={nombres}
-                  maxLength={100}
-                  onChange={(e) => setNombres(e.target.value)}
-                  required
-                />
-                {nombres.length > 0 && (() => {
-                  const v = validarNombre(nombres, "El nombre", true);
-                  return v.valido ? (
-                    <AlertaCampo exito="Nombre válido." />
-                  ) : (
-                    <AlertaCampo error={v.mensaje} />
-                  );
-                })()}
-              </div>
-
-              <div className="campo">
-                <label>Apellido paterno *</label>
-                <input
-                  value={apellidoPaterno}
-                  maxLength={100}
-                  onChange={(e) => setApellidoPaterno(e.target.value)}
-                  required
-                />
-                {apellidoPaterno.length > 0 && (() => {
-                  const v = validarNombre(apellidoPaterno, "El apellido paterno", true);
-                  return v.valido ? (
-                    <AlertaCampo exito="Apellido paterno válido." />
-                  ) : (
-                    <AlertaCampo error={v.mensaje} />
-                  );
-                })()}
-              </div>
-
-              <div className="campo">
-                <label>Apellido materno</label>
-                <input
-                  value={apellidoMaterno}
-                  maxLength={100}
-                  onChange={(e) => setApellidoMaterno(e.target.value)}
-                />
-                {apellidoMaterno.length > 0 && (() => {
-                  const v = validarNombre(apellidoMaterno, "El apellido materno", false);
-                  return v.valido ? (
-                    <AlertaCampo exito="Apellido materno válido." />
-                  ) : (
-                    <AlertaCampo error={v.mensaje} />
-                  );
-                })()}
-              </div>
-
-              <div className="campo">
-                <label>Celular</label>
-                <input
-                  value={celular}
-                  maxLength={9}
-                  onChange={(e) => setCelular(e.target.value.replace(/\D/g, "").slice(0, 9))}
-                  placeholder="Ej. 999999999"
-                />
-                {celular.length > 0 && (
-                  celular.length < 9 ? (
-                    <AlertaCampo error={`El celular debe tener 9 dígitos numéricos (has ingresado ${celular.length} de 9).`} />
-                  ) : !celular.startsWith("9") ? (
-                    <AlertaCampo error="El celular debe iniciar con 9." />
-                  ) : (
-                    <AlertaCampo exito="Número de celular válido (9 dígitos)." />
-                  )
-                )}
-              </div>
+          <div className="formulario-grid">
+            {/* 1. Área o departamento de trabajo */}
+            <div className="campo campo-ancho">
+              <label>Área o departamento de trabajo</label>
+              <input
+                value={areaTrabajo}
+                disabled
+                style={{ backgroundColor: "#f8fafc", color: "#0f172a", fontWeight: 600 }}
+              />
             </div>
 
-            <div style={{ marginTop: 16 }}>
-              <button
-                type="submit"
-                className="boton-primario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
-                disabled={guardandoDatos}
-              >
-                {guardandoDatos ? "Guardando..." : "Guardar datos personales"}
-              </button>
+            {/* 2. Correo empresarial */}
+            <div className="campo">
+              <label>Correo empresarial</label>
+              <input
+                value={usuario.correo_electronico}
+                disabled
+                style={{ backgroundColor: "#f8fafc", color: "#0f172a" }}
+              />
             </div>
-          </form>
-        </div>
 
-        {/* Formulario 2: Seguridad y Cambio de Contraseña */}
-        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
-          <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Seguridad y contraseña</h2>
-          <p className="descripcion">Cambia tu contraseña de acceso periódicamente para mayor seguridad.</p>
+            {/* 3. ID empresarial */}
+            <div className="campo">
+              <label>ID empresarial</label>
+              <input
+                value={idEmpresarial}
+                disabled
+                style={{ backgroundColor: "#f8fafc", color: "#0f172a", fontWeight: 600 }}
+              />
+            </div>
 
-          {errorClave && <div className="mensaje-error">{errorClave}</div>}
-
-          <form onSubmit={manejarCambiarClave}>
-            <div className="formulario-grid">
+            {/* 4. Nivel técnico (SE MUESTRA ÚNICAMENTE SI EL PERFIL ACTIVO ES TÉCNICO) */}
+            {esTecnicoActivo && (
               <div className="campo campo-ancho">
-                <label>Contraseña actual *</label>
-                <input
-                  type="password"
-                  value={claveActual}
-                  onChange={(e) => setClaveActual(e.target.value)}
-                  placeholder="Ingresa tu contraseña actual"
-                  required
-                />
-              </div>
-
-              <div className="campo">
-                <label>Nueva contraseña *</label>
-                <input
-                  type="password"
-                  value={claveNueva}
-                  onChange={(e) => setClaveNueva(e.target.value)}
-                  placeholder="Mínimo 8 caracteres"
-                  required
-                />
-              </div>
-
-              <div className="campo">
-                <label>Confirmar nueva contraseña *</label>
-                <input
-                  type="password"
-                  value={claveConfirmacion}
-                  onChange={(e) => setClaveConfirmacion(e.target.value)}
-                  placeholder="Repite la nueva contraseña"
-                  required
-                />
-                {claveConfirmacion.length > 0 && (
+                <label>Nivel técnico (Perfil Activo)</label>
+                <div
+                  style={{
+                    backgroundColor: tecnicoInfo.colorFondo,
+                    border: `1px solid ${tecnicoInfo.borde}`,
+                    borderRadius: 6,
+                    padding: "8px 12px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: 8,
+                  }}
+                >
+                  <span style={{ fontSize: 13, fontWeight: 700, color: tecnicoInfo.colorTexto }}>
+                    🛠️ Nivel {nivelTecnico} ({tecnicoInfo.codigo}) — {tecnicoInfo.rolSoporte}
+                  </span>
                   <span
                     style={{
                       fontSize: 11,
-                      marginTop: 4,
-                      display: "block",
-                      fontWeight: 500,
-                      color: clavesCoinciden ? "#059669" : "#dc2626",
+                      fontWeight: 700,
+                      backgroundColor: "#ffffff",
+                      color: tecnicoInfo.colorTexto,
+                      padding: "2px 8px",
+                      borderRadius: 4,
+                      border: `1px solid ${tecnicoInfo.borde}`,
                     }}
                   >
-                    {clavesCoinciden ? "Las contraseñas coinciden" : "Las contraseñas no coinciden"}
+                    Capacidad: {detalleTecnico?.capacidad_maxima_tickets ?? 10} tickets
                   </span>
-                )}
-              </div>
-
-              {/* Checklist de requisitos de seguridad en tiempo real */}
-              <div className="lista-requisitos-clave campo campo-ancho" style={{ margin: "4px 0" }}>
-                <div className={`requisito-item ${tieneLongitud ? "requisito-valido" : "requisito-invalido"}`}>
-                  <span className="requisito-punto" /> Mínimo 8 caracteres
-                </div>
-                <div className={`requisito-item ${tieneMayuscula ? "requisito-valido" : "requisito-invalido"}`}>
-                  <span className="requisito-punto" /> Al menos una letra mayúscula (A-Z)
-                </div>
-                <div className={`requisito-item ${tieneMinuscula ? "requisito-valido" : "requisito-invalido"}`}>
-                  <span className="requisito-punto" /> Al menos una letra minúscula (a-z)
-                </div>
-                <div className={`requisito-item ${tieneNumero ? "requisito-valido" : "requisito-invalido"}`}>
-                  <span className="requisito-punto" /> Al menos un número (0-9)
-                </div>
-                <div className={`requisito-item ${tieneSimbolo ? "requisito-valido" : "requisito-invalido"}`}>
-                  <span className="requisito-punto" /> Al menos un signo o carácter especial (!@#$%...)
                 </div>
               </div>
+            )}
+
+            {/* 5. Nivel solicitante (SE MUESTRA ÚNICAMENTE SI EL PERFIL ACTIVO ES SOLICITANTE) */}
+            {esSolicitanteActivo && (
+              <div className="campo campo-ancho">
+                <label>Nivel solicitante (Perfil Activo)</label>
+                <div
+                  style={{
+                    backgroundColor: prioridadInfo.colorFondo,
+                    border: `1px solid ${prioridadInfo.borde}`,
+                    borderRadius: 6,
+                    padding: "8px 12px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: 8,
+                  }}
+                >
+                  <span style={{ fontSize: 13, fontWeight: 700, color: prioridadInfo.colorTexto }}>
+                    📌 Prioridad {prioridadInfo.corto} (Nivel {nivelPrioridad}) — {prioridadInfo.categoria}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      backgroundColor: "#ffffff",
+                      color: prioridadInfo.colorTexto,
+                      padding: "2px 8px",
+                      borderRadius: 4,
+                      border: `1px solid ${prioridadInfo.borde}`,
+                    }}
+                  >
+                    Escalafón SLA
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* SECCIÓN: DATOS PERSONALES (SOLO LECTURA) */}
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+            <h2 style={{ fontSize: 16, margin: 0, color: "#0f172a", display: "flex", alignItems: "center", gap: 8 }}>
+              <span>👤</span> Datos personales
+            </h2>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "#64748b",
+                backgroundColor: "#f8fafc",
+                padding: "2px 8px",
+                borderRadius: 4,
+                border: "1px solid #cbd5e1",
+              }}
+            >
+              🔒 Solo lectura
+            </span>
+          </div>
+          <p className="descripcion" style={{ marginBottom: 16 }}>
+            Información de identidad personal administrada por Gestión del Talento.
+          </p>
+
+          <div className="formulario-grid">
+            <div className="campo">
+              <label>DNI</label>
+              <input value={usuario.dni} disabled style={{ backgroundColor: "#f8fafc" }} />
             </div>
 
-            <div style={{ marginTop: 16 }}>
-              <button
-                type="submit"
-                className="boton-primario"
-                style={{
-                  width: "auto",
-                  padding: "8px 18px",
-                  fontSize: 13,
-                  backgroundColor: !cumpleTodosRequisitos || !clavesCoinciden || !claveActual ? "#9ca3af" : "#1e40af",
-                  cursor: !cumpleTodosRequisitos || !clavesCoinciden || !claveActual ? "not-allowed" : "pointer"
-                }}
-                disabled={!cumpleTodosRequisitos || !clavesCoinciden || !claveActual || guardandoClave}
-              >
-                {guardandoClave ? "Actualizando..." : "Actualizar contraseña"}
-              </button>
+            <div className="campo">
+              <label>Celular</label>
+              <input value={usuario.celular || "No registrado"} disabled style={{ backgroundColor: "#f8fafc" }} />
             </div>
-          </form>
+
+            <div className="campo">
+              <label>Nombres</label>
+              <input value={usuario.nombres} disabled style={{ backgroundColor: "#f8fafc" }} />
+            </div>
+
+            <div className="campo">
+              <label>Apellido paterno</label>
+              <input value={usuario.apellido_paterno} disabled style={{ backgroundColor: "#f8fafc" }} />
+            </div>
+
+            <div className="campo">
+              <label>Apellido materno</label>
+              <input value={usuario.apellido_materno || "—"} disabled style={{ backgroundColor: "#f8fafc" }} />
+            </div>
+
+            <div className="campo">
+              <label>Correo personal</label>
+              <input value={usuario.correo_personal || "No registrado"} disabled style={{ backgroundColor: "#f8fafc" }} />
+            </div>
+          </div>
+
+          <div
+            style={{
+              marginTop: 16,
+              fontSize: 11.5,
+              color: "#64748b",
+              backgroundColor: "#f8fafc",
+              border: "1px solid #e2e8f0",
+              borderRadius: 6,
+              padding: "8px 12px",
+            }}
+          >
+            ℹ️ Los datos del perfil son de solo lectura. Para actualizar tu información de identidad o contacto, comunícate con el área de Talento Humano o Mesa de Servicio.
+          </div>
         </div>
       </div>
 
-      {/* Sección 3: Mis Roles y Permisos (Full width debajo) */}
-      <div style={{ marginTop: 20, backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
-        <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a" }}>Tus roles asignados</h2>
-        <p className="descripcion">Los perfiles que tienes habilitados en tu usuario:</p>
+      {/* SECCIÓN: SEGURIDAD Y CONTRASEÑA (ÚNICA SECCIÓN EDITABLE) */}
+      <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
+        <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a", display: "flex", alignItems: "center", gap: 8 }}>
+          <span>🔐</span> Seguridad y contraseña
+        </h2>
+        <p className="descripcion">Cambia tu contraseña periódicamente para mantener tu cuenta corporativa protegida.</p>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 12 }}>
-          {perfiles.map((p) => {
-            const esSolicitante = p.id_perfil === 3 || p.nombre.toLowerCase().includes("solicitante");
-            const esTecnico = p.id_perfil === 2 || p.nombre.toLowerCase().includes("tecnic");
+        {errorClave && <div className="mensaje-error">{errorClave}</div>}
 
-            return (
-              <div
-                key={p.id_perfil}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "12px 16px",
-                  backgroundColor: "#f9fafb",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 8,
-                  gap: 12,
-                }}
-              >
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                    <strong style={{ fontSize: 14, color: "#0f172a" }}>{p.nombre}</strong>
-                    {esSolicitante && (
-                      <span
-                        style={{
-                          fontSize: 11,
-                          fontWeight: 700,
-                          backgroundColor: prioridadInfo.colorFondo,
-                          color: prioridadInfo.colorTexto,
-                          border: `1px solid ${prioridadInfo.borde}`,
-                          padding: "1px 7px",
-                          borderRadius: 4,
-                        }}
-                      >
-                        Prioridad {prioridadInfo.corto} (Nivel {nivelPrioridad})
-                      </span>
-                    )}
-                    {esTecnico && (
-                      <span
-                        style={{
-                          fontSize: 11,
-                          fontWeight: 700,
-                          backgroundColor: tecnicoInfo.colorFondo,
-                          color: tecnicoInfo.colorTexto,
-                          border: `1px solid ${tecnicoInfo.borde}`,
-                          padding: "1px 7px",
-                          borderRadius: 4,
-                        }}
-                      >
-                        Nivel {nivelTecnico} ({tecnicoInfo.codigo})
-                      </span>
-                    )}
-                  </div>
-                  <p style={{ fontSize: 12, color: "#6b7280", margin: "4px 0 0 0" }}>
-                    {esSolicitante
-                      ? `Prioridad asignada: ${prioridadInfo.nombre} — ${prioridadInfo.descripcion}`
-                      : esTecnico
-                      ? `Nivel de soporte operativo: ${tecnicoInfo.nombre} — ${tecnicoInfo.descripcion}`
-                      : p.descripcion || "Acceso estándar según el catálogo de roles institucional."}
-                  </p>
-                </div>
-                <span className="badge-activo" style={{ flexShrink: 0 }}>Asignado</span>
+        <form onSubmit={manejarCambiarClave}>
+          <div className="formulario-grid">
+            <div className="campo campo-ancho">
+              <label>Contraseña actual *</label>
+              <input
+                type="password"
+                value={claveActual}
+                onChange={(e) => setClaveActual(e.target.value)}
+                placeholder="Ingresa tu contraseña actual"
+                required
+              />
+            </div>
+
+            <div className="campo">
+              <label>Nueva contraseña *</label>
+              <input
+                type="password"
+                value={claveNueva}
+                onChange={(e) => setClaveNueva(e.target.value)}
+                placeholder="Mínimo 8 caracteres"
+                required
+              />
+            </div>
+
+            <div className="campo">
+              <label>Confirmar nueva contraseña *</label>
+              <input
+                type="password"
+                value={claveConfirmacion}
+                onChange={(e) => setClaveConfirmacion(e.target.value)}
+                placeholder="Repite la nueva contraseña"
+                required
+              />
+              {claveConfirmacion.length > 0 && (
+                <span
+                  style={{
+                    fontSize: 11,
+                    marginTop: 4,
+                    display: "block",
+                    fontWeight: 500,
+                    color: clavesCoinciden ? "#059669" : "#dc2626",
+                  }}
+                >
+                  {clavesCoinciden ? "Las contraseñas coinciden" : "Las contraseñas no coinciden"}
+                </span>
+              )}
+            </div>
+
+            {/* Checklist de requisitos de seguridad en tiempo real */}
+            <div className="lista-requisitos-clave campo campo-ancho" style={{ margin: "4px 0" }}>
+              <div className={`requisito-item ${tieneLongitud ? "requisito-valido" : "requisito-invalido"}`}>
+                <span className="requisito-punto" /> Mínimo 8 caracteres
               </div>
-            );
-          })}
-        </div>
+              <div className={`requisito-item ${tieneMayuscula ? "requisito-valido" : "requisito-invalido"}`}>
+                <span className="requisito-punto" /> Al menos una letra mayúscula (A-Z)
+              </div>
+              <div className={`requisito-item ${tieneMinuscula ? "requisito-valido" : "requisito-invalido"}`}>
+                <span className="requisito-punto" /> Al menos una letra minúscula (a-z)
+              </div>
+              <div className={`requisito-item ${tieneNumero ? "requisito-valido" : "requisito-invalido"}`}>
+                <span className="requisito-punto" /> Al menos un número (0-9)
+              </div>
+              <div className={`requisito-item ${tieneSimbolo ? "requisito-valido" : "requisito-invalido"}`}>
+                <span className="requisito-punto" /> Al menos un signo o carácter especial (!@#$%...)
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 16 }}>
+            <button
+              type="submit"
+              className="boton-primario"
+              style={{
+                width: "auto",
+                padding: "8px 18px",
+                fontSize: 13,
+                backgroundColor: !cumpleTodosRequisitos || !clavesCoinciden || !claveActual ? "#9ca3af" : "#1e40af",
+                cursor: !cumpleTodosRequisitos || !clavesCoinciden || !claveActual ? "not-allowed" : "pointer"
+              }}
+              disabled={!cumpleTodosRequisitos || !clavesCoinciden || !claveActual || guardandoClave}
+            >
+              {guardandoClave ? "Actualizando..." : "Actualizar contraseña"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

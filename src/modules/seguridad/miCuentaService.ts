@@ -1,14 +1,24 @@
 import { query, queryRow } from "@/shared/lib/db";
-import { compararClave, crearTokenSesion, hashearClave, validarFortalezaClave } from "./authService";
+import { compararClave, hashearClave, validarFortalezaClave } from "./authService";
 import { ErrorDominio } from "@/shared/lib/errores";
-import { validarNombre, validarCelular } from "@/shared/lib/validaciones";
 import { Usuario, Perfil, SesionUsuario } from "@/types";
 
 export async function obtenerMiCuenta(idUsuario: number) {
   const usuarios = await query<Usuario>(
-    `SELECT id_usuario, dni, nombres, apellido_paterno, apellido_materno,
-            celular, correo_electronico, estado_registro, COALESCE(nivel_prioridad, 5) AS nivel_prioridad
-     FROM usuario WHERE id_usuario = $1`,
+    `SELECT u.id_usuario, u.dni, u.nombres, u.apellido_paterno, u.apellido_materno,
+            u.celular, u.correo_electronico, u.correo_personal, u.estado_registro,
+            COALESCE(u.nivel_prioridad, 5) AS nivel_prioridad,
+            u.foto_perfil,
+            u.id_departamento_empresa,
+            de.nombre AS departamento_empresa_nombre,
+            de.codigo AS departamento_empresa_codigo,
+            u.id_departamento,
+            dt.nombre AS departamento_ti_nombre,
+            dt.codigo AS departamento_ti_codigo
+     FROM usuario u
+     LEFT JOIN departamento_empresa de ON de.id_departamento_empresa = u.id_departamento_empresa
+     LEFT JOIN departamento_ti dt ON dt.id_departamento = u.id_departamento
+     WHERE u.id_usuario = $1`,
     [idUsuario]
   );
 
@@ -43,12 +53,9 @@ export async function obtenerMiCuenta(idUsuario: number) {
   return { usuario: usuarios[0], perfiles, detalleTecnico: detalleTecnico ?? null };
 }
 
-/** Datos personales y (opcionalmente) credenciales para actualizar la cuenta. */
+/** Campos permitidos para actualización: solo contraseña y foto de perfil. */
 export interface DatosActualizarCuenta {
-  nombres?: string | null;
-  apellido_paterno?: string | null;
-  apellido_materno?: string | null;
-  celular?: string | null;
+  foto_perfil?: string | null;
   clave_actual?: string | null;
   clave_nueva?: string | null;
 }
@@ -62,32 +69,24 @@ export async function actualizarMiCuenta(
   sesion: SesionUsuario,
   datos: DatosActualizarCuenta
 ): Promise<ResultadoActualizarCuenta> {
-  const {
-    nombres,
-    apellido_paterno,
-    apellido_materno,
-    celular,
-    clave_actual,
-    clave_nueva,
-  } = datos;
+  const { foto_perfil, clave_actual, clave_nueva } = datos;
 
-  const vNom = validarNombre(nombres, "El nombre", true);
-  if (!vNom.valido) throw new ErrorDominio(vNom.mensaje!);
+  // 1. Actualización de Foto de Perfil (si viene definida)
+  if (foto_perfil !== undefined) {
+    // Si viene imagen en base64, verificamos un límite seguro de peso (~5MB)
+    if (foto_perfil && foto_perfil.length > 5 * 1024 * 1024) {
+      throw new ErrorDominio("La imagen seleccionada supera el tamaño máximo permitido (5 MB)");
+    }
 
-  const vPat = validarNombre(apellido_paterno, "El apellido paterno", true);
-  if (!vPat.valido) throw new ErrorDominio(vPat.mensaje!);
+    await query(
+      `UPDATE usuario
+       SET foto_perfil = $1, usuario_modificacion = $2, fecha_modificacion = now()
+       WHERE id_usuario = $3`,
+      [foto_perfil || null, sesion.id_usuario, sesion.id_usuario]
+    );
+  }
 
-  const vMat = validarNombre(apellido_materno, "El apellido materno", false);
-  if (!vMat.valido) throw new ErrorDominio(vMat.mensaje!);
-
-  const vCel = validarCelular(celular, false);
-  if (!vCel.valido) throw new ErrorDominio(vCel.mensaje!);
-
-  const nombresLimpio = (nombres as string).trim();
-  const apellidoPaternoLimpio = (apellido_paterno as string).trim();
-
-  // Validación y cálculo opcional de nueva contraseña
-  let nuevoHash: string | null = null;
+  // 2. Actualización de Contraseña (si viene definida)
   if (clave_nueva && clave_nueva.trim()) {
     if (!clave_actual) {
       throw new ErrorDominio("Debes ingresar tu contraseña actual para cambiarla");
@@ -116,45 +115,24 @@ export async function actualizarMiCuenta(
       throw new ErrorDominio("La nueva contraseña no puede ser idéntica a la anterior. Elige una diferente.");
     }
 
-    nuevoHash = await hashearClave(clave_nueva.trim());
+    const nuevoHash = await hashearClave(clave_nueva.trim());
+
+    await query(
+      `UPDATE usuario
+       SET clave = $1, usuario_modificacion = $2, fecha_modificacion = now()
+       WHERE id_usuario = $3`,
+      [nuevoHash, sesion.id_usuario, sesion.id_usuario]
+    );
   }
-
-  // Actualización unificada de perfil y credenciales (sin duplicidad de queries)
-  await query(
-    `UPDATE usuario
-     SET nombres = $1, apellido_paterno = $2, apellido_materno = $3,
-         celular = $4, clave = COALESCE($5, clave), usuario_modificacion = $6, fecha_modificacion = now()
-     WHERE id_usuario = $7`,
-    [
-      nombresLimpio,
-      apellidoPaternoLimpio,
-      apellido_materno ? apellido_materno.trim() : null,
-      celular ? celular.trim() : null,
-      nuevoHash,
-      sesion.id_usuario,
-      sesion.id_usuario,
-    ]
-  );
-
-  // Actualizar token de sesión si cambiaron nombres
-  const nuevaSesion: SesionUsuario = {
-    ...sesion,
-    nombres: nombresLimpio,
-  };
-
-  const nuevoToken = crearTokenSesion(nuevaSesion);
 
   return {
     payload: {
       ok: true,
-      mensaje: "Tu perfil ha sido actualizado con éxito",
-      usuario: {
-        nombres: nombresLimpio,
-        apellido_paterno: apellidoPaternoLimpio,
-        apellido_materno: apellido_materno ? apellido_materno.trim() : null,
-        celular: celular ? celular.trim() : null,
-      },
+      mensaje: foto_perfil !== undefined && !clave_nueva
+        ? "Foto de perfil actualizada con éxito"
+        : "Contraseña actualizada con éxito",
+      foto_perfil: foto_perfil || null,
     },
-    tokenSesion: nuevoToken,
+    tokenSesion: "", // Mantiene el token actual intacto sin necesidad de reautenticar
   };
 }
