@@ -532,35 +532,17 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
 
         {/* Información personal del colaborador y etiquetas de roles asignados */}
         <div style={{ flex: 1, minWidth: 260 }}>
-          <h2 style={{ fontSize: 18, margin: "0 0 2px 0", color: "#0f172a" }}>
+          <h2 style={{ fontSize: 18, margin: "0 0 10px 0", color: "#0f172a" }}>
             {usuario.nombres} {usuario.apellido_paterno} {usuario.apellido_materno ?? ""}
           </h2>
-          <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 8px 0" }}>{usuario.correo_electronico}</p>
 
-          {/* Etiquetas simples de roles asignados debajo del nombre y correo */}
+          {/* Etiquetas simples de roles asignados debajo del nombre */}
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-            {perfiles.map((p) => {
-              const esActivo = perfilActivo?.id_perfil === p.id_perfil;
-              return (
-                <span
-                  key={p.id_perfil}
-                  className="chip-perfil"
-                  style={
-                    esActivo
-                      ? {
-                          backgroundColor: "#1e40af",
-                          color: "#ffffff",
-                          borderColor: "#1e3a8a",
-                          fontWeight: 700,
-                        }
-                      : undefined
-                  }
-                  title={esActivo ? "Perfil activo actualmente en la sesión" : `Rol asignado: ${p.nombre}`}
-                >
-                  {esActivo ? `● ${p.nombre} (Activo)` : p.nombre}
-                </span>
-              );
-            })}
+            {perfiles.map((p) => (
+              <span key={p.id_perfil} className="chip-perfil">
+                {p.nombre}
+              </span>
+            ))}
           </div>
         </div>
       </div>
@@ -625,75 +607,25 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
 
             {/* 4. Nivel técnico (SE MUESTRA ÚNICAMENTE SI EL PERFIL ACTIVO ES TÉCNICO) */}
             {esTecnicoActivo && (
-              <div className="campo campo-ancho">
-                <label>Nivel técnico (Perfil Activo)</label>
-                <div
-                  style={{
-                    backgroundColor: tecnicoInfo.colorFondo,
-                    border: `1px solid ${tecnicoInfo.borde}`,
-                    borderRadius: 6,
-                    padding: "8px 12px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    gap: 8,
-                  }}
-                >
-                  <span style={{ fontSize: 13, fontWeight: 700, color: tecnicoInfo.colorTexto }}>
-                    🛠️ Nivel {nivelTecnico} ({tecnicoInfo.codigo}) — {tecnicoInfo.rolSoporte}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      backgroundColor: "#ffffff",
-                      color: tecnicoInfo.colorTexto,
-                      padding: "2px 8px",
-                      borderRadius: 4,
-                      border: `1px solid ${tecnicoInfo.borde}`,
-                    }}
-                  >
-                    Capacidad: {detalleTecnico?.capacidad_maxima_tickets ?? 10} tickets
-                  </span>
-                </div>
+              <div className="campo">
+                <label>Nivel técnico</label>
+                <input
+                  value={`Nivel ${nivelTecnico} (${tecnicoInfo.codigo})`}
+                  disabled
+                  style={{ backgroundColor: "#f8fafc", color: "#0f172a" }}
+                />
               </div>
             )}
 
             {/* 5. Nivel solicitante (SE MUESTRA ÚNICAMENTE SI EL PERFIL ACTIVO ES SOLICITANTE) */}
             {esSolicitanteActivo && (
-              <div className="campo campo-ancho">
-                <label>Nivel solicitante (Perfil Activo)</label>
-                <div
-                  style={{
-                    backgroundColor: prioridadInfo.colorFondo,
-                    border: `1px solid ${prioridadInfo.borde}`,
-                    borderRadius: 6,
-                    padding: "8px 12px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    gap: 8,
-                  }}
-                >
-                  <span style={{ fontSize: 13, fontWeight: 700, color: prioridadInfo.colorTexto }}>
-                    📌 Prioridad {prioridadInfo.corto} (Nivel {nivelPrioridad}) — {prioridadInfo.categoria}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      backgroundColor: "#ffffff",
-                      color: prioridadInfo.colorTexto,
-                      padding: "2px 8px",
-                      borderRadius: 4,
-                      border: `1px solid ${prioridadInfo.borde}`,
-                    }}
-                  >
-                    Escalafón SLA
-                  </span>
-                </div>
+              <div className="campo">
+                <label>Nivel solicitante</label>
+                <input
+                  value={`Prioridad ${prioridadInfo.corto} (Nivel ${nivelPrioridad})`}
+                  disabled
+                  style={{ backgroundColor: "#f8fafc", color: "#0f172a" }}
+                />
               </div>
             )}
           </div>
