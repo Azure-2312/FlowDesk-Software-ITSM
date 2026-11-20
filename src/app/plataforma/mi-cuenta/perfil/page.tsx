@@ -11,12 +11,18 @@ export default async function PaginaMiCuentaPerfil() {
     redirect("/login");
   }
 
+  const perfilActivo = sesion.perfilActivo || sesion.perfiles?.[0] || undefined;
+
   let datosIniciales = null;
   try {
-    datosIniciales = await obtenerMiCuenta(sesion.id_usuario);
+    const cuenta = await obtenerMiCuenta(sesion.id_usuario);
+    datosIniciales = {
+      ...cuenta,
+      perfilActivo,
+    };
   } catch (err) {
     console.error("Error al obtener datos iniciales de usuario:", err);
   }
 
-  return <MiCuentaView datosIniciales={datosIniciales} />;
+  return <MiCuentaView datosIniciales={datosIniciales} perfilActivo={perfilActivo} />;
 }
