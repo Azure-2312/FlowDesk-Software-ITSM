@@ -12,6 +12,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Ticket, ComentarioTicket, Usuario, CatalogosTickets } from "@/types";
 import { validarTexto } from "@/shared/lib/validaciones";
+import TarjetaAprobacionSod from "@/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod";
 
 interface CampoConfigurado {
   id: string;
@@ -55,6 +56,7 @@ export default function PaginaDetalleTicket({
   const [catalogos, setCatalogos] = useState<CatalogosTickets | null>(null);
   const [usuarioActual, setUsuarioActual] = useState<Usuario | null>(null);
   const [perfilesIds, setPerfilesIds] = useState<number[]>([]);
+  const [perfilActivo, setPerfilActivo] = useState<{ id_perfil: number; nombre: string } | null>(null);
   const [camposConfig, setCamposConfig] = useState<Record<string, CampoConfigurado[]>>({
     incidente: [],
     solicitud: [],
@@ -139,6 +141,10 @@ export default function PaginaDetalleTicket({
 
       if (resUser.perfiles) {
         setPerfilesIds(resUser.perfiles.map((p: any) => p.id_perfil));
+      }
+
+      if (resUser.perfilActivo) {
+        setPerfilActivo(resUser.perfilActivo);
       }
 
       if (resConfig.configuracion?.valor) {
@@ -694,6 +700,27 @@ export default function PaginaDetalleTicket({
                   })}
                 </div>
               </div>
+
+              {/* Compuerta de Aprobación Jerárquica SoD (ITIL v4 / ISO 27001) */}
+              {ticket && (
+                <TarjetaAprobacionSod
+                  ticket={ticket}
+                  sesion={
+                    {
+                      id_usuario: usuarioActual?.id_usuario || 0,
+                      nombres: usuarioActual?.nombres || "",
+                      apellido_paterno: usuarioActual?.apellido_paterno || "",
+                      correo_electronico: usuarioActual?.correo_electronico || "",
+                      id_departamento_empresa: usuarioActual?.id_departamento_empresa || null,
+                      perfilActivo: perfilActivo || (perfilesIds.length > 0 ? { id_perfil: perfilesIds[0], nombre: "" } : null),
+                    } as any
+                  }
+                  onEjecutarAccion={async (payload) => {
+                    await ejecutarAccion(payload);
+                  }}
+                  ejecutandoAccion={ejecutandoAccion}
+                />
+              )}
 
               {/* Barra de Acciones Operativas ITIL (para Técnicos, Supervisores y Administradores) */}
               {esPersonalTI && (

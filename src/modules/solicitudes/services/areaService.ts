@@ -119,63 +119,6 @@ export async function listarHistorialDecisiones(idUsuario: number) {
   );
 }
 
-export async function listarDelegaciones(idUsuario: number) {
-  return query(
-    `SELECT d.id_delegacion, d.fecha_desde, d.fecha_hasta, d.motivo, d.fecha_creacion,
-            d.id_usuario_delegado,
-            CONCAT(u.nombres, ' ', u.apellido_paterno) AS delegado_nombre
-     FROM aprobacion_delegacion d
-     JOIN usuario u ON u.id_usuario = d.id_usuario_delegado
-     WHERE d.id_usuario_delegante = $1 AND d.estado_registro = true
-     ORDER BY d.fecha_desde DESC`,
-    [idUsuario]
-  );
-}
-
-export async function crearDelegacion(idUsuario: number, body: any) {
-  const area = await areaDeUsuario(idUsuario);
-  const idDelegado = Number(body.id_usuario_delegado);
-  const desde = body.fecha_desde;
-  const hasta = body.fecha_hasta;
-  if (!idDelegado || !desde || !hasta) {
-    throw new ErrorDominio("Debes indicar el suplente y el rango de fechas.");
-  }
-  if (new Date(hasta).getTime() < new Date(desde).getTime()) {
-    throw new ErrorDominio("La fecha de fin debe ser posterior o igual a la de inicio.");
-  }
-  if (idDelegado === idUsuario) {
-    throw new ErrorDominio("No puedes delegarte a ti mismo.");
-  }
-
-  const pertenece = await queryRow<{ existe: boolean }>(
-    `SELECT EXISTS (
-       SELECT 1 FROM usuario WHERE id_usuario = $1 AND id_departamento_empresa = $2 AND estado_registro = true
-     ) AS existe`,
-    [idDelegado, area.id_departamento_empresa]
-  );
-  if (!pertenece?.existe) throw new ErrorDominio("El suplente debe pertenecer a tu área.", 409);
-
-  const fila = await queryRow<any>(
-    `INSERT INTO aprobacion_delegacion (id_usuario_delegante, id_usuario_delegado, fecha_desde, fecha_hasta, motivo)
-     VALUES ($1, $2, $3, $4, $5)
-     RETURNING id_delegacion, id_usuario_delegado, fecha_desde, fecha_hasta, motivo`,
-    [idUsuario, idDelegado, desde, hasta, body.motivo ?? null]
-  );
-  return { mensaje: "Delegación registrada.", delegacion: fila };
-}
-
-export async function eliminarDelegacion(idUsuario: number, idDelegacion: number) {
-  const fila = await queryRow<any>(
-    `UPDATE aprobacion_delegacion
-     SET estado_registro = false
-     WHERE id_delegacion = $1 AND id_usuario_delegante = $2 AND estado_registro = true
-     RETURNING id_delegacion`,
-    [idDelegacion, idUsuario]
-  );
-  if (!fila) throw new ErrorDominio("La delegación no existe.", 404);
-  return { mensaje: "Delegación eliminada." };
-}
-
 export async function listarCambiosImpacto(idUsuario: number) {
   const area = await areaDeUsuario(idUsuario);
   return query(

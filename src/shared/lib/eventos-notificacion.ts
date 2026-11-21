@@ -19,8 +19,7 @@ export type CodigoEventoNotificacion =
   | "INCIDENTE_MAYOR_DECLARADO"
   | "PROBLEMA_ASIGNADO"
   | "ARTICULO_REVISION"
-  | "CONTRATO_VENCIMIENTO"
-  | "DELEGACION_ACTIVADA";
+  | "CONTRATO_VENCIMIENTO";
 
 export interface EventoDefinicion {
   codigo: CodigoEventoNotificacion;
@@ -195,18 +194,6 @@ export const CATALOGO_EVENTOS_NOTIFICACION: Record<CodigoEventoNotificacion, Eve
       titulo: `Vigencia por expirar: ${p.itemNombre || "Contrato"} (${p.diasRestantes || "30"} días)`,
       mensaje: `El contrato/licencia "${p.itemNombre || ""}" expira el ${p.fechaVencimiento || "próximamente"}.`,
       urlDestino: `/plataforma/activos/contratos?vista=renovaciones`,
-    }),
-  },
-
-  // 15. Delegación activada o terminada
-  DELEGACION_ACTIVADA: {
-    codigo: "DELEGACION_ACTIVADA",
-    nombre: "Delegación activada o terminada",
-    destinatariosDescripcion: "Delegante y delegado",
-    construirMensaje: (p) => ({
-      titulo: `Delegación de autoridad ${p.accion || "actualizada"}`,
-      mensaje: `Se ha registrado una delegación de facultades entre ${p.delegante || "Delegante"} y ${p.delegado || "Delegado"}.`,
-      urlDestino: `/plataforma/seguridad/delegaciones`,
     }),
   },
 };

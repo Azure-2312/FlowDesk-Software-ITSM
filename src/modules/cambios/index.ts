@@ -140,10 +140,6 @@ export {
   resolverCambio,
   listarModelosCambio,
   listarHistorialDecisiones,
-  listarDelegaciones,
-  listarPosiblesDelegados,
-  crearDelegacion,
-  eliminarDelegacion,
   obtenerReportesDecisiones,
 } from "./services/aprobacionesService";
 

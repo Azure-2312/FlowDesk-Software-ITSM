@@ -20,7 +20,14 @@ export default function TarjetaAprobacionSod({
 
   const idPerfil = sesion.perfilActivo?.id_perfil;
   const esSolicitantePropietario = ticket.id_usuario_solicitante === sesion.id_usuario;
-  const puedeAprobar = [1, 4, 5].includes(idPerfil || 0);
+  // Solo el Gestor de Área (id 5) de su propio departamento o Administrador (id 1) pueden dictaminar
+  const esGestorDeEstaArea =
+    idPerfil === 1 ||
+    (idPerfil === 5 &&
+      (!ticket.id_departamento_empresa ||
+        !sesion.id_departamento_empresa ||
+        sesion.id_departamento_empresa === ticket.id_departamento_empresa));
+  const puedeAprobar = [1, 5].includes(idPerfil || 0) && esGestorDeEstaArea;
 
   const tieneAprobacionPendiente = ticket.estado_aprobacion === "PENDIENTE_APROBACION";
   const tieneHistorial = ticket.aprobaciones && ticket.aprobaciones.length > 0;
@@ -116,7 +123,7 @@ export default function TarjetaAprobacionSod({
             </div>
           ) : (
             <div style={{ fontSize: 12, color: "#92400e", marginTop: 4, fontStyle: "italic" }}>
-              Esperando decision de la Jefatura de Area o Supervisor responsable.
+              Esperando decisión del Gestor de Área.
             </div>
           )}
         </div>

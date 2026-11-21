@@ -14,7 +14,7 @@ import {
 export interface ParametrosNotificar {
   usuarios: number[] | number;
   evento: CodigoEventoNotificacion;
-  entidad_tipo: "ticket" | "rfc" | "problema" | "articulo" | "activo" | "delegacion" | "sistema";
+  entidad_tipo: "ticket" | "rfc" | "problema" | "articulo" | "activo" | "sistema";
   entidad_id?: number | null;
   url_destino?: string;
   variables?: Record<string, any>;

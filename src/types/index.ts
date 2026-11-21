@@ -84,6 +84,8 @@ export interface SesionUsuario {
   id_usuario: number;
   nombres: string;
   correo_electronico: string;
+  id_departamento?: number | null;
+  id_departamento_empresa?: number | null;
   perfiles: PerfilBasico[];
   perfilActivo: PerfilBasico;
 }

@@ -22,6 +22,7 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
       s.requiere_aprobacion as servicio_requiere_aprobacion,
       t.id_departamento,
       t.id_departamento_empresa,
+      de.nombre as departamento_empresa_nombre,
       dep.nombre as departamento_nombre,
       dep.codigo as departamento_codigo,
       t.canal_comunicacion,
@@ -85,6 +86,7 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
     INNER JOIN categoria_ticket cat ON cat.id_categoria = t.id_categoria
     LEFT JOIN servicio_catalogo s ON s.id_servicio = t.id_servicio
     LEFT JOIN departamento_ti dep ON dep.id_departamento = t.id_departamento
+    LEFT JOIN departamento_empresa de ON de.id_departamento_empresa = t.id_departamento_empresa
     LEFT JOIN servicio_workflow_paso swp ON swp.id_paso = t.id_paso_actual
     INNER JOIN impacto_ticket imp ON imp.id_impacto = t.id_impacto
     INNER JOIN urgencia_ticket urg ON urg.id_urgencia = t.id_urgencia
@@ -122,7 +124,17 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
       "SELECT id_departamento_empresa FROM usuario WHERE id_usuario = $1 AND estado_registro = true",
       [sesion.id_usuario]
     );
-    autorizado = !!gestor?.id_departamento_empresa && ticket.id_departamento_empresa === gestor.id_departamento_empresa;
+    if (gestor?.id_departamento_empresa) {
+      if (ticket.id_departamento_empresa === gestor.id_departamento_empresa) {
+        autorizado = true;
+      } else {
+        const solDepto = await queryRow<{ id_departamento_empresa: number | null }>(
+          "SELECT id_departamento_empresa FROM usuario WHERE id_usuario = $1",
+          [ticket.id_usuario_solicitante]
+        );
+        autorizado = solDepto?.id_departamento_empresa === gestor.id_departamento_empresa;
+      }
+    }
   }
   if (idPerfil === 4 && autorizado) {
     const supervisaDepartamento = await queryRow<{ existe: boolean }>(
@@ -285,7 +297,14 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
         "SELECT id_departamento_empresa FROM usuario WHERE id_usuario = $1",
         [sesion.id_usuario]
       );
-      if (!gestor?.id_departamento_empresa || gestor.id_departamento_empresa !== actual.id_departamento_empresa) {
+      const ticketDeptoEmpresa = actual.id_departamento_empresa || (
+        await queryRow<{ id_departamento_empresa: number | null }>(
+          "SELECT id_departamento_empresa FROM usuario WHERE id_usuario = $1",
+          [actual.id_usuario_solicitante]
+        )
+      )?.id_departamento_empresa;
+
+      if (!gestor?.id_departamento_empresa || gestor.id_departamento_empresa !== ticketDeptoEmpresa) {
         throw new ErrorDominio(
           "Violación de Segregación de Funciones (SoD): Como Gestor de Área, solo puedes aprobar requerimientos correspondientes a tu propio departamento.",
           403

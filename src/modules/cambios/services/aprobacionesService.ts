@@ -3,7 +3,7 @@ import { ErrorDominio } from "@/shared/lib/errores";
 import { UMBRAL_MONTO_APROBACION as UMBRAL_MONTO } from "@/shared/lib/parametros";
 
 /**
- * Decisiones del Aprobador (perfil 7 / CAB): cambios (RFC/ECAB), delegaciones
+ * Decisiones del Aprobador (perfil 7 / CAB): cambios (RFC/ECAB)
  * y panel/historial de decisiones. Lógica de dominio movida desde el portal del
  * Aprobador (`src/modules/perfiles/aprobador`) para que el rol solo conserve su UI.
  */
@@ -174,67 +174,6 @@ export async function listarHistorialDecisiones(idUsuario: number) {
      ORDER BY fecha_decision DESC`,
     [idUsuario]
   );
-}
-
-export async function listarDelegaciones(idUsuario: number) {
-  return query(
-    `SELECT d.id_delegacion, d.fecha_desde, d.fecha_hasta, d.motivo, d.fecha_creacion,
-            d.id_usuario_delegado,
-            CONCAT(u.nombres, ' ', u.apellido_paterno) AS delegado_nombre
-     FROM aprobacion_delegacion d
-     JOIN usuario u ON u.id_usuario = d.id_usuario_delegado
-     WHERE d.id_usuario_delegante = $1 AND d.estado_registro = true
-     ORDER BY d.fecha_desde DESC`,
-    [idUsuario]
-  );
-}
-
-export async function listarPosiblesDelegados() {
-  return query(
-    `SELECT u.id_usuario, CONCAT(u.nombres, ' ', u.apellido_paterno) AS nombre
-     FROM usuario u
-     JOIN usuario_perfiles up ON up.id_usuario = u.id_usuario AND up.estado_registro = true
-     WHERE up.id_perfil = 7 AND u.estado_registro = true
-     ORDER BY u.apellido_paterno, u.nombres`
-  );
-}
-
-export async function crearDelegacion(idUsuario: number, body: any) {
-  const idDelegado = Number(body.id_usuario_delegado);
-  const desde = body.fecha_desde;
-  const hasta = body.fecha_hasta;
-  if (!idDelegado || !desde || !hasta) throw new ErrorDominio("Debes indicar el suplente y el rango de fechas.");
-  if (new Date(hasta).getTime() < new Date(desde).getTime()) {
-    throw new ErrorDominio("La fecha de fin debe ser posterior o igual a la de inicio.");
-  }
-  if (idDelegado === idUsuario) throw new ErrorDominio("No puedes delegarte a ti mismo.");
-
-  const pertenece = await queryRow<{ existe: boolean }>(
-    `SELECT EXISTS (
-       SELECT 1 FROM usuario_perfiles WHERE id_usuario = $1 AND id_perfil = 7 AND estado_registro = true
-     ) AS existe`,
-    [idDelegado]
-  );
-  if (!pertenece?.existe) throw new ErrorDominio("El suplente debe tener el perfil Aprobador.", 409);
-
-  const fila = await queryRow<any>(
-    `INSERT INTO aprobacion_delegacion (id_usuario_delegante, id_usuario_delegado, fecha_desde, fecha_hasta, motivo)
-     VALUES ($1, $2, $3, $4, $5)
-     RETURNING id_delegacion, id_usuario_delegado, fecha_desde, fecha_hasta, motivo`,
-    [idUsuario, idDelegado, desde, hasta, body.motivo ?? null]
-  );
-  return { mensaje: "Delegación registrada.", delegacion: fila };
-}
-
-export async function eliminarDelegacion(idUsuario: number, idDelegacion: number) {
-  const fila = await queryRow<any>(
-    `UPDATE aprobacion_delegacion SET estado_registro = false
-     WHERE id_delegacion = $1 AND id_usuario_delegante = $2 AND estado_registro = true
-     RETURNING id_delegacion`,
-    [idDelegacion, idUsuario]
-  );
-  if (!fila) throw new ErrorDominio("La delegación no existe.", 404);
-  return { mensaje: "Delegación eliminada." };
 }
 
 export async function obtenerReportesDecisiones(idUsuario: number) {

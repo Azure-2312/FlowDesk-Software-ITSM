@@ -82,10 +82,11 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
     params.push(idUsuario);
   }
 
-  // El Gestor de Área siempre queda dentro de su propio departamento (excepto en "mios").
-  if (idPerfil === 5 && vista !== "mios") {
-    condiciones.push(`t.id_departamento_empresa = (SELECT u.id_departamento_empresa FROM usuario u WHERE u.id_usuario = $${paramIdx++})`);
+  // El Gestor de Área solo puede consultar tickets de su departamento empresarial (área de negocio)
+  if (idPerfil === 5) {
+    condiciones.push(`(t.id_departamento_empresa = (SELECT u.id_departamento_empresa FROM usuario u WHERE u.id_usuario = $${paramIdx}) OR t.id_usuario_solicitante IN (SELECT u2.id_usuario FROM usuario u2 WHERE u2.id_departamento_empresa = (SELECT u3.id_departamento_empresa FROM usuario u3 WHERE u3.id_usuario = $${paramIdx})))`);
     params.push(idUsuario);
+    paramIdx++;
   }
 
   // Cada Supervisor solo consulta expedientes de los grupos de TI que supervisa (excepto en "mios").
