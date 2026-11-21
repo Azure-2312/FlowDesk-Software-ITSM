@@ -26,8 +26,10 @@ export async function listarArticulos(filtros: FiltrosArticulos, sesion: { idUsu
   if (filtros.vista === "mis_articulos") {
     condiciones.push(`a.id_autor = $${paramIdx++}`);
     params.push(sesion.idUsuario);
-  } else if (filtros.vista === "revisiones") {
+  } else if (filtros.vista === "revisiones" || filtros.vista === "pendientes") {
     condiciones.push(`a.estado_editorial = 'EN_REVISION'`);
+  } else if (filtros.vista === "publicacion" || filtros.vista === "aprobados") {
+    condiciones.push(`a.estado_editorial = 'APROBADO'`);
   } else {
     condiciones.push(`a.estado_editorial = 'PUBLICADO'`);
     condiciones.push(`($${paramIdx++} = 1 OR $${paramIdx - 1} = ANY(a.audiencia_perfiles))`);
@@ -928,4 +930,36 @@ export async function obtenerMetricasKcsDashboard() {
     topArticulos,
     gapsBusqueda,
   };
+}
+
+export async function aprobarArticulo(idArticulo: number) {
+  const rows = await query(
+    `UPDATE articulo_conocimiento 
+     SET estado_editorial = 'APROBADO', fecha_modificacion = now() 
+     WHERE id_articulo = $1 
+     RETURNING id_articulo, codigo_articulo, titulo, estado_editorial`,
+    [idArticulo]
+  );
+  return rows[0] || null;
+}
+
+export async function publicarArticulos(ids?: number[]) {
+  if (ids && ids.length > 0) {
+    const rows = await query(
+      `UPDATE articulo_conocimiento 
+       SET estado_editorial = 'PUBLICADO', fecha_publicacion = now(), fecha_modificacion = now() 
+       WHERE id_articulo = ANY($1::int[]) 
+       RETURNING id_articulo, codigo_articulo, titulo, estado_editorial`,
+      [ids]
+    );
+    return rows;
+  } else {
+    const rows = await query(
+      `UPDATE articulo_conocimiento 
+       SET estado_editorial = 'PUBLICADO', fecha_publicacion = now(), fecha_modificacion = now() 
+       WHERE estado_editorial = 'APROBADO' AND estado_registro = true 
+       RETURNING id_articulo, codigo_articulo, titulo, estado_editorial`
+    );
+    return rows;
+  }
 }

@@ -206,25 +206,11 @@ export default function VistaKedb() {
     <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto", boxSizing: "border-box" }}>
       {/* 1. Cabecera */}
       <div style={{ marginBottom: 20 }}>
-        <span
-          style={{
-            display: "inline-block",
-            marginBottom: 6,
-            backgroundColor: "#fef3c7",
-            color: "#92400e",
-            padding: "2px 8px",
-            borderRadius: 4,
-            fontSize: 11,
-            fontWeight: 700,
-          }}
-        >
-          Gestión de Problemas · Base KEDB (ITIL v4)
-        </span>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-          Errores Conocidos (KEDB)
+        <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          Base de errores conocidos (KEDB)
         </h1>
-        <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}>
-          Repositorio de causas raíz analizadas y soluciones temporales (workarounds) documentadas para acelerar la resolución de incidentes o generar nuevos casos de estudio.
+        <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          Repositorio institucional de causas raíz documentadas y soluciones temporales (workarounds) para acelerar la resolución de incidentes.
         </p>
       </div>
 
@@ -246,13 +232,13 @@ export default function VistaKedb() {
           type="button"
           onClick={() => setPestanaActiva("plantillas")}
           style={{
-            padding: "10px 20px",
+            padding: "8px 16px",
             border: "none",
             borderBottom: pestanaActiva === "plantillas" ? "3px solid #2563eb" : "3px solid transparent",
             backgroundColor: "transparent",
             color: pestanaActiva === "plantillas" ? "#2563eb" : "#64748b",
             fontWeight: pestanaActiva === "plantillas" ? 700 : 500,
-            fontSize: 14,
+            fontSize: 13.5,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -260,7 +246,7 @@ export default function VistaKedb() {
             marginBottom: -2,
           }}
         >
-          <span>📋 Plantillas / Catálogo KEDB</span>
+          <span>Catálogo de errores conocidos</span>
           <span style={{ fontSize: 11, backgroundColor: pestanaActiva === "plantillas" ? "#dbeafe" : "#f1f5f9", color: pestanaActiva === "plantillas" ? "#1e40af" : "#64748b", padding: "2px 8px", borderRadius: 999 }}>
             {items.length}
           </span>
@@ -270,13 +256,13 @@ export default function VistaKedb() {
           type="button"
           onClick={() => setPestanaActiva("registrar")}
           style={{
-            padding: "10px 20px",
+            padding: "8px 16px",
             border: "none",
             borderBottom: pestanaActiva === "registrar" ? "3px solid #2563eb" : "3px solid transparent",
             backgroundColor: "transparent",
             color: pestanaActiva === "registrar" ? "#2563eb" : "#64748b",
             fontWeight: pestanaActiva === "registrar" ? 700 : 500,
-            fontSize: 14,
+            fontSize: 13.5,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -284,20 +270,20 @@ export default function VistaKedb() {
             marginBottom: -2,
           }}
         >
-          <span>➕ Registrar Error Conocido</span>
+          <span>Registrar error conocido</span>
         </button>
 
         <button
           type="button"
           onClick={() => setPestanaActiva("aprobar")}
           style={{
-            padding: "10px 20px",
+            padding: "8px 16px",
             border: "none",
             borderBottom: pestanaActiva === "aprobar" ? "3px solid #2563eb" : "3px solid transparent",
             backgroundColor: "transparent",
             color: pestanaActiva === "aprobar" ? "#2563eb" : "#64748b",
             fontWeight: pestanaActiva === "aprobar" ? 700 : 500,
-            fontSize: 14,
+            fontSize: 13.5,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -305,7 +291,7 @@ export default function VistaKedb() {
             marginBottom: -2,
           }}
         >
-          <span>✅ Aprobar Publicaciones</span>
+          <span>Aprobar publicaciones</span>
           <span style={{ fontSize: 11, backgroundColor: propuestas.length > 0 ? "#fef3c7" : "#f1f5f9", color: propuestas.length > 0 ? "#92400e" : "#64748b", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
             {propuestas.length}
           </span>
@@ -585,9 +571,8 @@ export default function VistaKedb() {
           </div>
 
           {propuestas.length === 0 ? (
-            <div style={{ backgroundColor: "#ffffff", border: "1px dashed #cbd5e1", borderRadius: 8, padding: 40, textAlign: "center", color: "#64748b" }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>✅</div>
-              <div style={{ fontWeight: 700, fontSize: 14, color: "#1e293b" }}>No hay publicaciones KEDB pendientes de revisión</div>
+            <div style={{ backgroundColor: "#ffffff", border: "1px dashed #cbd5e1", borderRadius: 8, padding: 32, textAlign: "center", color: "#64748b" }}>
+              <div style={{ fontWeight: 600, fontSize: 13.5, color: "#1e293b" }}>No hay publicaciones KEDB pendientes de revisión</div>
               <p style={{ fontSize: 12.5, color: "#64748b", margin: "4px 0 0" }}>
                 Todos los análisis y workarounds registrados ya se encuentran aprobados o en investigación.
               </p>
@@ -599,9 +584,9 @@ export default function VistaKedb() {
                   key={p.id_problema}
                   style={{
                     backgroundColor: "#ffffff",
-                    border: "1px solid #fed7aa",
-                    borderRadius: 10,
-                    padding: "18px 20px",
+                    border: "1px solid #cbd5e1",
+                    borderRadius: 8,
+                    padding: "16px 20px",
                     display: "flex",
                     flexDirection: "column",
                     gap: 12,
@@ -610,12 +595,12 @@ export default function VistaKedb() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10 }}>
                     <div>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                        <span style={{ fontSize: 11, fontWeight: 800, padding: "2px 8px", backgroundColor: "#fef3c7", color: "#92400e", borderRadius: 4, textTransform: "uppercase" }}>
-                          PROPUESTA KEDB
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", backgroundColor: "#fef3c7", color: "#92400e", borderRadius: 4, textTransform: "uppercase" }}>
+                          Propuesta KEDB
                         </span>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#ea580c" }}>{p.codigo_problema}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#2563eb", fontFamily: "monospace" }}>{p.codigo_problema}</span>
                       </div>
-                      <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0 }}>{p.titulo}</h3>
+                      <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", margin: 0 }}>{p.titulo}</h3>
                     </div>
 
                     <div style={{ display: "flex", gap: 8 }}>
@@ -627,14 +612,14 @@ export default function VistaKedb() {
                           padding: "6px 14px",
                           backgroundColor: "#ffffff",
                           border: "1px solid #cbd5e1",
-                          color: "#475569",
+                          color: "#64748b",
                           borderRadius: 6,
                           fontSize: 12.5,
-                          fontWeight: 600,
+                          fontWeight: 500,
                           cursor: "pointer",
                         }}
                       >
-                        ↩️ Devolver a investigación
+                        Devolver a investigación
                       </button>
                       <button
                         type="button"
@@ -642,29 +627,29 @@ export default function VistaKedb() {
                         onClick={() => aprobarKedb(p.id_problema)}
                         style={{
                           padding: "6px 16px",
-                          backgroundColor: "#059669",
+                          backgroundColor: "#2563eb",
                           color: "#ffffff",
                           border: "none",
                           borderRadius: 6,
                           fontSize: 12.5,
-                          fontWeight: 700,
+                          fontWeight: 600,
                           cursor: "pointer",
                         }}
                       >
-                        ✅ Aprobar y Publicar en KEDB
+                        Aprobar y publicar en KEDB
                       </button>
                     </div>
                   </div>
 
                   <p style={{ fontSize: 13, color: "#475569", margin: 0, lineHeight: 1.5 }}>{p.descripcion}</p>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, padding: 14, backgroundColor: "#fffbeb", borderRadius: 8, fontSize: 12.5 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, padding: 12, backgroundColor: "#f8fafc", borderRadius: 6, fontSize: 12 }}>
                     <div>
-                      <strong style={{ color: "#92400e", display: "block", marginBottom: 4 }}>🔍 Causa Raíz Identificada:</strong>
+                      <strong style={{ color: "#334155", display: "block", marginBottom: 2 }}>Causa raíz identificada:</strong>
                       <span style={{ color: "#1e293b" }}>{p.causa_raiz || "Pendiente de redacción"}</span>
                     </div>
                     <div>
-                      <strong style={{ color: "#166534", display: "block", marginBottom: 4 }}>💡 Solución Temporal (Workaround):</strong>
+                      <strong style={{ color: "#334155", display: "block", marginBottom: 2 }}>Solución temporal (workaround):</strong>
                       <span style={{ color: "#1e293b" }}>{p.workaround || "Sin workaround documentado"}</span>
                     </div>
                   </div>

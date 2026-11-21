@@ -172,25 +172,11 @@ export default function VistaModelosCambioUnificada() {
     <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto", boxSizing: "border-box" }}>
       {/* 1. Encabezado */}
       <div style={{ marginBottom: 20 }}>
-        <span
-          style={{
-            display: "inline-block",
-            marginBottom: 6,
-            backgroundColor: "#dcfce7",
-            color: "#166534",
-            padding: "2px 8px",
-            borderRadius: 4,
-            fontSize: 11,
-            fontWeight: 700,
-          }}
-        >
-          Gestión de Cambios · Modelos Preautorizados (ITIL v4)
-        </span>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-          Modelos de Cambio Estándar
+        <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          Modelos de cambio estándar
         </h1>
-        <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}>
-          Catálogo oficial de procedimientos operativos estándar. Selecciona una plantilla para iniciar un cambio preaprobado o crea un nuevo modelo técnico.
+        <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          Catálogo institucional de procedimientos operativos estándar preautorizados. Selecciona una plantilla para iniciar un cambio o gestiona nuevas propuestas.
         </p>
       </div>
 
@@ -206,19 +192,19 @@ export default function VistaModelosCambioUnificada() {
         </div>
       )}
 
-      {/* 2. Selector de Pestañas Internas (Plantillas vs Crear Modelo) */}
+      {/* 2. Selector de Pestañas Internas */}
       <div style={{ display: "flex", gap: 8, borderBottom: "2px solid #e2e8f0", marginBottom: 24 }}>
         <button
           type="button"
           onClick={() => setPestanaActiva("plantillas")}
           style={{
-            padding: "10px 20px",
+            padding: "8px 16px",
             border: "none",
             borderBottom: pestanaActiva === "plantillas" ? "3px solid #2563eb" : "3px solid transparent",
             backgroundColor: "transparent",
             color: pestanaActiva === "plantillas" ? "#2563eb" : "#64748b",
             fontWeight: pestanaActiva === "plantillas" ? 700 : 500,
-            fontSize: 14,
+            fontSize: 13.5,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -226,7 +212,7 @@ export default function VistaModelosCambioUnificada() {
             marginBottom: -2,
           }}
         >
-          <span>📋 Plantillas de Cambio</span>
+          <span>Plantillas de cambio</span>
           <span style={{ fontSize: 11, backgroundColor: pestanaActiva === "plantillas" ? "#dbeafe" : "#f1f5f9", color: pestanaActiva === "plantillas" ? "#1e40af" : "#64748b", padding: "2px 8px", borderRadius: 999 }}>
             {items.length}
           </span>
@@ -236,13 +222,13 @@ export default function VistaModelosCambioUnificada() {
           type="button"
           onClick={() => setPestanaActiva("crear")}
           style={{
-            padding: "10px 20px",
+            padding: "8px 16px",
             border: "none",
             borderBottom: pestanaActiva === "crear" ? "3px solid #2563eb" : "3px solid transparent",
             backgroundColor: "transparent",
             color: pestanaActiva === "crear" ? "#2563eb" : "#64748b",
             fontWeight: pestanaActiva === "crear" ? 700 : 500,
-            fontSize: 14,
+            fontSize: 13.5,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -250,20 +236,20 @@ export default function VistaModelosCambioUnificada() {
             marginBottom: -2,
           }}
         >
-          <span>➕ Crear Modelo</span>
+          <span>Crear modelo</span>
         </button>
 
         <button
           type="button"
           onClick={() => setPestanaActiva("aprobar")}
           style={{
-            padding: "10px 20px",
+            padding: "8px 16px",
             border: "none",
             borderBottom: pestanaActiva === "aprobar" ? "3px solid #2563eb" : "3px solid transparent",
             backgroundColor: "transparent",
             color: pestanaActiva === "aprobar" ? "#2563eb" : "#64748b",
             fontWeight: pestanaActiva === "aprobar" ? 700 : 500,
-            fontSize: 14,
+            fontSize: 13.5,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -271,7 +257,7 @@ export default function VistaModelosCambioUnificada() {
             marginBottom: -2,
           }}
         >
-          <span>✅ Aprobar Publicaciones</span>
+          <span>Aprobar publicaciones</span>
           <span style={{ fontSize: 11, backgroundColor: pendientesAprobacion.length > 0 ? "#fef3c7" : "#f1f5f9", color: pendientesAprobacion.length > 0 ? "#92400e" : "#64748b", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
             {pendientesAprobacion.length}
           </span>
@@ -371,18 +357,16 @@ export default function VistaModelosCambioUnificada() {
                         style={{
                           display: "inline-flex",
                           alignItems: "center",
-                          gap: 6,
-                          padding: "8px 16px",
-                          backgroundColor: "#16a34a",
+                          padding: "7px 14px",
+                          backgroundColor: "#2563eb",
                           color: "#ffffff",
-                          borderRadius: 8,
+                          borderRadius: 6,
                           fontSize: 12.5,
-                          fontWeight: 700,
+                          fontWeight: 600,
                           textDecoration: "none",
-                          boxShadow: "0 1px 2px rgba(22, 163, 74, 0.2)",
                         }}
                       >
-                        <span>⚡ Crear cambio con este modelo</span>
+                        Crear cambio con este modelo
                       </Link>
                     </div>
                   </div>
@@ -629,9 +613,8 @@ export default function VistaModelosCambioUnificada() {
           </div>
 
           {pendientesAprobacion.length === 0 ? (
-            <div style={{ backgroundColor: "#ffffff", border: "1px dashed #cbd5e1", borderRadius: 8, padding: 40, textAlign: "center", color: "#64748b" }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>✅</div>
-              <div style={{ fontWeight: 700, fontSize: 14, color: "#1e293b" }}>No hay modelos estándar pendientes de aprobación</div>
+            <div style={{ backgroundColor: "#ffffff", border: "1px dashed #cbd5e1", borderRadius: 8, padding: 32, textAlign: "center", color: "#64748b" }}>
+              <div style={{ fontWeight: 600, fontSize: 13.5, color: "#1e293b" }}>No hay modelos estándar pendientes de aprobación</div>
               <p style={{ fontSize: 12.5, color: "#64748b", margin: "4px 0 0" }}>
                 Todas las plantillas propuestas han sido revisadas o ya están publicadas.
               </p>
@@ -644,8 +627,8 @@ export default function VistaModelosCambioUnificada() {
                   style={{
                     backgroundColor: "#ffffff",
                     border: "1px solid #cbd5e1",
-                    borderRadius: 10,
-                    padding: "18px 20px",
+                    borderRadius: 8,
+                    padding: "16px 20px",
                     display: "flex",
                     flexDirection: "column",
                     gap: 12,
@@ -654,12 +637,12 @@ export default function VistaModelosCambioUnificada() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10 }}>
                     <div>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                        <span style={{ fontSize: 11, fontWeight: 800, padding: "2px 8px", backgroundColor: "#fef3c7", color: "#92400e", borderRadius: 4, textTransform: "uppercase" }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", backgroundColor: "#fef3c7", color: "#92400e", borderRadius: 4, textTransform: "uppercase" }}>
                           {m.estado || "EN REVISIÓN"}
                         </span>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#2563eb" }}>{m.codigo}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#2563eb", fontFamily: "monospace" }}>{m.codigo}</span>
                       </div>
-                      <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0 }}>{m.nombre}</h3>
+                      <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", margin: 0 }}>{m.nombre}</h3>
                     </div>
 
                     <div style={{ display: "flex", gap: 8 }}>
@@ -670,11 +653,11 @@ export default function VistaModelosCambioUnificada() {
                         style={{
                           padding: "6px 14px",
                           backgroundColor: "#ffffff",
-                          border: "1px solid #fca5a5",
-                          color: "#dc2626",
+                          border: "1px solid #cbd5e1",
+                          color: "#64748b",
                           borderRadius: 6,
                           fontSize: 12.5,
-                          fontWeight: 600,
+                          fontWeight: 500,
                           cursor: "pointer",
                         }}
                       >
@@ -686,16 +669,16 @@ export default function VistaModelosCambioUnificada() {
                         onClick={() => cambiarEstado(m.id_modelo, "APROBADO")}
                         style={{
                           padding: "6px 16px",
-                          backgroundColor: "#059669",
+                          backgroundColor: "#2563eb",
                           color: "#ffffff",
                           border: "none",
                           borderRadius: 6,
                           fontSize: 12.5,
-                          fontWeight: 700,
+                          fontWeight: 600,
                           cursor: "pointer",
                         }}
                       >
-                        ✅ Aprobar y Publicar
+                        Aprobar y publicar
                       </button>
                     </div>
                   </div>

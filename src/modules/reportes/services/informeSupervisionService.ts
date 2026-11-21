@@ -144,10 +144,10 @@ export async function generarInformeSupervision(idUsuarioSupervisor: number): Pr
   const slaStats = await queryRow<any>(`
     SELECT
       COUNT(*)::int AS total,
-      COUNT(*) FILTER (WHERE fecha_cierre IS NOT NULL AND (fecha_limite_resolucion IS NULL OR fecha_cierre <= fecha_limite_resolucion))::int AS cump_resolucion,
-      COUNT(*) FILTER (WHERE fecha_primera_respuesta IS NOT NULL AND (fecha_limite_primera_respuesta IS NULL OR fecha_primera_respuesta <= fecha_limite_primera_respuesta))::int AS cump_respuesta,
-      COUNT(*) FILTER (WHERE fecha_cierre IS NULL AND fecha_limite_resolucion IS NOT NULL AND fecha_limite_resolucion < now())::int AS vencidos,
-      COUNT(*) FILTER (WHERE fecha_cierre IS NULL AND fecha_limite_resolucion IS NOT NULL AND fecha_limite_resolucion >= now() AND fecha_limite_resolucion <= now() + interval '4 hours')::int AS en_riesgo
+      COUNT(*) FILTER (WHERE fecha_cierre IS NOT NULL AND (fecha_limite_sla IS NULL OR fecha_cierre <= fecha_limite_sla))::int AS cump_resolucion,
+      COUNT(*) FILTER (WHERE fecha_primera_respuesta IS NOT NULL AND (fecha_limite_respuesta_sla IS NULL OR fecha_primera_respuesta <= fecha_limite_respuesta_sla))::int AS cump_respuesta,
+      COUNT(*) FILTER (WHERE fecha_cierre IS NULL AND fecha_limite_sla IS NOT NULL AND fecha_limite_sla < now())::int AS vencidos,
+      COUNT(*) FILTER (WHERE fecha_cierre IS NULL AND fecha_limite_sla IS NOT NULL AND fecha_limite_sla >= now() AND fecha_limite_sla <= now() + interval '4 hours')::int AS en_riesgo
     FROM ticket
     WHERE estado_registro = true
   `);
@@ -173,20 +173,20 @@ export async function generarInformeSupervision(idUsuarioSupervisor: number): Pr
       CONCAT(u.nombres, ' ', u.apellido_paterno) AS nombre,
       u.correo_electronico AS correo,
       COALESCE(d.nombre, 'Mesa de Servicio TI') AS departamento,
-      COALESCE(td.nivel, 'N1') AS nivel,
+      CASE WHEN td.nivel_soporte = 1 THEN 'N1' WHEN td.nivel_soporte = 2 THEN 'N2' WHEN td.nivel_soporte = 3 THEN 'N3' ELSE 'N1' END AS nivel,
       COUNT(t.id_ticket)::int AS asignados,
       COUNT(t.id_ticket) FILTER (WHERE t.id_estado = 5)::int AS resueltos,
       COUNT(t.id_ticket) FILTER (WHERE t.id_estado = 6)::int AS cancelados,
       COUNT(t.id_ticket) FILTER (WHERE t.id_estado IN (2, 3, 4))::int AS en_atencion,
       ROUND(AVG(EXTRACT(EPOCH FROM (t.fecha_cierre - t.fecha_creacion))/3600)::numeric, 1) AS horas_promedio,
-      COUNT(t.id_ticket) FILTER (WHERE t.id_estado = 5 AND (t.fecha_limite_resolucion IS NULL OR t.fecha_cierre <= t.fecha_limite_resolucion))::int AS resueltos_en_sla
+      COUNT(t.id_ticket) FILTER (WHERE t.id_estado = 5 AND (t.fecha_limite_sla IS NULL OR t.fecha_cierre <= t.fecha_limite_sla))::int AS resueltos_en_sla
     FROM usuario u
     JOIN usuario_perfiles up ON up.id_usuario = u.id_usuario AND up.id_perfil = 2 AND up.estado_registro = true
     LEFT JOIN departamento_ti d ON d.id_departamento = u.id_departamento
     LEFT JOIN tecnico_detalle td ON td.id_usuario = u.id_usuario AND td.estado_registro = true
     LEFT JOIN ticket t ON t.id_usuario_asignado = u.id_usuario AND t.estado_registro = true
     WHERE u.estado_registro = true
-    GROUP BY u.id_usuario, u.nombres, u.apellido_paterno, u.correo_electronico, d.nombre, td.nivel
+    GROUP BY u.id_usuario, u.nombres, u.apellido_paterno, u.correo_electronico, d.nombre, td.nivel_soporte
     ORDER BY resueltos DESC, asignados DESC
   `);
 

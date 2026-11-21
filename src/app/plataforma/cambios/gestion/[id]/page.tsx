@@ -7,6 +7,7 @@ export default function PaginaCambiosDetalle() {
     CAPACIDADES.CAMBIOS_GESTIONAR,
     CAPACIDADES.CAMBIOS_APROBAR,
     CAPACIDADES.SOLICITUDES_APROBAR,
+    CAPACIDADES.CAMBIOS_VER,
   ]);
   return <VistaCambiosGestionDetalle />;
 }

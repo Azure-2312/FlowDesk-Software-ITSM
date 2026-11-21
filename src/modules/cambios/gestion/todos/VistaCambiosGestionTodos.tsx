@@ -9,7 +9,14 @@ export default function PaginaTodosCambios() {
   const [cargando, setCargando] = useState(true);
   const [filtroTipo, setFiltroTipo] = useState<string>("TODOS");
   const [filtroEstado, setFiltroEstado] = useState<string>("TODOS");
+  const [soloSinAsignar, setSoloSinAsignar] = useState(false);
   const [cambioSeleccionado, setCambioSeleccionado] = useState<Cambio | null>(null);
+
+  // Asignación de equipo y técnico
+  const [modalAsignar, setModalAsignar] = useState<Cambio | null>(null);
+  const [tecnicos, setTecnicos] = useState<any[]>([]);
+  const [idTecnicoSeleccionado, setIdTecnicoSeleccionado] = useState<string>("");
+  const [guardandoAsignacion, setGuardandoAsignacion] = useState(false);
 
   async function cargarCambios() {
     setCargando(true);
@@ -18,10 +25,19 @@ export default function PaginaTodosCambios() {
       if (filtroTipo !== "TODOS") url.searchParams.set("tipo", filtroTipo);
       if (filtroEstado !== "TODOS") url.searchParams.set("estado", filtroEstado);
 
-      const res = await fetch(url.toString());
-      const data = await res.json();
+      const [resCambios, resEquipo] = await Promise.all([
+        fetch(url.toString()),
+        fetch(`/api/cambios/equipo?_t=${Date.now()}`),
+      ]);
+
+      const data = await resCambios.json();
       if (Array.isArray(data)) {
         setCambios(data);
+      }
+
+      if (resEquipo.ok) {
+        const dataEq = await resEquipo.json();
+        setTecnicos(dataEq.tecnicosDisponibles || []);
       }
     } catch (err) {
       console.error("Error al cargar cambios:", err);
@@ -34,13 +50,50 @@ export default function PaginaTodosCambios() {
     cargarCambios();
   }, [filtroTipo, filtroEstado]);
 
+  async function ejecutarAsignacion() {
+    if (!modalAsignar || !idTecnicoSeleccionado) return;
+    setGuardandoAsignacion(true);
+    try {
+      const res = await fetch("/api/cambios/equipo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          accion: "asignar",
+          id_cambio: modalAsignar.id_cambio,
+          id_usuario_responsable: Number(idTecnicoSeleccionado),
+        }),
+      });
+      if (res.ok) {
+        setModalAsignar(null);
+        setIdTecnicoSeleccionado("");
+        await cargarCambios();
+      } else {
+        const j = await res.json();
+        alert(j.error || "No se pudo asignar el cambio");
+      }
+    } catch {
+      alert("Error de conexión al asignar");
+    } finally {
+      setGuardandoAsignacion(false);
+    }
+  }
+
+  const cambiosFiltrados = cambios.filter((c: any) => {
+    if (soloSinAsignar && (c.id_usuario_responsable || c.responsable_nombre)) return false;
+    return true;
+  });
+
+  const conteoSinAsignar = cambios.filter((c: any) => !c.id_usuario_responsable && !c.responsable_nombre).length;
+
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h1>Historial Consolidado de Solicitudes de Cambio (RFC)</h1>
-          <p>
-            Trazabilidad integral ITIL v4: Flujo de aprobación CAB, CIs afectados, ventanas de ejecución y revisión post-implementación (PIR).
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+            Todos los cambios RFC
+          </h1>
+          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+            Supervisión integral de todas las solicitudes de cambio organizacionales, trazabilidad en workflow y asignación de equipos técnicos.
           </p>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
@@ -54,8 +107,8 @@ export default function PaginaTodosCambios() {
         </div>
       </div>
 
-      {/* Barra de Filtros */}
-      <div className="barra-filtros" style={{ marginBottom: 16 }}>
+      {/* Barra de Filtros y Alcance */}
+      <div className="barra-filtros" style={{ marginBottom: 16, display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span style={{ fontSize: 12, fontWeight: 600, color: "#475569" }}>Tipo:</span>
           <select
@@ -89,8 +142,27 @@ export default function PaginaTodosCambios() {
           </select>
         </div>
 
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: 8 }}>
+          <button
+            type="button"
+            onClick={() => setSoloSinAsignar(!soloSinAsignar)}
+            style={{
+              padding: "5px 12px",
+              borderRadius: 6,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+              border: soloSinAsignar ? "1px solid #dc2626" : "1px solid #cbd5e1",
+              backgroundColor: soloSinAsignar ? "#fef2f2" : "#ffffff",
+              color: soloSinAsignar ? "#b91c1c" : "#475569",
+            }}
+          >
+            {soloSinAsignar ? "Mostrando sin asignar" : `Pendientes de asignar (${conteoSinAsignar})`}
+          </button>
+        </div>
+
         <span style={{ marginLeft: "auto", fontSize: 12, color: "#64748b" }}>
-          {cambios.length} {cambios.length === 1 ? "cambio registrado" : "cambios registrados"}
+          {cambiosFiltrados.length} {cambiosFiltrados.length === 1 ? "cambio registrado" : "cambios registrados"}
         </span>
       </div>
 
@@ -98,10 +170,12 @@ export default function PaginaTodosCambios() {
         <div style={{ padding: 32, textAlign: "center", color: "#2563eb", fontWeight: 600 }}>
           Cargando registros RFC desde la base de datos...
         </div>
-      ) : cambios.length === 0 ? (
+      ) : cambiosFiltrados.length === 0 ? (
         <div style={{ padding: 32, textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
           <p style={{ margin: "0 0 10px 0", color: "#64748b", fontWeight: 500 }}>
-            No se encontraron solicitudes de cambio que coincidan con los filtros seleccionados.
+            {soloSinAsignar
+              ? "No hay cambios pendientes de asignación de equipo o especialista."
+              : "No se encontraron solicitudes de cambio que coincidan con los filtros seleccionados."}
           </p>
           <Link href="/plataforma/cambios/nuevo" className="boton-mini" style={{ textDecoration: "none" }}>
             Registrar la primera RFC
@@ -116,15 +190,14 @@ export default function PaginaTodosCambios() {
                 <th>Título</th>
                 <th>Tipo</th>
                 <th>Prioridad</th>
-                <th>CI Afectado</th>
-                <th>Solicitante</th>
+                <th>Responsable / Equipo</th>
                 <th>Ventana Propuesta</th>
                 <th>Estado</th>
-                <th>Acción</th>
+                <th style={{ textAlign: "center" }}>Acción</th>
               </tr>
             </thead>
             <tbody>
-              {cambios.map((c) => (
+              {cambiosFiltrados.map((c: any) => (
                 <tr key={c.id_cambio}>
                   <td>
                     <Link
@@ -135,7 +208,7 @@ export default function PaginaTodosCambios() {
                       {c.codigo_cambio}
                     </Link>
                   </td>
-                  <td style={{ fontWeight: 600, maxWidth: 300 }}>
+                  <td style={{ fontWeight: 600, maxWidth: 280 }}>
                     <Link
                       href={`/plataforma/cambios/gestion/${c.id_cambio}`}
                       style={{ color: "#1e293b", textDecoration: "none" }}
@@ -145,8 +218,11 @@ export default function PaginaTodosCambios() {
                   </td>
                   <td>
                     <span
-                      className="badge-itil"
                       style={{
+                        padding: "2px 8px",
+                        borderRadius: 4,
+                        fontSize: 11,
+                        fontWeight: 600,
                         backgroundColor: c.tipo_cambio === "EMERGENCIA" ? "#fee2e2" : c.tipo_cambio === "NORMAL" ? "#eff6ff" : "#f1f5f9",
                         color: c.tipo_cambio === "EMERGENCIA" ? "#991b1b" : c.tipo_cambio === "NORMAL" ? "#1d4ed8" : "#334155",
                         border: `1px solid ${c.tipo_cambio === "EMERGENCIA" ? "#fca5a5" : c.tipo_cambio === "NORMAL" ? "#bfdbfe" : "#cbd5e1"}`,
@@ -156,15 +232,38 @@ export default function PaginaTodosCambios() {
                     </span>
                   </td>
                   <td>{c.prioridad_nombre || "Media"}</td>
-                  <td>{c.ci_codigo ? `[${c.ci_codigo}] ${c.ci_nombre}` : "No asignado"}</td>
-                  <td>{c.solicitante_nombre || "Especialista TI"}</td>
+                  <td>
+                    {c.responsable_nombre ? (
+                      <span style={{ fontSize: 12, color: "#1e293b" }}>{c.responsable_nombre}</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setModalAsignar(c)}
+                        style={{
+                          padding: "3px 8px",
+                          borderRadius: 4,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          backgroundColor: "#fef3c7",
+                          color: "#92400e",
+                          border: "1px solid #fde68a",
+                          cursor: "pointer",
+                        }}
+                      >
+                        + Asignar equipo
+                      </button>
+                    )}
+                  </td>
                   <td style={{ fontSize: 11.5 }}>
-                    {new Date(c.ventana_inicio).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
+                    {c.ventana_inicio ? new Date(c.ventana_inicio).toLocaleString([], { dateStyle: "short", timeStyle: "short" }) : "—"}
                   </td>
                   <td>
                     <span
-                      className="badge-itil"
                       style={{
+                        padding: "2px 8px",
+                        borderRadius: 4,
+                        fontSize: 11,
+                        fontWeight: 600,
                         backgroundColor: c.id_estado === 3 ? "#ecfdf5" : c.id_estado === 2 ? "#fffbeb" : "#f1f5f9",
                         color: c.id_estado === 3 ? "#065f46" : c.id_estado === 2 ? "#92400e" : "#475569",
                         border: `1px solid ${c.id_estado === 3 ? "#a7f3d0" : c.id_estado === 2 ? "#fde68a" : "#cbd5e1"}`,
@@ -173,23 +272,23 @@ export default function PaginaTodosCambios() {
                       {c.estado_nombre}
                     </span>
                   </td>
-                  <td style={{ textAlign: "center", width: 80 }}>
-                    <div style={{ display: "flex", gap: 4, justifyContent: "center" }}>
+                  <td style={{ textAlign: "center", width: 110 }}>
+                    <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
                       <Link
                         href={`/plataforma/cambios/gestion/${c.id_cambio}`}
                         className="boton-mini"
                         style={{ textDecoration: "none", padding: "4px 8px", fontSize: 11 }}
-                        title="Ver ticket completo"
+                        title="Ver detalle del workflow"
                       >
-                        Abrir
+                        Detalle
                       </Link>
                       <button
                         type="button"
                         className="boton-mini"
                         onClick={() => setCambioSeleccionado(c)}
                         style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "4px 6px" }}
-                        title="Vista rápida modal"
-                        aria-label="Vista rápida modal"
+                        title="Vista rápida"
+                        aria-label="Vista rápida"
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -205,7 +304,80 @@ export default function PaginaTodosCambios() {
         </div>
       )}
 
-      {/* Modal Detalle de RFC */}
+      {/* Modal Asignar Equipo y Técnico */}
+      {modalAsignar && (
+        <div className="modal-overlay" onClick={() => setModalAsignar(null)}>
+          <div
+            className="modal-contenido"
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: 480, padding: 24, backgroundColor: "#ffffff", borderRadius: 8 }}
+          >
+            <h3 style={{ margin: "0 0 8px", fontSize: 16, color: "#0f172a" }}>
+              Asignar Especialista Responsable
+            </h3>
+            <p style={{ margin: "0 0 16px", fontSize: 12.5, color: "#64748b" }}>
+              RFC: <strong style={{ color: "#2563eb" }}>{modalAsignar.codigo_cambio}</strong> · {modalAsignar.titulo}
+            </p>
+
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 6 }}>
+                Seleccionar Especialista Técnico:
+              </label>
+              <select
+                className="input-base"
+                style={{ width: "100%", fontSize: 13, padding: "8px 10px" }}
+                value={idTecnicoSeleccionado}
+                onChange={(e) => setIdTecnicoSeleccionado(e.target.value)}
+              >
+                <option value="">-- Seleccionar especialista --</option>
+                {tecnicos.map((t) => (
+                  <option key={t.id_usuario} value={t.id_usuario}>
+                    {t.nombre_completo} ({t.departamento_nombre || "Mesa TI"} - {t.nivel_soporte_nombre || "Nivel 1"})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button
+                type="button"
+                onClick={() => setModalAsignar(null)}
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: 6,
+                  border: "1px solid #cbd5e1",
+                  backgroundColor: "#ffffff",
+                  fontSize: 13,
+                  color: "#475569",
+                  cursor: "pointer",
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={ejecutarAsignacion}
+                disabled={!idTecnicoSeleccionado || guardandoAsignacion}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: 6,
+                  border: "none",
+                  backgroundColor: "#2563eb",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#ffffff",
+                  cursor: idTecnicoSeleccionado && !guardandoAsignacion ? "pointer" : "not-allowed",
+                  opacity: idTecnicoSeleccionado && !guardandoAsignacion ? 1 : 0.6,
+                }}
+              >
+                {guardandoAsignacion ? "Asignando..." : "Confirmar asignación"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Detalle Rápido de RFC */}
       {cambioSeleccionado && (
         <div className="modal-overlay" onClick={() => setCambioSeleccionado(null)}>
           <div
@@ -268,15 +440,6 @@ export default function PaginaTodosCambios() {
                 <strong style={{ fontSize: 12.5, color: "#166534", display: "block", marginBottom: 4 }}>Plan de Pruebas Post-Cambio:</strong>
                 <div style={{ padding: 10, backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 6, fontSize: 12.5, color: "#14532d" }}>
                   {cambioSeleccionado.plan_pruebas}
-                </div>
-              </div>
-            )}
-
-            {cambioSeleccionado.resultado_pir && (
-              <div style={{ marginBottom: 14 }}>
-                <strong style={{ fontSize: 12.5, color: "#1e293b", display: "block", marginBottom: 4 }}>Revisión Post-Implementación (PIR):</strong>
-                <div style={{ padding: 10, backgroundColor: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 12.5 }}>
-                  {cambioSeleccionado.resultado_pir} (Incidentes inducidos: {cambioSeleccionado.incidentes_inducidos})
                 </div>
               </div>
             )}

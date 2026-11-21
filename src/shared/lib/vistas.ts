@@ -223,8 +223,7 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     nombre: "Candidatos a problema",
     vistaPorDefecto: "propuestos",
     vistas: [
-      { codigo: "propuestos", etiqueta: "Propuestos", idsLegados: [21095, 21096] },
-      { codigo: "recurrentes", etiqueta: "Incidentes recurrentes", idsLegados: [21100] },
+      { codigo: "propuestos", etiqueta: "Candidatos a problema", idsLegados: [21095, 21096] },
     ],
   },
 
@@ -337,10 +336,10 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     idOpcion: 21161,
     urlBase: "/plataforma/conocimiento/publicacion",
     nombre: "Revisión y publicación",
-    vistaPorDefecto: "publicacion",
+    vistaPorDefecto: "pendientes",
     vistas: [
-      { codigo: "publicacion", etiqueta: "Publicación", idsLegados: [21161] },
       { codigo: "pendientes", etiqueta: "Revisiones pendientes", idsLegados: [21162] },
+      { codigo: "publicacion", etiqueta: "Publicación", idsLegados: [21161] },
     ],
   },
 
