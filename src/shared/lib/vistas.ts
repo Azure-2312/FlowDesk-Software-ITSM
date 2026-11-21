@@ -47,19 +47,6 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     ],
   },
 
-  // 2. #21249 Mis aprobaciones
-  "/plataforma/aprobaciones": {
-    idOpcion: 21249,
-    urlBase: "/plataforma/aprobaciones",
-    nombre: "Mis aprobaciones",
-    vistaPorDefecto: "pendientes",
-    vistas: [
-      { codigo: "pendientes", etiqueta: "Pendientes", idsLegados: [21249, 21061, 21088, 21089, 21121] },
-      { codigo: "historial", etiqueta: "Historial", idsLegados: [21006] },
-      { codigo: "historial-area", etiqueta: "Historial de mi área", idsLegados: [21005] },
-    ],
-  },
-
   // 3. #21233 Bandeja de incidentes
   "/plataforma/incidentes/bandeja": {
     idOpcion: 21233,

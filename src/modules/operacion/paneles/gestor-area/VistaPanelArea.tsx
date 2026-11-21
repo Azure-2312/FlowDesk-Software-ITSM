@@ -119,8 +119,8 @@ export default function VistaPanelArea() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/aprobaciones?tipo=solicitud" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Mis aprobaciones de solicitudes</Link>
-            <Link href="/plataforma/aprobaciones?tipo=cambio-negocio" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Aprobación de negocio de cambios</Link>
+            <Link href="/plataforma/solicitudes/aprobaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Centro de aprobaciones de solicitudes</Link>
+            <Link href="/plataforma/cambios/aprobaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Centro de aprobaciones de cambios</Link>
             <Link href="/plataforma/incidentes/bandeja?vista=departamento" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Tickets de mi departamento</Link>
             <Link href="/plataforma/reportes/operativos?vista=area" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Reportes del área</Link>
           </div>

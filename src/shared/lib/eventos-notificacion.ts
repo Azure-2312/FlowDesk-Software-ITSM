@@ -109,7 +109,7 @@ export const CATALOGO_EVENTOS_NOTIFICACION: Record<CodigoEventoNotificacion, Eve
     construirMensaje: (p) => ({
       titulo: `Aprobación requerida: ${p.tipoTramite || "Trámite"} #${p.entidadId || ""}`,
       mensaje: `Se requiere su dictamen formal para: ${p.resumen || "Revisión pendiente"}.`,
-      urlDestino: `/plataforma/aprobaciones?vista=pendientes`,
+      urlDestino: p.tipoTramite === "RFC" ? `/plataforma/cambios/aprobaciones?vista=pendientes` : `/plataforma/solicitudes/aprobaciones?vista=pendientes`,
     }),
   },
 
@@ -121,7 +121,7 @@ export const CATALOGO_EVENTOS_NOTIFICACION: Record<CodigoEventoNotificacion, Eve
     construirMensaje: (p) => ({
       titulo: `Trámite #${p.entidadId || ""} ${p.resultado || "resuelto"}`,
       mensaje: `Su trámite ha sido dictaminado como ${p.resultado || "procesado"}.`,
-      urlDestino: `/plataforma/aprobaciones?vista=historial`,
+      urlDestino: p.tipoTramite === "RFC" ? `/plataforma/cambios/aprobaciones?vista=historial` : `/plataforma/solicitudes/aprobaciones?vista=historial`,
     }),
   },
 

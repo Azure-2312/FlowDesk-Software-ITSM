@@ -152,22 +152,25 @@ export async function listarModelosCambio() {
 
 export async function listarHistorialDecisiones(idUsuario: number) {
   return query(
-    `SELECT tipo, referencia, titulo, decision, comentario, fecha_decision FROM (
-       SELECT 'RFC' AS tipo, c.codigo_cambio AS referencia, c.titulo, ca.decision, ca.comentario, ca.fecha_decision
+    `SELECT tipo, referencia, codigo_cambio, id_cambio, tipo_cambio, titulo, decision, comentario, fecha_decision FROM (
+       SELECT 'RFC' AS tipo, c.codigo_cambio AS referencia, c.codigo_cambio, c.id_cambio, c.tipo_cambio, c.titulo, ca.decision, ca.comentario, ca.fecha_decision
        FROM cambio_aprobacion ca JOIN cambio c ON c.id_cambio = ca.id_cambio
        WHERE ca.id_usuario_aprobador = $1 AND ca.estado_registro = true
        UNION ALL
-       SELECT 'ECAB', c.codigo_cambio, c.titulo, e.decision, e.condiciones, e.fecha_decision
+       SELECT 'ECAB' AS tipo, c.codigo_cambio AS referencia, c.codigo_cambio, c.id_cambio, c.tipo_cambio, c.titulo, e.decision, e.condiciones AS comentario, e.fecha_decision
        FROM ecab_decision e JOIN cambio c ON c.id_cambio = e.id_cambio
        WHERE e.id_aprobador = $1 AND e.estado_registro = true
        UNION ALL
-       SELECT 'MONTO',
-              CASE am.tipo WHEN 'BAJA' THEN 'Baja activo #' || am.id_referencia ELSE 'Renovación licencia #' || am.id_referencia END,
-              am.tipo, am.decision, am.comentario, am.fecha_decision
+       SELECT 'MONTO' AS tipo,
+              CASE am.tipo WHEN 'BAJA' THEN 'Baja activo #' || am.id_referencia ELSE 'Renovación licencia #' || am.id_referencia END AS referencia,
+              NULL AS codigo_cambio, NULL::int AS id_cambio, NULL AS tipo_cambio,
+              am.tipo AS titulo, am.decision, am.comentario, am.fecha_decision
        FROM aprobacion_monto am
        WHERE am.id_aprobador = $1
        UNION ALL
-       SELECT 'PROBLEMA', p.codigo_problema, p.titulo, pc.decision, pc.comentario, pc.fecha_decision
+       SELECT 'PROBLEMA' AS tipo, p.codigo_problema AS referencia,
+              p.codigo_problema AS codigo_cambio, NULL::int AS id_cambio, NULL AS tipo_cambio,
+              p.titulo, pc.decision, pc.comentario, pc.fecha_decision
        FROM problema_cierre_aprobacion pc JOIN problema p ON p.id_problema = pc.id_problema
        WHERE pc.id_aprobador = $1
      ) d

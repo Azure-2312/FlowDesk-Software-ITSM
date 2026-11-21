@@ -17,23 +17,25 @@ interface CambioPendiente {
   ventana_fin?: string;
   fecha_creacion: string;
   solicitante_nombre?: string;
-  tipo_aprobacion: "VB_AREA" | "TECNICA";
+  tipo_aprobacion: "CAB" | "VB_AREA" | "TECNICA";
 }
 
 interface DecisionHistorial {
-  id_cambio_aprobacion: number;
-  id_cambio: number;
+  id_cambio_aprobacion?: number;
+  id_cambio?: number;
   decision: string;
   comentario: string;
   fecha_decision: string;
-  codigo_cambio: string;
+  codigo_cambio?: string;
+  referencia?: string;
   titulo: string;
-  tipo_cambio: string;
+  tipo_cambio?: string;
+  tipo?: string;
 }
 
 export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendientes" }: Props) {
   const [vista, setVista] = useState<"pendientes" | "historial">(vistaInicial);
-  const [filtroTipo, setFiltroTipo] = useState<"TODOS" | "VB_AREA" | "TECNICA">("TODOS");
+  const [filtroTipo, setFiltroTipo] = useState<"TODOS" | "CAB" | "VB_AREA" | "TECNICA">("TODOS");
 
   // Datos
   const [pendientes, setPendientes] = useState<CambioPendiente[]>([]);
@@ -61,37 +63,51 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
     setError(null);
     try {
       if (vista === "pendientes") {
-        // Cargar V°B° de área y evaluaciones técnicas en paralelo
-        const [resArea, resTecnicas] = await Promise.all([
+        // Cargar autorizaciones CAB, V°B° de área y evaluaciones técnicas en paralelo
+        const [resCab, resArea, resTecnicas] = await Promise.allSettled([
+          fetch(`/api/cambios/aprobaciones?_t=${Date.now()}`),
           fetch(`/api/cambios/area/aprobaciones?_t=${Date.now()}`),
           fetch(`/api/cambios/aprobaciones/tecnicas?_t=${Date.now()}`),
         ]);
 
-        const dataArea = resArea.ok ? await resArea.json() : [];
-        const dataTecnicas = resTecnicas.ok ? await resTecnicas.json() : [];
+        const listaCab: CambioPendiente[] =
+          resCab.status === "fulfilled" && resCab.value.ok
+            ? ((await resCab.value.json()) || []).map((c: any) => ({
+                ...c,
+                tipo_aprobacion: "CAB" as const,
+              }))
+            : [];
 
-        const listaArea: CambioPendiente[] = (Array.isArray(dataArea) ? dataArea : []).map(
-          (c: any) => ({
-            ...c,
-            tipo_aprobacion: "VB_AREA" as const,
-          })
-        );
+        const listaArea: CambioPendiente[] =
+          resArea.status === "fulfilled" && resArea.value.ok
+            ? ((await resArea.value.json()) || []).map((c: any) => ({
+                ...c,
+                tipo_aprobacion: "VB_AREA" as const,
+              }))
+            : [];
 
-        const listaTecnicas: CambioPendiente[] = (Array.isArray(dataTecnicas) ? dataTecnicas : []).map(
-          (c: any) => ({
-            ...c,
-            tipo_aprobacion: "TECNICA" as const,
-          })
-        );
+        const listaTecnicas: CambioPendiente[] =
+          resTecnicas.status === "fulfilled" && resTecnicas.value.ok
+            ? ((await resTecnicas.value.json()) || []).map((c: any) => ({
+                ...c,
+                tipo_aprobacion: "TECNICA" as const,
+              }))
+            : [];
 
-        setPendientes([...listaArea, ...listaTecnicas]);
+        setPendientes([...listaCab, ...listaArea, ...listaTecnicas]);
       } else {
-        const res = await fetch(`/api/solicitudes/historial?_t=${Date.now()}`);
-        const data = await res.json();
+        const res = await fetch(`/api/cambios/historial?_t=${Date.now()}`);
         if (res.ok) {
+          const data = await res.json();
           setHistorial(Array.isArray(data) ? data : []);
         } else {
-          setError(data.error || "No fue posible cargar el historial de cambios.");
+          const resFallback = await fetch(`/api/solicitudes/historial?_t=${Date.now()}`);
+          if (resFallback.ok) {
+            const dataFallback = await resFallback.json();
+            setHistorial(Array.isArray(dataFallback) ? dataFallback : []);
+          } else {
+            setError("No fue posible cargar el historial de cambios.");
+          }
         }
       }
     } catch {
@@ -104,6 +120,10 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
   useEffect(() => {
     cargarDatos();
   }, [vista]);
+
+  const totalCab = useMemo(() => pendientes.filter((p) => p.tipo_aprobacion === "CAB").length, [pendientes]);
+  const totalArea = useMemo(() => pendientes.filter((p) => p.tipo_aprobacion === "VB_AREA").length, [pendientes]);
+  const totalTecnica = useMemo(() => pendientes.filter((p) => p.tipo_aprobacion === "TECNICA").length, [pendientes]);
 
   const pendientesFiltrados = useMemo(() => {
     if (filtroTipo === "TODOS") return pendientes;
@@ -123,7 +143,18 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
       let endpoint = "";
       let payload: any = {};
 
-      if (itemAccion.item.tipo_aprobacion === "VB_AREA") {
+      if (itemAccion.item.tipo_aprobacion === "CAB") {
+        endpoint = "/api/cambios/aprobaciones";
+        payload = {
+          id_cambio: itemAccion.item.id_cambio,
+          decision: itemAccion.decision === "APROBAR" ? "APROBADO" : "RECHAZADO",
+          comentario:
+            comentarioAccion.trim() ||
+            (itemAccion.decision === "APROBAR"
+              ? "Autorización formal otorgada por el Comité de Cambios (CAB)."
+              : "Cambio denegado por el Comité de Cambios (CAB)."),
+        };
+      } else if (itemAccion.item.tipo_aprobacion === "VB_AREA") {
         endpoint = "/api/cambios/area/aprobaciones";
         payload = {
           id_cambio: itemAccion.item.id_cambio,
@@ -195,17 +226,17 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
       <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 block mb-1">
-            Gestión de Cambios · Aprobaciones de Negocio y Técnicas
+            Gestión de Cambios · Centro de Dictámenes
           </span>
           <h1 className="text-xl font-bold text-slate-900 m-0">Centro de Aprobaciones</h1>
           <p className="text-sm text-slate-600 mt-1 mb-0">
-            Dictamen de solicitudes de cambio (RFC), evaluación de viabilidad técnica y V°B° de área empresarial.
+            Autorización de cambios (CAB), evaluación técnica de viabilidad y V°B° de área empresarial.
           </p>
         </div>
 
         {/* Filtro secundario para vista de pendientes */}
-        {vista === "pendientes" && (
-          <div className="flex items-center gap-2">
+        {vista === "pendientes" && pendientes.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-medium text-slate-500">Filtrar por:</span>
             <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1">
               <button
@@ -219,28 +250,45 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
               >
                 Todos ({pendientes.length})
               </button>
-              <button
-                type="button"
-                onClick={() => setFiltroTipo("VB_AREA")}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                  filtroTipo === "VB_AREA"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                V°B° de Área ({pendientes.filter((p) => p.tipo_aprobacion === "VB_AREA").length})
-              </button>
-              <button
-                type="button"
-                onClick={() => setFiltroTipo("TECNICA")}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                  filtroTipo === "TECNICA"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                Evaluación Técnica ({pendientes.filter((p) => p.tipo_aprobacion === "TECNICA").length})
-              </button>
+              {totalCab > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setFiltroTipo("CAB")}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                    filtroTipo === "CAB"
+                      ? "bg-white text-slate-900 shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  Autorización CAB ({totalCab})
+                </button>
+              )}
+              {totalArea > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setFiltroTipo("VB_AREA")}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                    filtroTipo === "VB_AREA"
+                      ? "bg-white text-slate-900 shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  V°B° de Área ({totalArea})
+                </button>
+              )}
+              {totalTecnica > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setFiltroTipo("TECNICA")}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                    filtroTipo === "TECNICA"
+                      ? "bg-white text-slate-900 shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  Evaluación Técnica ({totalTecnica})
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -301,12 +349,32 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
                           padding: "2px 8px",
                           borderRadius: 4,
                           fontWeight: 600,
-                          backgroundColor: item.tipo_aprobacion === "VB_AREA" ? "#f0fdf4" : "#eff6ff",
-                          color: item.tipo_aprobacion === "VB_AREA" ? "#166534" : "#1e40af",
-                          border: `1px solid ${item.tipo_aprobacion === "VB_AREA" ? "#bbf7d0" : "#bfdbfe"}`,
+                          backgroundColor:
+                            item.tipo_aprobacion === "CAB"
+                              ? "#eff6ff"
+                              : item.tipo_aprobacion === "VB_AREA"
+                              ? "#f0fdf4"
+                              : "#f8fafc",
+                          color:
+                            item.tipo_aprobacion === "CAB"
+                              ? "#1d4ed8"
+                              : item.tipo_aprobacion === "VB_AREA"
+                              ? "#166534"
+                              : "#334155",
+                          border: `1px solid ${
+                            item.tipo_aprobacion === "CAB"
+                              ? "#bfdbfe"
+                              : item.tipo_aprobacion === "VB_AREA"
+                              ? "#bbf7d0"
+                              : "#cbd5e1"
+                          }`,
                         }}
                       >
-                        {item.tipo_aprobacion === "VB_AREA" ? "V°B° de Área" : "Evaluación Técnica"}
+                        {item.tipo_aprobacion === "CAB"
+                          ? "Autorización CAB"
+                          : item.tipo_aprobacion === "VB_AREA"
+                          ? "V°B° de Área"
+                          : "Evaluación Técnica"}
                       </span>
                     </td>
                     <td style={{ padding: "12px 16px", maxWidth: 280 }}>
@@ -383,7 +451,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
           historial.length === 0 ? (
             <div style={{ padding: 48, textAlign: "center", color: "#64748b" }}>
               <p style={{ margin: 0, fontSize: 14, fontWeight: 500 }}>
-                No se registran decisiones históricas emitidas en RFC.
+                No se registran decisiones históricas emitidas en cambios.
               </p>
             </div>
           ) : (
@@ -391,76 +459,88 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
               <thead>
                 <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
                   <th style={{ padding: "12px 16px", fontWeight: 600 }}>Fecha Decisión</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Código RFC</th>
+                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Referencia / Código</th>
                   <th style={{ padding: "12px 16px", fontWeight: 600 }}>Título del Cambio</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Tipo Cambio</th>
+                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Tipo</th>
                   <th style={{ padding: "12px 16px", fontWeight: 600 }}>Decisión</th>
                   <th style={{ padding: "12px 16px", fontWeight: 600 }}>Comentario Registrado</th>
                   <th style={{ padding: "12px 16px", fontWeight: 600, textAlign: "right" }}>Expediente</th>
                 </tr>
               </thead>
               <tbody>
-                {historial.map((d) => (
-                  <tr key={d.id_cambio_aprobacion} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                    <td style={{ padding: "12px 16px", color: "#64748b", fontSize: 12 }}>
-                      {formatearFecha(d.fecha_decision)}
-                    </td>
-                    <td style={{ padding: "12px 16px", fontWeight: 700, fontFamily: "monospace" }}>
-                      <Link
-                        href={`/plataforma/cambios/gestion/${d.id_cambio}`}
-                        className="text-blue-600 hover:text-blue-800 hover:underline"
-                      >
-                        {d.codigo_cambio}
-                      </Link>
-                    </td>
-                    <td style={{ padding: "12px 16px", maxWidth: 240, fontWeight: 500, color: "#1e293b" }}>
-                      {d.titulo}
-                    </td>
-                    <td style={{ padding: "12px 16px", color: "#475569" }}>
-                      <span style={{ fontSize: 11, padding: "2px 6px", borderRadius: 4, backgroundColor: "#f1f5f9", fontWeight: 600 }}>
-                        {d.tipo_cambio}
-                      </span>
-                    </td>
-                    <td style={{ padding: "12px 16px" }}>
-                      <span
-                        style={{
-                          padding: "2px 8px",
-                          borderRadius: 4,
-                          fontSize: 11,
-                          fontWeight: 700,
-                          backgroundColor:
-                            d.decision === "APROBADO" ? "#ecfdf5" : d.decision === "OBSERVADO" ? "#fffbeb" : "#fef2f2",
-                          color:
-                            d.decision === "APROBADO" ? "#065f46" : d.decision === "OBSERVADO" ? "#92400e" : "#991b1b",
-                          border: `1px solid ${
-                            d.decision === "APROBADO" ? "#a7f3d0" : d.decision === "OBSERVADO" ? "#fde68a" : "#fecaca"
-                          }`,
-                        }}
-                      >
-                        {d.decision}
-                      </span>
-                    </td>
-                    <td style={{ padding: "12px 16px", color: "#64748b", fontSize: 12, maxWidth: 260 }}>
-                      {d.comentario || "Sin observaciones adicionales."}
-                    </td>
-                    <td style={{ padding: "12px 16px", textAlign: "right" }}>
-                      <Link
-                        href={`/plataforma/cambios/gestion/${d.id_cambio}`}
-                        style={{
-                          padding: "4px 8px",
-                          fontSize: 11.5,
-                          borderRadius: 4,
-                          border: "1px solid #cbd5e1",
-                          backgroundColor: "#f8fafc",
-                          color: "#1e293b",
-                          textDecoration: "none",
-                        }}
-                      >
-                        Ver RFC
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+                {historial.map((d, idx) => {
+                  const refCodigo = d.codigo_cambio || d.referencia || `EXP-${idx + 1}`;
+                  const idRfc = d.id_cambio;
+                  return (
+                    <tr key={`${refCodigo}-${idx}`} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <td style={{ padding: "12px 16px", color: "#64748b", fontSize: 12 }}>
+                        {formatearFecha(d.fecha_decision)}
+                      </td>
+                      <td style={{ padding: "12px 16px", fontWeight: 700, fontFamily: "monospace" }}>
+                        {idRfc ? (
+                          <Link
+                            href={`/plataforma/cambios/gestion/${idRfc}`}
+                            className="text-blue-600 hover:text-blue-800 hover:underline"
+                          >
+                            {refCodigo}
+                          </Link>
+                        ) : (
+                          refCodigo
+                        )}
+                      </td>
+                      <td style={{ padding: "12px 16px", maxWidth: 240, fontWeight: 500, color: "#1e293b" }}>
+                        {d.titulo}
+                      </td>
+                      <td style={{ padding: "12px 16px", color: "#475569" }}>
+                        <span style={{ fontSize: 11, padding: "2px 6px", borderRadius: 4, backgroundColor: "#f1f5f9", fontWeight: 600 }}>
+                          {d.tipo_cambio || d.tipo || "CAMBIO"}
+                        </span>
+                      </td>
+                      <td style={{ padding: "12px 16px" }}>
+                        <span
+                          style={{
+                            padding: "2px 8px",
+                            borderRadius: 4,
+                            fontSize: 11,
+                            fontWeight: 700,
+                            backgroundColor:
+                              d.decision === "APROBADO" ? "#ecfdf5" : d.decision === "OBSERVADO" ? "#fffbeb" : "#fef2f2",
+                            color:
+                              d.decision === "APROBADO" ? "#065f46" : d.decision === "OBSERVADO" ? "#92400e" : "#991b1b",
+                            border: `1px solid ${
+                              d.decision === "APROBADO" ? "#a7f3d0" : d.decision === "OBSERVADO" ? "#fde68a" : "#fecaca"
+                            }`,
+                          }}
+                        >
+                          {d.decision}
+                        </span>
+                      </td>
+                      <td style={{ padding: "12px 16px", color: "#64748b", fontSize: 12, maxWidth: 260 }}>
+                        {d.comentario || "Sin observaciones adicionales."}
+                      </td>
+                      <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                        {idRfc ? (
+                          <Link
+                            href={`/plataforma/cambios/gestion/${idRfc}`}
+                            style={{
+                              padding: "4px 8px",
+                              fontSize: 11.5,
+                              borderRadius: 4,
+                              border: "1px solid #cbd5e1",
+                              backgroundColor: "#f8fafc",
+                              color: "#1e293b",
+                              textDecoration: "none",
+                            }}
+                          >
+                            Ver RFC
+                          </Link>
+                        ) : (
+                          <span style={{ color: "#94a3b8", fontSize: 11 }}>—</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )
@@ -489,7 +569,12 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
             </h3>
             <p className="text-sm text-slate-600 mb-4">
               Dictamen sobre <strong className="font-mono text-slate-900">{itemAccion.item.codigo_cambio}</strong> (
-              {itemAccion.item.tipo_aprobacion === "VB_AREA" ? "Visto Bueno de Área" : "Evaluación Técnica"}).
+              {itemAccion.item.tipo_aprobacion === "CAB"
+                ? "Autorización CAB"
+                : itemAccion.item.tipo_aprobacion === "VB_AREA"
+                ? "Visto Bueno de Área"
+                : "Evaluación Técnica"}
+              ).
             </p>
 
             <div className="mb-4">
