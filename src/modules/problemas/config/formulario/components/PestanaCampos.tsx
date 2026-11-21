@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { ModalEditarPropiedadesCampo } from "./ModalEditarPropiedadesCampo";
-import { SimuladorProblemasEnVivo } from "./ModalVistaPrevia";
 
 export interface CampoFormulario {
   codigo: string;
@@ -33,8 +32,7 @@ export interface PestanaCamposProps {
   onChangeSecciones?: (nuevasSecciones: SeccionFormulario[]) => void;
   camposPersonalizados?: any[];
   onIrACamposPersonalizados?: () => void;
-  onVistaPrevia?: () => void;
-  puedeEditar?: boolean;
+    puedeEditar?: boolean;
 }
 
 // Secciones que componen el Alta inicial vs Secciones exclusivas de Investigación Técnica
@@ -447,54 +445,17 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
         </div>
       </div>
 
-      {/* Banner Orientativo según la Fase Seleccionada */}
-      {formularioActivo === "alta" ? (
-        <div
-          style={{
-            backgroundColor: "#f0fdf4",
-            border: "1px solid #bbf7d0",
-            borderRadius: 8,
-            padding: "10px 16px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          <span style={{ fontSize: 16 }}>🌱</span>
-          <div style={{ fontSize: 12.5, color: "#166534" }}>
-            <strong>Fase de Alta (Creación del Ticket):</strong> Define únicamente los campos iniciales que el solicitante o mesa de ayuda debe registrar para que el ticket nazca con su número <strong>#PRB-2026-XXXX</strong>.
-          </div>
-        </div>
-      ) : (
-        <div
-          style={{
-            backgroundColor: "#eff6ff",
-            border: "1px solid #bfdbfe",
-            borderRadius: 8,
-            padding: "10px 16px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          <span style={{ fontSize: 16 }}>🧬</span>
-          <div style={{ fontSize: 12.5, color: "#1e40af" }}>
-            <strong>Fase de Investigación dentro del mismo Ticket:</strong> Los campos del Alta se <strong>heredan automáticamente</strong> (no necesitas reconfigurarlos). Aquí solo defines si quedan protegidos como <em>Solo Lectura</em> y configuras las <strong>secciones técnicas restantes</strong> que el especialista debe llenar para poder dar por resuelto el problema.
-          </div>
-        </div>
-      )}
-
-      {/* Layout de Dos Columnas: Lienzo de Secciones y Campos (Izquierda) + Vista Previa en Vivo (Derecha) */}
+      {/* Layout de Secciones y Campos */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(270px, 0.80fr) minmax(380px, 1.20fr)",
+          gridTemplateColumns: "1fr",
           gap: 12,
           minHeight: 680,
           alignItems: "start",
         }}
       >
-        {/* Columna Izquierda: Lienzo de Secciones */}
+        {/* Lienzo de Secciones */}
         <div style={{ display: "flex", flexDirection: "column", gap: 14, minHeight: 600 }}>
           {formularioActivo === "alta" ? (
             /* En Alta: Solo se listan las secciones de inicio */
@@ -506,7 +467,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 2px" }}>
                   <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", color: "#1d4ed8", backgroundColor: "#dbeafe", padding: "2px 8px", borderRadius: 4 }}>
-                    ✦ Heredados del Alta
+                    Heredados del Alta
                   </span>
                   <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>
                     Datos base del ticket (conservados automáticamente)
@@ -519,7 +480,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
               <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 2px" }}>
                   <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", color: "#065f46", backgroundColor: "#d1fae5", padding: "2px 8px", borderRadius: 4 }}>
-                    ⚡ Compuertas de Resolución y Cierre
+                    Compuertas de Resolución y Cierre
                   </span>
                   <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>
                     Secciones técnicas exigibles para dar por terminado el problema
@@ -529,21 +490,6 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
               </div>
             </>
           )}
-        </div>
-
-        {/* Columna Derecha: Vista Previa en Vivo Simulada */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            position: "sticky",
-            top: 16,
-          }}
-        >
-          <SimuladorProblemasEnVivo
-            secciones={secciones}
-            abierto={true}
-          />
         </div>
       </div>
 

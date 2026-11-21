@@ -418,7 +418,7 @@ export const PestanaCamposPersonalizadosMesa: React.FC<PestanaCamposPersonalizad
                 onClick={() => setModalAbierto(false)}
                 style={{ border: "none", backgroundColor: "transparent", cursor: "pointer", color: "#64748b" }}
               >
-                ✕
+                ×
               </button>
             </div>
 

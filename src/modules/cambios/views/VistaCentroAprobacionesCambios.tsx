@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
+import { Eye, Check, X, Clock, CheckCircle2, AlertCircle, RefreshCw, FileText, ArrowRight } from "@/shared/components/ui/Iconos";
 
 interface Props {
   vistaInicial?: "pendientes" | "historial";
@@ -31,6 +33,16 @@ interface DecisionHistorial {
   titulo: string;
   tipo_cambio?: string;
   tipo?: string;
+}
+
+function obtenerIniciales(nombre?: string): string {
+  if (!nombre) return "U";
+  return nombre
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
 }
 
 export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendientes" }: Props) {
@@ -162,19 +174,19 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
           comentario:
             comentarioAccion.trim() ||
             (itemAccion.decision === "APROBAR"
-              ? "Visto Bueno formal otorgado por la Jefatura de Área."
-              : "Visto Bueno denegado por la Jefatura de Área."),
+              ? "V°B° favorable de la Jefatura de Área."
+              : "V°B° denegado por la Jefatura de Área."),
         };
       } else {
         endpoint = "/api/cambios/aprobaciones/tecnicas";
         payload = {
           id_cambio: itemAccion.item.id_cambio,
-          decision: itemAccion.decision,
+          decision: itemAccion.decision === "APROBAR" ? "APROBADO" : "OBSERVADO",
           comentario:
             comentarioAccion.trim() ||
             (itemAccion.decision === "APROBAR"
-              ? "Evaluación técnica aprobada conforme a directrices de gestión."
-              : "Evaluación técnica desestimada."),
+              ? "Evaluación técnica favorable (arquitectura, impacto y rollback validados)."
+              : "Evaluación técnica desfavorable o con observaciones críticas."),
         };
       }
 
@@ -192,15 +204,15 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
 
       setMensajeExito(
         itemAccion.decision === "APROBAR"
-          ? `Cambio ${itemAccion.item.codigo_cambio} aprobado correctamente.`
-          : `Cambio ${itemAccion.item.codigo_cambio} rechazado formalmente.`
+          ? `Decisión de aprobación registrada para ${itemAccion.item.codigo_cambio}.`
+          : `Dictamen de rechazo emitido para ${itemAccion.item.codigo_cambio}.`
       );
       setTimeout(() => setMensajeExito(null), 4000);
       setItemAccion(null);
       setComentarioAccion("");
       await cargarDatos();
     } catch {
-      alert("Error de red al procesar la aprobación del cambio.");
+      alert("Error de red al procesar el dictamen.");
     } finally {
       setProcesando(false);
     }
@@ -220,365 +232,499 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
         });
   }
 
+  function renderBadgeTipoAprobacion(tipo: "CAB" | "VB_AREA" | "TECNICA") {
+    if (tipo === "CAB") {
+      return (
+        <span
+          style={{
+            fontSize: "11.5px",
+            padding: "3px 8px",
+            borderRadius: "6px",
+            fontWeight: 600,
+            backgroundColor: "#eff6ff",
+            color: "#1d4ed8",
+            border: "1px solid #bfdbfe",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Autorización CAB
+        </span>
+      );
+    }
+    if (tipo === "VB_AREA") {
+      return (
+        <span
+          style={{
+            fontSize: "11.5px",
+            padding: "3px 8px",
+            borderRadius: "6px",
+            fontWeight: 600,
+            backgroundColor: "#ecfdf5",
+            color: "#065f46",
+            border: "1px solid #a7f3d0",
+            whiteSpace: "nowrap",
+          }}
+        >
+          V°B° de Área
+        </span>
+      );
+    }
+    return (
+      <span
+        style={{
+          fontSize: "11.5px",
+          padding: "3px 8px",
+          borderRadius: "6px",
+          fontWeight: 600,
+          backgroundColor: "#f8fafc",
+          color: "#334155",
+          border: "1px solid #cbd5e1",
+          whiteSpace: "nowrap",
+        }}
+      >
+        Evaluación Técnica
+      </span>
+    );
+  }
+
   return (
-    <div className="space-y-4">
+    <div className="vista-contenedor" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Cabecera Corporativa */}
-      <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          padding: "20px 24px",
+          borderRadius: "12px",
+          border: "1px solid #e2e8f0",
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "16px",
+        }}
+      >
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 block mb-1">
+          <span
+            style={{
+              fontSize: "11px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              color: "#2563eb",
+              display: "block",
+              marginBottom: "4px",
+            }}
+          >
             Gestión de Cambios · Centro de Dictámenes
           </span>
-          <h1 className="text-xl font-bold text-slate-900 m-0">Centro de Aprobaciones</h1>
-          <p className="text-sm text-slate-600 mt-1 mb-0">
+          <h1 style={{ fontSize: "20px", fontWeight: 700, color: "#0f172a", margin: 0, letterSpacing: "-0.01em" }}>
+            Centro de Aprobaciones
+          </h1>
+          <p style={{ fontSize: "13px", color: "#64748b", margin: "4px 0 0 0" }}>
             Autorización de cambios (CAB), evaluación técnica de viabilidad y V°B° de área empresarial.
           </p>
         </div>
 
-        {/* Filtro secundario para vista de pendientes */}
-        {vista === "pendientes" && pendientes.length > 0 && (
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-medium text-slate-500">Filtrar por:</span>
-            <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1">
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+          {vista === "pendientes" && pendientes.length > 0 && (
+            <div className="control-segmentado">
               <button
                 type="button"
                 onClick={() => setFiltroTipo("TODOS")}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                  filtroTipo === "TODOS"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
+                className={`control-segmentado-item ${filtroTipo === "TODOS" ? "activo" : ""}`}
               >
-                Todos ({pendientes.length})
+                <span>Todos</span>
+                <span style={{ fontSize: "11px", opacity: 0.8 }}>({pendientes.length})</span>
               </button>
               {totalCab > 0 && (
                 <button
                   type="button"
                   onClick={() => setFiltroTipo("CAB")}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                    filtroTipo === "CAB"
-                      ? "bg-white text-slate-900 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
+                  className={`control-segmentado-item ${filtroTipo === "CAB" ? "activo" : ""}`}
                 >
-                  Autorización CAB ({totalCab})
+                  <span>CAB</span>
+                  <span style={{ fontSize: "11px", opacity: 0.8 }}>({totalCab})</span>
                 </button>
               )}
               {totalArea > 0 && (
                 <button
                   type="button"
                   onClick={() => setFiltroTipo("VB_AREA")}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                    filtroTipo === "VB_AREA"
-                      ? "bg-white text-slate-900 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
+                  className={`control-segmentado-item ${filtroTipo === "VB_AREA" ? "activo" : ""}`}
                 >
-                  V°B° de Área ({totalArea})
+                  <span>V°B° Área</span>
+                  <span style={{ fontSize: "11px", opacity: 0.8 }}>({totalArea})</span>
                 </button>
               )}
               {totalTecnica > 0 && (
                 <button
                   type="button"
                   onClick={() => setFiltroTipo("TECNICA")}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                    filtroTipo === "TECNICA"
-                      ? "bg-white text-slate-900 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
+                  className={`control-segmentado-item ${filtroTipo === "TECNICA" ? "activo" : ""}`}
                 >
-                  Evaluación Técnica ({totalTecnica})
+                  <span>Técnica</span>
+                  <span style={{ fontSize: "11px", opacity: 0.8 }}>({totalTecnica})</span>
                 </button>
               )}
             </div>
-          </div>
-        )}
+          )}
+
+          <button
+            type="button"
+            onClick={cargarDatos}
+            disabled={cargando}
+            title="Actualizar listado"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px",
+              padding: "7px 12px",
+              height: "34px",
+              backgroundColor: "#ffffff",
+              border: "1px solid #cbd5e1",
+              borderRadius: "6px",
+              fontSize: "12.5px",
+              fontWeight: 600,
+              color: "#334155",
+              cursor: cargando ? "not-allowed" : "pointer",
+              transition: "all 0.15s ease",
+            }}
+          >
+            <RefreshCw size={13} style={{ animation: cargando ? "spin 1s linear infinite" : "none" }} />
+            <span>Actualizar</span>
+          </button>
+        </div>
       </div>
 
       {mensajeExito && (
-        <div style={{ padding: "12px 16px", backgroundColor: "#ecfdf5", border: "1px solid #a7f3d0", color: "#065f46", borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
-          {mensajeExito}
+        <div
+          style={{
+            padding: "12px 16px",
+            backgroundColor: "#ecfdf5",
+            border: "1px solid #a7f3d0",
+            color: "#065f46",
+            borderRadius: "8px",
+            fontSize: "13px",
+            fontWeight: 500,
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <CheckCircle2 size={16} />
+          <span>{mensajeExito}</span>
         </div>
       )}
 
       {error && (
-        <div style={{ padding: "12px 16px", backgroundColor: "#fef2f2", border: "1px solid #fecaca", color: "#991b1b", borderRadius: 8, fontSize: 13 }}>
-          {error}
+        <div
+          style={{
+            padding: "12px 16px",
+            backgroundColor: "#fef2f2",
+            border: "1px solid #fecaca",
+            color: "#991b1b",
+            borderRadius: "8px",
+            fontSize: "13px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <AlertCircle size={16} />
+          <span>{error}</span>
         </div>
       )}
 
       {/* Tabla de Datos */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          borderRadius: "12px",
+          border: "1px solid #e2e8f0",
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
+          overflow: "hidden",
+        }}
+      >
         {cargando ? (
-          <div style={{ padding: 40, textAlign: "center", color: "#64748b", fontSize: 13 }}>
-            Cargando aprobaciones de cambios...
+          <div style={{ padding: "48px 24px", textAlign: "center", color: "#64748b", fontSize: "13.5px" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              <RefreshCw size={16} style={{ animation: "spin 1s linear infinite", color: "#2563eb" }} />
+              <span>Cargando aprobaciones de cambios...</span>
+            </div>
           </div>
         ) : vista === "pendientes" ? (
           pendientesFiltrados.length === 0 ? (
-            <div style={{ padding: 48, textAlign: "center", color: "#64748b" }}>
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 500 }}>
-                No tienes solicitudes de cambio pendientes de dictamen en este momento.
+            <div style={{ padding: "56px 24px", textAlign: "center", color: "#64748b" }}>
+              <div
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "50%",
+                  backgroundColor: "#f1f5f9",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#94a3b8",
+                  marginBottom: "12px",
+                }}
+              >
+                <CheckCircle2 size={24} />
+              </div>
+              <p style={{ margin: "0 0 4px 0", fontSize: "14px", fontWeight: 600, color: "#1e293b" }}>
+                Sin solicitudes de cambio pendientes de dictamen
+              </p>
+              <p style={{ margin: 0, fontSize: "12.5px", color: "#64748b" }}>
+                No tienes solicitudes de cambio asignadas en este momento para la categoría seleccionada.
               </p>
             </div>
           ) : (
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-              <thead>
-                <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Código</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Tipo de Dictamen</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Título / Resumen</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Solicitante</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Ventana Propuesta</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600, textAlign: "right" }}>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pendientesFiltrados.map((item) => (
-                  <tr key={`${item.tipo_aprobacion}-${item.id_cambio}`} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                    <td style={{ padding: "12px 16px", fontWeight: 700, fontFamily: "monospace" }}>
-                      <Link
-                        href={`/plataforma/cambios/gestion/${item.id_cambio}`}
-                        className="text-blue-600 hover:text-blue-800 hover:underline"
-                      >
-                        {item.codigo_cambio}
-                      </Link>
-                    </td>
-                    <td style={{ padding: "12px 16px" }}>
-                      <span
-                        style={{
-                          fontSize: 11,
-                          padding: "2px 8px",
-                          borderRadius: 4,
-                          fontWeight: 600,
-                          backgroundColor:
-                            item.tipo_aprobacion === "CAB"
-                              ? "#eff6ff"
-                              : item.tipo_aprobacion === "VB_AREA"
-                              ? "#f0fdf4"
-                              : "#f8fafc",
-                          color:
-                            item.tipo_aprobacion === "CAB"
-                              ? "#1d4ed8"
-                              : item.tipo_aprobacion === "VB_AREA"
-                              ? "#166534"
-                              : "#334155",
-                          border: `1px solid ${
-                            item.tipo_aprobacion === "CAB"
-                              ? "#bfdbfe"
-                              : item.tipo_aprobacion === "VB_AREA"
-                              ? "#bbf7d0"
-                              : "#cbd5e1"
-                          }`,
-                        }}
-                      >
-                        {item.tipo_aprobacion === "CAB"
-                          ? "Autorización CAB"
-                          : item.tipo_aprobacion === "VB_AREA"
-                          ? "V°B° de Área"
-                          : "Evaluación Técnica"}
-                      </span>
-                    </td>
-                    <td style={{ padding: "12px 16px", maxWidth: 280 }}>
-                      <div style={{ fontWeight: 600, color: "#1e293b" }}>{item.titulo}</div>
-                      <div style={{ fontSize: 11.5, color: "#64748b", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {item.justificacion || "Sin justificación adicional"}
-                      </div>
-                    </td>
-                    <td style={{ padding: "12px 16px", color: "#334155" }}>
-                      {item.solicitante_nombre || "—"}
-                    </td>
-                    <td style={{ padding: "12px 16px", color: "#64748b", fontSize: 12 }}>
-                      <div>{formatearFecha(item.ventana_inicio)}</div>
-                      <div style={{ fontSize: 11, color: "#94a3b8" }}>al {formatearFecha(item.ventana_fin)}</div>
-                    </td>
-                    <td style={{ padding: "12px 16px", textAlign: "right" }}>
-                      <div style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
-                        <Link
-                          href={`/plataforma/cambios/gestion/${item.id_cambio}`}
-                          style={{
-                            padding: "6px 10px",
-                            fontSize: 12,
-                            borderRadius: 6,
-                            border: "1px solid #cbd5e1",
-                            backgroundColor: "#ffffff",
-                            color: "#334155",
-                            textDecoration: "none",
-                            fontWeight: 500,
-                            display: "inline-block",
-                          }}
-                        >
-                          Ver RFC
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => setItemAccion({ item, decision: "APROBAR" })}
-                          style={{
-                            padding: "6px 12px",
-                            fontSize: 12,
-                            borderRadius: 6,
-                            border: "1px solid #059669",
-                            backgroundColor: "#059669",
-                            color: "#ffffff",
-                            cursor: "pointer",
-                            fontWeight: 600,
-                          }}
-                        >
-                          Aprobar
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setItemAccion({ item, decision: "RECHAZAR" })}
-                          style={{
-                            padding: "6px 10px",
-                            fontSize: 12,
-                            borderRadius: 6,
-                            border: "1px solid #fca5a5",
-                            backgroundColor: "#ffffff",
-                            color: "#dc2626",
-                            cursor: "pointer",
-                            fontWeight: 600,
-                          }}
-                        >
-                          Rechazar
-                        </button>
-                      </div>
-                    </td>
+            <TablaDobleScroll minWidth={1050}>
+              <table className="tabla-datos" style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px", minWidth: "1050px" }}>
+                <thead>
+                  <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", textAlign: "left" }}>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", width: "130px" }}>Código</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", width: "160px" }}>Tipo de Dictamen</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569" }}>Título / Resumen</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", width: "200px" }}>Solicitante</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", width: "180px" }}>Ventana Propuesta</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", textAlign: "right", width: "260px" }}>Acciones</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {pendientesFiltrados.map((item) => (
+                    <tr key={`${item.tipo_aprobacion}-${item.id_cambio}`} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <td style={{ padding: "12px 16px", whiteSpace: "nowrap" }}>
+                        <Link href={`/plataforma/cambios/gestion/${item.id_cambio}`}>
+                          <span className="codigo-pill">{item.codigo_cambio}</span>
+                        </Link>
+                      </td>
+
+                      <td style={{ padding: "12px 16px", whiteSpace: "nowrap" }}>
+                        {renderBadgeTipoAprobacion(item.tipo_aprobacion)}
+                      </td>
+
+                      <td style={{ padding: "12px 16px", maxWidth: "320px" }}>
+                        <div style={{ fontWeight: 600, color: "#0f172a", fontSize: "13px", lineHeight: 1.35 }}>
+                          {item.titulo}
+                        </div>
+                        <div style={{ fontSize: "11.5px", color: "#64748b", marginTop: "3px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {item.justificacion || "Sin justificación adicional registrada"}
+                        </div>
+                      </td>
+
+                      <td style={{ padding: "12px 16px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span className="avatar-iniciales">{obtenerIniciales(item.solicitante_nombre)}</span>
+                          <span style={{ fontWeight: 600, color: "#1e293b", fontSize: "12.5px" }}>
+                            {item.solicitante_nombre || "—"}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td style={{ padding: "12px 16px", whiteSpace: "nowrap", color: "#475569", fontSize: "12px" }}>
+                        <div>{formatearFecha(item.ventana_inicio)}</div>
+                        <div style={{ fontSize: "11px", color: "#94a3b8" }}>al {formatearFecha(item.ventana_fin)}</div>
+                      </td>
+
+                      <td style={{ padding: "12px 16px", textAlign: "right", whiteSpace: "nowrap" }}>
+                        <div style={{ display: "inline-flex", gap: "6px", alignItems: "center", justifyContent: "flex-end" }}>
+                          <Link
+                            href={`/plataforma/cambios/gestion/${item.id_cambio}`}
+                            className="boton-tabla-detalle"
+                            title="Ver detalle del cambio (RFC)"
+                          >
+                            <Eye size={13} />
+                            <span>Ver RFC</span>
+                          </Link>
+
+                          <button
+                            type="button"
+                            className="boton-tabla-aprobar"
+                            onClick={() => setItemAccion({ item, decision: "APROBAR" })}
+                            title="Emitir dictamen favorable"
+                          >
+                            <Check size={13} />
+                            <span>Aprobar</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="boton-tabla-rechazar"
+                            onClick={() => setItemAccion({ item, decision: "RECHAZAR" })}
+                            title="Denegar o rechazar solicitud"
+                          >
+                            <X size={13} />
+                            <span>Rechazar</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TablaDobleScroll>
           )
         ) : (
           historial.length === 0 ? (
-            <div style={{ padding: 48, textAlign: "center", color: "#64748b" }}>
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 500 }}>
+            <div style={{ padding: "56px 24px", textAlign: "center", color: "#64748b" }}>
+              <p style={{ margin: 0, fontSize: "14px", fontWeight: 500 }}>
                 No se registran decisiones históricas emitidas en cambios.
               </p>
             </div>
           ) : (
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-              <thead>
-                <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Fecha Decisión</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Referencia / Código</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Título del Cambio</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Tipo</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Decisión</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600 }}>Comentario Registrado</th>
-                  <th style={{ padding: "12px 16px", fontWeight: 600, textAlign: "right" }}>Expediente</th>
-                </tr>
-              </thead>
-              <tbody>
-                {historial.map((d, idx) => {
-                  const refCodigo = d.codigo_cambio || d.referencia || `EXP-${idx + 1}`;
-                  const idRfc = d.id_cambio;
-                  return (
-                    <tr key={`${refCodigo}-${idx}`} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                      <td style={{ padding: "12px 16px", color: "#64748b", fontSize: 12 }}>
-                        {formatearFecha(d.fecha_decision)}
-                      </td>
-                      <td style={{ padding: "12px 16px", fontWeight: 700, fontFamily: "monospace" }}>
-                        {idRfc ? (
-                          <Link
-                            href={`/plataforma/cambios/gestion/${idRfc}`}
-                            className="text-blue-600 hover:text-blue-800 hover:underline"
-                          >
-                            {refCodigo}
-                          </Link>
-                        ) : (
-                          refCodigo
-                        )}
-                      </td>
-                      <td style={{ padding: "12px 16px", maxWidth: 240, fontWeight: 500, color: "#1e293b" }}>
-                        {d.titulo}
-                      </td>
-                      <td style={{ padding: "12px 16px", color: "#475569" }}>
-                        <span style={{ fontSize: 11, padding: "2px 6px", borderRadius: 4, backgroundColor: "#f1f5f9", fontWeight: 600 }}>
-                          {d.tipo_cambio || d.tipo || "CAMBIO"}
-                        </span>
-                      </td>
-                      <td style={{ padding: "12px 16px" }}>
-                        <span
-                          style={{
-                            padding: "2px 8px",
-                            borderRadius: 4,
-                            fontSize: 11,
-                            fontWeight: 700,
-                            backgroundColor:
-                              d.decision === "APROBADO" ? "#ecfdf5" : d.decision === "OBSERVADO" ? "#fffbeb" : "#fef2f2",
-                            color:
-                              d.decision === "APROBADO" ? "#065f46" : d.decision === "OBSERVADO" ? "#92400e" : "#991b1b",
-                            border: `1px solid ${
-                              d.decision === "APROBADO" ? "#a7f3d0" : d.decision === "OBSERVADO" ? "#fde68a" : "#fecaca"
-                            }`,
-                          }}
-                        >
-                          {d.decision}
-                        </span>
-                      </td>
-                      <td style={{ padding: "12px 16px", color: "#64748b", fontSize: 12, maxWidth: 260 }}>
-                        {d.comentario || "Sin observaciones adicionales."}
-                      </td>
-                      <td style={{ padding: "12px 16px", textAlign: "right" }}>
-                        {idRfc ? (
-                          <Link
-                            href={`/plataforma/cambios/gestion/${idRfc}`}
+            <TablaDobleScroll minWidth={1050}>
+              <table className="tabla-datos" style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px", minWidth: "1050px" }}>
+                <thead>
+                  <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", textAlign: "left" }}>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", width: "160px" }}>Fecha Decisión</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", width: "140px" }}>Referencia / Código</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569" }}>Título del Cambio</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", width: "110px" }}>Tipo</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", width: "120px" }}>Decisión</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", maxWidth: "260px" }}>Comentario Registrado</th>
+                    <th style={{ padding: "12px 16px", fontWeight: 600, color: "#475569", textAlign: "right", width: "110px" }}>Expediente</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {historial.map((d, idx) => {
+                    const refCodigo = d.codigo_cambio || d.referencia || `EXP-${idx + 1}`;
+                    const idRfc = d.id_cambio;
+                    return (
+                      <tr key={`${refCodigo}-${idx}`} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                        <td style={{ padding: "12px 16px", color: "#475569", fontSize: "12.5px", whiteSpace: "nowrap" }}>
+                          {formatearFecha(d.fecha_decision)}
+                        </td>
+
+                        <td style={{ padding: "12px 16px", whiteSpace: "nowrap" }}>
+                          {idRfc ? (
+                            <Link href={`/plataforma/cambios/gestion/${idRfc}`}>
+                              <span className="codigo-pill">{refCodigo}</span>
+                            </Link>
+                          ) : (
+                            <span className="codigo-pill">{refCodigo}</span>
+                          )}
+                        </td>
+
+                        <td style={{ padding: "12px 16px", maxWidth: "260px" }}>
+                          <div style={{ fontWeight: 600, color: "#0f172a", fontSize: "13px" }}>{d.titulo}</div>
+                        </td>
+
+                        <td style={{ padding: "12px 16px", whiteSpace: "nowrap" }}>
+                          <span
                             style={{
-                              padding: "4px 8px",
-                              fontSize: 11.5,
-                              borderRadius: 4,
-                              border: "1px solid #cbd5e1",
-                              backgroundColor: "#f8fafc",
-                              color: "#1e293b",
-                              textDecoration: "none",
+                              fontSize: "11px",
+                              padding: "2px 6px",
+                              borderRadius: "4px",
+                              backgroundColor: "#f1f5f9",
+                              color: "#475569",
+                              fontWeight: 600,
                             }}
                           >
-                            Ver RFC
-                          </Link>
-                        ) : (
-                          <span style={{ color: "#94a3b8", fontSize: 11 }}>—</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                            {d.tipo_cambio || d.tipo || "CAMBIO"}
+                          </span>
+                        </td>
+
+                        <td style={{ padding: "12px 16px", whiteSpace: "nowrap" }}>
+                          <span
+                            className={`badge-estado ${
+                              d.decision === "APROBADO"
+                                ? "badge-estado-aprobado"
+                                : d.decision === "OBSERVADO"
+                                ? "badge-estado-pendiente"
+                                : "badge-estado-rechazado"
+                            }`}
+                          >
+                            {d.decision}
+                          </span>
+                        </td>
+
+                        <td style={{ padding: "12px 16px", color: "#64748b", fontSize: "12px", maxWidth: "260px" }}>
+                          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {d.comentario || "Sin observaciones adicionales."}
+                          </div>
+                        </td>
+
+                        <td style={{ padding: "12px 16px", textAlign: "right", whiteSpace: "nowrap" }}>
+                          {idRfc ? (
+                            <Link href={`/plataforma/cambios/gestion/${idRfc}`} className="boton-tabla-detalle">
+                              <Eye size={12} />
+                              <span>Ver RFC</span>
+                            </Link>
+                          ) : (
+                            <span style={{ color: "#94a3b8", fontSize: "11px" }}>—</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </TablaDobleScroll>
           )
+        )}
+
+        {/* Barra de Resumen Inferior */}
+        {!cargando && (
+          <div
+            style={{
+              padding: "10px 16px",
+              backgroundColor: "#f8fafc",
+              borderTop: "1px solid #e2e8f0",
+              fontSize: "12px",
+              color: "#64748b",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <span>
+              {vista === "pendientes"
+                ? `Mostrando ${pendientesFiltrados.length} cambios pendientes de autorización`
+                : `Mostrando ${historial.length} decisiones históricas`}
+            </span>
+            <span style={{ fontSize: "11px", color: "#94a3b8" }}>FlowDesk ITSM · Gestión de Cambios</span>
+          </div>
         )}
       </div>
 
       {/* Modal de Dictamen */}
       {itemAccion && (
-        <div
-          className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50"
-          onClick={() => !procesando && setItemAccion(null)}
-        >
-          <div
-            className="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-lg p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3
-              style={{
-                margin: "0 0 8px",
-                fontSize: 16,
-                fontWeight: 700,
-                color: itemAccion.decision === "APROBAR" ? "#065f46" : "#991b1b",
-              }}
-            >
-              {itemAccion.decision === "APROBAR" ? "Aprobar Solicitud de Cambio" : "Rechazar Solicitud de Cambio"}
-            </h3>
-            <p className="text-sm text-slate-600 mb-4">
-              Dictamen sobre <strong className="font-mono text-slate-900">{itemAccion.item.codigo_cambio}</strong> (
-              {itemAccion.item.tipo_aprobacion === "CAB"
-                ? "Autorización CAB"
-                : itemAccion.item.tipo_aprobacion === "VB_AREA"
-                ? "Visto Bueno de Área"
-                : "Evaluación Técnica"}
-              ).
+        <div className="modal-overlay" onClick={() => !procesando && setItemAccion(null)}>
+          <div className="modal-contenido" style={{ maxWidth: "500px", padding: "24px" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+              <div
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "50%",
+                  backgroundColor: itemAccion.decision === "APROBAR" ? "#ecfdf5" : "#fef2f2",
+                  color: itemAccion.decision === "APROBAR" ? "#059669" : "#dc2626",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                {itemAccion.decision === "APROBAR" ? <Check size={20} /> : <X size={20} />}
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 700, color: "#0f172a" }}>
+                  {itemAccion.decision === "APROBAR" ? "Aprobar Solicitud de Cambio" : "Rechazar Solicitud de Cambio"}
+                </h3>
+                <span style={{ fontSize: "12px", color: "#64748b" }}>
+                  {itemAccion.item.codigo_cambio} · {itemAccion.item.tipo_aprobacion === "CAB" ? "Comité CAB" : itemAccion.item.tipo_aprobacion === "VB_AREA" ? "V°B° Área" : "Evaluación Técnica"}
+                </span>
+              </div>
+            </div>
+
+            <p style={{ fontSize: "13px", color: "#64748b", margin: "0 0 16px", lineHeight: 1.45 }}>
+              Dictamen formal para <strong style={{ color: "#0f172a" }}>{itemAccion.item.titulo}</strong>.
             </p>
 
-            <div className="mb-4">
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>
                 {itemAccion.decision === "RECHAZAR" ? "Motivo del rechazo (obligatorio):" : "Comentarios u observaciones:"}
               </label>
               <textarea
@@ -590,16 +736,18 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
                     ? "Explique las razones o requerimientos no satisfechos..."
                     : "Comentario opcional sobre el dictamen..."
                 }
-                className="w-full rounded-lg border border-slate-300 p-2.5 text-sm focus:border-blue-500 focus:outline-none"
+                className="input-base"
+                style={{ width: "100%", fontSize: "13px", resize: "vertical" }}
               />
             </div>
 
-            <div className="flex justify-end gap-2">
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
               <button
                 type="button"
                 onClick={() => setItemAccion(null)}
                 disabled={procesando}
-                className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors"
+                className="boton-secundario"
+                style={{ padding: "8px 16px", fontSize: "13px" }}
               >
                 Cancelar
               </button>
@@ -607,11 +755,8 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
                 type="button"
                 onClick={ejecutarDecision}
                 disabled={procesando}
-                className={`px-4 py-2 text-xs font-semibold rounded-lg text-white transition-colors ${
-                  itemAccion.decision === "APROBAR"
-                    ? "bg-emerald-600 hover:bg-emerald-700"
-                    : "bg-red-600 hover:bg-red-700"
-                }`}
+                className={itemAccion.decision === "APROBAR" ? "boton-tabla-aprobar" : "boton-tabla-rechazar"}
+                style={{ height: "36px", padding: "0 18px", fontSize: "13px" }}
               >
                 {procesando ? "Procesando..." : itemAccion.decision === "APROBAR" ? "Confirmar Aprobación" : "Confirmar Rechazo"}
               </button>

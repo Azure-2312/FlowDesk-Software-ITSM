@@ -36,7 +36,7 @@ export const PestanaEscalamiento: React.FC<PestanaEscalamientoProps> = ({
   const [modalEditor, setModalEditor] = useState(false);
   const [esNueva, setEsNueva] = useState(true);
   const [reglaEnEdicion, setReglaEnEdicion] = useState<ReglaEscalamiento | null>(null);
-  const [modalSimulador, setModalSimulador] = useState(false);
+  
   const [guardando, setGuardando] = useState(false);
   const [errorLocal, setErrorLocal] = useState("");
 
@@ -50,9 +50,7 @@ export const PestanaEscalamiento: React.FC<PestanaEscalamientoProps> = ({
   const [notifSupervisor, setNotifSupervisor] = useState(false);
   const [marcarEtiqueta, setMarcarEtiqueta] = useState(true);
 
-  // Simulador
-  const [simPrio, setSimPrio] = useState("P1");
-  const [simConsumo, setSimConsumo] = useState(80);
+  
 
   const abrirNueva = () => {
     setEsNueva(true);
@@ -134,13 +132,7 @@ export const PestanaEscalamiento: React.FC<PestanaEscalamientoProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
-          <button
-            type="button"
-            onClick={() => setModalSimulador(true)}
-            className="px-3.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition"
-          >
-            Simulador de escalamiento
-          </button>
+          
           <button
             type="button"
             onClick={abrirNueva}
@@ -251,7 +243,7 @@ export const PestanaEscalamiento: React.FC<PestanaEscalamientoProps> = ({
                 onClick={() => setModalEditor(false)}
                 className="text-slate-400 hover:text-slate-600 font-bold"
               >
-                ✕
+                ×
               </button>
             </div>
 
@@ -358,77 +350,6 @@ export const PestanaEscalamiento: React.FC<PestanaEscalamientoProps> = ({
         </div>
       )}
 
-      {/* Modal Simulador */}
-      {modalSimulador && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-md w-full p-5 space-y-4">
-            <div className="flex items-center justify-between border-b pb-2">
-              <h3 className="text-sm font-bold text-slate-800">Simulador de Escalamiento</h3>
-              <button
-                type="button"
-                onClick={() => setModalSimulador(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Prioridad del Problema:</label>
-                <select
-                  value={simPrio}
-                  onChange={(e) => setSimPrio(e.target.value)}
-                  className="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white"
-                >
-                  <option value="P1">P1 - Crítica</option>
-                  <option value="P2">P2 - Alta</option>
-                  <option value="P3">P3 - Media</option>
-                  <option value="P4">P4 - Baja</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  Porcentaje consumido de tiempo: {simConsumo}%
-                </label>
-                <input
-                  type="range"
-                  min={10}
-                  max={120}
-                  value={simConsumo}
-                  onChange={(e) => setSimConsumo(parseInt(e.target.value, 10))}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg space-y-1">
-                <span className="font-bold text-amber-900 block">Acciones Disparadas:</span>
-                <ul className="list-disc pl-4 space-y-0.5 text-amber-800">
-                  {simConsumo >= 75 && <li>Notificación enviada al responsable técnico.</li>}
-                  {simConsumo >= 90 && <li>Notificación de alerta enviada al supervisor del grupo.</li>}
-                  {simConsumo >= 100 && (
-                    <li className="font-bold text-rose-700">
-                      Escalamiento a Gestor de Problemas y marca de ticket 'Vencido'.
-                    </li>
-                  )}
-                  {simConsumo < 75 && <li>Ninguna regla activada (tiempo dentro de márgenes normales).</li>}
-                </ul>
-              </div>
-            </div>
-
-            <div className="flex justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setModalSimulador(false)}
-                className="px-4 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 font-medium rounded-lg text-slate-700"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
   );
 };

@@ -291,7 +291,7 @@ export default function VistaNotificacionesInApp() {
                     }}
                     title="Marcar como leída"
                   >
-                    ✓ Leída
+                    Leída
                   </button>
                 )}
                 <span style={{ color: "#2563eb", fontSize: 13, fontWeight: 600 }}>

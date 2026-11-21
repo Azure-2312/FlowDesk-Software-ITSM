@@ -559,7 +559,7 @@ export const PestanaCatalogos: React.FC = () => {
                         e.currentTarget.style.borderColor = "#e2e8f0";
                       }}
                     >
-                      ✏️
+                      
                     </button>
 
                     <div>
@@ -731,7 +731,7 @@ export const PestanaCatalogos: React.FC = () => {
                               onClick={() => eliminarItem(it)}
                               style={{ fontSize: 11, padding: "2px 6px" }}
                             >
-                              ✕
+                              ×
                             </button>
                           )}
                         </div>
@@ -844,7 +844,7 @@ export const PestanaCatalogos: React.FC = () => {
                               onClick={() => eliminarItem(it)}
                               style={{ fontSize: 11, padding: "2px 6px" }}
                             >
-                              ✕
+                              ×
                             </button>
                           )}
                         </div>

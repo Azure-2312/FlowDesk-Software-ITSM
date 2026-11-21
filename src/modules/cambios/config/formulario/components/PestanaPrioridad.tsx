@@ -233,7 +233,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
           </div>
           <p style={{ fontSize: 12, color: "#64748b", margin: 0, paddingLeft: 26 }}>
             {config.usar_matriz_propia
-              ? "✓ Matriz propia activa: Se utilizarán los valores configurados en la tabla superior al guardar cambios."
+              ? "Matriz propia activa: Se utilizarán los valores configurados en la tabla superior al guardar cambios."
               : "Desmarcado (Por defecto): Se utiliza la matriz institucional compartida. Marca esta casilla y guarda cambios para activar la matriz propia de cambios."}
           </p>
         </div>

@@ -90,12 +90,12 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
       {/* Alertas globales de guardado */}
       {mensajeGlobal && (
         <div style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", color: "#166534", padding: "10px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600, marginBottom: 16 }}>
-          ✓ {mensajeGlobal}
+          {mensajeGlobal}
         </div>
       )}
       {errorGlobal && (
         <div className="mensaje-error" style={{ marginBottom: 16 }}>
-          ✕ {errorGlobal}
+          {errorGlobal}
         </div>
       )}
 

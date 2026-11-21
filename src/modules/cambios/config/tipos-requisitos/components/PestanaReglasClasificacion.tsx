@@ -44,21 +44,7 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
   const estrategia = config?.estrategia_evaluacion || "todas";
 
   const [modalEdicionAbierto, setModalEdicionAbierto] = useState(false);
-  const [modalSimuladorAbierto, setModalSimuladorAbierto] = useState(false);
   const [reglaEnEdicion, setReglaEnEdicion] = useState<ReglaClasificacion | null>(null);
-
-  // Estados del Simulador
-  const [simParams, setSimParams] = useState({
-    tipo_cambio: "estandar",
-    nivel_riesgo: "medio",
-    criticidad_ci: "media",
-    entorno: "produccion",
-    horas_anticipacion: 12,
-    fuera_de_ventana: false,
-    dentro_congelamiento: false
-  });
-  const [simResultado, setSimResultado] = useState<any>(null);
-  const [simulando, setSimulando] = useState(false);
 
   const cambiarEstrategia = (val: "todas" | "primera") => {
     onChange({
@@ -153,23 +139,6 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
     setReglaEnEdicion(null);
   };
 
-  const ejecutarSimulacion = async () => {
-    try {
-      setSimulando(true);
-      const res = await fetch("/api/cambios/configuracion/reglas-clasificacion/simular", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(simParams)
-      });
-      const data = await res.json();
-      setSimResultado(data);
-    } catch (err: any) {
-      alert("Error al simular: " + err.message);
-    } finally {
-      setSimulando(false);
-    }
-  };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Barra de Herramientas y Parámetros Globales */}
@@ -205,26 +174,6 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
               <option value="primera">Detener en la primera coincidencia</option>
             </select>
           </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              setModalSimuladorAbierto(true);
-              ejecutarSimulacion();
-            }}
-            style={{
-              padding: "7px 14px",
-              fontSize: 12.5,
-              fontWeight: 600,
-              backgroundColor: "#f1f5f9",
-              color: "#334155",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              cursor: "pointer"
-            }}
-          >
-            Simulador de Reglas
-          </button>
 
           <button
             type="button"
@@ -518,176 +467,6 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
                 style={{ padding: "7px 16px", fontSize: 12.5, fontWeight: 600, backgroundColor: "#2563eb", color: "#ffffff", border: "none", borderRadius: 6, cursor: "pointer" }}
               >
                 Guardar regla
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal Simulador de Reglas de Clasificación */}
-      {modalSimuladorAbierto && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 200,
-            backgroundColor: "rgba(15, 23, 42, 0.6)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 20
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#ffffff",
-              borderRadius: 8,
-              maxWidth: 680,
-              width: "100%",
-              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)",
-              display: "flex",
-              flexDirection: "column"
-            }}
-          >
-            <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
-                Simulador de Reglas de Clasificación y Elevación
-              </h3>
-              <button
-                type="button"
-                onClick={() => setModalSimuladorAbierto(false)}
-                style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#64748b" }}
-              >
-                ×
-              </button>
-            </div>
-
-            <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 14 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <div>
-                  <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#334155", marginBottom: 2 }}>
-                    Tipo seleccionado:
-                  </label>
-                  <select
-                    value={simParams.tipo_cambio}
-                    onChange={(e) => setSimParams({ ...simParams, tipo_cambio: e.target.value })}
-                    style={{ width: "100%", padding: "6px 8px", fontSize: 12, border: "1px solid #cbd5e1", borderRadius: 4 }}
-                  >
-                    <option value="estandar">Estándar</option>
-                    <option value="normal">Normal</option>
-                    <option value="emergencia">Emergencia</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#334155", marginBottom: 2 }}>
-                    Nivel de riesgo evaluado:
-                  </label>
-                  <select
-                    value={simParams.nivel_riesgo}
-                    onChange={(e) => setSimParams({ ...simParams, nivel_riesgo: e.target.value })}
-                    style={{ width: "100%", padding: "6px 8px", fontSize: 12, border: "1px solid #cbd5e1", borderRadius: 4 }}
-                  >
-                    <option value="bajo">Bajo</option>
-                    <option value="medio">Medio</option>
-                    <option value="alto">Alto</option>
-                    <option value="critico">Crítico</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#334155", marginBottom: 2 }}>
-                    Criticidad de los CI:
-                  </label>
-                  <select
-                    value={simParams.criticidad_ci}
-                    onChange={(e) => setSimParams({ ...simParams, criticidad_ci: e.target.value })}
-                    style={{ width: "100%", padding: "6px 8px", fontSize: 12, border: "1px solid #cbd5e1", borderRadius: 4 }}
-                  >
-                    <option value="baja">Baja</option>
-                    <option value="media">Media</option>
-                    <option value="alta">Alta</option>
-                    <option value="critica">Crítica</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#334155", marginBottom: 2 }}>
-                    Horas de anticipación a la ventana:
-                  </label>
-                  <input
-                    type="number"
-                    value={simParams.horas_anticipacion}
-                    onChange={(e) => setSimParams({ ...simParams, horas_anticipacion: Number(e.target.value) })}
-                    style={{ width: "100%", padding: "6px 8px", fontSize: 12, border: "1px solid #cbd5e1", borderRadius: 4 }}
-                  />
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={ejecutarSimulacion}
-                disabled={simulando}
-                style={{
-                  padding: "8px 16px",
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  backgroundColor: "#2563eb",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: 6,
-                  cursor: "pointer"
-                }}
-              >
-                {simulando ? "Evaluando reglas..." : "Simular Clasificación"}
-              </button>
-
-              {simResultado && (
-                <div style={{ padding: 14, backgroundColor: "#f8fafc", borderRadius: 6, border: "1px solid #cbd5e1" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                    <span style={{ fontSize: 12.5, fontWeight: 700, color: "#1e293b" }}>
-                      Resultado de la Simulación:
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 800,
-                        padding: "3px 8px",
-                        borderRadius: 4,
-                        backgroundColor: simResultado.bloqueado ? "#fee2e2" : "#dbeafe",
-                        color: simResultado.bloqueado ? "#991b1b" : "#1e40af"
-                      }}
-                    >
-                      Tipo resultante: {simResultado.tipo_resultante}
-                    </span>
-                  </div>
-
-                  <p style={{ margin: "0 0 6px 0", fontSize: 12, color: "#475569" }}>
-                    Reglas disparadas: <strong>{simResultado.total_reglas_disparadas}</strong>
-                  </p>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    {(simResultado.reglas_disparadas || []).map((r: any) => (
-                      <div key={r.id} style={{ padding: 8, backgroundColor: "#ffffff", borderRadius: 4, border: "1px solid #e2e8f0" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-                          <strong style={{ fontSize: 12, color: "#1e293b" }}>#{r.orden} {r.nombre}</strong>
-                          <span style={{ fontSize: 11, color: "#64748b" }}>{r.accion}</span>
-                        </div>
-                        <p style={{ margin: 0, fontSize: 11.5, color: "#475569" }}>{r.mensaje}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div style={{ padding: "12px 20px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "flex-end" }}>
-              <button
-                type="button"
-                onClick={() => setModalSimuladorAbierto(false)}
-                style={{ padding: "6px 14px", fontSize: 12, border: "1px solid #cbd5e1", borderRadius: 6, backgroundColor: "#ffffff", cursor: "pointer" }}
-              >
-                Cerrar
               </button>
             </div>
           </div>

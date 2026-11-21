@@ -41,7 +41,6 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
   const [listaCabecera, setListaCabecera] = useState<ElementoCabecera[]>(cabecera);
   const [listaPestanas, setListaPestanas] = useState<PestanaTicketConfig[]>(pestanas);
   const [modalCamposPestana, setModalCamposPestana] = useState<string | null>(null);
-  const [modalSimuladorVista, setModalSimuladorVista] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
 
@@ -86,12 +85,12 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
         <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between text-xs text-emerald-900">
           <span>{mensajeExito}</span>
           <button type="button" onClick={() => setMensajeExito("")} className="font-bold">
-            ✕
+            ×
           </button>
         </div>
       )}
 
-      {/* Barra Superior con Botón de Vista Previa */}
+      {/* Barra Superior */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
         <div>
           <h3 className="text-sm font-bold text-slate-800">
@@ -100,16 +99,6 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
           <p className="text-xs text-slate-500">
             Configure la distribución de la cabecera fija, las 12 pestañas funcionales, el panel de resumen y la barra de acciones.
           </p>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <button
-            type="button"
-            onClick={() => setModalSimuladorVista(true)}
-            className="px-3.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition"
-          >
-            Vista previa con ejemplo
-          </button>
         </div>
       </div>
 
@@ -272,7 +261,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                 className="p-2 bg-slate-50 border border-slate-200 rounded flex items-center justify-between"
               >
                 <span>{item}</span>
-                <span className="text-emerald-700 font-bold">✓ Activo</span>
+                <span className="text-emerald-700 font-bold">Activo</span>
               </div>
             ))}
           </div>
@@ -303,7 +292,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
         </div>
       </div>
 
-      {/* Modal Simulación de Campos de Pestaña */}
+      {/* Modal Información de Campos de Pestaña */}
       {modalCamposPestana && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-md w-full p-5 space-y-3">
@@ -324,94 +313,6 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                 className="px-4 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 rounded font-medium text-slate-700"
               >
                 Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal Simulador Completo de Vista */}
-      {modalSimuladorVista && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-300 max-w-5xl w-full p-6 space-y-4">
-            <div className="flex items-center justify-between border-b pb-2">
-              <span className="text-sm font-bold text-slate-900">
-                Simulador Visual del Ticket PRB-000042 (Sección 5 de la spec)
-              </span>
-              <button
-                type="button"
-                onClick={() => setModalSimuladorVista(false)}
-                className="font-bold text-slate-400 hover:text-slate-600"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Cabecera Simulada */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <span className="font-mono text-xs font-bold bg-blue-100 text-blue-900 px-2 py-0.5 rounded">
-                    PRB-000042
-                  </span>
-                  <span className="font-bold text-slate-900 text-sm">
-                    Caída recurrente del gateway de pagos
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
-                    En análisis
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">
-                    P1 - Crítica
-                  </span>
-                </div>
-                <div className="text-[11px] text-slate-500">
-                  Responsable: Carlos Mendoza · Grupo: Redes e Infraestructura · Abierto hace: 1 d 4 h
-                </div>
-              </div>
-
-              {/* Medidores de objetivos */}
-              <div className="flex space-x-3 text-xs">
-                <div className="bg-white p-2 rounded border border-slate-200 text-center">
-                  <span className="text-[10px] text-slate-500 block">Diagnóstico</span>
-                  <span className="font-bold text-blue-700">18h restantes (45%)</span>
-                </div>
-                <div className="bg-white p-2 rounded border border-slate-200 text-center">
-                  <span className="text-[10px] text-slate-500 block">Resolución</span>
-                  <span className="font-bold text-emerald-700">62h restantes (15%)</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Pestañas Horizontales */}
-            <div className="flex border-b border-slate-200 space-x-1 text-xs font-semibold overflow-x-auto pb-1">
-              {listaPestanas
-                .filter((p) => p.visible)
-                .map((p, idx) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    className={`px-3 py-1.5 rounded-t-lg transition ${
-                      idx === 0
-                        ? "bg-blue-600 text-white font-bold"
-                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                    }`}
-                  >
-                    {p.nombre}
-                  </button>
-                ))}
-            </div>
-
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
-              Vista del ticket estructurada y conforme con las 12 secciones ITIL v4 de la especificación.
-            </div>
-
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={() => setModalSimuladorVista(false)}
-                className="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-xs font-medium rounded-lg text-slate-700"
-              >
-                Cerrar Simulador
               </button>
             </div>
           </div>

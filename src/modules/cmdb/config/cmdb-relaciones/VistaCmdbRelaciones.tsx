@@ -28,7 +28,7 @@ const PESTANAS: PestanaMetadata[] = [
     id: "tipos_relacion",
     numero: "1.5.4.2",
     titulo: "Tipos de relación",
-    descripcion: "Catálogo de relaciones topológicas ITIL, dirección de propagación de fallos, matriz de clases permitidas y simulador."
+    descripcion: "Catálogo de relaciones topológicas ITIL, dirección de propagación de fallos y matriz de clases permitidas."
   }
 ];
 

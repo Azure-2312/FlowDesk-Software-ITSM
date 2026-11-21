@@ -17,9 +17,9 @@ export default async function PaginaCambiosCab({ searchParams }: PageProps) {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="vista-contenedor" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {vistasPermitidas.length > 1 && (
-        <div className="bg-white px-6 pt-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white px-6 pt-2 rounded-xl border border-slate-200 shadow-xs">
           <PestanasVista
             vistas={vistasPermitidas}
             vistaActiva={vistaActiva}

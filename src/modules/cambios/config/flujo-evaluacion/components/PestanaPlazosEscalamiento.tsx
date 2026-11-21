@@ -71,17 +71,6 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
   const [reglaEnEdicion, setReglaEnEdicion] = useState<Partial<ReglaEscalamiento>>({});
   const [errorRegla, setErrorRegla] = useState<string | null>(null);
 
-  // Modal simulador de escalamiento
-  const [modalSimuladorAbierto, setModalSimuladorAbierto] = useState(false);
-  const [simParams, setSimParams] = useState({
-    prioridad: "p2",
-    tipo_cambio: "normal",
-    fase: "autorizacion",
-    horas_transcurridas: 18
-  });
-  const [simResultado, setSimResultado] = useState<any>(null);
-  const [simulando, setSimulando] = useState(false);
-
   const handleUpdatePlazo = (index: number, campo: keyof PlazoPrioridad, valor: number) => {
     const nuevos = [...plazos];
     nuevos[index] = { ...nuevos[index], [campo]: valor };
@@ -142,24 +131,6 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
     }
   };
 
-  // Simulación
-  const ejecutarSimulacion = async () => {
-    try {
-      setSimulando(true);
-      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/simular-escalamiento", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...simParams, parametros_custom: snapshot })
-      });
-      const data = await res.json();
-      setSimResultado(data);
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    } finally {
-      setSimulando(false);
-    }
-  };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {/* Encabezado */}
@@ -172,25 +143,6 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
             Tiempos máximos de respuesta, evaluación y autorización por prioridad, y protocolos de alerta y escalamiento jerárquico.
           </p>
         </div>
-
-        <button
-          onClick={() => {
-            setModalSimuladorAbierto(true);
-            ejecutarSimulacion();
-          }}
-          style={{
-            backgroundColor: "#f8fafc",
-            border: "1px solid #cbd5e1",
-            color: "#1e293b",
-            padding: "8px 16px",
-            borderRadius: "6px",
-            fontWeight: 600,
-            fontSize: "0.85rem",
-            cursor: "pointer"
-          }}
-        >
-          Simular Escalamiento
-        </button>
       </div>
 
       {/* Matriz de Plazos por Prioridad */}
@@ -428,149 +380,6 @@ export const PestanaPlazosEscalamiento: React.FC<PestanaPlazosEscalamientoProps>
         </table>
         </TablaDobleScroll>
       </div>
-
-      {/* MODAL SIMULADOR DE ESCALAMIENTO */}
-      {modalSimuladorAbierto && (
-        <div style={{
-          position: "fixed",
-          inset: 0,
-          backgroundColor: "rgba(15, 23, 42, 0.6)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-          padding: "16px"
-        }}>
-          <div style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            width: "100%",
-            maxWidth: "650px",
-            maxHeight: "90vh",
-            overflowY: "auto",
-            padding: "24px",
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
-          }}>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1e293b", margin: "0 0 16px 0" }}>
-              Simulador de Plazos SLA y Disparo de Escalamientos
-            </h3>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px", marginBottom: "16px" }}>
-              <div>
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#475569", marginBottom: "4px" }}>
-                  Prioridad
-                </label>
-                <select
-                  value={simParams.prioridad}
-                  onChange={e => setSimParams({ ...simParams, prioridad: e.target.value })}
-                  style={{ width: "100%", padding: "6px 8px", border: "1px solid #cbd5e1", borderRadius: "4px", fontSize: "0.8rem" }}
-                >
-                  <option value="p1">P1 - Crítica</option>
-                  <option value="p2">P2 - Alta</option>
-                  <option value="p3">P3 - Media</option>
-                  <option value="p4">P4 - Baja</option>
-                </select>
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#475569", marginBottom: "4px" }}>
-                  Fase del Ciclo
-                </label>
-                <select
-                  value={simParams.fase}
-                  onChange={e => setSimParams({ ...simParams, fase: e.target.value })}
-                  style={{ width: "100%", padding: "6px 8px", border: "1px solid #cbd5e1", borderRadius: "4px", fontSize: "0.8rem" }}
-                >
-                  <option value="primera_respuesta">Primera Respuesta</option>
-                  <option value="evaluacion">Evaluación Técnica</option>
-                  <option value="autorizacion">Autorización Total</option>
-                  <option value="etapa">Plazo por Etapa Individual</option>
-                </select>
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#475569", marginBottom: "4px" }}>
-                  Horas Transcurridas
-                </label>
-                <input
-                  type="number"
-                  step="0.5"
-                  value={simParams.horas_transcurridas}
-                  onChange={e => setSimParams({ ...simParams, horas_transcurridas: Number(e.target.value) })}
-                  style={{ width: "100%", padding: "6px 8px", border: "1px solid #cbd5e1", borderRadius: "4px", fontSize: "0.8rem" }}
-                />
-              </div>
-            </div>
-
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
-              <button
-                onClick={ejecutarSimulacion}
-                disabled={simulando}
-                style={{ padding: "6px 14px", backgroundColor: "#2563eb", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: 600, fontSize: "0.8rem", cursor: "pointer" }}
-              >
-                {simulando ? "Calculando..." : "Calcular Estado SLA"}
-              </button>
-            </div>
-
-            {simResultado && (
-              <div style={{ backgroundColor: "#f8fafc", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: "12px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <span style={{ fontSize: "0.75rem", color: "#64748b" }}>Consumo de Plazo:</span>
-                    <div style={{ fontSize: "1.1rem", fontWeight: 700, color: simResultado.color_sla }}>
-                      {simResultado.horas_transcurridas}h / {simResultado.plazo_limite_horas}h ({simResultado.porcentaje_consumido}%)
-                    </div>
-                  </div>
-
-                  <span style={{ padding: "4px 10px", borderRadius: "4px", backgroundColor: simResultado.color_sla, color: "#ffffff", fontWeight: 700, fontSize: "0.8rem" }}>
-                    {simResultado.estado_sla}
-                  </span>
-                </div>
-
-                <div style={{ fontSize: "0.8rem", color: "#334155" }}>
-                  {simResultado.es_vencido ? (
-                    <span style={{ color: "#dc2626", fontWeight: 600 }}>Plazo vencido por {simResultado.horas_vencido} horas.</span>
-                  ) : (
-                    <span>Tiempo restante: {simResultado.horas_restantes} horas.</span>
-                  )}
-                </div>
-
-                <div>
-                  <strong style={{ fontSize: "0.85rem", color: "#1e293b" }}>
-                    Reglas de Escalamiento Disparadas ({simResultado.reglas_disparadas?.length || 0}):
-                  </strong>
-                  {simResultado.reglas_disparadas?.length > 0 ? (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginTop: "6px" }}>
-                      {simResultado.reglas_disparadas.map((r: any, i: number) => (
-                        <div key={i} style={{ padding: "8px", backgroundColor: "#ffffff", borderRadius: "4px", border: "1px solid #cbd5e1", fontSize: "0.8rem" }}>
-                          <span style={{ fontWeight: 600, color: "#2563eb" }}>{r.nombre}:</span> {r.mensaje}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div style={{ fontSize: "0.8rem", color: "#64748b", marginTop: "4px" }}>
-                      No se activa ningún escalamiento en este punto.
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ padding: "8px 12px", backgroundColor: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "4px", fontSize: "0.75rem", color: "#1e40af" }}>
-                  {simResultado.regla_seguridad}
-                </div>
-              </div>
-            )}
-
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}>
-              <button
-                onClick={() => setModalSimuladorAbierto(false)}
-                style={{ padding: "8px 16px", backgroundColor: "#2563eb", color: "#ffffff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: 600, fontSize: "0.85rem" }}
-              >
-                Cerrar Simulador
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

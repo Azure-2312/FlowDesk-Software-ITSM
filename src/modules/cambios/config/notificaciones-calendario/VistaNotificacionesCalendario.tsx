@@ -57,6 +57,7 @@ export default function NotificacionesCalendarioPage() {
   }, [searchParams]);
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
+  const [solicitudControlEnviada, setSolicitudControlEnviada] = useState(false);
 
   // Estados de autoría y guardado
   const [versionPublicada, setVersionPublicada] = useState<number>(1);
@@ -232,12 +233,19 @@ export default function NotificacionesCalendarioPage() {
         {bloqueadoPorOtro && (
           <div style={{ marginBottom: 16, background: "#fee2e2", border: "1px solid #fca5a5", color: "#991b1b", padding: "10px 14px", borderRadius: 6, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span>Esta pestaña está siendo editada actualmente por <strong>{bloqueadoPorOtro}</strong>. Está en modo de solo lectura.</span>
-            <button
-              onClick={() => alert("Se ha solicitado el control de la sesión de edición al administrador.")}
-              style={{ padding: "4px 10px", background: "#991b1b", color: "#ffffff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12 }}
-            >
-              Solicitar Control
-            </button>
+            {solicitudControlEnviada ? (
+              <span style={{ fontSize: 12, fontWeight: 600, color: "#991b1b" }}>
+                Solicitud de control enviada al administrador
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSolicitudControlEnviada(true)}
+                style={{ padding: "4px 10px", background: "#991b1b", color: "#ffffff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12 }}
+              >
+                Solicitar Control
+              </button>
+            )}
           </div>
         )}
 

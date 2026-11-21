@@ -223,13 +223,13 @@ export const PestanaNivelesSolicitante = React.forwardRef<PestanaNivelesSolicita
 
       {mensajeExito && (
         <div style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", color: "#166534", padding: "10px 16px", borderRadius: 6, fontSize: 13, fontWeight: 600 }}>
-          ✓ {mensajeExito}
+          {mensajeExito}
         </div>
       )}
 
       {errorGuardado && (
         <div style={{ backgroundColor: "#fef2f2", border: "1px solid #fecaca", color: "#991b1b", padding: "10px 16px", borderRadius: 6, fontSize: 13, fontWeight: 600 }}>
-          ✕ {errorGuardado}
+          {errorGuardado}
         </div>
       )}
 

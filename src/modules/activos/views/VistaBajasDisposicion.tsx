@@ -76,7 +76,7 @@ export default function VistaBajasDisposicion() {
                     </td>
                     <td>{a.responsable_nombre ?? "—"}</td>
                     <td style={{ color: ciInconsistente ? "#b45309" : undefined, fontWeight: ciInconsistente ? 600 : undefined }}>
-                      {a.ci_activos}{ciInconsistente ? " ⚠" : ""}
+                      {a.ci_activos}{ciInconsistente ? " (!)" : ""}
                     </td>
                   </tr>
                 );

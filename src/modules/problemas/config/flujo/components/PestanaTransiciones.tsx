@@ -201,7 +201,7 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({
               Matriz de Transiciones Permitidas
             </h4>
             <span className="text-xs text-slate-400">
-              Haga clic en una celda vacía para crear una acción, o sobre un check (✓) para editarla.
+              Haga clic en una celda vacía para crear una acción, o sobre una celda marcada para editarla.
             </span>
           </div>
 
@@ -281,7 +281,7 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({
                         >
                           {trn ? (
                             <span title={`${trn.nombre} (Clic para editar)`}>
-                              ✓
+                              Sí
                             </span>
                           ) : (
                             <span className="text-[10px] opacity-0 hover:opacity-100 text-blue-600">
@@ -312,13 +312,6 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({
                 Visualización automática de nodos de estado y transiciones dirigidas.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => alert("Diagrama exportado como imagen.")}
-              className="px-3 py-1 text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-300"
-            >
-              Exportar PNG
-            </button>
           </div>
 
           <div className="bg-slate-900 rounded-xl p-6 overflow-x-auto min-h-[300px] flex items-center justify-around space-x-4">
@@ -443,7 +436,7 @@ export const PestanaTransiciones: React.FC<PestanaTransicionesProps> = ({
                 onClick={() => setModalEditor(false)}
                 className="text-slate-400 hover:text-slate-600 font-bold"
               >
-                ✕
+                ×
               </button>
             </div>
 

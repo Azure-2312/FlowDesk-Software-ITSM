@@ -170,7 +170,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
               boxShadow: subpestanaActiva === "campos" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
             }}
           >
-            📝 Campos Técnicos Adicionales
+            Campos Técnicos Adicionales
           </button>
           <button
             type="button"
@@ -187,7 +187,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
               boxShadow: subpestanaActiva === "pestanas" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
             }}
           >
-            📑 Pestañas del Ticket ({pestanas.filter((p) => p.visible).length})
+            Pestañas del Ticket ({pestanas.filter((p) => p.visible).length})
           </button>
           <button
             type="button"
@@ -204,7 +204,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
               boxShadow: subpestanaActiva === "botones" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
             }}
           >
-            🔘 Botones de Acción ({botonesAccion.filter((b) => b.visible).length})
+            Botones de Acción ({botonesAccion.filter((b) => b.visible).length})
           </button>
         </div>
       </div>
@@ -265,9 +265,9 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                         onChange={(e) => actualizarCampoTicket(campo.id, { modo_entrega: e.target.value as any })}
                         style={{ fontSize: 11, padding: "3px 6px", width: 140 }}
                       >
-                        <option value="ambos">📄 Ambos (Texto + PDF)</option>
-                        <option value="pdf">📎 Solo PDF Adjunto</option>
-                        <option value="texto">✏️ Solo Texto</option>
+                        <option value="ambos">Ambos (Texto + PDF)</option>
+                        <option value="pdf">Solo PDF Adjunto</option>
+                        <option value="texto">Solo Texto</option>
                       </select>
                     )}
 
@@ -359,7 +359,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                         </span>
                         {p.fijo && (
                           <span style={{ marginLeft: 6, fontSize: 10, color: "#d97706", fontWeight: 700 }}>
-                            🔒 [Fijo]
+                            [Fijo]
                           </span>
                         )}
                         <span style={{ display: "block", fontSize: 10.5, color: "#64748b", marginTop: 1 }}>
@@ -390,9 +390,9 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                               fontWeight: 600,
                             }}
                           >
-                            <option value="ambos">📄 Ambos (Texto + PDF)</option>
-                            <option value="pdf">📎 Solo Documento PDF</option>
-                            <option value="texto">✏️ Solo Texto</option>
+                            <option value="ambos">Ambos (Texto + PDF)</option>
+                            <option value="pdf">Solo Documento PDF</option>
+                            <option value="texto">Solo Texto</option>
                           </select>
                         ) : (
                           <span style={{ fontSize: 11, color: "#64748b" }}>Interactivo</span>

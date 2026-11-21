@@ -293,7 +293,7 @@ export const PestanaEstados: React.FC<PestanaEstadosProps> = ({
                 onClick={() => setModalAbierto(false)}
                 className="text-slate-400 hover:text-slate-600 font-bold"
               >
-                ✕
+                ×
               </button>
             </div>
 

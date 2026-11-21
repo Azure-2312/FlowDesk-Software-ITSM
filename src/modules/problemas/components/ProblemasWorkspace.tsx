@@ -446,7 +446,7 @@ export default function ProblemasWorkspace({
                             whiteSpace: "nowrap",
                           }}
                         >
-                          ⚡ Usar plantilla
+                          Usar plantilla
                         </Link>
                       </td>
                     </tr>

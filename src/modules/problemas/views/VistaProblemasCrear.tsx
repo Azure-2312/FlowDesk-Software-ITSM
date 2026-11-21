@@ -155,7 +155,7 @@ function FormularioProblemasCrear() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 20 }}>⚡</span>
+          
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af" }}>
               Prellenar formulario desde Error Conocido (KEDB)

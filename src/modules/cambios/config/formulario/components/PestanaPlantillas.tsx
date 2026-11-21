@@ -262,7 +262,7 @@ export const PestanaPlantillas: React.FC = () => {
       >
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 18 }}>📋</span>
+            
             <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", margin: 0 }}>
               Modelos de Cambio Estándar (Preautorizados)
             </h3>
@@ -507,7 +507,7 @@ export const PestanaPlantillas: React.FC = () => {
                 {modeloActivo.id_modelo ? `Editar Modelo Estándar: ${modeloActivo.nombre}` : "Nuevo Modelo de Cambio Estándar"}
               </h3>
               <button type="button" className="modal-cerrar-boton" onClick={() => setModalEditorAbierto(false)}>
-                ✕
+                ×
               </button>
             </div>
 
@@ -598,7 +598,7 @@ export const PestanaPlantillas: React.FC = () => {
                           const hijas = obtenerHijas(padre.id_item);
                           return (
                             <React.Fragment key={padre.id_item}>
-                              <option value={padre.id_item} style={{ fontWeight: "bold" }}>📁 {padre.nombre}</option>
+                              <option value={padre.id_item} style={{ fontWeight: "bold" }}>{padre.nombre}</option>
                               {hijas.map((h) => (
                                 <option key={h.id_item} value={h.id_item}>
                                   &nbsp;&nbsp;&nbsp;&nbsp;↳ {h.nombre}
@@ -683,13 +683,13 @@ export const PestanaPlantillas: React.FC = () => {
                             fontSize: 12,
                           }}
                         >
-                          <span style={{ color: "#334155" }}>✅ {cond}</span>
+                          <span style={{ color: "#334155" }}>{cond}</span>
                           <button
                             type="button"
                             onClick={() => quitarCondicion(idx)}
                             style={{ background: "none", border: "none", color: "#dc2626", cursor: "pointer", fontSize: 14 }}
                           >
-                            ✕
+                            ×
                           </button>
                         </div>
                       ))

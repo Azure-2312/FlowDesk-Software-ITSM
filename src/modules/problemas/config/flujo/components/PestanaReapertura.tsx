@@ -78,7 +78,7 @@ export const PestanaReapertura: React.FC<PestanaReaperturaProps> = ({
         <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between text-xs text-emerald-900">
           <span>{mensajeExito}</span>
           <button type="button" onClick={() => setMensajeExito("")} className="font-bold">
-            ✕
+            ×
           </button>
         </div>
       )}
@@ -238,7 +238,7 @@ export const PestanaReapertura: React.FC<PestanaReaperturaProps> = ({
                       onClick={() => setMotivos(motivos.filter((_, i) => i !== idx))}
                       className="text-rose-600 hover:text-rose-800 font-bold"
                     >
-                      ✕
+                      ×
                     </button>
                   )}
                 </div>

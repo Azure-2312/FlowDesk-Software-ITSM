@@ -50,9 +50,9 @@ export default function PestanasVista({
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 6,
+        gap: 4,
         borderBottom: "1px solid #e2e8f0",
-        marginBottom: 20,
+        marginBottom: 0,
         overflowX: "auto",
         WebkitOverflowScrolling: "touch",
       }}
@@ -77,6 +77,7 @@ export default function PestanasVista({
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
+              borderRadius: "4px 4px 0 0",
             }}
             aria-current={estaActiva ? "page" : undefined}
           >

@@ -505,7 +505,7 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
               }}
               title="Subir o cambiar foto de perfil"
             >
-              {subiendoFoto ? "Cargando..." : "📷 Cambiar foto"}
+              {subiendoFoto ? "Cargando..." : "Cambiar foto"}
             </button>
             {fotoPerfil && (
               <button
@@ -524,7 +524,7 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
                 }}
                 title="Quitar foto de perfil"
               >
-                ✕ Quitar
+                Quitar
               </button>
             )}
           </div>
@@ -554,7 +554,7 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
         <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
             <h2 style={{ fontSize: 16, margin: 0, color: "#0f172a", display: "flex", alignItems: "center", gap: 8 }}>
-              <span>🏢</span> Datos empresariales
+              Datos empresariales
             </h2>
             <span
               style={{
@@ -635,7 +635,7 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
         <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
             <h2 style={{ fontSize: 16, margin: 0, color: "#0f172a", display: "flex", alignItems: "center", gap: 8 }}>
-              <span>👤</span> Datos personales
+              Datos personales
             </h2>
             <span
               style={{
@@ -648,7 +648,7 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
                 border: "1px solid #cbd5e1",
               }}
             >
-              🔒 Solo lectura
+              Solo lectura
             </span>
           </div>
           <p className="descripcion" style={{ marginBottom: 16 }}>
@@ -706,7 +706,7 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
       {/* SECCIÓN: SEGURIDAD Y CONTRASEÑA (ÚNICA SECCIÓN EDITABLE) */}
       <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
         <h2 style={{ fontSize: 16, margin: 0, marginBottom: 4, color: "#0f172a", display: "flex", alignItems: "center", gap: 8 }}>
-          <span>🔐</span> Seguridad y contraseña
+          Seguridad y contraseña
         </h2>
         <p className="descripcion">Cambia tu contraseña periódicamente para mantener tu cuenta corporativa protegida.</p>
 

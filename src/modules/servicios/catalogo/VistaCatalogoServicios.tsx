@@ -309,7 +309,7 @@ function ContenidoCatalogo({
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 18 }}>⚠️</span>
+              
               <div style={{ textAlign: "left" }}>
                 <div>Catálogo de Incidentes</div>
                 <div style={{ fontSize: 11.5, fontWeight: 400, color: tipoActivo === 1 ? "#b91c1c" : "#64748b" }}>
@@ -355,7 +355,7 @@ function ContenidoCatalogo({
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 18 }}>📋</span>
+              
               <div style={{ textAlign: "left" }}>
                 <div>Catálogo de Solicitudes</div>
                 <div style={{ fontSize: 11.5, fontWeight: 400, color: tipoActivo === 2 ? "#1d4ed8" : "#64748b" }}>

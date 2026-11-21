@@ -541,7 +541,7 @@ export default function PaginaDetalleTicketRFC() {
             <div>
               <span style={{ fontSize: 11, color: "#64748b" }}>Cumplimiento de Ventana:</span>
               <div style={{ fontSize: 12, color: "#16a34a", fontWeight: 700, marginTop: 2 }}>
-                ✓ En ventana de mantenimiento estándar
+                En ventana de mantenimiento estándar
               </div>
             </div>
           </div>

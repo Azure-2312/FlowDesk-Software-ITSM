@@ -304,7 +304,7 @@ export default function ProveedoresWorkspace({ puedeEditar }: { puedeEditar: boo
           </div>
 
           <div style={{ display: "flex", alignItems: "flex-end" }}>
-            <button className="boton-principal" style={{ width: "100%", height: 38 }}>
+            <button type="submit" className="boton-principal" style={{ width: "100%", height: 38 }}>
               Guardar registro
             </button>
           </div>

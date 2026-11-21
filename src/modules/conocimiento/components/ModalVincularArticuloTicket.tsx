@@ -90,7 +90,7 @@ export default function ModalVincularArticuloTicket({
             onClick={alCerrar}
             className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-bold"
           >
-            ✕
+            ×
           </button>
         </div>
 

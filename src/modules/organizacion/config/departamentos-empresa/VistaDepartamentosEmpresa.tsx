@@ -198,7 +198,7 @@ export default function DepartamentosEmpresa() {
           <div style={{ gridColumn: "1 / -1" }}>
             {error && <p role="alert" className="mensaje-error" style={{ marginBottom: 10 }}>{error}</p>}
             {ok && <p role="status" style={{ color: "#15803d", marginBottom: 10, fontWeight: 600 }}>{ok}</p>}
-            <button className="boton-primario" style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}>Guardar Departamento</button>
+            <button type="submit" className="boton-primario" style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}>Guardar Departamento</button>
           </div>
         </form>
       )}

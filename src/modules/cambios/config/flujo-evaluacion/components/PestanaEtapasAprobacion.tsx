@@ -82,20 +82,6 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
   const [etapaActual, setEtapaActual] = useState<Partial<EtapaConfig>>({});
   const [errorValidacion, setErrorValidacion] = useState<string | null>(null);
 
-  // Modal simulador de etapas
-  const [modalSimuladorAbierto, setModalSimuladorAbierto] = useState(false);
-  const [simParams, setSimParams] = useState({
-    tipo_cambio: "normal",
-    nivel_riesgo: "medio",
-    solicitante_id: 6,
-    implementador_id: 5,
-    supervisor_id: 7,
-    fuera_de_ventana: false,
-    dentro_congelamiento: false
-  });
-  const [simResultado, setSimResultado] = useState<any>(null);
-  const [simulando, setSimulando] = useState(false);
-
   const abrirModalCrear = () => {
     setModoEdicion("crear");
     setEtapaActual({
@@ -169,24 +155,6 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
     onChange({ etapas, segregacion_funciones: nuevoSoD as SegregacionConfig });
   };
 
-  // Simular etapas
-  const handleEjecutarSimulacion = async () => {
-    try {
-      setSimulando(true);
-      const res = await fetch("/api/cambios/configuracion/flujo-evaluacion/simular-etapas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(simParams)
-      });
-      const data = await res.json();
-      setSimResultado(data);
-    } catch (err: any) {
-      alert("Error en simulación: " + err.message);
-    } finally {
-      setSimulando(false);
-    }
-  };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {/* Encabezado */}
@@ -201,25 +169,6 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
         </div>
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <button
-            onClick={() => {
-              setModalSimuladorAbierto(true);
-              handleEjecutarSimulacion();
-            }}
-            style={{
-              backgroundColor: "#f8fafc",
-              border: "1px solid #cbd5e1",
-              color: "#1e293b",
-              padding: "8px 16px",
-              borderRadius: "6px",
-              fontWeight: 600,
-              fontSize: "0.85rem",
-              cursor: "pointer"
-            }}
-          >
-            Simulador de Etapas
-          </button>
-
           <button
             onClick={abrirModalCrear}
             disabled={disabled}
@@ -408,177 +357,6 @@ export const PestanaEtapasAprobacion: React.FC<PestanaEtapasProps> = ({ snapshot
         </table>
         </TablaDobleScroll>
       </div>
-
-      {/* MODAL SIMULADOR DE ETAPAS */}
-      {modalSimuladorAbierto && (
-        <div style={{
-          position: "fixed",
-          inset: 0,
-          backgroundColor: "rgba(15, 23, 42, 0.6)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-          padding: "16px"
-        }}>
-          <div style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            width: "100%",
-            maxWidth: "750px",
-            maxHeight: "90vh",
-            overflowY: "auto",
-            padding: "24px",
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
-          }}>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1e293b", margin: "0 0 16px 0" }}>
-              Simulador de Resolución de Aprobadores y Segregación SoD
-            </h3>
-
-            {/* Parámetros de simulación */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px", marginBottom: "16px" }}>
-              <div>
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#475569", marginBottom: "4px" }}>
-                  Tipo de Cambio
-                </label>
-                <select
-                  value={simParams.tipo_cambio}
-                  onChange={e => setSimParams({ ...simParams, tipo_cambio: e.target.value })}
-                  style={{ width: "100%", padding: "6px 10px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "0.8rem" }}
-                >
-                  <option value="estandar">Estándar</option>
-                  <option value="normal">Normal</option>
-                  <option value="emergencia">Emergencia</option>
-                </select>
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#475569", marginBottom: "4px" }}>
-                  Nivel de Riesgo
-                </label>
-                <select
-                  value={simParams.nivel_riesgo}
-                  onChange={e => setSimParams({ ...simParams, nivel_riesgo: e.target.value })}
-                  style={{ width: "100%", padding: "6px 10px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "0.8rem" }}
-                >
-                  <option value="bajo">Bajo</option>
-                  <option value="medio">Medio</option>
-                  <option value="alto">Alto</option>
-                  <option value="critico">Crítico</option>
-                </select>
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#475569", marginBottom: "4px" }}>
-                  Solicitante
-                </label>
-                <select
-                  value={simParams.solicitante_id}
-                  onChange={e => setSimParams({ ...simParams, solicitante_id: Number(e.target.value) })}
-                  style={{ width: "100%", padding: "6px 10px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "0.8rem" }}
-                >
-                  {(catalogoUsuarios || []).map(u => (
-                    <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_completo} ({u.perfil})</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", gap: "16px", marginBottom: "16px", fontSize: "0.8rem" }}>
-              <label style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer" }}>
-                <input
-                  type="checkbox"
-                  checked={simParams.fuera_de_ventana}
-                  onChange={e => setSimParams({ ...simParams, fuera_de_ventana: e.target.checked })}
-                />
-                Fuera de ventana de mantenimiento
-              </label>
-
-              <label style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer" }}>
-                <input
-                  type="checkbox"
-                  checked={simParams.dentro_congelamiento}
-                  onChange={e => setSimParams({ ...simParams, dentro_congelamiento: e.target.checked })}
-                />
-                Dentro de período de congelamiento
-              </label>
-
-              <button
-                onClick={handleEjecutarSimulacion}
-                disabled={simulando}
-                style={{ marginLeft: "auto", padding: "6px 14px", backgroundColor: "#2563eb", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: 600, fontSize: "0.8rem", cursor: "pointer" }}
-              >
-                {simulando ? "Calculando..." : "Recalcular"}
-              </button>
-            </div>
-
-            {/* Resultado de la simulación */}
-            {simResultado && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#f8fafc", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: 700, fontSize: "0.85rem", color: "#1e293b" }}>
-                    Cadena de Etapas Resuelta ({simResultado.total_etapas} etapas):
-                  </span>
-                  <span style={{
-                    padding: "3px 8px",
-                    borderRadius: "4px",
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                    backgroundColor: simResultado.segregacion_valida ? "#dcfce7" : "#fee2e2",
-                    color: simResultado.segregacion_valida ? "#166534" : "#991b1b"
-                  }}>
-                    {simResultado.segregacion_valida ? "SoD Válida / Resuelta" : "Conflicto SoD No Resuelto"}
-                  </span>
-                </div>
-
-                {simResultado.advertencias_sod?.length > 0 && (
-                  <div style={{ padding: "8px 12px", backgroundColor: "#fef3c7", border: "1px solid #fde68a", borderRadius: "6px", fontSize: "0.75rem", color: "#92400e" }}>
-                    <strong>Alertas de Segregación detectadas:</strong>
-                    <ul style={{ margin: "4px 0 0 0", paddingLeft: "16px" }}>
-                      {simResultado.advertencias_sod.map((adv: string, i: number) => (
-                        <li key={i}>{adv}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {simResultado.etapas?.map((et: any, index: number) => (
-                    <div key={index} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", backgroundColor: "#ffffff", borderRadius: "6px", border: "1px solid #cbd5e1" }}>
-                      <div>
-                        <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "#1e293b" }}>
-                          Etapa {index + 1}: {et.etapa_nombre}
-                        </div>
-                        <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
-                          {et.detalle_asignacion}
-                        </div>
-                      </div>
-
-                      <div style={{ textAlign: "right" }}>
-                        <div style={{ fontWeight: 600, fontSize: "0.8rem", color: "#2563eb" }}>
-                          {et.aprobador_resuelto?.nombre_completo || "Pendiente"}
-                        </div>
-                        <div style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-                          {et.aprobador_resuelto?.correo_electronico}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}>
-              <button
-                onClick={() => setModalSimuladorAbierto(false)}
-                style={{ padding: "8px 16px", backgroundColor: "#2563eb", color: "#ffffff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: 600, fontSize: "0.85rem" }}
-              >
-                Cerrar Simulador
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* MODAL EDITOR DE ETAPA */}
       {modalAbierto && (

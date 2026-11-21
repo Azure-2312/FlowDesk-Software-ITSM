@@ -40,45 +40,11 @@ interface Props {
 }
 
 export function PestanaKedb({ config, onChange, onMarcarModificado }: Props) {
-  const [modalProbarAbierto, setModalProbarAbierto] = useState(false);
   const [modalCamposAbierto, setModalCamposAbierto] = useState(false);
-
-  // Formulario de prueba
-  const [pruebaTitulo, setPruebaTitulo] = useState("Lentitud en impresión y trabajos pendientes en spooler");
-  const [pruebaDesc, setPruebaDesc] = useState("Los usuarios de administración no pueden imprimir facturas.");
-  const [resultadoPrueba, setResultadoPrueba] = useState<any[] | null>(null);
-  const [probando, setProbando] = useState(false);
 
   function actualizar(campo: keyof ConfigKedb, valor: any) {
     onChange({ ...config, [campo]: valor });
     onMarcarModificado();
-  }
-
-  async function ejecutarPrueba() {
-    setProbando(true);
-    try {
-      const res = await fetch("/api/problemas/configuracion/relaciones/kedb", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "probar_coincidencia",
-          prueba: {
-            titulo: pruebaTitulo,
-            descripcion: pruebaDesc,
-            id_servicio: 1,
-            texto_ci: "SRV-PRINT-01"
-          }
-        })
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setResultadoPrueba(data.sugerencias || []);
-      }
-    } catch {
-      // Ignorar error
-    } finally {
-      setProbando(false);
-    }
   }
 
   return (
@@ -282,21 +248,10 @@ export function PestanaKedb({ config, onChange, onMarcarModificado }: Props) {
 
         {/* Ponderación de pesos */}
         <div style={{ backgroundColor: "#f8fafc", padding: 14, borderRadius: 6, border: "1px solid #e2e8f0", marginBottom: 16 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <div style={{ marginBottom: 12 }}>
             <span style={{ fontSize: 12.5, fontWeight: 700, color: "#1e293b" }}>
               Ponderación de Coincidencia Semántica (Pesos 1 al 5):
             </span>
-            <button
-              type="button"
-              className="boton-secundario"
-              style={{ width: "auto", padding: "4px 10px", fontSize: 12 }}
-              onClick={() => {
-                setModalProbarAbierto(true);
-                ejecutarPrueba();
-              }}
-            >
-              Probar Coincidencia
-            </button>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
@@ -453,116 +408,6 @@ export function PestanaKedb({ config, onChange, onMarcarModificado }: Props) {
           ))}
         </div>
       </div>
-
-      {/* MODAL DE PROBAR COINCIDENCIA */}
-      {modalProbarAbierto && (
-        <div style={{
-          position: "fixed",
-          inset: 0,
-          backgroundColor: "rgba(15, 23, 42, 0.6)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-          padding: 20
-        }}>
-          <div style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 10,
-            maxWidth: 700,
-            width: "100%",
-            maxHeight: "90vh",
-            overflowY: "auto",
-            padding: 24,
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
-          }}>
-            <h3 style={{ fontSize: 17, fontWeight: 700, margin: "0 0 14px 0", color: "#0f172a" }}>
-              Simulador de Coincidencia de Errores Conocidos
-            </h3>
-
-            <div className="campo" style={{ marginBottom: 12 }}>
-              <label>Título de Incidente de Prueba</label>
-              <input
-                type="text"
-                className="input-base"
-                value={pruebaTitulo}
-                onChange={(e) => setPruebaTitulo(e.target.value)}
-              />
-            </div>
-
-            <div className="campo" style={{ marginBottom: 14 }}>
-              <label>Descripción / Síntomas del Incidente</label>
-              <textarea
-                className="input-base"
-                rows={2}
-                value={pruebaDesc}
-                onChange={(e) => setPruebaDesc(e.target.value)}
-              />
-            </div>
-
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
-              <button
-                type="button"
-                className="boton-primario"
-                style={{ width: "auto", padding: "6px 16px", fontSize: 13 }}
-                onClick={ejecutarPrueba}
-                disabled={probando}
-              >
-                {probando ? "Calculando..." : "Evaluar Coincidencia"}
-              </button>
-            </div>
-
-            {resultadoPrueba && (
-              <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: 14 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#1e293b", marginBottom: 10 }}>
-                  Errores Conocidos Sugeridos (Umbral mínimo: {config.umbral_minimo_coincidencia}%):
-                </div>
-                {resultadoPrueba.length === 0 ? (
-                  <div style={{ color: "#64748b", fontSize: 12.5, textAlign: "center", padding: "14px 0" }}>
-                    Ningún error conocido alcanzó el porcentaje mínimo de coincidencia.
-                  </div>
-                ) : (
-                  resultadoPrueba.map((ke: any, i: number) => (
-                    <div
-                      key={i}
-                      style={{
-                        padding: 12,
-                        borderRadius: 6,
-                        border: "1px solid #e2e8f0",
-                        marginBottom: 10,
-                        backgroundColor: ke.supera_umbral ? "#f0fdf4" : "#f8fafc"
-                      }}
-                    >
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                        <span style={{ fontWeight: 700, fontSize: 13, color: "#0f172a" }}>
-                          [{ke.id_ke}] {ke.titulo}
-                        </span>
-                        <strong style={{ color: ke.supera_umbral ? "#16a34a" : "#ca8a04", fontSize: 13 }}>
-                          {ke.porcentaje_coincidencia}% coincidencia
-                        </strong>
-                      </div>
-                      <div style={{ fontSize: 12, color: "#475569", marginBottom: 4 }}>
-                        <strong>Workaround:</strong> {ke.workaround}
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            )}
-
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-              <button
-                type="button"
-                className="boton-secundario"
-                style={{ width: "auto", padding: "6px 16px", fontSize: 13 }}
-                onClick={() => setModalProbarAbierto(false)}
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* MODAL DE CAMPOS DEL KE */}
       {modalCamposAbierto && (

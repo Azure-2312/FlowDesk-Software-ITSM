@@ -185,7 +185,7 @@ export default function PaginaBaseConocimiento() {
                 onClick={() => setArticuloSeleccionado(null)}
                 style={{ background: "transparent", border: "none", fontSize: 20, cursor: "pointer", color: "#64748b" }}
               >
-                ✕
+                ×
               </button>
             </div>
             <div style={{ whiteSpace: "pre-wrap", color: "#334155", fontSize: 14.5, lineHeight: 1.6 }}>

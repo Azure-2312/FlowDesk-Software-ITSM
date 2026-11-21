@@ -39,12 +39,12 @@ const COLORES_CRITICIDAD: Record<string, { bg: string; text: string; border: str
 };
 
 const ICONOS_TIPO: Record<string, string> = {
-  APLICACION: "📱",
-  SERVIDOR_LOGICO: "💻",
-  SERVIDOR_FISICO: "🖥️",
-  BASE_DATOS: "🗄️",
-  NODO_RED: "🔀",
-  SERVICIO: "⚙️",
+  APLICACION: "[APP]",
+  SERVIDOR_LOGICO: "[SRV]",
+  SERVIDOR_FISICO: "[HOST]",
+  BASE_DATOS: "[DB]",
+  NODO_RED: "[RED]",
+  SERVICIO: "[SVC]",
 };
 
 export default function VistaActivosMapa() {
@@ -369,7 +369,7 @@ export default function VistaActivosMapa() {
                     boxShadow: pestañaDerecha === "lista" ? "0 1px 3px rgba(37,99,235,0.2)" : "0 1px 2px rgba(0,0,0,0.05)",
                   }}
                 >
-                  📑 Relaciones en Lista
+                  Relaciones en Lista
                 </button>
                 <button
                   type="button"
@@ -386,7 +386,7 @@ export default function VistaActivosMapa() {
                     boxShadow: pestañaDerecha === "grafico" ? "0 1px 3px rgba(37,99,235,0.2)" : "0 1px 2px rgba(0,0,0,0.05)",
                   }}
                 >
-                  📊 Vista Gráfica (Interactivo)
+                  Vista Gráfica (Interactivo)
                 </button>
               </div>
 
@@ -399,7 +399,7 @@ export default function VistaActivosMapa() {
                     title="Acercar (Zoom In)"
                     style={{ border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: "bold", padding: "2px 6px" }}
                   >
-                    🔍+
+                    +
                   </button>
                   <span style={{ fontSize: 11.5, fontWeight: 700, color: "#334155", minWidth: 42, textAlign: "center" }}>
                     {Math.round(zoom * 100)}%
@@ -410,7 +410,7 @@ export default function VistaActivosMapa() {
                     title="Alejar (Zoom Out)"
                     style={{ border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: "bold", padding: "2px 6px" }}
                   >
-                    🔍-
+                    -
                   </button>
                   <button
                     type="button"
@@ -523,7 +523,7 @@ export default function VistaActivosMapa() {
               >
                 {/* Indicador de ayuda */}
                 <div style={{ position: "absolute", top: 12, left: 16, zIndex: 10, pointerEvents: "none", backgroundColor: "rgba(255,255,255,0.85)", padding: "4px 10px", borderRadius: 6, fontSize: 11, color: "#64748b", border: "1px solid #e2e8f0" }}>
-                  🖱️ Arrastra con el mouse para mover el mapa · Rueda para Zoom ({Math.round(zoom * 100)}%)
+                  Arrastra con el mouse para mover el mapa · Rueda para Zoom ({Math.round(zoom * 100)}%)
                 </div>
 
                 {/* Lienzo SVG */}
@@ -600,7 +600,7 @@ export default function VistaActivosMapa() {
                     {nodosGrafico.map((nodo) => {
                       const esSeleccionado = ciActivo?.id_ci === nodo.id_ci;
                       const colorCrit = COLORES_CRITICIDAD[nodo.criticidad] || { bg: "#f1f5f9", text: "#475569", border: "#cbd5e1" };
-                      const icono = ICONOS_TIPO[nodo.tipo_ci] || "📦";
+                      const icono = ICONOS_TIPO[nodo.tipo_ci] || "[CI]";
 
                       return (
                         <g

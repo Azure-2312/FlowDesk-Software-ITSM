@@ -447,7 +447,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                                 : "Clic para editar pregunta y opciones"
                             }
                           >
-                            {opc.texto} ({opc.puntaje} pts{opc.eleva_minimo ? ` ⚠️ Mín. ${opc.eleva_minimo}` : ""})
+                            {opc.texto} ({opc.puntaje} pts{opc.eleva_minimo ? ` Mín. ${opc.eleva_minimo}` : ""})
                           </button>
                         ))}
                       </div>
@@ -719,7 +719,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                 </span>
               </div>
               <button type="button" className="modal-cerrar-boton" onClick={() => setModalEditarPreguntaAbierto(false)}>
-                ✕
+                ×
               </button>
             </div>
 
@@ -946,7 +946,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                             fontSize: 12,
                           }}
                         >
-                          ✕
+                          ×
                         </button>
                       </div>
                     </div>
@@ -1004,7 +1004,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                 </span>
               </div>
               <button type="button" className="modal-cerrar-boton" onClick={() => setModalNivelesAbierto(false)}>
-                ✕
+                ×
               </button>
             </div>
 

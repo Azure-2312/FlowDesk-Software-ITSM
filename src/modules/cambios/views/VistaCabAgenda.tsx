@@ -163,7 +163,7 @@ export default function VistaCabAgenda() {
           </div>
         </div>
         <div style={{ marginTop: 12 }}>
-          <button className="boton-primario" style={{ width: "auto" }} disabled={guardando}>{guardando ? "Guardando..." : "Programar reunión"}</button>
+          <button type="submit" className="boton-primario" style={{ width: "auto" }} disabled={guardando}>{guardando ? "Guardando..." : "Programar reunión"}</button>
         </div>
         {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginTop: 10, marginBottom: 0 }}>{ok}</p>}
         {error && <p role="alert" className="mensaje-error" style={{ marginTop: 10, marginBottom: 0 }}>{error}</p>}

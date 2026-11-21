@@ -264,7 +264,7 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
                 onClick={() => setModalEditor(false)}
                 className="text-slate-400 hover:text-slate-600 font-bold"
               >
-                ✕
+                ×
               </button>
             </div>
 
@@ -496,7 +496,7 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
                           }
                           className="text-rose-600 hover:text-rose-800 font-bold"
                         >
-                          ✕
+                          ×
                         </button>
                       </div>
                     ))}

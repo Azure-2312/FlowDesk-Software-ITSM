@@ -37,7 +37,6 @@ export const PestanaObjetivosTiempo: React.FC<PestanaObjetivosTiempoProps> = ({
 }) => {
   const [listaObjetivos, setListaObjetivos] = useState<ObjetivoTiempoProblema[]>(objetivos);
   const [guardando, setGuardando] = useState(false);
-  const [modalMedidores, setModalMedidores] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
 
   const handleModificar = (idPrioridad: number, campo: keyof ObjetivoTiempoProblema, valor: any) => {
@@ -76,7 +75,7 @@ export const PestanaObjetivosTiempo: React.FC<PestanaObjetivosTiempoProps> = ({
         <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between text-xs text-emerald-900">
           <span>{mensajeExito}</span>
           <button type="button" onClick={() => setMensajeExito("")} className="font-bold">
-            ✕
+            ×
           </button>
         </div>
       )}
@@ -100,13 +99,6 @@ export const PestanaObjetivosTiempo: React.FC<PestanaObjetivosTiempoProps> = ({
             className="px-3 py-1.5 text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-300 transition"
           >
             Restaurar valores sugeridos
-          </button>
-          <button
-            type="button"
-            onClick={() => setModalMedidores(true)}
-            className="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition"
-          >
-            Vista previa de medidores
           </button>
         </div>
       </div>
@@ -213,72 +205,12 @@ export const PestanaObjetivosTiempo: React.FC<PestanaObjetivosTiempoProps> = ({
 
       {/* Bloque Informativo sobre Integración con 1.2.4 */}
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start space-x-3 text-xs text-blue-900">
-        <div className="font-bold text-base text-blue-700">ℹ</div>
+        <div className="font-bold text-base text-blue-700">!</div>
         <div>
           <span className="font-semibold">Integración de fuente única con 1.2.4 Objetivos SLA: </span>
           La pantalla general de Objetivos Institucionales (1.2.4) refleja automáticamente los valores de esta tabla en su bloque de solo lectura "Objetivos internos de Problemas", preservando la consistencia entre niveles de servicio y metas internas.
         </div>
       </div>
-
-      {/* Modal Vista Previa de Medidores */}
-      {modalMedidores && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 space-y-4">
-            <div className="flex items-center justify-between border-b pb-2">
-              <h3 className="text-sm font-bold text-slate-800">
-                Vista Previa de los Medidores en Cabecera del Ticket
-              </h3>
-              <button
-                type="button"
-                onClick={() => setModalMedidores(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="p-4 bg-slate-50 border rounded-xl space-y-3">
-                <span className="font-bold text-slate-800 text-xs block">
-                  Simulación de Ticket P1 Crítico (Consumo 45% Diagnóstico / 15% Resolución)
-                </span>
-
-                {/* Medidor Diagnóstico */}
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-semibold text-slate-700">Reloj Diagnóstico:</span>
-                    <span className="font-bold text-blue-700">32h de 72h (45% consumido)</span>
-                  </div>
-                  <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-600 rounded-full" style={{ width: "45%" }} />
-                  </div>
-                </div>
-
-                {/* Medidor Resolución */}
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-semibold text-slate-700">Reloj Resolución:</span>
-                    <span className="font-bold text-emerald-700">36h de 240h (15% consumido)</span>
-                  </div>
-                  <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: "15%" }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setModalMedidores(false)}
-                className="px-4 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

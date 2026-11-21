@@ -385,7 +385,7 @@ export default function VistaKedb() {
                           boxShadow: "0 1px 2px rgba(37, 99, 235, 0.2)",
                         }}
                       >
-                        <span>⚡ Crear problema con esta plantilla</span>
+                        <span>Crear problema con esta plantilla</span>
                       </Link>
                     </div>
                   </div>
@@ -394,7 +394,7 @@ export default function VistaKedb() {
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                     <div style={{ backgroundColor: "#fef2f2", border: "1px solid #fee2e2", borderRadius: 8, padding: 12 }}>
                       <div style={{ fontSize: 11, fontWeight: 700, color: "#991b1b", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                        🔍 Causa Raíz Identificada (RCA)
+                        Causa Raíz Identificada (RCA)
                       </div>
                       <div style={{ fontSize: 12.5, color: "#7f1d1d", marginTop: 4, lineHeight: 1.4 }}>
                         {k.causa_raiz || "Pendiente de formalizar en expediente técnico."}
@@ -403,7 +403,7 @@ export default function VistaKedb() {
 
                     <div style={{ backgroundColor: "#f0fdf4", border: "1px solid #dcfce7", borderRadius: 8, padding: 12 }}>
                       <div style={{ fontSize: 11, fontWeight: 700, color: "#166534", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                        💡 Solución Temporal / Workaround (Mitigación Rápida)
+                        Solución Temporal / Workaround (Mitigación Rápida)
                       </div>
                       <div style={{ fontSize: 12.5, color: "#14532d", marginTop: 4, lineHeight: 1.4 }}>
                         {k.workaround || "Sin solución provisional registrada."}

@@ -58,12 +58,6 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
   const [enfriamientoHoras, setEnfriamientoHoras] = useState(24);
   const [activa, setActiva] = useState(false);
 
-  // Simulador
-  const [simuladorAbierto, setSimuladorAbierto] = useState(false);
-  const [diasSimulacion, setDiasSimulacion] = useState(30);
-  const [resultadoSimulacion, setResultadoSimulacion] = useState<any | null>(null);
-  const [simulando, setSimulando] = useState(false);
-
   // Historial de ejecuciones
   const [modalEjecuciones, setModalEjecuciones] = useState(false);
   const [ejecuciones, setEjecuciones] = useState<any[]>([]);
@@ -198,41 +192,6 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
     }
   }
 
-  async function abrirSimulador(regla?: ReglaUmbral) {
-    const reglaEval = regla || reglaEditando || {
-      nombre: "Simulación Rápida",
-      agrupar_por: agruparPor,
-      umbral_incidentes: umbralIncidentes,
-      ventana_horas: ventanaHoras,
-      accion: accion,
-      prioridad_problema: prioridadProblema
-    };
-
-    setSimulando(true);
-    setSimuladorAbierto(true);
-    setResultadoSimulacion(null);
-
-    try {
-      const res = await fetch("/api/problemas/configuracion/relaciones/umbral", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "simular",
-          diasSimulacion,
-          regla: reglaEval
-        })
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setResultadoSimulacion(data.resultadoSimulacion);
-      }
-    } catch {
-      // Error
-    } finally {
-      setSimulando(false);
-    }
-  }
-
   async function verHistorial(r: ReglaUmbral) {
     setReglaSeleccionadaHistorial(r);
     setModalEjecuciones(true);
@@ -260,14 +219,6 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
           </p>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <button
-            type="button"
-            className="boton-secundario"
-            style={{ width: "auto", padding: "6px 14px", fontSize: 13 }}
-            onClick={() => abrirSimulador()}
-          >
-            Simular Regla
-          </button>
           <button
             type="button"
             className="boton-primario"
@@ -370,15 +321,6 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
                   </td>
                   <td style={{ textAlign: "right" }}>
                     <div style={{ display: "inline-flex", gap: 6 }}>
-                      <button
-                        type="button"
-                        className="boton-secundario"
-                        style={{ width: "auto", padding: "4px 8px", fontSize: 11.5 }}
-                        onClick={() => abrirSimulador(r)}
-                        title="Simular comportamiento con datos reales"
-                      >
-                        Simular
-                      </button>
                       <button
                         type="button"
                         className="boton-secundario"
@@ -615,115 +557,6 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
         </div>
       )}
 
-      {/* MODAL: SIMULADOR INTERACTIVO DE REGLA */}
-      {simuladorAbierto && (
-        <div style={{
-          position: "fixed",
-          inset: 0,
-          backgroundColor: "rgba(15, 23, 42, 0.6)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-          padding: 20
-        }}>
-          <div style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 10,
-            maxWidth: 750,
-            width: "100%",
-            maxHeight: "90vh",
-            overflowY: "auto",
-            padding: 24,
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-              <div>
-                <h3 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#0f172a" }}>
-                  Simulador de Detección de Umbrales Proactivos
-                </h3>
-                <p style={{ margin: "2px 0 0 0", color: "#64748b", fontSize: 12.5 }}>
-                  Evalúa cómo reaccionaría la regla con los tickets reales registrados en la base de datos.
-                </p>
-              </div>
-              <select
-                className="input-base"
-                style={{ width: "auto", fontSize: 12 }}
-                value={diasSimulacion}
-                onChange={(e) => {
-                  setDiasSimulacion(parseInt(e.target.value, 10));
-                  abrirSimulador();
-                }}
-              >
-                <option value={30}>Últimos 30 días</option>
-                <option value={60}>Últimos 60 días</option>
-                <option value={90}>Últimos 90 días</option>
-              </select>
-            </div>
-
-            {simulando ? (
-              <div style={{ padding: "40px 0", textAlign: "center", color: "#64748b" }}>
-                Analizando tickets históricos y agrupando clusters...
-              </div>
-            ) : resultadoSimulacion ? (
-              <div>
-                {/* Métricas del simulador */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 18 }}>
-                  <div style={{ backgroundColor: "#f8fafc", padding: "10px 14px", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-                    <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase" }}>Incidentes Analizados</div>
-                    <div style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", marginTop: 2 }}>{resultadoSimulacion.totalIncidentesEvaluados}</div>
-                  </div>
-                  <div style={{ backgroundColor: "#f8fafc", padding: "10px 14px", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-                    <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase" }}>Clusters Detectados</div>
-                    <div style={{ fontSize: 20, fontWeight: 700, color: "#e11d48", marginTop: 2 }}>{resultadoSimulacion.gruposSuperanUmbral}</div>
-                  </div>
-                  <div style={{ backgroundColor: "#f8fafc", padding: "10px 14px", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-                    <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase" }}>Problemas Generados</div>
-                    <div style={{ fontSize: 20, fontWeight: 700, color: "#0284c7", marginTop: 2 }}>{resultadoSimulacion.problemasEstimados}</div>
-                  </div>
-                </div>
-
-                {/* Lista de clusters */}
-                {resultadoSimulacion.grupos.length === 0 ? (
-                  <div style={{ padding: "20px 0", textAlign: "center", color: "#64748b", backgroundColor: "#f8fafc", borderRadius: 6 }}>
-                    No se detectaron grupos que superen el umbral configurado en los últimos {diasSimulacion} días.
-                  </div>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
-                    {resultadoSimulacion.grupos.map((g: any, i: number) => (
-                      <div key={i} style={{ border: "1px solid #e2e8f0", borderRadius: 8, padding: 12 }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                          <strong style={{ color: "#0f172a", fontSize: 13.5 }}>{g.criterio}</strong>
-                          <span style={{ fontSize: 12, fontWeight: 600, color: "#0284c7" }}>
-                            {g.total_incidentes} incidentes coincidentes
-                          </span>
-                        </div>
-                        <div style={{ fontSize: 11.5, color: "#64748b", marginBottom: 6 }}>
-                          Muestra de tickets: {g.muestra_tickets.join(", ")}
-                        </div>
-                        <div style={{ fontSize: 12, color: "#16a34a", fontWeight: 600 }}>
-                          Acción: {g.accion_sugerida} (Prioridad {g.prioridad_calculada})
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : null}
-
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
-              <button
-                type="button"
-                className="boton-primario"
-                style={{ width: "auto", padding: "6px 18px", fontSize: 13 }}
-                onClick={() => setSimuladorAbierto(false)}
-              >
-                Cerrar Simulador
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

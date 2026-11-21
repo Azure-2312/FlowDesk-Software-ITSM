@@ -1245,7 +1245,7 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                                 color: esCompleto || esActivo ? "#ffffff" : "#64748b",
                               }}
                             >
-                              {esCompleto ? "✓" : step.num}
+                              {esCompleto ? "OK" : step.num}
                             </span>
                             <span style={{ fontSize: 10.5, fontWeight: esActivo ? 700 : 500, color: esActivo ? "#1e40af" : esCompleto ? "#15803d" : "#94a3b8" }}>
                               {step.label}
@@ -1308,7 +1308,7 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                       marginBottom: -2,
                     }}
                   >
-                    📋 Detalle del Ticket
+                    Detalle del Ticket
                   </button>
                   <button
                     type="button"
@@ -1325,7 +1325,7 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                       marginBottom: -2,
                     }}
                   >
-                    💬 Conversación (2)
+                    Conversación (2)
                   </button>
                   {/* Pestaña de Notas Técnicas: Si el nivel no tiene autorización, ni siquiera aparece en el menú */}
                   {nivelSimulado <= 4 && (
@@ -1344,7 +1344,7 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                         marginBottom: -2,
                       }}
                     >
-                      🔒 Notas Técnicas Internas
+                      Notas Técnicas Internas
                     </button>
                   )}
                 </div>
@@ -1428,10 +1428,10 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                           </span>
                           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                             <span style={{ fontSize: 10.5, backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 4, padding: "2px 8px", color: "#334155" }}>
-                              📎 captura_error_sql.png (340 KB)
+                              captura_error_sql.png (340 KB)
                             </span>
                             <span style={{ fontSize: 10.5, backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 4, padding: "2px 8px", color: "#334155" }}>
-                              📎 traza_red_timeout.log (45 KB)
+                              traza_red_timeout.log (45 KB)
                             </span>
                           </div>
                         </div>
@@ -1512,7 +1512,7 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                           </span>
                           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                             <span style={{ fontSize: 10.5, backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 4, padding: "2px 8px", color: "#334155" }}>
-                              📎 formato_solicitud_ingreso_finanzas.pdf (185 KB)
+                              formato_solicitud_ingreso_finanzas.pdf (185 KB)
                             </span>
                           </div>
                         </div>
@@ -1565,14 +1565,14 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                 {subTabTicket === "notas" && nivelSimulado <= 4 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 11.5 }}>
                     <div style={{ padding: "6px 10px", backgroundColor: "#fef3c7", border: "1px solid #fde68a", borderRadius: 4, color: "#92400e", fontSize: 11, fontWeight: 700 }}>
-                      🔒 Notas Técnicas y Coordinación Interna
+                      Notas Técnicas y Coordinación Interna
                     </div>
 
                     {/* Tiempo transcurrido de SLA y restante dentro de la conversación interna */}
                     <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 6, padding: "8px 10px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                         <span style={{ fontSize: 10.5, fontWeight: 700, color: "#1e40af", textTransform: "uppercase" }}>
-                          ⏱️ Monitoreo de SLA y Tiempos de Atención
+                          Monitoreo de SLA y Tiempos de Atención
                         </span>
                         {nivelSimulado === 4 && (
                           <button
@@ -1589,7 +1589,7 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                               cursor: "pointer",
                             }}
                           >
-                            ✏️ Ajustar SLA
+                            Ajustar SLA
                           </button>
                         )}
                       </div>
@@ -1597,7 +1597,7 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, fontSize: 11 }}>
                         <div style={{ backgroundColor: "#ffffff", padding: "5px 8px", borderRadius: 4, border: "1px solid #e2e8f0" }}>
                           <span style={{ color: "#64748b", fontSize: 10, display: "block" }}>Primera Respuesta:</span>
-                          <span style={{ fontWeight: 700, color: "#166534" }}>✓ Cumplido en 12 min</span>
+                          <span style={{ fontWeight: 700, color: "#166534" }}>Cumplido en 12 min</span>
                         </div>
                         <div style={{ backgroundColor: "#ffffff", padding: "5px 8px", borderRadius: 4, border: "1px solid #e2e8f0" }}>
                           <span style={{ color: "#64748b", fontSize: 10, display: "block" }}>Tiempo Transcurrido / Restante:</span>
@@ -1608,7 +1608,7 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
 
                       {slaModificadoExito && (
                         <div style={{ marginTop: 6, padding: "5px 8px", backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 4, color: "#166534", fontSize: 11 }}>
-                          ✓ Plazo de SLA modificado a {slaHorasResolucion} horas. Motivo registrado en auditoría.
+                          Plazo de SLA modificado a {slaHorasResolucion} horas. Motivo registrado en auditoría.
                         </div>
                       )}
 

@@ -545,7 +545,7 @@ export default function VistaDeclararIncidenteMayor() {
               cursor: guardando ? "not-allowed" : "pointer",
             }}
           >
-            {guardando ? "Declarando Incidente..." : "🚨 Declarar y Convocar Sala de Crisis"}
+            {guardando ? "Declarando Incidente..." : "Declarar y Convocar Sala de Crisis"}
           </button>
         </div>
       </form>

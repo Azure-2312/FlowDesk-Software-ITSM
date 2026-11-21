@@ -49,7 +49,11 @@ function fecha(valor: string | null) {
   return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString("es-PE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-export default function VistaMantenimientoActivos() {
+interface Props {
+  vistaActiva?: string;
+}
+
+export default function VistaMantenimientoActivos({ vistaActiva }: Props = {}) {
   const [mantenimientos, setMantenimientos] = useState<Mantenimiento[]>([]);
   const [activos, setActivos] = useState<Activo[]>([]);
   const [garantias, setGarantias] = useState<Garantia[]>([]);
@@ -140,93 +144,100 @@ export default function VistaMantenimientoActivos() {
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
       {error && <p role="alert" className="mensaje-error" style={{ marginBottom: 12 }}>{error}</p>}
 
-      <div className="tarjeta-formulario" style={{ marginBottom: 20 }}>
-        <h2>Programar mantenimiento</h2>
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <label style={{ fontSize: 12, color: "#374151" }}>
-            Activo
-            <select value={form.id_activo} onChange={(e) => setForm((p) => ({ ...p, id_activo: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8, minWidth: 220 }}>
-              <option value="">Selecciona...</option>
-              {activos.map((a) => <option key={a.id_activo} value={a.id_activo}>{a.codigo_patrimonial} · {a.tipo_activo} {a.marca}</option>)}
-            </select>
+      {/* Formulario solo visible en modo reparaciones o general */}
+      {vistaActiva !== "garantias" && (
+        <div className="tarjeta-formulario" style={{ marginBottom: 20 }}>
+          <h2>Programar mantenimiento</h2>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <label style={{ fontSize: 12, color: "#374151" }}>
+              Activo
+              <select value={form.id_activo} onChange={(e) => setForm((p) => ({ ...p, id_activo: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8, minWidth: 220 }}>
+                <option value="">Selecciona...</option>
+                {activos.map((a) => <option key={a.id_activo} value={a.id_activo}>{a.codigo_patrimonial} · {a.tipo_activo} {a.marca}</option>)}
+              </select>
+            </label>
+            <label style={{ fontSize: 12, color: "#374151" }}>
+              Tipo
+              <select value={form.tipo} onChange={(e) => setForm((p) => ({ ...p, tipo: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }}>
+                <option value="PREVENTIVO">Preventivo</option>
+                <option value="CORRECTIVO">Correctivo</option>
+              </select>
+            </label>
+            <label style={{ fontSize: 12, color: "#374151" }}>
+              Fecha programada
+              <input type="date" value={form.fecha_programada} onChange={(e) => setForm((p) => ({ ...p, fecha_programada: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }} />
+            </label>
+            <label style={{ fontSize: 12, color: "#374151" }}>
+              Proveedor
+              <input type="text" value={form.proveedor} onChange={(e) => setForm((p) => ({ ...p, proveedor: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8, minWidth: 160 }} />
+            </label>
+            <label style={{ fontSize: 12, color: "#374151" }}>
+              Costo
+              <input type="number" value={form.costo} onChange={(e) => setForm((p) => ({ ...p, costo: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8, width: 120 }} />
+            </label>
+          </div>
+          <label style={{ fontSize: 12, color: "#374151", display: "block", marginTop: 10 }}>
+            Descripción
+            <textarea rows={2} value={form.descripcion} onChange={(e) => setForm((p) => ({ ...p, descripcion: e.target.value }))} style={{ display: "block", width: "100%", marginTop: 4, padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }} />
           </label>
-          <label style={{ fontSize: 12, color: "#374151" }}>
-            Tipo
-            <select value={form.tipo} onChange={(e) => setForm((p) => ({ ...p, tipo: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }}>
-              <option value="PREVENTIVO">Preventivo</option>
-              <option value="CORRECTIVO">Correctivo</option>
-            </select>
-          </label>
-          <label style={{ fontSize: 12, color: "#374151" }}>
-            Fecha programada
-            <input type="date" value={form.fecha_programada} onChange={(e) => setForm((p) => ({ ...p, fecha_programada: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }} />
-          </label>
-          <label style={{ fontSize: 12, color: "#374151" }}>
-            Proveedor
-            <input type="text" value={form.proveedor} onChange={(e) => setForm((p) => ({ ...p, proveedor: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8, minWidth: 160 }} />
-          </label>
-          <label style={{ fontSize: 12, color: "#374151" }}>
-            Costo
-            <input type="number" value={form.costo} onChange={(e) => setForm((p) => ({ ...p, costo: e.target.value }))} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8, width: 120 }} />
-          </label>
+          <button className="boton-primario" style={{ width: "auto", marginTop: 10 }} disabled={procesando} onClick={programar}>{procesando ? "Guardando..." : "Programar"}</button>
         </div>
-        <label style={{ fontSize: 12, color: "#374151", display: "block", marginTop: 10 }}>
-          Descripción
-          <textarea rows={2} value={form.descripcion} onChange={(e) => setForm((p) => ({ ...p, descripcion: e.target.value }))} style={{ display: "block", width: "100%", marginTop: 4, padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }} />
-        </label>
-        <button className="boton-primario" style={{ width: "auto", marginTop: 10 }} disabled={procesando} onClick={programar}>{procesando ? "Guardando..." : "Programar"}</button>
-      </div>
+      )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
-        <div>
-          <h2>Mantenimientos</h2>
-          {cargando ? (
-            <p>Cargando...</p>
-          ) : mantenimientos.length === 0 ? (
-            <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>Sin mantenimientos registrados.</div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {mantenimientos.map((m) => {
-                const color = COLORES[m.estado] ?? { bg: "#e5e7eb", fg: "#374151" };
-                return (
-                  <div key={m.id_mantenimiento} className="tarjeta-formulario" style={{ margin: 0 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                      <strong style={{ fontSize: 13 }}>{m.codigo_patrimonial} · {m.tipo}</strong>
-                      <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 999, backgroundColor: color.bg, color: color.fg }}>{m.estado}</span>
+      <div style={{ display: "grid", gridTemplateColumns: vistaActiva ? "1fr" : "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
+        {vistaActiva !== "garantias" && (
+          <div>
+            <h2>Mantenimientos y reparaciones</h2>
+            {cargando ? (
+              <p>Cargando...</p>
+            ) : mantenimientos.length === 0 ? (
+              <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>Sin mantenimientos registrados.</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {mantenimientos.map((m) => {
+                  const color = COLORES[m.estado] ?? { bg: "#e5e7eb", fg: "#374151" };
+                  return (
+                    <div key={m.id_mantenimiento} className="tarjeta-formulario" style={{ margin: 0 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                        <strong style={{ fontSize: 13 }}>{m.codigo_patrimonial} · {m.tipo}</strong>
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 999, backgroundColor: color.bg, color: color.fg }}>{m.estado}</span>
+                      </div>
+                      <div style={{ fontSize: 12, color: "#6b7280", marginTop: 3 }}>{m.descripcion}</div>
+                      <div style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>
+                        Programado {fecha(m.fecha_programada)} · Ejecutado {fecha(m.fecha_ejecucion)} · {m.proveedor ?? "sin proveedor"}
+                      </div>
+                      <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+                        {m.estado === "PROGRAMADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "EN_PROCESO")}>Iniciar</button>}
+                        {m.estado === "EN_PROCESO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "COMPLETADO")}>Completar</button>}
+                        {["PROGRAMADO", "EN_PROCESO"].includes(m.estado) && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "CANCELADO")}>Cancelar</button>}
+                      </div>
                     </div>
-                    <div style={{ fontSize: 12, color: "#6b7280", marginTop: 3 }}>{m.descripcion}</div>
-                    <div style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>
-                      Programado {fecha(m.fecha_programada)} · Ejecutado {fecha(m.fecha_ejecucion)} · {m.proveedor ?? "sin proveedor"}
-                    </div>
-                    <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
-                      {m.estado === "PROGRAMADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "EN_PROCESO")}>Iniciar</button>}
-                      {m.estado === "EN_PROCESO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "COMPLETADO")}>Completar</button>}
-                      {["PROGRAMADO", "EN_PROCESO"].includes(m.estado) && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "CANCELADO")}>Cancelar</button>}
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {vistaActiva !== "reparaciones" && (
+          <div>
+            <h2>Garantías por vencer</h2>
+            {garantias.length === 0 ? (
+              <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>Sin garantías próximas a vencer.</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {garantias.map((g) => (
+                  <div key={g.id_activo} className="tarjeta-formulario" style={{ margin: 0 }}>
+                    <strong style={{ fontSize: 13 }}>{g.codigo_patrimonial} · {g.tipo_activo}</strong>
+                    <div style={{ fontSize: 12, color: Number(g.dias_restantes) < 0 ? "#b91c1c" : "#b45309", marginTop: 3 }}>
+                      {g.marca} {g.modelo} · vence {fecha(g.fecha_fin_garantia)} ({Math.round(Number(g.dias_restantes))} días)
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        <div>
-          <h2>Garantías por vencer</h2>
-          {garantias.length === 0 ? (
-            <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>Sin garantías próximas a vencer.</div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {garantias.map((g) => (
-                <div key={g.id_activo} className="tarjeta-formulario" style={{ margin: 0 }}>
-                  <strong style={{ fontSize: 13 }}>{g.codigo_patrimonial} · {g.tipo_activo}</strong>
-                  <div style={{ fontSize: 12, color: Number(g.dias_restantes) < 0 ? "#b91c1c" : "#b45309", marginTop: 3 }}>
-                    {g.marca} {g.modelo} · vence {fecha(g.fecha_fin_garantia)} ({Math.round(Number(g.dias_restantes))} días)
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

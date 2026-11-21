@@ -361,7 +361,7 @@ export default function FormularioServicioConfig({ id }: { id: string }) {
           </section>
         </div>
 
-        {/* COLUMNA DERECHA: SIMULADOR EN VIVO DEL FORMULARIO EN EL PORTAL */}
+        {/* COLUMNA DERECHA: VISTA PREVIA EN VIVO DEL FORMULARIO EN EL PORTAL */}
         <div
           style={{
             backgroundColor: "#ffffff",
@@ -376,7 +376,7 @@ export default function FormularioServicioConfig({ id }: { id: string }) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, borderBottom: "1px solid #e2e8f0", paddingBottom: 10 }}>
             <div>
               <strong style={{ fontSize: 13.5, color: "#0f172a" }}>
-                Simulador del Portal de Autoservicio
+                Vista Previa del Portal de Autoservicio
               </strong>
               <span style={{ display: "block", fontSize: 11.5, color: "#64748b" }}>
                 Previsualización en tiempo real de la captura del usuario solicitante

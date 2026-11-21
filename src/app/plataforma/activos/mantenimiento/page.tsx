@@ -1,7 +1,6 @@
 import { exigirVistaPagina } from "@/shared/lib/vistas";
 import PestanasVista from "@/shared/components/ui/PestanasVista";
 import VistaMantenimientoActivos from "@/modules/activos/views/VistaMantenimientoActivos";
-import VistaActivosMantenimiento from "@/modules/activos/views/VistaActivosMantenimiento";
 
 interface PageProps {
   searchParams?: Promise<{ vista?: string }> | { vista?: string };
@@ -15,9 +14,9 @@ export default async function PaginaMantenimientoActivos({ searchParams }: PageP
   );
 
   return (
-    <div className="space-y-4">
+    <div className="vista-contenedor space-y-4">
       {vistasPermitidas.length > 1 && (
-        <div className="bg-white px-6 pt-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white px-6 pt-2 rounded-xl border border-slate-200 shadow-xs">
           <PestanasVista
             vistas={vistasPermitidas}
             vistaActiva={vistaActiva}
@@ -25,8 +24,7 @@ export default async function PaginaMantenimientoActivos({ searchParams }: PageP
           />
         </div>
       )}
-      {vistaActiva === "garantias" && <VistaMantenimientoActivos />}
-      {vistaActiva === "reparaciones" && <VistaActivosMantenimiento />}
+      <VistaMantenimientoActivos vistaActiva={vistaActiva} />
     </div>
   );
 }

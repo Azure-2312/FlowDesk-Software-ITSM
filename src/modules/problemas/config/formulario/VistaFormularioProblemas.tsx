@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { ModalVistaPrevia } from "./components/ModalVistaPrevia";
 import { PestanaCampos } from "./components/PestanaCampos";
 import { PestanaCamposPersonalizados } from "./components/PestanaCamposPersonalizados";
 import { PestanaListasCatalogos } from "./components/PestanaListasCatalogos";
@@ -69,8 +68,7 @@ export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormul
   const [modalPublicarAbierto, setModalPublicarAbierto] = useState<boolean>(false);
   const [modalHistorialAbierto, setModalHistorialAbierto] = useState<boolean>(false);
   const [modalRestaurarAbierto, setModalRestaurarAbierto] = useState<boolean>(false);
-  const [modalVistaPreviaAbierto, setModalVistaPreviaAbierto] = useState<boolean>(false);
-  const [versionesHistorial, setVersionesHistorial] = useState<any[]>([]);
+    const [versionesHistorial, setVersionesHistorial] = useState<any[]>([]);
   const [diffsPublicacion, setDiffsPublicacion] = useState<any[]>([]);
   const [ticketsAbiertosAfectados, setTicketsAbiertosAfectados] = useState<number>(0);
 
@@ -526,8 +524,7 @@ export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormul
                 }}
                 camposPersonalizados={camposPersonalizados}
                 onIrACamposPersonalizados={() => setTabActiva("campos_personalizados")}
-                onVistaPrevia={() => setModalVistaPreviaAbierto(true)}
-                puedeEditar={puedeEditar}
+                                puedeEditar={puedeEditar}
               />
             </div>
 
@@ -653,13 +650,7 @@ export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormul
             </div>
           </div>
         )}
-      {modalVistaPreviaAbierto && (
-        <ModalVistaPrevia
-          abierto={modalVistaPreviaAbierto}
-          secciones={seccionesFormulario}
-          onCerrar={() => setModalVistaPreviaAbierto(false)}
-        />
-      )}
+      
       </div>
     </div>
   );

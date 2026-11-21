@@ -359,7 +359,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
                 onClick={() => setModalAsistenteAbierto(false)}
                 style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#64748b" }}
               >
-                ✕
+                ×
               </button>
             </div>
 

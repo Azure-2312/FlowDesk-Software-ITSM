@@ -54,11 +54,6 @@ export const PestanaAsignacion: React.FC<PestanaAsignacionProps> = ({
   const [considerarDisp, setConsiderarDisp] = useState(true);
   const [notificarAsig, setNotificarAsig] = useState(true);
 
-  // Simulador
-  const [simCategoria, setSimCategoria] = useState("Hardware");
-  const [simPrioridad, setSimPrioridad] = useState("P1");
-  const [simOrigen, setSimOrigen] = useState("incidente_recurrente");
-
   const abrirNueva = () => {
     setEsNueva(true);
     setReglaEnEdicion(null);
@@ -147,9 +142,9 @@ export const PestanaAsignacion: React.FC<PestanaAsignacionProps> = ({
         </button>
       </div>
 
-      <div className="grid grid-cols-12 gap-6 items-start">
-        {/* Tabla de Reglas (8/12 cols) */}
-        <div className="col-span-8 bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div>
+        {/* Tabla de Reglas */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
           <div className="p-4 border-b border-slate-100 flex items-center justify-between">
             <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
               Reglas de Enrutamiento Automático ({reglas.length})
@@ -236,74 +231,6 @@ export const PestanaAsignacion: React.FC<PestanaAsignacionProps> = ({
             </table>
           </TablaDobleScroll>
         </div>
-
-        {/* Panel Lateral: Simulador de Asignación (4/12 cols) */}
-        <div className="col-span-4 bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-3 text-xs">
-          <span className="font-bold text-slate-800 uppercase tracking-wider block">
-            Simulador de Asignación
-          </span>
-          <p className="text-[11px] text-slate-500">
-            Compruebe qué grupo y especialista recibirían el ticket con los siguientes atributos:
-          </p>
-
-          <div className="space-y-2">
-            <div>
-              <label className="block text-slate-600 font-medium mb-0.5">Categoría:</label>
-              <select
-                value={simCategoria}
-                onChange={(e) => setSimCategoria(e.target.value)}
-                className="w-full border border-slate-300 rounded px-2.5 py-1 text-slate-800 bg-white"
-              >
-                <option value="Hardware">Hardware / Equipos</option>
-                <option value="Software">Software y Aplicaciones</option>
-                <option value="Red">Red y Telecomunicaciones</option>
-                <option value="Seguridad">Seguridad de Información</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-slate-600 font-medium mb-0.5">Prioridad OLA:</label>
-              <select
-                value={simPrioridad}
-                onChange={(e) => setSimPrioridad(e.target.value)}
-                className="w-full border border-slate-300 rounded px-2.5 py-1 text-slate-800 bg-white"
-              >
-                <option value="P1">P1 - Crítica</option>
-                <option value="P2">P2 - Alta</option>
-                <option value="P3">P3 - Media</option>
-                <option value="P4">P4 - Baja</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-slate-600 font-medium mb-0.5">Origen:</label>
-              <select
-                value={simOrigen}
-                onChange={(e) => setSimOrigen(e.target.value)}
-                className="w-full border border-slate-300 rounded px-2.5 py-1 text-slate-800 bg-white"
-              >
-                <option value="incidente_recurrente">Incidente(s) recurrente(s)</option>
-                <option value="deteccion_proactiva">Detección proactiva</option>
-                <option value="tendencias">Análisis de tendencias</option>
-              </select>
-            </div>
-
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-1 mt-3">
-              <span className="text-[10px] text-blue-700 uppercase font-bold tracking-wider block">
-                Resultado de Asignación Simulado
-              </span>
-              <div className="font-bold text-blue-900 text-xs">
-                {reglas[0]?.nombre || "Regla de fábrica"}
-              </div>
-              <div className="text-[11px] text-blue-800">
-                Grupo destino: <strong>{reglas[0]?.departamento_nombre || "Gestión de Problemas"}</strong>
-              </div>
-              <div className="text-[11px] text-slate-600">
-                Estrategia: Bandeja de entrada sin responsable directo (espera asignación de mesa).
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Modal Editor de Regla */}
@@ -319,7 +246,7 @@ export const PestanaAsignacion: React.FC<PestanaAsignacionProps> = ({
                 onClick={() => setModalEditor(false)}
                 className="text-slate-400 hover:text-slate-600 font-bold"
               >
-                ✕
+                ×
               </button>
             </div>
 

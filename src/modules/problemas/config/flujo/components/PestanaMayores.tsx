@@ -56,7 +56,6 @@ export const PestanaMayores: React.FC<PestanaMayoresProps> = ({
     ]
   );
 
-  const [modalProbar, setModalProbar] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
 
@@ -78,7 +77,7 @@ export const PestanaMayores: React.FC<PestanaMayoresProps> = ({
         <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between text-xs text-emerald-900">
           <span>{mensajeExito}</span>
           <button type="button" onClick={() => setMensajeExito("")} className="font-bold">
-            ✕
+            ×
           </button>
         </div>
       )}
@@ -92,16 +91,6 @@ export const PestanaMayores: React.FC<PestanaMayoresProps> = ({
           <p className="text-xs text-slate-500">
             Define los criterios automáticos de severidad mayor, el bloqueo de cierre y el cuestionario formal de lecciones aprendidas.
           </p>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <button
-            type="button"
-            onClick={() => setModalProbar(true)}
-            className="px-3.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition"
-          >
-            Probar criterios
-          </button>
         </div>
       </div>
 
@@ -254,7 +243,7 @@ export const PestanaMayores: React.FC<PestanaMayoresProps> = ({
                       onClick={() => setPreguntas(preguntas.filter((_, i) => i !== qIdx))}
                       className="text-rose-600 hover:text-rose-800 font-bold"
                     >
-                      ✕
+                      ×
                     </button>
                   )}
                 </div>
@@ -292,49 +281,6 @@ export const PestanaMayores: React.FC<PestanaMayoresProps> = ({
         </div>
       </div>
 
-      {/* Modal Probar Criterios */}
-      {modalProbar && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-md w-full p-5 space-y-4 text-xs">
-            <div className="flex items-center justify-between border-b pb-2">
-              <h3 className="text-sm font-bold text-slate-800">
-                Evaluador de Criterios de Problema Mayor
-              </h3>
-              <button
-                type="button"
-                onClick={() => setModalProbar(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <p className="text-slate-600">
-              Simulación de análisis sobre los 14 problemas abiertos en el repositorio:
-            </p>
-
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg space-y-1">
-              <span className="font-bold text-rose-900 block">2 Problemas calificados como MAYORES:</span>
-              <div className="text-rose-800">
-                • <strong>PRB-000042:</strong> Prioridad P1 Crítica (Gateway de pagos).
-              </div>
-              <div className="text-rose-800">
-                • <strong>PRB-000047:</strong> 12 incidentes vinculados concurrentes.
-              </div>
-            </div>
-
-            <div className="flex justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setModalProbar(false)}
-                className="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

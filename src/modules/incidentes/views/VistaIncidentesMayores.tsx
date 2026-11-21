@@ -377,7 +377,7 @@ export default function VistaIncidentesMayores() {
                           color: totalInvolucrados > 0 ? "#1d4ed8" : "#64748b",
                         }}
                       >
-                        👥 {totalInvolucrados} miembros
+                        {totalInvolucrados} miembros
                       </span>
                     </td>
                     <td style={{ padding: "12px 16px", color: "#334155", fontSize: 12.5 }}>
@@ -488,7 +488,7 @@ export default function VistaIncidentesMayores() {
                   color: "#64748b",
                 }}
               >
-                ✕
+                ×
               </button>
             </div>
 
@@ -523,9 +523,9 @@ export default function VistaIncidentesMayores() {
                         backgroundColor: "#ffffff",
                       }}
                     >
-                      <option value="ABIERTO">🔴 ABIERTO (Crisis activa)</option>
-                      <option value="MITIGADO">🟠 MITIGADO (Servicio restablecido)</option>
-                      <option value="CERRADO">🟢 CERRADO (Resuelto)</option>
+                      <option value="ABIERTO">ABIERTO (Crisis activa)</option>
+                      <option value="MITIGADO">MITIGADO (Servicio restablecido)</option>
+                      <option value="CERRADO">CERRADO (Resuelto)</option>
                     </select>
                     {actualizandoEstado && <span style={{ fontSize: 12, color: "#64748b" }}>Actualizando...</span>}
                   </div>
@@ -550,7 +550,7 @@ export default function VistaIncidentesMayores() {
                         textDecoration: "underline",
                       }}
                     >
-                      🔗 Unirse a Sala Virtual ({incidenteSeleccionado.sala_virtual})
+                      Unirse a Sala Virtual ({incidenteSeleccionado.sala_virtual})
                     </a>
                   ) : (
                     <span style={{ fontSize: 12.5, color: "#94a3b8" }}>Sin sala virtual registrada</span>

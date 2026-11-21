@@ -421,7 +421,7 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                 onClick={() => setModalEditar(false)}
                 className="text-slate-400 hover:text-slate-600 font-bold"
               >
-                ✕
+                ×
               </button>
             </div>
 

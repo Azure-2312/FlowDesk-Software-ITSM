@@ -59,9 +59,7 @@ export function MatrizPrioridadSla({ onRegistrarGuardar, ocultarBotonGuardar = f
   const [mensajeExito, setMensajeExito] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // Simulador
-  const [simImpacto, setSimImpacto] = useState(2);
-  const [simUrgencia, setSimUrgencia] = useState(2);
+  
 
   useEffect(() => {
     async function cargarMatriz() {
@@ -93,7 +91,7 @@ export function MatrizPrioridadSla({ onRegistrarGuardar, ocultarBotonGuardar = f
     return prioridades.find((p) => p.id_prioridad === celda.id_prioridad) || null;
   };
 
-  const prioridadSimulada = obtenerPrioridadCelda(simImpacto, simUrgencia);
+  
 
   const handleCambiarCelda = (imp: number, urg: number, idPrioridad: number) => {
     const nuevas = [...celdasEditables];
@@ -199,8 +197,8 @@ export function MatrizPrioridadSla({ onRegistrarGuardar, ocultarBotonGuardar = f
         )}
       </div>
 
-      {/* Grilla: Matriz 3x3 a la izquierda y Simulador a la derecha */}
-      <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 20, alignItems: "start" }}>
+      {/* Matriz 3x3 y Gobernanza */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 20, alignItems: "start" }}>
         {/* LADO IZQUIERDO: MATRIZ BIDIMENSIONAL */}
         <div style={{ backgroundColor: "#ffffff", padding: 22, borderRadius: 10, border: "1px solid #e2e8f0" }}>
           <div style={{ marginBottom: 16 }}>
@@ -287,129 +285,30 @@ export function MatrizPrioridadSla({ onRegistrarGuardar, ocultarBotonGuardar = f
           </div>
         </div>
 
-        {/* LADO DERECHO: SIMULADOR INTERACTIVO */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ backgroundColor: "#ffffff", padding: 20, borderRadius: 10, border: "1px solid #e2e8f0" }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", margin: "0 0 6px 0" }}>
-              Simulador en Tiempo Real
-            </h3>
-            <p style={{ margin: "0 0 14px 0", fontSize: 12, color: "#64748b" }}>
-              Compruebe el comportamiento del cálculo combinando variables de prueba:
-            </p>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
-              <div>
-                <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#475569", marginBottom: 6, textTransform: "uppercase" }}>
-                  Impacto en el negocio:
-                </label>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
-                  {[
-                    { nivel: 1, label: "Baja" },
-                    { nivel: 2, label: "Media" },
-                    { nivel: 3, label: "Alta" },
-                  ].map((imp) => (
-                    <button
-                      key={imp.nivel}
-                      type="button"
-                      onClick={() => setSimImpacto(imp.nivel)}
-                      style={{
-                        padding: "6px 0",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        borderRadius: 6,
-                        border: simImpacto === imp.nivel ? "1.5px solid #2563eb" : "1px solid #cbd5e1",
-                        backgroundColor: simImpacto === imp.nivel ? "#eff6ff" : "#ffffff",
-                        color: simImpacto === imp.nivel ? "#1d4ed8" : "#475569",
-                        cursor: "pointer"
-                      }}
-                    >
-                      {imp.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#475569", marginBottom: 6, textTransform: "uppercase" }}>
-                  Urgencia operativa:
-                </label>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
-                  {[
-                    { nivel: 1, label: "Baja" },
-                    { nivel: 2, label: "Media" },
-                    { nivel: 3, label: "Alta" },
-                  ].map((urg) => (
-                    <button
-                      key={urg.nivel}
-                      type="button"
-                      onClick={() => setSimUrgencia(urg.nivel)}
-                      style={{
-                        padding: "6px 0",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        borderRadius: 6,
-                        border: simUrgencia === urg.nivel ? "1.5px solid #2563eb" : "1px solid #cbd5e1",
-                        backgroundColor: simUrgencia === urg.nivel ? "#eff6ff" : "#ffffff",
-                        color: simUrgencia === urg.nivel ? "#1d4ed8" : "#475569",
-                        cursor: "pointer"
-                      }}
-                    >
-                      {urg.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Resultado del simulador */}
-            <div
-              style={{
-                padding: "16px",
-                borderRadius: 8,
-                backgroundColor: prioridadSimulada?.color ? `${prioridadSimulada.color}15` : "#f8fafc",
-                border: `1.5px solid ${prioridadSimulada?.color || "#cbd5e1"}`,
-                textAlign: "center"
-              }}
-            >
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase", display: "block", marginBottom: 4 }}>
-                Prioridad Calculada y Tiempo SLA
-              </span>
-              <div style={{ fontSize: 18, fontWeight: 800, color: prioridadSimulada?.color || "#0f172a" }}>
-                {prioridadSimulada ? `${prioridadSimulada.codigo} - ${prioridadSimulada.nombre}` : "No definida"}
-              </div>
-              {prioridadSimulada && (
-                <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>
-                  Meta de resolución OLA: <strong>{prioridadSimulada.tiempo_resolucion_horas} horas</strong>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Opciones de gobernanza de la matriz */}
-          <div style={{ backgroundColor: "#ffffff", padding: 20, borderRadius: 10, border: "1px solid #e2e8f0" }}>
-            <h3 style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", margin: "0 0 10px 0" }}>
-              Reglas de Gobernanza
-            </h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 12, color: "#334155" }}>
-              <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-                <input
-                  type="checkbox"
-                  checked={config.permitir_prioridad_manual}
-                  onChange={(e) => setConfig({ ...config, permitir_prioridad_manual: e.target.checked })}
-                  style={{ width: 16, height: 16, accentColor: "#2563eb" }}
-                />
-                Permitir sobrescritura manual con justificación
-              </label>
-              <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-                <input
-                  type="checkbox"
-                  checked={config.recalcular_al_cambiar}
-                  onChange={(e) => setConfig({ ...config, recalcular_al_cambiar: e.target.checked })}
-                  style={{ width: 16, height: 16, accentColor: "#2563eb" }}
-                />
-                Recalcular automáticamente al cambiar impacto/urgencia
-              </label>
-            </div>
+        {/* REGLAS DE GOBERNANZA */}
+        <div style={{ backgroundColor: "#ffffff", padding: 20, borderRadius: 10, border: "1px solid #e2e8f0" }}>
+          <h3 style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", margin: "0 0 10px 0" }}>
+            Reglas de Gobernanza
+          </h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 12, color: "#334155" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={config.permitir_prioridad_manual}
+                onChange={(e) => setConfig({ ...config, permitir_prioridad_manual: e.target.checked })}
+                style={{ width: 16, height: 16, accentColor: "#2563eb" }}
+              />
+              Permitir sobrescritura manual con justificación
+            </label>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={config.recalcular_al_cambiar}
+                onChange={(e) => setConfig({ ...config, recalcular_al_cambiar: e.target.checked })}
+                style={{ width: 16, height: 16, accentColor: "#2563eb" }}
+              />
+              Recalcular automáticamente al cambiar impacto/urgencia
+            </label>
           </div>
         </div>
       </div>
