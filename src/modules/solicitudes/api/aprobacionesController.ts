@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
   }
 
   const idPerfil = sesion.perfilActivo?.id_perfil || 0;
+  const vista = req.nextUrl.searchParams.get("vista") || "pendientes";
 
   try {
     const params: any[] = [];
@@ -40,6 +41,14 @@ export async function GET(req: NextRequest) {
         SELECT id_departamento_empresa FROM usuario WHERE id_usuario = $1
       )`;
     }
+
+    const esHistorial = vista === "historial";
+    const condicionEstado = esHistorial
+      ? `AND ts.estado_aprobacion IN ('APROBADO', 'RECHAZADO')`
+      : `AND ts.estado_aprobacion = 'PENDIENTE_APROBACION'`;
+    const orden = esHistorial
+      ? `ORDER BY COALESCE(ult_ap.fecha_decision, t.fecha_modificacion, t.fecha_creacion) DESC LIMIT 100`
+      : `ORDER BY p.nivel ASC, t.fecha_creacion ASC`;
 
     const sql = `
       SELECT 
@@ -66,6 +75,10 @@ export async function GET(req: NextRequest) {
         p.codigo AS prioridad_codigo,
         et.nombre AS estado_nombre,
         et.color AS estado_color,
+        ult_ap.estado_decision,
+        ult_ap.comentario AS comentario_decision,
+        ult_ap.fecha_decision,
+        ult_ap.aprobador_nombre,
         (t.id_usuario_solicitante = ${sesion.id_usuario}) AS es_solicitante_propietario,
         (t.id_usuario_solicitante != ${sesion.id_usuario}) AS puede_dictaminar
       FROM ticket t
@@ -74,10 +87,19 @@ export async function GET(req: NextRequest) {
       INNER JOIN categoria_ticket c ON c.id_categoria = t.id_categoria
       INNER JOIN prioridad_ticket p ON p.id_prioridad = t.id_prioridad
       INNER JOIN estado_ticket et ON et.id_estado = t.id_estado
+      LEFT JOIN LATERAL (
+        SELECT ta.estado_decision, ta.comentario, ta.fecha_decision,
+               CONCAT(uap.nombres, ' ', uap.apellido_paterno) AS aprobador_nombre
+        FROM ticket_aprobacion ta
+        LEFT JOIN usuario uap ON uap.id_usuario = ta.id_usuario_aprobador
+        WHERE ta.id_ticket = t.id_ticket AND ta.estado_registro = true
+        ORDER BY ta.fecha_decision DESC
+        LIMIT 1
+      ) ult_ap ON true
       WHERE t.estado_registro = true
-        AND ts.estado_aprobacion = 'PENDIENTE_APROBACION'
+        ${condicionEstado}
         ${filtroJurisdiccion}
-      ORDER BY p.nivel ASC, t.fecha_creacion ASC
+      ${orden}
     `;
 
     const tickets = await query(sql, params);

@@ -6,6 +6,75 @@ import { ErrorDominio } from "@/shared/lib/errores";
  * (perfil 4). Lógica de dominio del activo movida desde
  * src/modules/perfiles/supervisor para que el rol solo conserve su UI.
  */
+export async function listarBajasAprobaciones(
+  sesion: { id_usuario: number; id_perfil?: number },
+  vista: string = "pendientes"
+) {
+  const esHistorial = vista === "historial";
+  const estadoCondicion = esHistorial
+    ? "s.estado IN ('APROBADA', 'RECHAZADA')"
+    : "s.estado = 'PENDIENTE'";
+
+  const params: any[] = [];
+  let filtroAlcance = "";
+
+  if (sesion.id_perfil === 1) {
+    filtroAlcance = "";
+  } else if (sesion.id_perfil === 5) {
+    const area = await queryRow<{ id_departamento_empresa: number }>(
+      `SELECT id_departamento_empresa FROM usuario WHERE id_usuario = $1`,
+      [sesion.id_usuario]
+    );
+    if (!area?.id_departamento_empresa) {
+      return [];
+    }
+    params.push(area.id_departamento_empresa);
+    filtroAlcance = `AND (uc.id_departamento_empresa = $${params.length} OR us.id_departamento_empresa = $${params.length})`;
+  } else if (sesion.id_perfil === 4) {
+    params.push(sesion.id_usuario);
+    filtroAlcance = `AND a.id_departamento IN (
+      SELECT d.id_departamento FROM departamento_ti d
+      WHERE d.id_supervisor = $${params.length} AND d.estado_registro = true
+    )`;
+  } else {
+    params.push(sesion.id_usuario);
+    filtroAlcance = `AND (s.id_usuario_solicita = $${params.length} OR a.id_usuario_custodio = $${params.length})`;
+  }
+
+  const sql = `
+    SELECT
+      s.id_solicitud,
+      s.id_activo,
+      s.motivo,
+      s.estado,
+      s.comentario_resolucion,
+      s.fecha_solicitud,
+      s.fecha_resolucion,
+      a.codigo_patrimonial,
+      a.tipo_activo,
+      a.marca,
+      a.modelo,
+      CONCAT(us.nombres, ' ', us.apellido_paterno) AS solicitante_nombre,
+      CONCAT(uc.nombres, ' ', uc.apellido_paterno) AS custodio_nombre,
+      CONCAT(ur.nombres, ' ', ur.apellido_paterno) AS resolutor_nombre
+    FROM solicitud_baja_activo s
+    JOIN activo a ON a.id_activo = s.id_activo
+    LEFT JOIN usuario us ON us.id_usuario = s.id_usuario_solicita
+    LEFT JOIN usuario uc ON uc.id_usuario = a.id_usuario_custodio
+    LEFT JOIN usuario ur ON ur.id_usuario = s.id_usuario_resuelve
+    WHERE s.estado_registro = true
+      AND ${estadoCondicion}
+      ${filtroAlcance}
+    ORDER BY ${
+      esHistorial
+        ? "s.fecha_resolucion DESC NULLS LAST, s.fecha_solicitud DESC"
+        : "s.fecha_solicitud ASC"
+    }
+  `;
+
+  return query(sql, params);
+}
+
 export async function resolverBajaArea(
   idUsuario: number,
   idSolicitud: number,

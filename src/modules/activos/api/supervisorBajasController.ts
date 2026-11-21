@@ -2,17 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { sesionConCapacidad } from "@/shared/lib/api-auth";
-import { listarBajasPendientes } from "@/modules/servicios/services/supervisionService";
-import { resolverBajaArea } from "@/modules/activos";
+import { listarBajasAprobaciones, resolverBajaArea } from "@/modules/activos/services/supervisionBajasService";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.ACTIVOS_VER);
   if (error) return error;
 
   try {
-    return NextResponse.json(await listarBajasPendientes(sesion));
+    const vista = req.nextUrl.searchParams.get("vista") || "pendientes";
+    return NextResponse.json(await listarBajasAprobaciones(sesion, vista));
   } catch (err) {
     if (!(err instanceof ErrorDominio)) console.error("Error al listar bajas:", err);
     const { error: mensaje, status } = respuestaError(err, "Error al consultar bajas");

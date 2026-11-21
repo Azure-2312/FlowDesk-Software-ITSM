@@ -90,6 +90,18 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     ],
   },
 
+  // #21273 Centro de aprobaciones (Solicitudes de servicio)
+  "/plataforma/solicitudes/aprobaciones": {
+    idOpcion: 21273,
+    urlBase: "/plataforma/solicitudes/aprobaciones",
+    nombre: "Centro de aprobaciones",
+    vistaPorDefecto: "pendientes",
+    vistas: [
+      { codigo: "pendientes", etiqueta: "Pendientes", idsLegados: [21273] },
+      { codigo: "historial", etiqueta: "Historial", idsLegados: [21273] },
+    ],
+  },
+
   // 5. #21238 Incidentes mayores
   "/plataforma/incidentes/mayores": {
     idOpcion: 21238,
@@ -199,6 +211,18 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     ],
   },
 
+  // #21274 Centro de aprobaciones (Cambios: evaluación técnica y V°B° de área)
+  "/plataforma/cambios/aprobaciones": {
+    idOpcion: 21274,
+    urlBase: "/plataforma/cambios/aprobaciones",
+    nombre: "Centro de aprobaciones",
+    vistaPorDefecto: "pendientes",
+    vistas: [
+      { codigo: "pendientes", etiqueta: "Pendientes", idsLegados: [21274] },
+      { codigo: "historial", etiqueta: "Historial", idsLegados: [21274] },
+    ],
+  },
+
   // 13. #21191 Configuración de cambios
   "/plataforma/cambios/configuracion": {
     idOpcion: 21191,
@@ -302,6 +326,18 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     vistas: [
       { codigo: "gestion", etiqueta: "Gestión", idsLegados: [21123] },
       { codigo: "consulta", etiqueta: "Consulta", idsLegados: [21122] },
+    ],
+  },
+
+  // #21275 Centro de aprobaciones (Activos: bajas de activos)
+  "/plataforma/activos/aprobaciones": {
+    idOpcion: 21275,
+    urlBase: "/plataforma/activos/aprobaciones",
+    nombre: "Centro de aprobaciones",
+    vistaPorDefecto: "pendientes",
+    vistas: [
+      { codigo: "pendientes", etiqueta: "Pendientes", idsLegados: [21275] },
+      { codigo: "historial", etiqueta: "Historial", idsLegados: [21275] },
     ],
   },
 
