@@ -211,3 +211,119 @@ export async function obtenerDatosEquipoTrabajo(idUsuario: number): Promise<Dato
     historial,
   };
 }
+
+export interface EquipoTICompleto {
+  id_departamento: number;
+  codigo: string;
+  nombre: string;
+  descripcion: string;
+  supervisor_nombre: string;
+  total_integrantes: number;
+  cambios_activos: number;
+  integrantes: {
+    id_usuario: number;
+    nombre: string;
+    correo: string;
+    cargo: string;
+  }[];
+}
+
+export async function obtenerTodosLosEquiposTrabajo(): Promise<EquipoTICompleto[]> {
+  const deptos = await query<any>(`
+    SELECT d.id_departamento, d.codigo, d.nombre, d.descripcion,
+           CONCAT(s.nombres, ' ', s.apellido_paterno) AS supervisor_nombre
+    FROM departamento_ti d
+    LEFT JOIN usuario s ON s.id_usuario = d.id_supervisor
+    WHERE d.estado_registro = true
+    ORDER BY d.nombre ASC
+  `);
+
+  const usuarios = await query<any>(`
+    SELECT u.id_usuario, u.id_departamento,
+           CONCAT(u.nombres, ' ', u.apellido_paterno) AS nombre,
+           u.correo_electronico AS correo,
+           COALESCE(p.nombre, 'Técnico') AS cargo
+    FROM usuario u
+    LEFT JOIN usuario_perfiles up ON up.id_usuario = u.id_usuario AND up.estado_registro = true
+    LEFT JOIN perfiles p ON p.id_perfil = up.id_perfil
+    WHERE u.estado_registro = true
+    ORDER BY u.nombres
+  `);
+
+  const cambiosActivos = await query<any>(`
+    SELECT u.id_departamento, COUNT(c.id_cambio)::int AS total
+    FROM cambio c
+    JOIN usuario u ON u.id_usuario = c.id_usuario_responsable
+    WHERE c.estado_registro = true AND c.id_estado IN (2, 3, 4)
+    GROUP BY u.id_departamento
+  `);
+
+  const mapaActivos = new Map<number, number>();
+  cambiosActivos.forEach((c) => mapaActivos.set(c.id_departamento, c.total));
+
+  return deptos.map((d) => {
+    const ints = usuarios.filter((u) => u.id_departamento === d.id_departamento);
+    return {
+      id_departamento: d.id_departamento,
+      codigo: d.codigo || `DEP-${d.id_departamento}`,
+      nombre: d.nombre,
+      descripcion: d.descripcion || "Equipo técnico de operaciones TI",
+      supervisor_nombre: d.supervisor_nombre || "Sin supervisor asignado",
+      total_integrantes: ints.length,
+      cambios_activos: mapaActivos.get(d.id_departamento) || 0,
+      integrantes: ints.map((i) => ({
+        id_usuario: i.id_usuario,
+        nombre: i.nombre,
+        correo: i.correo,
+        cargo: i.cargo,
+      })),
+    };
+  });
+}
+
+export async function listarCambiosSinAsignar(): Promise<any[]> {
+  return query(`
+    SELECT c.id_cambio, c.codigo_cambio, c.titulo, c.descripcion, c.tipo_cambio,
+           c.id_estado, c.fecha_creacion,
+           it.nombre AS impacto_nombre,
+           pt.nombre AS prioridad_nombre,
+           CONCAT(us.nombres, ' ', us.apellido_paterno) AS solicitante_nombre
+    FROM cambio c
+    LEFT JOIN impacto_ticket it ON it.id_impacto = c.id_impacto
+    LEFT JOIN prioridad_ticket pt ON pt.id_prioridad = c.id_prioridad
+    LEFT JOIN usuario us ON us.id_usuario = c.id_usuario_solicitante
+    WHERE c.estado_registro = true
+      AND c.id_usuario_responsable IS NULL
+    ORDER BY c.fecha_creacion DESC
+  `);
+}
+
+export async function asignarResponsableCambio(idCambio: number, idUsuarioResponsable: number) {
+  return queryRow(`
+    UPDATE cambio
+    SET id_usuario_responsable = $2,
+        fecha_modificacion = now()
+    WHERE id_cambio = $1 AND estado_registro = true
+    RETURNING id_cambio, codigo_cambio, id_usuario_responsable
+  `, [idCambio, idUsuarioResponsable]);
+}
+
+export async function crearNuevoEquipoTrabajo(codigo: string, nombre: string, descripcion: string, idSupervisor?: number) {
+  return queryRow(`
+    INSERT INTO departamento_ti (codigo, nombre, descripcion, id_supervisor, estado_registro)
+    VALUES ($1, $2, $3, $4, true)
+    RETURNING id_departamento, codigo, nombre, descripcion
+  `, [codigo.trim().toUpperCase(), nombre.trim(), descripcion.trim(), idSupervisor || null]);
+}
+
+export async function obtenerTecnicosDisponibles() {
+  return query(`
+    SELECT u.id_usuario, CONCAT(u.nombres, ' ', u.apellido_paterno) AS nombre,
+           u.correo_electronico AS correo, u.id_departamento, d.nombre AS departamento_nombre
+    FROM usuario u
+    JOIN usuario_perfiles up ON up.id_usuario = u.id_usuario AND up.estado_registro = true
+    LEFT JOIN departamento_ti d ON d.id_departamento = u.id_departamento
+    WHERE u.estado_registro = true AND up.id_perfil IN (2, 4, 8)
+    ORDER BY u.nombres
+  `);
+}

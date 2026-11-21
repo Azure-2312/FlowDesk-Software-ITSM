@@ -8,19 +8,20 @@ export default function PaginaMisCambios() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [alcance, setAlcance] = useState<"mis_cambios" | "todos">("mis_cambios");
   const [segmento, setSegmento] = useState<"todos" | "normal" | "estandar" | "emergencia">("todos");
   const [busqueda, setBusqueda] = useState("");
 
-  async function cargarCambios() {
+  async function cargarCambios(alcanceTarget = alcance) {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/cambios?vista=mis_cambios&_t=${Date.now()}`);
+      const res = await fetch(`/api/cambios?vista=${alcanceTarget}&_t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
         setCambios(Array.isArray(data) ? data : []);
       } else {
-        setError("No se pudieron cargar tus cambios RFC.");
+        setError("No se pudieron cargar los cambios RFC.");
       }
     } catch {
       setError("Error de conexión al cargar cambios.");
@@ -30,8 +31,8 @@ export default function PaginaMisCambios() {
   }
 
   useEffect(() => {
-    cargarCambios();
-  }, []);
+    cargarCambios(alcance);
+  }, [alcance]);
 
   const cambiosFiltrados = useMemo(() => {
     return cambios.filter((c) => {
@@ -57,11 +58,51 @@ export default function PaginaMisCambios() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Gestión de Cambios & RFC (ITIL v4)
           </span>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-            Mis cambios (Solicitudes RFC)
-          </h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
-            Solicitudes de cambio propuestas o asignadas a tu responsabilidad ({cambiosFiltrados.length} cambios)
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+              {alcance === "todos" ? "Todos los cambios RFC (Institucional)" : "Mis cambios (Solicitudes RFC)"}
+            </h1>
+            <div style={{ display: "flex", backgroundColor: "#f1f5f9", padding: 2, borderRadius: 6, border: "1px solid #cbd5e1" }}>
+              <button
+                type="button"
+                onClick={() => setAlcance("mis_cambios")}
+                style={{
+                  padding: "4px 10px",
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  border: "none",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  backgroundColor: alcance === "mis_cambios" ? "#ffffff" : "transparent",
+                  color: alcance === "mis_cambios" ? "#1e293b" : "#64748b",
+                  boxShadow: alcance === "mis_cambios" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
+                }}
+              >
+                👤 Mis cambios
+              </button>
+              <button
+                type="button"
+                onClick={() => setAlcance("todos")}
+                style={{
+                  padding: "4px 10px",
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  border: "none",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  backgroundColor: alcance === "todos" ? "#ffffff" : "transparent",
+                  color: alcance === "todos" ? "#1e293b" : "#64748b",
+                  boxShadow: alcance === "todos" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
+                }}
+              >
+                🏢 Todos los cambios
+              </button>
+            </div>
+          </div>
+          <p style={{ fontSize: 13.5, color: "#64748b", margin: 0 }}>
+            {alcance === "todos"
+              ? `Supervisión global de todas las solicitudes RFC de la organización (${cambiosFiltrados.length} cambios)`
+              : `Solicitudes de cambio propuestas o asignadas a tu responsabilidad (${cambiosFiltrados.length} cambios)`}
           </p>
         </div>
 
@@ -82,7 +123,7 @@ export default function PaginaMisCambios() {
           </Link>
           <button
             type="button"
-            onClick={cargarCambios}
+            onClick={() => cargarCambios()}
             style={{
               padding: "8px 14px",
               backgroundColor: "#ffffff",

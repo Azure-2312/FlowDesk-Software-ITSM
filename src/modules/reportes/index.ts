@@ -11,3 +11,4 @@ export {
   generarCsvReporteGerencial,
   nombreArchivoReporteGerencial,
 } from "./services/reportesGerencialesCsv";
+export { default as VistaInformeSupervision } from "./views/VistaInformeSupervision";

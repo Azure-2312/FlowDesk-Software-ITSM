@@ -14,3 +14,4 @@ export { default as VistaProductividad } from "./views/VistaProductividad";
 export { default as VistaReportesActivos } from "./views/VistaReportesActivos";
 export { default as VistaReportesCambios } from "./views/VistaReportesCambios";
 export { default as VistaReportesProblemas } from "./views/VistaReportesProblemas";
+export { default as VistaInformeSupervision } from "./views/VistaInformeSupervision";

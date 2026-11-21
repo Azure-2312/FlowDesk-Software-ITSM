@@ -23,8 +23,9 @@ interface ErrorConocidoItem {
 
 export default function VistaKedb() {
   const router = useRouter();
-  const [pestanaActiva, setPestanaActiva] = useState<"plantillas" | "registrar">("plantillas");
+  const [pestanaActiva, setPestanaActiva] = useState<"plantillas" | "registrar" | "aprobar">("plantillas");
   const [items, setItems] = useState<ErrorConocidoItem[]>([]);
+  const [propuestas, setPropuestas] = useState<any[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
@@ -46,17 +47,79 @@ export default function VistaKedb() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/problemas?kedb=true&_t=${Date.now()}`);
-      const data = await res.json();
-      if (res.ok) {
-        setItems(Array.isArray(data) ? data : []);
+      const [resKedb, resTodos] = await Promise.all([
+        fetch(`/api/problemas?kedb=true&_t=${Date.now()}`),
+        fetch(`/api/problemas?vista=todos&_t=${Date.now()}`),
+      ]);
+
+      const dataKedb = await resKedb.json();
+      if (resKedb.ok) {
+        setItems(Array.isArray(dataKedb) ? dataKedb : []);
       } else {
-        setError(data.error || "No se pudieron cargar los errores conocidos.");
+        setError(dataKedb.error || "No se pudieron cargar los errores conocidos.");
+      }
+
+      if (resTodos.ok) {
+        const dataTodos = await resTodos.json();
+        if (Array.isArray(dataTodos)) {
+          const pends = dataTodos.filter(
+            (p: any) => !p.es_error_conocido && (p.causa_raiz || p.workaround)
+          );
+          setPropuestas(pends);
+        }
       }
     } catch {
       setError("Error de conexión al cargar la base de errores conocidos (KEDB).");
     } finally {
       setCargando(false);
+    }
+  }
+
+  async function aprobarKedb(idProblema: number) {
+    setProcesando(true);
+    setError(null);
+    setOk(null);
+    try {
+      const res = await fetch(`/api/problemas/${idProblema}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ es_error_conocido: true, id_estado: 4 }),
+      });
+      if (res.ok) {
+        setOk("Publicación en KEDB aprobada exitosamente.");
+        await cargarKedb();
+      } else {
+        const j = await res.json();
+        setError(j.error || "No se pudo aprobar la publicación.");
+      }
+    } catch {
+      setError("Error de conexión al aprobar KEDB.");
+    } finally {
+      setProcesando(false);
+    }
+  }
+
+  async function rechazarKedb(idProblema: number) {
+    setProcesando(true);
+    setError(null);
+    setOk(null);
+    try {
+      const res = await fetch(`/api/problemas/${idProblema}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ es_error_conocido: false, id_estado: 2 }),
+      });
+      if (res.ok) {
+        setOk("Caso devuelto a investigación.");
+        await cargarKedb();
+      } else {
+        const j = await res.json();
+        setError(j.error || "No se pudo rechazar.");
+      }
+    } catch {
+      setError("Error de conexión.");
+    } finally {
+      setProcesando(false);
     }
   }
 
@@ -222,6 +285,30 @@ export default function VistaKedb() {
           }}
         >
           <span>➕ Registrar Error Conocido</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setPestanaActiva("aprobar")}
+          style={{
+            padding: "10px 20px",
+            border: "none",
+            borderBottom: pestanaActiva === "aprobar" ? "3px solid #2563eb" : "3px solid transparent",
+            backgroundColor: "transparent",
+            color: pestanaActiva === "aprobar" ? "#2563eb" : "#64748b",
+            fontWeight: pestanaActiva === "aprobar" ? 700 : 500,
+            fontSize: 14,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: -2,
+          }}
+        >
+          <span>✅ Aprobar Publicaciones</span>
+          <span style={{ fontSize: 11, backgroundColor: propuestas.length > 0 ? "#fef3c7" : "#f1f5f9", color: propuestas.length > 0 ? "#92400e" : "#64748b", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
+            {propuestas.length}
+          </span>
         </button>
       </div>
 
@@ -483,6 +570,109 @@ export default function VistaKedb() {
             </button>
           </div>
         </form>
+      )}
+
+      {/* 5. Pestaña: Aprobar Publicaciones KEDB (Supervisión) */}
+      {pestanaActiva === "aprobar" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 18 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+              Propuestas de Errores Conocidos y Soluciones Temporales Pendientes de Aprobación
+            </h2>
+            <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}>
+              Revisa los análisis de causa raíz y workarounds documentados por los técnicos resolutores para aprobar su publicación oficial en la base KEDB.
+            </p>
+          </div>
+
+          {propuestas.length === 0 ? (
+            <div style={{ backgroundColor: "#ffffff", border: "1px dashed #cbd5e1", borderRadius: 8, padding: 40, textAlign: "center", color: "#64748b" }}>
+              <div style={{ fontSize: 28, marginBottom: 8 }}>✅</div>
+              <div style={{ fontWeight: 700, fontSize: 14, color: "#1e293b" }}>No hay publicaciones KEDB pendientes de revisión</div>
+              <p style={{ fontSize: 12.5, color: "#64748b", margin: "4px 0 0" }}>
+                Todos los análisis y workarounds registrados ya se encuentran aprobados o en investigación.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {propuestas.map((p) => (
+                <div
+                  key={p.id_problema}
+                  style={{
+                    backgroundColor: "#ffffff",
+                    border: "1px solid #fed7aa",
+                    borderRadius: 10,
+                    padding: "18px 20px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 12,
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10 }}>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                        <span style={{ fontSize: 11, fontWeight: 800, padding: "2px 8px", backgroundColor: "#fef3c7", color: "#92400e", borderRadius: 4, textTransform: "uppercase" }}>
+                          PROPUESTA KEDB
+                        </span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#ea580c" }}>{p.codigo_problema}</span>
+                      </div>
+                      <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0 }}>{p.titulo}</h3>
+                    </div>
+
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button
+                        type="button"
+                        disabled={procesando}
+                        onClick={() => rechazarKedb(p.id_problema)}
+                        style={{
+                          padding: "6px 14px",
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #cbd5e1",
+                          color: "#475569",
+                          borderRadius: 6,
+                          fontSize: 12.5,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        ↩️ Devolver a investigación
+                      </button>
+                      <button
+                        type="button"
+                        disabled={procesando}
+                        onClick={() => aprobarKedb(p.id_problema)}
+                        style={{
+                          padding: "6px 16px",
+                          backgroundColor: "#059669",
+                          color: "#ffffff",
+                          border: "none",
+                          borderRadius: 6,
+                          fontSize: 12.5,
+                          fontWeight: 700,
+                          cursor: "pointer",
+                        }}
+                      >
+                        ✅ Aprobar y Publicar en KEDB
+                      </button>
+                    </div>
+                  </div>
+
+                  <p style={{ fontSize: 13, color: "#475569", margin: 0, lineHeight: 1.5 }}>{p.descripcion}</p>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, padding: 14, backgroundColor: "#fffbeb", borderRadius: 8, fontSize: 12.5 }}>
+                    <div>
+                      <strong style={{ color: "#92400e", display: "block", marginBottom: 4 }}>🔍 Causa Raíz Identificada:</strong>
+                      <span style={{ color: "#1e293b" }}>{p.causa_raiz || "Pendiente de redacción"}</span>
+                    </div>
+                    <div>
+                      <strong style={{ color: "#166534", display: "block", marginBottom: 4 }}>💡 Solución Temporal (Workaround):</strong>
+                      <span style={{ color: "#1e293b" }}>{p.workaround || "Sin workaround documentado"}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

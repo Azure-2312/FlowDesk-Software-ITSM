@@ -26,6 +26,14 @@ export async function listarCambios(sesion: any, filtros: FiltrosCambios) {
     condiciones.push(`c.id_estado IN (3, 4, 5)`);
   } else if (vista === "historial") {
     condiciones.push(`c.id_estado IN (6, 7, 8)`);
+  } else if (vista === "todos") {
+    // Modo "todos los cambios": supervisor y admin ven todos los cambios de la organización
+  } else if (vista === "sin_asignar") {
+    condiciones.push(`c.id_usuario_responsable IS NULL`);
+  } else if (vista === "mis_cambios") {
+    condiciones.push(`(c.id_usuario_solicitante = $${paramIdx} OR c.id_usuario_responsable = $${paramIdx})`);
+    params.push(sesion.id_usuario);
+    paramIdx++;
   } else if (sesion.perfilActivo?.id_perfil === 2) {
     condiciones.push(`(c.id_usuario_solicitante = $${paramIdx} OR c.id_usuario_responsable = $${paramIdx})`);
     params.push(sesion.id_usuario);

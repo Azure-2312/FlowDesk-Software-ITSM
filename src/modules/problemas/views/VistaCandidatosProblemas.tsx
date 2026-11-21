@@ -43,6 +43,13 @@ export default function VistaCandidatosProblemas() {
   const [abierto, setAbierto] = useState<string | null>(null);
   const [form, setForm] = useState<Record<string, { titulo: string; descripcion: string; id_prioridad: string }>>({});
 
+  // Subida manual de candidato a problema
+  const [modalManual, setModalManual] = useState(false);
+  const [manualTitulo, setManualTitulo] = useState("");
+  const [manualDesc, setManualDesc] = useState("");
+  const [manualPrioridad, setManualPrioridad] = useState("");
+  const [guardandoManual, setGuardandoManual] = useState(false);
+
   async function cargar() {
     setCargando(true);
     setError(null);
@@ -103,11 +110,58 @@ export default function VistaCandidatosProblemas() {
     }
   }
 
+  async function subirCandidatoManual(e: React.FormEvent) {
+    e.preventDefault();
+    if (!manualTitulo.trim()) return;
+
+    setGuardandoManual(true);
+    setError(null);
+    setOk(null);
+
+    try {
+      const res = await fetch("/api/problemas/gestion/candidatos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          titulo: manualTitulo.trim(),
+          descripcion: manualDesc.trim() || "Candidato registrado manualmente por supervisión técnica.",
+          ids_tickets: [],
+          id_prioridad: manualPrioridad || undefined,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error ?? "No se pudo registrar el candidato a problema.");
+      } else {
+        setOk(`Candidato registrado como Problema ${json.codigo_problema} exitosamente.`);
+        setModalManual(false);
+        setManualTitulo("");
+        setManualDesc("");
+        setManualPrioridad("");
+        await cargar();
+      }
+    } catch {
+      setError("Error de conexión al registrar candidato.");
+    } finally {
+      setGuardandoManual(false);
+    }
+  }
+
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Candidatos a problema</h1>
-        <p>Sugerencias de las reglas de umbral con alcance global: incidentes agrupados que superan el umbral configurado.</p>
+      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <div>
+          <h1 style={{ margin: 0 }}>Candidatos a problema</h1>
+          <p style={{ margin: "4px 0 0" }}>Sugerencias de las reglas de umbral con alcance global: incidentes agrupados que superan el umbral configurado.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setModalManual(true)}
+          className="boton-primario"
+          style={{ width: "auto", fontSize: 13, padding: "8px 16px", cursor: "pointer" }}
+        >
+          + Subir candidato manual
+        </button>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -138,7 +192,44 @@ export default function VistaCandidatosProblemas() {
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {candidatos.map((c) => {
                 const clave = claveDe(c);
-                return (
+                async function subirCandidatoManual(e: React.FormEvent) {
+    e.preventDefault();
+    if (!manualTitulo.trim()) return;
+
+    setGuardandoManual(true);
+    setError(null);
+    setOk(null);
+
+    try {
+      const res = await fetch("/api/problemas/gestion/candidatos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          titulo: manualTitulo.trim(),
+          descripcion: manualDesc.trim() || "Candidato registrado manualmente por supervisión técnica.",
+          ids_tickets: [],
+          id_prioridad: manualPrioridad || undefined,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error ?? "No se pudo registrar el candidato a problema.");
+      } else {
+        setOk(`Candidato registrado como Problema ${json.codigo_problema} exitosamente.`);
+        setModalManual(false);
+        setManualTitulo("");
+        setManualDesc("");
+        setManualPrioridad("");
+        await cargar();
+      }
+    } catch {
+      setError("Error de conexión al registrar candidato.");
+    } finally {
+      setGuardandoManual(false);
+    }
+  }
+
+  return (
                   <div key={clave} className="tarjeta-formulario" style={{ margin: 0 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
                       <div>
@@ -186,6 +277,92 @@ export default function VistaCandidatosProblemas() {
             </div>
           )}
         </>
+      )}
+
+      {/* Modal Subir Candidato Manual */}
+      {modalManual && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(15, 23, 42, 0.6)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: 20,
+          }}
+        >
+          <div style={{ backgroundColor: "#ffffff", borderRadius: 10, maxWidth: 540, width: "100%", padding: 24, boxShadow: "0 20px 25px rgba(0,0,0,0.15)" }}>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: "0 0 16px" }}>
+              Registrar Candidato a Problema Manualmente
+            </h3>
+            <form onSubmit={subirCandidatoManual} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
+                  Título del Candidato *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej. Latencia anómala recurrente en Microservicio Auth"
+                  value={manualTitulo}
+                  onChange={(e) => setManualTitulo(e.target.value)}
+                  style={{ width: "100%", padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13 }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
+                  Prioridad Estimada
+                </label>
+                <select
+                  value={manualPrioridad}
+                  onChange={(e) => setManualPrioridad(e.target.value)}
+                  style={{ width: "100%", padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, backgroundColor: "#ffffff" }}
+                >
+                  <option value="">-- Sin definir --</option>
+                  {prioridades.map((p) => (
+                    <option key={p.id} value={p.id}>{p.nombre}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
+                  Descripción / Sospecha de Causa Raíz
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Detalle el comportamiento recurrente, patrones observados o motivos para abrir investigación formal..."
+                  value={manualDesc}
+                  onChange={(e) => setManualDesc(e.target.value)}
+                  style={{ width: "100%", padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13 }}
+                />
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 10 }}>
+                <button
+                  type="button"
+                  onClick={() => setModalManual(false)}
+                  style={{ padding: "8px 14px", border: "1px solid #cbd5e1", borderRadius: 6, backgroundColor: "#ffffff", fontSize: 13, cursor: "pointer" }}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={guardandoManual}
+                  style={{ padding: "8px 18px", backgroundColor: "#2563eb", color: "#ffffff", border: "none", borderRadius: 6, fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+                >
+                  {guardandoManual ? "Registrando..." : "Registrar Candidato"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

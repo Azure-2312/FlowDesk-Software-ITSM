@@ -1,6 +1,10 @@
 import { exigirVistaPagina } from "@/shared/lib/vistas";
 import PestanasVista from "@/shared/components/ui/PestanasVista";
-import { VistaReportesOperativos, VistaReportesArea } from "@/modules/reportes/ui";
+import {
+  VistaReportesOperativos,
+  VistaReportesArea,
+  VistaInformeSupervision,
+} from "@/modules/reportes/ui";
 
 interface PageProps {
   searchParams?: Promise<{ vista?: string }> | { vista?: string };
@@ -24,7 +28,13 @@ export default async function PaginaReportesOperativos({ searchParams }: PagePro
           />
         </div>
       )}
-      {vistaActiva === "area" ? <VistaReportesArea /> : <VistaReportesOperativos />}
+      {vistaActiva === "supervision" ? (
+        <VistaInformeSupervision />
+      ) : vistaActiva === "area" ? (
+        <VistaReportesArea />
+      ) : (
+        <VistaReportesOperativos />
+      )}
     </div>
   );
 }

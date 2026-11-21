@@ -23,21 +23,21 @@ interface ProblemaItem {
 }
 
 export default function PaginaProblemasAsignados() {
+  const [alcance, setAlcance] = useState<"mios" | "todos">("mios");
   const [problemas, setProblemas] = useState<ProblemaItem[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  async function cargarProblemas() {
+  async function cargarProblemas(alcanceTarget = alcance) {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/problemas?_t=${Date.now()}`);
+      const res = await fetch(`/api/problemas?vista=${alcanceTarget}&_t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
-        // Filtrar los asignados a mí (o todos los del técnico si la API ya los filtra)
         setProblemas(Array.isArray(data) ? data : []);
       } else {
-        setError("No se pudieron cargar los problemas asignados.");
+        setError("No se pudieron cargar los problemas.");
       }
     } catch {
       setError("Error de conexión al cargar problemas.");
@@ -47,8 +47,8 @@ export default function PaginaProblemasAsignados() {
   }
 
   useEffect(() => {
-    cargarProblemas();
-  }, []);
+    cargarProblemas(alcance);
+  }, [alcance]);
 
   return (
     <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto" }}>
@@ -57,11 +57,51 @@ export default function PaginaProblemasAsignados() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Gestión de Problemas ITIL v4
           </span>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-            Problemas asignados a mí
-          </h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
-            Investigaciones de causa raíz y workaround asignadas a tu gestión técnica ({problemas.length} problemas)
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+              {alcance === "todos" ? "Todos los problemas (Institucional)" : "Problemas asignados a mí"}
+            </h1>
+            <div style={{ display: "flex", backgroundColor: "#f1f5f9", padding: 2, borderRadius: 6, border: "1px solid #cbd5e1" }}>
+              <button
+                type="button"
+                onClick={() => setAlcance("mios")}
+                style={{
+                  padding: "4px 10px",
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  border: "none",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  backgroundColor: alcance === "mios" ? "#ffffff" : "transparent",
+                  color: alcance === "mios" ? "#1e293b" : "#64748b",
+                  boxShadow: alcance === "mios" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
+                }}
+              >
+                👤 Mis problemas
+              </button>
+              <button
+                type="button"
+                onClick={() => setAlcance("todos")}
+                style={{
+                  padding: "4px 10px",
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  border: "none",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  backgroundColor: alcance === "todos" ? "#ffffff" : "transparent",
+                  color: alcance === "todos" ? "#1e293b" : "#64748b",
+                  boxShadow: alcance === "todos" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
+                }}
+              >
+                🏢 Todos los problemas
+              </button>
+            </div>
+          </div>
+          <p style={{ fontSize: 13.5, color: "#64748b", margin: 0 }}>
+            {alcance === "todos"
+              ? `Supervisión institucional de todos los problemas de causa raíz (${problemas.length} problemas)`
+              : `Investigaciones de causa raíz y workaround asignadas a tu gestión técnica (${problemas.length} problemas)`}
           </p>
         </div>
 
@@ -82,7 +122,7 @@ export default function PaginaProblemasAsignados() {
           </Link>
           <button
             type="button"
-            onClick={cargarProblemas}
+            onClick={() => cargarProblemas()}
             style={{
               padding: "8px 14px",
               backgroundColor: "#ffffff",

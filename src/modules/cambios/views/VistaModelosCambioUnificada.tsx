@@ -33,7 +33,7 @@ interface ModeloEstandar {
 
 export default function VistaModelosCambioUnificada() {
   const router = useRouter();
-  const [pestanaActiva, setPestanaActiva] = useState<"plantillas" | "crear">("plantillas");
+  const [pestanaActiva, setPestanaActiva] = useState<"plantillas" | "crear" | "aprobar">("plantillas");
   const [items, setItems] = useState<ModeloEstandar[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +83,34 @@ export default function VistaModelosCambioUnificada() {
   useEffect(() => {
     cargarModelos();
   }, []);
+
+  const pendientesAprobacion = items.filter(
+    (m) => ["BORRADOR", "EN_REVISION", "PROPUESTO"].includes((m.estado || "").toUpperCase())
+  );
+
+  async function cambiarEstado(idModelo: number, nuevoEstado: string) {
+    setProcesando(true);
+    setError(null);
+    setOk(null);
+    try {
+      const res = await fetch("/api/cambios/gestion/modelos", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_modelo: idModelo, estado: nuevoEstado }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error ?? "No se pudo actualizar el estado del modelo.");
+      } else {
+        setOk(`Modelo de cambio estándar ${nuevoEstado === "APROBADO" ? "aprobado y publicado" : "actualizado"}.`);
+        await cargarModelos();
+      }
+    } catch {
+      setError("Error de conexión al actualizar estado.");
+    } finally {
+      setProcesando(false);
+    }
+  }
 
   async function registrarModelo(e: React.FormEvent) {
     e.preventDefault();
@@ -223,6 +251,30 @@ export default function VistaModelosCambioUnificada() {
           }}
         >
           <span>➕ Crear Modelo</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setPestanaActiva("aprobar")}
+          style={{
+            padding: "10px 20px",
+            border: "none",
+            borderBottom: pestanaActiva === "aprobar" ? "3px solid #2563eb" : "3px solid transparent",
+            backgroundColor: "transparent",
+            color: pestanaActiva === "aprobar" ? "#2563eb" : "#64748b",
+            fontWeight: pestanaActiva === "aprobar" ? 700 : 500,
+            fontSize: 14,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: -2,
+          }}
+        >
+          <span>✅ Aprobar Publicaciones</span>
+          <span style={{ fontSize: 11, backgroundColor: pendientesAprobacion.length > 0 ? "#fef3c7" : "#f1f5f9", color: pendientesAprobacion.length > 0 ? "#92400e" : "#64748b", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
+            {pendientesAprobacion.length}
+          </span>
         </button>
       </div>
 
@@ -562,6 +614,111 @@ export default function VistaModelosCambioUnificada() {
             </button>
           </div>
         </form>
+      )}
+
+      {/* 5. Pestaña: Aprobar Publicaciones (Supervisión) */}
+      {pestanaActiva === "aprobar" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 18 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+              Propuestas de Modelos de Cambio Estándar Pendientes de Aprobación
+            </h2>
+            <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}>
+              Como supervisor, revisa las plantillas técnicas propuestas por los técnicos resolutores para autorizar su incorporación oficial al catálogo preaprobado.
+            </p>
+          </div>
+
+          {pendientesAprobacion.length === 0 ? (
+            <div style={{ backgroundColor: "#ffffff", border: "1px dashed #cbd5e1", borderRadius: 8, padding: 40, textAlign: "center", color: "#64748b" }}>
+              <div style={{ fontSize: 28, marginBottom: 8 }}>✅</div>
+              <div style={{ fontWeight: 700, fontSize: 14, color: "#1e293b" }}>No hay modelos estándar pendientes de aprobación</div>
+              <p style={{ fontSize: 12.5, color: "#64748b", margin: "4px 0 0" }}>
+                Todas las plantillas propuestas han sido revisadas o ya están publicadas.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {pendientesAprobacion.map((m) => (
+                <div
+                  key={m.id_modelo}
+                  style={{
+                    backgroundColor: "#ffffff",
+                    border: "1px solid #cbd5e1",
+                    borderRadius: 10,
+                    padding: "18px 20px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 12,
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10 }}>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                        <span style={{ fontSize: 11, fontWeight: 800, padding: "2px 8px", backgroundColor: "#fef3c7", color: "#92400e", borderRadius: 4, textTransform: "uppercase" }}>
+                          {m.estado || "EN REVISIÓN"}
+                        </span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#2563eb" }}>{m.codigo}</span>
+                      </div>
+                      <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0 }}>{m.nombre}</h3>
+                    </div>
+
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button
+                        type="button"
+                        disabled={procesando}
+                        onClick={() => cambiarEstado(m.id_modelo, "RETIRADO")}
+                        style={{
+                          padding: "6px 14px",
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #fca5a5",
+                          color: "#dc2626",
+                          borderRadius: 6,
+                          fontSize: 12.5,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Rechazar / Retirar
+                      </button>
+                      <button
+                        type="button"
+                        disabled={procesando}
+                        onClick={() => cambiarEstado(m.id_modelo, "APROBADO")}
+                        style={{
+                          padding: "6px 16px",
+                          backgroundColor: "#059669",
+                          color: "#ffffff",
+                          border: "none",
+                          borderRadius: 6,
+                          fontSize: 12.5,
+                          fontWeight: 700,
+                          cursor: "pointer",
+                        }}
+                      >
+                        ✅ Aprobar y Publicar
+                      </button>
+                    </div>
+                  </div>
+
+                  {m.descripcion && (
+                    <p style={{ fontSize: 13, color: "#475569", margin: 0, lineHeight: 1.5 }}>{m.descripcion}</p>
+                  )}
+
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10, padding: 12, backgroundColor: "#f8fafc", borderRadius: 6, fontSize: 12 }}>
+                    <div><strong>Riesgo fijado:</strong> {(m.riesgo_fijo || "Bajo").toUpperCase()}</div>
+                    <div><strong>Autorización automática:</strong> {m.autorizacion_automatica ? "Sí" : "No"}</div>
+                    <div><strong>Versión:</strong> {m.version_modelo || "1"}</div>
+                    {m.contenido_prellenado?.plan_rollback && (
+                      <div style={{ gridColumn: "1 / -1" }}>
+                        <strong>Plan de Rollback:</strong> {m.contenido_prellenado.plan_rollback}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

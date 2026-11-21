@@ -4,17 +4,22 @@ import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { sesionConCapacidad } from "@/shared/lib/api-auth";
 import {
   listarIncidentesMayores,
+  listarInvolucradosDisponibles,
   declararIncidenteMayor,
   actualizarIncidenteMayor,
 } from "@/modules/incidentes/services/incidentesMayoresService";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const { error } = sesionConCapacidad(CAPACIDADES.INCIDENTES_GESTIONAR);
   if (error) return error;
 
   try {
+    const url = new URL(req.url);
+    if (url.searchParams.get("recurso") === "involucrados") {
+      return NextResponse.json(await listarInvolucradosDisponibles());
+    }
     return NextResponse.json(await listarIncidentesMayores());
   } catch (err) {
     if (!(err instanceof ErrorDominio)) console.error("Error al listar incidentes mayores:", err);

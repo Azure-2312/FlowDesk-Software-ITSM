@@ -9,16 +9,73 @@ import { ErrorDominio } from "@/shared/lib/errores";
 export async function listarIncidentesMayores() {
   return query(
     `SELECT im.id_incidente_mayor, im.codigo, im.titulo, im.descripcion, im.severidad,
-            im.estado, im.sala_virtual, im.comunicados,
+            im.estado, im.sala_virtual, im.comunicados, COALESCE(im.involucrados, '[]'::jsonb) AS involucrados,
             im.fecha_declaracion, im.fecha_cierre,
             im.id_ticket, t.codigo_ticket,
+            im.id_departamento, d.nombre AS departamento_nombre,
             CONCAT(u.nombres, ' ', u.apellido_paterno) AS declarado_por
      FROM incidente_mayor im
      LEFT JOIN ticket t ON t.id_ticket = im.id_ticket
+     LEFT JOIN departamento_ti d ON d.id_departamento = im.id_departamento
      LEFT JOIN usuario u ON u.id_usuario = im.id_usuario_declara
      WHERE im.estado_registro = true
      ORDER BY (im.estado = 'ABIERTO') DESC, im.fecha_declaracion DESC`
   );
+}
+
+export async function listarInvolucradosDisponibles() {
+  const usuarios = await query<{
+    id_usuario: number;
+    nombre: string;
+    correo: string;
+    id_perfil: number;
+    perfil_nombre: string;
+    departamento_nombre: string | null;
+  }>(`
+    SELECT u.id_usuario,
+           CONCAT(u.nombres, ' ', u.apellido_paterno) AS nombre,
+           u.correo_electronico AS correo,
+           p.id_perfil,
+           p.nombre AS perfil_nombre,
+           d.nombre AS departamento_nombre
+    FROM usuario u
+    INNER JOIN usuario_perfiles up ON up.id_usuario = u.id_usuario AND up.estado_registro = true
+    INNER JOIN perfiles p ON p.id_perfil = up.id_perfil
+    LEFT JOIN departamento_ti d ON d.id_departamento = u.id_departamento
+    WHERE u.estado_registro = true
+    ORDER BY p.id_perfil, u.nombres
+  `);
+
+  const tecnicos: any[] = [];
+  const gestoresArea: any[] = [];
+  const gestoresModulo: any[] = [];
+  const otros: any[] = [];
+  const vistos = new Set<number>();
+
+  for (const u of usuarios) {
+    if (vistos.has(u.id_usuario)) continue;
+    vistos.add(u.id_usuario);
+
+    const item = {
+      id_usuario: u.id_usuario,
+      nombre: u.nombre,
+      correo: u.correo,
+      cargo: u.perfil_nombre,
+      departamento: u.departamento_nombre || "General",
+    };
+
+    if (u.id_perfil === 2) {
+      tecnicos.push({ ...item, tipo: "tecnico" });
+    } else if (u.id_perfil === 5) {
+      gestoresArea.push({ ...item, tipo: "gestor_area" });
+    } else if ([8, 9, 10].includes(u.id_perfil)) {
+      gestoresModulo.push({ ...item, tipo: "gestor_modulo" });
+    } else {
+      otros.push({ ...item, tipo: "otro" });
+    }
+  }
+
+  return { tecnicos, gestoresArea, gestoresModulo, otros };
 }
 
 export async function declararIncidenteMayor(sesion: { id_usuario: number }, body: any) {
@@ -35,11 +92,13 @@ export async function declararIncidenteMayor(sesion: { id_usuario: number }, bod
   const correlativo = String(parseInt(countRow?.c || "0", 10) + 1).padStart(4, "0");
   const codigo = `IM-${year}-${correlativo}`;
 
+  const involucradosJson = JSON.stringify(Array.isArray(body.involucrados) ? body.involucrados : []);
+
   const fila = await queryRow<any>(
     `INSERT INTO incidente_mayor
-       (codigo, titulo, descripcion, severidad, id_ticket, id_departamento, sala_virtual, id_usuario_declara)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-     RETURNING id_incidente_mayor, codigo, titulo, severidad, estado, fecha_declaracion`,
+       (codigo, titulo, descripcion, severidad, id_ticket, id_departamento, sala_virtual, id_usuario_declara, involucrados)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb)
+     RETURNING id_incidente_mayor, codigo, titulo, severidad, estado, fecha_declaracion, involucrados`,
     [
       codigo,
       titulo,
@@ -49,9 +108,10 @@ export async function declararIncidenteMayor(sesion: { id_usuario: number }, bod
       body.id_departamento ?? null,
       body.sala_virtual ?? null,
       sesion.id_usuario,
+      involucradosJson,
     ]
   );
-  return { mensaje: "Incidente mayor declarado.", incidente: fila };
+  return { mensaje: "Incidente mayor declarado exitosamente.", incidente: fila };
 }
 
 export async function actualizarIncidenteMayor(
@@ -65,18 +125,21 @@ export async function actualizarIncidenteMayor(
   }
 
   const comunicado = body.comunicado ? String(body.comunicado).trim() : null;
+  const involucradosJson = body.involucrados ? JSON.stringify(body.involucrados) : null;
 
   const fila = await queryRow<any>(
     `UPDATE incidente_mayor
      SET estado = COALESCE($2, estado),
          descripcion = COALESCE($3, descripcion),
-         comunicados = CASE WHEN $4::text IS NULL THEN comunicados
-           ELSE comunicados || jsonb_build_array(jsonb_build_object('texto', $4, 'fecha', now(), 'usuario', $5)) END,
-         id_usuario_cierra = CASE WHEN $2 = 'CERRADO' THEN $5 ELSE id_usuario_cierra END,
+         sala_virtual = COALESCE($4, sala_virtual),
+         involucrados = CASE WHEN $5::text IS NULL THEN involucrados ELSE $5::jsonb END,
+         comunicados = CASE WHEN $6::text IS NULL THEN comunicados
+           ELSE COALESCE(comunicados, '[]'::jsonb) || jsonb_build_array(jsonb_build_object('texto', $6, 'fecha', now(), 'usuario', $7)) END,
+         id_usuario_cierra = CASE WHEN $2 = 'CERRADO' THEN $7 ELSE id_usuario_cierra END,
          fecha_cierre = CASE WHEN $2 = 'CERRADO' THEN now() ELSE fecha_cierre END
      WHERE id_incidente_mayor = $1 AND estado_registro = true
-     RETURNING id_incidente_mayor, codigo, estado, comunicados`,
-    [idIncidente, estado, body.descripcion ?? null, comunicado, sesion.id_usuario]
+     RETURNING id_incidente_mayor, codigo, estado, comunicados, involucrados`,
+    [idIncidente, estado, body.descripcion ?? null, body.sala_virtual ?? null, involucradosJson, comunicado, sesion.id_usuario]
   );
   if (!fila) throw new ErrorDominio("El incidente mayor no existe.", 404);
   return { mensaje: "Incidente mayor actualizado.", incidente: fila };

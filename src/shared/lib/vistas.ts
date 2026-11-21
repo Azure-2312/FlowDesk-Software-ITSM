@@ -97,7 +97,8 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     nombre: "Incidentes mayores",
     vistaPorDefecto: "listado",
     vistas: [
-      { codigo: "listado", etiqueta: "Listado", idsLegados: [21238] },
+      { codigo: "listado", etiqueta: "Bandeja de incidentes", idsLegados: [21238] },
+      { codigo: "declarar", etiqueta: "Declarar incidente", idsLegados: [21238] },
       { codigo: "sala-crisis", etiqueta: "Sala de crisis", idsLegados: [21239] },
     ],
   },
@@ -391,6 +392,7 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     vistas: [
       { codigo: "operativo", etiqueta: "Operativos institucionales", idsLegados: [21175] },
       { codigo: "area", etiqueta: "Reportes del área", idsLegados: [21182] },
+      { codigo: "supervision", etiqueta: "Informe de Supervisión TI", idsLegados: [21175] },
     ],
   },
 
@@ -470,6 +472,10 @@ export function obtenerVistaPorDefecto(urlBase: string, idPerfil?: number): stri
 
   if (pantalla.urlBase === "/plataforma/activos/inventario" && idPerfil === 2) {
     return "operativo";
+  }
+
+  if (pantalla.urlBase === "/plataforma/reportes/operativos" && idPerfil === 4) {
+    return "supervision";
   }
 
   return pantalla.vistaPorDefecto;

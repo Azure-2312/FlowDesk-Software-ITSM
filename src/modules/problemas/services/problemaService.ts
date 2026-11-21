@@ -63,6 +63,7 @@ const SELECT_PROBLEMA = `
 export interface FiltrosProblemas {
   estado?: string | null;
   soloKedb?: boolean;
+  vista?: string | null;
 }
 
 export async function listarProblemas(filtros: FiltrosProblemas, sesion: SesionProblema) {
@@ -79,7 +80,12 @@ export async function listarProblemas(filtros: FiltrosProblemas, sesion: SesionP
     condiciones.push(`p.es_error_conocido = true`);
   }
 
-  if (sesion.idPerfil === 2) {
+  if (filtros.vista === "todos") {
+    // Ver todos los problemas a nivel institucional
+  } else if (filtros.vista === "mios") {
+    condiciones.push(`p.id_usuario_asignado = $${paramIdx++}`);
+    params.push(sesion.idUsuario);
+  } else if (sesion.idPerfil === 2) {
     condiciones.push(
       `p.id_departamento = (SELECT td.id_departamento FROM tecnico_detalle td WHERE td.id_usuario = $${paramIdx++} AND td.estado_registro = true)`
     );

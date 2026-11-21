@@ -16,7 +16,11 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   try {
     const rows = await listarProblemas(
-      { estado: searchParams.get("estado"), soloKedb: searchParams.get("kedb") === "true" },
+      {
+        estado: searchParams.get("estado"),
+        soloKedb: searchParams.get("kedb") === "true",
+        vista: searchParams.get("vista"),
+      },
       { idUsuario: sesion.id_usuario, idPerfil: sesion.perfilActivo?.id_perfil }
     );
     return NextResponse.json(rows);

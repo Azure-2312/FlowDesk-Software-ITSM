@@ -52,9 +52,7 @@ export async function obtenerPanelSupervision(sesion: Sesion) {
           WHERE im.estado = 'ABIERTO' AND im.estado_registro = true) AS incidentes_mayores,
        (SELECT COUNT(*)::int FROM ticket t
           WHERE t.estado_registro = true AND ${AREA_TICKETS}
-            AND t.fecha_cierre IS NULL AND t.id_usuario_asignado IS NULL AND t.id_prioridad IN (1, 2)) AS p1p2_sin_asignar,
-       (SELECT COUNT(*)::int FROM cambio c
-          WHERE c.estado_registro = true AND ${AREA_CAMBIOS} AND c.id_estado = 2) AS aprobaciones_pendientes`,
+            AND t.fecha_cierre IS NULL AND t.id_usuario_asignado IS NULL AND t.id_prioridad IN (1, 2)) AS p1p2_sin_asignar`,
     [sesion.id_usuario]
   );
 
@@ -71,7 +69,6 @@ export async function obtenerPanelSupervision(sesion: Sesion) {
     alertas: {
       incidentes_mayores: alertasRow?.incidentes_mayores ?? 0,
       p1p2_sin_asignar: alertasRow?.p1p2_sin_asignar ?? 0,
-      aprobaciones_pendientes: alertasRow?.aprobaciones_pendientes ?? 0,
       tecnicos_sobrecargados: sobrecargados,
     },
     tecnicos,
