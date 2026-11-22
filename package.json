@@ -11,7 +11,10 @@
     "db:status": "pg_ctl status -D \"%USERPROFILE%\\AppData\\Local\\Programs\\pgsql\\data\"",
     "db:stop": "pg_ctl stop -D \"%USERPROFILE%\\AppData\\Local\\Programs\\pgsql\\data\"",
     "test": "node scripts/test_e2e_lifecycle.js",
-    "test:e2e": "node scripts/test_e2e_lifecycle.js"
+    "test:e2e": "node scripts/test_e2e_lifecycle.js",
+    "test:api-clientes": "node scripts/test_api_clientes.js",
+    "seed:api-clientes": "node scripts/seed_api_clientes.js",
+    "protect:audit-log": "node scripts/protect_audit_log.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

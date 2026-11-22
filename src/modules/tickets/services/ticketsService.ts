@@ -440,92 +440,55 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
     idDeptoFinal = Number(id_departamento);
   }
 
-  // 6. Generar código correlativo de ticket: ej. INC-2026-0005 o REQ-2026-0005
-  const anioActual = new Date().getFullYear();
-  const conteoAnio = await queryRow<{ total: string }>(
-    `SELECT COUNT(*) as total FROM ticket WHERE codigo_ticket LIKE $1`,
-    [`${tipo.prefijo_codigo}-${anioActual}-%`]
-  );
-  const siguienteCorrelativo = (parseInt(conteoAnio?.total || "0", 10) + 1).toString().padStart(4, "0");
-  const codigoTicket = `${tipo.prefijo_codigo}-${anioActual}-${siguienteCorrelativo}`;
-
-  // 7. Calcular fecha límite SLA en horas hábiles (ITIL 4 / ISO 20000: L-V 08:00 a 18:00)
-  const fechaLimiteSla = await calcularFechaLimiteHorasHabilesAsync(horasResolucion);
-  const fechaLimiteRespuestaSla = await calcularFechaLimiteHorasHabilesAsync(horasRespuesta);
-
-  // 8. Determinar solicitante real si se registra a nombre de otro por personal autorizado
+  // 6. Determinar solicitante real si se registra a nombre de otro por personal autorizado
   const idPerfilActual = sesion.perfilActivo?.id_perfil || 0;
   const esPersonalSoporte = [1, 2, 4, 8].includes(idPerfilActual);
   const idSolicitante = (body.id_usuario_solicitante && esPersonalSoporte)
     ? Number(body.id_usuario_solicitante)
     : sesion.id_usuario;
 
-  // 8. Insertar ticket con modelo ampliado ITIL 4 y campos adicionales JSONB
-  const deptoEmpresa = await queryRow<{ id_departamento_empresa: number | null }>(
-    "SELECT id_departamento_empresa FROM usuario WHERE id_usuario = $1", [idSolicitante]
-  );
   const idAsignadoInicial = (body.autoasignar_tecnico && [1, 2, 4].includes(idPerfilActual))
     ? sesion.id_usuario
     : null;
   if (idAsignadoInicial) {
     await validarCargaTecnico(idAsignadoInicial);
   }
-  const idEstadoInicial = idAsignadoInicial ? 2 : 1; // Asignado (2) o Abierto (1)
   const idCi = body.id_ci ? Number(body.id_ci) : null;
 
-  const nuevoTicket = await transaccion(async (client) => {
-    const insert = await client.query(
-      `INSERT INTO ticket (
-        codigo_ticket, titulo, descripcion, id_tipo_ticket, id_categoria,
-        id_servicio, id_departamento, id_departamento_empresa, canal_comunicacion,
-        id_impacto, id_urgencia, id_prioridad, id_estado,
-        id_usuario_solicitante, id_usuario_asignado, fecha_limite_sla, fecha_limite_respuesta_sla, usuario_creacion, campos_adicionales, id_ci
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20
-      ) RETURNING id_ticket`,
-      [
-        codigoTicket,
-        titulo.trim(),
-        descripcion.trim(),
-        id_tipo_ticket,
-        id_categoria,
-        id_servicio || null,
-        idDeptoFinal,
-        deptoEmpresa?.id_departamento_empresa ?? null,
-        canal_comunicacion || "PORTAL_WEB",
-        id_impacto,
-        id_urgencia,
-        prioridad.id_prioridad,
-        idEstadoInicial,
-        idSolicitante,
-        idAsignadoInicial,
-        fechaLimiteSla,
-        fechaLimiteRespuestaSla,
-        sesion.id_usuario,
-        JSON.stringify(campos_adicionales || {}),
-        idCi,
-      ]
-    );
+  // 7. Invocación al Stored Procedure: sp_crear_ticket (PostgreSQL PL/pgSQL)
+  // Genera correlativo atómico, calcula prioridad ITIL, resuelve SLA,
+  // inserta ticket, subtipo (trg_ticket_subtipo) y bitácora inicial en una sola llamada ACID.
+  const spResultado = await queryRow<{ id_ticket: number }>(
+    `SELECT id_ticket FROM sp_crear_ticket(
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+    )`,
+    [
+      titulo.trim(),
+      descripcion.trim(),
+      Number(id_tipo_ticket),
+      Number(id_categoria),
+      id_servicio ? Number(id_servicio) : null,
+      Number(id_impacto),
+      Number(id_urgencia),
+      canal_comunicacion || "PORTAL_WEB",
+      idSolicitante,
+      idAsignadoInicial,
+      idDeptoFinal,
+      idCi,
+      JSON.stringify(campos_adicionales || {}),
+      sesion.id_usuario,
+    ]
+  );
 
-    const idTicket = insert.rows[0].id_ticket;
+  if (!spResultado?.id_ticket) {
+    throw new ErrorDominio("Error en la ejecución del procedimiento almacenado de creación de tickets", 500);
+  }
 
-    // El trigger de la migracion crea la extension 1:1. Aqui solo se
-    // completan los datos exclusivos de solicitud.
-    if (esSolicitud) {
-      await client.query(
-        `UPDATE ticket_solicitud
-         SET estado_aprobacion = $1, id_paso_actual = $2
-         WHERE id_ticket = $3`,
-        [estadoAprobacion, idPasoInicial, idTicket]
-      );
-    }
-
-    const full = await client.query(
-      "SELECT * FROM vista_ticket WHERE id_ticket = $1",
-      [idTicket]
-    );
-    return full.rows[0] as Ticket;
-  });
+  const idTicket = spResultado.id_ticket;
+  const nuevoTicket = await queryRow<Ticket>(
+    "SELECT * FROM vista_ticket WHERE id_ticket = $1",
+    [idTicket]
+  );
 
   // 8.1. Guardar archivos adjuntos de evidencias técnicas en adjunto_ticket
   if (nuevoTicket && archivos && Array.isArray(archivos) && archivos.length > 0) {
@@ -546,25 +509,6 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
         );
       }
     }
-  }
-
-  // 9. Registrar primer comentario de trazabilidad en la bitácora
-  if (nuevoTicket) {
-    let detalleInicial = "Ticket creado y registrado en la Mesa de Servicio (Service Desk).";
-    if (idSolicitante !== sesion.id_usuario) {
-      detalleInicial = "Ticket registrado por el personal de soporte técnico a nombre del usuario solicitante.";
-    }
-    if (idAsignadoInicial) {
-      detalleInicial += " Asignado automáticamente al especialista registrador.";
-    }
-    if (estadoAprobacion === "PENDIENTE_APROBACION") {
-      detalleInicial += " Requerimiento sujeto a compuerta de aprobación de jefatura responsable.";
-    }
-    await query(
-      `INSERT INTO comentario_ticket (id_ticket, id_usuario, comentario, es_interno)
-       VALUES ($1, $2, $3, false)`,
-      [nuevoTicket.id_ticket, sesion.id_usuario, detalleInicial]
-    );
   }
 
   return { ticket: nuevoTicket };

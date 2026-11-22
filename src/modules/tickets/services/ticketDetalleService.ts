@@ -318,44 +318,11 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
     }
     const comentarioAprob = body.comentario_aprobacion?.trim() || `Decisión de aprobación: ${decision}`;
 
-    // Registrar en ticket_aprobacion
-    await query(
-      `INSERT INTO ticket_aprobacion (
-        id_ticket, id_usuario_aprobador, id_paso_workflow, estado_decision, comentario
-      ) VALUES ($1, $2, $3, $4, $5)`,
-      [idTicket, sesion.id_usuario, actual.id_paso_actual, decision, comentarioAprob]
-    );
-
-    let nuevoEstadoAprob = decision === "APROBADO" ? "APROBADO" : "RECHAZADO";
-    let nuevoEstadoTicket = actual.id_estado;
-    let notaDecision = `Compuerta de aprobación ${decision} por ${sesion.nombres}.`;
-    if (body.comentario_aprobacion?.trim()) {
-      notaDecision += ` Nota: ${body.comentario_aprobacion.trim()}`;
-    }
-
-    // Si fue rechazado, cancela el requerimiento
-    if (decision === "RECHAZADO") {
-      nuevoEstadoTicket = 7; // CANCELADO
-    }
-
-    await query(
-      `UPDATE ticket_solicitud SET estado_aprobacion = $1 WHERE id_ticket = $2`,
-      [nuevoEstadoAprob, idTicket]
-    );
-
-    await query(
-      `UPDATE ticket SET
-        id_estado = $1,
-        usuario_modificacion = $2,
-        fecha_modificacion = now()
-       WHERE id_ticket = $3`,
-      [nuevoEstadoTicket, sesion.id_usuario, idTicket]
-    );
-
-    await query(
-      `INSERT INTO comentario_ticket (id_ticket, id_usuario, comentario, es_interno, id_estado_cambiado)
-       VALUES ($1, $2, $3, false, $4)`,
-      [idTicket, sesion.id_usuario, notaDecision, nuevoEstadoTicket !== actual.id_estado ? nuevoEstadoTicket : null]
+    // Delegar compuerta de aprobación al Stored Procedure: sp_resolver_aprobacion_ticket
+    // Registra ticket_aprobacion, actualiza ticket_solicitud, transiciona ticket y bitácora en una llamada atómica.
+    await queryRow(
+      `SELECT * FROM sp_resolver_aprobacion_ticket($1, $2, $3, $4)`,
+      [idTicket, sesion.id_usuario, decision, body.comentario_aprobacion?.trim() || null]
     );
 
     const ticketActualizado = await queryRow("SELECT * FROM vista_ticket WHERE id_ticket = $1", [idTicket]);
@@ -371,25 +338,10 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
     const estrellas = Math.max(1, Math.min(5, Math.round(body.calificacion_csat)));
     const comentCsat = body.comentario_csat?.trim() || null;
 
-    await query(
-      `UPDATE ticket SET
-        calificacion_csat = $1,
-        comentario_csat = $2,
-        fecha_csat = now(),
-        usuario_modificacion = $3,
-        fecha_modificacion = now()
-       WHERE id_ticket = $4`,
-      [estrellas, comentCsat, sesion.id_usuario, idTicket]
-    );
-
-    await query(
-      `INSERT INTO comentario_ticket (id_ticket, id_usuario, comentario, es_interno)
-       VALUES ($1, $2, $3, false)`,
-      [
-        idTicket,
-        sesion.id_usuario,
-        `Encuesta CSAT enviada por el usuario: ${estrellas} de 5 estrellas.${comentCsat ? ` Comentario: "${comentCsat}"` : ""}`,
-      ]
+    // Delegar evaluación de satisfacción al Stored Procedure: sp_evaluar_csat_ticket
+    await queryRow(
+      `SELECT * FROM sp_evaluar_csat_ticket($1, $2, $3, $4)`,
+      [idTicket, sesion.id_usuario, estrellas, comentCsat]
     );
 
     const ticketActualizado = await queryRow("SELECT * FROM vista_ticket WHERE id_ticket = $1", [idTicket]);
