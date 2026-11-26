@@ -94,14 +94,13 @@ export default function VistaPanelSupervisor() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Mesa de Supervisión & Operaciones (ITIL v4)
           </span>
-          <h1 style={{ margin: 0 }}>Panel de supervisión</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Estado del equipo de mi área técnica en un vistazo.</p>
+          <h1 className="titulo-pagina">Panel de supervisión</h1>
+          <p className="descripcion-pagina">Estado del equipo de mi área técnica en un vistazo.</p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
             href="/plataforma/tickets/gestion/asignar"
             className="boton-primario"
-            style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
             Centro de Asignación
           </Link>
@@ -109,7 +108,6 @@ export default function VistaPanelSupervisor() {
             type="button"
             className="boton-secundario"
             onClick={cargarDatos}
-            style={{ fontSize: 13, padding: "8px 12px", cursor: "pointer" }}
             title="Actualizar panel"
           >
             Actualizar
@@ -141,14 +139,14 @@ export default function VistaPanelSupervisor() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/tickets/gestion/asignar" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Centro de asignación</Link>
-            <Link href="/plataforma/organizacion/grupos-ti?vista=tecnicos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Monitoreo de técnicos</Link>
-            <Link href="/plataforma/incidentes/mayores" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Declarar incidente mayor</Link>
+            <Link href="/plataforma/tickets/gestion/asignar" className="boton-secundario" >Centro de asignación</Link>
+            <Link href="/plataforma/organizacion/grupos-ti?vista=tecnicos" className="boton-secundario" >Monitoreo de técnicos</Link>
+            <Link href="/plataforma/incidentes/mayores" className="boton-secundario" >Declarar incidente mayor</Link>
           </div>
         </div>
       </div>
 
-      <div className="tarjeta-formulario">
+      <div className="estado-vacio">
         <h2>Carga del equipo</h2>
         {data.tecnicos.length === 0 ? (
           <p>No hay técnicos asociados a mi área.</p>

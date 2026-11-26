@@ -191,10 +191,10 @@ export default function VistaDeclararIncidenteMayor() {
           >
             Sala de Crisis · ITIL v4 Incident Management
           </span>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Declarar Incidente Mayor
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}>
+          <p className="descripcion-pagina">
             Formulario independiente de activación y convocatoria de crisis con equipo multidisciplinario.
           </p>
         </div>
@@ -202,7 +202,6 @@ export default function VistaDeclararIncidenteMayor() {
         <Link
           href="/plataforma/incidentes/mayores?vista=listado"
           className="boton-secundario"
-          style={{ textDecoration: "none", fontSize: 13, padding: "8px 16px" }}
         >
            Volver a la Bandeja
         </Link>
@@ -341,7 +340,7 @@ export default function VistaDeclararIncidenteMayor() {
           {/* Selector de Involucrados */}
           <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: 16, marginBottom: 20 }}>
             {/* Pestañas de Roles */}
-            <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #cbd5e1", paddingBottom: 10, marginBottom: 14 }}>
+            <div className="pestanas" style={{ marginBottom: 14 }}>
               {[
                 { id: "tecnico", label: "Técnicos Resolutores" },
                 { id: "gestor_area", label: "Gestores de Área" },
@@ -355,16 +354,7 @@ export default function VistaDeclararIncidenteMayor() {
                     setTabTipo(t.id as any);
                     setUsuarioSeleccionadoId("");
                   }}
-                  style={{
-                    padding: "6px 12px",
-                    borderRadius: 6,
-                    fontSize: 12,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    border: "none",
-                    backgroundColor: tabTipo === t.id ? "#2563eb" : "#e2e8f0",
-                    color: tabTipo === t.id ? "#ffffff" : "#475569",
-                  }}
+                  className={tabTipo === t.id ? "pestana pestana-activa" : "pestana"}
                 >
                   {t.label}
                 </button>
@@ -422,17 +412,7 @@ export default function VistaDeclararIncidenteMayor() {
                 type="button"
                 onClick={agregarInvolucrado}
                 disabled={!usuarioSeleccionadoId}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: usuarioSeleccionadoId ? "#059669" : "#94a3b8",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: 6,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: usuarioSeleccionadoId ? "pointer" : "not-allowed",
-                  height: 35,
-                }}
+                className="boton-primario"
               >
                 + Agregar
               </button>
@@ -492,17 +472,9 @@ export default function VistaDeclararIncidenteMayor() {
                     <td style={{ padding: "8px 12px", color: "#64748b" }}>{inv.correo}</td>
                     <td style={{ padding: "8px 12px", color: "#334155", fontWeight: 500 }}>{inv.rol_crisis}</td>
                     <td style={{ padding: "8px 12px", textAlign: "right" }}>
-                      <button
+                      <button className="boton-peligro boton-sm"
                         type="button"
                         onClick={() => quitarInvolucrado(inv.id_usuario)}
-                        style={{
-                          backgroundColor: "transparent",
-                          border: "none",
-                          color: "#dc2626",
-                          cursor: "pointer",
-                          fontWeight: 600,
-                          fontSize: 12,
-                        }}
                       >
                         Quitar
                       </button>
@@ -531,19 +503,9 @@ export default function VistaDeclararIncidenteMayor() {
           >
             Cancelar
           </Link>
-          <button
+          <button className="boton-peligro"
             type="submit"
             disabled={guardando}
-            style={{
-              padding: "10px 24px",
-              backgroundColor: "#dc2626",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: guardando ? "not-allowed" : "pointer",
-            }}
           >
             {guardando ? "Declarando Incidente..." : "Declarar y Convocar Sala de Crisis"}
           </button>

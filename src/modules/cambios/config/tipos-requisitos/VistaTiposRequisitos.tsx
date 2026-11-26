@@ -155,10 +155,10 @@ export default function ConfiguracionTiposRequisitosPage({ pestanaFija }: VistaT
           marginBottom: 16
         }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#0f172a" }}>
+            <h1 className="titulo-pagina">
               Tipos de Cambio y Requisitos
             </h1>
-            <p style={{ margin: "6px 0 0 0", fontSize: 13, color: "#64748b", lineHeight: 1.45 }}>
+            <p className="descripcion-pagina">
               Gobierno de directrices ITIL v4: tipos normativos, matriz de autoridad, catálogo de modelos estándar y reglas de elevación.
             </p>
           </div>
@@ -169,7 +169,7 @@ export default function ConfiguracionTiposRequisitosPage({ pestanaFija }: VistaT
               onClick={handleGuardarConfiguracion}
               disabled={guardando || !puedeEditar}
               className="boton-primario"
-              style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+              style={{ flexShrink: 0 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
@@ -180,14 +180,7 @@ export default function ConfiguracionTiposRequisitosPage({ pestanaFija }: VistaT
       {/* Selector de Pestañas (solo si no es pestaña fija) */}
       {!pestanaFija && (
       <div
-        style={{
-          display: "flex",
-          gap: 8,
-          borderBottom: "1px solid #e2e8f0",
-          marginBottom: 24,
-          justifyContent: "flex-start",
-          overflowX: "auto"
-        }}
+        className="pestanas"
       >
         {(["tipos", "matriz_autoridad", "modelos_estandar", "reglas_clasificacion"] as TabId[]).map((tab) => {
           const info = PESTANAS_INFO[tab];
@@ -197,17 +190,7 @@ export default function ConfiguracionTiposRequisitosPage({ pestanaFija }: VistaT
               key={tab}
               type="button"
               onClick={() => setTabActiva(tab)}
-              style={{
-                padding: "10px 16px",
-                fontSize: 13,
-                fontWeight: activa ? 600 : 500,
-                color: activa ? "#2563eb" : "#64748b",
-                border: "none",
-                borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
-                backgroundColor: "transparent",
-                cursor: "pointer",
-                whiteSpace: "nowrap"
-              }}
+              className={activa ? "pestana pestana-activa" : "pestana"}
             >
               {info.titulo}
             </button>

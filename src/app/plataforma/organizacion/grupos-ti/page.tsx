@@ -17,13 +17,11 @@ export default async function PaginaGruposTI({ searchParams }: PageProps) {
   return (
     <div className="space-y-4">
       {vistasPermitidas.length > 1 && (
-        <div className="bg-white px-6 pt-4 rounded-xl border border-slate-200 shadow-sm">
-          <PestanasVista
+        <PestanasVista
             vistas={vistasPermitidas}
             vistaActiva={vistaActiva}
             urlBase="/plataforma/organizacion/grupos-ti"
           />
-        </div>
       )}
       {vistaActiva === "tecnicos" ? (
         <VistaTecnicos />

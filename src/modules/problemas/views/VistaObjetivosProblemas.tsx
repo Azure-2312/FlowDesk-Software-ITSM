@@ -98,8 +98,8 @@ export default function VistaObjetivosProblemas() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Objetivos de tiempo</h1>
-        <p>Define los tiempos objetivo de primera respuesta, diagnóstico y resolución por prioridad.</p>
+        <h1 className="titulo-pagina">Objetivos de tiempo</h1>
+        <p className="descripcion-pagina">Define los tiempos objetivo de primera respuesta, diagnóstico y resolución por prioridad.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -108,7 +108,7 @@ export default function VistaObjetivosProblemas() {
       {cargando ? (
         <p>Cargando...</p>
       ) : objetivos.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>No hay objetivos de tiempo configurados.</div>
+        <div className="estado-vacio" >No hay objetivos de tiempo configurados.</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {objetivos.map((o) => {
@@ -142,7 +142,7 @@ export default function VistaObjetivosProblemas() {
                   Umbrales de alerta (JSON)
                   <input type="text" value={v.umbrales_alerta} onChange={(e) => setCampo(o.id_objetivo, "umbrales_alerta", e.target.value, o)} placeholder='{"aviso":0.75,"critico":1}' style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }} />
                 </label>
-                <button className="boton-primario" style={{ width: "auto", marginTop: 12 }} disabled={procesando === o.id_objetivo} onClick={() => guardar(o)}>
+                <button className="boton-primario" style={{ marginTop: 12 }} disabled={procesando === o.id_objetivo} onClick={() => guardar(o)}>
                   Guardar
                 </button>
               </div>

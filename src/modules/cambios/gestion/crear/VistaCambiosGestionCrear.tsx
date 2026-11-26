@@ -730,10 +730,10 @@ export default function VistaCambiosGestionCrear() {
               Gestión de Cambios &amp; RFC (ITIL v4)
             </span>
           </div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, margin: "0 0 6px", color: "#0f172a" }}>
+          <h1 className="titulo-pagina">
             Registrar Solicitud de Cambio (RFC - Request for Change)
           </h1>
-          <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>
+          <p className="descripcion-pagina">
             Control exhaustivo de intervenciones técnicas: justificación de negocio, evaluación de riesgo, planes de contingencia y ventanas de ejecución.
           </p>
         </div>
@@ -748,7 +748,6 @@ export default function VistaCambiosGestionCrear() {
             }
           }}
           className="boton-secundario"
-          style={{ width: "auto", padding: "8px 16px" }}
         >
           Volver al Historial
         </button>
@@ -813,15 +812,7 @@ export default function VistaCambiosGestionCrear() {
           <button
             type="button"
             onClick={() => cambiarTipoCambio("NORMAL")}
-            style={{
-              padding: "14px 16px",
-              borderRadius: 8,
-              border: tipoCambio === "NORMAL" ? "2px solid #2563eb" : "1px solid #cbd5e1",
-              backgroundColor: tipoCambio === "NORMAL" ? "#eff6ff" : "#ffffff",
-              cursor: "pointer",
-              textAlign: "left",
-              transition: "all 0.15s ease",
-            }}
+            className={tipoCambio === "NORMAL" ? "opcion-seleccionable opcion-seleccionada" : "opcion-seleccionable"}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
               <span style={{ width: 12, height: 12, borderRadius: "50%", backgroundColor: "#2563eb" }}></span>
@@ -838,15 +829,7 @@ export default function VistaCambiosGestionCrear() {
           <button
             type="button"
             onClick={() => cambiarTipoCambio("ESTANDAR")}
-            style={{
-              padding: "14px 16px",
-              borderRadius: 8,
-              border: tipoCambio === "ESTANDAR" ? "2px solid #16a34a" : "1px solid #cbd5e1",
-              backgroundColor: tipoCambio === "ESTANDAR" ? "#f0fdf4" : "#ffffff",
-              cursor: "pointer",
-              textAlign: "left",
-              transition: "all 0.15s ease",
-            }}
+            className={tipoCambio === "ESTANDAR" ? "opcion-seleccionable opcion-seleccionada" : "opcion-seleccionable"}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
               <span style={{ width: 12, height: 12, borderRadius: "50%", backgroundColor: "#16a34a" }}></span>
@@ -863,15 +846,7 @@ export default function VistaCambiosGestionCrear() {
           <button
             type="button"
             onClick={() => cambiarTipoCambio("EMERGENCIA")}
-            style={{
-              padding: "14px 16px",
-              borderRadius: 8,
-              border: tipoCambio === "EMERGENCIA" ? "2px solid #dc2626" : "1px solid #cbd5e1",
-              backgroundColor: tipoCambio === "EMERGENCIA" ? "#fef2f2" : "#ffffff",
-              cursor: "pointer",
-              textAlign: "left",
-              transition: "all 0.15s ease",
-            }}
+            className={tipoCambio === "EMERGENCIA" ? "opcion-seleccionable opcion-seleccionada" : "opcion-seleccionable"}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
               <span style={{ width: 12, height: 12, borderRadius: "50%", backgroundColor: "#dc2626" }}></span>
@@ -1464,7 +1439,6 @@ export default function VistaCambiosGestionCrear() {
                     type="button"
                     onClick={() => setModalRiesgoAbierto(true)}
                     className="boton-secundario"
-                    style={{ width: "auto", padding: "6px 10px", fontSize: 12 }}
                   >
                     Cuestionario Ponderado
                   </button>
@@ -1665,7 +1639,6 @@ export default function VistaCambiosGestionCrear() {
               }
             }}
             className="boton-secundario"
-            style={{ width: "auto", padding: "9px 20px" }}
             disabled={guardando}
           >
             Cancelar
@@ -1674,11 +1647,6 @@ export default function VistaCambiosGestionCrear() {
           <button
             type="submit"
             className="boton-primario"
-            style={{
-              width: "auto",
-              padding: "9px 24px",
-              backgroundColor: tipoCambio === "EMERGENCIA" ? "#dc2626" : tipoCambio === "ESTANDAR" ? "#16a34a" : "#2563eb",
-            }}
             disabled={guardando}
           >
             {guardando
@@ -1731,16 +1699,9 @@ export default function VistaCambiosGestionCrear() {
                   Responda a los siguientes criterios para determinar el nivel ponderado de riesgo del cambio.
                 </p>
               </div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => setModalRiesgoAbierto(false)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  fontSize: 20,
-                  cursor: "pointer",
-                  color: "#64748b",
-                }}
               >
                 &times;
               </button>
@@ -1795,7 +1756,6 @@ export default function VistaCambiosGestionCrear() {
                 type="button"
                 onClick={() => setModalRiesgoAbierto(false)}
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px" }}
               >
                 Cancelar
               </button>
@@ -1803,7 +1763,6 @@ export default function VistaCambiosGestionCrear() {
                 type="button"
                 onClick={calcularRiesgoPonderado}
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 20px" }}
               >
                 Aplicar Evaluación de Riesgo
               </button>

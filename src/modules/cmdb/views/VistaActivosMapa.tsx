@@ -219,10 +219,10 @@ export default function VistaActivosMapa() {
           >
             Gestión de Configuración (CMDB) · ITIL v4
           </span>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Topología & Mapa de Dependencias de CIs
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}>
+          <p className="descripcion-pagina">
             Visualización de dependencias entre servicios, infraestructura y elementos de configuración (CI).
           </p>
         </div>
@@ -289,7 +289,7 @@ export default function VistaActivosMapa() {
 
             <div style={{ flex: 1, overflowY: "auto", padding: "10px 12px", display: "flex", flexDirection: "column", gap: 8 }}>
               {relacionesFiltradas.length === 0 ? (
-                <div style={{ padding: 24, textAlign: "center", color: "#94a3b8", fontSize: 12.5 }}>
+                <div className="estado-vacio">
                   No se encontraron relaciones coincidentes.
                 </div>
               ) : (
@@ -353,38 +353,18 @@ export default function VistaActivosMapa() {
           >
             {/* Header de Pestañas Derechas */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 18px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
-              <div style={{ display: "flex", gap: 8 }}>
+              <div className="pestanas">
                 <button
                   type="button"
                   onClick={() => setPestañaDerecha("lista")}
-                  style={{
-                    padding: "8px 16px",
-                    borderRadius: 6,
-                    border: "none",
-                    backgroundColor: pestañaDerecha === "lista" ? "#2563eb" : "#ffffff",
-                    color: pestañaDerecha === "lista" ? "#ffffff" : "#475569",
-                    fontWeight: pestañaDerecha === "lista" ? 700 : 500,
-                    fontSize: 13,
-                    cursor: "pointer",
-                    boxShadow: pestañaDerecha === "lista" ? "0 1px 3px rgba(37,99,235,0.2)" : "0 1px 2px rgba(0,0,0,0.05)",
-                  }}
+                  className={pestañaDerecha === "lista" ? "pestana pestana-activa" : "pestana"}
                 >
                   Relaciones en Lista
                 </button>
                 <button
                   type="button"
                   onClick={() => setPestañaDerecha("grafico")}
-                  style={{
-                    padding: "8px 16px",
-                    borderRadius: 6,
-                    border: "none",
-                    backgroundColor: pestañaDerecha === "grafico" ? "#2563eb" : "#ffffff",
-                    color: pestañaDerecha === "grafico" ? "#ffffff" : "#475569",
-                    fontWeight: pestañaDerecha === "grafico" ? 700 : 500,
-                    fontSize: 13,
-                    cursor: "pointer",
-                    boxShadow: pestañaDerecha === "grafico" ? "0 1px 3px rgba(37,99,235,0.2)" : "0 1px 2px rgba(0,0,0,0.05)",
-                  }}
+                  className={pestañaDerecha === "grafico" ? "pestana pestana-activa" : "pestana"}
                 >
                   Vista Gráfica (Interactivo)
                 </button>
@@ -393,30 +373,27 @@ export default function VistaActivosMapa() {
               {pestañaDerecha === "grafico" && (
                 /* Controles de Zoom y Pan */
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, backgroundColor: "#ffffff", padding: "3px 8px", borderRadius: 6, border: "1px solid #cbd5e1" }}>
-                  <button
+                  <button className="boton-icono boton-sm"
                     type="button"
                     onClick={() => setZoom((z) => Math.min(Number((z + 0.15).toFixed(2)), 2.5))}
                     title="Acercar (Zoom In)"
-                    style={{ border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: "bold", padding: "2px 6px" }}
                   >
                     +
                   </button>
                   <span style={{ fontSize: 11.5, fontWeight: 700, color: "#334155", minWidth: 42, textAlign: "center" }}>
                     {Math.round(zoom * 100)}%
                   </span>
-                  <button
+                  <button className="boton-icono boton-sm"
                     type="button"
                     onClick={() => setZoom((z) => Math.max(Number((z - 0.15).toFixed(2)), 0.4))}
                     title="Alejar (Zoom Out)"
-                    style={{ border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: "bold", padding: "2px 6px" }}
                   >
                     -
                   </button>
-                  <button
+                  <button className="boton-enlace"
                     type="button"
                     onClick={restablecerVista}
                     title="Restablecer posición y zoom"
-                    style={{ border: "none", background: "none", cursor: "pointer", fontSize: 12, color: "#2563eb", padding: "2px 6px" }}
                   >
                      Reset
                   </button>
@@ -458,20 +435,11 @@ export default function VistaActivosMapa() {
                               <div style={{ fontSize: 11.5, color: "#64748b" }}>{r.hijo_nombre}</div>
                             </td>
                             <td style={{ padding: "10px 14px", textAlign: "center" }}>
-                              <button
+                              <button className="boton-secundario boton-sm"
                                 type="button"
                                 onClick={() => {
                                   setCiSeleccionadoId(r.id_ci_padre);
                                   setPestañaDerecha("grafico");
-                                }}
-                                style={{
-                                  padding: "4px 10px",
-                                  fontSize: 11.5,
-                                  backgroundColor: "#eff6ff",
-                                  color: "#2563eb",
-                                  border: "1px solid #bfdbfe",
-                                  borderRadius: 4,
-                                  cursor: "pointer",
                                 }}
                               >
                                 Ver en Grafo

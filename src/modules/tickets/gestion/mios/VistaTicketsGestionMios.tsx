@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Pestanas from "@/shared/components/ui/Pestanas";
 import { Ticket } from "@/types";
 
 export default function PaginaMisTickets({
@@ -166,10 +167,10 @@ export default function PaginaMisTickets({
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Mesa de Ayuda & Casos Personales (ITIL v4)
           </span>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             {titulo ?? "Mis Tickets"}
           </h1>
-          <p style={{ color: "#64748b", fontSize: 13, marginTop: 4, marginBottom: 0 }}>
+          <p className="descripcion-pagina">
             Consulta y realiza seguimiento de todos tus tickets reportados en la Mesa de Servicio.
           </p>
         </div>
@@ -179,108 +180,27 @@ export default function PaginaMisTickets({
             type="button"
             onClick={cargarMisTickets}
             className="boton-secundario"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              padding: "8px 14px",
-              fontSize: 13,
-              fontWeight: 500,
-              width: "auto",
-              cursor: "pointer",
-            }}
           >
             Actualizar
           </button>
           <Link
             href={rutaCrear ?? (tipoFijo === "1" ? "/plataforma/incidentes/crear" : "/plataforma/solicitudes/crear")}
             className="boton-primario"
-            style={{
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              padding: "8px 18px",
-              fontSize: 13,
-              fontWeight: 600,
-              width: "auto",
-            }}
           >
             Crear ticket
           </Link>
         </div>
       </div>
 
-      {/* Tarjetas de Métricas que actúan como Filtro de Pestaña Principal */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))",
-          gap: 14,
-          marginBottom: 20,
-        }}
-      >
-        <div
-          onClick={() => setPestana("en_proceso")}
-          style={{
-            backgroundColor: pestana === "en_proceso" ? "#eff6ff" : "#ffffff",
-            border: pestana === "en_proceso" ? "2px solid #2563eb" : "1px solid #e2e8f0",
-            borderRadius: 10,
-            padding: 16,
-            cursor: "pointer",
-            boxShadow: pestana === "en_proceso" ? "0 4px 12px rgba(37, 99, 235, 0.1)" : "0 1px 3px rgba(0,0,0,0.04)",
-            transition: "all 0.15s ease",
-          }}
-        >
-          <span style={{ fontSize: 11.5, fontWeight: 700, color: pestana === "en_proceso" ? "#1e40af" : "#64748b", textTransform: "uppercase" }}>
-            En Proceso
-          </span>
-          <div style={{ fontSize: 24, fontWeight: 800, color: "#2563eb", marginTop: 4 }}>
-            {ticketsEnProceso.length}
-          </div>
-          <span style={{ fontSize: 11, color: "#64748b" }}>Abiertos, asignados o en atención</span>
-        </div>
-
-        <div
-          onClick={() => setPestana("finalizados")}
-          style={{
-            backgroundColor: pestana === "finalizados" ? "#f0fdf4" : "#ffffff",
-            border: pestana === "finalizados" ? "2px solid #16a34a" : "1px solid #e2e8f0",
-            borderRadius: 10,
-            padding: 16,
-            cursor: "pointer",
-            boxShadow: pestana === "finalizados" ? "0 4px 12px rgba(22, 163, 74, 0.1)" : "0 1px 3px rgba(0,0,0,0.04)",
-            transition: "all 0.15s ease",
-          }}
-        >
-          <span style={{ fontSize: 11.5, fontWeight: 700, color: pestana === "finalizados" ? "#15803d" : "#64748b", textTransform: "uppercase" }}>
-            Finalizados
-          </span>
-          <div style={{ fontSize: 24, fontWeight: 800, color: "#16a34a", marginTop: 4 }}>
-            {ticketsFinalizados.length}
-          </div>
-          <span style={{ fontSize: 11, color: "#64748b" }}>Resueltos y cerrados con éxito</span>
-        </div>
-
-        <div
-          onClick={() => setPestana("todos")}
-          style={{
-            backgroundColor: pestana === "todos" ? "#f8fafc" : "#ffffff",
-            border: pestana === "todos" ? "2px solid #0f172a" : "1px solid #e2e8f0",
-            borderRadius: 10,
-            padding: 16,
-            cursor: "pointer",
-            boxShadow: pestana === "todos" ? "0 4px 12px rgba(15, 23, 42, 0.1)" : "0 1px 3px rgba(0,0,0,0.04)",
-            transition: "all 0.15s ease",
-          }}
-        >
-          <span style={{ fontSize: 11.5, fontWeight: 700, color: pestana === "todos" ? "#0f172a" : "#64748b", textTransform: "uppercase" }}>
-            Total Registrados
-          </span>
-          <div style={{ fontSize: 24, fontWeight: 800, color: "#0f172a", marginTop: 4 }}>
-            {totalTickets}
-          </div>
-          <span style={{ fontSize: 11, color: "#64748b" }}>Historial completo de tu usuario</span>
-        </div>
-      </div>
+      <Pestanas
+        items={[
+          { id: "en_proceso", etiqueta: "En proceso", contador: ticketsEnProceso.length },
+          { id: "finalizados", etiqueta: "Finalizados", contador: ticketsFinalizados.length },
+          { id: "todos", etiqueta: "Todos", contador: totalTickets },
+        ]}
+        activa={pestana}
+        onCambiar={setPestana}
+      />
 
       {/* Barra de Búsqueda y Botón Filtrar */}
       <div
@@ -311,19 +231,6 @@ export default function PaginaMisTickets({
             type="button"
             onClick={() => setMostrarFiltros((prev) => !prev)}
             className="boton-secundario"
-            style={{
-              padding: "7px 16px",
-              fontSize: 12.5,
-              fontWeight: 600,
-              width: "auto",
-              cursor: "pointer",
-              backgroundColor: mostrarFiltros || cantidadFiltrosActivos > 0 ? "#eff6ff" : "#ffffff",
-              borderColor: mostrarFiltros || cantidadFiltrosActivos > 0 ? "#2563eb" : "#cbd5e1",
-              color: mostrarFiltros || cantidadFiltrosActivos > 0 ? "#1d4ed8" : "#334155",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
           >
             Filtrar
             {cantidadFiltrosActivos > 0 && (
@@ -461,8 +368,7 @@ export default function PaginaMisTickets({
                       setFiltroPrioridad("todos");
                       setFiltroEstado("todos");
                     }}
-                    className="boton-texto"
-                    style={{ fontSize: 12, color: "#dc2626", fontWeight: 600, padding: 0, cursor: "pointer", background: "none", border: "none" }}
+                    className="boton-enlace"
                   >
                     Limpiar filtros
                   </button>
@@ -471,7 +377,6 @@ export default function PaginaMisTickets({
                   type="button"
                   onClick={() => setMostrarFiltros(false)}
                   className="boton-secundario"
-                  style={{ fontSize: 12, padding: "4px 12px", width: "auto" }}
                 >
                   Cerrar
                 </button>
@@ -492,13 +397,7 @@ export default function PaginaMisTickets({
         </div>
       ) : ticketsFiltrados.length === 0 ? (
         <div
-          style={{
-            backgroundColor: "#ffffff",
-            border: "1px solid #e2e8f0",
-            borderRadius: 10,
-            padding: "48px 20px",
-            textAlign: "center",
-          }}
+          className="estado-vacio"
         >
           <div style={{ fontSize: 15, fontWeight: 700, color: "#334155", marginBottom: 6 }}>
             No se encontraron tickets en esta vista
@@ -513,7 +412,6 @@ export default function PaginaMisTickets({
           <Link
             href={rutaCrear ?? (tipoFijo === "1" ? "/plataforma/incidentes/crear" : "/plataforma/solicitudes/crear")}
             className="boton-primario"
-            style={{ width: "auto", display: "inline-block", textDecoration: "none" }}
           >
             Crear ticket
           </Link>
@@ -655,11 +553,6 @@ export default function PaginaMisTickets({
                           router.push(rutaDetalleBase ? `${rutaDetalleBase}/${t.id_ticket}` : (esIncidente ? `/plataforma/incidentes/${t.id_ticket}` : `/plataforma/solicitudes/${t.id_ticket}`));
                         }}
                         className="boton-secundario"
-                        style={{
-                          padding: "5px 12px",
-                          fontSize: 12,
-                          width: "auto",
-                        }}
                       >
                         Ver ticket
                       </button>

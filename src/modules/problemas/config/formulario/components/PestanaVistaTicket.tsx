@@ -84,7 +84,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
       {mensajeExito && (
         <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between text-xs text-emerald-900">
           <span>{mensajeExito}</span>
-          <button type="button" onClick={() => setMensajeExito("")} className="font-bold">
+          <button type="button" onClick={() => setMensajeExito("")} className="boton-icono">
             ×
           </button>
         </div>
@@ -138,11 +138,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                     nuevas[idx].visible = !nuevas[idx].visible;
                     setListaCabecera(nuevas);
                   }}
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
-                    el.visible
-                      ? "bg-emerald-50 border-emerald-300 text-emerald-800"
-                      : "bg-slate-200 border-slate-300 text-slate-600"
-                  }`}
+                  className="boton-secundario boton-sm" aria-pressed={el.visible}
                 >
                   {el.visible ? "Visible" : "Oculto"}
                 </button>
@@ -178,7 +174,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                       type="button"
                       onClick={() => handleMoverPestana(idx, "arriba")}
                       disabled={idx === 0 || !puedeEditar}
-                      className="hover:text-slate-700 disabled:opacity-20"
+                      className="boton-icono boton-sm"
                     >
                       ▲
                     </button>
@@ -186,7 +182,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                       type="button"
                       onClick={() => handleMoverPestana(idx, "abajo")}
                       disabled={idx === listaPestanas.length - 1 || !puedeEditar}
-                      className="hover:text-slate-700 disabled:opacity-20"
+                      className="boton-icono boton-sm"
                     >
                       ▼
                     </button>
@@ -205,11 +201,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                       type="button"
                       onClick={() => handleToggleVisiblePestana(p.id)}
                       disabled={p.fijo || !puedeEditar}
-                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                        p.visible
-                          ? "bg-emerald-100 text-emerald-800"
-                          : "bg-slate-200 text-slate-600 line-through"
-                      }`}
+                      className="boton-secundario boton-sm" aria-pressed={p.visible}
                     >
                       {p.visible ? "Visible" : "Oculta"}
                     </button>
@@ -224,7 +216,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                     <button
                       type="button"
                       onClick={() => setModalCamposPestana(p.nombre)}
-                      className="px-2.5 py-1 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded border border-blue-200 transition"
+                      className="boton-secundario boton-sm"
                     >
                       Configurar campos…
                     </button>
@@ -310,7 +302,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
               <button
                 type="button"
                 onClick={() => setModalCamposPestana(null)}
-                className="px-4 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 rounded font-medium text-slate-700"
+                className="boton-secundario boton-sm"
               >
                 Cerrar
               </button>

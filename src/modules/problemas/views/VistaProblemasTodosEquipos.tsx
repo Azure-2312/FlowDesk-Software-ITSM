@@ -76,28 +76,18 @@ export default function VistaProblemasTodosEquipos() {
       {/* 1. Cabecera Principal */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16, borderBottom: "1px solid #e2e8f0", paddingBottom: 16 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          <h1 className="titulo-pagina">
             Todos los equipos de trabajo (Problemas)
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          <p className="descripcion-pagina">
             Directorio institucional de departamentos y grupos de especialistas enfocados en análisis de causa raíz y erradicación de fallas.
           </p>
         </div>
 
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button
+          <button className="boton-primario"
             type="button"
             onClick={() => setModalCrear(true)}
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#2563eb",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
           >
             + Crear nuevo equipo
           </button>
@@ -261,35 +251,15 @@ export default function VistaProblemasTodosEquipos() {
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
-                <button
+                <button className="boton-secundario"
                   type="button"
                   onClick={() => setModalCrear(false)}
-                  style={{
-                    padding: "8px 14px",
-                    borderRadius: 6,
-                    border: "1px solid #cbd5e1",
-                    backgroundColor: "#ffffff",
-                    fontSize: 13,
-                    color: "#475569",
-                    cursor: "pointer",
-                  }}
                 >
                   Cancelar
                 </button>
-                <button
+                <button className="boton-primario"
                   type="submit"
                   disabled={creandoEquipo}
-                  style={{
-                    padding: "8px 16px",
-                    borderRadius: 6,
-                    border: "none",
-                    backgroundColor: "#2563eb",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#ffffff",
-                    cursor: creandoEquipo ? "not-allowed" : "pointer",
-                    opacity: creandoEquipo ? 0.6 : 1,
-                  }}
                 >
                   {creandoEquipo ? "Guardando..." : "Crear equipo"}
                 </button>

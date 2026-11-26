@@ -127,15 +127,13 @@ export function PestanaVentanasMantenimiento({ config, onChange, servicios, depa
           </p>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <button
+          <button className="boton-secundario"
             onClick={() => setModalPreviaAbierto(true)}
-            style={{ padding: "8px 14px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, fontWeight: 500, color: "#334155", cursor: "pointer" }}
           >
             Vista Previa en Calendario
           </button>
-          <button
+          <button className="boton-primario"
             onClick={() => abrirEditor()}
-            style={{ padding: "8px 16px", background: "#2563eb", border: "none", borderRadius: 6, fontSize: 13, fontWeight: 600, color: "#ffffff", cursor: "pointer" }}
           >
             Nueva Ventana
           </button>
@@ -161,7 +159,7 @@ export function PestanaVentanasMantenimiento({ config, onChange, servicios, depa
           <tbody>
             {ventanas.length === 0 ? (
               <tr>
-                <td colSpan={8} style={{ padding: 30, textAlign: "center", color: "#64748b" }}>
+                <td colSpan={8} className="celda-vacia">
                   No hay ventanas de mantenimiento configuradas. Cree una nueva para comenzar.
                 </td>
               </tr>
@@ -214,49 +212,29 @@ export function PestanaVentanasMantenimiento({ config, onChange, servicios, depa
                   </td>
                   <td style={{ padding: "10px 14px", textAlign: "center" }}>
                     <button
+                      type="button"
+                      role="switch"
+                      aria-checked={v.activo}
+                      className={v.activo ? "interruptor interruptor-activo" : "interruptor"}
                       onClick={() => toggleActiva(v.codigo)}
-                      style={{
-                        background: v.activo ? "#10b981" : "#cbd5e1",
-                        border: "none",
-                        color: "#ffffff",
-                        borderRadius: 12,
-                        width: 36,
-                        height: 20,
-                        cursor: "pointer",
-                        position: "relative"
-                      }}
                       title={v.activo ? "Desactivar ventana" : "Activar ventana"}
-                    >
-                      <div style={{
-                        position: "absolute",
-                        top: 2,
-                        left: v.activo ? 18 : 2,
-                        width: 16,
-                        height: 16,
-                        borderRadius: "50%",
-                        background: "#ffffff",
-                        transition: "left 0.2s"
-                      }} />
-                    </button>
+                    />
                   </td>
                   <td style={{ padding: "10px 14px", textAlign: "right" }}>
                     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 6 }}>
-                      <button
+                      <button className="boton-secundario boton-sm"
                         onClick={() => abrirEditor(v)}
-                        style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8", padding: "4px 8px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 500 }}
                       >
                         Editar
                       </button>
-                      <button
+                      <button className="boton-secundario boton-sm"
                         onClick={() => duplicarVentana(v)}
-                        style={{ background: "#f8fafc", border: "1px solid #cbd5e1", color: "#475569", padding: "4px 8px", borderRadius: 4, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 11 }}
                         title="Duplicar ventana"
                       >
                         <Copy size={12} />
                       </button>
-                      <button
+                      <button className="boton-peligro boton-sm"
                         onClick={() => eliminarVentana(v.codigo)}
-                        style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", padding: "4px 8px", borderRadius: 4, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 11 }}
                         title="Eliminar ventana"
                       >
                         <Trash2 size={12} />
@@ -279,7 +257,7 @@ export function PestanaVentanasMantenimiento({ config, onChange, servicios, depa
               <h3 style={{ margin: 0, fontSize: 17, color: "#0f172a" }}>
                 {esNueva ? "Nueva Ventana de Mantenimiento" : `Editar: ${ventanaEditando.nombre}`}
               </h3>
-              <button onClick={() => setVentanaEditando(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8" }}>
+              <button className="boton-icono boton-sm" onClick={() => setVentanaEditando(null)} >
                 <X size={20} />
               </button>
             </div>
@@ -464,15 +442,13 @@ export function PestanaVentanasMantenimiento({ config, onChange, servicios, depa
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 24, borderTop: "1px solid #e2e8f0", paddingTop: 16 }}>
-              <button
+              <button className="boton-secundario"
                 onClick={() => setVentanaEditando(null)}
-                style={{ padding: "8px 16px", border: "1px solid #cbd5e1", background: "#ffffff", borderRadius: 6, cursor: "pointer", fontSize: 13 }}
               >
                 Cancelar
               </button>
-              <button
+              <button className="boton-primario"
                 onClick={guardarVentana}
-                style={{ padding: "8px 16px", border: "none", background: "#2563eb", color: "#ffffff", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: 13 }}
               >
                 Guardar Ventana
               </button>
@@ -490,7 +466,7 @@ export function PestanaVentanasMantenimiento({ config, onChange, servicios, depa
                 <Calendar size={18} color="#2563eb" />
                 <h3 style={{ margin: 0, fontSize: 17, color: "#0f172a" }}>Vista Semanal de Ventanas de Mantenimiento</h3>
               </div>
-              <button onClick={() => setModalPreviaAbierto(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8" }}>
+              <button className="boton-icono boton-sm" onClick={() => setModalPreviaAbierto(false)} >
                 <X size={20} />
               </button>
             </div>
@@ -536,9 +512,8 @@ export function PestanaVentanasMantenimiento({ config, onChange, servicios, depa
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-              <button
+              <button className="boton-secundario"
                 onClick={() => setModalPreviaAbierto(false)}
-                style={{ padding: "8px 16px", border: "1px solid #cbd5e1", background: "#ffffff", borderRadius: 6, cursor: "pointer", fontSize: 13 }}
               >
                 Cerrar
               </button>

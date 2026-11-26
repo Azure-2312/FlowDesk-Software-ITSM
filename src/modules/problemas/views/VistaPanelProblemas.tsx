@@ -109,14 +109,13 @@ export default function VistaPanelProblemas() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Gestión de Problemas & Catálogo KEDB (ITIL v4)
           </span>
-          <h1 style={{ margin: 0 }}>Panel de gestión de problemas</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Problemas abiertos, sin asignar, por vencer, mayores activos, errores conocidos y candidatos detectados.</p>
+          <h1 className="titulo-pagina">Panel de gestión de problemas</h1>
+          <p className="descripcion-pagina">Problemas abiertos, sin asignar, por vencer, mayores activos, errores conocidos y candidatos detectados.</p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
             href="/plataforma/problemas/crear"
             className="boton-primario"
-            style={{ textDecoration: "none", fontSize: 13, padding: "8px 16px", width: "auto" }}
           >
             Registrar problema
           </Link>
@@ -124,7 +123,6 @@ export default function VistaPanelProblemas() {
             type="button"
             className="boton-secundario"
             onClick={cargarDatos}
-            style={{ fontSize: 13, padding: "8px 14px", cursor: "pointer", width: "auto" }}
             title="Actualizar panel"
           >
             Actualizar
@@ -146,10 +144,10 @@ export default function VistaPanelProblemas() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/problemas/mios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Mis problemas</Link>
-            <Link href="/plataforma/problemas/candidatos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Candidatos a problema</Link>
-            <Link href="/plataforma/problemas/crear" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Registrar problema</Link>
-            <Link href="/plataforma/problemas/kedb" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Errores conocidos (KEDB)</Link>
+            <Link href="/plataforma/problemas/mios" className="boton-secundario" >Mis problemas</Link>
+            <Link href="/plataforma/problemas/candidatos" className="boton-secundario" >Candidatos a problema</Link>
+            <Link href="/plataforma/problemas/crear" className="boton-secundario" >Registrar problema</Link>
+            <Link href="/plataforma/problemas/kedb" className="boton-secundario" >Errores conocidos (KEDB)</Link>
           </div>
         </div>
 
@@ -187,7 +185,7 @@ export default function VistaPanelProblemas() {
           )}
         </div>
 
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Errores conocidos (KEDB)</h2>
           {data.kedb.length === 0 ? (
             <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>No hay errores conocidos publicados.</p>

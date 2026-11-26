@@ -89,15 +89,15 @@ export default function PaginaTodosCambios() {
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          <h1 className="titulo-pagina">
             Todos los cambios RFC
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          <p className="descripcion-pagina">
             Supervisión integral de todas las solicitudes de cambio organizacionales, trazabilidad en workflow y asignación de equipos técnicos.
           </p>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <Link href="/plataforma/cambios/nuevo" className="boton-primario" style={{ width: "auto", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <Link href="/plataforma/cambios/nuevo" className="boton-primario" >
 
             Nueva Solicitud RFC
           </Link>
@@ -143,16 +143,7 @@ export default function PaginaTodosCambios() {
           <button
             type="button"
             onClick={() => setSoloSinAsignar(!soloSinAsignar)}
-            style={{
-              padding: "5px 12px",
-              borderRadius: 6,
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-              border: soloSinAsignar ? "1px solid #dc2626" : "1px solid #cbd5e1",
-              backgroundColor: soloSinAsignar ? "#fef2f2" : "#ffffff",
-              color: soloSinAsignar ? "#b91c1c" : "#475569",
-            }}
+            className="boton-secundario boton-sm" aria-pressed={soloSinAsignar}
           >
             {soloSinAsignar ? "Mostrando sin asignar" : `Pendientes de asignar (${conteoSinAsignar})`}
           </button>
@@ -174,7 +165,7 @@ export default function PaginaTodosCambios() {
               ? "No hay cambios pendientes de asignación de equipo o especialista."
               : "No se encontraron solicitudes de cambio que coincidan con los filtros seleccionados."}
           </p>
-          <Link href="/plataforma/cambios/nuevo" className="boton-mini" style={{ textDecoration: "none" }}>
+          <Link href="/plataforma/cambios/nuevo" className="boton-secundario boton-sm" >
             Registrar la primera RFC
           </Link>
         </div>
@@ -233,19 +224,9 @@ export default function PaginaTodosCambios() {
                     {c.responsable_nombre ? (
                       <span style={{ fontSize: 12, color: "#1e293b" }}>{c.responsable_nombre}</span>
                     ) : (
-                      <button
+                      <button className="boton-peligro boton-sm"
                         type="button"
                         onClick={() => setModalAsignar(c)}
-                        style={{
-                          padding: "3px 8px",
-                          borderRadius: 4,
-                          fontSize: 11,
-                          fontWeight: 600,
-                          backgroundColor: "#fef3c7",
-                          color: "#92400e",
-                          border: "1px solid #fde68a",
-                          cursor: "pointer",
-                        }}
                       >
                         + Asignar equipo
                       </button>
@@ -273,17 +254,15 @@ export default function PaginaTodosCambios() {
                     <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
                       <Link
                         href={`/plataforma/cambios/gestion/${c.id_cambio}`}
-                        className="boton-mini"
-                        style={{ textDecoration: "none", padding: "4px 8px", fontSize: 11 }}
+                        className="boton-secundario boton-sm"
                         title="Ver detalle del workflow"
                       >
                         Detalle
                       </Link>
                       <button
                         type="button"
-                        className="boton-mini"
+                        className="boton-secundario boton-sm"
                         onClick={() => setCambioSeleccionado(c)}
-                        style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "4px 6px" }}
                         title="Vista rápida"
                         aria-label="Vista rápida"
                       >
@@ -336,36 +315,16 @@ export default function PaginaTodosCambios() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
-              <button
+              <button className="boton-secundario"
                 type="button"
                 onClick={() => setModalAsignar(null)}
-                style={{
-                  padding: "8px 14px",
-                  borderRadius: 6,
-                  border: "1px solid #cbd5e1",
-                  backgroundColor: "#ffffff",
-                  fontSize: 13,
-                  color: "#475569",
-                  cursor: "pointer",
-                }}
               >
                 Cancelar
               </button>
-              <button
+              <button className="boton-primario"
                 type="button"
                 onClick={ejecutarAsignacion}
                 disabled={!idTecnicoSeleccionado || guardandoAsignacion}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: 6,
-                  border: "none",
-                  backgroundColor: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#ffffff",
-                  cursor: idTecnicoSeleccionado && !guardandoAsignacion ? "pointer" : "not-allowed",
-                  opacity: idTecnicoSeleccionado && !guardandoAsignacion ? 1 : 0.6,
-                }}
               >
                 {guardandoAsignacion ? "Asignando..." : "Confirmar asignación"}
               </button>
@@ -391,7 +350,7 @@ export default function PaginaTodosCambios() {
               </div>
               <button
                 type="button"
-                className="modal-cerrar-boton"
+                className="boton-icono"
                 onClick={() => setCambioSeleccionado(null)}
                 aria-label="Cerrar modal"
               >

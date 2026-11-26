@@ -562,14 +562,8 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                         onClick={() => {
                           actualizarCampo(sec.id, campo.codigo, { visible: !campo.visible });
                         }}
-                        className="boton-accion-icono"
-                        style={{
-                          width: 26,
-                          height: 26,
-                          color: campo.visible ? "#16a34a" : "#94a3b8",
-                          borderColor: campo.visible ? "#bbf7d0" : "#e2e8f0",
-                          backgroundColor: campo.visible ? "#f0fdf4" : "#f8fafc",
-                        }}
+                        className="boton-icono boton-sm"
+                        style={{ width: 26 }}
                         title={campo.visible ? "Campo visible (clic para ocultar)" : "Campo oculto (clic para mostrar)"}
                         aria-label={campo.visible ? "Campo visible (clic para ocultar)" : "Campo oculto (clic para mostrar)"}
                       >
@@ -591,14 +585,8 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                         type="button"
                         disabled={!puedeEditar}
                         onClick={() => setCampoEditando({ seccionId: sec.id, campo })}
-                        className="boton-accion-icono"
-                        style={{
-                          width: 28,
-                          height: 28,
-                          color: "#2563eb",
-                          borderColor: "#bfdbfe",
-                          backgroundColor: "#eff6ff",
-                        }}
+                        className="boton-icono boton-sm"
+                        style={{ width: 28 }}
                         title="Editar propiedades del campo (etiqueta, ayuda, ancho, reglas)"
                         aria-label="Editar propiedades del campo"
                       >
@@ -613,14 +601,8 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                         type="button"
                         disabled={!puedeEditar}
                         onClick={() => eliminarCampoDeSeccion(sec.id, campo.codigo)}
-                        className="boton-accion-icono"
-                        style={{
-                          width: 28,
-                          height: 28,
-                          color: "#dc2626",
-                          borderColor: "#fecaca",
-                          backgroundColor: "#fef2f2",
-                        }}
+                        className="boton-icono boton-sm"
+                        style={{ width: 28 }}
                         title="Eliminar campo de la sección"
                         aria-label="Eliminar campo"
                       >
@@ -689,7 +671,7 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button
             type="button"
-            className="boton-mini"
+            className="boton-secundario boton-sm"
             onClick={() => {
               setSoloObligatorios((prev) => {
                 const next = !prev;
@@ -697,28 +679,18 @@ export const PestanaCampos: React.FC<PestanaCamposProps> = ({
                 return next;
               });
             }}
-            style={{
-              backgroundColor: soloObligatorios ? "#eff6ff" : "#ffffff",
-              color: soloObligatorios ? "#1d4ed8" : "#475569",
-              borderColor: soloObligatorios ? "#93c5fd" : "#cbd5e1",
-            }}
           >
             Solo obligatorios
           </button>
           <button
             type="button"
-            className="boton-mini"
+            className="boton-secundario boton-sm"
             onClick={() => {
               setSoloOcultos((prev) => {
                 const next = !prev;
                 if (next) setSoloObligatorios(false);
                 return next;
               });
-            }}
-            style={{
-              backgroundColor: soloOcultos ? "#fee2e2" : "#ffffff",
-              color: soloOcultos ? "#991b1b" : "#475569",
-              borderColor: soloOcultos ? "#fca5a5" : "#cbd5e1",
             }}
           >
             Solo ocultos

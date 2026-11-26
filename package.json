@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/verificar_estilos.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -13,6 +14,7 @@
     "test": "node scripts/test_e2e_lifecycle.js",
     "test:e2e": "node scripts/test_e2e_lifecycle.js",
     "test:api-clientes": "node scripts/test_api_clientes.js",
+    "test:estilos": "node scripts/verificar_estilos.js --detalle",
     "seed:api-clientes": "node scripts/seed_api_clientes.js",
     "protect:audit-log": "node scripts/protect_audit_log.js"
   },

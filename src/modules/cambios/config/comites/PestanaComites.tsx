@@ -223,38 +223,12 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Cabecera Unificada Corporativa */}
-      <div
-        style={{
-          backgroundColor: "#ffffff",
-          padding: "20px 24px",
-          borderRadius: "12px",
-          border: "1px solid #e2e8f0",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "16px",
-        }}
-      >
+      <div className="cabecera-pagina">
         <div>
-          <span
-            style={{
-              fontSize: "11px",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              color: "#2563eb",
-              display: "block",
-              marginBottom: "4px",
-            }}
-          >
-            Gestión de Cambios · Gobernanza CAB y ECAB
-          </span>
-          <h1 style={{ fontSize: "20px", fontWeight: 700, color: "#0f172a", margin: 0, letterSpacing: "-0.01em" }}>
+          <h1 className="titulo-pagina">
             Comités Colegiados: CAB y ECAB
           </h1>
-          <p style={{ fontSize: "13px", color: "#64748b", margin: "4px 0 0 0" }}>
+          <p className="descripcion-pagina">
             Gobernanza del Change Advisory Board (CAB) y Emergency CAB: composición, quórum, reglas de voto y agendas.
           </p>
         </div>
@@ -266,15 +240,6 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
               onClick={onGuardar}
               disabled={guardando || disabled}
               className="boton-primario"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "7px 16px",
-                height: "36px",
-                fontSize: "12.5px",
-                cursor: guardando || disabled ? "not-allowed" : "pointer",
-              }}
             >
               
               <span>{guardando ? "Guardando..." : "Guardar miembros y quórum"}</span>
@@ -285,24 +250,14 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
 
       {/* Selector de Comité: Segmented Switch Moderno */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-        <div className="control-segmentado">
+        <div className="pestanas">
           <button
             type="button"
             onClick={() => setPanelActivo("cab")}
-            className={`control-segmentado-item ${panelActivo === "cab" ? "activo" : ""}`}
+            className={`pestana ${panelActivo === "cab" ? "pestana-activa" : ""}`}
           >
-            
             <span>CAB — Comité Asesor de Cambios</span>
-            <span
-              style={{
-                fontSize: "11px",
-                padding: "1px 6px",
-                borderRadius: "10px",
-                backgroundColor: panelActivo === "cab" ? "#eff6ff" : "#e2e8f0",
-                color: panelActivo === "cab" ? "#1d4ed8" : "#475569",
-                fontWeight: 700,
-              }}
-            >
+            <span className="pestana-contador">
               {cabConfig.miembros.length}
             </span>
           </button>
@@ -310,20 +265,10 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
           <button
             type="button"
             onClick={() => setPanelActivo("ecab")}
-            className={`control-segmentado-item ${panelActivo === "ecab" ? "activo" : ""}`}
+            className={`pestana ${panelActivo === "ecab" ? "pestana-activa" : ""}`}
           >
-            
             <span>ECAB — Comité de Emergencia</span>
-            <span
-              style={{
-                fontSize: "11px",
-                padding: "1px 6px",
-                borderRadius: "10px",
-                backgroundColor: panelActivo === "ecab" ? "#fef2f2" : "#e2e8f0",
-                color: panelActivo === "ecab" ? "#b91c1c" : "#475569",
-                fontWeight: 700,
-              }}
-            >
+            <span className="pestana-contador">
               {ecabConfig.miembros.length}
             </span>
           </button>
@@ -527,14 +472,6 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
             onClick={abrirModalNuevoMiembro}
             disabled={disabled}
             className="boton-primario"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-              padding: "7px 14px",
-              height: "34px",
-              fontSize: "12.5px",
-            }}
           >
             
             <span>Agregar Miembro</span>
@@ -556,7 +493,7 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
             <tbody>
               {comiteActual.miembros.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: "32px", textAlign: "center", color: "#64748b" }}>
+                  <td colSpan={6} className="celda-vacia">
                     No hay miembros asignados a este comité aún. Pulsa en "Agregar Miembro" para incorporar el primer integrante.
                   </td>
                 </tr>
@@ -602,7 +539,7 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
                           type="button"
                           onClick={() => abrirModalEditarMiembro(m)}
                           disabled={disabled}
-                          className="boton-tabla-accion"
+                          className="boton-secundario boton-sm"
                           title="Editar miembro"
                         >
                           <Edit2 size={13} />
@@ -611,7 +548,7 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
                           type="button"
                           onClick={() => handleEliminarMiembro(m.id_usuario)}
                           disabled={disabled}
-                          className="boton-tabla-accion-peligro"
+                          className="boton-peligro boton-sm"
                           title="Quitar miembro del comité"
                         >
                           <Trash2 size={13} />
@@ -914,7 +851,6 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
                 type="button"
                 onClick={() => setModalMiembroAbierto(false)}
                 className="boton-secundario"
-                style={{ padding: "8px 16px", fontSize: "13px" }}
               >
                 Cancelar
               </button>
@@ -922,7 +858,6 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
                 type="button"
                 onClick={handleGuardarMiembro}
                 className="boton-primario"
-                style={{ padding: "8px 18px", fontSize: "13px" }}
               >
                 Guardar Miembro
               </button>

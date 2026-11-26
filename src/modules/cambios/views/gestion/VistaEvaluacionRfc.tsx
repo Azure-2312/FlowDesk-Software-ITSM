@@ -88,8 +88,8 @@ export default function VistaEvaluacionRfc() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Bandeja de RFC por evaluar</h1>
-        <p>Asigna evaluador, revisa el riesgo y envía la RFC al circuito de autorización.</p>
+        <h1 className="titulo-pagina">Bandeja de RFC por evaluar</h1>
+        <p className="descripcion-pagina">Asigna evaluador, revisa el riesgo y envía la RFC al circuito de autorización.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -98,7 +98,7 @@ export default function VistaEvaluacionRfc() {
       {cargando ? (
         <p>Cargando...</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio" >
           No hay RFC pendientes de evaluación.
         </div>
       ) : (
@@ -127,7 +127,6 @@ export default function VistaEvaluacionRfc() {
                   </select>
                   <button
                     className="boton-secundario"
-                    style={{ width: "auto" }}
                     disabled={procesando === c.id_cambio || !seleccion[c.id_cambio]}
                     onClick={() => accion(c.id_cambio, { accion: "asignar", id_evaluador: Number(seleccion[c.id_cambio]) })}
                   >
@@ -135,13 +134,12 @@ export default function VistaEvaluacionRfc() {
                   </button>
                   <button
                     className="boton-primario"
-                    style={{ width: "auto" }}
                     disabled={procesando === c.id_cambio}
                     onClick={() => accion(c.id_cambio, { accion: "enviar" })}
                   >
                     Enviar a autorización
                   </button>
-                  <button className="boton-secundario" style={{ width: "auto" }} onClick={() => setExpandido(expandido === c.id_cambio ? null : c.id_cambio)}>
+                  <button className="boton-secundario"  onClick={() => setExpandido(expandido === c.id_cambio ? null : c.id_cambio)}>
                     {expandido === c.id_cambio ? "Ocultar" : "Detalle"}
                   </button>
                 </div>

@@ -83,8 +83,8 @@ export default function PaginaAutorizacionesCAB() {
     <div className="vista-contenedor">
       <div className="cabecera-pagina">
         <div>
-          <h1>Bandeja de Autorizaciones CAB (Change Advisory Board)</h1>
-          <p className="descripcion">
+          <h1 className="titulo-pagina">Bandeja de Autorizaciones CAB (Change Advisory Board)</h1>
+          <p className="descripcion-pagina">
             Evaluación colegiada de solicitudes de cambio mayores y normales para mitigar riesgos operacionales (ITIL v4 / ISO 20000).
           </p>
         </div>
@@ -160,7 +160,7 @@ export default function PaginaAutorizacionesCAB() {
           Consultando solicitudes pendientes de evaluación CAB...
         </div>
       ) : rfcs.length === 0 ? (
-        <div className="contenedor-tabla" style={{ padding: 36, textAlign: "center", backgroundColor: "#f8fafc" }}>
+        <div className="estado-vacio">
           <p style={{ margin: 0, color: "#64748b", fontWeight: 600 }}>
             No hay solicitudes de cambio pendientes de dictamen en el comité CAB en este momento.
           </p>
@@ -223,16 +223,6 @@ export default function PaginaAutorizacionesCAB() {
                         {esAprobadorCab ? <button
                           type="button"
                           className="boton-primario"
-                          style={{
-                            width: "auto",
-                            padding: "6px 10px",
-                            backgroundColor: puedeVotar ? "#2563eb" : "#94a3b8",
-                            borderColor: puedeVotar ? "#1d4ed8" : "#94a3b8",
-                            cursor: puedeVotar ? "pointer" : "not-allowed",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
                           disabled={!puedeVotar}
                           onClick={() => {
                             setRfcVotar(rfc);
@@ -281,7 +271,7 @@ export default function PaginaAutorizacionesCAB() {
               </div>
               <button
                 type="button"
-                className="modal-cerrar-boton"
+                className="boton-icono"
                 onClick={() => setRfcVotar(null)}
                 title="Cerrar modal"
                 aria-label="Cerrar modal"
@@ -314,17 +304,7 @@ export default function PaginaAutorizacionesCAB() {
                       key={dec}
                       type="button"
                       onClick={() => setDecision(dec)}
-                      style={{
-                        flex: 1,
-                        padding: "8px 12px",
-                        borderRadius: 6,
-                        border: `2px solid ${decision === dec ? (dec === "APROBADO" ? "#16a34a" : dec === "OBSERVADO" ? "#d97706" : "#dc2626") : "#cbd5e1"}`,
-                        backgroundColor: decision === dec ? (dec === "APROBADO" ? "#dcfce7" : dec === "OBSERVADO" ? "#fef3c7" : "#fee2e2") : "#ffffff",
-                        color: decision === dec ? (dec === "APROBADO" ? "#166534" : dec === "OBSERVADO" ? "#92400e" : "#991b1b") : "#475569",
-                        fontWeight: decision === dec ? 700 : 500,
-                        cursor: "pointer",
-                        fontSize: 12,
-                      }}
+                      className={decision === dec ? "opcion-seleccionable opcion-seleccionada" : "opcion-seleccionable"} style={{ flex: 1 }}
                     >
                       {dec}
                     </button>
@@ -345,10 +325,10 @@ export default function PaginaAutorizacionesCAB() {
               </div>
 
               <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-                <button type="button" className="boton-mini" onClick={() => setRfcVotar(null)}>
+                <button type="button" className="boton-secundario boton-sm" onClick={() => setRfcVotar(null)}>
                   Cancelar
                 </button>
-                <button type="submit" className="boton-primario" style={{ width: "auto" }} disabled={enviandoVoto}>
+                <button type="submit" className="boton-primario"  disabled={enviandoVoto}>
                   {enviandoVoto ? "Emitiendo dictamen..." : "Confirmar Dictamen CAB"}
                 </button>
               </div>

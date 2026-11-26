@@ -358,13 +358,13 @@ function ContenidoConfiguracionVistasTickets({
       {!ocultarCabecera && (
         <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <h1>{infoEncabezado.titulo}</h1>
-            <p className="subtitulo">{infoEncabezado.subtitulo}</p>
+            <h1 className="titulo-pagina">{infoEncabezado.titulo}</h1>
+            <p className="descripcion-pagina">{infoEncabezado.subtitulo}</p>
           </div>
           <button
             type="button"
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+            style={{ flexShrink: 0 }}
             onClick={guardarConfiguracionTotal}
             disabled={guardando || cargando}
           >
@@ -383,38 +383,18 @@ function ContenidoConfiguracionVistasTickets({
 
       {/* Pestañas Principales (solo si no se especificó sección ni tipo estricto en la URL y no se ocultaron) */}
       {!ocultarTabsSuperiores && !seccionParam && !tipoParam && (
-        <div style={{ display: "flex", gap: 10, marginBottom: 18, borderBottom: "1px solid #e2e8f0", paddingBottom: 10 }}>
+        <div className="pestanas" style={{ marginBottom: 18 }}>
           <button
             type="button"
             onClick={() => setPestanaPrincipal("vistas")}
-            style={{
-              padding: "8px 16px",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: pestanaPrincipal === "vistas" ? 700 : 500,
-              backgroundColor: pestanaPrincipal === "vistas" ? "#2563eb" : "#f1f5f9",
-              color: pestanaPrincipal === "vistas" ? "#ffffff" : "#475569",
-              border: "none",
-              cursor: "pointer",
-              transition: "all 0.15s ease",
-            }}
+            className={pestanaPrincipal === "vistas" ? "pestana pestana-activa" : "pestana"}
           >
             Vistas y Permisos por Perfil / Usuario
           </button>
           <button
             type="button"
             onClick={() => setPestanaPrincipal("estados")}
-            style={{
-              padding: "8px 16px",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: pestanaPrincipal === "estados" ? 700 : 500,
-              backgroundColor: pestanaPrincipal === "estados" ? "#2563eb" : "#f1f5f9",
-              color: pestanaPrincipal === "estados" ? "#ffffff" : "#475569",
-              border: "none",
-              cursor: "pointer",
-              transition: "all 0.15s ease",
-            }}
+            className={pestanaPrincipal === "estados" ? "pestana pestana-activa" : "pestana"}
           >
             Flujo de Estados y Acciones (Ciclo de Vida)
           </button>
@@ -437,23 +417,14 @@ function ContenidoConfiguracionVistasTickets({
                   Al seleccionar un usuario o perfil, se renderiza exactamente cómo observará el ticket en producción.
                 </span>
               </div>
-              <div style={{ display: "flex", gap: 6 }}>
+              <div className="pestanas">
                 <button
                   type="button"
                   onClick={() => {
                     setModoSeleccion("perfil");
                     setClaveSeleccionada("3");
                   }}
-                  style={{
-                    padding: "6px 12px",
-                    borderRadius: 6,
-                    fontSize: 12,
-                    fontWeight: modoSeleccion === "perfil" ? 700 : 500,
-                    backgroundColor: modoSeleccion === "perfil" ? "#0f172a" : "#f8fafc",
-                    color: modoSeleccion === "perfil" ? "#ffffff" : "#475569",
-                    border: "1px solid #cbd5e1",
-                    cursor: "pointer",
-                  }}
+                  className={modoSeleccion === "perfil" ? "pestana pestana-activa" : "pestana"}
                 >
                   Ver por Perfil
                 </button>
@@ -463,16 +434,7 @@ function ContenidoConfiguracionVistasTickets({
                     setModoSeleccion("usuario");
                     if (usuarios.length > 0) setClaveSeleccionada(String(usuarios[0].id_usuario));
                   }}
-                  style={{
-                    padding: "6px 12px",
-                    borderRadius: 6,
-                    fontSize: 12,
-                    fontWeight: modoSeleccion === "usuario" ? 700 : 500,
-                    backgroundColor: modoSeleccion === "usuario" ? "#0f172a" : "#f8fafc",
-                    color: modoSeleccion === "usuario" ? "#ffffff" : "#475569",
-                    border: "1px solid #cbd5e1",
-                    cursor: "pointer",
-                  }}
+                  className={modoSeleccion === "usuario" ? "pestana pestana-activa" : "pestana"}
                 >
                   Ver por Usuario Específico
                 </button>
@@ -488,21 +450,7 @@ function ContenidoConfiguracionVistasTickets({
                       key={p.id_perfil}
                       type="button"
                       onClick={() => setClaveSeleccionada(String(p.id_perfil))}
-                      style={{
-                        padding: "8px 14px",
-                        borderRadius: 6,
-                        fontSize: 12.5,
-                        fontWeight: activo ? 700 : 500,
-                        backgroundColor: activo ? "#2563eb" : "#f8fafc",
-                        color: activo ? "#ffffff" : "#334155",
-                        border: activo ? "1px solid #2563eb" : "1px solid #cbd5e1",
-                        whiteSpace: "nowrap",
-                        cursor: "pointer",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-start",
-                        gap: 2,
-                      }}
+                      className={activo ? "opcion-seleccionable opcion-seleccionada" : "opcion-seleccionable"} style={{ width: "auto" }}
                     >
                       <span>{p.nombre}</span>
                       <span style={{ fontSize: 10.5, opacity: 0.85 }}>ID: {p.id_perfil}</span>
@@ -531,18 +479,7 @@ function ContenidoConfiguracionVistasTickets({
                         key={u.id_usuario}
                         type="button"
                         onClick={() => setClaveSeleccionada(String(u.id_usuario))}
-                        style={{
-                          padding: "8px 12px",
-                          borderRadius: 6,
-                          fontSize: 12,
-                          fontWeight: activo ? 700 : 500,
-                          backgroundColor: activo ? "#2563eb" : "#f8fafc",
-                          color: activo ? "#ffffff" : "#334155",
-                          border: activo ? "1px solid #2563eb" : "1px solid #cbd5e1",
-                          whiteSpace: "nowrap",
-                          cursor: "pointer",
-                          textAlign: "left",
-                        }}
+                        className={activo ? "opcion-seleccionable opcion-seleccionada" : "opcion-seleccionable"} style={{ width: "auto" }}
                       >
                         <div style={{ fontWeight: 600 }}>{u.nombres} {u.apellido_paterno}</div>
                         <div style={{ fontSize: 11, opacity: 0.85 }}>{u.correo_electronico}</div>
@@ -571,21 +508,9 @@ function ContenidoConfiguracionVistasTickets({
                 gap: 16,
               }}
             >
-              <button
+              <button className="boton-primario"
                 type="button"
                 onClick={() => toggleHabilitacionTipo(true)}
-                style={{
-                  padding: "9px 18px",
-                  backgroundColor: "#2563eb",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: 6,
-                  fontSize: 13,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                }}
               >
                 Habilitar para este usuario
               </button>
@@ -621,19 +546,9 @@ function ContenidoConfiguracionVistasTickets({
                   Este usuario/perfil tiene acceso activo a la ficha de {tipoTicket.toUpperCase()}. Abajo puede calibrar qué componentes y secciones observa.
                 </span>
               </div>
-              <button
+              <button className="boton-peligro boton-sm"
                 type="button"
                 onClick={() => toggleHabilitacionTipo(false)}
-                style={{
-                  padding: "6px 14px",
-                  backgroundColor: "#fee2e2",
-                  color: "#b91c1c",
-                  border: "1px solid #fca5a5",
-                  borderRadius: 6,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
               >
                 Deshabilitar para este usuario
               </button>

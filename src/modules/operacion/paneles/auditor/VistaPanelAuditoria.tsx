@@ -85,14 +85,13 @@ export default function VistaPanelAuditoria() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Auditoría y Cumplimiento Normativo (ISO 20000)
           </span>
-          <h1 style={{ margin: 0 }}>Panel de auditoría</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Hallazgos, cumplimiento y muestras pendientes (solo lectura).</p>
+          <h1 className="titulo-pagina">Panel de auditoría</h1>
+          <p className="descripcion-pagina">Hallazgos, cumplimiento y muestras pendientes (solo lectura).</p>
         </div>
         <button
           type="button"
           className="boton-secundario"
           onClick={cargarDatos}
-          style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer" }}
           title="Actualizar panel"
         >
           Actualizar
@@ -112,10 +111,10 @@ export default function VistaPanelAuditoria() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/seguridad/perfiles" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Perfiles y permisos</Link>
-            <Link href="/plataforma/seguridad/auditoria-sistema" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Auditoría y accesos</Link>
-            <Link href="/plataforma/cmdb/cis" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Elementos de configuración (CMDB)</Link>
-            <Link href="/plataforma/reportes/operativos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Indicadores operativos y SLA</Link>
+            <Link href="/plataforma/seguridad/perfiles" className="boton-secundario" >Perfiles y permisos</Link>
+            <Link href="/plataforma/seguridad/auditoria-sistema" className="boton-secundario" >Auditoría y accesos</Link>
+            <Link href="/plataforma/cmdb/cis" className="boton-secundario" >Elementos de configuración (CMDB)</Link>
+            <Link href="/plataforma/reportes/operativos" className="boton-secundario" >Indicadores operativos y SLA</Link>
           </div>
         </div>
 

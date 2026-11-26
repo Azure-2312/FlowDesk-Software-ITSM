@@ -85,14 +85,13 @@ export default function VistaPanelAprobador() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Comité CAB & Autorización de Negocio (ITIL v4)
           </span>
-          <h1 style={{ margin: 0 }}>Panel del aprobador</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Pendientes por vencer, reuniones del comité y decisiones recientes.</p>
+          <h1 className="titulo-pagina">Panel del aprobador</h1>
+          <p className="descripcion-pagina">Pendientes por vencer, reuniones del comité y decisiones recientes.</p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
             href="/plataforma/cambios/cab"
             className="boton-primario"
-            style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
             Agenda del CAB
           </Link>
@@ -100,7 +99,6 @@ export default function VistaPanelAprobador() {
             type="button"
             className="boton-secundario"
             onClick={cargarDatos}
-            style={{ fontSize: 13, padding: "8px 12px", cursor: "pointer" }}
             title="Actualizar panel"
           >
             Actualizar
@@ -116,7 +114,7 @@ export default function VistaPanelAprobador() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16 }}>
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Próxima reunión del CAB</h2>
           {data.proximaReunion ? (
             <div style={{ fontSize: 13 }}>
@@ -124,7 +122,7 @@ export default function VistaPanelAprobador() {
               <div style={{ color: "#6b7280", marginTop: 4 }}>
                 {fechaHora(data.proximaReunion.fecha_reunion)} · {data.proximaReunion.tipo}
               </div>
-              <Link href="/plataforma/cambios/cab" className="boton-secundario" style={{ display: "inline-block", marginTop: 10, textDecoration: "none" }}>Ver agenda</Link>
+              <Link href="/plataforma/cambios/cab" className="boton-secundario" style={{ marginTop: 10 }}>Ver agenda</Link>
             </div>
           ) : (
             <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>No hay reuniones programadas. <Link href="/plataforma/cambios/cab">Programar</Link></p>

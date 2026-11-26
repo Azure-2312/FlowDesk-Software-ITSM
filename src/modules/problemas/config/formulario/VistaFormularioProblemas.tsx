@@ -430,10 +430,10 @@ export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormul
         marginBottom: 16
       }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+          <h1 className="titulo-pagina">
             Configuración de Formulario de Problemas
           </h1>
-          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
+          <p className="descripcion-pagina">
             Definición de campos, formularios de alta y edición, catálogos ITIL 4, matriz institucional y parametrización visual del ticket.
           </p>
         </div>
@@ -445,7 +445,7 @@ export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormul
             onClick={handleGuardarBorrador}
             disabled={guardando}
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+            style={{ flexShrink: 0 }}
           >
             {guardando ? "Guardando..." : "Guardar Configuración"}
           </button>
@@ -454,14 +454,7 @@ export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormul
 
       {/* Selector de Pestañas (solo si no es fija) */}
       {!pestanaFija && (
-      <div style={{
-        display: "flex",
-        gap: 8,
-        borderBottom: "1px solid #e2e8f0",
-        marginBottom: 24,
-        justifyContent: "flex-start",
-        overflowX: "auto"
-      }}>
+      <div className="pestanas">
         {[
           { id: "campos", label: "Campos" },
           { id: "campos_personalizados", label: "Campos personalizados" },
@@ -476,17 +469,7 @@ export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormul
               key={tab.id}
               type="button"
               onClick={() => setTabActiva(tab.id as TabId)}
-              style={{
-                padding: "10px 16px",
-                fontSize: 13,
-                fontWeight: activa ? 600 : 500,
-                color: activa ? "#2563eb" : "#64748b",
-                borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                whiteSpace: "nowrap"
-              }}
+              className={activa ? "pestana pestana-activa" : "pestana"}
             >
               {tab.label}
             </button>
@@ -504,10 +487,9 @@ export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormul
         <div style={{ backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #fecdd3", padding: 32, textAlign: "center" }}>
           <div style={{ color: "#e11d48", fontWeight: 700, fontSize: 16 }}>Error al cargar la pantalla</div>
           <p style={{ fontSize: 13, color: "#475569", margin: "8px 0 16px 0" }}>{errorCarga}</p>
-          <button
+          <button className="boton-primario boton-sm"
             type="button"
             onClick={cargarDatos}
-            style={{ padding: "8px 16px", fontSize: 12, fontWeight: 600, color: "#ffffff", backgroundColor: "#2563eb", borderRadius: 6, border: "none", cursor: "pointer" }}
           >
             Reintentar
           </button>

@@ -21,10 +21,10 @@ export default function VistaProblemasEquipoTrabajo({ datos }: Props) {
       {/* 1. Cabecera Principal */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16, borderBottom: "1px solid #e2e8f0", paddingBottom: 16 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          <h1 className="titulo-pagina">
             Mi equipo de trabajo: {nombreEquipo}
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          <p className="descripcion-pagina">
             Supervisión operativa de especialistas, diagnósticos de causa raíz y casos de problemas asignados a tu equipo.
           </p>
         </div>
@@ -84,7 +84,7 @@ export default function VistaProblemasEquipoTrabajo({ datos }: Props) {
             <tbody>
               {integrantes.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: 24, textAlign: "center", color: "#64748b" }}>
+                  <td colSpan={4} className="celda-vacia">
                     No hay integrantes asignados a este equipo resolutor.
                   </td>
                 </tr>
@@ -141,7 +141,7 @@ export default function VistaProblemasEquipoTrabajo({ datos }: Props) {
             <tbody>
               {problemasActivos.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: 24, textAlign: "center", color: "#64748b" }}>
+                  <td colSpan={6} className="celda-vacia">
                     No hay problemas activos asignados a este equipo en este momento.
                   </td>
                 </tr>

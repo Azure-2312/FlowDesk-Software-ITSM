@@ -54,10 +54,10 @@ export default function PaginaMisCambios() {
     <div className="vista-contenedor">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          <h1 className="titulo-pagina">
             Mis cambios (Solicitudes RFC)
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          <p className="descripcion-pagina">
             Solicitudes de cambio propuestas o asignadas directamente a tu responsabilidad ({cambiosFiltrados.length} cambios)
           </p>
         </div>
@@ -77,18 +77,9 @@ export default function PaginaMisCambios() {
           >
             Registrar solicitud RFC
           </Link>
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={() => cargarCambios()}
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              fontSize: 13,
-              color: "#334155",
-              cursor: "pointer",
-            }}
           >
             Actualizar
           </button>
@@ -96,68 +87,32 @@ export default function PaginaMisCambios() {
       </div>
 
       {/* Segmentos */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16, borderBottom: "1px solid #e2e8f0", paddingBottom: 10 }}>
+      <div className="pestanas" style={{ marginBottom: 16 }}>
         <button
           type="button"
           onClick={() => setSegmento("todos")}
-          style={{
-            padding: "6px 14px",
-            borderRadius: 6,
-            fontSize: 13,
-            fontWeight: segmento === "todos" ? 600 : 500,
-            border: "none",
-            backgroundColor: segmento === "todos" ? "#2563eb" : "transparent",
-            color: segmento === "todos" ? "#ffffff" : "#64748b",
-            cursor: "pointer",
-          }}
+          className={segmento === "todos" ? "pestana pestana-activa" : "pestana"}
         >
           Todos ({cambios.length})
         </button>
         <button
           type="button"
           onClick={() => setSegmento("normal")}
-          style={{
-            padding: "6px 14px",
-            borderRadius: 6,
-            fontSize: 13,
-            fontWeight: segmento === "normal" ? 600 : 500,
-            border: "none",
-            backgroundColor: segmento === "normal" ? "#2563eb" : "transparent",
-            color: segmento === "normal" ? "#ffffff" : "#64748b",
-            cursor: "pointer",
-          }}
+          className={segmento === "normal" ? "pestana pestana-activa" : "pestana"}
         >
           Normales
         </button>
         <button
           type="button"
           onClick={() => setSegmento("estandar")}
-          style={{
-            padding: "6px 14px",
-            borderRadius: 6,
-            fontSize: 13,
-            fontWeight: segmento === "estandar" ? 600 : 500,
-            border: "none",
-            backgroundColor: segmento === "estandar" ? "#2563eb" : "transparent",
-            color: segmento === "estandar" ? "#ffffff" : "#64748b",
-            cursor: "pointer",
-          }}
+          className={segmento === "estandar" ? "pestana pestana-activa" : "pestana"}
         >
           Estándar
         </button>
         <button
           type="button"
           onClick={() => setSegmento("emergencia")}
-          style={{
-            padding: "6px 14px",
-            borderRadius: 6,
-            fontSize: 13,
-            fontWeight: segmento === "emergencia" ? 600 : 500,
-            border: "none",
-            backgroundColor: segmento === "emergencia" ? "#dc2626" : "transparent",
-            color: segmento === "emergencia" ? "#ffffff" : "#64748b",
-            cursor: "pointer",
-          }}
+          className={segmento === "emergencia" ? "pestana pestana-activa" : "pestana"}
         >
           Emergencia
         </button>
@@ -177,13 +132,7 @@ export default function PaginaMisCambios() {
 
       {!cargando && !error && cambiosFiltrados.length === 0 && (
         <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            padding: "48px 24px",
-            textAlign: "center",
-          }}
+          className="estado-vacio"
         >
           <div style={{ fontSize: 16, fontWeight: 600, color: "#1e293b", marginBottom: 6 }}>
             No tienes solicitudes de cambio en esta vista

@@ -187,8 +187,8 @@ export default function VistaPanelAdministrador() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Administración del Sistema & Seguridad ITIL
           </span>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#0f172a" }}>Panel de administración</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>
+          <h1 className="titulo-pagina">Panel de administración</h1>
+          <p className="descripcion-pagina">
             Supervisión integral de seguridad, eventos de autenticación, trazabilidad de identidades y auditoría de cambios del sistema.
           </p>
         </div>
@@ -196,7 +196,7 @@ export default function VistaPanelAdministrador() {
           type="button"
           onClick={cargarPanel}
           className="boton-primario"
-          style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+          style={{ flexShrink: 0 }}
         >
           Actualizar Panel
         </button>
@@ -307,7 +307,7 @@ export default function VistaPanelAdministrador() {
           </div>
 
           {data.logsInicioSesion.length === 0 ? (
-            <div style={{ padding: "24px 16px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
+            <div className="estado-vacio">
               <p style={{ fontSize: 12.5, color: "#64748b", margin: 0 }}>No hay eventos de acceso registrados.</p>
             </div>
           ) : (

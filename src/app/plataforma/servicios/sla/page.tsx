@@ -31,13 +31,11 @@ export default async function PaginaMonitorSla({ searchParams }: Props) {
   return (
     <div className="vista-contenedor" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {vistasPermitidas.length > 1 && (
-        <div className="bg-white px-6 pt-2 rounded-xl border border-slate-200 shadow-xs">
-          <PestanasVista
+        <PestanasVista
             vistas={vistasPermitidas}
             vistaActiva={vistaActiva}
             urlBase="/plataforma/servicios/sla"
           />
-        </div>
       )}
 
       <div>

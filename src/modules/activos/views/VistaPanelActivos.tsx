@@ -86,14 +86,13 @@ export default function VistaPanelActivos() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Gestión de Activos TI & Configuración (SACM / ITIL v4)
           </span>
-          <h1 style={{ margin: 0 }}>Panel de activos y CMDB</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Garantías por vencer, sobreuso de licencias, inexactitudes de CMDB, campañas activas y actas pendientes.</p>
+          <h1 className="titulo-pagina">Panel de activos y CMDB</h1>
+          <p className="descripcion-pagina">Garantías por vencer, sobreuso de licencias, inexactitudes de CMDB, campañas activas y actas pendientes.</p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
             href="/plataforma/activos/inventario"
             className="boton-primario"
-            style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
             Inventario de Activos
           </Link>
@@ -101,7 +100,6 @@ export default function VistaPanelActivos() {
             type="button"
             className="boton-secundario"
             onClick={cargarDatos}
-            style={{ fontSize: 13, padding: "8px 12px", cursor: "pointer" }}
             title="Actualizar panel"
           >
             Actualizar
@@ -122,14 +120,14 @@ export default function VistaPanelActivos() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/activos/inventario?vista=importar" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Importación masiva</Link>
-            <Link href="/plataforma/activos/asignaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Asignaciones y actas</Link>
-            <Link href="/plataforma/activos/licencias" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Licencias de software</Link>
-            <Link href="/plataforma/activos/contratos" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Contratos y proveedores</Link>
+            <Link href="/plataforma/activos/inventario?vista=importar" className="boton-secundario" >Importación masiva</Link>
+            <Link href="/plataforma/activos/asignaciones" className="boton-secundario" >Asignaciones y actas</Link>
+            <Link href="/plataforma/activos/licencias" className="boton-secundario" >Licencias de software</Link>
+            <Link href="/plataforma/activos/contratos" className="boton-secundario" >Contratos y proveedores</Link>
           </div>
         </div>
 
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Garantías por vencer</h2>
           {data.garantiasPorVencer.length === 0 ? (
             <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>No hay garantías próximas a vencer.</p>
@@ -147,7 +145,7 @@ export default function VistaPanelActivos() {
           )}
         </div>
 
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Campañas activas</h2>
           {data.campanasActivas.length === 0 ? (
             <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>No hay campañas de inventario abiertas.</p>

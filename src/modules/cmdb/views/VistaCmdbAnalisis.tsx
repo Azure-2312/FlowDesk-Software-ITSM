@@ -209,15 +209,14 @@ export default function VistaCmdbAnalisis() {
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 21, fontWeight: 700, color: "#0f172a" }}>Análisis e Impacto de la CMDB</h1>
-          <p className="descripcion" style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
+          <h1 className="titulo-pagina">Análisis e Impacto de la CMDB</h1>
+          <p className="descripcion-pagina">
             Topología de dependencias en red, análisis de impacto aguas arriba/abajo en fallas y cambios, reconciliación Activo ↔ CI e historial de configuración (ITIL v4).
           </p>
         </div>
         <Link
           href="/plataforma/cmdb/topologia"
           className="boton-secundario"
-          style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
         >
            Volver a la CMDB
         </Link>
@@ -226,22 +225,13 @@ export default function VistaCmdbAnalisis() {
       {error && <div className="mensaje-error" style={{ marginBottom: 16 }}>{error}</div>}
 
       {/* Pestanas */}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", borderBottom: "1px solid #e2e8f0", marginBottom: 18 }}>
+      <div className="pestanas">
         {tabs.map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => setTab(t.id)}
-            style={{
-              background: "none",
-              border: "none",
-              borderBottom: tab === t.id ? "2px solid #2563eb" : "2px solid transparent",
-              color: tab === t.id ? "#2563eb" : "#64748b",
-              fontWeight: 600,
-              fontSize: 13.5,
-              padding: "10px 12px",
-              cursor: "pointer",
-            }}
+            className={tab === t.id ? "pestana pestana-activa" : "pestana"}
           >
             {t.label}
           </button>
@@ -449,7 +439,7 @@ function BloqueImpacto({ titulo, items, keyCodigo }: { titulo: string; items: an
         {titulo} <span style={{ color: "#64748b", fontWeight: 500 }}>({items?.length ?? 0})</span>
       </h4>
       {!items || items.length === 0 ? (
-        <div style={{ padding: 12, textAlign: "center", color: "#94a3b8", fontSize: 12.5, fontStyle: "italic" }}>Sin registros.</div>
+        <div className="estado-vacio">Sin registros.</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 320, overflowY: "auto" }}>
           {items.map((it, i) => (

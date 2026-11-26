@@ -405,7 +405,6 @@ export const PestanaCatalogos: React.FC = () => {
                     setFiltroTexto("");
                   }}
                   className="boton-secundario"
-                  style={{ width: "auto", fontSize: 11.5, padding: "4px 10px", display: "inline-flex", alignItems: "center", gap: 5 }}
                 >
                    Volver a Categorías Principales
                 </button>
@@ -462,7 +461,6 @@ export const PestanaCatalogos: React.FC = () => {
                 type="button"
                 className="boton-primario"
                 onClick={abrirCrear}
-                style={{ width: "auto", fontSize: 12.5, padding: "7px 16px", backgroundColor: "#2563eb", whiteSpace: "nowrap" }}
               >
                 {catalogoSeleccionado === "categorias_cambio"
                   ? categoriaPadreActivaId !== null
@@ -480,7 +478,7 @@ export const PestanaCatalogos: React.FC = () => {
         ) : catalogoSeleccionado === "categorias_cambio" && categoriaPadreActivaId === null ? (
           /* Nivel 1: Botones de Categorías Principales */
           categoriasPrincipalesFiltradas.length === 0 ? (
-            <div className="tarjeta-formulario" style={{ textAlign: "center", padding: 32, color: "#64748b" }}>
+            <div className="estado-vacio" >
               No se encontraron categorías principales que coincidan con la búsqueda.
             </div>
           ) : (
@@ -523,31 +521,14 @@ export const PestanaCatalogos: React.FC = () => {
                     }}
                   >
                     {/* Botón Lapicito de edición en la esquina superior derecha */}
-                    <button
+                    <button className="boton-secundario"
                       type="button"
                       title={`Editar ${cat.nombre}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         abrirEditar(cat);
                       }}
-                      style={{
-                        position: "absolute",
-                        top: 10,
-                        right: 10,
-                        width: 30,
-                        height: 30,
-                        borderRadius: 6,
-                        border: "1px solid #e2e8f0",
-                        backgroundColor: "#ffffff",
-                        color: "#475569",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        fontSize: 13,
-                        transition: "all 0.15s ease",
-                        zIndex: 2,
-                      }}
+                      style={{ position: "absolute", top: 10, right: 10, width: 30, zIndex: 2 }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = "#eff6ff";
                         e.currentTarget.style.color = "#2563eb";
@@ -647,7 +628,7 @@ export const PestanaCatalogos: React.FC = () => {
               <tbody>
                 {subcategoriasFiltradas.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: "center", padding: 32, color: "#64748b" }}>
+                    <td colSpan={7} className="celda-vacia">
                       No hay subcategorías registradas en <strong>{catPadreActual?.nombre}</strong>. Haz clic en <strong>Nuevo valor</strong> arriba para agregar una subcategoría.
                     </td>
                   </tr>
@@ -708,18 +689,16 @@ export const PestanaCatalogos: React.FC = () => {
                         <div style={{ display: "flex", gap: 4 }}>
                           <button
                             type="button"
-                            className="boton-mini"
+                            className="boton-secundario boton-sm"
                             onClick={() => abrirEditar(it)}
-                            style={{ fontSize: 11, padding: "2px 6px" }}
                           >
                             Editar
                           </button>
                           {!it.es_sistema && (
                             <button
                               type="button"
-                              className="boton-mini"
+                              className="boton-secundario boton-sm"
                               onClick={() => alternarActivo(it)}
-                              style={{ fontSize: 11, padding: "2px 6px" }}
                             >
                               {it.activo ? "Desact" : "Act"}
                             </button>
@@ -727,9 +706,8 @@ export const PestanaCatalogos: React.FC = () => {
                           {!it.es_sistema && it.usos_count === 0 && (
                             <button
                               type="button"
-                              className="boton-mini boton-mini-peligro"
+                              className="boton-sm boton-peligro"
                               onClick={() => eliminarItem(it)}
-                              style={{ fontSize: 11, padding: "2px 6px" }}
                             >
                               ×
                             </button>
@@ -760,7 +738,7 @@ export const PestanaCatalogos: React.FC = () => {
               <tbody>
                 {itemsFiltrados.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: "center", padding: 32, color: "#64748b" }}>
+                    <td colSpan={7} className="celda-vacia">
                       No hay registros en este catálogo.
                     </td>
                   </tr>
@@ -821,18 +799,16 @@ export const PestanaCatalogos: React.FC = () => {
                         <div style={{ display: "flex", gap: 4 }}>
                           <button
                             type="button"
-                            className="boton-mini"
+                            className="boton-secundario boton-sm"
                             onClick={() => abrirEditar(it)}
-                            style={{ fontSize: 11, padding: "2px 6px" }}
                           >
                             Editar
                           </button>
                           {!it.es_sistema && (
                             <button
                               type="button"
-                              className="boton-mini"
+                              className="boton-secundario boton-sm"
                               onClick={() => alternarActivo(it)}
-                              style={{ fontSize: 11, padding: "2px 6px" }}
                             >
                               {it.activo ? "Desact" : "Act"}
                             </button>
@@ -840,9 +816,8 @@ export const PestanaCatalogos: React.FC = () => {
                           {!it.es_sistema && it.usos_count === 0 && (
                             <button
                               type="button"
-                              className="boton-mini boton-mini-peligro"
+                              className="boton-sm boton-peligro"
                               onClick={() => eliminarItem(it)}
-                              style={{ fontSize: 11, padding: "2px 6px" }}
                             >
                               ×
                             </button>
@@ -948,7 +923,7 @@ export const PestanaCatalogos: React.FC = () => {
               <button type="button" className="boton-secundario" onClick={() => setModalNuevoAbierto(false)}>
                 Cancelar
               </button>
-              <button type="button" className="boton-primario" onClick={guardarNuevo} style={{ width: "auto", padding: "8px 16px", backgroundColor: "#2563eb" }}>
+              <button type="button" className="boton-primario" onClick={guardarNuevo} >
                 {catalogoSeleccionado === "categorias_cambio"
                   ? categoriaPadreActivaId !== null
                     ? "Guardar Subcategoría"
@@ -1044,7 +1019,7 @@ export const PestanaCatalogos: React.FC = () => {
               <button type="button" className="boton-secundario" onClick={() => setModalEditarAbierto(false)}>
                 Cancelar
               </button>
-              <button type="button" className="boton-primario" onClick={guardarEdicion} style={{ width: "auto", padding: "8px 16px", backgroundColor: "#2563eb" }}>
+              <button type="button" className="boton-primario" onClick={guardarEdicion} >
                 Guardar Cambios
               </button>
             </div>

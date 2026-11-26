@@ -94,14 +94,13 @@ export default function VistaPanelGestion() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Habilitación del Cambio & Calendario RFC (ITIL v4)
           </span>
-          <h1 style={{ margin: 0 }}>Panel de gestión de cambios</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y PIR vencidas.</p>
+          <h1 className="titulo-pagina">Panel de gestión de cambios</h1>
+          <p className="descripcion-pagina">RFC por evaluar, autorizaciones pendientes, cambios de hoy, conflictos y PIR vencidas.</p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
             href="/plataforma/cambios/nuevo"
             className="boton-primario"
-            style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
             + Crear Cambio (RFC)
           </Link>
@@ -109,7 +108,6 @@ export default function VistaPanelGestion() {
             type="button"
             className="boton-secundario"
             onClick={cargarDatos}
-            style={{ fontSize: 13, padding: "8px 12px", cursor: "pointer" }}
             title="Actualizar panel"
           >
             Actualizar
@@ -130,14 +128,14 @@ export default function VistaPanelGestion() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/cambios/gestion?vista=por-evaluar" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Bandeja de evaluación</Link>
-            <Link href="/plataforma/cambios/gestion?vista=aprobacion" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Autorizaciones</Link>
-            <Link href="/plataforma/cambios/gestion/calendario" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Calendario y programación</Link>
-            <Link href="/plataforma/cambios/gestion/pir" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Revisión post-implementación</Link>
+            <Link href="/plataforma/cambios/gestion?vista=por-evaluar" className="boton-secundario" >Bandeja de evaluación</Link>
+            <Link href="/plataforma/cambios/gestion?vista=aprobacion" className="boton-secundario" >Autorizaciones</Link>
+            <Link href="/plataforma/cambios/gestion/calendario" className="boton-secundario" >Calendario y programación</Link>
+            <Link href="/plataforma/cambios/gestion/pir" className="boton-secundario" >Revisión post-implementación</Link>
           </div>
         </div>
 
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Próximos cambios programados</h2>
           {data.proximos.length === 0 ? (
             <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>No hay cambios programados próximos.</p>

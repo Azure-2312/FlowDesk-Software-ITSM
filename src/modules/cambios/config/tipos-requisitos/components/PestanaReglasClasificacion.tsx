@@ -179,7 +179,6 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
             type="button"
             onClick={abrirCrearRegla}
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
             Nueva regla
           </button>
@@ -287,40 +286,35 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
 
                 <td style={{ padding: "10px 14px", textAlign: "right" }}>
                   <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 4 }}>
-                    <button
+                    <button className="boton-secundario boton-sm"
                       type="button"
                       disabled={idx === 0}
                       onClick={() => moverRegla(idx, "arriba")}
-                      style={{ padding: "2px 6px", fontSize: 11, border: "1px solid #cbd5e1", borderRadius: 4, cursor: "pointer", backgroundColor: "#ffffff" }}
                     >
                       ↑
                     </button>
-                    <button
+                    <button className="boton-secundario boton-sm"
                       type="button"
                       disabled={idx === reglas.length - 1}
                       onClick={() => moverRegla(idx, "abajo")}
-                      style={{ padding: "2px 6px", fontSize: 11, border: "1px solid #cbd5e1", borderRadius: 4, cursor: "pointer", backgroundColor: "#ffffff" }}
                     >
                       ↓
                     </button>
-                    <button
+                    <button className="boton-secundario boton-sm"
                       type="button"
                       onClick={() => abrirEditarRegla(r)}
-                      style={{ padding: "2px 6px", fontSize: 11, border: "1px solid #cbd5e1", borderRadius: 4, cursor: "pointer", backgroundColor: "#ffffff" }}
                     >
                       Editar
                     </button>
-                    <button
+                    <button className="boton-secundario boton-sm"
                       type="button"
                       onClick={() => duplicarRegla(r)}
-                      style={{ padding: "2px 6px", fontSize: 11, border: "1px solid #cbd5e1", borderRadius: 4, cursor: "pointer", backgroundColor: "#ffffff" }}
                     >
                       Duplicar
                     </button>
-                    <button
+                    <button className="boton-peligro boton-sm"
                       type="button"
                       onClick={() => eliminarRegla(r.id)}
-                      style={{ padding: "2px 6px", fontSize: 11, border: "1px solid #fecaca", borderRadius: 4, cursor: "pointer", backgroundColor: "#fff1f2", color: "#b91c1c" }}
                     >
                       Eliminar
                     </button>
@@ -364,10 +358,9 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
               <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
                 Editor de Regla de Clasificación #{reglaEnEdicion.orden}
               </h3>
-              <button
+              <button className="boton-icono boton-sm"
                 type="button"
                 onClick={() => setModalEdicionAbierto(false)}
-                style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#64748b" }}
               >
                 ×
               </button>
@@ -454,17 +447,15 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
             </div>
 
             <div style={{ padding: "14px 20px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "flex-end", gap: 10 }}>
-              <button
+              <button className="boton-secundario"
                 type="button"
                 onClick={() => setModalEdicionAbierto(false)}
-                style={{ padding: "7px 14px", fontSize: 12.5, border: "1px solid #cbd5e1", borderRadius: 6, backgroundColor: "#ffffff", cursor: "pointer" }}
               >
                 Cancelar
               </button>
-              <button
+              <button className="boton-primario"
                 type="button"
                 onClick={guardarRegla}
-                style={{ padding: "7px 16px", fontSize: 12.5, fontWeight: 600, backgroundColor: "#2563eb", color: "#ffffff", border: "none", borderRadius: 6, cursor: "pointer" }}
               >
                 Guardar regla
               </button>

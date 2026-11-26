@@ -155,8 +155,8 @@ export default function PaginaReportes() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Analítica Operativa & Cuadros de Mando (ITIL v4)
           </span>
-          <h1 style={{ margin: 0 }}>Reportes y Dashboards Ejecutivos de Gestión ITIL 4</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>
+          <h1 className="titulo-pagina">Reportes y Dashboards Ejecutivos de Gestión ITIL 4</h1>
+          <p className="descripcion-pagina">
             Métricas de Mesa de Servicio: Acuerdos de Nivel de Servicio (SLA), gráficos de pastel de tickets abiertos, barras de cumplimiento y distribución por prioridad.
           </p>
         </div>
@@ -166,17 +166,15 @@ export default function PaginaReportes() {
             className="boton-secundario"
             onClick={exportarReporteCSV}
             disabled={cargando}
-            style={{ fontSize: 13, padding: "8px 12px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
             Exportar CSV
           </button>
           <button
-            className="boton-mini"
+            className="boton-secundario boton-sm"
             onClick={cargar}
             disabled={cargando}
             title="Recalcular métricas"
             aria-label="Recalcular métricas"
-            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 10px" }}
           >
             <svg
               width="14"

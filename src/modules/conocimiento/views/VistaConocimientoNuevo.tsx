@@ -95,10 +95,10 @@ Confirmar que el servicio responde correctamente...`
   return (
     <div style={{ padding: "24px 32px", maxWidth: 960, margin: "0 auto" }}>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+        <h1 className="titulo-pagina">
           Crear artículo de conocimiento
         </h1>
-        <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
+        <p className="descripcion-pagina">
           Redacción de documentación técnica y procedimientos para revisión editorial y publicación
         </p>
       </div>
@@ -178,7 +178,7 @@ Confirmar que el servicio responde correctamente...`
         </div>
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={() => {
               if (typeof window !== "undefined" && window.history.length > 1) {
@@ -187,31 +187,12 @@ Confirmar que el servicio responde correctamente...`
                 router.push("/plataforma/conocimiento");
               }
             }}
-            style={{
-              padding: "9px 18px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              fontSize: 13,
-              color: "#475569",
-              cursor: "pointer",
-            }}
           >
             Cancelar
           </button>
-          <button
+          <button className="boton-primario"
             type="submit"
             disabled={guardando}
-            style={{
-              padding: "9px 22px",
-              backgroundColor: "#2563eb",
-              border: "none",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#ffffff",
-              cursor: guardando ? "not-allowed" : "pointer",
-            }}
           >
             {guardando ? "Enviando..." : "Enviar a revisión editorial"}
           </button>

@@ -180,18 +180,17 @@ export default function PaginaAsignarTickets() {
       {/* Cabecera Principal */}
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h1>Despacho y Asignación Inteligente de Tickets</h1>
-          <p>
+          <h1 className="titulo-pagina">Despacho y Asignación Inteligente de Tickets</h1>
+          <p className="descripcion-pagina">
             Supervisión y triaje ITIL 4: distribución balanceada de tickets según niveles de soporte, disponibilidad operativa y capacidad WIP.
           </p>
         </div>
         <button
-          className="boton-mini"
+          className="boton-secundario boton-sm"
           onClick={cargarDatos}
           disabled={cargando}
           title="Actualizar despacho"
           aria-label="Actualizar despacho"
-          style={{ padding: "6px 8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
         >
           <svg
             width="14"
@@ -299,10 +298,10 @@ export default function PaginaAsignarTickets() {
           }}
         >
           <span>{mensajeExito}</span>
-          <button
+          <button className="boton-icono boton-sm"
             type="button"
             onClick={() => setMensajeExito(null)}
-            style={{ background: "none", border: "none", color: "#065f46", cursor: "pointer", display: "inline-flex", alignItems: "center", padding: 2 }}
+            
             aria-label="Cerrar notificación"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -329,10 +328,10 @@ export default function PaginaAsignarTickets() {
           }}
         >
           <span>{errorAsignacion}</span>
-          <button
+          <button className="boton-peligro boton-sm"
             type="button"
             onClick={() => setErrorAsignacion(null)}
-            style={{ background: "none", border: "none", color: "#991b1b", cursor: "pointer", display: "inline-flex", alignItems: "center", padding: 2 }}
+            
             aria-label="Cerrar error"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -421,7 +420,7 @@ export default function PaginaAsignarTickets() {
 
           {/* Lista de Tickets */}
           {ticketsFiltrados.length === 0 ? (
-            <div style={{ textAlign: "center", padding: 32, color: "#64748b", fontSize: 12.5, backgroundColor: "#f8fafc", borderRadius: 6 }}>
+            <div className="estado-vacio">
               No hay tickets pendientes con los filtros aplicados.
             </div>
           ) : (
@@ -540,11 +539,10 @@ export default function PaginaAsignarTickets() {
                   </div>
                   <button
                     type="button"
-                    className="boton-mini"
+                    className="boton-secundario boton-sm"
                     onClick={() => router.push(rutaDetalleTicket(ticketSeleccionado))}
                     title="Ver detalle completo del ticket"
                     aria-label="Ver detalle completo del ticket"
-                    style={{ padding: "5px 8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
                   >
                     <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -698,17 +696,10 @@ export default function PaginaAsignarTickets() {
 
                       <button
                         type="button"
-                        className="boton-mini"
+                        className="boton-secundario boton-sm"
                         disabled={asignando || esActual}
                         onClick={() => ejecutarAsignacion(tec.id_usuario, tec.nombre_completo)}
-                        style={{
-                          width: "100%",
-                          fontSize: 11,
-                          backgroundColor: esActual ? "#f1f5f9" : esRecomendado ? "#2563eb" : "#ffffff",
-                          color: esActual ? "#64748b" : esRecomendado ? "#ffffff" : "#1e293b",
-                          borderColor: esRecomendado ? "#2563eb" : "#cbd5e1",
-                          fontWeight: 600,
-                        }}
+                        style={{ width: "100%" }}
                       >
                         {esActual
                           ? "Actualmente asignado a este ticket"

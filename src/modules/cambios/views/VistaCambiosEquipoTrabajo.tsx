@@ -22,10 +22,10 @@ export default function VistaCambiosEquipoTrabajo({ datos }: Props) {
       {/* 1. Cabecera Principal */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16, borderBottom: "1px solid #e2e8f0", paddingBottom: 16 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          <h1 className="titulo-pagina">
             Mi equipo de trabajo: {nombreEquipo}
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          <p className="descripcion-pagina">
             Supervisión del equipo técnico, especialistas asignados y estado operativo de cambios en cartera.
           </p>
         </div>
@@ -163,7 +163,7 @@ export default function VistaCambiosEquipoTrabajo({ datos }: Props) {
               <tbody>
                 {integrantes.length === 0 ? (
                   <tr>
-                    <td colSpan={4} style={{ padding: 24, textAlign: "center", color: "#64748b" }}>
+                    <td colSpan={4} className="celda-vacia">
                       No hay integrantes asignados a este equipo resolutor.
                     </td>
                   </tr>

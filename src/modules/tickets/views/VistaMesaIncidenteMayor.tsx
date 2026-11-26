@@ -107,12 +107,12 @@ export default function VistaMesaIncidenteMayor() {
     <div style={{ padding: "24px 32px", maxWidth: 1200, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>Incidente mayor (sala de crisis)</h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
+          <h1 className="titulo-pagina">Incidente mayor (sala de crisis)</h1>
+          <p className="descripcion-pagina">
             Coordinación cuando el Supervisor declara un incidente mayor: línea de tiempo, tickets vinculados y comunicados.
           </p>
         </div>
-        <button type="button" onClick={cargar} style={{ padding: "8px 14px", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, color: "#334155", cursor: "pointer" }}>
+        <button className="boton-secundario" type="button" onClick={cargar} >
           Actualizar
         </button>
       </div>
@@ -123,7 +123,7 @@ export default function VistaMesaIncidenteMayor() {
       {cargando ? (
         <p>Cargando...</p>
       ) : incidentes.length === 0 ? (
-        <div style={{ textAlign: "center", color: "#64748b", fontSize: 13, border: "1px dashed #cbd5e1", borderRadius: 10, padding: 32 }}>
+        <div className="estado-vacio">
           No hay incidentes mayores declarados.
         </div>
       ) : (
@@ -192,11 +192,11 @@ export default function VistaMesaIncidenteMayor() {
                         style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }}
                       />
                     </label>
-                    <button
+                    <button className="boton-primario"
                       type="button"
                       disabled={enviando === i.id_incidente_mayor}
                       onClick={() => enviarComunicado(i.id_incidente_mayor)}
-                      style={{ marginTop: 8, padding: "8px 16px", backgroundColor: "#1d4ed8", color: "#ffffff", border: "none", borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+                      style={{ marginTop: 8 }}
                     >
                       {enviando === i.id_incidente_mayor ? "Publicando..." : "Publicar comunicado"}
                     </button>

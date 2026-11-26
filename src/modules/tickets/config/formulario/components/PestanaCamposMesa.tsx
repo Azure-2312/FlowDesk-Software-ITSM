@@ -777,19 +777,7 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                           <button
                             type="button"
                             onClick={() => actualizarCampo(sec.id, campo.codigo, { visible: !campo.visible })}
-                            style={{
-                              width: 26,
-                              height: 26,
-                              borderRadius: 4,
-                              border: `1px solid ${campo.visible ? "#bbf7d0" : "#e2e8f0"}`,
-                              backgroundColor: campo.visible ? "#f0fdf4" : "#f8fafc",
-                              color: campo.visible ? "#16a34a" : "#94a3b8",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              cursor: "pointer",
-                              padding: 0,
-                            }}
+                            className="boton-icono boton-sm" aria-pressed={campo.visible}
                             title={campo.visible ? "Campo visible (clic para ocultar)" : "Campo oculto (clic para mostrar)"}
                           >
                             {campo.visible ? (
@@ -806,22 +794,10 @@ export const PestanaCamposMesa = React.forwardRef<PestanaCamposMesaHandle, Pesta
                           </button>
 
                           {/* Botón de Edición (Lápiz) */}
-                          <button
+                          <button className="boton-secundario boton-sm"
                             type="button"
                             onClick={() => setCampoEditando({ seccionId: sec.id, campo })}
-                            style={{
-                              width: 26,
-                              height: 26,
-                              borderRadius: 4,
-                              border: "1px solid #bfdbfe",
-                              backgroundColor: "#eff6ff",
-                              color: "#2563eb",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              cursor: "pointer",
-                              padding: 0,
-                            }}
+                            style={{ width: 26 }}
                             title="Editar propiedades del campo (sección, etiqueta, ayuda, ancho, jerarquía VIP)"
                           >
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

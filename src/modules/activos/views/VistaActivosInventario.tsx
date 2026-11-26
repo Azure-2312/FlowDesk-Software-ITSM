@@ -70,26 +70,17 @@ export default function PaginaInventarioActivos() {
     <div className="vista-contenedor">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Inventario de activos de TI
           </h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
+          <p className="descripcion-pagina">
             Consulta de equipamiento tecnológico, custodios asignados y estado operativo ({activosFiltrados.length} activos)
           </p>
         </div>
 
-        <button
+        <button className="boton-secundario"
           type="button"
           onClick={cargarActivos}
-          style={{
-            padding: "8px 14px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #cbd5e1",
-            borderRadius: 6,
-            fontSize: 13,
-            color: "#334155",
-            cursor: "pointer",
-          }}
         >
           Actualizar
         </button>
@@ -162,13 +153,7 @@ export default function PaginaInventarioActivos() {
 
       {!cargando && !error && activosFiltrados.length === 0 && (
         <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            padding: "48px 24px",
-            textAlign: "center",
-          }}
+          className="estado-vacio"
         >
           <div style={{ fontSize: 16, fontWeight: 600, color: "#1e293b", marginBottom: 6 }}>
             No se encontraron activos

@@ -86,8 +86,8 @@ export default function PaginaAuditoriaSistema() {
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1>Bitácora de Auditoría Integral del Sistema (Audit Trail)</h1>
-          <p className="subtitulo">
+          <h1 className="titulo-pagina">Bitácora de Auditoría Integral del Sistema (Audit Trail)</h1>
+          <p className="descripcion-pagina">
             Registro cronológico inmutable de todas las acciones de configuración, modificaciones de parámetros, SLAs, altas y eventos de seguridad ejecutados en la plataforma.
           </p>
         </div>
@@ -97,17 +97,15 @@ export default function PaginaAuditoriaSistema() {
             className="boton-secundario"
             onClick={exportarCSV}
             disabled={logs.length === 0}
-            style={{ fontSize: 13, padding: "8px 14px", width: "auto" }}
           >
             Exportar CSV
           </button>
           <button
-            className="boton-mini"
+            className="boton-secundario boton-sm"
             onClick={cargarLogs}
             disabled={cargando}
             title="Actualizar bitácora"
             aria-label="Actualizar bitácora"
-            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 10px" }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="23 4 23 10 17 10" />
@@ -200,7 +198,7 @@ export default function PaginaAuditoriaSistema() {
           Consultando registros de auditoría...
         </div>
       ) : logs.length === 0 ? (
-        <div className="contenedor-tabla" style={{ padding: 36, textAlign: "center", color: "#64748b" }}>
+        <div className="estado-vacio">
           No hay eventos de auditoría registrados con los filtros seleccionados.
         </div>
       ) : (
@@ -268,11 +266,10 @@ export default function PaginaAuditoriaSistema() {
                     <td style={{ textAlign: "center" }}>
                       <button
                         type="button"
-                        className="boton-mini"
+                        className="boton-secundario boton-sm"
                         onClick={() => setLogSeleccionado(log)}
                         title="Ver detalles del evento"
                         aria-label="Ver detalles del evento"
-                        style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "5px 8px" }}
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -307,9 +304,8 @@ export default function PaginaAuditoriaSistema() {
               </div>
               <button
                 type="button"
-                className="boton-mini"
+                className="boton-secundario boton-sm"
                 onClick={() => setLogSeleccionado(null)}
-                style={{ padding: "4px 8px" }}
               >
                 Cerrar
               </button>

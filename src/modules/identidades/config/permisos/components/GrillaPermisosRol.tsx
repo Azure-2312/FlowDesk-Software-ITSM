@@ -137,7 +137,7 @@ export default function GrillaPermisosRol({ grupos, perfiles }: Props) {
             <tr>
               <td
                 colSpan={perfiles.length + 1}
-                style={{ padding: 24, textAlign: "center", color: "#64748b" }}
+                className="celda-vacia"
               >
                 No hay capacidades que coincidan con los filtros.
               </td>

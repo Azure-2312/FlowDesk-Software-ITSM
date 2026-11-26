@@ -339,19 +339,9 @@ export const PestanaTiposCambio: React.FC<PestanaTiposCambioProps> = ({
             </span>
           </div>
 
-          <button
+          <button className="boton-secundario boton-sm"
             type="button"
             onClick={restaurarTipoActualFabrica}
-            style={{
-              padding: "6px 12px",
-              fontSize: 12,
-              fontWeight: 600,
-              color: "#475569",
-              backgroundColor: "#f8fafc",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              cursor: "pointer"
-            }}
           >
             Restaurar tipo a valores de fábrica
           </button>
@@ -611,33 +601,15 @@ export const PestanaTiposCambio: React.FC<PestanaTiposCambioProps> = ({
                   Establece si cada campo del formulario es <strong>Oculto</strong>, <strong>Opcional</strong> u <strong>Obligatorio</strong> para cada tipo.
                 </p>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <button
+                  <button className="boton-secundario boton-sm"
                     type="button"
                     onClick={() => copiarColumna("normal")}
-                    style={{
-                      padding: "4px 8px",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      backgroundColor: "#f1f5f9",
-                      border: "1px solid #cbd5e1",
-                      borderRadius: 4,
-                      cursor: "pointer"
-                    }}
                   >
                     Copiar columna de Normal
                   </button>
-                  <button
+                  <button className="boton-secundario boton-sm"
                     type="button"
                     onClick={() => copiarColumna("estandar")}
-                    style={{
-                      padding: "4px 8px",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      backgroundColor: "#f1f5f9",
-                      border: "1px solid #cbd5e1",
-                      borderRadius: 4,
-                      cursor: "pointer"
-                    }}
                   >
                     Copiar columna de Estándar
                   </button>
@@ -844,19 +816,9 @@ export const PestanaTiposCambio: React.FC<PestanaTiposCambioProps> = ({
                     : "Secuencia variable según riesgo: Técnica (Bajo) → Negocio (Medio) → CAB (Alto) → Dirección (Crítico)."}
                 </span>
                 {onIrAMatrizAutoridad && (
-                  <button
+                  <button className="boton-primario boton-sm"
                     type="button"
                     onClick={onIrAMatrizAutoridad}
-                    style={{
-                      padding: "6px 12px",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      backgroundColor: "#2563eb",
-                      color: "#ffffff",
-                      border: "none",
-                      borderRadius: 6,
-                      cursor: "pointer"
-                    }}
                   >
                     Editar en Matriz de autoridad 
                   </button>

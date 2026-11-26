@@ -330,7 +330,6 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
             type="button"
             className="boton-primario"
             onClick={abrirNuevaPregunta}
-            style={{ width: "auto", fontSize: 13, padding: "8px 16px" }}
           >
             Nueva Pregunta
           </button>
@@ -351,7 +350,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
             <tbody>
               {preguntas.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center", padding: 28, color: "#64748b" }}>
+                  <td colSpan={6} className="celda-vacia">
                     No hay preguntas configuradas. Haz clic en <strong>Nueva Pregunta</strong> para agregar la primera.
                   </td>
                 </tr>
@@ -367,15 +366,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                             onClick={() => moverPregunta(index, -1)}
                             disabled={index === 0}
                             title="Subir orden"
-                            style={{
-                              border: "none",
-                              background: "none",
-                              cursor: index === 0 ? "default" : "pointer",
-                              color: index === 0 ? "#cbd5e1" : "#475569",
-                              fontSize: 10,
-                              lineHeight: 1,
-                              padding: 1,
-                            }}
+                            className="boton-icono boton-sm"
                           >
                             ▲
                           </button>
@@ -384,15 +375,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                             onClick={() => moverPregunta(index, 1)}
                             disabled={index === preguntas.length - 1}
                             title="Bajar orden"
-                            style={{
-                              border: "none",
-                              background: "none",
-                              cursor: index === preguntas.length - 1 ? "default" : "pointer",
-                              color: index === preguntas.length - 1 ? "#cbd5e1" : "#475569",
-                              fontSize: 10,
-                              lineHeight: 1,
-                              padding: 1,
-                            }}
+                            className="boton-icono boton-sm"
                           >
                             ▼
                           </button>
@@ -431,16 +414,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                             key={i}
                             type="button"
                             onClick={() => abrirEditarPregunta(preg)}
-                            style={{
-                              fontSize: 10.5,
-                              padding: "2px 7px",
-                              backgroundColor: opc.eleva_minimo ? "#fff1f2" : "#f8fafc",
-                              border: `1px solid ${opc.eleva_minimo ? "#fecdd3" : "#e2e8f0"}`,
-                              borderRadius: 4,
-                              color: opc.eleva_minimo ? "#be123c" : "#334155",
-                              cursor: "pointer",
-                              textAlign: "left",
-                            }}
+                            className={opc.eleva_minimo ? "boton-peligro boton-sm" : "boton-secundario boton-sm"}
                             title={
                               opc.eleva_minimo
                                 ? `Eleva riesgo automáticamente a mínimo ${opc.eleva_minimo} (clic para editar opciones)`
@@ -457,32 +431,22 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 6 }}>
                         <button
                           type="button"
-                          className="boton-mini"
+                          className="boton-secundario boton-sm"
                           onClick={() => alternarActivaPregunta(preg.id)}
-                          style={{
-                            fontSize: 11,
-                            padding: "4px 8px",
-                            backgroundColor: preg.activa ? "#fef2f2" : "#f0fdf4",
-                            color: preg.activa ? "#b91c1c" : "#15803d",
-                            border: `1px solid ${preg.activa ? "#fecaca" : "#bbf7d0"}`,
-                            fontWeight: 600,
-                          }}
                         >
                           {preg.activa ? "Deshabilitar" : "Habilitar"}
                         </button>
                         <button
                           type="button"
-                          className="boton-mini"
+                          className="boton-secundario boton-sm"
                           onClick={() => abrirEditarPregunta(preg)}
-                          style={{ fontSize: 11, padding: "4px 8px" }}
                         >
                           Editar
                         </button>
                         <button
                           type="button"
-                          className="boton-mini boton-mini-peligro"
+                          className="boton-sm boton-peligro"
                           onClick={() => eliminarPregunta(preg)}
-                          style={{ fontSize: 11, padding: "4px 8px" }}
                         >
                           Eliminar
                         </button>
@@ -529,9 +493,8 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
             </div>
             <button
               type="button"
-              className="boton-mini"
+              className="boton-secundario boton-sm"
               onClick={abrirEditarNiveles}
-              style={{ fontSize: 11, padding: "4px 10px", whiteSpace: "nowrap" }}
             >
               Editar Escala
             </button>
@@ -718,7 +681,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                   Configura el enunciado, tipos de cambio aplicables y sus opciones con puntajes.
                 </span>
               </div>
-              <button type="button" className="modal-cerrar-boton" onClick={() => setModalEditarPreguntaAbierto(false)}>
+              <button type="button" className="boton-icono" onClick={() => setModalEditarPreguntaAbierto(false)}>
                 ×
               </button>
             </div>
@@ -825,15 +788,8 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                   </div>
                   <button
                     type="button"
-                    className="boton-mini"
+                    className="boton-secundario boton-sm"
                     onClick={agregarOpcionModal}
-                    style={{
-                      backgroundColor: "#eff6ff",
-                      borderColor: "#93c5fd",
-                      color: "#1d4ed8",
-                      fontWeight: 700,
-                      padding: "5px 10px",
-                    }}
                   >
                     + Agregar Opción
                   </button>
@@ -895,16 +851,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                           onClick={() => moverOpcionModal(idx, -1)}
                           disabled={idx === 0}
                           title="Subir opción"
-                          style={{
-                            border: "1px solid #cbd5e1",
-                            backgroundColor: "#ffffff",
-                            borderRadius: 4,
-                            width: 24,
-                            height: 28,
-                            cursor: idx === 0 ? "default" : "pointer",
-                            color: idx === 0 ? "#cbd5e1" : "#475569",
-                            fontSize: 10,
-                          }}
+                          className="boton-icono boton-sm"
                         >
                           ▲
                         </button>
@@ -913,20 +860,11 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                           onClick={() => moverOpcionModal(idx, 1)}
                           disabled={idx === preguntaEditar.opciones.length - 1}
                           title="Bajar opción"
-                          style={{
-                            border: "1px solid #cbd5e1",
-                            backgroundColor: "#ffffff",
-                            borderRadius: 4,
-                            width: 24,
-                            height: 28,
-                            cursor: idx === preguntaEditar.opciones.length - 1 ? "default" : "pointer",
-                            color: idx === preguntaEditar.opciones.length - 1 ? "#cbd5e1" : "#475569",
-                            fontSize: 10,
-                          }}
+                          className="boton-icono boton-sm"
                         >
                           ▼
                         </button>
-                        <button
+                        <button className="boton-peligro boton-sm"
                           type="button"
                           onClick={() => eliminarOpcionModal(idx)}
                           title={
@@ -934,17 +872,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                               ? "Debe conservar al menos 1 opción"
                               : "Eliminar opción"
                           }
-                          style={{
-                            border: "1px solid #fecaca",
-                            backgroundColor: "#fef2f2",
-                            borderRadius: 4,
-                            width: 26,
-                            height: 28,
-                            cursor: "pointer",
-                            color: "#b91c1c",
-                            fontWeight: 700,
-                            fontSize: 12,
-                          }}
+                          style={{ width: 26 }}
                         >
                           ×
                         </button>
@@ -973,7 +901,6 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                 type="button"
                 className="boton-primario"
                 onClick={guardarPreguntaEditada}
-                style={{ width: "auto", padding: "8px 18px", backgroundColor: "#2563eb" }}
               >
                 {esNuevaPregunta ? "Agregar Pregunta" : "Guardar Cambios"}
               </button>
@@ -1003,7 +930,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                   Puntaje máximo actual según preguntas activas: <strong>{puntajeMaximoCalculado} puntos</strong>
                 </span>
               </div>
-              <button type="button" className="modal-cerrar-boton" onClick={() => setModalNivelesAbierto(false)}>
+              <button type="button" className="boton-icono" onClick={() => setModalNivelesAbierto(false)}>
                 ×
               </button>
             </div>
@@ -1101,13 +1028,12 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
             >
               <button
                 type="button"
-                className="boton-mini"
+                className="boton-secundario boton-sm"
                 onClick={() => {
                   if (nivelesEditar.length > 0) {
                     actualizarNivelModal(nivelesEditar.length - 1, { max: Math.max(puntajeMaximoCalculado, nivelesEditar[nivelesEditar.length - 1].min) });
                   }
                 }}
-                style={{ fontSize: 11.5, padding: "6px 10px" }}
               >
                 Ajustar tope máximo a {puntajeMaximoCalculado} pts
               </button>
@@ -1120,7 +1046,6 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                   type="button"
                   className="boton-primario"
                   onClick={guardarNivelesEditados}
-                  style={{ width: "auto", padding: "8px 18px", backgroundColor: "#2563eb" }}
                 >
                   Guardar Escala
                 </button>

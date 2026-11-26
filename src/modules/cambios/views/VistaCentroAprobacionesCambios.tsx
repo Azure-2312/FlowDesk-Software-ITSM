@@ -290,107 +290,65 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
   return (
     <div className="vista-contenedor" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Cabecera Corporativa */}
-      <div
-        style={{
-          backgroundColor: "#ffffff",
-          padding: "20px 24px",
-          borderRadius: "12px",
-          border: "1px solid #e2e8f0",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "16px",
-        }}
-      >
+      <div className="cabecera-pagina">
         <div>
-          <span
-            style={{
-              fontSize: "11px",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              color: "#2563eb",
-              display: "block",
-              marginBottom: "4px",
-            }}
-          >
-            Gestión de Cambios · Centro de Dictámenes
-          </span>
-          <h1 style={{ fontSize: "20px", fontWeight: 700, color: "#0f172a", margin: 0, letterSpacing: "-0.01em" }}>
+          <h1 className="titulo-pagina">
             Centro de Aprobaciones
           </h1>
-          <p style={{ fontSize: "13px", color: "#64748b", margin: "4px 0 0 0" }}>
+          <p className="descripcion-pagina">
             Autorización de cambios (CAB), evaluación técnica de viabilidad y V°B° de área empresarial.
           </p>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
           {vista === "pendientes" && pendientes.length > 0 && (
-            <div className="control-segmentado">
+            <div className="pestanas">
               <button
                 type="button"
                 onClick={() => setFiltroTipo("TODOS")}
-                className={`control-segmentado-item ${filtroTipo === "TODOS" ? "activo" : ""}`}
+                className={`pestana ${filtroTipo === "TODOS" ? "pestana-activa" : ""}`}
               >
                 <span>Todos</span>
-                <span style={{ fontSize: "11px", opacity: 0.8 }}>({pendientes.length})</span>
+                <span className="pestana-contador">{pendientes.length}</span>
               </button>
               {totalCab > 0 && (
                 <button
                   type="button"
                   onClick={() => setFiltroTipo("CAB")}
-                  className={`control-segmentado-item ${filtroTipo === "CAB" ? "activo" : ""}`}
+                  className={`pestana ${filtroTipo === "CAB" ? "pestana-activa" : ""}`}
                 >
                   <span>CAB</span>
-                  <span style={{ fontSize: "11px", opacity: 0.8 }}>({totalCab})</span>
+                  <span className="pestana-contador">{totalCab}</span>
                 </button>
               )}
               {totalArea > 0 && (
                 <button
                   type="button"
                   onClick={() => setFiltroTipo("VB_AREA")}
-                  className={`control-segmentado-item ${filtroTipo === "VB_AREA" ? "activo" : ""}`}
+                  className={`pestana ${filtroTipo === "VB_AREA" ? "pestana-activa" : ""}`}
                 >
                   <span>V°B° Área</span>
-                  <span style={{ fontSize: "11px", opacity: 0.8 }}>({totalArea})</span>
+                  <span className="pestana-contador">{totalArea}</span>
                 </button>
               )}
               {totalTecnica > 0 && (
                 <button
                   type="button"
                   onClick={() => setFiltroTipo("TECNICA")}
-                  className={`control-segmentado-item ${filtroTipo === "TECNICA" ? "activo" : ""}`}
+                  className={`pestana ${filtroTipo === "TECNICA" ? "pestana-activa" : ""}`}
                 >
                   <span>Técnica</span>
-                  <span style={{ fontSize: "11px", opacity: 0.8 }}>({totalTecnica})</span>
+                  <span className="pestana-contador">{totalTecnica}</span>
                 </button>
               )}
             </div>
           )}
 
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={cargarDatos}
             disabled={cargando}
             title="Actualizar listado"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              padding: "7px 12px",
-              height: "34px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: "6px",
-              fontSize: "12.5px",
-              fontWeight: 600,
-              color: "#334155",
-              cursor: cargando ? "not-allowed" : "pointer",
-              transition: "all 0.15s ease",
-            }}
           >
 
             <span>Actualizar</span>
@@ -456,7 +414,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
           </div>
         ) : vista === "pendientes" ? (
           pendientesFiltrados.length === 0 ? (
-            <div style={{ padding: "56px 24px", textAlign: "center", color: "#64748b" }}>
+            <div className="estado-vacio">
               <div
                 style={{
                   width: "48px",
@@ -532,7 +490,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
                         <div style={{ display: "inline-flex", gap: "6px", alignItems: "center", justifyContent: "flex-end" }}>
                           <Link
                             href={`/plataforma/cambios/gestion/${item.id_cambio}`}
-                            className="boton-tabla-detalle"
+                            className="boton-secundario boton-sm"
                             title="Ver detalle del cambio (RFC)"
                           >
 
@@ -541,7 +499,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
 
                           <button
                             type="button"
-                            className="boton-tabla-aprobar"
+                            className="boton-primario boton-sm"
                             onClick={() => setItemAccion({ item, decision: "APROBAR" })}
                             title="Emitir dictamen favorable"
                           >
@@ -551,7 +509,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
 
                           <button
                             type="button"
-                            className="boton-tabla-rechazar"
+                            className="boton-peligro boton-sm"
                             onClick={() => setItemAccion({ item, decision: "RECHAZAR" })}
                             title="Denegar o rechazar solicitud"
                           >
@@ -648,7 +606,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
 
                         <td style={{ padding: "12px 16px", textAlign: "right", whiteSpace: "nowrap" }}>
                           {idRfc ? (
-                            <Link href={`/plataforma/cambios/gestion/${idRfc}`} className="boton-tabla-detalle">
+                            <Link href={`/plataforma/cambios/gestion/${idRfc}`} className="boton-secundario boton-sm">
 
                               <span>Ver RFC</span>
                             </Link>
@@ -747,7 +705,6 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
                 onClick={() => setItemAccion(null)}
                 disabled={procesando}
                 className="boton-secundario"
-                style={{ padding: "8px 16px", fontSize: "13px" }}
               >
                 Cancelar
               </button>
@@ -755,8 +712,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
                 type="button"
                 onClick={ejecutarDecision}
                 disabled={procesando}
-                className={itemAccion.decision === "APROBAR" ? "boton-tabla-aprobar" : "boton-tabla-rechazar"}
-                style={{ height: "36px", padding: "0 18px", fontSize: "13px" }}
+                className={itemAccion.decision === "APROBAR" ? "boton-primario boton-sm" : "boton-peligro boton-sm"}
               >
                 {procesando ? "Procesando..." : itemAccion.decision === "APROBAR" ? "Confirmar Aprobación" : "Confirmar Rechazo"}
               </button>

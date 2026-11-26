@@ -202,10 +202,10 @@ export default function GobiernoConocimiento({
       {/* Cabecera Principal */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 16 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+          <h1 className="titulo-pagina">
             Gobierno de la Base de Conocimiento
           </h1>
-          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
+          <p className="descripcion-pagina">
             Supervise el ciclo editorial de artículos técnicos, audite la trazabilidad y configure las políticas de redacción y compuertas de publicación del autoservicio.
           </p>
         </div>
@@ -215,7 +215,7 @@ export default function GobiernoConocimiento({
             className="boton-primario"
             onClick={guardarPoliticasKCS}
             disabled={guardandoPoliticas}
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+            style={{ flexShrink: 0 }}
           >
             {guardandoPoliticas ? "Guardando..." : "Guardar Configuración"}
           </button>
@@ -224,21 +224,11 @@ export default function GobiernoConocimiento({
 
       {/* Navegación por Pestañas (si no está fijada externamente) */}
       {!pestanaFija && (
-        <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #e2e8f0", marginBottom: 24, justifyContent: "flex-start", overflowX: "auto" }}>
+        <div className="pestanas">
           <button
             type="button"
             onClick={() => setPestañaActiva("articulos")}
-            style={{
-              padding: "10px 16px",
-              border: "none",
-              background: "transparent",
-              borderBottom: pestañaActiva === "articulos" ? "2px solid #2563eb" : "2px solid transparent",
-              color: pestañaActiva === "articulos" ? "#2563eb" : "#64748b",
-              fontWeight: pestañaActiva === "articulos" ? 600 : 500,
-              cursor: "pointer",
-              fontSize: 13,
-              whiteSpace: "nowrap",
-            }}
+            className={pestañaActiva === "articulos" ? "pestana pestana-activa" : "pestana"}
           >
             Artículos y Ciclo de Vida Editorial
           </button>
@@ -246,17 +236,7 @@ export default function GobiernoConocimiento({
           <button
             type="button"
             onClick={() => setPestañaActiva("politicas")}
-            style={{
-              padding: "10px 16px",
-              border: "none",
-              background: "transparent",
-              borderBottom: pestañaActiva === "politicas" ? "2px solid #2563eb" : "2px solid transparent",
-              color: pestañaActiva === "politicas" ? "#2563eb" : "#64748b",
-              fontWeight: pestañaActiva === "politicas" ? 600 : 500,
-              cursor: "pointer",
-              fontSize: 13,
-              whiteSpace: "nowrap",
-            }}
+            className={pestañaActiva === "politicas" ? "pestana pestana-activa" : "pestana"}
           >
             Gobernanza, Políticas KCS y Categorías
           </button>
@@ -335,7 +315,6 @@ export default function GobiernoConocimiento({
                   type="button"
                   className="boton-secundario"
                   onClick={() => { setIdRetirar(null); setMotivoRetiro(""); }}
-                  style={{ width: "auto" }}
                 >
                   Cancelar
                 </button>
@@ -344,7 +323,6 @@ export default function GobiernoConocimiento({
                   className="boton-peligro"
                   disabled={!motivoRetiro.trim()}
                   onClick={() => accionTransicion(idRetirar, "RETIRAR", { motivo: motivoRetiro })}
-                  style={{ width: "auto" }}
                 >
                   Confirmar Retiro
                 </button>
@@ -356,7 +334,7 @@ export default function GobiernoConocimiento({
           {cargando ? (
             <p>Cargando inventario maestro de artículos...</p>
           ) : articulosFiltrados.length === 0 ? (
-            <div style={{ background: "#ffffff", padding: 32, borderRadius: 8, border: "1px solid #e2e8f0", textAlign: "center", color: "#64748b" }}>
+            <div className="estado-vacio">
               No se encontraron artículos con los criterios seleccionados.
             </div>
           ) : (
@@ -413,27 +391,24 @@ export default function GobiernoConocimiento({
                         <div style={{ display: "flex", gap: 6, justifyContent: "flex-end", flexWrap: "wrap" }}>
                           {a.estado_editorial === "EN_REVISION" && (
                             <>
-                              <button
+                              <button className="boton-primario boton-sm"
                                 type="button"
                                 onClick={() => accionTransicion(a.id_articulo, "APROBAR")}
-                                style={{ padding: "4px 8px", fontSize: 11, background: "#16a34a", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer" }}
                               >
                                 Aprobar
                               </button>
-                              <button
+                              <button className="boton-peligro boton-sm"
                                 type="button"
                                 onClick={() => accionTransicion(a.id_articulo, "RECHAZAR")}
-                                style={{ padding: "4px 8px", fontSize: 11, background: "#ef4444", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer" }}
                               >
                                 Rechazar
                               </button>
                             </>
                           )}
                           {a.estado_editorial === "PUBLICADO" && (
-                            <button
+                            <button className="boton-peligro boton-sm"
                               type="button"
                               onClick={() => setIdRetirar(a.id_articulo)}
-                              style={{ padding: "4px 8px", fontSize: 11, background: "#f59e0b", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer" }}
                             >
                               Retirar
                             </button>

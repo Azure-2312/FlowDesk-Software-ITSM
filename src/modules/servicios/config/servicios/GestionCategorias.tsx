@@ -472,10 +472,9 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
           }}
         >
           <span>{mensajeInfo}</span>
-          <button
+          <button className="boton-enlace"
             type="button"
             onClick={() => setMensajeInfo(null)}
-            style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontWeight: 700 }}
           >
             Cerrar
           </button>
@@ -506,7 +505,6 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
             <button
               type="button"
               className="boton-secundario"
-              style={{ width: "auto", padding: "6px 12px", fontSize: 12 }}
               onClick={cerrarFormulario}
             >
               Cerrar Formulario
@@ -657,7 +655,6 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={cerrarFormulario}
                 disabled={guardando}
               >
@@ -666,13 +663,6 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
               <button
                 type="submit"
                 className="boton-primario"
-                style={{
-                  width: "auto",
-                  padding: "8px 22px",
-                  fontSize: 13,
-                  opacity: (!formularioValido || guardando) ? 0.6 : 1,
-                  cursor: (!formularioValido || guardando) ? "not-allowed" : "pointer",
-                }}
                 disabled={guardando || !formularioValido}
               >
                 {guardando ? "Guardando cambios..." : modoEdicion === "crear" ? "Registrar Categoría" : "Guardar Modificaciones"}
@@ -731,7 +721,6 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => setCategoriaAEliminar(null)}
               >
                 Cancelar
@@ -739,7 +728,6 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
               <button
                 type="button"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13, backgroundColor: "#dc2626" }}
                 onClick={() => ejecutarEliminar(categoriaAEliminar)}
               >
                 Confirmar y Proceder
@@ -752,17 +740,17 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
       {/* Cabecera General de la Vista */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 16 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+          <h1 className="titulo-pagina">
             Clasificación y Configuración de Categorías
           </h1>
-          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
+          <p className="descripcion-pagina">
             Administre las categorías maestras que agrupan los servicios y rigen los tiempos base de SLA en el catálogo y los formularios.
           </p>
         </div>
         <button
           type="button"
           className="boton-primario"
-          style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+          style={{ flexShrink: 0 }}
           onClick={abrirCrear}
         >
           Nueva Categoría
@@ -770,52 +758,25 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
       </div>
 
       {/* Tabs por Tipo (Debajo del Título General) */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, borderBottom: "1px solid #e2e8f0", marginBottom: 24, justifyContent: "flex-start" }}>
+      <div className="pestanas">
         <button
           type="button"
           onClick={() => setFiltroTipo("todos")}
-          style={{
-            border: "none",
-            background: "transparent",
-            color: filtroTipo === "todos" ? "#2563eb" : "#64748b",
-            fontWeight: filtroTipo === "todos" ? 600 : 500,
-            padding: "10px 16px",
-            fontSize: 13,
-            cursor: "pointer",
-            borderBottom: filtroTipo === "todos" ? "2px solid #2563eb" : "2px solid transparent",
-          }}
+          className={filtroTipo === "todos" ? "pestana pestana-activa" : "pestana"}
         >
           Todas ({totalCategorias})
         </button>
         <button
           type="button"
           onClick={() => setFiltroTipo("1")}
-          style={{
-            border: "none",
-            background: "transparent",
-            color: filtroTipo === "1" ? "#2563eb" : "#64748b",
-            fontWeight: filtroTipo === "1" ? 600 : 500,
-            padding: "10px 16px",
-            fontSize: 13,
-            cursor: "pointer",
-            borderBottom: filtroTipo === "1" ? "2px solid #2563eb" : "2px solid transparent",
-          }}
+          className={filtroTipo === "1" ? "pestana pestana-activa" : "pestana"}
         >
           Incidentes ({cantIncidentes})
         </button>
         <button
           type="button"
           onClick={() => setFiltroTipo("2")}
-          style={{
-            border: "none",
-            background: "transparent",
-            color: filtroTipo === "2" ? "#2563eb" : "#64748b",
-            fontWeight: filtroTipo === "2" ? 600 : 500,
-            padding: "10px 16px",
-            fontSize: 13,
-            cursor: "pointer",
-            borderBottom: filtroTipo === "2" ? "2px solid #2563eb" : "2px solid transparent",
-          }}
+          className={filtroTipo === "2" ? "pestana pestana-activa" : "pestana"}
         >
           Solicitudes ({cantSolicitudes})
         </button>
@@ -875,14 +836,13 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
             Cargando categorías oficiales...
           </div>
         ) : categoriasFiltradas.length === 0 ? (
-          <div style={{ padding: "40px 20px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, color: "#64748b" }}>
+          <div className="estado-vacio">
             <p style={{ margin: "0 0 10px 0", fontSize: 13.5 }}>
               No se encontraron categorías que coincidan con los filtros aplicados.
             </p>
             <button
               type="button"
               className="boton-secundario"
-              style={{ width: "auto", padding: "6px 14px", fontSize: 12.5 }}
               onClick={abrirCrear}
             >
               Crear la primera categoría
@@ -1002,7 +962,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "flex-end" }}>
                         <button
                           type="button"
-                          className="boton-accion-icono"
+                          className="boton-icono boton-sm"
                           title="Editar categoría"
                           aria-label="Editar categoría"
                           onClick={() => abrirEditar(c)}
@@ -1015,7 +975,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
 
                         <button
                           type="button"
-                          className="boton-accion-icono"
+                          className="boton-icono boton-sm"
                           title={c.estado_registro ? "Desactivar categoría del catálogo" : "Activar categoría"}
                           aria-label={c.estado_registro ? "Desactivar categoría" : "Activar categoría"}
                           onClick={() => alternarEstado(c)}
@@ -1036,7 +996,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
 
                         <button
                           type="button"
-                          className="boton-accion-icono"
+                          className="boton-icono boton-sm"
                           title="Eliminar categoría"
                           aria-label="Eliminar categoría"
                           onClick={() => setCategoriaAEliminar(c)}

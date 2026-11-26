@@ -58,8 +58,8 @@ export default function VistaReportesArea() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Reportes del área</h1>
-        <p>Consumo por servicio, SLA percibido, satisfacción y costo referencial de {data.departamento}.</p>
+        <h1 className="titulo-pagina">Reportes del área</h1>
+        <p className="descripcion-pagina">Consumo por servicio, SLA percibido, satisfacción y costo referencial de {data.departamento}.</p>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))", gap: 14, marginBottom: 24 }}>
@@ -70,7 +70,7 @@ export default function VistaReportesArea() {
         <Kpi titulo="Costo licencias / año" valor={`S/ ${r.costo_referencial.toLocaleString("es-PE")}`} />
       </div>
 
-      <div className="tarjeta-formulario">
+      <div className="estado-vacio">
         <h2>Tickets por servicio</h2>
         {data.porServicio.length === 0 ? (
           <p>Sin datos para el periodo.</p>

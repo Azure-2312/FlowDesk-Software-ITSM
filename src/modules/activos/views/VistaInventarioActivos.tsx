@@ -383,10 +383,10 @@ function ContenidoInventarioActivos() {
       {/* Cabecera General de la Vista */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 12 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+          <h1 className="titulo-pagina">
             Inventario de Activos Tecnológicos
           </h1>
-          <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
+          <p className="descripcion-pagina">
             {pestanaItam === "inventario"
               ? "Control patrimonial ITIL v4: Identificación por serie, asignación departamental y ciclo de vida de equipamiento físico."
               : pestanaItam === "tipos"
@@ -398,7 +398,6 @@ function ContenidoInventarioActivos() {
           <button
             type="button"
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
             onClick={abrirNuevo}
           >
             Registrar Activo
@@ -408,7 +407,6 @@ function ContenidoInventarioActivos() {
           <button
             type="button"
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
             onClick={() => setModalNuevoModelo(true)}
           >
             Registrar Modelo Homologado
@@ -417,55 +415,25 @@ function ContenidoInventarioActivos() {
       </div>
 
       {/* Selector de Pestañas ITAM (Debajo del Título General) */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, borderBottom: "1px solid #e2e8f0", marginBottom: 20, justifyContent: "flex-start", overflowX: "auto" }}>
+      <div className="pestanas">
         <button
           type="button"
           onClick={() => { setPestanaItam("inventario"); setVista("tabla"); }}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            background: "transparent",
-            borderBottom: pestanaItam === "inventario" ? "2px solid #2563eb" : "2px solid transparent",
-            color: pestanaItam === "inventario" ? "#2563eb" : "#64748b",
-            fontWeight: pestanaItam === "inventario" ? 600 : 500,
-            fontSize: 13,
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-          }}
+          className={pestanaItam === "inventario" ? "pestana pestana-activa" : "pestana"}
         >
           Inventario Operativo
         </button>
         <button
           type="button"
           onClick={() => setPestanaItam("tipos")}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            background: "transparent",
-            borderBottom: pestanaItam === "tipos" ? "2px solid #2563eb" : "2px solid transparent",
-            color: pestanaItam === "tipos" ? "#2563eb" : "#64748b",
-            fontWeight: pestanaItam === "tipos" ? 600 : 500,
-            fontSize: 13,
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-          }}
+          className={pestanaItam === "tipos" ? "pestana pestana-activa" : "pestana"}
         >
           Tipos, Modelos y Reglas de Depreciación
         </button>
         <button
           type="button"
           onClick={() => setPestanaItam("ciclo-vida")}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            background: "transparent",
-            borderBottom: pestanaItam === "ciclo-vida" ? "2px solid #2563eb" : "2px solid transparent",
-            color: pestanaItam === "ciclo-vida" ? "#2563eb" : "#64748b",
-            fontWeight: pestanaItam === "ciclo-vida" ? 600 : 500,
-            fontSize: 13,
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-          }}
+          className={pestanaItam === "ciclo-vida" ? "pestana pestana-activa" : "pestana"}
         >
           Ciclo de Vida y Transiciones Autorizadas
         </button>
@@ -490,22 +458,10 @@ function ContenidoInventarioActivos() {
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => setVista("tabla")}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver al Inventario de Activos
               </button>
@@ -520,7 +476,6 @@ function ContenidoInventarioActivos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => setVista("tabla")}
                 disabled={guardando}
               >
@@ -530,7 +485,6 @@ function ContenidoInventarioActivos() {
                 type="submit"
                 form="form-nuevo-activo"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Registrando..." : "Registrar Activo"}
@@ -641,7 +595,6 @@ function ContenidoInventarioActivos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => setVista("tabla")}
                 disabled={guardando}
               >
@@ -650,7 +603,6 @@ function ContenidoInventarioActivos() {
               <button
                 type="submit"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Registrando..." : "Registrar Activo"}
@@ -676,25 +628,13 @@ function ContenidoInventarioActivos() {
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => {
                   setVista("tabla");
                   setActivoSeleccionado(null);
                 }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver al Inventario de Activos
               </button>
@@ -709,7 +649,6 @@ function ContenidoInventarioActivos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setActivoSeleccionado(null);
@@ -722,7 +661,6 @@ function ContenidoInventarioActivos() {
                 type="submit"
                 form="form-editar-activo"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Guardando..." : "Guardar Cambios"}
@@ -871,7 +809,6 @@ function ContenidoInventarioActivos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setActivoSeleccionado(null);
@@ -883,7 +820,6 @@ function ContenidoInventarioActivos() {
               <button
                 type="submit"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Guardando..." : "Guardar Cambios"}
@@ -896,25 +832,13 @@ function ContenidoInventarioActivos() {
       {/* 3. VISTA DEDICADA: DAR DE BAJA ACTIVO */}
       {vista === "baja" && activoSeleccionado && (
         <div style={{ maxWidth: 700, margin: "0 auto", backgroundColor: "#ffffff", padding: 28, borderRadius: 10, border: "1px solid #e2e8f0" }}>
-          <button
+          <button className="boton-enlace"
             type="button"
             onClick={() => {
               setVista("tabla");
               setActivoSeleccionado(null);
             }}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              background: "transparent",
-              border: "none",
-              color: "#2563eb",
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-              marginBottom: 14,
-              padding: 0,
-            }}
+            style={{ marginBottom: 14 }}
           >
             Volver al Inventario de Activos
           </button>
@@ -953,7 +877,6 @@ function ContenidoInventarioActivos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setActivoSeleccionado(null);
@@ -965,12 +888,6 @@ function ContenidoInventarioActivos() {
               <button
                 type="submit"
                 className="boton-primario"
-                style={{
-                  width: "auto",
-                  padding: "8px 24px",
-                  fontSize: 13,
-                  backgroundColor: activoSeleccionado.estado_activo !== "BAJA" ? "#dc2626" : "#16a34a",
-                }}
                 disabled={guardando}
               >
                 {guardando
@@ -989,10 +906,10 @@ function ContenidoInventarioActivos() {
         <div style={{ maxWidth: 960, margin: "0 auto", padding: "16px 0" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
             <div>
-              <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+              <h1 className="titulo-pagina">
                 Historial de Ciclo de Vida: [{activoSeleccionado.codigo_patrimonial}] {activoSeleccionado.marca} {activoSeleccionado.modelo}
               </h1>
-              <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: 13 }}>
+              <p className="descripcion-pagina">
                 Trazabilidad completa de estados, reasignaciones de custodia y justificaciones según ITIL v4 e ISO/IEC 20000.
               </p>
             </div>
@@ -1000,7 +917,6 @@ function ContenidoInventarioActivos() {
               type="button"
               className="boton-secundario"
               onClick={() => { setVista("tabla"); setActivoSeleccionado(null); }}
-              style={{ padding: "8px 16px", fontSize: 13 }}
             >
               Volver a Inventario
             </button>
@@ -1116,7 +1032,7 @@ function ContenidoInventarioActivos() {
               Cargando activos de hardware...
             </div>
           ) : activosFiltrados.length === 0 ? (
-            <div style={{ padding: "32px 0", textAlign: "center", color: "#64748b" }}>
+            <div className="estado-vacio">
               No se encontraron activos con los criterios seleccionados.
             </div>
           ) : (
@@ -1191,7 +1107,7 @@ function ContenidoInventarioActivos() {
                         <div style={{ display: "inline-flex", gap: 5 }}>
                           <button
                             type="button"
-                            className="boton-accion-icono"
+                            className="boton-icono boton-sm"
                             title="Historial de ciclo de vida"
                             onClick={() => abrirHistorial(a)}
                           >
@@ -1202,7 +1118,7 @@ function ContenidoInventarioActivos() {
                           </button>
                           <button
                             type="button"
-                            className="boton-accion-icono"
+                            className="boton-icono boton-sm"
                             title="Editar activo"
                             onClick={() => abrirEditar(a)}
                           >
@@ -1213,7 +1129,7 @@ function ContenidoInventarioActivos() {
                           </button>
                           <button
                             type="button"
-                            className={"boton-accion-icono " + (a.estado_activo !== "BAJA" ? "boton-accion-peligro" : "")}
+                            className={a.estado_activo !== "BAJA" ? "boton-icono boton-sm boton-icono-peligro" : "boton-icono boton-sm"}
                             title={a.estado_activo !== "BAJA" ? "Dar de baja activo" : "Reactivar activo"}
                             onClick={() => abrirBaja(a)}
                           >
@@ -1499,17 +1415,15 @@ function ContenidoInventarioActivos() {
                 </select>
               </div>
               <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 20 }}>
-                <button
+                <button className="boton-secundario"
                   type="button"
                   onClick={() => setModalNuevoModelo(false)}
-                  style={{ padding: "8px 16px", borderRadius: 6, border: "1px solid #cbd5e1", backgroundColor: "#ffffff", color: "#475569", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   className="boton-primario"
-                  style={{ width: "auto", padding: "8px 16px" }}
                   disabled={guardandoModelo}
                 >
                   {guardandoModelo ? "Guardando..." : "Guardar Modelo"}

@@ -61,7 +61,7 @@ export default function VistaProblemaDetalle() {
         <div style={{ backgroundColor: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: 20, color: "#991b1b", maxWidth: 520, margin: "0 auto" }}>
           <h3 style={{ margin: "0 0 8px 0", fontSize: 16 }}>Error al abrir el problema</h3>
           <p style={{ margin: "0 0 16px 0", fontSize: 13 }}>{error || "El problema solicitado no existe."}</p>
-          <Link href="/plataforma/problemas/mios" className="boton-primario" style={{ fontSize: 12, textDecoration: "none" }}>
+          <Link href="/plataforma/problemas/mios" className="boton-primario">
             Volver a Mis problemas
           </Link>
         </div>
@@ -141,7 +141,7 @@ export default function VistaProblemaDetalle() {
               </span>
             )}
           </div>
-          <h1 style={{ fontSize: 19, fontWeight: 800, color: "#0f172a", margin: "8px 0 4px 0" }}>{problema.titulo}</h1>
+          <h1 className="titulo-pagina">{problema.titulo}</h1>
           <div style={{ fontSize: 12, color: "#64748b" }}>
             Registrado: {problema.fecha_creacion ? new Date(problema.fecha_creacion).toLocaleString() : "—"}
           </div>
@@ -150,7 +150,6 @@ export default function VistaProblemaDetalle() {
         <button
           type="button"
           className="boton-secundario"
-          style={{ width: "auto" }}
           onClick={() => {
             if (typeof window !== "undefined" && window.history.length > 1) {
               router.back();

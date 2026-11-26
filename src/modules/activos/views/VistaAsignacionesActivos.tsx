@@ -102,8 +102,8 @@ export default function VistaAsignacionesActivos() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Asignación, custodia y actas</h1>
-        <p>Asigna, transfiere y devuelve activos; cada movimiento queda con su acta y aceptación del custodio.</p>
+        <h1 className="titulo-pagina">Asignación, custodia y actas</h1>
+        <p className="descripcion-pagina">Asigna, transfiere y devuelve activos; cada movimiento queda con su acta y aceptación del custodio.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -114,7 +114,7 @@ export default function VistaAsignacionesActivos() {
       {cargando ? (
         <p>Cargando...</p>
       ) : filtrados.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>No hay activos que coincidan.</div>
+        <div className="estado-vacio" >No hay activos que coincidan.</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {filtrados.map((a) => (
@@ -127,10 +127,10 @@ export default function VistaAsignacionesActivos() {
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                  <button className="boton-secundario" style={{ width: "auto" }} onClick={() => setAbierto(abierto === a.id_activo ? null : a.id_activo)}>
+                  <button className="boton-secundario"  onClick={() => setAbierto(abierto === a.id_activo ? null : a.id_activo)}>
                     {abierto === a.id_activo ? "Cerrar" : "Asignar / transferir"}
                   </button>
-                  {a.custodio_nombre && <button className="boton-secundario" style={{ width: "auto" }} disabled={procesando === a.id_activo} onClick={() => mover(a.id_activo, "DEVOLVER")}>Devolver</button>}
+                  {a.custodio_nombre && <button className="boton-secundario"  disabled={procesando === a.id_activo} onClick={() => mover(a.id_activo, "DEVOLVER")}>Devolver</button>}
                 </div>
               </div>
               {abierto === a.id_activo && (
@@ -153,7 +153,7 @@ export default function VistaAsignacionesActivos() {
                     Motivo del acta
                     <input type="text" value={form[a.id_activo]?.motivo ?? ""} onChange={(e) => setCampo(a.id_activo, "motivo", e.target.value)} style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }} />
                   </label>
-                  <button className="boton-primario" style={{ width: "auto" }} disabled={procesando === a.id_activo} onClick={() => mover(a.id_activo, a.custodio_nombre ? "TRANSFERIR" : "ASIGNAR")}>
+                  <button className="boton-primario"  disabled={procesando === a.id_activo} onClick={() => mover(a.id_activo, a.custodio_nombre ? "TRANSFERIR" : "ASIGNAR")}>
                     {a.custodio_nombre ? "Transferir" : "Asignar"}
                   </button>
                 </div>

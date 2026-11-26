@@ -104,12 +104,12 @@ export default function VistaConocimientoRevisiones({
       {/* 1. Cabecera */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          <h1 className="titulo-pagina">
             {esPublicacion
               ? "Artículos aprobados listos para publicación"
               : "Revisiones editoriales pendientes"}
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          <p className="descripcion-pagina">
             {esPublicacion
               ? `Artículos validados técnica y formalmente, listos para difusión oficial (${articulos.length} artículos aprobados)`
               : `Artículos redactados por especialistas técnicos a la espera de validación (${articulos.length} pendientes)`}
@@ -117,38 +117,18 @@ export default function VistaConocimientoRevisiones({
         </div>
 
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={cargarArticulos}
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              fontSize: 13,
-              color: "#334155",
-              cursor: "pointer",
-            }}
           >
             Actualizar
           </button>
 
           {esPublicacion && (
-            <button
+            <button className="boton-primario"
               type="button"
               onClick={publicarTodosLosAprobados}
               disabled={articulos.length === 0 || publicandoTodos}
-              style={{
-                padding: "8px 16px",
-                backgroundColor: "#2563eb",
-                border: "none",
-                borderRadius: 6,
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#ffffff",
-                cursor: articulos.length > 0 && !publicandoTodos ? "pointer" : "not-allowed",
-                opacity: articulos.length > 0 && !publicandoTodos ? 1 : 0.6,
-              }}
             >
               {publicandoTodos ? "Publicando..." : "Publicar artículos"}
             </button>
@@ -255,21 +235,10 @@ export default function VistaConocimientoRevisiones({
                         </Link>
 
                         {!esPublicacion && (
-                          <button
+                          <button className="boton-primario boton-sm"
                             type="button"
                             onClick={() => aprobarArticulo(a.id_articulo)}
                             disabled={esAprobando}
-                            style={{
-                              padding: "4px 12px",
-                              backgroundColor: "#2563eb",
-                              border: "none",
-                              borderRadius: 4,
-                              fontSize: 12,
-                              fontWeight: 600,
-                              color: "#ffffff",
-                              cursor: esAprobando ? "not-allowed" : "pointer",
-                              opacity: esAprobando ? 0.6 : 1,
-                            }}
                           >
                             {esAprobando ? "Aprobando..." : "Aprobar"}
                           </button>

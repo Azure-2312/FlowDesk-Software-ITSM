@@ -141,38 +141,12 @@ export default function VistaCentroAprobacionesBajas({ vistaInicial = "pendiente
   return (
     <div className="vista-contenedor" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Cabecera Corporativa */}
-      <div
-        style={{
-          backgroundColor: "#ffffff",
-          padding: "20px 24px",
-          borderRadius: "12px",
-          border: "1px solid #e2e8f0",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "16px",
-        }}
-      >
+      <div className="cabecera-pagina">
         <div>
-          <span
-            style={{
-              fontSize: "11px",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              color: "#2563eb",
-              display: "block",
-              marginBottom: "4px",
-            }}
-          >
-            Gestión de Activos · Bajas y Desincorporaciones
-          </span>
-          <h1 style={{ fontSize: "20px", fontWeight: 700, color: "#0f172a", margin: 0, letterSpacing: "-0.01em" }}>
+          <h1 className="titulo-pagina">
             Centro de Aprobaciones
           </h1>
-          <p style={{ fontSize: "13px", color: "#64748b", margin: "4px 0 0 0" }}>
+          <p className="descripcion-pagina">
             Control de bajas patrimoniales, disposición final de activos y dictamen de retiro departamental.
           </p>
         </div>
@@ -198,27 +172,11 @@ export default function VistaCentroAprobacionesBajas({ vistaInicial = "pendiente
             </span>
           </div>
 
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={cargarDatos}
             disabled={cargando}
             title="Actualizar listado"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              padding: "7px 12px",
-              height: "34px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: "6px",
-              fontSize: "12.5px",
-              fontWeight: 600,
-              color: "#334155",
-              cursor: cargando ? "not-allowed" : "pointer",
-              transition: "all 0.15s ease",
-            }}
           >
 
             <span>Actualizar</span>
@@ -365,7 +323,7 @@ export default function VistaCentroAprobacionesBajas({ vistaInicial = "pendiente
                       <div style={{ display: "inline-flex", gap: "6px", alignItems: "center", justifyContent: "flex-end" }}>
                         <button
                           type="button"
-                          className="boton-tabla-aprobar"
+                          className="boton-primario boton-sm"
                           onClick={() => setSolicitudAccion({ item: s, decision: "APROBAR" })}
                           title="Autorizar baja de activo"
                         >
@@ -375,7 +333,7 @@ export default function VistaCentroAprobacionesBajas({ vistaInicial = "pendiente
 
                         <button
                           type="button"
-                          className="boton-tabla-rechazar"
+                          className="boton-peligro boton-sm"
                           onClick={() => setSolicitudAccion({ item: s, decision: "RECHAZAR" })}
                           title="Rechazar baja de activo"
                         >
@@ -531,7 +489,6 @@ export default function VistaCentroAprobacionesBajas({ vistaInicial = "pendiente
                 onClick={() => setSolicitudAccion(null)}
                 disabled={procesando}
                 className="boton-secundario"
-                style={{ padding: "8px 16px", fontSize: "13px" }}
               >
                 Cancelar
               </button>
@@ -539,8 +496,7 @@ export default function VistaCentroAprobacionesBajas({ vistaInicial = "pendiente
                 type="button"
                 onClick={ejecutarDecision}
                 disabled={procesando}
-                className={solicitudAccion.decision === "APROBAR" ? "boton-tabla-aprobar" : "boton-tabla-rechazar"}
-                style={{ height: "36px", padding: "0 18px", fontSize: "13px" }}
+                className={solicitudAccion.decision === "APROBAR" ? "boton-primario boton-sm" : "boton-peligro boton-sm"}
               >
                 {procesando ? "Procesando..." : solicitudAccion.decision === "APROBAR" ? "Confirmar Baja" : "Confirmar Rechazo"}
               </button>

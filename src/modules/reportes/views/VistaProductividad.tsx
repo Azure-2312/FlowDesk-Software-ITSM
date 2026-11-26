@@ -34,8 +34,8 @@ export default function VistaProductividad() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Productividad individual</h1>
-        <p>Resueltos, tiempos, cumplimiento de SLA y satisfacción por técnico. Uso de gestión, no punitivo.</p>
+        <h1 className="titulo-pagina">Productividad individual</h1>
+        <p className="descripcion-pagina">Resueltos, tiempos, cumplimiento de SLA y satisfacción por técnico. Uso de gestión, no punitivo.</p>
       </div>
 
       {cargando ? (
@@ -43,7 +43,7 @@ export default function VistaProductividad() {
       ) : error ? (
         <p role="alert" className="mensaje-error">{error}</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio" >
           No hay técnicos asociados a mi área.
         </div>
       ) : (

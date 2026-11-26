@@ -52,21 +52,10 @@ export default function PresentadorProblema({
           </span>
 
           {onElevarAProblema && (
-            <button
+            <button className="boton-peligro boton-sm"
               type="button"
               onClick={onElevarAProblema}
               disabled={elevandoProblema}
-              style={{
-                backgroundColor: "#be185d",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: 6,
-                padding: "6px 14px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: elevandoProblema ? "not-allowed" : "pointer",
-                opacity: elevandoProblema ? 0.6 : 1,
-              }}
             >
               {elevandoProblema ? "Vinculando..." : "Abrir Expediente de Problema"}
             </button>

@@ -44,8 +44,8 @@ export default function VistaBajasDisposicion() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Consulta de bajas</h1>
-        <p>Actas de baja, sustento de la inactivación y consistencia con la CMDB (solo lectura).</p>
+        <h1 className="titulo-pagina">Consulta de bajas</h1>
+        <p className="descripcion-pagina">Actas de baja, sustento de la inactivación y consistencia con la CMDB (solo lectura).</p>
       </div>
 
       {cargando ? (
@@ -53,7 +53,7 @@ export default function VistaBajasDisposicion() {
       ) : error ? (
         <p role="alert" className="mensaje-error">{error}</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio" >
           No hay activos dados de baja.
         </div>
       ) : (

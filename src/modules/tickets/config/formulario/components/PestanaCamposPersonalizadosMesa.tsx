@@ -239,7 +239,6 @@ export const PestanaCamposPersonalizadosMesa: React.FC<PestanaCamposPersonalizad
             type="button"
             className="boton-primario"
             onClick={() => setModalAbierto(true)}
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
           >
             Nuevo Campo Personalizado
           </button>
@@ -270,7 +269,7 @@ export const PestanaCamposPersonalizadosMesa: React.FC<PestanaCamposPersonalizad
               </tr>
             ) : campos.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ textAlign: "center", padding: 35, color: "#64748b" }}>
+                <td colSpan={7} className="celda-vacia">
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
                     No hay campos personalizados registrados para {tipo === "incidente" ? "incidentes" : "solicitudes"}.
                   </div>
@@ -326,33 +325,14 @@ export const PestanaCamposPersonalizadosMesa: React.FC<PestanaCamposPersonalizad
                       <button
                         type="button"
                         onClick={() => handleToggleActivo(c.id_campo, c.activo, c.etiqueta)}
-                        style={{
-                          border: `1px solid ${c.activo ? "#fde68a" : "#bbf7d0"}`,
-                          backgroundColor: c.activo ? "#fffbeb" : "#f0fdf4",
-                          color: c.activo ? "#b45309" : "#166534",
-                          padding: "4px 8px",
-                          borderRadius: 5,
-                          fontSize: 11.5,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
+                        className="boton-secundario boton-sm"
                         title={c.activo ? "Deshabilitar campo" : "Habilitar campo"}
                       >
                         {c.activo ? "Deshabilitar" : "Habilitar"}
                       </button>
-                      <button
+                      <button className="boton-peligro boton-sm"
                         type="button"
                         onClick={() => handleEliminarCampo(c.id_campo, c.etiqueta)}
-                        style={{
-                          border: "1px solid #fee2e2",
-                          backgroundColor: "#fef2f2",
-                          color: "#dc2626",
-                          padding: "4px 8px",
-                          borderRadius: 5,
-                          fontSize: 11.5,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
                         title="Eliminar campo personalizado"
                       >
                         Eliminar
@@ -413,10 +393,9 @@ export const PestanaCamposPersonalizadosMesa: React.FC<PestanaCamposPersonalizad
                   Defina las propiedades y la sección del formulario donde se incorporará.
                 </p>
               </div>
-              <button
+              <button className="boton-icono boton-sm"
                 type="button"
                 onClick={() => setModalAbierto(false)}
-                style={{ border: "none", backgroundColor: "transparent", cursor: "pointer", color: "#64748b" }}
               >
                 ×
               </button>
@@ -536,7 +515,6 @@ export const PestanaCamposPersonalizadosMesa: React.FC<PestanaCamposPersonalizad
                   type="button"
                   className="boton-secundario"
                   onClick={() => setModalAbierto(false)}
-                  style={{ padding: "8px 16px", fontSize: 13 }}
                 >
                   Cancelar
                 </button>
@@ -544,7 +522,6 @@ export const PestanaCamposPersonalizadosMesa: React.FC<PestanaCamposPersonalizad
                   type="submit"
                   className="boton-primario"
                   disabled={guardando}
-                  style={{ padding: "8px 20px", fontSize: 13 }}
                 >
                   {guardando ? "Creando..." : "Crear Campo"}
                 </button>

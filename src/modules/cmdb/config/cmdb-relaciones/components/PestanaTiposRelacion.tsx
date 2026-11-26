@@ -193,7 +193,6 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
             disabled={bloqueado}
             onClick={abrirNuevoTipo}
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
             Nuevo tipo de relación
           </button>
@@ -235,11 +234,7 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
                           e.stopPropagation();
                           handleToggleActivo(tipo.id);
                         }}
-                        className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold ${
-                          tipo.activo
-                            ? "bg-emerald-100 text-emerald-800"
-                            : "bg-slate-100 text-slate-500"
-                        }`}
+                        className="boton-secundario boton-sm" aria-pressed={tipo.activo}
                       >
                         {tipo.activo ? "Activa" : "Inactiva"}
                       </button>
@@ -303,7 +298,7 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
               type="button"
               disabled={bloqueado}
               onClick={marcarTodasParejas}
-              className="px-2.5 py-1 text-xs border border-slate-300 rounded text-slate-700 hover:bg-slate-50"
+              className="boton-secundario boton-sm"
             >
               Marcar todo
             </button>
@@ -311,7 +306,7 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
               type="button"
               disabled={bloqueado}
               onClick={limpiarParejas}
-              className="px-2.5 py-1 text-xs border border-slate-300 rounded text-slate-700 hover:bg-slate-50"
+              className="boton-secundario boton-sm"
             >
               Limpiar
             </button>
@@ -372,7 +367,7 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
               <button
                 type="button"
                 onClick={() => setModalEdicion({ abierto: false, esNuevo: false })}
-                className="text-slate-400 hover:text-slate-600 font-bold text-xs"
+                className="boton-enlace"
               >
                 Cerrar
               </button>
@@ -488,14 +483,14 @@ export function PestanaTiposRelacion({ datos, onChange, bloqueado }: Props) {
               <button
                 type="button"
                 onClick={() => setModalEdicion({ abierto: false, esNuevo: false })}
-                className="px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-700"
+                className="boton-secundario boton-sm"
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={guardarTipo}
-                className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-semibold"
+                className="boton-primario boton-sm"
               >
                 Guardar
               </button>

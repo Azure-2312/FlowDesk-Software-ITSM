@@ -138,21 +138,19 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Subnavegador */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #cbd5e1", paddingBottom: 10 }}>
-        <div style={{ display: "flex", gap: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 8 }}>
+        <div className="pestanas" style={{ marginBottom: 0, flex: 1 }}>
           <button
             type="button"
-            className={seccionActiva === "fabricantes" ? "boton-principal" : "boton-secundario"}
+            className={seccionActiva === "fabricantes" ? "pestana pestana-activa" : "pestana"}
             onClick={() => setSeccionActiva("fabricantes")}
-            style={{ fontSize: 12.5 }}
           >
             Catálogo de Fabricantes ({fabricantes.length})
           </button>
           <button
             type="button"
-            className={seccionActiva === "modelos" ? "boton-principal" : "boton-secundario"}
+            className={seccionActiva === "modelos" ? "pestana pestana-activa" : "pestana"}
             onClick={() => setSeccionActiva("modelos")}
-            style={{ fontSize: 12.5 }}
           >
             Catálogo de Modelos Homologados ({modelos.length})
           </button>
@@ -270,9 +268,8 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
                 </div>
                 <button
                   type="button"
-                  className="boton-principal"
+                  className="boton-primario"
                   onClick={agregarFabricante}
-                  style={{ fontSize: 12, padding: "8px 16px" }}
                 >
                   Guardar Fabricante
                 </button>
@@ -345,7 +342,7 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
                 })}
                 {modelosFiltrados.length === 0 && (
                   <tr>
-                    <td colSpan={8} style={{ padding: 16, textAlign: "center", color: "#94a3b8" }}>
+                    <td colSpan={8} className="celda-vacia">
                       No se encontraron modelos con los criterios seleccionados.
                     </td>
                   </tr>
@@ -428,9 +425,8 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
                 </div>
                 <button
                   type="button"
-                  className="boton-principal"
+                  className="boton-primario"
                   onClick={agregarModelo}
-                  style={{ fontSize: 12, padding: "8px 16px" }}
                 >
                   Guardar Modelo
                 </button>

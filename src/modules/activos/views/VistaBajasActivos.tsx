@@ -66,8 +66,8 @@ export default function VistaBajasActivos() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Aprobación de bajas de mi área</h1>
-        <p>Aprueba o rechaza las solicitudes de baja de activos de mi área técnica.</p>
+        <h1 className="titulo-pagina">Aprobación de bajas de mi área</h1>
+        <p className="descripcion-pagina">Aprueba o rechaza las solicitudes de baja de activos de mi área técnica.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -76,7 +76,7 @@ export default function VistaBajasActivos() {
       {cargando ? (
         <p>Cargando...</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio" >
           No hay solicitudes de baja registradas para mi área.
         </div>
       ) : (
@@ -98,8 +98,8 @@ export default function VistaBajasActivos() {
                   <td style={{ whiteSpace: "nowrap" }}>
                     {s.estado === "PENDIENTE" ? (
                       <>
-                        <button className="boton-primario" style={{ width: "auto", marginRight: 6 }} disabled={procesando === s.id_solicitud} onClick={() => decidir(s.id_solicitud, "APROBAR")}>Aprobar</button>
-                        <button className="boton-secundario" style={{ width: "auto" }} disabled={procesando === s.id_solicitud} onClick={() => decidir(s.id_solicitud, "RECHAZAR")}>Rechazar</button>
+                        <button className="boton-primario" style={{ marginRight: 6 }} disabled={procesando === s.id_solicitud} onClick={() => decidir(s.id_solicitud, "APROBAR")}>Aprobar</button>
+                        <button className="boton-secundario"  disabled={procesando === s.id_solicitud} onClick={() => decidir(s.id_solicitud, "RECHAZAR")}>Rechazar</button>
                       </>
                     ) : (
                       <span style={{ color: "#6b7280" }}>—</span>

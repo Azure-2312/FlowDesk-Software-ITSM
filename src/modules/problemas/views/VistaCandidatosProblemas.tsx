@@ -121,26 +121,17 @@ export default function VistaCandidatosProblemas() {
       {/* 1. Cabecera */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          <h1 className="titulo-pagina">
             Candidatos a problema
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          <p className="descripcion-pagina">
             Incidentes agrupados que superan los umbrales de recurrencia. Revisa, edita y aprueba su promoción a problema formal.
           </p>
         </div>
 
-        <button
+        <button className="boton-secundario"
           type="button"
           onClick={cargar}
-          style={{
-            padding: "8px 14px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #cbd5e1",
-            borderRadius: 6,
-            fontSize: 13,
-            color: "#334155",
-            cursor: "pointer",
-          }}
         >
           Actualizar
         </button>
@@ -251,38 +242,17 @@ export default function VistaCandidatosProblemas() {
                 </div>
 
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                  <button
+                  <button className="boton-secundario"
                     type="button"
                     onClick={() => abrirEdicion(c)}
                     disabled={esProcesando}
-                    style={{
-                      padding: "6px 14px",
-                      borderRadius: 6,
-                      border: "1px solid #cbd5e1",
-                      backgroundColor: "#ffffff",
-                      fontSize: 12.5,
-                      fontWeight: 500,
-                      color: "#334155",
-                      cursor: "pointer",
-                    }}
                   >
                     Editar
                   </button>
-                  <button
+                  <button className="boton-primario"
                     type="button"
                     onClick={() => aprobarCandidato(c)}
                     disabled={esProcesando}
-                    style={{
-                      padding: "6px 16px",
-                      borderRadius: 6,
-                      border: "none",
-                      backgroundColor: "#2563eb",
-                      fontSize: 12.5,
-                      fontWeight: 600,
-                      color: "#ffffff",
-                      cursor: esProcesando ? "not-allowed" : "pointer",
-                      opacity: esProcesando ? 0.6 : 1,
-                    }}
                   >
                     {esProcesando ? "Aprobando..." : "Aprobar"}
                   </button>
@@ -360,34 +330,15 @@ export default function VistaCandidatosProblemas() {
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
-                <button
+                <button className="boton-secundario"
                   type="button"
                   onClick={() => setCandidatoEditando(null)}
-                  style={{
-                    padding: "8px 14px",
-                    borderRadius: 6,
-                    border: "1px solid #cbd5e1",
-                    backgroundColor: "#ffffff",
-                    fontSize: 13,
-                    color: "#475569",
-                    cursor: "pointer",
-                  }}
                 >
                   Cancelar
                 </button>
-                <button
+                <button className="boton-primario"
                   type="submit"
                   disabled={Boolean(procesandoClave)}
-                  style={{
-                    padding: "8px 16px",
-                    borderRadius: 6,
-                    border: "none",
-                    backgroundColor: "#2563eb",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#ffffff",
-                    cursor: "pointer",
-                  }}
                 >
                   {procesandoClave ? "Aprobando..." : "Aprobar y registrar problema"}
                 </button>

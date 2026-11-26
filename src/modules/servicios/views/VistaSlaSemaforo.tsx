@@ -61,60 +61,35 @@ export default function PaginaSlaSemaforo({ alcanceInicial = "mios" }: { alcance
     <div style={{ padding: "24px 32px", maxWidth: 1500, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Semáforo de SLA de mi cola
           </h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
+          <p className="descripcion-pagina">
             Tablero visual de seguimiento proactivo según tiempos de expiración y estado de pausas
           </p>
         </div>
 
         <div style={{ display: "flex", gap: 10 }}>
-          <div style={{ display: "flex", borderRadius: 6, border: "1px solid #cbd5e1", overflow: "hidden" }}>
+          <div className="pestanas">
             <button
               type="button"
               onClick={() => setAlcance("mios")}
-              style={{
-                padding: "7px 14px",
-                border: "none",
-                fontSize: 12.5,
-                fontWeight: alcance === "mios" ? 600 : 500,
-                backgroundColor: alcance === "mios" ? "#2563eb" : "#ffffff",
-                color: alcance === "mios" ? "#ffffff" : "#475569",
-                cursor: "pointer",
-              }}
+              className={alcance === "mios" ? "pestana pestana-activa" : "pestana"}
             >
               Mis tickets
             </button>
             <button
               type="button"
               onClick={() => setAlcance("area")}
-              style={{
-                padding: "7px 14px",
-                border: "none",
-                fontSize: 12.5,
-                fontWeight: alcance === "area" ? 600 : 500,
-                backgroundColor: alcance === "area" ? "#2563eb" : "#ffffff",
-                color: alcance === "area" ? "#ffffff" : "#475569",
-                cursor: "pointer",
-              }}
+              className={alcance === "area" ? "pestana pestana-activa" : "pestana"}
             >
               Mi departamento
             </button>
           </div>
 
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={cargarTickets}
-            style={{
-              padding: "7px 14px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              fontSize: 12.5,
-              color: "#334155",
-              cursor: "pointer",
-            }}
           >
             Actualizar
           </button>

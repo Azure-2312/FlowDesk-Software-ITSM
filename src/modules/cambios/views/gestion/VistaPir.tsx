@@ -82,8 +82,8 @@ export default function VistaPir() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Revisión post-implementación (PIR)</h1>
-        <p>Confirma resultados, registra incidentes inducidos y documenta lecciones tras el cierre del cambio.</p>
+        <h1 className="titulo-pagina">Revisión post-implementación (PIR)</h1>
+        <p className="descripcion-pagina">Confirma resultados, registra incidentes inducidos y documenta lecciones tras el cierre del cambio.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -92,7 +92,7 @@ export default function VistaPir() {
       {cargando ? (
         <p>Cargando...</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio" >
           No hay cambios cerrados que requieran PIR.
         </div>
       ) : (
@@ -118,7 +118,7 @@ export default function VistaPir() {
                       </div>
                     )}
                   </div>
-                  <button className="boton-secundario" style={{ width: "auto", height: "fit-content" }} onClick={() => setAbierto(abierto === c.id_cambio ? null : c.id_cambio)}>
+                  <button className="boton-secundario"  onClick={() => setAbierto(abierto === c.id_cambio ? null : c.id_cambio)}>
                     {abierto === c.id_cambio ? "Cerrar" : c.resultado_pir ? "Actualizar PIR" : "Registrar PIR"}
                   </button>
                 </div>
@@ -141,7 +141,7 @@ export default function VistaPir() {
                         style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }}
                       />
                     </label>
-                    <button className="boton-primario" style={{ width: "auto" }} disabled={procesando === c.id_cambio} onClick={() => registrar(c.id_cambio)}>
+                    <button className="boton-primario"  disabled={procesando === c.id_cambio} onClick={() => registrar(c.id_cambio)}>
                       {procesando === c.id_cambio ? "Guardando..." : "Guardar PIR"}
                     </button>
                   </div>

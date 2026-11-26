@@ -189,7 +189,6 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
           className="boton-primario"
           onClick={abrirModalCrear}
           disabled={campos.length >= limite}
-          style={{ width: "auto", fontSize: 13, padding: "8px 16px" }}
         >
           Nuevo campo personalizado
         </button>
@@ -243,7 +242,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
           <tbody>
             {camposFiltrados.length === 0 ? (
               <tr>
-                <td colSpan={8} style={{ textAlign: "center", padding: 32, color: "#64748b" }}>
+                <td colSpan={8} className="celda-vacia">
                   No se encontraron campos personalizados para Gestión de Cambios.
                 </td>
               </tr>
@@ -284,17 +283,15 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
                     <div style={{ display: "flex", gap: 6 }}>
                       <button
                         type="button"
-                        className="boton-mini"
+                        className="boton-secundario boton-sm"
                         onClick={() => alternarEstado(c)}
-                        style={{ fontSize: 11, padding: "3px 6px" }}
                       >
                         {c.activo ? "Desactivar" : "Activar"}
                       </button>
                       <button
                         type="button"
-                        className="boton-mini"
+                        className="boton-secundario boton-sm"
                         onClick={() => eliminarCampo(c)}
-                        style={{ fontSize: 11, padding: "3px 6px", color: "#dc2626" }}
                       >
                         Eliminar
                       </button>
@@ -355,9 +352,8 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
               </div>
               <button
                 type="button"
-                className="modal-cerrar-boton"
+                className="boton-icono"
                 onClick={() => setModalAsistenteAbierto(false)}
-                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#64748b" }}
               >
                 ×
               </button>
@@ -615,7 +611,6 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
                 className="boton-secundario"
                 onClick={() => setPasoAsistente(Math.max(1, pasoAsistente - 1))}
                 disabled={pasoAsistente === 1}
-                style={{ fontSize: 12 }}
               >
                  Atrás
               </button>
@@ -632,7 +627,6 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
                     setErrorModal("");
                     setPasoAsistente(pasoAsistente + 1);
                   }}
-                  style={{ fontSize: 12, backgroundColor: "#7c3aed" }}
                 >
                   Siguiente 
                 </button>
@@ -642,7 +636,6 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
                   className="boton-primario"
                   onClick={manejarGuardarNuevo}
                   disabled={guardando}
-                  style={{ fontSize: 12, backgroundColor: "#16a34a" }}
                 >
                   {guardando ? "Creando campo..." : "Confirmar y Crear Campo"}
                 </button>

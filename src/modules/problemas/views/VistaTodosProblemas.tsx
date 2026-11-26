@@ -117,10 +117,10 @@ export default function VistaTodosProblemas() {
     <div className="vista-contenedor">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          <h1 className="titulo-pagina">
             Todos los problemas
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          <p className="descripcion-pagina">
             Supervisión integral de problemas organizacionales, análisis de causa raíz, soluciones de contorno (workarounds) y asignación de equipos.
           </p>
         </div>
@@ -140,18 +140,9 @@ export default function VistaTodosProblemas() {
           >
             Registrar problema
           </Link>
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={cargarProblemas}
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              fontSize: 13,
-              color: "#334155",
-              cursor: "pointer",
-            }}
           >
             Actualizar
           </button>
@@ -178,16 +169,7 @@ export default function VistaTodosProblemas() {
         <button
           type="button"
           onClick={() => setSoloSinAsignar(!soloSinAsignar)}
-          style={{
-            padding: "6px 12px",
-            borderRadius: 6,
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-            border: soloSinAsignar ? "1px solid #dc2626" : "1px solid #cbd5e1",
-            backgroundColor: soloSinAsignar ? "#fef2f2" : "#ffffff",
-            color: soloSinAsignar ? "#b91c1c" : "#475569",
-          }}
+          className="boton-secundario boton-sm" aria-pressed={soloSinAsignar}
         >
           {soloSinAsignar ? "Mostrando sin asignar" : `Pendientes de asignar (${conteoSinAsignar})`}
         </button>
@@ -226,7 +208,7 @@ export default function VistaTodosProblemas() {
             <tbody>
               {problemasFiltrados.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ padding: 24, textAlign: "center", color: "#64748b" }}>
+                  <td colSpan={7} className="celda-vacia">
                     No se encontraron problemas con los criterios actuales.
                   </td>
                 </tr>
@@ -252,19 +234,9 @@ export default function VistaTodosProblemas() {
                       {p.tecnico_asignado_nombre ? (
                         <span style={{ fontSize: 12, color: "#1e293b" }}>{p.tecnico_asignado_nombre}</span>
                       ) : (
-                        <button
+                        <button className="boton-peligro boton-sm"
                           type="button"
                           onClick={() => setModalAsignar(p)}
-                          style={{
-                            padding: "3px 8px",
-                            borderRadius: 4,
-                            fontSize: 11,
-                            fontWeight: 600,
-                            backgroundColor: "#fef3c7",
-                            color: "#92400e",
-                            border: "1px solid #fde68a",
-                            cursor: "pointer",
-                          }}
                         >
                           + Asignar equipo
                         </button>
@@ -371,36 +343,16 @@ export default function VistaTodosProblemas() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
-              <button
+              <button className="boton-secundario"
                 type="button"
                 onClick={() => setModalAsignar(null)}
-                style={{
-                  padding: "8px 14px",
-                  borderRadius: 6,
-                  border: "1px solid #cbd5e1",
-                  backgroundColor: "#ffffff",
-                  fontSize: 13,
-                  color: "#475569",
-                  cursor: "pointer",
-                }}
               >
                 Cancelar
               </button>
-              <button
+              <button className="boton-primario"
                 type="button"
                 onClick={ejecutarAsignacion}
                 disabled={!idDeptoSeleccionado || guardandoAsignacion}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: 6,
-                  border: "none",
-                  backgroundColor: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#ffffff",
-                  cursor: idDeptoSeleccionado && !guardandoAsignacion ? "pointer" : "not-allowed",
-                  opacity: idDeptoSeleccionado && !guardandoAsignacion ? 1 : 0.6,
-                }}
               >
                 {guardandoAsignacion ? "Asignando..." : "Confirmar asignación"}
               </button>

@@ -54,10 +54,10 @@ export default function PaginaCambiosImpacto({ tipoImpacto = "servicios" }: Vist
     <div style={{ padding: "24px 32px", maxWidth: 1300, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 21, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             {tipoImpacto === "equipo" ? "Cambios que Afectan a mi Equipo" : "Cambios que Afectan mis Servicios"}
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: "6px 0 0" }}>
+          <p className="descripcion-pagina">
             {tipoImpacto === "equipo"
               ? `Notificación preventiva de intervenciones que pueden afectar las tareas de mi equipo (${cambios.length} cambios programados).`
               : `Notificación preventiva de intervenciones de infraestructura que pueden generar incidentes o consultas de usuarios (${cambios.length} cambios programados).`}
@@ -66,36 +66,17 @@ export default function PaginaCambiosImpacto({ tipoImpacto = "servicios" }: Vist
 
         <div style={{ display: "flex", gap: 10 }}>
           {cambios.length > 0 && (
-            <button
+            <button className="boton-primario"
               type="button"
               onClick={marcarTodosEnterados}
-              style={{
-                padding: "8px 16px",
-                backgroundColor: "#2563eb",
-                border: "none",
-                borderRadius: 6,
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#ffffff",
-                cursor: "pointer",
-              }}
             >
               Marcar todos como enterados
             </button>
           )}
 
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={cargarCambios}
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              fontSize: 13,
-              color: "#334155",
-              cursor: "pointer",
-            }}
           >
             Actualizar
           </button>
@@ -108,13 +89,7 @@ export default function PaginaCambiosImpacto({ tipoImpacto = "servicios" }: Vist
         </div>
       ) : cambios.length === 0 ? (
         <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            padding: "48px 24px",
-            textAlign: "center",
-          }}
+          className="estado-vacio"
         >
           <div style={{ fontSize: 16, fontWeight: 600, color: "#1e293b", marginBottom: 6 }}>
             No hay cambios con impacto sobre tus servicios
@@ -172,16 +147,7 @@ export default function PaginaCambiosImpacto({ tipoImpacto = "servicios" }: Vist
                   <button
                     type="button"
                     onClick={() => marcarEnterado(c.id_cambio)}
-                    style={{
-                      padding: "6px 14px",
-                      borderRadius: 6,
-                      fontSize: 12.5,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      border: estaEnterado ? "1px solid #a7f3d0" : "1px solid #cbd5e1",
-                      backgroundColor: estaEnterado ? "#ecfdf5" : "#ffffff",
-                      color: estaEnterado ? "#065f46" : "#334155",
-                    }}
+                    className="boton-secundario boton-sm" aria-pressed={estaEnterado}
                   >
                     {estaEnterado ? "Enterado confirmado" : "Enterado"}
                   </button>

@@ -155,21 +155,18 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
           </p>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-          <button
+          <button className="boton-secundario"
             onClick={exportarCsv}
-            style={{ padding: "8px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, fontWeight: 500, color: "#334155", cursor: "pointer" }}
           >
             Exportar CSV
           </button>
-          <button
+          <button className="boton-secundario"
             onClick={() => { setModalCsvAbierto(true); setCsvTexto(""); setCsvError(null); setCsvResultado(null); }}
-            style={{ padding: "8px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, fontWeight: 500, color: "#334155", cursor: "pointer" }}
           >
             Importar CSV
           </button>
-          <button
+          <button className="boton-peligro"
             onClick={() => abrirEditor()}
-            style={{ padding: "8px 16px", background: "#dc2626", border: "none", borderRadius: 6, fontSize: 13, fontWeight: 600, color: "#ffffff", cursor: "pointer" }}
           >
             Nuevo Período
           </button>
@@ -195,7 +192,7 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
           <tbody>
             {periodos.length === 0 ? (
               <tr>
-                <td colSpan={8} style={{ padding: 30, textAlign: "center", color: "#64748b" }}>
+                <td colSpan={8} className="celda-vacia">
                   No hay períodos de congelamiento configurados. Cree uno nuevo para proteger fechas críticas.
                 </td>
               </tr>
@@ -245,49 +242,29 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
                     </td>
                     <td style={{ padding: "10px 14px", textAlign: "center" }}>
                       <button
+                        type="button"
+                        role="switch"
+                        aria-checked={p.activo}
+                        className={p.activo ? "interruptor interruptor-activo" : "interruptor"}
                         onClick={() => toggleActivo(p.id)}
-                        style={{
-                          background: p.activo ? "#10b981" : "#cbd5e1",
-                          border: "none",
-                          color: "#ffffff",
-                          borderRadius: 12,
-                          width: 36,
-                          height: 20,
-                          cursor: "pointer",
-                          position: "relative"
-                        }}
                         title={p.activo ? "Desactivar período" : "Activar período"}
-                      >
-                        <div style={{
-                          position: "absolute",
-                          top: 2,
-                          left: p.activo ? 18 : 2,
-                          width: 16,
-                          height: 16,
-                          borderRadius: "50%",
-                          background: "#ffffff",
-                          transition: "left 0.2s"
-                        }} />
-                      </button>
+                      />
                     </td>
                     <td style={{ padding: "10px 14px", textAlign: "right" }}>
                       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 6 }}>
-                        <button
+                        <button className="boton-secundario boton-sm"
                           onClick={() => abrirEditor(p)}
-                          style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8", padding: "4px 8px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 500 }}
                         >
                           Editar
                         </button>
-                        <button
+                        <button className="boton-secundario boton-sm"
                           onClick={() => duplicarPeriodo(p)}
-                          style={{ background: "#f8fafc", border: "1px solid #cbd5e1", color: "#475569", padding: "4px 8px", borderRadius: 4, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 11 }}
                           title="Duplicar"
                         >
                           <Copy size={12} />
                         </button>
-                        <button
+                        <button className="boton-peligro boton-sm"
                           onClick={() => eliminarPeriodo(p.id)}
-                          style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", padding: "4px 8px", borderRadius: 4, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 11 }}
                           title="Eliminar"
                         >
                           <Trash2 size={12} />
@@ -311,7 +288,7 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
               <h3 style={{ margin: 0, fontSize: 17, color: "#0f172a" }}>
                 {esNuevo ? "Nuevo Período de Congelamiento" : `Editar: ${periodoEditando.nombre}`}
               </h3>
-              <button onClick={() => setPeriodoEditando(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8" }}>
+              <button className="boton-icono boton-sm" onClick={() => setPeriodoEditando(null)} >
                 <X size={20} />
               </button>
             </div>
@@ -452,15 +429,13 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 24, borderTop: "1px solid #e2e8f0", paddingTop: 16 }}>
-              <button
+              <button className="boton-secundario"
                 onClick={() => setPeriodoEditando(null)}
-                style={{ padding: "8px 16px", border: "1px solid #cbd5e1", background: "#ffffff", borderRadius: 6, cursor: "pointer", fontSize: 13 }}
               >
                 Cancelar
               </button>
-              <button
+              <button className="boton-peligro"
                 onClick={guardarPeriodo}
-                style={{ padding: "8px 16px", border: "none", background: "#dc2626", color: "#ffffff", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: 13 }}
               >
                 Guardar Período
               </button>
@@ -475,7 +450,7 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
           <div style={{ background: "#ffffff", borderRadius: 8, padding: 24, width: 560, maxWidth: "90vw", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, borderBottom: "1px solid #e2e8f0", paddingBottom: 12 }}>
               <h3 style={{ margin: 0, fontSize: 16, color: "#0f172a" }}>Importar Períodos de Congelamiento desde CSV</h3>
-              <button onClick={() => setModalCsvAbierto(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8" }}>
+              <button className="boton-icono boton-sm" onClick={() => setModalCsvAbierto(false)} >
                 <X size={20} />
               </button>
             </div>
@@ -504,15 +479,13 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
             />
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 16 }}>
-              <button
+              <button className="boton-secundario"
                 onClick={() => setModalCsvAbierto(false)}
-                style={{ padding: "8px 16px", border: "1px solid #cbd5e1", background: "#ffffff", borderRadius: 6, cursor: "pointer", fontSize: 13 }}
               >
                 Cerrar
               </button>
-              <button
+              <button className="boton-primario"
                 onClick={importarCsv}
-                style={{ padding: "8px 16px", border: "none", background: "#2563eb", color: "#ffffff", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: 13 }}
               >
                 Procesar e Importar
               </button>

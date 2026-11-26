@@ -137,30 +137,6 @@ textarea.input-base {
   font-size: 13px;
 }
 
-.boton-primario,
-.boton-principal {
-  width: 100%;
-  padding: 10px 12px;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.boton-primario:hover,
-.boton-principal:hover {
-  background-color: #1d4ed8;
-}
-
-.boton-primario:disabled,
-.boton-principal:disabled {
-  background-color: #93c5fd;
-  cursor: not-allowed;
-}
-
 .mensaje-error {
   background-color: #fef2f2;
   border: 1px solid #fecaca;
@@ -588,19 +564,6 @@ textarea.input-base {
   color: #4b5563;
 }
 
-.boton-secundario {
-  padding: 6px 12px;
-  background: white;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.boton-secundario:hover {
-  background-color: #f3f4f6;
-}
-
 /* ---------- Menú recursivo (niveles 1, 2 y 3) ---------- */
 
 .menu-nivel-1,
@@ -919,94 +882,6 @@ textarea.input-base {
   gap: 6px;
 }
 
-.boton-mini {
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: white;
-  cursor: pointer;
-}
-
-.boton-mini:hover {
-  background-color: #f3f4f6;
-}
-
-.boton-mini-peligro {
-  border-color: #fecaca;
-  color: #b91c1c;
-}
-
-.boton-mini-peligro:hover {
-  background-color: #fef2f2;
-}
-
-.boton-accion-icono {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
-  min-height: 30px;
-  border-radius: 6px;
-  border: 1px solid #e2e8f0;
-  background-color: #ffffff;
-  color: #475569;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-  padding: 0;
-}
-
-.boton-accion-icono:hover:not(:disabled) {
-  background-color: #f8fafc;
-  color: #0f172a;
-  border-color: #cbd5e1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-
-.boton-accion-icono:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.boton-accion-primario {
-  border-color: #bfdbfe;
-  color: #2563eb;
-  background-color: #ffffff;
-}
-
-.boton-accion-primario:hover:not(:disabled) {
-  background-color: #eff6ff;
-  color: #1d4ed8;
-  border-color: #93c5fd;
-}
-
-.boton-accion-peligro {
-  border-color: #fecaca;
-  color: #dc2626;
-  background-color: #ffffff;
-}
-
-.boton-accion-peligro:hover:not(:disabled) {
-  background-color: #fef2f2;
-  color: #b91c1c;
-  border-color: #fca5a5;
-}
-
-.boton-accion-exito {
-  border-color: #bbf7d0;
-  color: #16a34a;
-  background-color: #ffffff;
-}
-
-.boton-accion-exito:hover:not(:disabled) {
-  background-color: #f0fdf4;
-  color: #15803d;
-  border-color: #86efac;
-}
-
 /* ---------- Formularios de alta / edición ---------- */
 
 .formulario-grid {
@@ -1061,19 +936,6 @@ textarea.input-base {
   display: flex;
   gap: 8px;
   margin-top: 20px;
-}
-
-.boton-texto {
-  background: none;
-  border: none;
-  color: #6b7280;
-  font-size: 13px;
-  cursor: pointer;
-  padding: 10px 12px;
-}
-
-.boton-texto:hover {
-  color: #111827;
 }
 
 .texto-ayuda {
@@ -1377,28 +1239,6 @@ textarea.input-base {
   background-color: #ffffff;
 }
 
-.modal-cerrar-boton {
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #64748b;
-  flex-shrink: 0;
-  transition: all 0.15s ease;
-  margin-top: 2px;
-}
-
-.modal-cerrar-boton:hover {
-  background-color: #fee2e2;
-  color: #b91c1c;
-  border-color: #fca5a5;
-}
-
 .modal-alerta-seguridad {
   background: #ffffff;
   border-radius: 12px;
@@ -1506,19 +1346,6 @@ textarea.input-base {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-}
-
-.boton-mini-desbloquear {
-  background-color: #ecfdf5;
-  color: #065f46;
-  border-color: #a7f3d0;
-  font-weight: 600;
-}
-
-.boton-mini-desbloquear:hover {
-  background-color: #d1fae5;
-  border-color: #6ee7b7;
-  color: #047857;
 }
 
 /* ---------- Árbol Jerárquico de Permisos de Perfiles ---------- */
@@ -2356,110 +2183,6 @@ textarea.input-base {
 }
 
 /* Botones de Acción en Tablas */
-.boton-tabla-detalle {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 0 12px;
-  height: 32px;
-  font-size: 12px;
-  font-weight: 500;
-  border-radius: 6px;
-  border: 1px solid #cbd5e1;
-  background-color: #ffffff;
-  color: #334155;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.15s ease;
-  text-decoration: none;
-}
-.boton-tabla-detalle:hover {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
-}
-
-.boton-tabla-aprobar {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 0 14px;
-  height: 32px;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 6px;
-  border: 1px solid #059669;
-  background-color: #059669;
-  color: #ffffff;
-  cursor: pointer;
-  white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
-  transition: all 0.15s ease;
-}
-.boton-tabla-aprobar:hover:not(:disabled) {
-  background-color: #047857;
-  border-color: #047857;
-}
-
-.boton-tabla-rechazar {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 0 12px;
-  height: 32px;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 6px;
-  border: 1px solid #fecaca;
-  background-color: #fff1f2;
-  color: #dc2626;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.15s ease;
-}
-.boton-tabla-rechazar:hover:not(:disabled) {
-  background-color: #fee2e2;
-  border-color: #fca5a5;
-  color: #b91c1c;
-}
-
-.boton-tabla-accion {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  border: 1px solid #e2e8f0;
-  background-color: #ffffff;
-  color: #475569;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.boton-tabla-accion:hover:not(:disabled) {
-  background-color: #f1f5f9;
-  border-color: #cbd5e1;
-  color: #0f172a;
-}
-
-.boton-tabla-accion-peligro {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  border: 1px solid #fecaca;
-  background-color: #fff1f2;
-  color: #dc2626;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.boton-tabla-accion-peligro:hover:not(:disabled) {
-  background-color: #fee2e2;
-  border-color: #fca5a5;
-  color: #b91c1c;
-}
 
 /* Avatar de Iniciales de Usuario */
 .avatar-iniciales {
@@ -2478,44 +2201,6 @@ textarea.input-base {
 }
 
 /* Control Segmentado (Segmented Switch) */
-.control-segmentado {
-  display: inline-flex;
-  flex-wrap: wrap;
-  max-width: 100%;
-  align-items: center;
-  background-color: #f1f5f9;
-  padding: 4px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  gap: 4px;
-}
-
-.control-segmentado-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 14px;
-  border-radius: 6px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: #64748b;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-}
-.control-segmentado-item:hover {
-  color: #1e293b;
-  background-color: rgba(255, 255, 255, 0.6);
-}
-.control-segmentado-item.activo {
-  background-color: #ffffff;
-  color: #0f172a;
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-}
 
 /* Formatos de Fecha Sin Wrap */
 .fecha-celda {
@@ -2690,9 +2375,6 @@ textarea.input-base {
 .w-8 { width:2rem; }
 
 /* Clases semánticas usadas en el código que no tenían estilo */
-.boton-peligro { width: auto; padding: 8px 14px; background-color: #dc2626; color: #fff; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
-.boton-peligro:hover { background-color: #b91c1c; }
-.boton-peligro:disabled { background-color: #fca5a5; cursor: not-allowed; }
 .mensaje-exito { background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; font-size: 13px; padding: 8px 12px; border-radius: 6px; margin-bottom: 16px; }
 .mensaje-vacio, .mensaje-cargando { padding: 24px 16px; text-align: center; color: #64748b; font-size: 13px; }
 
@@ -2788,3 +2470,220 @@ textarea.input-base {
 .fade-in, .zoom-in-95 { animation-name: fd-aparecer; }
 .duration-150 { animation-duration: .15s; transition-duration: .15s; }
 .duration-200 { animation-duration: .2s; transition-duration: .2s; }
+
+/* ==========================================================================
+   SISTEMA DE DISEÑO FLOWDESK — fuente única de estilos de componentes
+   Ver la guía en /plataforma/guia-estilo. Regla: ningún botón, pestaña,
+   tarjeta o estado vacío lleva colores/tamaños inline; se usan estas clases.
+   ========================================================================== */
+:root {
+  --color-primario: #2563eb;
+  --color-primario-hover: #1d4ed8;
+  --color-primario-suave: #eff6ff;
+  --color-peligro: #dc2626;
+  --color-peligro-hover: #b91c1c;
+  --color-peligro-suave: #fef2f2;
+  --color-exito: #16a34a;
+  --color-texto: #0f172a;
+  --color-texto-secundario: #475569;
+  --color-texto-tenue: #64748b;
+  --color-borde: #e2e8f0;
+  --color-borde-control: #cbd5e1;
+  --color-fondo: #f4f5f7;
+  --color-superficie: #ffffff;
+  --color-superficie-hover: #f8fafc;
+  --radio-control: 6px;
+  --radio-tarjeta: 10px;
+  --sombra-tarjeta: 0 1px 3px rgba(15, 23, 42, 0.05);
+  --altura-control: 36px;
+  --altura-control-sm: 28px;
+}
+
+/* ---------- Botones: primario · secundario · peligro · enlace · icono ---------- */
+.boton-primario,
+.boton-secundario,
+.boton-peligro,
+.boton-enlace,
+.boton-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--altura-control);
+  padding: 0 16px;
+  border-radius: var(--radio-control);
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.boton-primario { background: var(--color-primario); border-color: var(--color-primario); color: #fff; }
+.boton-primario:hover:not(:disabled) { background: var(--color-primario-hover); border-color: var(--color-primario-hover); }
+.boton-secundario { background: var(--color-superficie); border-color: var(--color-borde-control); color: var(--color-texto-secundario); }
+.boton-secundario:hover:not(:disabled) { background: var(--color-superficie-hover); color: var(--color-texto); border-color: #94a3b8; }
+.boton-peligro { background: var(--color-superficie); border-color: #fecaca; color: var(--color-peligro); }
+.boton-peligro:hover:not(:disabled) { background: var(--color-peligro); border-color: var(--color-peligro); color: #fff; }
+.boton-enlace { background: transparent; color: var(--color-primario); padding: 0 4px; height: auto; min-height: 24px; }
+.boton-enlace:hover:not(:disabled) { color: var(--color-primario-hover); text-decoration: underline; }
+.boton-icono { width: var(--altura-control); padding: 0; background: var(--color-superficie); border-color: var(--color-borde); color: var(--color-texto-secundario); }
+.boton-icono:hover:not(:disabled) { background: var(--color-superficie-hover); border-color: var(--color-borde-control); color: var(--color-texto); }
+.boton-icono.boton-icono-peligro { color: var(--color-peligro); border-color: #fecaca; }
+.boton-icono.boton-icono-peligro:hover:not(:disabled) { background: var(--color-peligro-suave); }
+.boton-primario:disabled, .boton-secundario:disabled, .boton-peligro:disabled,
+.boton-enlace:disabled, .boton-icono:disabled { opacity: 0.5; cursor: not-allowed; }
+.boton-primario:focus-visible, .boton-secundario:focus-visible, .boton-peligro:focus-visible,
+.boton-enlace:focus-visible, .boton-icono:focus-visible, .pestana:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+}
+/* Tamaño compacto para acciones dentro de tablas y listas */
+.boton-sm { height: var(--altura-control-sm); padding: 0 10px; font-size: 12px; gap: 4px; }
+.boton-icono.boton-sm { width: var(--altura-control-sm); padding: 0; }
+.boton-enlace.boton-sm { height: auto; padding: 0 2px; }
+.boton-ancho-completo { width: 100%; }
+
+/* ---------- Pestañas: una sola forma en todo el sistema ---------- */
+.pestanas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 4px;
+  border-bottom: 1px solid var(--color-borde);
+  margin-bottom: 20px;
+}
+.pestana {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  margin-bottom: -1px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--color-texto-tenue);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.pestana:hover { color: var(--color-texto); }
+.pestana-activa,
+.pestana-activa:hover { color: var(--color-primario); border-bottom-color: var(--color-primario); font-weight: 600; }
+.pestana-contador {
+  min-width: 20px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: var(--color-texto-tenue);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+.pestana-activa .pestana-contador { background: var(--color-primario-suave); color: var(--color-primario); }
+/* Pestañas de segundo nivel (dentro de una pestaña) usan la misma forma */
+.pestanas .pestanas { margin-bottom: 0; }
+
+/* ---------- Tarjeta / estado vacío ---------- */
+.tarjeta-contenido {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
+  padding: 20px;
+}
+.estado-vacio {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--color-texto-tenue);
+  font-size: 14px;
+  background: var(--color-superficie);
+  border: 1px dashed var(--color-borde-control);
+  border-radius: var(--radio-tarjeta);
+}
+.estado-vacio strong { display: block; color: var(--color-texto); font-size: 15px; margin-bottom: 4px; }
+
+/* ---------- Interruptor (activar/desactivar) ---------- */
+.interruptor {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-borde-control);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.interruptor::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: left 0.15s ease;
+}
+.interruptor-activo { background: var(--color-exito); }
+.interruptor-activo::after { left: 18px; }
+.interruptor:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---------- Opción seleccionable (tarjeta-botón) ---------- */
+.opcion-seleccionable {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  text-align: left;
+  font-family: inherit;
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde-control);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.opcion-seleccionable:hover:not(:disabled) { border-color: #94a3b8; }
+.opcion-seleccionada { border-color: var(--color-primario); background: var(--color-primario-suave); box-shadow: inset 0 0 0 1px var(--color-primario); }
+.opcion-seleccionable:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Botón de alternancia (filtro activo/inactivo, visible/oculto): mismo botón con aria-pressed */
+.boton-secundario[aria-pressed="true"],
+.boton-icono[aria-pressed="true"] {
+  background: var(--color-primario-suave);
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+/* ---------- Cabecera de página: un solo tamaño de título y descripción ---------- */
+.titulo-pagina,
+.cabecera-pagina h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--color-texto);
+}
+.descripcion-pagina,
+.cabecera-pagina p.descripcion {
+  margin: 4px 0 0;
+  max-width: 900px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-texto-tenue);
+}
+.celda-vacia {
+  padding: 32px 16px !important;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-texto-tenue);
+}

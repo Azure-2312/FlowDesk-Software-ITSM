@@ -123,15 +123,15 @@ export default function VistaContratos() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Contratos y cobertura</h1>
-        <p>Registra contratos con proveedores, su cobertura, montos y vigencias.</p>
+        <h1 className="titulo-pagina">Contratos y cobertura</h1>
+        <p className="descripcion-pagina">Registra contratos con proveedores, su cobertura, montos y vigencias.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
       {error && <p role="alert" className="mensaje-error" style={{ marginBottom: 12 }}>{error}</p>}
 
       <div style={{ marginBottom: 14 }}>
-        <button className="boton-primario" style={{ width: "auto" }} onClick={() => setMostrarForm((v) => !v)}>{mostrarForm ? "Cancelar" : "Nuevo contrato"}</button>
+        <button className="boton-primario"  onClick={() => setMostrarForm((v) => !v)}>{mostrarForm ? "Cancelar" : "Nuevo contrato"}</button>
       </div>
 
       {mostrarForm && (
@@ -182,14 +182,14 @@ export default function VistaContratos() {
             Cobertura
             <textarea rows={2} value={form.cobertura} onChange={(e) => setForm((p) => ({ ...p, cobertura: e.target.value }))} style={{ display: "block", width: "100%", marginTop: 4, padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }} />
           </label>
-          <button className="boton-primario" style={{ width: "auto", marginTop: 10 }} disabled={procesando} onClick={crear}>{procesando ? "Guardando..." : "Registrar contrato"}</button>
+          <button className="boton-primario" style={{ marginTop: 10 }} disabled={procesando} onClick={crear}>{procesando ? "Guardando..." : "Registrar contrato"}</button>
         </div>
       )}
 
       {cargando ? (
         <p>Cargando...</p>
       ) : contratos.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>No hay contratos registrados.</div>
+        <div className="estado-vacio" >No hay contratos registrados.</div>
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table className="tabla-datos">
@@ -208,8 +208,8 @@ export default function VistaContratos() {
                     <td><span style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 999, backgroundColor: color.bg, color: color.fg }}>{c.estado}</span></td>
                     <td>
                       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                        {c.estado !== "VIGENTE" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(c.id_contrato, "VIGENTE")}>Vigente</button>}
-                        {c.estado !== "CANCELADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(c.id_contrato, "CANCELADO")}>Cancelar</button>}
+                        {c.estado !== "VIGENTE" && <button className="boton-secundario"  disabled={procesando} onClick={() => cambiarEstado(c.id_contrato, "VIGENTE")}>Vigente</button>}
+                        {c.estado !== "CANCELADO" && <button className="boton-secundario"  disabled={procesando} onClick={() => cambiarEstado(c.id_contrato, "CANCELADO")}>Cancelar</button>}
                       </div>
                     </td>
                   </tr>

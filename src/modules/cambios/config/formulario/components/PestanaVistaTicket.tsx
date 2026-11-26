@@ -154,55 +154,25 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
           </h3>
         </div>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, backgroundColor: "#f1f5f9", padding: 3, borderRadius: 8 }}>
+        <div className="pestanas">
           <button
             type="button"
             onClick={() => setSubpestanaActiva("campos")}
-            style={{
-              padding: "6px 12px",
-              borderRadius: 6,
-              fontSize: 12,
-              cursor: "pointer",
-              border: "none",
-              backgroundColor: subpestanaActiva === "campos" ? "#ffffff" : "transparent",
-              color: subpestanaActiva === "campos" ? "#2563eb" : "#64748b",
-              fontWeight: subpestanaActiva === "campos" ? 700 : 500,
-              boxShadow: subpestanaActiva === "campos" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
-            }}
+            className={subpestanaActiva === "campos" ? "pestana pestana-activa" : "pestana"}
           >
             Campos Técnicos Adicionales
           </button>
           <button
             type="button"
             onClick={() => setSubpestanaActiva("pestanas")}
-            style={{
-              padding: "6px 12px",
-              borderRadius: 6,
-              fontSize: 12,
-              cursor: "pointer",
-              border: "none",
-              backgroundColor: subpestanaActiva === "pestanas" ? "#ffffff" : "transparent",
-              color: subpestanaActiva === "pestanas" ? "#2563eb" : "#64748b",
-              fontWeight: subpestanaActiva === "pestanas" ? 700 : 500,
-              boxShadow: subpestanaActiva === "pestanas" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
-            }}
+            className={subpestanaActiva === "pestanas" ? "pestana pestana-activa" : "pestana"}
           >
             Pestañas del Ticket ({pestanas.filter((p) => p.visible).length})
           </button>
           <button
             type="button"
             onClick={() => setSubpestanaActiva("botones")}
-            style={{
-              padding: "6px 12px",
-              borderRadius: 6,
-              fontSize: 12,
-              cursor: "pointer",
-              border: "none",
-              backgroundColor: subpestanaActiva === "botones" ? "#ffffff" : "transparent",
-              color: subpestanaActiva === "botones" ? "#2563eb" : "#64748b",
-              fontWeight: subpestanaActiva === "botones" ? 700 : 500,
-              boxShadow: subpestanaActiva === "botones" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
-            }}
+            className={subpestanaActiva === "botones" ? "pestana pestana-activa" : "pestana"}
           >
             Botones de Acción ({botonesAccion.filter((b) => b.visible).length})
           </button>
@@ -287,14 +257,8 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                     <button
                       type="button"
                       onClick={() => actualizarCampoTicket(campo.id, { visible: !campo.visible })}
-                      className="boton-accion-icono"
-                      style={{
-                        width: 28,
-                        height: 28,
-                        color: campo.visible ? "#16a34a" : "#94a3b8",
-                        borderColor: campo.visible ? "#bbf7d0" : "#e2e8f0",
-                        backgroundColor: campo.visible ? "#f0fdf4" : "#f8fafc",
-                      }}
+                      className="boton-icono boton-sm"
+                      style={{ width: 28 }}
                       title={campo.visible ? "Campo visible en el ticket" : "Campo oculto"}
                     >
                       {campo.visible ? (
@@ -425,16 +389,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                           <button
                             type="button"
                             onClick={() => alternarVisiblePestana(p.id)}
-                            style={{
-                              padding: "3px 8px",
-                              fontSize: 10.5,
-                              borderRadius: 4,
-                              border: "1px solid #cbd5e1",
-                              backgroundColor: "#ffffff",
-                              color: p.visible ? "#dc2626" : "#2563eb",
-                              cursor: "pointer",
-                              fontWeight: 600,
-                            }}
+                            className="boton-secundario boton-sm"
                           >
                             {p.visible ? "Ocultar" : "Mostrar"}
                           </button>
@@ -522,16 +477,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                   <button
                     type="button"
                     onClick={() => alternarBotonAccion(btn.id)}
-                    style={{
-                      padding: "4px 10px",
-                      borderRadius: 4,
-                      fontSize: 11,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      border: `1px solid ${btn.visible ? "#86efac" : "#cbd5e1"}`,
-                      backgroundColor: btn.visible ? "#dcfce7" : "#f1f5f9",
-                      color: btn.visible ? "#166534" : "#64748b",
-                    }}
+                    className="boton-secundario boton-sm" aria-pressed={btn.visible}
                   >
                     {btn.visible ? "Habilitado" : "Deshabilitado"}
                   </button>

@@ -90,8 +90,8 @@ export default function VistaAutorizaciones() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Seguimiento de etapas de aprobación</h1>
-        <p>Etapas pendientes, plazos, recordatorios y escalamiento de las RFC en autorización.</p>
+        <h1 className="titulo-pagina">Seguimiento de etapas de aprobación</h1>
+        <p className="descripcion-pagina">Etapas pendientes, plazos, recordatorios y escalamiento de las RFC en autorización.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -100,7 +100,7 @@ export default function VistaAutorizaciones() {
       {cargando ? (
         <p>Cargando...</p>
       ) : cambios.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio" >
           No hay RFC en proceso de autorización.
         </div>
       ) : (
@@ -125,9 +125,9 @@ export default function VistaAutorizaciones() {
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-start" }}>
-                    <button className="boton-secundario" style={{ width: "auto" }} disabled={procesando === c.id_cambio} onClick={() => notificar(c.id_cambio, "RECORDATORIO")}>Recordar</button>
-                    <button className="boton-primario" style={{ width: "auto" }} disabled={procesando === c.id_cambio} onClick={() => notificar(c.id_cambio, "ESCALAMIENTO")}>Escalar</button>
-                    <button className="boton-secundario" style={{ width: "auto" }} onClick={() => setExpandido(expandido === c.id_cambio ? null : c.id_cambio)}>
+                    <button className="boton-secundario"  disabled={procesando === c.id_cambio} onClick={() => notificar(c.id_cambio, "RECORDATORIO")}>Recordar</button>
+                    <button className="boton-primario"  disabled={procesando === c.id_cambio} onClick={() => notificar(c.id_cambio, "ESCALAMIENTO")}>Escalar</button>
+                    <button className="boton-secundario"  onClick={() => setExpandido(expandido === c.id_cambio ? null : c.id_cambio)}>
                       {expandido === c.id_cambio ? "Ocultar" : "Votos"}
                     </button>
                   </div>

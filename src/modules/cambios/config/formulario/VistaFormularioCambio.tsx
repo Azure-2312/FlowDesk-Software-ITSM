@@ -388,10 +388,10 @@ export default function ConfiguracionFormularioCambiosPage({ pestanaFija }: Vist
         }}
       >
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Configuración de Formulario de Cambios (RFC)
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: "6px 0 0 0", lineHeight: 1.45 }}>
+          <p className="descripcion-pagina">
             {pestanaActualInfo.descripcion}
           </p>
         </div>
@@ -402,7 +402,7 @@ export default function ConfiguracionFormularioCambiosPage({ pestanaFija }: Vist
             onClick={handleGuardarBorrador}
             disabled={guardando}
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+            style={{ flexShrink: 0 }}
           >
             {guardando ? "Guardando..." : "Guardar Configuración"}
           </button>
@@ -435,14 +435,7 @@ export default function ConfiguracionFormularioCambiosPage({ pestanaFija }: Vist
       {/* Selector de las 7 Pestañas (solo si no es pestaña fija) */}
       {!pestanaFija && (
       <div
-        style={{
-          display: "flex",
-          gap: 8,
-          borderBottom: "1px solid #e2e8f0",
-          marginBottom: 24,
-          justifyContent: "flex-start",
-          overflowX: "auto",
-        }}
+        className="pestanas"
       >
         {(Object.keys(PESTANAS_INFO) as TabId[]).map((tabKey) => {
           const info = PESTANAS_INFO[tabKey];
@@ -452,17 +445,7 @@ export default function ConfiguracionFormularioCambiosPage({ pestanaFija }: Vist
               key={tabKey}
               type="button"
               onClick={() => setTabActiva(tabKey)}
-              style={{
-                padding: "10px 16px",
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: esActiva ? 600 : 500,
-                color: esActiva ? "#2563eb" : "#64748b",
-                borderBottom: esActiva ? "2px solid #2563eb" : "2px solid transparent",
-                whiteSpace: "nowrap",
-              }}
+              className={esActiva ? "pestana pestana-activa" : "pestana"}
             >
               {info.titulo}
             </button>

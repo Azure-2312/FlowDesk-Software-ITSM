@@ -86,22 +86,21 @@ export default function FormularioServicioConfig({ id }: { id: string }) {
       {/* Cabecera Estandarizada con Acciones a la Derecha */}
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, margin: "0 0 4px 0", color: "#0f172a" }}>
+          <h1 className="titulo-pagina">
             Formulario y Enrutamiento del Servicio
           </h1>
-          <p className="subtitulo" style={{ margin: 0, fontSize: 13, color: "#64748b" }}>
+          <p className="descripcion-pagina" >
             {servicio ? `[${servicio.codigo_servicio}] ${servicio.nombre}` : ""} · Configuración de captura en el portal y grupo resolutor institucional.
           </p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <Link className="boton-secundario" href="/plataforma/servicios/configuracion" style={{ padding: "8px 14px", textDecoration: "none" }}>
+          <Link className="boton-secundario" href="/plataforma/servicios/configuracion" >
             Volver al catálogo
           </Link>
           <button
             className="boton-primario"
             onClick={guardar}
             disabled={guardando}
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
           >
             {guardando ? "Guardando…" : "Guardar Configuración"}
           </button>
@@ -133,7 +132,6 @@ export default function FormularioServicioConfig({ id }: { id: string }) {
                 type="button"
                 className="boton-secundario"
                 onClick={() => setCampos((xs) => [...xs, campoVacio()])}
-                style={{ fontSize: 12, padding: "6px 12px" }}
               >
                 + Agregar campo
               </button>
@@ -214,19 +212,10 @@ export default function FormularioServicioConfig({ id }: { id: string }) {
                         Obligatorio
                       </label>
 
-                      <button
+                      <button className="boton-peligro boton-sm"
                         type="button"
                         onClick={() => setCampos((xs) => xs.filter((_, j) => j !== i))}
-                        style={{
-                          backgroundColor: "#fef2f2",
-                          border: "1px solid #fecaca",
-                          color: "#dc2626",
-                          padding: "6px 10px",
-                          borderRadius: 6,
-                          fontSize: 12,
-                          cursor: "pointer",
-                          marginTop: 18,
-                        }}
+                        style={{ marginTop: 18 }}
                       >
                         Quitar
                       </button>
@@ -330,7 +319,6 @@ export default function FormularioServicioConfig({ id }: { id: string }) {
                   className="boton-secundario"
                   type="button"
                   onClick={() => setEscalamientos((xs) => xs.filter((_, j) => j !== i))}
-                  style={{ padding: "8px 12px" }}
                 >
                   Quitar
                 </button>
@@ -347,7 +335,7 @@ export default function FormularioServicioConfig({ id }: { id: string }) {
                 ])
               }
               disabled={!departamentos.length}
-              style={{ fontSize: 12, padding: "6px 12px", marginTop: 6 }}
+              style={{ marginTop: 6 }}
             >
               + Agregar regla de escalamiento
             </button>

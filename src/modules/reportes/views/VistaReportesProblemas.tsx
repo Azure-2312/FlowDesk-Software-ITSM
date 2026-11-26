@@ -61,8 +61,8 @@ export default function VistaReportesProblemas() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Reportes de problemas</h1>
-        <p>Volumen por estado y prioridad, tiempo medio de cierre, errores conocidos y recurrencia por servicio.</p>
+        <h1 className="titulo-pagina">Reportes de problemas</h1>
+        <p className="descripcion-pagina">Volumen por estado y prioridad, tiempo medio de cierre, errores conocidos y recurrencia por servicio.</p>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))", gap: 14, marginBottom: 24 }}>
@@ -77,7 +77,7 @@ export default function VistaReportesProblemas() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: 16 }}>
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2 style={{ marginTop: 0 }}>Por estado</h2>
           {data.porEstado.length === 0 ? (
             <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>Sin datos.</p>
@@ -97,7 +97,7 @@ export default function VistaReportesProblemas() {
           )}
         </div>
 
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2 style={{ marginTop: 0 }}>Por prioridad</h2>
           {data.porPrioridad.length === 0 ? (
             <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>Sin datos.</p>

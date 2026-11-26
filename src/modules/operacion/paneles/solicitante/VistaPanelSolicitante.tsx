@@ -93,14 +93,13 @@ export default function VistaPanelSolicitante() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Portal de Autoservicio & Solicitudes (ITIL v4)
           </span>
-          <h1 style={{ margin: 0 }}>Panel del solicitante</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Estado de mis solicitudes, mis activos asignados y las guías disponibles para resolver por mi cuenta.</p>
+          <h1 className="titulo-pagina">Panel del solicitante</h1>
+          <p className="descripcion-pagina">Estado de mis solicitudes, mis activos asignados y las guías disponibles para resolver por mi cuenta.</p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
             href="/plataforma/solicitudes/crear"
             className="boton-primario"
-            style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
             + Nueva Solicitud
           </Link>
@@ -108,7 +107,6 @@ export default function VistaPanelSolicitante() {
             type="button"
             className="boton-secundario"
             onClick={cargarDatos}
-            style={{ fontSize: 13, padding: "8px 12px", cursor: "pointer" }}
             title="Actualizar panel"
           >
             Actualizar
@@ -149,17 +147,17 @@ export default function VistaPanelSolicitante() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/incidentes/crear" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Registrar un incidente</Link>
-            <Link href="/plataforma/servicios/catalogo?vista=explorar&tipo=incidente" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Reportar un incidente</Link>
-            <Link href="/plataforma/servicios/catalogo?vista=explorar&tipo=solicitud" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Pedir un servicio</Link>
-            <Link href="/plataforma/incidentes/mios" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Ver mis incidentes</Link>
-            <Link href="/plataforma/conocimiento/base" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Base de conocimiento</Link>
+            <Link href="/plataforma/incidentes/crear" className="boton-secundario" >Registrar un incidente</Link>
+            <Link href="/plataforma/servicios/catalogo?vista=explorar&tipo=incidente" className="boton-secundario" >Reportar un incidente</Link>
+            <Link href="/plataforma/servicios/catalogo?vista=explorar&tipo=solicitud" className="boton-secundario" >Pedir un servicio</Link>
+            <Link href="/plataforma/incidentes/mios" className="boton-secundario" >Ver mis incidentes</Link>
+            <Link href="/plataforma/conocimiento/base" className="boton-secundario" >Base de conocimiento</Link>
           </div>
         </div>
       </div>
 
       <div>
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Guías que pueden ayudarte (Autoservicio)</h2>
           {data.articulos.length === 0 ? (
             <p>No hay artículos publicados todavía.</p>

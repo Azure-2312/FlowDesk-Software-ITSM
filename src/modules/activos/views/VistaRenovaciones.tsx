@@ -129,8 +129,8 @@ export default function VistaRenovaciones() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Renovaciones y vencimientos</h1>
-        <p>Genera solicitudes de renovación para contratos por vencer y registra su historial.</p>
+        <h1 className="titulo-pagina">Renovaciones y vencimientos</h1>
+        <p className="descripcion-pagina">Genera solicitudes de renovación para contratos por vencer y registra su historial.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -154,7 +154,7 @@ export default function VistaRenovaciones() {
             Comentario
             <input type="text" value={form.comentario} onChange={(e) => setForm((p) => ({ ...p, comentario: e.target.value }))} style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }} />
           </label>
-          <button className="boton-primario" style={{ width: "auto" }} disabled={procesando} onClick={solicitar}>{procesando ? "Guardando..." : "Solicitar"}</button>
+          <button className="boton-primario"  disabled={procesando} onClick={solicitar}>{procesando ? "Guardando..." : "Solicitar"}</button>
         </div>
       </div>
 
@@ -204,11 +204,11 @@ export default function VistaRenovaciones() {
                     <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
                       {r.estado === "SOLICITADA" && (
                         <>
-                          <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => resolver(r.id_renovacion, "APROBADA")}>Aprobar</button>
-                          <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => resolver(r.id_renovacion, "RECHAZADA")}>Rechazar</button>
+                          <button className="boton-secundario"  disabled={procesando} onClick={() => resolver(r.id_renovacion, "APROBADA")}>Aprobar</button>
+                          <button className="boton-secundario"  disabled={procesando} onClick={() => resolver(r.id_renovacion, "RECHAZADA")}>Rechazar</button>
                         </>
                       )}
-                      {r.estado === "APROBADA" && <button className="boton-primario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => resolver(r.id_renovacion, "EJECUTADA")}>Marcar ejecutada</button>}
+                      {r.estado === "APROBADA" && <button className="boton-primario"  disabled={procesando} onClick={() => resolver(r.id_renovacion, "EJECUTADA")}>Marcar ejecutada</button>}
                     </div>
                   </div>
                 );

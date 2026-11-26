@@ -670,7 +670,7 @@ export function VistaCatalogoServicios({
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => {
                   if (vistaParam === "crear") {
@@ -679,19 +679,7 @@ export function VistaCatalogoServicios({
                     setVista("tabla");
                   }
                 }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver al Catálogo de Servicios
               </button>
@@ -940,7 +928,6 @@ export function VistaCatalogoServicios({
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   if (vistaParam === "crear") {
                     router.push(`/plataforma/servicios/configuracion?tipo=${nuevoTipo}`);
@@ -955,13 +942,6 @@ export function VistaCatalogoServicios({
               <button
                 type="submit"
                 className="boton-primario"
-                style={{
-                  width: "auto",
-                  padding: "8px 24px",
-                  fontSize: 13,
-                  opacity: formNuevoInvalido || guardando ? 0.6 : 1,
-                  cursor: formNuevoInvalido || guardando ? "not-allowed" : "pointer",
-                }}
                 disabled={guardando || formNuevoInvalido}
                 title={formNuevoInvalido ? "Complete correctamente todos los campos y verifique los tiempos SLA para continuar." : ""}
               >
@@ -983,25 +963,13 @@ export function VistaCatalogoServicios({
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => {
                   setVista("tabla");
                   setServicioSeleccionado(null);
                 }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver al Catálogo de Servicios
               </button>
@@ -1236,7 +1204,6 @@ export function VistaCatalogoServicios({
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setServicioSeleccionado(null);
@@ -1248,13 +1215,6 @@ export function VistaCatalogoServicios({
               <button
                 type="submit"
                 className="boton-primario"
-                style={{
-                  width: "auto",
-                  padding: "8px 24px",
-                  fontSize: 13,
-                  opacity: formEdicionInvalido || guardando ? 0.6 : 1,
-                  cursor: formEdicionInvalido || guardando ? "not-allowed" : "pointer",
-                }}
                 disabled={guardando || formEdicionInvalido}
                 title={formEdicionInvalido ? "Complete correctamente todos los campos y verifique los tiempos SLA para continuar." : ""}
               >
@@ -1276,25 +1236,13 @@ export function VistaCatalogoServicios({
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => {
                   setVista("tabla");
                   setServicioSeleccionado(null);
                 }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver al Catálogo de Servicios
               </button>
@@ -1316,7 +1264,6 @@ export function VistaCatalogoServicios({
                 type="button"
                 className="boton-secundario"
                 onClick={agregarPasoWorkflow}
-                style={{ width: "auto", padding: "6px 14px", fontSize: 12.5, fontWeight: 600, color: "#2563eb", borderColor: "#bfdbfe", backgroundColor: "#eff6ff" }}
               >
                 Agregar Paso Operativo
               </button>
@@ -1357,18 +1304,9 @@ export function VistaCatalogoServicios({
                       </strong>
                     </div>
 
-                    <button
+                    <button className="boton-peligro boton-sm"
                       type="button"
                       onClick={() => eliminarPasoWorkflow(idx)}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        color: "#ef4444",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                      }}
                     >
                       Eliminar este paso
                     </button>
@@ -1451,7 +1389,6 @@ export function VistaCatalogoServicios({
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setServicioSeleccionado(null);
@@ -1463,7 +1400,6 @@ export function VistaCatalogoServicios({
               <button
                 type="submit"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Guardando..." : "Guardar Workflow"}
@@ -1476,25 +1412,13 @@ export function VistaCatalogoServicios({
       {/* 4. VISTA DEDICADA: DESHABILITAR / REACTIVAR SERVICIO CON JUSTIFICACIÓN OBLIGATORIA */}
       {vista === "desactivar" && servicioSeleccionado && (
         <div style={{ maxWidth: 700, margin: "0 auto", backgroundColor: "#ffffff", padding: 28, borderRadius: 10, border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-          <button
+          <button className="boton-enlace"
             type="button"
             onClick={() => {
               setVista("tabla");
               setServicioSeleccionado(null);
             }}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              background: "transparent",
-              border: "none",
-              color: "#2563eb",
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-              marginBottom: 14,
-              padding: 0,
-            }}
+            style={{ marginBottom: 14 }}
           >
             Volver al Catálogo de Servicios
           </button>
@@ -1550,7 +1474,6 @@ export function VistaCatalogoServicios({
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setServicioSeleccionado(null);
@@ -1562,12 +1485,6 @@ export function VistaCatalogoServicios({
               <button
                 type="submit"
                 className={servicioSeleccionado.estado_registro ? "boton-primario" : "boton-primario"}
-                style={{
-                  width: "auto",
-                  padding: "8px 24px",
-                  fontSize: 13,
-                  backgroundColor: servicioSeleccionado.estado_registro ? "#dc2626" : "#16a34a",
-                }}
                 disabled={guardando}
               >
                 {guardando
@@ -1597,22 +1514,10 @@ export function VistaCatalogoServicios({
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => setVista("tabla")}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver a Categoría: {categoriaSeleccionada.nombre}
               </button>
@@ -1627,7 +1532,6 @@ export function VistaCatalogoServicios({
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => setVista("tabla")}
                 disabled={guardando}
               >
@@ -1636,7 +1540,6 @@ export function VistaCatalogoServicios({
               <button
                 type="button"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
                 onClick={ejecutarAsignacionServicios}
                 disabled={serviciosSeleccionadosParaAsignar.length === 0 || guardando}
               >
@@ -1681,7 +1584,7 @@ export function VistaCatalogoServicios({
 
             if (serviciosSinCat.length === 0) {
               return (
-                <div style={{ padding: "48px 20px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 10, border: "1px dashed #cbd5e1" }}>
+                <div className="estado-vacio">
                   <p style={{ margin: "0 0 12px 0", color: "#64748b", fontSize: 14 }}>
                     No hay servicios pendientes de asignación para el tipo <strong>{tipoActual === 1 ? "Incidente" : "Solicitud"}</strong>.
                   </p>
@@ -1692,14 +1595,12 @@ export function VistaCatalogoServicios({
                     <Link
                       href="/plataforma/servicios/configuracion?vista=crear"
                       className="boton-primario"
-                      style={{ width: "auto", padding: "8px 20px", fontSize: 13, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
                     >
                       Ir a registrar servicio
                     </Link>
                     <button
                       type="button"
                       className="boton-secundario"
-                      style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                       onClick={() => setVista("tabla")}
                     >
                       Volver a la categoría
@@ -1711,7 +1612,7 @@ export function VistaCatalogoServicios({
 
             if (filtrados.length === 0) {
               return (
-                <div style={{ padding: "36px 20px", textAlign: "center", color: "#64748b", backgroundColor: "#f8fafc", borderRadius: 8 }}>
+                <div className="estado-vacio">
                   No se encontraron servicios sin asignar que coincidan con "{busquedaAsignar}".
                 </div>
               );
@@ -1839,7 +1740,6 @@ export function VistaCatalogoServicios({
                   <button
                     type="button"
                     className="boton-secundario"
-                    style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                     onClick={() => setVista("tabla")}
                     disabled={guardando}
                   >
@@ -1848,7 +1748,6 @@ export function VistaCatalogoServicios({
                   <button
                     type="button"
                     className="boton-primario"
-                    style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
                     disabled={serviciosSeleccionadosParaAsignar.length === 0 || guardando}
                     onClick={ejecutarAsignacionServicios}
                   >
@@ -1871,8 +1770,8 @@ export function VistaCatalogoServicios({
             <div>
               <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <h1>{tipoActual === 1 ? "Servicios de Incidentes" : "Servicios de Solicitudes"}</h1>
-                  <p>
+                  <h1 className="titulo-pagina">{tipoActual === 1 ? "Servicios de Incidentes" : "Servicios de Solicitudes"}</h1>
+                  <p className="descripcion-pagina">
                     {tipoActual === 1
                       ? "Seleccione una categoría para consultar, parametrizar y administrar los servicios técnicos de reporte y atención de incidentes."
                       : "Seleccione una categoría para consultar, parametrizar y administrar las ofertas de solicitudes de servicio y requerimientos."}
@@ -1881,7 +1780,7 @@ export function VistaCatalogoServicios({
                 <button
                   type="button"
                   className="boton-primario"
-                  style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+                  style={{ flexShrink: 0 }}
                   onClick={abrirNuevo}
                 >
                   Nuevo Servicio
@@ -1998,25 +1897,13 @@ export function VistaCatalogoServicios({
                 }}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <button
+                  <button className="boton-enlace"
                     type="button"
                     onClick={() => {
                       setCategoriaSeleccionada(null);
                       setBusqueda("");
                     }}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
-                      background: "transparent",
-                      border: "none",
-                      color: "#2563eb",
-                      fontSize: 13,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      marginBottom: 8,
-                      padding: 0,
-                    }}
+                    style={{ marginBottom: 8 }}
                   >
                     Volver a Categorías de {tipoActual === 1 ? "Incidentes" : "Solicitudes"}
                   </button>
@@ -2051,7 +1938,6 @@ export function VistaCatalogoServicios({
                   <button
                     type="button"
                     className="boton-primario"
-                    style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                     onClick={() => {
                       setServiciosSeleccionadosParaAsignar([]);
                       setBusquedaAsignar("");
@@ -2096,7 +1982,7 @@ export function VistaCatalogoServicios({
                   Cargando servicios de la categoría...
                 </div>
               ) : servicios.filter((s) => s.id_categoria === categoriaSeleccionada.id_categoria).length === 0 ? (
-                <div style={{ padding: "40px 20px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
+                <div className="estado-vacio">
                   <p style={{ margin: "0 0 16px 0", color: "#64748b", fontSize: 14 }}>
                     No hay servicios registrados en la categoría <strong>{categoriaSeleccionada.nombre}</strong> con los filtros actuales.
                   </p>
@@ -2104,14 +1990,12 @@ export function VistaCatalogoServicios({
                     <Link
                       href="/plataforma/servicios/configuracion?vista=crear"
                       className="boton-secundario"
-                      style={{ width: "auto", padding: "8px 18px", fontSize: 13, textDecoration: "none" }}
                     >
                       Ir a registrar servicio
                     </Link>
                     <button
                       type="button"
                       className="boton-primario"
-                      style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                       onClick={() => {
                         setServiciosSeleccionadosParaAsignar([]);
                         setBusquedaAsignar("");
@@ -2182,7 +2066,7 @@ export function VistaCatalogoServicios({
                               <div style={{ display: "inline-flex", gap: 5 }}>
                                 <Link
                                   href={`/plataforma/servicios/configuracion/${s.id_servicio}/formulario`}
-                                  className="boton-accion-icono"
+                                  className="boton-icono boton-sm"
                                   title="Configurar formulario y grupo resolutor"
                                   aria-label="Configurar formulario y grupo resolutor"
                                 >
@@ -2196,7 +2080,7 @@ export function VistaCatalogoServicios({
                                 </Link>
                                 <button
                                   type="button"
-                                  className="boton-accion-icono"
+                                  className="boton-icono boton-sm"
                                   title="Editar parámetros y SLA del servicio"
                                   aria-label="Editar parámetros y SLA del servicio"
                                   onClick={() => abrirEdicion(s)}
@@ -2208,7 +2092,7 @@ export function VistaCatalogoServicios({
                                 </button>
                                 <button
                                   type="button"
-                                  className="boton-accion-icono"
+                                  className="boton-icono boton-sm"
                                   title="Diseñar workflow de pasos"
                                   aria-label="Diseñar workflow de pasos"
                                   onClick={() => abrirWorkflow(s)}
@@ -2224,7 +2108,7 @@ export function VistaCatalogoServicios({
                                 </button>
                                 <button
                                   type="button"
-                                  className={"boton-accion-icono " + (s.estado_registro ? "boton-accion-peligro" : "")}
+                                  className={s.estado_registro ? "boton-icono boton-sm boton-icono-peligro" : "boton-icono boton-sm"}
                                   title={s.estado_registro ? "Deshabilitar servicio con justificación" : "Reactivar servicio"}
                                   aria-label={s.estado_registro ? "Deshabilitar servicio" : "Reactivar servicio"}
                                   onClick={() => abrirDesactivar(s)}

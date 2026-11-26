@@ -33,26 +33,17 @@ export default function PaginaHistorialCambios() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Gestión de Cambios & Auditoría Histórica (ITIL v4)
           </span>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Historial de cambios finalizados
           </h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
+          <p className="descripcion-pagina">
             Registro histórico de intervenciones cerradas para correlación con incidentes y auditoría ({cambios.length} cambios)
           </p>
         </div>
 
-        <button
+        <button className="boton-secundario"
           type="button"
           onClick={cargarHistorial}
-          style={{
-            padding: "8px 14px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #cbd5e1",
-            borderRadius: 6,
-            fontSize: 13,
-            color: "#334155",
-            cursor: "pointer",
-          }}
         >
           Actualizar
         </button>
@@ -64,13 +55,7 @@ export default function PaginaHistorialCambios() {
         </div>
       ) : cambios.length === 0 ? (
         <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            padding: "48px 24px",
-            textAlign: "center",
-          }}
+          className="estado-vacio"
         >
           <div style={{ fontSize: 16, fontWeight: 600, color: "#1e293b", marginBottom: 6 }}>
             No hay cambios finalizados en el historial

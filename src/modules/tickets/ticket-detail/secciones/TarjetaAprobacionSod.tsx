@@ -86,8 +86,7 @@ export default function TarjetaAprobacionSod({
               <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
                 <button
                   type="button"
-                  className="boton-mini"
-                  style={{ backgroundColor: "#dc2626", color: "#ffffff", borderColor: "#b91c1c", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 5 }}
+                  className="boton-secundario boton-sm"
                   onClick={() =>
                     onEjecutarAccion({
                       decision_aprobacion: "RECHAZADO",
@@ -102,7 +101,6 @@ export default function TarjetaAprobacionSod({
                 <button
                   type="button"
                   className="boton-primario"
-                  style={{ width: "auto", backgroundColor: "#059669", borderColor: "#047857", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 5 }}
                   onClick={() =>
                     onEjecutarAccion({
                       decision_aprobacion: "APROBADO",

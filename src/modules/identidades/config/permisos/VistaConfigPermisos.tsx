@@ -142,28 +142,16 @@ export default function VistaConfigPermisos({ onVolver }: { onVolver?: () => voi
       >
         <div>
           {onVolver && (
-            <button
+            <button className="boton-enlace"
               type="button"
               onClick={onVolver}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                background: "transparent",
-                border: "none",
-                color: "#2563eb",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
-                marginBottom: 6,
-                padding: 0,
-              }}
+              style={{ marginBottom: 6 }}
             >
                Volver a la lista de perfiles
             </button>
           )}
-          <h1>Matriz de capacidades por perfil</h1>
-          <p>
+          <h1 className="titulo-pagina">Matriz de capacidades por perfil</h1>
+          <p className="descripcion-pagina">
             Vista consolidada del catálogo RBAC. Cada capacidad se evalúa antes de permitir
             el acceso a una página, endpoint o acción del sistema.
           </p>
@@ -171,7 +159,6 @@ export default function VistaConfigPermisos({ onVolver }: { onVolver?: () => voi
         <button
           type="button"
           className="boton-secundario"
-          style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           onClick={limpiarFiltros}
         >
           Limpiar filtros

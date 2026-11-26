@@ -61,10 +61,10 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
       {/* Cabecera Principal con Botón Guardar Configuración (solo texto) */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 16 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+          <h1 className="titulo-pagina">
             {titulo}
           </h1>
-          <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
+          <p className="descripcion-pagina">
             {descripcion}
           </p>
         </div>
@@ -74,14 +74,7 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
           className="boton-primario"
           onClick={handleGuardarConfiguracion}
           disabled={guardando}
-          style={{
-            width: "auto",
-            flexShrink: 0,
-            padding: "8px 20px",
-            fontSize: 13,
-            fontWeight: 600,
-            whiteSpace: "nowrap",
-          }}
+          style={{ flexShrink: 0 }}
         >
           {guardando ? "Guardando..." : "Guardar Configuración"}
         </button>
@@ -101,29 +94,12 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
 
       {/* Selector de Pestañas Homogéneo */}
       <div
-        style={{
-          display: "flex", flexWrap: "wrap",
-          gap: 8,
-          borderBottom: "1px solid #e2e8f0",
-          marginBottom: 24,
-          justifyContent: "flex-start",
-          overflowX: "auto",
-        }}
+        className="pestanas"
       >
         <button
           type="button"
           onClick={() => setTabActiva("campos")}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            background: "transparent",
-            borderBottom: tabActiva === "campos" ? "2px solid #2563eb" : "2px solid transparent",
-            color: tabActiva === "campos" ? "#2563eb" : "#64748b",
-            fontWeight: tabActiva === "campos" ? 600 : 500,
-            fontSize: 13,
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-          }}
+          className={tabActiva === "campos" ? "pestana pestana-activa" : "pestana"}
         >
           Campos
         </button>
@@ -131,17 +107,7 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
         <button
           type="button"
           onClick={() => setTabActiva("personalizados")}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            background: "transparent",
-            borderBottom: tabActiva === "personalizados" ? "2px solid #2563eb" : "2px solid transparent",
-            color: tabActiva === "personalizados" ? "#2563eb" : "#64748b",
-            fontWeight: tabActiva === "personalizados" ? 600 : 500,
-            fontSize: 13,
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-          }}
+          className={tabActiva === "personalizados" ? "pestana pestana-activa" : "pestana"}
         >
           Campos personalizados
         </button>
@@ -149,17 +115,7 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
         <button
           type="button"
           onClick={() => setTabActiva("niveles_solicitante")}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            background: "transparent",
-            borderBottom: tabActiva === "niveles_solicitante" ? "2px solid #2563eb" : "2px solid transparent",
-            color: tabActiva === "niveles_solicitante" ? "#2563eb" : "#64748b",
-            fontWeight: tabActiva === "niveles_solicitante" ? 600 : 500,
-            fontSize: 13,
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-          }}
+          className={tabActiva === "niveles_solicitante" ? "pestana pestana-activa" : "pestana"}
         >
           Niveles de solicitante (VIP)
         </button>

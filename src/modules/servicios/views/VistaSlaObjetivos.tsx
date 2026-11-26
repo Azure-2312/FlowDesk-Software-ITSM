@@ -75,10 +75,10 @@ export default function PaginaSlaObjetivos() {
   return (
     <div style={{ padding: "24px 32px", maxWidth: 1200, margin: "0 auto" }}>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+        <h1 className="titulo-pagina">
           Objetivos de tiempo vigentes (Matriz de SLA)
         </h1>
-        <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
+        <p className="descripcion-pagina">
           Parámetros institucionales acordados para primera respuesta y restauración del servicio
         </p>
       </div>

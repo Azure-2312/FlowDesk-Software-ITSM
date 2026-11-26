@@ -20,13 +20,11 @@ export default async function PaginaReportesOperativos({ searchParams }: PagePro
   return (
     <div className="space-y-4">
       {vistasPermitidas.length > 1 && (
-        <div className="bg-white px-6 pt-4 rounded-xl border border-slate-200 shadow-sm">
-          <PestanasVista
+        <PestanasVista
             vistas={vistasPermitidas}
             vistaActiva={vistaActiva}
             urlBase="/plataforma/reportes/operativos"
           />
-        </div>
       )}
       {vistaActiva === "supervision" ? (
         <VistaInformeSupervision />

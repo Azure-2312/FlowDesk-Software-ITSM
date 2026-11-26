@@ -137,8 +137,8 @@ export default function VistaMantenimientoActivos({ vistaActiva }: Props = {}) {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Mantenimiento y garantías</h1>
-        <p>Programa mantenimientos preventivos y correctivos, y controla los vencimientos de garantía.</p>
+        <h1 className="titulo-pagina">Mantenimiento y garantías</h1>
+        <p className="descripcion-pagina">Programa mantenimientos preventivos y correctivos, y controla los vencimientos de garantía.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -180,7 +180,7 @@ export default function VistaMantenimientoActivos({ vistaActiva }: Props = {}) {
             Descripción
             <textarea rows={2} value={form.descripcion} onChange={(e) => setForm((p) => ({ ...p, descripcion: e.target.value }))} style={{ display: "block", width: "100%", marginTop: 4, padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontSize: 13 }} />
           </label>
-          <button className="boton-primario" style={{ width: "auto", marginTop: 10 }} disabled={procesando} onClick={programar}>{procesando ? "Guardando..." : "Programar"}</button>
+          <button className="boton-primario" style={{ marginTop: 10 }} disabled={procesando} onClick={programar}>{procesando ? "Guardando..." : "Programar"}</button>
         </div>
       )}
 
@@ -207,9 +207,9 @@ export default function VistaMantenimientoActivos({ vistaActiva }: Props = {}) {
                         Programado {fecha(m.fecha_programada)} · Ejecutado {fecha(m.fecha_ejecucion)} · {m.proveedor ?? "sin proveedor"}
                       </div>
                       <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
-                        {m.estado === "PROGRAMADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "EN_PROCESO")}>Iniciar</button>}
-                        {m.estado === "EN_PROCESO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "COMPLETADO")}>Completar</button>}
-                        {["PROGRAMADO", "EN_PROCESO"].includes(m.estado) && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "CANCELADO")}>Cancelar</button>}
+                        {m.estado === "PROGRAMADO" && <button className="boton-secundario"  disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "EN_PROCESO")}>Iniciar</button>}
+                        {m.estado === "EN_PROCESO" && <button className="boton-secundario"  disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "COMPLETADO")}>Completar</button>}
+                        {["PROGRAMADO", "EN_PROCESO"].includes(m.estado) && <button className="boton-secundario"  disabled={procesando} onClick={() => cambiarEstado(m.id_mantenimiento, "CANCELADO")}>Cancelar</button>}
                       </div>
                     </div>
                   );

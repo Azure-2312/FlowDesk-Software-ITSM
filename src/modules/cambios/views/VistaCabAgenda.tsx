@@ -123,8 +123,8 @@ export default function VistaCabAgenda() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Agenda y actas del CAB</h1>
-        <p>Programa reuniones del comité, arma la agenda y registra el acta.</p>
+        <h1 className="titulo-pagina">Agenda y actas del CAB</h1>
+        <p className="descripcion-pagina">Programa reuniones del comité, arma la agenda y registra el acta.</p>
       </div>
 
       <form onSubmit={crear} className="tarjeta-formulario" style={{ marginBottom: 20 }}>
@@ -163,7 +163,7 @@ export default function VistaCabAgenda() {
           </div>
         </div>
         <div style={{ marginTop: 12 }}>
-          <button type="submit" className="boton-primario" style={{ width: "auto" }} disabled={guardando}>{guardando ? "Guardando..." : "Programar reunión"}</button>
+          <button type="submit" className="boton-primario"  disabled={guardando}>{guardando ? "Guardando..." : "Programar reunión"}</button>
         </div>
         {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginTop: 10, marginBottom: 0 }}>{ok}</p>}
         {error && <p role="alert" className="mensaje-error" style={{ marginTop: 10, marginBottom: 0 }}>{error}</p>}
@@ -190,8 +190,8 @@ export default function VistaCabAgenda() {
                   </div>
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-start" }}>
                     <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 999, backgroundColor: color.bg, color: color.fg }}>{r.estado}</span>
-                    {r.estado === "PROGRAMADA" && <button className="boton-primario" style={{ width: "auto", fontSize: 12, padding: "5px 10px" }} onClick={() => registrarActa(r)}>Registrar acta</button>}
-                    {r.estado === "PROGRAMADA" && <button className="boton-secundario" style={{ width: "auto", fontSize: 12, padding: "5px 10px" }} onClick={() => actualizar(r.id_reunion, "CANCELADA")}>Cancelar</button>}
+                    {r.estado === "PROGRAMADA" && <button className="boton-primario"  onClick={() => registrarActa(r)}>Registrar acta</button>}
+                    {r.estado === "PROGRAMADA" && <button className="boton-secundario"  onClick={() => actualizar(r.id_reunion, "CANCELADA")}>Cancelar</button>}
                   </div>
                 </div>
                 {Array.isArray(r.agenda) && r.agenda.length > 0 && (

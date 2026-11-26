@@ -330,10 +330,10 @@ export default function TiposModelosAtributosPage({
           marginBottom: 20
         }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+            <h1 className="titulo-pagina">
               Jerarquía de Clases, Tipos y Modelos de Activos
             </h1>
-            <p style={{ margin: "8px 0 0 0", color: "#64748b", fontSize: 13.5, lineHeight: 1.5 }}>
+            <p className="descripcion-pagina">
               {pestanaInfo.descripcion}
             </p>
           </div>
@@ -344,7 +344,6 @@ export default function TiposModelosAtributosPage({
               type="button"
               disabled={guardando || estaBloqueado}
               className="boton-primario"
-              style={{ padding: "9px 22px", fontSize: 13, width: "auto", fontWeight: 700 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
@@ -360,7 +359,7 @@ export default function TiposModelosAtributosPage({
             </div>
             <button
               onClick={handleSolicitarControl}
-              className="px-3 py-1 bg-white text-amber-800 font-bold rounded shadow-sm hover:bg-amber-50 transition-colors"
+              className="boton-secundario"
             >
               Solicitar control
             </button>
@@ -369,32 +368,14 @@ export default function TiposModelosAtributosPage({
 
         {/* 3. Barra de pestañas horizontales corporativa */}
         {!vistaExclusiva && (
-          <div style={{
-            display: "flex",
-            gap: 8,
-            borderBottom: "1px solid #e2e8f0",
-            marginBottom: 28,
-            justifyContent: "flex-start",
-            overflowX: "auto"
-          }}>
+          <div className="pestanas">
             {PESTANAS.map((tab) => {
               const activa = tabActiva === tab.id;
               return (
-                <button
+                <button type="button"
                   key={tab.id}
                   onClick={() => cambiarTab(tab.id)}
-                  style={{
-                    padding: "12px 18px",
-                    border: "none",
-                    background: "transparent",
-                    borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
-                    color: activa ? "#2563eb" : "#64748b",
-                    fontWeight: activa ? 600 : 500,
-                    fontSize: 13.5,
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    transition: "all 0.15s ease",
-                  }}
+                  className={activa ? "pestana pestana-activa" : "pestana"}
                 >
                   {tab.titulo}
                 </button>
@@ -417,7 +398,7 @@ export default function TiposModelosAtributosPage({
             <p className="text-xs text-red-600 mb-4">{errorCarga}</p>
             <button
               onClick={cargarDatos}
-              className="px-4 py-2 bg-red-600 text-white rounded text-xs font-semibold hover:bg-red-700 transition-colors"
+              className="boton-peligro boton-sm"
             >
               Reintentar
             </button>

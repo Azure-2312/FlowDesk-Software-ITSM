@@ -446,7 +446,7 @@ export function PestanaClasesTipos({ datos, onChange, bloqueado }: Props) {
                   ))}
                   {(!claseActiva.tipos || claseActiva.tipos.length === 0) && (
                     <tr>
-                      <td colSpan={5} style={{ padding: 16, textAlign: "center", color: "#94a3b8" }}>
+                      <td colSpan={5} className="celda-vacia">
                         No hay tipos registrados para esta clase.
                       </td>
                     </tr>
@@ -487,9 +487,8 @@ export function PestanaClasesTipos({ datos, onChange, bloqueado }: Props) {
                   </div>
                   <button
                     type="button"
-                    className="boton-principal"
+                    className="boton-primario"
                     onClick={agregarTipo}
-                    style={{ fontSize: 12, padding: "8px 16px" }}
                   >
                     Agregar Tipo
                   </button>

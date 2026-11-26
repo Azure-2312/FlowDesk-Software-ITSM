@@ -172,10 +172,10 @@ export default function VistaModelosCambioUnificada() {
     <div className="vista-contenedor">
       {/* 1. Encabezado */}
       <div style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+        <h1 className="titulo-pagina">
           Modelos de cambio estándar
         </h1>
-        <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+        <p className="descripcion-pagina">
           Catálogo institucional de procedimientos operativos estándar preautorizados. Selecciona una plantilla para iniciar un cambio o gestiona nuevas propuestas.
         </p>
       </div>
@@ -193,24 +193,11 @@ export default function VistaModelosCambioUnificada() {
       )}
 
       {/* 2. Selector de Pestañas Internas */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, borderBottom: "2px solid #e2e8f0", marginBottom: 24 }}>
+      <div className="pestanas">
         <button
           type="button"
           onClick={() => setPestanaActiva("plantillas")}
-          style={{
-            padding: "8px 16px",
-            border: "none",
-            borderBottom: pestanaActiva === "plantillas" ? "3px solid #2563eb" : "3px solid transparent",
-            backgroundColor: "transparent",
-            color: pestanaActiva === "plantillas" ? "#2563eb" : "#64748b",
-            fontWeight: pestanaActiva === "plantillas" ? 700 : 500,
-            fontSize: 13.5,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: -2,
-          }}
+          className={pestanaActiva === "plantillas" ? "pestana pestana-activa" : "pestana"}
         >
           <span>Plantillas de cambio</span>
           <span style={{ fontSize: 11, backgroundColor: pestanaActiva === "plantillas" ? "#dbeafe" : "#f1f5f9", color: pestanaActiva === "plantillas" ? "#1e40af" : "#64748b", padding: "2px 8px", borderRadius: 999 }}>
@@ -221,20 +208,7 @@ export default function VistaModelosCambioUnificada() {
         <button
           type="button"
           onClick={() => setPestanaActiva("crear")}
-          style={{
-            padding: "8px 16px",
-            border: "none",
-            borderBottom: pestanaActiva === "crear" ? "3px solid #2563eb" : "3px solid transparent",
-            backgroundColor: "transparent",
-            color: pestanaActiva === "crear" ? "#2563eb" : "#64748b",
-            fontWeight: pestanaActiva === "crear" ? 700 : 500,
-            fontSize: 13.5,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: -2,
-          }}
+          className={pestanaActiva === "crear" ? "pestana pestana-activa" : "pestana"}
         >
           <span>Crear modelo</span>
         </button>
@@ -242,20 +216,7 @@ export default function VistaModelosCambioUnificada() {
         <button
           type="button"
           onClick={() => setPestanaActiva("aprobar")}
-          style={{
-            padding: "8px 16px",
-            border: "none",
-            borderBottom: pestanaActiva === "aprobar" ? "3px solid #2563eb" : "3px solid transparent",
-            backgroundColor: "transparent",
-            color: pestanaActiva === "aprobar" ? "#2563eb" : "#64748b",
-            fontWeight: pestanaActiva === "aprobar" ? 700 : 500,
-            fontSize: 13.5,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: -2,
-          }}
+          className={pestanaActiva === "aprobar" ? "pestana pestana-activa" : "pestana"}
         >
           <span>Aprobar publicaciones</span>
           <span style={{ fontSize: 11, backgroundColor: pendientesAprobacion.length > 0 ? "#fef3c7" : "#f1f5f9", color: pendientesAprobacion.length > 0 ? "#92400e" : "#64748b", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
@@ -293,7 +254,7 @@ export default function VistaModelosCambioUnificada() {
               Cargando modelos de cambio estándar...
             </div>
           ) : itemsFiltrados.length === 0 ? (
-            <div style={{ padding: 48, textAlign: "center", backgroundColor: "#ffffff", borderRadius: 10, border: "1px dashed #cbd5e1", color: "#64748b", fontSize: 14 }}>
+            <div className="estado-vacio">
               No se encontraron modelos de cambio estándar.
             </div>
           ) : (
@@ -582,7 +543,6 @@ export default function VistaModelosCambioUnificada() {
             <button
               type="button"
               className="boton-secundario"
-              style={{ width: "auto" }}
               disabled={procesando}
               onClick={() => setPestanaActiva("plantillas")}
             >
@@ -591,7 +551,6 @@ export default function VistaModelosCambioUnificada() {
             <button
               type="submit"
               className="boton-primario"
-              style={{ width: "auto" }}
               disabled={procesando || !form.codigo.trim() || !form.nombre.trim()}
             >
               {procesando ? "Guardando modelo..." : "Guardar y Publicar Modelo Estándar"}
@@ -613,7 +572,7 @@ export default function VistaModelosCambioUnificada() {
           </div>
 
           {pendientesAprobacion.length === 0 ? (
-            <div style={{ backgroundColor: "#ffffff", border: "1px dashed #cbd5e1", borderRadius: 8, padding: 32, textAlign: "center", color: "#64748b" }}>
+            <div className="estado-vacio">
               <div style={{ fontWeight: 600, fontSize: 13.5, color: "#1e293b" }}>No hay modelos estándar pendientes de aprobación</div>
               <p style={{ fontSize: 12.5, color: "#64748b", margin: "4px 0 0" }}>
                 Todas las plantillas propuestas han sido revisadas o ya están publicadas.
@@ -646,37 +605,17 @@ export default function VistaModelosCambioUnificada() {
                     </div>
 
                     <div style={{ display: "flex", gap: 8 }}>
-                      <button
+                      <button className="boton-secundario"
                         type="button"
                         disabled={procesando}
                         onClick={() => cambiarEstado(m.id_modelo, "RETIRADO")}
-                        style={{
-                          padding: "6px 14px",
-                          backgroundColor: "#ffffff",
-                          border: "1px solid #cbd5e1",
-                          color: "#64748b",
-                          borderRadius: 6,
-                          fontSize: 12.5,
-                          fontWeight: 500,
-                          cursor: "pointer",
-                        }}
                       >
                         Rechazar / Retirar
                       </button>
-                      <button
+                      <button className="boton-primario"
                         type="button"
                         disabled={procesando}
                         onClick={() => cambiarEstado(m.id_modelo, "APROBADO")}
-                        style={{
-                          padding: "6px 16px",
-                          backgroundColor: "#2563eb",
-                          color: "#ffffff",
-                          border: "none",
-                          borderRadius: 6,
-                          fontSize: 12.5,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
                       >
                         Aprobar y publicar
                       </button>

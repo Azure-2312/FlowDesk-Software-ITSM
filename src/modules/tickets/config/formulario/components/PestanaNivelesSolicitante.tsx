@@ -214,7 +214,6 @@ export const PestanaNivelesSolicitante = React.forwardRef<PestanaNivelesSolicita
             type="button"
             onClick={restaurarValoresPorDefecto}
             className="boton-secundario"
-            style={{ fontSize: 12, padding: "7px 12px" }}
           >
             Restaurar Valores de Fábrica
           </button>
@@ -248,19 +247,7 @@ export const PestanaNivelesSolicitante = React.forwardRef<PestanaNivelesSolicita
               key={nivel.id}
               type="button"
               onClick={() => setNivelSeleccionado(nivel.id)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                padding: "12px 14px",
-                borderRadius: 8,
-                border: `2px solid ${esActivo ? nivel.color : "#e2e8f0"}`,
-                backgroundColor: esActivo ? "#ffffff" : "#f8fafc",
-                boxShadow: esActivo ? "0 4px 6px -1px rgba(0,0,0,0.08)" : "none",
-                cursor: "pointer",
-                textAlign: "left",
-                transition: "all 0.15s ease",
-              }}
+              className={esActivo ? "opcion-seleccionable opcion-seleccionada" : "opcion-seleccionable"}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 6, width: "100%", justifyContent: "space-between" }}>
                 <span

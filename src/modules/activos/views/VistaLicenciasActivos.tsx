@@ -234,10 +234,10 @@ export default function PaginaLicenciasActivos() {
         <div style={{ maxWidth: 960, margin: "0 auto", padding: "16px 0" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
             <div>
-              <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+              <h1 className="titulo-pagina">
                 Asignaciones de Asientos: {licenciaSeleccionada?.nombre_software}
               </h1>
-              <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: 13 }}>
+              <p className="descripcion-pagina">
                 Fabricante: {licenciaSeleccionada?.fabricante} | Cupos: {licenciaSeleccionada?.cantidad_en_uso} / {licenciaSeleccionada?.cantidad_adquirida} asignados
               </p>
             </div>
@@ -245,7 +245,6 @@ export default function PaginaLicenciasActivos() {
               type="button"
               className="boton-secundario"
               onClick={() => { setVista("tabla"); setLicenciaSeleccionada(null); }}
-              style={{ padding: "8px 16px", fontSize: 13 }}
             >
               Volver a Licencias
             </button>
@@ -294,7 +293,6 @@ export default function PaginaLicenciasActivos() {
                 type="submit"
                 className="boton-primario"
                 disabled={asignando || (licenciaSeleccionada?.licencias_disponibles <= 0 && licenciaSeleccionada?.cantidad_en_uso >= licenciaSeleccionada?.cantidad_adquirida)}
-                style={{ padding: "8px 16px", whiteSpace: "nowrap" }}
               >
                 {asignando ? "Asignando..." : "Asignar Asiento"}
               </button>
@@ -358,9 +356,8 @@ export default function PaginaLicenciasActivos() {
                           {activa && (
                             <button
                               type="button"
-                              className="boton-mini"
+                              className="boton-secundario boton-sm"
                               onClick={() => revocarAsignacion(a.id_asignacion)}
-                              style={{ color: "#dc2626", borderColor: "#fca5a5", fontSize: 11, padding: "4px 8px" }}
                             >
                               Revocar Asiento
                             </button>
@@ -378,18 +375,17 @@ export default function PaginaLicenciasActivos() {
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "16px 0" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
             <div>
-              <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+              <h1 className="titulo-pagina">
                 {vista === "nuevo" ? "Registrar Licencia de Software" : `Editar Licencia: ${licenciaSeleccionada?.nombre_software}`}
               </h1>
-              <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: 13 }}>
+              <p className="descripcion-pagina">
                 Gestión de activos de software (SAM - ITIL v4). Defina métricas de licenciamiento y control contractual.
               </p>
             </div>
             <button
               type="button"
-              className="boton-mini"
+              className="boton-secundario boton-sm"
               onClick={() => setVista("tabla")}
-              style={{ padding: "8px 16px", fontSize: 13 }}
             >
               Volver a Licencias
             </button>
@@ -514,10 +510,10 @@ export default function PaginaLicenciasActivos() {
               </div>
 
               <div style={{ display: "flex", gap: 12, justifyContent: "flex-end", borderTop: "1px solid #e2e8f0", paddingTop: 18 }}>
-                <button type="button" className="boton-mini" onClick={() => setVista("tabla")} style={{ padding: "9px 18px" }}>
+                <button type="button" className="boton-secundario boton-sm" onClick={() => setVista("tabla")} >
                   Cancelar
                 </button>
-                <button type="submit" className="boton-primario" style={{ width: "auto", padding: "9px 24px" }} disabled={guardando}>
+                <button type="submit" className="boton-primario"  disabled={guardando}>
                   {guardando ? "Guardando..." : vista === "editar" ? "Actualizar Licencia" : "Guardar Licencia"}
                 </button>
               </div>
@@ -529,15 +525,14 @@ export default function PaginaLicenciasActivos() {
         <>
           <div className="cabecera-pagina">
             <div>
-              <h1>Control de Licenciamiento de Software y Contratos (SAM - ITIL v4)</h1>
-              <p className="descripcion">
+              <h1 className="titulo-pagina">Control de Licenciamiento de Software y Contratos (SAM - ITIL v4)</h1>
+              <p className="descripcion-pagina">
                 Supervisión de cumplimiento de licencias (Software Asset Management), asignación de asientos y vencimiento de garantías.
               </p>
             </div>
             <button
               type="button"
               className="boton-primario"
-              style={{ width: "auto", display: "inline-flex", alignItems: "center", gap: 6 }}
               onClick={abrirCrear}
             >
 
@@ -571,7 +566,7 @@ export default function PaginaLicenciasActivos() {
               Consultando licencias y contratos de software...
             </div>
           ) : licencias.length === 0 ? (
-            <div className="contenedor-tabla" style={{ padding: 36, textAlign: "center", backgroundColor: "#f8fafc" }}>
+            <div className="estado-vacio">
               <p style={{ margin: 0, color: "#64748b", fontWeight: 600 }}>
                 No hay licencias de software registradas en el repositorio SAM.
               </p>
@@ -666,17 +661,16 @@ export default function PaginaLicenciasActivos() {
                         <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
                           <button
                             type="button"
-                            className="boton-mini"
+                            className="boton-secundario boton-sm"
                             onClick={() => abrirAsignaciones(l)}
-                            style={{ fontSize: 11, padding: "4px 8px", marginRight: 6, borderColor: "#93c5fd", color: "#1d4ed8" }}
+                            style={{ marginRight: 6 }}
                           >
                             Asignaciones ({l.cantidad_en_uso})
                           </button>
                           <button
                             type="button"
-                            className="boton-mini"
+                            className="boton-secundario boton-sm"
                             onClick={() => abrirEditar(l)}
-                            style={{ fontSize: 12, padding: "4px 8px" }}
                           >
                             Editar
                           </button>

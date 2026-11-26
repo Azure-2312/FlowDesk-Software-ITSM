@@ -106,15 +106,14 @@ export default function VistaCatalogoSoftware() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Gestión SAM & Software Homologado (ITIL v4)
           </span>
-          <h1 style={{ margin: 0 }}>Catálogo de software autorizado</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Registra el software permitido, su categoría y si requiere licencia; restringe o prohíbe el no autorizado.</p>
+          <h1 className="titulo-pagina">Catálogo de software autorizado</h1>
+          <p className="descripcion-pagina">Registra el software permitido, su categoría y si requiere licencia; restringe o prohíbe el no autorizado.</p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <button
             type="button"
             className="boton-primario"
             onClick={() => setMostrarForm((v) => !v)}
-            style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
             {mostrarForm ? "Cancelar" : "Agregar Software"}
           </button>
@@ -122,7 +121,6 @@ export default function VistaCatalogoSoftware() {
             type="button"
             className="boton-secundario"
             onClick={cargar}
-            style={{ fontSize: 13, padding: "8px 12px", cursor: "pointer" }}
             title="Actualizar catálogo"
           >
             Actualizar
@@ -134,7 +132,7 @@ export default function VistaCatalogoSoftware() {
       {error && <p role="alert" className="mensaje-error" style={{ marginBottom: 12 }}>{error}</p>}
 
       <div style={{ marginBottom: 14 }}>
-        <button className="boton-primario" style={{ width: "auto" }} onClick={() => setMostrarForm((v) => !v)}>{mostrarForm ? "Cancelar" : "Agregar software"}</button>
+        <button className="boton-primario"  onClick={() => setMostrarForm((v) => !v)}>{mostrarForm ? "Cancelar" : "Agregar software"}</button>
       </div>
 
       {mostrarForm && (
@@ -162,7 +160,7 @@ export default function VistaCatalogoSoftware() {
               Requiere licencia
             </label>
           </div>
-          <button className="boton-primario" style={{ width: "auto", marginTop: 10 }} disabled={procesando} onClick={crear}>{procesando ? "Guardando..." : "Registrar"}</button>
+          <button className="boton-primario" style={{ marginTop: 10 }} disabled={procesando} onClick={crear}>{procesando ? "Guardando..." : "Registrar"}</button>
         </div>
       )}
 
@@ -186,9 +184,9 @@ export default function VistaCatalogoSoftware() {
                   <td><span style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 999, backgroundColor: color.bg, color: color.fg }}>{s.estado}</span></td>
                   <td>
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                      {s.estado !== "AUTORIZADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(s.id_software, "AUTORIZADO")}>Autorizar</button>}
-                      {s.estado !== "RESTRINGIDO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(s.id_software, "RESTRINGIDO")}>Restringir</button>}
-                      {s.estado !== "PROHIBIDO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando} onClick={() => cambiarEstado(s.id_software, "PROHIBIDO")}>Prohibir</button>}
+                      {s.estado !== "AUTORIZADO" && <button className="boton-secundario"  disabled={procesando} onClick={() => cambiarEstado(s.id_software, "AUTORIZADO")}>Autorizar</button>}
+                      {s.estado !== "RESTRINGIDO" && <button className="boton-secundario"  disabled={procesando} onClick={() => cambiarEstado(s.id_software, "RESTRINGIDO")}>Restringir</button>}
+                      {s.estado !== "PROHIBIDO" && <button className="boton-secundario"  disabled={procesando} onClick={() => cambiarEstado(s.id_software, "PROHIBIDO")}>Prohibir</button>}
                     </div>
                   </td>
                 </tr>

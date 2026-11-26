@@ -205,30 +205,13 @@ export function PestanaConflictosCapacidad({ config, onChange, servicios, ciList
                 </td>
                 <td style={{ padding: "10px 14px", textAlign: "center" }}>
                   <button
+                    type="button"
+                    role="switch"
+                    aria-checked={r.activa}
+                    className={r.activa ? "interruptor interruptor-activo" : "interruptor"}
                     onClick={() => actualizarRegla(r.codigo, "activa", !r.activa)}
-                    style={{
-                      background: r.activa ? "#10b981" : "#cbd5e1",
-                      border: "none",
-                      color: "#ffffff",
-                      borderRadius: 12,
-                      width: 36,
-                      height: 20,
-                      cursor: "pointer",
-                      position: "relative"
-                    }}
                     title={r.activa ? "Desactivar regla" : "Activar regla"}
-                  >
-                    <div style={{
-                      position: "absolute",
-                      top: 2,
-                      left: r.activa ? 18 : 2,
-                      width: 16,
-                      height: 16,
-                      borderRadius: "50%",
-                      background: "#ffffff",
-                      transition: "left 0.2s"
-                    }} />
-                  </button>
+                  />
                 </td>
               </tr>
             ))}

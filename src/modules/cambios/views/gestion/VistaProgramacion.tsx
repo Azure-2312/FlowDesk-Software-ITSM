@@ -89,8 +89,8 @@ export default function VistaProgramacion() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Programación de cambios autorizados</h1>
-        <p>Asigna la ventana de ejecución a las RFC aprobadas y verifica conflictos de calendario.</p>
+        <h1 className="titulo-pagina">Programación de cambios autorizados</h1>
+        <p className="descripcion-pagina">Asigna la ventana de ejecución a las RFC aprobadas y verifica conflictos de calendario.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -99,7 +99,7 @@ export default function VistaProgramacion() {
       {cargando ? (
         <p>Cargando...</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio" >
           No hay RFC autorizadas por programar.
         </div>
       ) : (
@@ -122,7 +122,7 @@ export default function VistaProgramacion() {
                   Fin
                   <input type="datetime-local" value={form[c.id_cambio]?.fin ?? ""} onChange={(e) => actualizar(c.id_cambio, "fin", e.target.value)} style={{ display: "block", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }} />
                 </label>
-                <button className="boton-primario" style={{ width: "auto" }} disabled={procesando === c.id_cambio} onClick={() => programar(c.id_cambio)}>
+                <button className="boton-primario"  disabled={procesando === c.id_cambio} onClick={() => programar(c.id_cambio)}>
                   {procesando === c.id_cambio ? "Programando..." : "Programar"}
                 </button>
               </div>

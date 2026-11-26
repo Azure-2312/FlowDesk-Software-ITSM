@@ -151,10 +151,10 @@ export default function PaginaPanelTecnico() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Mesa de Ayuda & Turno Operativo (N1/N2 ITIL v4)
           </span>
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Dashboard del especialista técnico
           </h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
+          <p className="descripcion-pagina">
             Visión centralizada de prioridades operativas, SLA y desempeño del turno
           </p>
         </div>
@@ -163,11 +163,6 @@ export default function PaginaPanelTecnico() {
           type="button"
           onClick={cargarDatosPanel}
           className="boton-secundario"
-          style={{
-            padding: "8px 14px",
-            fontSize: 13,
-            cursor: "pointer",
-          }}
         >
           Actualizar
         </button>
@@ -329,7 +324,7 @@ export default function PaginaPanelTecnico() {
               Cargando prioridades...
             </div>
           ) : atenderAhora.length === 0 ? (
-            <div style={{ padding: "30px 0", textAlign: "center", color: "#64748b", fontSize: 13 }}>
+            <div className="estado-vacio">
               No tienes tickets urgentes pendientes en este momento.
             </div>
           ) : (
@@ -475,52 +470,25 @@ export default function PaginaPanelTecnico() {
             </p>
           </div>
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          <div className="pestanas">
             <button
               type="button"
               onClick={() => setPeriodoDesempeno("7_dias")}
-              style={{
-                padding: "5px 12px",
-                borderRadius: 6,
-                fontSize: 12,
-                fontWeight: periodoDesempeno === "7_dias" ? 600 : 500,
-                backgroundColor: periodoDesempeno === "7_dias" ? "#2563eb" : "#ffffff",
-                color: periodoDesempeno === "7_dias" ? "#ffffff" : "#475569",
-                border: "1px solid #cbd5e1",
-                cursor: "pointer",
-              }}
+              className={periodoDesempeno === "7_dias" ? "pestana pestana-activa" : "pestana"}
             >
               Últimos 7 días
             </button>
             <button
               type="button"
               onClick={() => setPeriodoDesempeno("30_dias")}
-              style={{
-                padding: "5px 12px",
-                borderRadius: 6,
-                fontSize: 12,
-                fontWeight: periodoDesempeno === "30_dias" ? 600 : 500,
-                backgroundColor: periodoDesempeno === "30_dias" ? "#2563eb" : "#ffffff",
-                color: periodoDesempeno === "30_dias" ? "#ffffff" : "#475569",
-                border: "1px solid #cbd5e1",
-                cursor: "pointer",
-              }}
+              className={periodoDesempeno === "30_dias" ? "pestana pestana-activa" : "pestana"}
             >
               Últimos 30 días
             </button>
             <button
               type="button"
               onClick={() => setPeriodoDesempeno("todo")}
-              style={{
-                padding: "5px 12px",
-                borderRadius: 6,
-                fontSize: 12,
-                fontWeight: periodoDesempeno === "todo" ? 600 : 500,
-                backgroundColor: periodoDesempeno === "todo" ? "#2563eb" : "#ffffff",
-                color: periodoDesempeno === "todo" ? "#ffffff" : "#475569",
-                border: "1px solid #cbd5e1",
-                cursor: "pointer",
-              }}
+              className={periodoDesempeno === "todo" ? "pestana pestana-activa" : "pestana"}
             >
               Histórico total
             </button>

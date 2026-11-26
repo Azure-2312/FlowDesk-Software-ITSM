@@ -146,7 +146,7 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
           <button
             type="button"
             onClick={onCerrar}
-            className="boton-accion-icono"
+            className="boton-icono boton-sm"
             title="Cerrar modal"
             aria-label="Cerrar modal"
           >
@@ -330,8 +330,7 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
             <button
               type="button"
               onClick={onCerrar}
-              className="boton-mini"
-              style={{ padding: "7px 14px", fontSize: 12 }}
+              className="boton-secundario boton-sm"
             >
               Cancelar
             </button>
@@ -339,7 +338,6 @@ export const ModalEditarPropiedadesCampo: React.FC<ModalEditarPropiedadesCampoPr
               type="submit"
               disabled={!puedeEditar}
               className="boton-primario"
-              style={{ padding: "7px 16px", fontSize: 12, width: "auto" }}
             >
               Guardar Propiedades
             </button>

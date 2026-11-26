@@ -131,15 +131,15 @@ export default function DepartamentosEmpresa() {
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1>Departamentos empresariales</h1>
-          <p className="subtitulo">
+          <h1 className="titulo-pagina">Departamentos empresariales</h1>
+          <p className="descripcion-pagina">
             Unidades del cliente, como Finanzas, Legal o Ventas. Se usan para asignar colaboradores y limitar la supervisión del Gestor de Área.
           </p>
         </div>
         <button
           type="button"
           className="boton-primario"
-          style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+          style={{ flexShrink: 0 }}
           onClick={() => setMostrarFormulario(!mostrarFormulario)}
         >
           {mostrarFormulario ? "Cerrar Formulario" : "Nuevo Departamento"}
@@ -198,7 +198,7 @@ export default function DepartamentosEmpresa() {
           <div style={{ gridColumn: "1 / -1" }}>
             {error && <p role="alert" className="mensaje-error" style={{ marginBottom: 10 }}>{error}</p>}
             {ok && <p role="status" style={{ color: "#15803d", marginBottom: 10, fontWeight: 600 }}>{ok}</p>}
-            <button type="submit" className="boton-primario" style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}>Guardar Departamento</button>
+            <button type="submit" className="boton-primario" >Guardar Departamento</button>
           </div>
         </form>
       )}
@@ -241,8 +241,7 @@ export default function DepartamentosEmpresa() {
                         />
                         <button
                           type="button"
-                          className="boton-mini"
-                          style={{ padding: "4px 8px", fontSize: 11.5 }}
+                          className="boton-secundario boton-sm"
                           onClick={() => alternar(d)}
                         >
                           {d.estado_registro ? "Inactivar" : "Activar"}

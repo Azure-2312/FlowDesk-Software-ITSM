@@ -272,10 +272,10 @@ function ContenidoCatalogo({
         <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
           Catálogo Unificado de Prestaciones TI (ITIL v4)
         </span>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+        <h1 className="titulo-pagina">
           {esSolicitud ? "Catálogo de Solicitudes de Servicio" : "Catálogo de Incidentes"}
         </h1>
-        <p style={{ color: "#64748b", fontSize: 13, marginTop: 4, marginBottom: 0 }}>
+        <p className="descripcion-pagina">
           {esSolicitud
             ? "Explora las categorías y servicios disponibles para requerimientos, trámites y nuevas solicitudes institucionales."
             : "Explora las categorías y servicios oficiales para el reporte de incidentes técnicos e interrupciones del servicio."}
@@ -291,22 +291,7 @@ function ContenidoCatalogo({
               setTipoActivo(1);
               setCategoriaSeleccionada(null);
             }}
-            style={{
-              flex: "1 1 240px",
-              padding: "12px 18px",
-              borderRadius: 10,
-              fontWeight: 700,
-              fontSize: 13.5,
-              cursor: "pointer",
-              border: tipoActivo === 1 ? "2px solid #ef4444" : "1px solid #e2e8f0",
-              backgroundColor: tipoActivo === 1 ? "#fef2f2" : "#ffffff",
-              color: tipoActivo === 1 ? "#991b1b" : "#475569",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              boxShadow: tipoActivo === 1 ? "0 2px 4px rgba(239, 68, 68, 0.12)" : "0 1px 2px rgba(0,0,0,0.03)",
-              transition: "all 0.15s ease",
-            }}
+            className={tipoActivo === 1 ? "opcion-seleccionable opcion-seleccionada" : "opcion-seleccionable"} style={{ flex: "1 1 240px" }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
 
@@ -337,22 +322,7 @@ function ContenidoCatalogo({
               setTipoActivo(2);
               setCategoriaSeleccionada(null);
             }}
-            style={{
-              flex: "1 1 240px",
-              padding: "12px 18px",
-              borderRadius: 10,
-              fontWeight: 700,
-              fontSize: 13.5,
-              cursor: "pointer",
-              border: tipoActivo === 2 ? "2px solid #2563eb" : "1px solid #e2e8f0",
-              backgroundColor: tipoActivo === 2 ? "#eff6ff" : "#ffffff",
-              color: tipoActivo === 2 ? "#1e40af" : "#475569",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              boxShadow: tipoActivo === 2 ? "0 2px 4px rgba(37, 99, 235, 0.12)" : "0 1px 2px rgba(0,0,0,0.03)",
-              transition: "all 0.15s ease",
-            }}
+            className={tipoActivo === 2 ? "opcion-seleccionable opcion-seleccionada" : "opcion-seleccionable"} style={{ flex: "1 1 240px" }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
 
@@ -409,7 +379,6 @@ function ContenidoCatalogo({
                 type="button"
                 className="boton-secundario"
                 onClick={() => setBusqueda("")}
-                style={{ width: "auto" }}
               >
                 Limpiar
               </button>
@@ -418,7 +387,7 @@ function ContenidoCatalogo({
 
           {/* Grid de Tarjetas de Categorías */}
           {categoriasFiltradas.length === 0 ? (
-            <div style={{ padding: "36px 20px", textAlign: "center", color: "#64748b", backgroundColor: "#f8fafc", borderRadius: 8 }}>
+            <div className="estado-vacio">
               No se encontraron categorías que coincidan con "{busqueda}".
             </div>
           ) : (
@@ -501,25 +470,13 @@ function ContenidoCatalogo({
               borderBottom: "1px solid #e2e8f0",
             }}
           >
-            <button
+            <button className="boton-enlace"
               type="button"
               onClick={() => {
                 setCategoriaSeleccionada(null);
                 setBusqueda("");
               }}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                background: "transparent",
-                border: "none",
-                color: "#2563eb",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
-                marginBottom: 10,
-                padding: 0,
-              }}
+              style={{ marginBottom: 10 }}
             >
               Volver a Categorías de {esSolicitud ? "Solicitudes" : "Incidentes"}
             </button>
@@ -649,12 +606,6 @@ function ContenidoCatalogo({
                         <button
                           type="button"
                           className="boton-primario"
-                          style={{
-                            width: "auto",
-                            padding: "6px 14px",
-                            fontSize: 12.5,
-                            whiteSpace: "nowrap",
-                          }}
                           onClick={() => solicitarServicio(s)}
                         >
                           {esSolicitud ? "Solicitar servicio" : "Reportar incidente"}

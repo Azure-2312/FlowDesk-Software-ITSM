@@ -96,14 +96,14 @@ export default function VistaCabEmergencia() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Comité de emergencia (ECAB)</h1>
-        <p>Decisión rápida sobre cambios de emergencia, con plazo y revisión retroactiva.</p>
+        <h1 className="titulo-pagina">Comité de emergencia (ECAB)</h1>
+        <p className="descripcion-pagina">Decisión rápida sobre cambios de emergencia, con plazo y revisión retroactiva.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
       {error && <p role="alert" className="mensaje-error" style={{ marginBottom: 12 }}>{error}</p>}
 
-      <div className="tarjeta-formulario">
+      <div className="estado-vacio">
         <h2>Emergencias pendientes</h2>
         {pendientes.length === 0 ? (
           <p style={{ color: "#6b7280", fontSize: 13, margin: 0 }}>No hay cambios de emergencia pendientes.</p>
@@ -118,8 +118,8 @@ export default function VistaCabEmergencia() {
                 <div style={{ fontSize: 12.5, color: "#374151", marginTop: 6 }}>Ventana: {fechaHora(c.ventana_inicio)} → {fechaHora(c.ventana_fin)}</div>
                 <p style={{ fontSize: 12.5, color: "#374151", marginTop: 8, whiteSpace: "pre-wrap" }}>{c.justificacion}</p>
                 <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                  <button className="boton-primario" style={{ width: "auto" }} disabled={procesando === c.id_cambio} onClick={() => decidir(c.id_cambio, "APROBADO")}>Aprobar con condiciones</button>
-                  <button className="boton-secundario" style={{ width: "auto" }} disabled={procesando === c.id_cambio} onClick={() => decidir(c.id_cambio, "RECHAZADO")}>Rechazar</button>
+                  <button className="boton-primario"  disabled={procesando === c.id_cambio} onClick={() => decidir(c.id_cambio, "APROBADO")}>Aprobar con condiciones</button>
+                  <button className="boton-secundario"  disabled={procesando === c.id_cambio} onClick={() => decidir(c.id_cambio, "RECHAZADO")}>Rechazar</button>
                 </div>
               </div>
             ))}

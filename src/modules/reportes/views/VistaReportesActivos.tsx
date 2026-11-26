@@ -69,8 +69,8 @@ export default function VistaReportesActivos() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Reportes de activos</h1>
-        <p>Distribución por estado y tipo, antigüedad, costos, garantías y exactitud de la CMDB.</p>
+        <h1 className="titulo-pagina">Reportes de activos</h1>
+        <p className="descripcion-pagina">Distribución por estado y tipo, antigüedad, costos, garantías y exactitud de la CMDB.</p>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))", gap: 14, marginBottom: 24 }}>
@@ -83,7 +83,7 @@ export default function VistaReportesActivos() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: 16 }}>
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Por tipo de activo</h2>
           {data.porTipo.length === 0 ? (
             <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>Sin datos.</p>
@@ -103,7 +103,7 @@ export default function VistaReportesActivos() {
           )}
         </div>
 
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Antigüedad</h2>
           {data.antiguedad.length === 0 ? (
             <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>Sin datos.</p>

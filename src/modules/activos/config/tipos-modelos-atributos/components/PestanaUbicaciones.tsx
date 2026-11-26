@@ -89,7 +89,7 @@ export function PestanaUbicaciones({ datos, catalogoUbicaciones = [], onChange, 
             );
           })}
           {ubicacionesFiltradas.length === 0 && (
-            <div style={{ padding: 16, textAlign: "center", color: "#94a3b8", fontSize: 12 }}>
+            <div className="estado-vacio">
               No se encontraron ubicaciones registradas.
             </div>
           )}

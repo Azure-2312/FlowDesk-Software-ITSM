@@ -67,11 +67,11 @@ export default function Pagina403AccesoDenegado() {
           </span>
         </div>
 
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0f172a", margin: "8px 0 12px" }}>
+        <h1 className="titulo-pagina">
           Acceso denegado a esta sección
         </h1>
 
-        <p style={{ fontSize: 13.5, color: "#475569", lineHeight: 1.6, margin: "0 0 20px" }}>
+        <p className="descripcion-pagina">
           No dispones de los permisos normativos o la opción solicitada no está habilitada para tu perfil institucional activo en esta sesión.
         </p>
 
@@ -104,14 +104,6 @@ export default function Pagina403AccesoDenegado() {
               type="button"
               onClick={() => router.back()}
               className="boton-secundario"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                padding: "8px 16px",
-                fontSize: 13,
-                cursor: "pointer",
-              }}
             >
 
               Volver a la página anterior
@@ -120,14 +112,6 @@ export default function Pagina403AccesoDenegado() {
             <Link
               href="/plataforma/inicio"
               className="boton-primario"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                padding: "8px 16px",
-                fontSize: 13,
-                textDecoration: "none",
-              }}
             >
 
               Ir al Panel Principal

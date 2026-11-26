@@ -65,11 +65,11 @@ export default function Pagina404NoEncontrada() {
           </span>
         </div>
 
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0f172a", margin: "8px 0 12px" }}>
+        <h1 className="titulo-pagina">
           Página no encontrada
         </h1>
 
-        <p style={{ fontSize: 13.5, color: "#475569", lineHeight: 1.6, margin: "0 0 24px" }}>
+        <p className="descripcion-pagina">
           La ruta que intentas consultar no existe o ha sido reubicada dentro del sistema.
         </p>
 
@@ -78,14 +78,6 @@ export default function Pagina404NoEncontrada() {
             type="button"
             onClick={() => router.back()}
             className="boton-secundario"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "8px 16px",
-              fontSize: 13,
-              cursor: "pointer",
-            }}
           >
 
             Volver
@@ -94,14 +86,6 @@ export default function Pagina404NoEncontrada() {
           <Link
             href="/plataforma/inicio"
             className="boton-primario"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "8px 16px",
-              fontSize: 13,
-              textDecoration: "none",
-            }}
           >
 
             Ir al inicio

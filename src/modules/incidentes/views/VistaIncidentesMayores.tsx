@@ -165,10 +165,10 @@ export default function VistaIncidentesMayores() {
           >
             Gestión de Incidentes Críticos & Sala de Crisis (ITIL v4)
           </span>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Bandeja de Incidentes Mayores
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}>
+          <p className="descripcion-pagina">
             Supervisión institucional, estado de contingencia y equipos multidisciplinarios involucrados ({filtrados.length} incidentes).
           </p>
         </div>
@@ -191,18 +191,9 @@ export default function VistaIncidentesMayores() {
           >
             + Declarar Incidente Mayor
           </Link>
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={cargarIncidentes}
-            style={{
-              padding: "9px 14px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              fontSize: 13,
-              color: "#334155",
-              cursor: "pointer",
-            }}
           >
             Actualizar
           </button>
@@ -286,7 +277,7 @@ export default function VistaIncidentesMayores() {
       ) : error ? (
         <div style={{ padding: 16, backgroundColor: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, color: "#b91c1c" }}>{error}</div>
       ) : filtrados.length === 0 ? (
-        <div style={{ backgroundColor: "#ffffff", border: "1px dashed #cbd5e1", borderRadius: 8, padding: 40, textAlign: "center", color: "#64748b" }}>
+        <div className="estado-vacio">
           No se encontraron incidentes mayores con los criterios seleccionados.
         </div>
       ) : (
@@ -387,19 +378,9 @@ export default function VistaIncidentesMayores() {
                       {new Date(im.fecha_declaracion).toLocaleString("es-PE", { dateStyle: "short", timeStyle: "short" })}
                     </td>
                     <td style={{ padding: "12px 16px", textAlign: "right" }}>
-                      <button
+                      <button className="boton-primario boton-sm"
                         type="button"
                         onClick={() => setIncidenteSeleccionado(im)}
-                        style={{
-                          padding: "6px 12px",
-                          backgroundColor: "#2563eb",
-                          color: "#ffffff",
-                          border: "none",
-                          borderRadius: 6,
-                          fontSize: 12,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
                       >
                         Ver Expediente
                       </button>
@@ -477,16 +458,9 @@ export default function VistaIncidentesMayores() {
                 </div>
               </div>
 
-              <button
+              <button className="boton-icono boton-sm"
                 type="button"
                 onClick={() => setIncidenteSeleccionado(null)}
-                style={{
-                  backgroundColor: "transparent",
-                  border: "none",
-                  fontSize: 20,
-                  cursor: "pointer",
-                  color: "#64748b",
-                }}
               >
                 ×
               </button>
@@ -685,17 +659,7 @@ export default function VistaIncidentesMayores() {
                   <button
                     type="submit"
                     disabled={guardandoComunicado || !nuevoComunicado.trim()}
-                    style={{
-                      padding: "8px 16px",
-                      backgroundColor: nuevoComunicado.trim() ? "#2563eb" : "#94a3b8",
-                      color: "#ffffff",
-                      border: "none",
-                      borderRadius: 6,
-                      fontSize: 12.5,
-                      fontWeight: 600,
-                      cursor: nuevoComunicado.trim() ? "pointer" : "not-allowed",
-                      height: 35,
-                    }}
+                    className="boton-primario"
                   >
                     {guardandoComunicado ? "Publicando..." : "Emitir Comunicado"}
                   </button>
@@ -713,19 +677,9 @@ export default function VistaIncidentesMayores() {
                 backgroundColor: "#f8fafc",
               }}
             >
-              <button
+              <button className="boton-secundario"
                 type="button"
                 onClick={() => setIncidenteSeleccionado(null)}
-                style={{
-                  padding: "8px 18px",
-                  backgroundColor: "#ffffff",
-                  border: "1px solid #cbd5e1",
-                  borderRadius: 6,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#334155",
-                  cursor: "pointer",
-                }}
               >
                 Cerrar Expediente
               </button>

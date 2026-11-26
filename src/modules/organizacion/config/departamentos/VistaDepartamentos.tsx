@@ -313,25 +313,13 @@ export default function PaginaAdminDepartamentos() {
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => {
                   setVista("tabla");
                   setDeptoEditando(null);
                 }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver a Departamentos de TI
               </button>
@@ -348,7 +336,6 @@ export default function PaginaAdminDepartamentos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setDeptoEditando(null);
@@ -361,7 +348,6 @@ export default function PaginaAdminDepartamentos() {
                 type="submit"
                 form="form-departamento"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Guardando..." : vista === "crear" ? "Registrar Departamento" : "Guardar Cambios"}
@@ -498,7 +484,6 @@ export default function PaginaAdminDepartamentos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setDeptoEditando(null);
@@ -510,7 +495,6 @@ export default function PaginaAdminDepartamentos() {
               <button
                 type="submit"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Guardando..." : vista === "crear" ? "Registrar Departamento" : "Guardar Cambios"}
@@ -536,25 +520,13 @@ export default function PaginaAdminDepartamentos() {
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => {
                   setVista("tabla");
                   setDeptoVerTecnicos(null);
                 }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver a Departamentos de TI
               </button>
@@ -568,7 +540,6 @@ export default function PaginaAdminDepartamentos() {
             <Link
               href="/plataforma/organizacion/grupos-ti?vista=tecnicos"
               className="boton-primario"
-              style={{ width: "auto", padding: "8px 16px", fontSize: 13, textDecoration: "none" }}
             >
               Gestionar Especialistas
             </Link>
@@ -579,7 +550,7 @@ export default function PaginaAdminDepartamentos() {
               Cargando nómina de técnicos...
             </div>
           ) : tecnicosDelDepto.length === 0 ? (
-            <div style={{ padding: "24px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
+            <div className="estado-vacio">
               <p style={{ color: "#64748b", margin: 0, fontSize: 14 }}>
                 No hay técnicos enrolados actualmente en este departamento.
               </p>
@@ -658,16 +629,16 @@ export default function PaginaAdminDepartamentos() {
           {/* Cabecera Principal */}
           <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <h1>Departamentos y Grupos de Soporte de TI</h1>
-              <p>
+              <h1 className="titulo-pagina">Departamentos y Grupos de Soporte de TI</h1>
+              <p className="descripcion-pagina">
                 Estructura organizacional y áreas resolutoras de TI (ITIL 4 / COBIT 2019): unidades operativas, jefaturas responsables y acuerdos de nivel operativo (OLA).
               </p>
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
-              <Link href="/plataforma/organizacion/grupos-ti?vista=tecnicos" className="boton-secundario" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", padding: "8px 14px", fontSize: 13 }}>
+              <Link href="/plataforma/organizacion/grupos-ti?vista=tecnicos" className="boton-secundario">
                 Ver plantilla de técnicos
               </Link>
-              <button type="button" className="boton-primario" onClick={abrirCrear} style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}>
+              <button type="button" className="boton-primario" onClick={abrirCrear} >
                 Nuevo Departamento
               </button>
             </div>
@@ -733,7 +704,7 @@ export default function PaginaAdminDepartamentos() {
               Cargando departamentos de TI...
             </div>
           ) : deptosFiltrados.length === 0 ? (
-            <div style={{ padding: "32px 0", textAlign: "center", color: "#64748b" }}>
+            <div className="estado-vacio">
               No se encontraron departamentos con los criterios especificados.
             </div>
           ) : (
@@ -772,18 +743,9 @@ export default function PaginaAdminDepartamentos() {
                         )}
                       </td>
                       <td style={{ textAlign: "center" }}>
-                        <button
+                        <button className="boton-enlace"
                           type="button"
                           onClick={() => abrirVerTecnicos(d)}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: "#2563eb",
-                            fontWeight: 700,
-                            fontSize: 13,
-                            cursor: "pointer",
-                            textDecoration: "underline",
-                          }}
                           title="Ver nómina de técnicos"
                         >
                           {d.cantidad_tecnicos || 0}
@@ -806,7 +768,7 @@ export default function PaginaAdminDepartamentos() {
                         <div style={{ display: "inline-flex", gap: 6 }}>
                           <button
                             type="button"
-                            className="boton-accion-icono"
+                            className="boton-icono boton-sm"
                             title="Editar departamento"
                             onClick={() => abrirEditar(d)}
                           >
@@ -817,7 +779,7 @@ export default function PaginaAdminDepartamentos() {
                           </button>
                           <button
                             type="button"
-                            className="boton-accion-icono"
+                            className="boton-icono boton-sm"
                             title="Ver técnicos del área"
                             onClick={() => abrirVerTecnicos(d)}
                           >

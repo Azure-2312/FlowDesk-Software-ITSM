@@ -219,12 +219,12 @@ export default function VistaConfigCategorias() {
         }}
       >
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+          <h1 className="titulo-pagina">
             Taxonomía y Categorías de Conocimiento
           </h1>
           <p
-            className="subtitulo"
-            style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}
+            className="descripcion-pagina"
+            
           >
             Gestión de la estructura jerárquica de artículos de soporte, autoayuda y procedimientos técnicos.
           </p>
@@ -239,18 +239,8 @@ export default function VistaConfigCategorias() {
             disabled={cargando}
             title="Actualizar catálogo"
             aria-label="Actualizar catálogo"
-            className="boton-accion-icono"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 6,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid #cbd5e1",
-              backgroundColor: "#ffffff",
-              cursor: cargando ? "wait" : "pointer",
-            }}
+            className="boton-icono boton-sm"
+            style={{ width: 36 }}
           >
             <svg
               width="16"
@@ -279,11 +269,6 @@ export default function VistaConfigCategorias() {
               setMostrarModalNuevo(true);
             }}
             className="boton-primario"
-            style={{
-              width: "auto",
-              padding: "8px 18px",
-              fontSize: 13,
-            }}
           >
             Nueva Categoría
           </button>
@@ -412,18 +397,11 @@ export default function VistaConfigCategorias() {
                         {/* Botón Editar - Solo Icono Lápiz */}
                         <button
                           type="button"
-                          className="boton-accion-icono"
+                          className="boton-icono boton-sm"
                           onClick={() => abrirEdicion(cat)}
                           title="Editar categoría"
                           aria-label="Editar categoría"
-                          style={{
-                            width: 30,
-                            height: 30,
-                            color: "#2563eb",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
+                          style={{ width: 30 }}
                         >
                           <svg
                             width="14"
@@ -443,18 +421,11 @@ export default function VistaConfigCategorias() {
                         {/* Botón Desactivar / Activar - Solo Icono */}
                         <button
                           type="button"
-                          className="boton-accion-icono"
+                          className="boton-icono boton-sm"
                           onClick={() => cambiarEstado(cat)}
                           title={cat.estado_registro ? "Desactivar categoría" : "Activar categoría"}
                           aria-label={cat.estado_registro ? "Desactivar categoría" : "Activar categoría"}
-                          style={{
-                            width: 30,
-                            height: 30,
-                            color: cat.estado_registro ? "#b45309" : "#16a34a",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
+                          style={{ width: 30 }}
                         >
                           {cat.estado_registro ? (
                             <svg
@@ -491,17 +462,11 @@ export default function VistaConfigCategorias() {
                         {/* Botón Eliminar - Solo Icono Papelera */}
                         <button
                           type="button"
-                          className="boton-accion-icono boton-accion-peligro"
+                          className="boton-icono boton-sm boton-icono-peligro"
                           onClick={() => setCategoriaEliminar(cat)}
                           title="Eliminar categoría"
                           aria-label="Eliminar categoría"
-                          style={{
-                            width: 30,
-                            height: 30,
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
+                          style={{ width: 30 }}
                         >
                           <svg
                             width="14"
@@ -590,7 +555,6 @@ export default function VistaConfigCategorias() {
                   type="button"
                   onClick={() => setMostrarModalNuevo(false)}
                   className="boton-secundario"
-                  style={{ fontSize: 13, padding: "7px 14px" }}
                 >
                   Cancelar
                 </button>
@@ -598,7 +562,6 @@ export default function VistaConfigCategorias() {
                   type="submit"
                   disabled={guardandoNuevo}
                   className="boton-primario"
-                  style={{ fontSize: 13, padding: "7px 16px" }}
                 >
                   {guardandoNuevo ? "Guardando..." : "Crear Categoría"}
                 </button>
@@ -677,7 +640,6 @@ export default function VistaConfigCategorias() {
                   type="button"
                   onClick={() => setCategoriaEditando(null)}
                   className="boton-secundario"
-                  style={{ fontSize: 13, padding: "7px 14px" }}
                 >
                   Cancelar
                 </button>
@@ -685,7 +647,6 @@ export default function VistaConfigCategorias() {
                   type="submit"
                   disabled={guardandoEdit}
                   className="boton-primario"
-                  style={{ fontSize: 13, padding: "7px 16px" }}
                 >
                   {guardandoEdit ? "Guardando..." : "Guardar Cambios"}
                 </button>
@@ -732,7 +693,6 @@ export default function VistaConfigCategorias() {
                 type="button"
                 onClick={() => setCategoriaEliminar(null)}
                 className="boton-secundario"
-                style={{ fontSize: 13, padding: "7px 14px" }}
               >
                 Cancelar
               </button>
@@ -741,7 +701,6 @@ export default function VistaConfigCategorias() {
                 onClick={confirmarEliminar}
                 disabled={eliminando}
                 className="boton-primario"
-                style={{ backgroundColor: "#dc2626", borderColor: "#b91c1c", fontSize: 13, padding: "7px 16px" }}
               >
                 {eliminando ? "Eliminando..." : "Confirmar Eliminación"}
               </button>

@@ -133,8 +133,8 @@ export default function VistaAnalisisProblemas({ problemaId }: VistaAnalisisProb
     <div className="vista-contenedor" style={{ padding: problemaId ? "0" : undefined }}>
       {!problemaId && (
         <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-          <h1>Análisis de causa raíz (RCA)</h1>
-          <p>Aplica 5 porqués y línea de tiempo; registra la conclusión y marca el error conocido.</p>
+          <h1 className="titulo-pagina">Análisis de causa raíz (RCA)</h1>
+          <p className="descripcion-pagina">Aplica 5 porqués y línea de tiempo; registra la conclusión y marca el error conocido.</p>
         </div>
       )}
 
@@ -186,7 +186,7 @@ export default function VistaAnalisisProblemas({ problemaId }: VistaAnalisisProb
               <input type="checkbox" checked={esErrorConocido} onChange={(e) => setEsErrorConocido(e.target.checked)} />
               Marcar como error conocido (KEDB) con workaround documentado
             </label>
-            <button className="boton-primario" style={{ width: "auto", marginTop: 12 }} disabled={guardando} onClick={guardar}>
+            <button className="boton-primario" style={{ marginTop: 12 }} disabled={guardando} onClick={guardar}>
               {guardando ? "Guardando..." : "Guardar análisis"}
             </button>
           </div>

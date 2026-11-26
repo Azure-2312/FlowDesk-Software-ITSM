@@ -16,13 +16,11 @@ export default async function PaginaMantenimientoActivos({ searchParams }: PageP
   return (
     <div className="vista-contenedor space-y-4">
       {vistasPermitidas.length > 1 && (
-        <div className="bg-white px-6 pt-2 rounded-xl border border-slate-200 shadow-xs">
-          <PestanasVista
+        <PestanasVista
             vistas={vistasPermitidas}
             vistaActiva={vistaActiva}
             urlBase="/plataforma/activos/mantenimiento"
           />
-        </div>
       )}
       <VistaMantenimientoActivos vistaActiva={vistaActiva} />
     </div>

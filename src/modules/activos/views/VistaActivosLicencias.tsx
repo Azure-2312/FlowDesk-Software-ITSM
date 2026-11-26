@@ -55,10 +55,10 @@ export default function PaginaLicenciasSoftware() {
   return (
     <div style={{ padding: "24px 32px", maxWidth: 1300, margin: "0 auto" }}>
       <div style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+        <h1 className="titulo-pagina">
           Licencias de software (Consulta operativa)
         </h1>
-        <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
+        <p className="descripcion-pagina">
           Disponibilidad de cupos, asignaciones y cumplimiento normativo (claves protegidas y costos restringidos)
         </p>
       </div>

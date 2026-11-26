@@ -394,22 +394,10 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => setMostrarFormulario(false)}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0
-                }}
+                style={{ marginBottom: 6 }}
               >
                  Volver a la lista de perfiles
               </button>
@@ -430,7 +418,6 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => setMostrarFormulario(false)}
               >
                 {soloLectura ? "Cerrar" : "Cancelar"}
@@ -440,7 +427,6 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
                   type="submit"
                   form="formulario-perfil"
                   className="boton-primario"
-                  style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
                   disabled={guardando}
                 >
                   {guardando ? "Guardando..." : formulario.id_perfil === null ? "Crear Perfil" : "Guardar Cambios"}
@@ -499,34 +485,16 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
                 </div>
                 {!soloLectura && (
                   <div style={{ display: "flex", gap: 10 }}>
-                    <button
+                    <button className="boton-enlace"
                       type="button"
                       onClick={marcarTodasOpciones}
-                      style={{
-                        fontSize: 12,
-                        background: "none",
-                        border: "none",
-                        color: "#2563eb",
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                        fontWeight: 600,
-                      }}
                     >
                       Marcar todas
                     </button>
                     <span style={{ color: "#cbd5e1" }}>|</span>
-                    <button
+                    <button className="boton-enlace"
                       type="button"
                       onClick={desmarcarTodasOpciones}
-                      style={{
-                        fontSize: 12,
-                        background: "none",
-                        border: "none",
-                        color: "#64748b",
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                        fontWeight: 600,
-                      }}
                     >
                       Desmarcar todas
                     </button>
@@ -555,7 +523,6 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => setMostrarFormulario(false)}
               >
                 {soloLectura ? "Cerrar" : "Cancelar"}
@@ -564,7 +531,6 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
                 <button
                   type="submit"
                   className="boton-primario"
-                  style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
                   disabled={guardando}
                 >
                   {guardando ? "Guardando..." : formulario.id_perfil === null ? "Crear Perfil" : "Guardar Cambios"}
@@ -580,21 +546,20 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
         <div>
           <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 18 }}>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <h1>Perfiles y Permisos (RBAC)</h1>
-              <p>
+              <h1 className="titulo-pagina">Perfiles y Permisos (RBAC)</h1>
+              <p className="descripcion-pagina">
                 Catálogo de roles del sistema, asignación de permisos de acceso a las opciones del menú y gobierno de privilegios.
               </p>
             </div>
             <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
               <button
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => setVista("capacidades")}
               >
                 Matriz de capacidades
               </button>
               {!soloLectura && (
-                <button className="boton-primario" style={{ width: "auto", padding: "8px 18px", fontSize: 13 }} onClick={abrirFormularioNuevo}>
+                <button className="boton-primario"  onClick={abrirFormularioNuevo}>
                   Nuevo Perfil
                 </button>
               )}
@@ -606,7 +571,7 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
               Cargando perfiles del sistema...
             </div>
           ) : perfiles.length === 0 ? (
-            <div style={{ padding: "32px 0", textAlign: "center", color: "#6b7280" }}>
+            <div className="estado-vacio">
               No hay perfiles registrados en el sistema.
             </div>
           ) : (
@@ -654,7 +619,7 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
                             {soloLectura ? (
                               <button
                                 type="button"
-                                className="boton-accion-icono"
+                                className="boton-icono boton-sm"
                                 title="Ver permisos"
                                 onClick={() => abrirFormularioEditar(perfil)}
                               >
@@ -667,7 +632,7 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
                               <>
                                 <button
                                   type="button"
-                                  className="boton-accion-icono"
+                                  className="boton-icono boton-sm"
                                   title="Editar permisos"
                                   onClick={() => abrirFormularioEditar(perfil)}
                                 >
@@ -680,7 +645,7 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
                                 {!esAdmin && (
                                   <button
                                     type="button"
-                                    className="boton-accion-icono boton-accion-peligro"
+                                    className="boton-icono boton-sm boton-icono-peligro"
                                     title={perfil.estado_registro ? "Desactivar perfil" : "Activar perfil"}
                                     onClick={() => alternarEstado(perfil)}
                                   >

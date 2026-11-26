@@ -82,15 +82,14 @@ export default function PaginaBaseConocimiento() {
     <div className="vista-contenedor" style={{ maxWidth: 1000, margin: "0 auto", paddingBottom: 60 }}>
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: "#0f172a" }}>Base de conocimiento KCS</h1>
-          <p className="subtitulo" style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 14 }}>
+          <h1 className="titulo-pagina">Base de conocimiento KCS</h1>
+          <p className="descripcion-pagina">
             Consulta procedimientos, soluciones a errores conocidos y guías oficiales de soporte.
           </p>
         </div>
         <Link
           href="/plataforma/conocimiento/crear"
           className="boton-primario"
-          style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
         >
           <span>+ Redactar artículo</span>
         </Link>
@@ -180,10 +179,9 @@ export default function PaginaBaseConocimiento() {
                 <span style={{ fontSize: 12, color: "#2563eb", fontWeight: 600 }}>{articuloSeleccionado.codigo_articulo}</span>
                 <h2 style={{ margin: "4px 0 0 0", fontSize: 20, fontWeight: 700, color: "#0f172a" }}>{articuloSeleccionado.titulo}</h2>
               </div>
-              <button
+              <button className="boton-icono boton-sm"
                 type="button"
                 onClick={() => setArticuloSeleccionado(null)}
-                style={{ background: "transparent", border: "none", fontSize: 20, cursor: "pointer", color: "#64748b" }}
               >
                 ×
               </button>

@@ -396,6 +396,25 @@ Entorno temporal retirado: captcha y `X-Frame-Options` restaurados a su código 
 
 Pendiente de tu lado: avisar al equipo que **vuelva a clonar** (o haga `git fetch` + `git reset --hard origin/<rama>`); si alguien sube su copia vieja, la contraseña vuelve al historial. Ejecutar `db/05_vista_umbral_problemas.sql` en producción para que el Gestor de Problemas vea la pestaña nueva.
 
+## 13. Estandarización visual (sistema de diseño)
+
+Pedido del docente: cada elemento visual debe existir de una sola forma en todo el sistema.
+
+| Elemento | Antes | Ahora |
+|---|---|---|
+| Pestañas | 3 formas: línea suelta, línea dentro de tarjeta (30 pantallas), código propio en ~25 pantallas (bordes de 2 o 3 px, verde, "control segmentado", tarjetas KPI clicables) | Una sola: `.pestanas`/`.pestana` vía `<PestanasVista>` (URL) o `<Pestanas>` (estado) |
+| Botones | 23 clases y ~340 con estilos inline que las pisaban | 5 variantes (`boton-primario`, `-secundario`, `-peligro`, `-enlace`, `-icono`) + `boton-sm`; filtros on/off con `aria-pressed`; interruptores `.interruptor`; opciones `.opcion-seleccionable` |
+| Títulos de página | 19–22 px con estilos inline (121 títulos) | `.titulo-pagina` + `.descripcion-pagina` (20/13 px); 4 cabeceras dentro de tarjeta pasadas a `.cabecera-pagina` |
+| "Sin resultados" | 100 variantes inline | `.estado-vacio` (77) y `.celda-vacia` (23) |
+| Colores | Hex sueltos | Variables `--color-*` en `:root` |
+
+- Guía visual en **/plataforma/guia-estilo** (solo administrador).
+- `scripts/verificar_estilos.js` (`npm run test:estilos`, y antes de cada `npm run build`) falla si aparece un botón sin clase del sistema, estilos visuales inline en botones/pestañas, icono + texto en un botón, pestañas sueltas o clases antiguas. Resultado actual: 0 desviaciones.
+- Verificado en la app (base local): 63/63 páginas del menú cargan sin error; sin desbordes a 768 px.
+- Pendiente de decisión: en 31 páginas las pestañas de vista quedan **encima** del título (las pone la página) y las internas **debajo**; unificar el orden requiere mover la cabecera de cada vista a la página.
+
+---
+
 ---
 
 *Generado con análisis estático; los scripts usados (grafo de imports, auditoría AST de botones y layout) se pueden volver a ejecutar para medir el avance de la limpieza.*

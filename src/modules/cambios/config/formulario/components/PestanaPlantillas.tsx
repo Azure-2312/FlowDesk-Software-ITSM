@@ -278,7 +278,6 @@ export const PestanaPlantillas: React.FC = () => {
           type="button"
           className="boton-primario"
           onClick={abrirCrearModelo}
-          style={{ width: "auto", fontSize: 13, padding: "8px 16px", backgroundColor: "#16a34a" }}
         >
           Nuevo Modelo Estándar
         </button>
@@ -362,7 +361,7 @@ export const PestanaPlantillas: React.FC = () => {
               <tbody>
               {modelosFiltrados.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: "center", padding: 32, color: "#64748b" }}>
+                  <td colSpan={7} className="celda-vacia">
                     No se encontraron modelos de cambio estándar con los filtros aplicados.
                   </td>
                 </tr>
@@ -413,49 +412,31 @@ export const PestanaPlantillas: React.FC = () => {
                           {esAprobado ? (
                             <button
                               type="button"
-                              className="boton-mini"
+                              className="boton-secundario boton-sm"
                               onClick={() => cambiarEstadoModelo(m.id_modelo, "suspender")}
-                              style={{
-                                fontSize: 11,
-                                padding: "4px 8px",
-                                backgroundColor: "#fef2f2",
-                                color: "#b91c1c",
-                                border: "1px solid #fecaca",
-                                fontWeight: 600,
-                              }}
                             >
                               Suspender
                             </button>
                           ) : (
                             <button
                               type="button"
-                              className="boton-mini"
+                              className="boton-secundario boton-sm"
                               onClick={() => cambiarEstadoModelo(m.id_modelo, "aprobar")}
-                              style={{
-                                fontSize: 11,
-                                padding: "4px 8px",
-                                backgroundColor: "#f0fdf4",
-                                color: "#15803d",
-                                border: "1px solid #bbf7d0",
-                                fontWeight: 600,
-                              }}
                             >
                               Aprobar
                             </button>
                           )}
                           <button
                             type="button"
-                            className="boton-mini"
+                            className="boton-secundario boton-sm"
                             onClick={() => abrirEditarModelo(m)}
-                            style={{ fontSize: 11, padding: "4px 8px" }}
                           >
                             Editar
                           </button>
                           <button
                             type="button"
-                            className="boton-mini boton-mini-peligro"
+                            className="boton-sm boton-peligro"
                             onClick={() => eliminarModelo(m)}
-                            style={{ fontSize: 11, padding: "4px 8px" }}
                           >
                             Eliminar
                           </button>
@@ -506,14 +487,14 @@ export const PestanaPlantillas: React.FC = () => {
               <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0 }}>
                 {modeloActivo.id_modelo ? `Editar Modelo Estándar: ${modeloActivo.nombre}` : "Nuevo Modelo de Cambio Estándar"}
               </h3>
-              <button type="button" className="modal-cerrar-boton" onClick={() => setModalEditorAbierto(false)}>
+              <button type="button" className="boton-icono" onClick={() => setModalEditorAbierto(false)}>
                 ×
               </button>
             </div>
 
             <div className="modal-ticket-cuerpo">
               {/* Pestañas internas */}
-              <div style={{ display: "flex", gap: 6, borderBottom: "1px solid #e2e8f0" }}>
+              <div className="pestanas">
                 {[
                   { id: "general", label: "1. Datos Generales y Categoría" },
                   { id: "elegibilidad", label: "2. Criterios de Elegibilidad" },
@@ -523,16 +504,7 @@ export const PestanaPlantillas: React.FC = () => {
                     key={tab.id}
                     type="button"
                     onClick={() => setPestañaModal(tab.id as any)}
-                    style={{
-                      padding: "8px 14px",
-                      border: "none",
-                      background: "none",
-                      cursor: "pointer",
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: pestañaModal === tab.id ? "#16a34a" : "#64748b",
-                      borderBottom: `2px solid ${pestañaModal === tab.id ? "#16a34a" : "transparent"}`,
-                    }}
+                    className={pestañaModal === tab.id ? "pestana pestana-activa" : "pestana"}
                   >
                     {tab.label}
                   </button>
@@ -657,7 +629,6 @@ export const PestanaPlantillas: React.FC = () => {
                       type="button"
                       className="boton-secundario"
                       onClick={agregarCondicion}
-                      style={{ fontSize: 12, padding: "6px 12px" }}
                     >
                       + Agregar Criterio
                     </button>
@@ -665,7 +636,7 @@ export const PestanaPlantillas: React.FC = () => {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 220, overflowY: "auto" }}>
                     {(modeloActivo.lista_elegibilidad || []).length === 0 ? (
-                      <div style={{ padding: 16, backgroundColor: "#f8fafc", borderRadius: 6, textAlign: "center", color: "#94a3b8", fontSize: 12 }}>
+                      <div className="estado-vacio">
                         No hay criterios definidos. Se recomienda al menos 1 condición para autorizar el modelo.
                       </div>
                     ) : (
@@ -684,10 +655,9 @@ export const PestanaPlantillas: React.FC = () => {
                           }}
                         >
                           <span style={{ color: "#334155" }}>{cond}</span>
-                          <button
+                          <button className="boton-peligro"
                             type="button"
                             onClick={() => quitarCondicion(idx)}
-                            style={{ background: "none", border: "none", color: "#dc2626", cursor: "pointer", fontSize: 14 }}
                           >
                             ×
                           </button>
@@ -838,7 +808,6 @@ export const PestanaPlantillas: React.FC = () => {
                 className="boton-primario"
                 onClick={guardarModelo}
                 disabled={guardando}
-                style={{ width: "auto", padding: "8px 16px", backgroundColor: "#16a34a" }}
               >
                 {guardando ? "Guardando..." : "Guardar Modelo Estándar"}
               </button>

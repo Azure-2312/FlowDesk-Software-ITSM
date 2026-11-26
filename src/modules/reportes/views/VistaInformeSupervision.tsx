@@ -46,7 +46,7 @@ export default function VistaInformeSupervision() {
     return (
       <div style={{ padding: 24, backgroundColor: "#ffffff", border: "1px solid #000000", margin: 20, color: "#000000" }}>
         <p><strong>Error al generar reporte:</strong> {error || "Datos no disponibles."}</p>
-        <button onClick={cargarInforme} style={{ padding: "6px 12px", border: "1px solid #000000", background: "#ffffff", cursor: "pointer" }}>
+        <button className="boton-secundario" onClick={cargarInforme} >
           Reintentar
         </button>
       </div>
@@ -159,37 +159,15 @@ export default function VistaInformeSupervision() {
           </div>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={cargarInforme}
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 4,
-              fontSize: 12.5,
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
           >
             Actualizar Datos
           </button>
-          <button
+          <button className="boton-primario"
             type="button"
             onClick={handleImprimir}
-            style={{
-              padding: "8px 20px",
-              backgroundColor: "#0f172a",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 4,
-              fontSize: 12.5,
-              fontWeight: 700,
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-            }}
           >
             Imprimir Documento / Guardar como PDF
           </button>
@@ -205,7 +183,7 @@ export default function VistaInformeSupervision() {
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: 0.8 }}>
                   {metadatos.organizacion}
                 </div>
-                <h1 style={{ fontSize: 19, fontWeight: 800, margin: "4px 0 2px 0", color: "#000000", textTransform: "uppercase" }}>
+                <h1 className="titulo-pagina">
                   Informe de Supervisión y Rendimiento Operativo de TI
                 </h1>
                 <div style={{ fontSize: 11, color: "#334155" }}>

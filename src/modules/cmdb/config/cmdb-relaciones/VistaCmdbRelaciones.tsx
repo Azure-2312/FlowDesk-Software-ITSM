@@ -218,10 +218,10 @@ export default function CmdbRelacionesConfigPage({
           marginBottom: 20
         }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+            <h1 className="titulo-pagina">
               Elementos de Configuración y Relaciones de CMDB
             </h1>
-            <p style={{ margin: "8px 0 0 0", color: "#64748b", fontSize: 13.5, lineHeight: 1.5 }}>
+            <p className="descripcion-pagina">
               Modelado de clases lógicas y físicas, tipos de enlace topológico, propagación de impacto, integridad y auditoría continua.
             </p>
           </div>
@@ -232,7 +232,6 @@ export default function CmdbRelacionesConfigPage({
               onClick={handleGuardarRelaciones}
               disabled={guardando || !puedeEditar}
               className="boton-primario"
-              style={{ padding: "9px 22px", fontSize: 13, width: "auto", fontWeight: 700 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
@@ -241,32 +240,14 @@ export default function CmdbRelacionesConfigPage({
 
         {/* Navegación horizontal de pestañas */}
         {!pestanaFija && (
-          <div style={{
-            display: "flex",
-            gap: 8,
-            borderBottom: "1px solid #e2e8f0",
-            marginBottom: 28,
-            justifyContent: "flex-start",
-            overflowX: "auto"
-          }}>
+          <div className="pestanas">
             {PESTANAS.map((pestana) => {
               const activa = tabActiva === pestana.id;
               return (
-                <button
+                <button type="button"
                   key={pestana.id}
                   onClick={() => cambiarTab(pestana.id)}
-                  style={{
-                    padding: "12px 18px",
-                    border: "none",
-                    background: "transparent",
-                    borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
-                    color: activa ? "#2563eb" : "#64748b",
-                    fontWeight: activa ? 600 : 500,
-                    fontSize: 13.5,
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    transition: "all 0.15s ease",
-                  }}
+                  className={activa ? "pestana pestana-activa" : "pestana"}
                 >
                   {pestana.titulo}
                 </button>
@@ -286,7 +267,7 @@ export default function CmdbRelacionesConfigPage({
             </div>
             <button
               onClick={cargarDatos}
-              className="px-3 py-1 bg-white border border-rose-300 text-rose-700 text-xs rounded hover:bg-rose-100"
+              className="boton-peligro boton-sm"
             >
               Reintentar
             </button>

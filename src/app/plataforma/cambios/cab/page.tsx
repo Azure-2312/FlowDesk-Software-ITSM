@@ -19,13 +19,11 @@ export default async function PaginaCambiosCab({ searchParams }: PageProps) {
   return (
     <div className="vista-contenedor" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {vistasPermitidas.length > 1 && (
-        <div className="bg-white px-6 pt-2 rounded-xl border border-slate-200 shadow-xs">
-          <PestanasVista
+        <PestanasVista
             vistas={vistasPermitidas}
             vistaActiva={vistaActiva}
             urlBase="/plataforma/cambios/cab"
           />
-        </div>
       )}
       {vistaActiva === "agenda" && <VistaCabAgenda />}
       {vistaActiva === "emergencia" && <VistaCabEmergencia />}

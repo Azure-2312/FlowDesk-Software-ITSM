@@ -413,17 +413,16 @@ export default function PaginaUsuarios() {
           marginBottom: 24,
         }}>
           <div>
-            <h1>Crear Nuevo Usuario</h1>
-            <p>
+            <h1 className="titulo-pagina">Crear Nuevo Usuario</h1>
+            <p className="descripcion-pagina">
               Ingresa los datos del nuevo usuario. El correo corporativo y la contraseña se generarán de forma automática.
             </p>
           </div>
           <button
             type="button"
-            className="boton-texto"
+            className="boton-enlace"
             onClick={volverATabla}
             disabled={guardando}
-            style={{ fontSize: 13 }}
           >
             Volver a usuarios
           </button>
@@ -596,7 +595,6 @@ export default function PaginaUsuarios() {
             <button
               type="submit"
               className="boton-primario"
-              style={{ width: "auto" }}
               disabled={guardando}
             >
               {guardando ? "Generando credenciales..." : "Generar credenciales"}
@@ -604,7 +602,6 @@ export default function PaginaUsuarios() {
             <button
               type="button"
               className="boton-secundario"
-              style={{ width: "auto" }}
               onClick={volverATabla}
               disabled={guardando}
             >
@@ -638,8 +635,8 @@ export default function PaginaUsuarios() {
           }}>
             Creación Exitosa
           </span>
-          <h1>Resumen de Datos y Credenciales</h1>
-          <p>
+          <h1 className="titulo-pagina">Resumen de Datos y Credenciales</h1>
+          <p className="descripcion-pagina">
             El usuario ha sido registrado en la base de datos con sus credenciales corporativas estándar.
           </p>
         </div>
@@ -701,23 +698,12 @@ export default function PaginaUsuarios() {
               <span style={{ fontSize: 12, color: "#1e3a8a", fontWeight: 600 }}>
                 Correo Corporativo Estándar
               </span>
-              <button
+              <button className="boton-secundario boton-sm"
                 type="button"
                 onClick={() => {
                   navigator.clipboard.writeText(resumenNuevoUsuario.correo_corporativo);
                   setCopiadoCorreo(true);
                   setTimeout(() => setCopiadoCorreo(false), 2000);
-                }}
-                style={{
-                  background: "none",
-                  border: "1px solid #93c5fd",
-                  borderRadius: 4,
-                  padding: "3px 10px",
-                  fontSize: 11,
-                  color: "#1d4ed8",
-                  cursor: "pointer",
-                  backgroundColor: "#ffffff",
-                  fontWeight: 600,
                 }}
               >
                 {copiadoCorreo ? "Copiado" : "Copiar"}
@@ -744,40 +730,18 @@ export default function PaginaUsuarios() {
                 Contraseña Estándar Generada
               </span>
               <div style={{ display: "flex", gap: 6 }}>
-                <button
+                <button className="boton-secundario boton-sm"
                   type="button"
                   onClick={() => setMostrarClaveEnResumen(!mostrarClaveEnResumen)}
-                  style={{
-                    background: "none",
-                    border: "1px solid #93c5fd",
-                    borderRadius: 4,
-                    padding: "3px 10px",
-                    fontSize: 11,
-                    color: "#1d4ed8",
-                    cursor: "pointer",
-                    backgroundColor: "#ffffff",
-                    fontWeight: 600,
-                  }}
                 >
                   {mostrarClaveEnResumen ? "Ocultar" : "Mostrar"}
                 </button>
-                <button
+                <button className="boton-secundario boton-sm"
                   type="button"
                   onClick={() => {
                     navigator.clipboard.writeText(resumenNuevoUsuario.clave_generada);
                     setCopiadoClave(true);
                     setTimeout(() => setCopiadoClave(false), 2000);
-                  }}
-                  style={{
-                    background: "none",
-                    border: "1px solid #93c5fd",
-                    borderRadius: 4,
-                    padding: "3px 10px",
-                    fontSize: 11,
-                    color: "#1d4ed8",
-                    cursor: "pointer",
-                    backgroundColor: "#ffffff",
-                    fontWeight: 600,
                   }}
                 >
                   {copiadoClave ? "Copiada" : "Copiar"}
@@ -820,7 +784,6 @@ export default function PaginaUsuarios() {
             type="button"
             className="boton-primario"
             onClick={finalizarCreacionUsuario}
-            style={{ width: "auto" }}
           >
             Finalizar y volver a la tabla
           </button>
@@ -844,17 +807,16 @@ export default function PaginaUsuarios() {
           marginBottom: 24,
         }}>
           <div>
-            <h1>Editar Usuario</h1>
-            <p>
+            <h1 className="titulo-pagina">Editar Usuario</h1>
+            <p className="descripcion-pagina">
               Actualiza los datos personales, perfil asignado o contraseña del usuario.
             </p>
           </div>
           <button
             type="button"
-            className="boton-texto"
+            className="boton-enlace"
             onClick={volverATabla}
             disabled={guardando}
-            style={{ fontSize: 13 }}
           >
             Volver a usuarios
           </button>
@@ -1069,11 +1031,6 @@ export default function PaginaUsuarios() {
             <button
               type="submit"
               className="boton-primario"
-              style={{
-                width: "auto",
-                opacity: !claveEsValidaParaEdicion || guardando ? 0.6 : 1,
-                cursor: !claveEsValidaParaEdicion || guardando ? "not-allowed" : "pointer",
-              }}
               disabled={!claveEsValidaParaEdicion || guardando}
             >
               {guardando ? "Guardando..." : "Guardar cambios"}
@@ -1081,7 +1038,6 @@ export default function PaginaUsuarios() {
             <button
               type="button"
               className="boton-secundario"
-              style={{ width: "auto" }}
               onClick={volverATabla}
               disabled={guardando}
             >
@@ -1115,12 +1071,12 @@ export default function PaginaUsuarios() {
 
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1>Usuarios</h1>
-          <p>
+          <h1 className="titulo-pagina">Usuarios</h1>
+          <p className="descripcion-pagina">
             Administración de usuarios, perfiles asignados y generación de credenciales corporativas.
           </p>
         </div>
-        <button className="boton-primario" style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }} onClick={abrirFormularioNuevo}>
+        <button className="boton-primario" style={{ flexShrink: 0 }} onClick={abrirFormularioNuevo}>
           Nuevo Usuario
         </button>
       </div>
@@ -1217,11 +1173,10 @@ export default function PaginaUsuarios() {
                     {(u.cuenta_bloqueada || (u.intentos_fallidos ?? 0) >= 3) && (
                       <button
                         type="button"
-                        className="boton-mini boton-mini-desbloquear"
+                        className="boton-secundario boton-sm"
                         title="Desbloquear usuario"
                         aria-label="Desbloquear usuario"
                         onClick={() => manejarDesbloquear(u.id_usuario)}
-                        style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "6px 8px" }}
                       >
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -1231,11 +1186,10 @@ export default function PaginaUsuarios() {
                     )}
                     <button
                       type="button"
-                      className="boton-mini"
+                      className="boton-secundario boton-sm"
                       onClick={() => abrirFormularioEditar(u)}
                       title="Editar usuario"
                       aria-label="Editar usuario"
-                      style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "6px 8px" }}
                     >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M12 20h9" />
@@ -1244,11 +1198,10 @@ export default function PaginaUsuarios() {
                     </button>
                     <button
                       type="button"
-                      className={u.estado_registro ? "boton-mini boton-mini-peligro" : "boton-mini"}
+                      className={u.estado_registro ? "boton-icono boton-sm boton-icono-peligro" : "boton-icono boton-sm"}
                       onClick={() => alternarEstado(u)}
                       title={u.estado_registro ? "Desactivar usuario" : "Activar usuario"}
                       aria-label={u.estado_registro ? "Desactivar usuario" : "Activar usuario"}
-                      style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "6px 8px" }}
                     >
                       {u.estado_registro ? (
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

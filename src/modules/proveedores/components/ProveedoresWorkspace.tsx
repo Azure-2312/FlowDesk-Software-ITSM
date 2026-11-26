@@ -148,8 +148,8 @@ export default function ProveedoresWorkspace({ puedeEditar }: { puedeEditar: boo
     <div className="vista-contenedor">
       <div className="cabecera-pagina">
         <div>
-          <h1>Proveedores y contratos de TI</h1>
-          <p className="subtitulo">
+          <h1 className="titulo-pagina">Proveedores y contratos de TI</h1>
+          <p className="descripcion-pagina">
             Control de proveedores técnicos, contratos de soporte, fechas de vigencia, compromisos de servicio y evaluaciones.
           </p>
         </div>
@@ -304,7 +304,7 @@ export default function ProveedoresWorkspace({ puedeEditar }: { puedeEditar: boo
           </div>
 
           <div style={{ display: "flex", alignItems: "flex-end" }}>
-            <button type="submit" className="boton-principal" style={{ width: "100%", height: 38 }}>
+            <button type="submit" className="boton-primario" style={{ width: "100%" }}>
               Guardar registro
             </button>
           </div>
@@ -335,7 +335,7 @@ export default function ProveedoresWorkspace({ puedeEditar }: { puedeEditar: boo
               </p>
               <p>SLA: {p.compromiso_sla || "No documentado"} · Evaluación: {p.evaluacion_desempeno ?? "Pendiente"}</p>
               {puedeEditar && (
-                <button className="boton-mini" onClick={() => cambiarEstado(p)}>
+                <button className="boton-secundario boton-sm" onClick={() => cambiarEstado(p)}>
                   {p.estado === "INACTIVO" ? "Reactivar" : "Inactivar"}
                 </button>
               )}

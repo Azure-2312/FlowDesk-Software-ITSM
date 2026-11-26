@@ -350,25 +350,13 @@ export default function PaginaAdminTecnicos() {
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => {
                   setVista("tabla");
                   setTecnicoEditando(null);
                 }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                  Volver a plantilla de técnicos
               </button>
@@ -383,7 +371,6 @@ export default function PaginaAdminTecnicos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setTecnicoEditando(null);
@@ -396,7 +383,6 @@ export default function PaginaAdminTecnicos() {
                 type="submit"
                 form="form-editar-tecnico"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Guardando..." : "Guardar Cambios"}
@@ -489,7 +475,6 @@ export default function PaginaAdminTecnicos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setTecnicoEditando(null);
@@ -501,7 +486,6 @@ export default function PaginaAdminTecnicos() {
               <button
                 type="submit"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Guardando..." : "Guardar Cambios"}
@@ -527,22 +511,10 @@ export default function PaginaAdminTecnicos() {
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => setVista("tabla")}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                  Volver a plantilla de técnicos
               </button>
@@ -557,7 +529,6 @@ export default function PaginaAdminTecnicos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => setVista("tabla")}
                 disabled={guardando}
               >
@@ -567,7 +538,6 @@ export default function PaginaAdminTecnicos() {
                 type="submit"
                 form="form-enrolar-tecnico"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Enrolando..." : "Enrolar Técnico"}
@@ -661,7 +631,6 @@ export default function PaginaAdminTecnicos() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => setVista("tabla")}
                 disabled={guardando}
               >
@@ -670,7 +639,6 @@ export default function PaginaAdminTecnicos() {
               <button
                 type="submit"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Enrolando..." : "Enrolar Técnico"}
@@ -685,15 +653,15 @@ export default function PaginaAdminTecnicos() {
         <div>
           <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <h1>Gestión de Especialistas Técnicos (Capacidad y Carga WIP)</h1>
-              <p>
+              <h1 className="titulo-pagina">Gestión de Especialistas Técnicos (Capacidad y Carga WIP)</h1>
+              <p className="descripcion-pagina">
                 Gobierno de recursos resolutores (ITIL 4 / ISO 20000): nivelación de soporte (Tier 1/2/3), límites de saturación (WIP) y disponibilidad operativa.
               </p>
             </div>
             <button
               type="button"
               className="boton-primario"
-              style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+              style={{ flexShrink: 0 }}
               onClick={abrirEnrolar}
             >
               Enrolar Nuevo Técnico
@@ -784,7 +752,7 @@ export default function PaginaAdminTecnicos() {
               Cargando nómina de técnicos...
             </div>
           ) : tecnicosFiltrados.length === 0 ? (
-            <div style={{ padding: "32px 0", textAlign: "center", color: "#64748b" }}>
+            <div className="estado-vacio">
               No se encontraron técnicos registrados con los criterios especificados.
             </div>
           ) : (
@@ -867,7 +835,7 @@ export default function PaginaAdminTecnicos() {
                         <td style={{ textAlign: "right" }}>
                           <button
                             type="button"
-                            className="boton-accion-icono"
+                            className="boton-icono boton-sm"
                             onClick={() => abrirEdicion(tec)}
                             title="Configurar técnico"
                           >
@@ -901,7 +869,7 @@ export default function PaginaAdminTecnicos() {
                 <button
                   type="button"
                   className="boton-primario"
-                  style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+                  style={{ flexShrink: 0 }}
                   onClick={abrirNuevaAusencia}
                 >
                   Registrar Ausencia
@@ -990,7 +958,6 @@ export default function PaginaAdminTecnicos() {
                     <button
                       type="button"
                       className="boton-secundario"
-                      style={{ width: "auto", padding: "6px 14px", fontSize: 13 }}
                       onClick={cancelarFormAusencia}
                       disabled={guardandoAusencia}
                     >
@@ -999,7 +966,6 @@ export default function PaginaAdminTecnicos() {
                     <button
                       type="submit"
                       className="boton-primario"
-                      style={{ width: "auto", padding: "6px 18px", fontSize: 13 }}
                       disabled={guardandoAusencia}
                     >
                       {guardandoAusencia ? "Guardando..." : ausenciaEditando ? "Actualizar Ausencia" : "Guardar Ausencia"}
@@ -1015,15 +981,7 @@ export default function PaginaAdminTecnicos() {
                 Cargando ausencias...
               </div>
             ) : ausencias.length === 0 ? (
-              <div style={{
-                padding: "24px 16px",
-                textAlign: "center",
-                backgroundColor: "#f8fafc",
-                border: "1px dashed #cbd5e1",
-                borderRadius: 8,
-                color: "#64748b",
-                fontSize: 13,
-              }}>
+              <div className="estado-vacio">
                 No hay ausencias programadas registradas en el sistema. Todos los técnicos se consideran disponibles según su estado base.
               </div>
             ) : (
@@ -1104,22 +1062,12 @@ export default function PaginaAdminTecnicos() {
                               <button
                                 type="button"
                                 className="boton-secundario"
-                                style={{ width: "auto", padding: "4px 8px", fontSize: 12 }}
                                 onClick={() => abrirEditarAusencia(a)}
                               >
                                 Editar
                               </button>
-                              <button
+                              <button className="boton-peligro boton-sm"
                                 type="button"
-                                style={{
-                                  background: "transparent",
-                                  border: "1px solid #fecaca",
-                                  borderRadius: 4,
-                                  color: "#dc2626",
-                                  padding: "4px 8px",
-                                  fontSize: 12,
-                                  cursor: "pointer",
-                                }}
                                 onClick={() => eliminarAusencia(a.id_ausencia)}
                               >
                                 Eliminar

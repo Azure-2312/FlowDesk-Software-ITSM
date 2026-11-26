@@ -47,8 +47,8 @@ export default function VistaCambiosImpactoArea() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1 style={{ margin: 0, fontSize: 21, fontWeight: 700, color: "#0f172a" }}>Cambios con Interrupción para mi Área</h1>
-        <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
+        <h1 className="titulo-pagina">Cambios con Interrupción para mi Área</h1>
+        <p className="descripcion-pagina">
           Mantenimientos programados o en curso que pueden afectar la disponibilidad de servicios de mi departamento.
         </p>
       </div>
@@ -58,7 +58,7 @@ export default function VistaCambiosImpactoArea() {
       ) : error ? (
         <p role="alert" className="mensaje-error">{error}</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio">
           No hay cambios programados que afecten a mi área.
         </div>
       ) : (

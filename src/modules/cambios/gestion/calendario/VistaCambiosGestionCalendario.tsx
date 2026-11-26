@@ -48,12 +48,12 @@ export default function PaginaCalendarioCambios() {
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h1>Calendario de Ventanas de Mantenimiento y Cambios (ITIL v4)</h1>
-          <p>
+          <h1 className="titulo-pagina">Calendario de Ventanas de Mantenimiento y Cambios (ITIL v4)</h1>
+          <p className="descripcion-pagina">
             Programación de ventanas de intervención autorizadas, verificación de colisiones y congelamientos oficiales (Change Freeze).
           </p>
         </div>
-        <Link href="/plataforma/cambios/nuevo" className="boton-primario" style={{ width: "auto", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
+        <Link href="/plataforma/cambios/nuevo" className="boton-primario" >
 
           Programar Cambio
         </Link>
@@ -79,7 +79,7 @@ export default function PaginaCalendarioCambios() {
           Cargando cronograma oficial de cambios...
         </div>
       ) : cambios.length === 0 ? (
-        <div style={{ padding: 36, textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
+        <div className="estado-vacio">
           <p style={{ margin: "0 0 10px 0", color: "#64748b", fontWeight: 600 }}>
             No hay ventanas de cambio programadas en el cronograma institucional.
           </p>
@@ -186,8 +186,7 @@ export default function PaginaCalendarioCambios() {
                 <div>
                   <Link
                     href="/plataforma/cambios/gestion?vista=historial"
-                    className="boton-mini"
-                    style={{ textDecoration: "none", fontSize: 11.5 }}
+                    className="boton-secundario boton-sm"
                   >
                     Ver en Historial
                   </Link>

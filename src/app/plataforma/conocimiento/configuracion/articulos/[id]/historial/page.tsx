@@ -143,10 +143,10 @@ export default function PaginaHistorialArticuloDetallado() {
             <span>/</span>
             <span>Historial y Métricas de Auditoría</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900">
+          <h1 className="titulo-pagina">
             {articulo.titulo}
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="descripcion-pagina">
             Categoría: <strong className="text-slate-700">{articulo.categoria_nombre || "General"}</strong> | Autor: <strong className="text-slate-700">{articulo.autor_nombre || "Especialista"}</strong> | Versión Actual: <strong className="text-slate-700">v{articulo.version || 1}</strong>
           </p>
         </div>

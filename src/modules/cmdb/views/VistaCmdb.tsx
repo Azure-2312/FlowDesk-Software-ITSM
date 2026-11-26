@@ -398,22 +398,10 @@ export default function PaginaMapaCMDB() {
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => setVista("tabla")}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver al Mapa de Topología CMDB
               </button>
@@ -428,7 +416,6 @@ export default function PaginaMapaCMDB() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => setVista("tabla")}
                 disabled={guardando}
               >
@@ -438,7 +425,6 @@ export default function PaginaMapaCMDB() {
                 type="submit"
                 form="form-nuevo-ci"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Registrando..." : "Registrar CI"}
@@ -588,7 +574,6 @@ export default function PaginaMapaCMDB() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => setVista("tabla")}
                 disabled={guardando}
               >
@@ -597,7 +582,6 @@ export default function PaginaMapaCMDB() {
               <button
                 type="submit"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Registrando..." : "Registrar Elemento de Configuración"}
@@ -623,25 +607,13 @@ export default function PaginaMapaCMDB() {
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => {
                   setVista("tabla");
                   setCiSeleccionado(null);
                 }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver al Mapa de Topología CMDB
               </button>
@@ -656,7 +628,6 @@ export default function PaginaMapaCMDB() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setCiSeleccionado(null);
@@ -669,7 +640,6 @@ export default function PaginaMapaCMDB() {
                 type="submit"
                 form="form-editar-ci"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 20px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Guardando..." : "Guardar Cambios"}
@@ -776,7 +746,6 @@ export default function PaginaMapaCMDB() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setCiSeleccionado(null);
@@ -788,7 +757,6 @@ export default function PaginaMapaCMDB() {
               <button
                 type="submit"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 24px", fontSize: 13 }}
                 disabled={guardando}
               >
                 {guardando ? "Guardando..." : "Guardar Cambios"}
@@ -814,25 +782,13 @@ export default function PaginaMapaCMDB() {
             }}
           >
             <div>
-              <button
+              <button className="boton-enlace"
                 type="button"
                 onClick={() => {
                   setVista("tabla");
                   setCiSeleccionado(null);
                 }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "transparent",
-                  border: "none",
-                  color: "#2563eb",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  marginBottom: 6,
-                  padding: 0,
-                }}
+                style={{ marginBottom: 6 }}
               >
                 Volver al Mapa de Topología CMDB
               </button>
@@ -846,7 +802,6 @@ export default function PaginaMapaCMDB() {
             <button
               type="button"
               className="boton-secundario"
-              style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
               onClick={() => {
                 setVista("tabla");
                 setCiSeleccionado(null);
@@ -900,7 +855,6 @@ export default function PaginaMapaCMDB() {
               <button
                 type="submit"
                 className="boton-primario"
-                style={{ width: "auto", padding: "9px 18px", fontSize: 13 }}
                 disabled={guardando || !relacionDestinoId}
               >
                 {guardando ? "Vinculando..." : "Vincular Arista"}
@@ -920,7 +874,7 @@ export default function PaginaMapaCMDB() {
               </p>
 
               {relaciones.filter((r) => r.id_ci_hijo === ciSeleccionado.id_ci).length === 0 ? (
-                <div style={{ padding: 16, textAlign: "center", color: "#9ca3af", fontSize: 12.5, fontStyle: "italic" }}>
+                <div className="estado-vacio">
                   No tiene dependencias hacia arriba registradas.
                 </div>
               ) : (
@@ -947,18 +901,9 @@ export default function PaginaMapaCMDB() {
                           <span style={{ fontSize: 13, color: "#1e293b" }}>{r.padre_nombre}</span>
                           <div style={{ fontSize: 11, color: "#64748b" }}>Tipo: {r.tipo_relacion}</div>
                         </div>
-                        <button
+                        <button className="boton-peligro boton-sm"
                           type="button"
                           onClick={() => eliminarRelacion(r.id_ci_padre, r.id_ci_hijo)}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: "#ef4444",
-                            cursor: "pointer",
-                            fontSize: 12,
-                            fontWeight: 600,
-                            textDecoration: "underline",
-                          }}
                         >
                           Desvincular
                         </button>
@@ -1005,18 +950,9 @@ export default function PaginaMapaCMDB() {
                           <span style={{ fontSize: 13, color: "#1e293b" }}>{r.hijo_nombre}</span>
                           <div style={{ fontSize: 11, color: "#64748b" }}>Tipo: {r.tipo_relacion}</div>
                         </div>
-                        <button
+                        <button className="boton-peligro boton-sm"
                           type="button"
                           onClick={() => eliminarRelacion(r.id_ci_padre, r.id_ci_hijo)}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: "#ef4444",
-                            cursor: "pointer",
-                            fontSize: 12,
-                            fontWeight: 600,
-                            textDecoration: "underline",
-                          }}
                         >
                           Desvincular
                         </button>
@@ -1032,25 +968,13 @@ export default function PaginaMapaCMDB() {
       {/* 4. VISTA DEDICADA: DAR DE BAJA O REACTIVAR CI CON JUSTIFICACIÓN */}
       {vista === "desactivar" && ciSeleccionado && (
         <div style={{ maxWidth: 700, margin: "0 auto", backgroundColor: "#ffffff", padding: 28, borderRadius: 10, border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-          <button
+          <button className="boton-enlace"
             type="button"
             onClick={() => {
               setVista("tabla");
               setCiSeleccionado(null);
             }}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              background: "transparent",
-              border: "none",
-              color: "#2563eb",
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-              marginBottom: 14,
-              padding: 0,
-            }}
+            style={{ marginBottom: 14 }}
           >
             Volver al Mapa de Topología CMDB
           </button>
@@ -1106,7 +1030,6 @@ export default function PaginaMapaCMDB() {
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
                 onClick={() => {
                   setVista("tabla");
                   setCiSeleccionado(null);
@@ -1118,12 +1041,6 @@ export default function PaginaMapaCMDB() {
               <button
                 type="submit"
                 className="boton-primario"
-                style={{
-                  width: "auto",
-                  padding: "8px 24px",
-                  fontSize: 13,
-                  backgroundColor: ciSeleccionado.estado_registro !== false ? "#dc2626" : "#16a34a",
-                }}
                 disabled={guardando}
               >
                 {guardando
@@ -1142,8 +1059,8 @@ export default function PaginaMapaCMDB() {
         <div>
           <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
             <div>
-              <h1 style={{ margin: 0, fontSize: 21, fontWeight: 700, color: "#0f172a" }}>Base de Datos de Configuración (CMDB)</h1>
-              <p className="descripcion" style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13 }}>
+              <h1 className="titulo-pagina">Base de Datos de Configuración (CMDB)</h1>
+              <p className="descripcion-pagina" >
                 Modelado integral de Elementos de Configuración (CI), topología de dependencias y análisis de impacto en fallas y cambios (ITIL v4 / ISO 20000).
               </p>
             </div>
@@ -1151,7 +1068,6 @@ export default function PaginaMapaCMDB() {
               <button
                 type="button"
                 className="boton-primario"
-                style={{ width: "auto", padding: "8px 18px", fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6 }}
                 onClick={abrirNuevo}
               >
                 <span>+</span> Registrar CI
@@ -1251,7 +1167,7 @@ export default function PaginaMapaCMDB() {
               Cargando repositorio maestro CMDB...
             </div>
           ) : elementosFiltrados.length === 0 ? (
-            <div style={{ padding: "32px 0", textAlign: "center", color: "#64748b" }}>
+            <div className="estado-vacio">
               No se encontraron Elementos de Configuración registrados.
             </div>
           ) : (
@@ -1384,7 +1300,7 @@ export default function PaginaMapaCMDB() {
                           <div style={{ display: "inline-flex", gap: 5 }}>
                             <button
                               type="button"
-                              className="boton-accion-icono"
+                              className="boton-icono boton-sm"
                               title="Editar atributos del CI"
                               onClick={() => abrirEditar(ci)}
                             >
@@ -1395,7 +1311,7 @@ export default function PaginaMapaCMDB() {
                             </button>
                             <button
                               type="button"
-                              className="boton-accion-icono"
+                              className="boton-icono boton-sm"
                               title="Gestionar relaciones y topología"
                               onClick={() => abrirRelaciones(ci)}
                             >
@@ -1407,7 +1323,7 @@ export default function PaginaMapaCMDB() {
                             </button>
                             <button
                               type="button"
-                              className={"boton-accion-icono " + (ci.estado_registro !== false ? "boton-accion-peligro" : "")}
+                              className={ci.estado_registro !== false ? "boton-icono boton-sm boton-icono-peligro" : "boton-icono boton-sm"}
                               title={ci.estado_registro !== false ? "Dar de baja CI con justificación" : "Reactivar CI"}
                               onClick={() => abrirDesactivar(ci)}
                             >

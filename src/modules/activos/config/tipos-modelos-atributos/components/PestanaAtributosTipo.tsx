@@ -234,7 +234,7 @@ export function PestanaAtributosTipo({ datos, onChange, bloqueado }: Props) {
             ))}
             {atributosFiltrados.length === 0 && (
               <tr>
-                <td colSpan={10} style={{ padding: 16, textAlign: "center", color: "#94a3b8" }}>
+                <td colSpan={10} className="celda-vacia">
                   No se encontraron atributos con los criterios indicados.
                 </td>
               </tr>
@@ -354,9 +354,9 @@ export function PestanaAtributosTipo({ datos, onChange, bloqueado }: Props) {
 
           <button
             type="button"
-            className="boton-principal"
+            className="boton-primario"
             onClick={agregarAtributo}
-            style={{ fontSize: 12, padding: "8px 18px", marginTop: 8 }}
+            style={{ marginTop: 8 }}
           >
             Guardar Atributo
           </button>

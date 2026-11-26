@@ -297,7 +297,7 @@ export default function PanelApiClientes() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-              <h1 style={{ fontSize: "1.4rem", fontWeight: 800, margin: 0 }}>FlowDesk ITSM — Consola de Verificación de la API</h1>
+              <h1 className="titulo-pagina">FlowDesk ITSM — Consola de Verificación de la API</h1>
               <span style={{ background: "#22c55e", color: "#052e16", fontSize: "0.75rem", fontWeight: 700, padding: "3px 10px", borderRadius: 9999 }}>
                 ● API v2.0
               </span>
@@ -317,10 +317,9 @@ export default function PanelApiClientes() {
                 <span style={{ opacity: 0.8, marginLeft: 6 }}>({salud.base_de_datos.latencia_ms} ms)</span>
               )}
             </div>
-            <button
+            <button className="boton-primario"
               onClick={verificarSalud}
               disabled={cargandoSalud}
-              style={{ background: "#3b82f6", color: "white", border: "none", padding: "7px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
             >
                /health
             </button>
@@ -344,24 +343,24 @@ export default function PanelApiClientes() {
               style={{ width: "100%", padding: "7px 10px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: "0.85rem", fontFamily: "monospace", marginTop: 3, boxSizing: "border-box" }}
             />
           </div>
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={() => setMostrarKey(!mostrarKey)}
-            style={{ background: "white", border: "1px solid #cbd5e1", padding: "8px 12px", borderRadius: 6, cursor: "pointer", fontSize: "0.82rem", fontWeight: 600, marginTop: 14 }}
+            style={{ marginTop: 14 }}
           >
             {mostrarKey ? "Ocultar" : "Ver"}
           </button>
-          <button
+          <button className="boton-primario"
             type="button"
             onClick={guardarKeyLocal}
-            style={{ background: "#2563eb", color: "white", border: "none", padding: "8px 14px", borderRadius: 6, cursor: "pointer", fontSize: "0.82rem", fontWeight: 600, marginTop: 14 }}
+            style={{ marginTop: 14 }}
           >
              Recordar en esta sesión
           </button>
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={() => setApiKey("fdk_live_grupo_aliado_2026_acceso_seguro_token")}
-            style={{ background: "#f1f5f9", border: "1px solid #94a3b8", padding: "8px 12px", borderRadius: 6, cursor: "pointer", fontSize: "0.82rem", fontWeight: 600, marginTop: 14 }}
+            style={{ marginTop: 14 }}
           >
             Pegar Llave Aliada Demo
           </button>
@@ -381,15 +380,13 @@ export default function PanelApiClientes() {
               📁 Código: <strong>src/services/usuarioService.js</strong> &rarr; <code>listarUsuarios()</code>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <button
+              <button className="boton-primario"
                 onClick={cargarUsuarios}
-                style={{ background: "#2563eb", color: "white", border: "none", padding: "8px 14px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
               >
                  Consultar Usuarios
               </button>
-              <button
+              <button className="boton-secundario"
                 onClick={verificarSalud}
-                style={{ background: "white", border: "1px solid #cbd5e1", padding: "8px 14px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
               >
                  Probar /health
               </button>
@@ -464,15 +461,13 @@ export default function PanelApiClientes() {
               />
             </div>
             <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-              <button
+              <button className="boton-primario"
                 onClick={registrarUsuario}
-                style={{ background: "#16a34a", color: "white", border: "none", padding: "7px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
               >
                  Registrar Trabajador
               </button>
-              <button
+              <button className="boton-peligro"
                 onClick={probarDuplicado}
-                style={{ background: "#ca8a04", color: "white", border: "none", padding: "7px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
               >
                  Forzar Duplicado (409)
               </button>
@@ -506,17 +501,15 @@ export default function PanelApiClientes() {
                 <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "#334155" }}>{rateLimit} RPM</div>
               </div>
               <div>
-                <button
+                <button className="boton-primario"
                   onClick={realizarPeticionRateLimit}
-                  style={{ background: "#2563eb", color: "white", border: "none", padding: "7px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
                 >
                    Hacer 1 Petición
                 </button>
               </div>
             </div>
-            <button
+            <button className="boton-peligro"
               onClick={bombardearRateLimit}
-              style={{ background: "#dc2626", color: "white", border: "none", padding: "7px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
             >
                Disparar Ráfaga (Probar bloqueo 429)
             </button>
@@ -537,21 +530,18 @@ export default function PanelApiClientes() {
               📁 Código: <strong>src/shared/lib/api-key-auth.ts</strong> &rarr; <code>compararStringsSeguro()</code>
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
-              <button
+              <button className="boton-peligro"
                 onClick={probarSinApiKey}
-                style={{ background: "#dc2626", color: "white", border: "none", padding: "7px 11px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.8rem" }}
               >
                  Probar Sin Clave (401)
               </button>
-              <button
+              <button className="boton-peligro"
                 onClick={probarClaveFalsa}
-                style={{ background: "#ca8a04", color: "white", border: "none", padding: "7px 11px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.8rem" }}
               >
                  Probar Clave Falsa (401)
               </button>
-              <button
+              <button className="boton-primario"
                 onClick={probarClaveCorrecta}
-                style={{ background: "#16a34a", color: "white", border: "none", padding: "7px 11px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.8rem" }}
               >
                  Clave Autorizada (200)
               </button>
@@ -578,10 +568,9 @@ export default function PanelApiClientes() {
                 )}
               </p>
             </div>
-            <button
+            <button className="boton-secundario"
               onClick={cargarTrazabilidad}
               disabled={cargandoLogs}
-              style={{ background: "white", border: "1px solid #cbd5e1", padding: "6px 12px", borderRadius: 6, fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" }}
             >
                Actualizar Bitácora
             </button>

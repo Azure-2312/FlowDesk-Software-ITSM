@@ -69,26 +69,17 @@ export default function PaginaCambiosImplementacion() {
     <div className="vista-contenedor">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Consola de implementación de cambios
           </h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
+          <p className="descripcion-pagina">
             Ejecución controlada de RFC autorizadas con validación Go/No-Go y bitácora en tiempo real
           </p>
         </div>
 
-        <button
+        <button className="boton-secundario"
           type="button"
           onClick={cargarCambios}
-          style={{
-            padding: "8px 14px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #cbd5e1",
-            borderRadius: 6,
-            fontSize: 13,
-            color: "#334155",
-            cursor: "pointer",
-          }}
         >
           Actualizar
         </button>
@@ -100,13 +91,7 @@ export default function PaginaCambiosImplementacion() {
         </div>
       ) : cambios.length === 0 ? (
         <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            padding: "48px 24px",
-            textAlign: "center",
-          }}
+          className="estado-vacio"
         >
           <div style={{ fontSize: 16, fontWeight: 600, color: "#1e293b", marginBottom: 6 }}>
             No hay cambios pendientes de implementación
@@ -186,33 +171,14 @@ export default function PaginaCambiosImplementacion() {
                         type="button"
                         disabled={!goNoGoListo}
                         onClick={() => setEnEjecucion(true)}
-                        style={{
-                          padding: "8px 18px",
-                          backgroundColor: goNoGoListo ? "#16a34a" : "#cbd5e1",
-                          color: "#ffffff",
-                          border: "none",
-                          borderRadius: 6,
-                          fontSize: 13,
-                          fontWeight: 600,
-                          cursor: goNoGoListo ? "pointer" : "not-allowed",
-                        }}
+                        className="boton-primario"
                       >
                         Iniciar ejecución
                       </button>
                     ) : (
-                      <button
+                      <button className="boton-peligro"
                         type="button"
                         onClick={ejecutarRollback}
-                        style={{
-                          padding: "8px 18px",
-                          backgroundColor: "#dc2626",
-                          color: "#ffffff",
-                          border: "none",
-                          borderRadius: 6,
-                          fontSize: 13,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
                       >
                         Ejecutar rollback
                       </button>
@@ -277,16 +243,7 @@ export default function PaginaCambiosImplementacion() {
                     type="button"
                     onClick={registrarPaso}
                     disabled={!enEjecucion || !nuevoPasoTexto.trim()}
-                    style={{
-                      padding: "8px 16px",
-                      backgroundColor: enEjecucion && nuevoPasoTexto.trim() ? "#2563eb" : "#cbd5e1",
-                      color: "#ffffff",
-                      border: "none",
-                      borderRadius: 6,
-                      fontSize: 13,
-                      fontWeight: 600,
-                      cursor: enEjecucion && nuevoPasoTexto.trim() ? "pointer" : "not-allowed",
-                    }}
+                    className="boton-primario"
                   >
                     Registrar paso
                   </button>

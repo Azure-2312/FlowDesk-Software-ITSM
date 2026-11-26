@@ -803,10 +803,10 @@ function ContenidoCrearTicket({
               Mesa de Ayuda &amp; Intake ITIL v4
             </span>
           </div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             {tipoFijo === 1 ? "Registrar incidente" : tipoFijo === 2 ? "Registrar solicitud de servicio" : "Crear Ticket en Mesa de Servicio"}
           </h1>
-          <p style={{ color: "#64748b", fontSize: 13, marginTop: 4, marginBottom: 0 }}>
+          <p className="descripcion-pagina">
             {tipoFijo
               ? "Completa el formulario oficial del módulo correspondiente."
               : "Selecciona el tipo de proceso para habilitar el formulario oficial correspondiente."}
@@ -822,7 +822,6 @@ function ContenidoCrearTicket({
             }
           }}
           className="boton-secundario"
-          style={{ width: "auto", fontSize: 12.5, padding: "6px 14px" }}
         >
           {rutaLista ? "Volver al Listado" : "Volver"}
         </button>
@@ -928,7 +927,6 @@ function ContenidoCrearTicket({
                         type="button"
                         onClick={deseleccionarUsuario}
                         className="boton-secundario"
-                        style={{ fontSize: 11.5, padding: "4px 10px", width: "auto" }}
                       >
                         Cambiar usuario
                       </button>
@@ -1552,13 +1550,6 @@ function ContenidoCrearTicket({
 
             <label
               className="boton-secundario"
-              style={{
-                fontSize: 12,
-                padding: "6px 16px",
-                width: "auto",
-                display: "inline-block",
-                cursor: "pointer",
-              }}
             >
               Seleccionar Archivos
               <input
@@ -1609,10 +1600,9 @@ function ContenidoCrearTicket({
                         <span style={{ fontSize: 11, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "#1e293b", fontWeight: 600 }} title={a.nombre}>
                           {a.nombre}
                         </span>
-                        <button
+                        <button className="boton-peligro boton-sm"
                           type="button"
                           onClick={() => eliminarArchivo(idx)}
-                          style={{ background: "none", border: "none", color: "#dc2626", cursor: "pointer", fontWeight: 700, fontSize: 12, padding: "2px 4px" }}
                           title="Eliminar archivo"
                         >
                           X
@@ -1665,7 +1655,6 @@ function ContenidoCrearTicket({
                   router.push(rutaLista ?? (esIncidente ? "/plataforma/incidentes/mios" : "/plataforma/solicitudes/mios"));
                 }
               }}
-              style={{ width: "auto", fontSize: 13, padding: "8px 18px" }}
               disabled={guardando}
             >
               Cancelar
@@ -1674,13 +1663,6 @@ function ContenidoCrearTicket({
               type="submit"
               className="boton-primario"
               disabled={guardando || !formularioTicketValido}
-              style={{
-                width: "auto",
-                fontSize: 13,
-                padding: "8px 24px",
-                opacity: !formularioTicketValido || guardando ? 0.6 : 1,
-                cursor: !formularioTicketValido || guardando ? "not-allowed" : "pointer",
-              }}
               title={!formularioTicketValido ? "Complete todos los campos obligatorios para registrar el ticket." : ""}
             >
               {guardando
@@ -1739,7 +1721,6 @@ function ContenidoCrearTicket({
                 type="button"
                 onClick={() => setImagenModal(null)}
                 className="boton-primario"
-                style={{ fontSize: 12, padding: "5px 14px", width: "auto" }}
               >
                 Cerrar
               </button>

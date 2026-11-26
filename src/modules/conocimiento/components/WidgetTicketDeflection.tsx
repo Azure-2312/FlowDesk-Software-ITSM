@@ -105,7 +105,7 @@ export default function WidgetTicketDeflection({
                 type="button"
                 onClick={() => marcarResuelto(art.id_articulo)}
                 disabled={articuloResuelto === art.id_articulo}
-                className="px-2.5 py-1 text-xs text-white bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-800 rounded font-medium transition-colors"
+                className="boton-primario boton-sm"
               >
                 {articuloResuelto === art.id_articulo ? "¡Resuelto!" : "Esto me sirvió"}
               </button>

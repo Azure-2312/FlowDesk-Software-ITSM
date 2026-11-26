@@ -65,8 +65,8 @@ export default function VistaReportesCambios() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Reportes de cambios</h1>
-        <p>Tasa de éxito, emergencias, tiempo de ciclo, incidentes inducidos y cumplimiento de ventana.</p>
+        <h1 className="titulo-pagina">Reportes de cambios</h1>
+        <p className="descripcion-pagina">Tasa de éxito, emergencias, tiempo de ciclo, incidentes inducidos y cumplimiento de ventana.</p>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))", gap: 14, marginBottom: 24 }}>
@@ -80,7 +80,7 @@ export default function VistaReportesCambios() {
         <Kpi titulo="Horas de ciclo prom." valor={r.horas_ciclo_promedio === null ? "—" : r.horas_ciclo_promedio} sufijo={r.horas_ciclo_promedio === null ? undefined : "h"} />
       </div>
 
-      <div className="tarjeta-formulario" style={{ margin: 0 }}>
+      <div className="estado-vacio" style={{ margin: 0 }} >
         <h2>Desempeño por tipo de cambio</h2>
         {data.porTipo.length === 0 ? (
           <p style={{ fontSize: 12.5, color: "#6b7280", margin: 0 }}>Sin datos de cambios.</p>

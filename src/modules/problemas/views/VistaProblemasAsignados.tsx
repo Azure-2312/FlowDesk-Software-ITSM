@@ -53,10 +53,10 @@ export default function PaginaProblemasAsignados() {
     <div className="vista-contenedor">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+          <h1 className="titulo-pagina">
             Mis problemas asignados
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          <p className="descripcion-pagina">
             Investigaciones de causa raíz y soluciones temporales (workaround) asignadas a tu gestión técnica ({problemas.length} problemas)
           </p>
         </div>
@@ -76,18 +76,9 @@ export default function PaginaProblemasAsignados() {
           >
             Registrar problema
           </Link>
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={() => cargarProblemas()}
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              fontSize: 13,
-              color: "#334155",
-              cursor: "pointer",
-            }}
           >
             Actualizar
           </button>
@@ -108,13 +99,7 @@ export default function PaginaProblemasAsignados() {
 
       {!cargando && !error && problemas.length === 0 && (
         <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            padding: "48px 24px",
-            textAlign: "center",
-          }}
+          className="estado-vacio"
         >
           <div style={{ fontSize: 16, fontWeight: 600, color: "#1e293b", marginBottom: 6 }}>
             No tienes problemas asignados actualmente

@@ -35,8 +35,8 @@ export default function VistaIncumplimientosSla() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Incumplimientos y causas</h1>
-        <p>Análisis de tickets vencidos de mi área por servicio y por técnico.</p>
+        <h1 className="titulo-pagina">Incumplimientos y causas</h1>
+        <p className="descripcion-pagina">Análisis de tickets vencidos de mi área por servicio y por técnico.</p>
       </div>
 
       <div className="tarjeta-formulario" style={{ marginBottom: 20 }}>
@@ -45,7 +45,7 @@ export default function VistaIncumplimientosSla() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16 }}>
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Por servicio</h2>
           {data.porServicio.length === 0 ? <p>Sin datos.</p> : (
             <table className="tabla-datos">
@@ -59,7 +59,7 @@ export default function VistaIncumplimientosSla() {
           )}
         </div>
 
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Por técnico</h2>
           {data.porTecnico.length === 0 ? <p>Sin datos.</p> : (
             <table className="tabla-datos">

@@ -50,8 +50,8 @@ export default function VistaContratosArea() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Licencias y contratos de mi departamento</h1>
-        <p>Software asignado a los colaboradores de mi área y sus vencimientos.</p>
+        <h1 className="titulo-pagina">Licencias y contratos de mi departamento</h1>
+        <p className="descripcion-pagina">Software asignado a los colaboradores de mi área y sus vencimientos.</p>
       </div>
 
       {cargando ? (
@@ -59,7 +59,7 @@ export default function VistaContratosArea() {
       ) : error ? (
         <p role="alert" className="mensaje-error">{error}</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio" >
           No hay licencias asignadas a mi área.
         </div>
       ) : (

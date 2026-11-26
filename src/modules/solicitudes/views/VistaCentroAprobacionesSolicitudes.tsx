@@ -140,38 +140,12 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
   return (
     <div className="vista-contenedor" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Cabecera Corporativa de Aprobaciones */}
-      <div
-        style={{
-          backgroundColor: "#ffffff",
-          padding: "20px 24px",
-          borderRadius: "12px",
-          border: "1px solid #e2e8f0",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "16px",
-        }}
-      >
+      <div className="cabecera-pagina">
         <div>
-          <span
-            style={{
-              fontSize: "11px",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              color: "#2563eb",
-              display: "block",
-              marginBottom: "4px",
-            }}
-          >
-            Mesa de Servicio · Solicitudes de Requerimiento
-          </span>
-          <h1 style={{ fontSize: "20px", fontWeight: 700, color: "#0f172a", margin: 0, letterSpacing: "-0.01em" }}>
+          <h1 className="titulo-pagina">
             Centro de Aprobaciones
           </h1>
-          <p style={{ fontSize: "13px", color: "#64748b", margin: "4px 0 0 0" }}>
+          <p className="descripcion-pagina">
             Control jerárquico de requerimientos corporativos, autorizaciones de acceso y dotación de servicios.
           </p>
         </div>
@@ -215,27 +189,11 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
             </div>
           )}
 
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={cargarDatos}
             disabled={cargando}
             title="Actualizar listado"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              padding: "7px 12px",
-              height: "34px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: "6px",
-              fontSize: "12.5px",
-              fontWeight: 600,
-              color: "#334155",
-              cursor: cargando ? "not-allowed" : "pointer",
-              transition: "all 0.15s ease",
-            }}
           >
 
             <span>Actualizar</span>
@@ -384,7 +342,7 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
                       <div style={{ display: "inline-flex", gap: "6px", alignItems: "center", justifyContent: "flex-end" }}>
                         <button
                           type="button"
-                          className="boton-tabla-detalle"
+                          className="boton-secundario boton-sm"
                           onClick={() => router.push(rutaDetalleTicket({ id_ticket: t.id_ticket, id_tipo_ticket: 2 }))}
                           title="Consultar expediente completo"
                         >
@@ -394,7 +352,7 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
 
                         <button
                           type="button"
-                          className="boton-tabla-aprobar"
+                          className="boton-primario boton-sm"
                           onClick={() => setTicketAccion({ id: t.id_ticket, decision: "APROBADO", codigo: t.codigo_ticket })}
                           title="Conceder autorización"
                         >
@@ -404,7 +362,7 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
 
                         <button
                           type="button"
-                          className="boton-tabla-rechazar"
+                          className="boton-peligro boton-sm"
                           onClick={() => setTicketAccion({ id: t.id_ticket, decision: "RECHAZADO", codigo: t.codigo_ticket })}
                           title="Denegar requerimiento"
                         >
@@ -478,7 +436,7 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
                     <td style={{ padding: "12px 16px", textAlign: "right", whiteSpace: "nowrap" }}>
                       <button
                         type="button"
-                        className="boton-tabla-detalle"
+                        className="boton-secundario boton-sm"
                         onClick={() => router.push(rutaDetalleTicket({ id_ticket: t.id_ticket, id_tipo_ticket: 2 }))}
                         title="Ver detalle"
                       >
@@ -571,7 +529,6 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ padding: "8px 16px", fontSize: "13px" }}
                 onClick={() => setTicketAccion(null)}
                 disabled={procesando}
               >
@@ -579,8 +536,7 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
               </button>
               <button
                 type="button"
-                className={ticketAccion.decision === "APROBADO" ? "boton-tabla-aprobar" : "boton-tabla-rechazar"}
-                style={{ height: "36px", padding: "0 18px", fontSize: "13px" }}
+                className={ticketAccion.decision === "APROBADO" ? "boton-primario boton-sm" : "boton-peligro boton-sm"}
                 onClick={ejecutarDecision}
                 disabled={procesando}
               >

@@ -254,8 +254,8 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
       {/* Cabecera de Página */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 16, flexWrap: "nowrap" }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 4px 0", color: "#0f172a" }}>{titulo}</h1>
-          <p className="subtitulo" style={{ margin: 0, fontSize: 13, color: "#64748b", maxWidth: 900 }}>
+          <h1 className="titulo-pagina">{titulo}</h1>
+          <p className="descripcion-pagina">
             {descripcion}
           </p>
         </div>
@@ -264,7 +264,7 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
             type="button"
             className="boton-primario"
             onClick={abrirModalFiltros}
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+            style={{ flexShrink: 0 }}
           >
             {filtrosActivosCount > 0 ? `Filtrar (${filtrosActivosCount})` : "Filtrar"}
           </button>
@@ -274,7 +274,7 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
             className="boton-secundario"
             onClick={cargarTickets}
             disabled={cargando}
-            style={{ width: "auto", padding: "8px 14px", fontSize: 13, flexShrink: 0 }}
+            style={{ flexShrink: 0 }}
           >
             Actualizar
           </button>
@@ -282,7 +282,7 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
       </div>
 
       {/* Pestañas de Acceso Rápido por Tipo de Ticket */}
-      {!tipoFijo && <div style={{ display: "flex", gap: 8, marginBottom: 16, borderBottom: "1px solid #e2e8f0", paddingBottom: 10, overflowX: "auto" }}>
+      {!tipoFijo && <div className="pestanas">
         {[
           { id: "", label: "Todos los Tipos" },
           { id: "1", label: "Incidentes" },
@@ -298,18 +298,7 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
               key={tab.id}
               type="button"
               onClick={() => setFiltroTipo(tab.id)}
-              style={{
-                background: activo ? "#eff6ff" : "transparent",
-                color: activo ? "#1d4ed8" : "#64748b",
-                border: activo ? "1px solid #bfdbfe" : "1px solid transparent",
-                borderRadius: 6,
-                padding: "6px 14px",
-                fontSize: 13,
-                fontWeight: activo ? 700 : 500,
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                transition: "all 0.15s ease",
-              }}
+              className={activo ? "pestana pestana-activa" : "pestana"}
             >
               {tab.label}
             </button>
@@ -340,9 +329,8 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
         {filtrosActivosCount > 0 && (
           <button
             type="button"
-            className="boton-mini"
+            className="boton-secundario boton-sm"
             onClick={limpiarFiltros}
-            style={{ color: "#dc2626", borderColor: "#fca5a5", backgroundColor: "#fef2f2", fontSize: 12, padding: "7px 12px" }}
           >
             Limpiar {filtrosActivosCount} filtro(s)
           </button>
@@ -357,7 +345,7 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
           Consultando tickets...
         </div>
       ) : tickets.length === 0 ? (
-        <div className="contenedor-tabla" style={{ textAlign: "center", padding: "40px 16px", color: "#64748b" }}>
+        <div className="estado-vacio">
           No se encontraron tickets con los criterios y filtros especificados.
         </div>
       ) : (
@@ -432,7 +420,7 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
                     <td style={{ textAlign: "center" }}>
                       <button
                         type="button"
-                        className="boton-mini"
+                        className="boton-secundario boton-sm"
                         onClick={() => {
                           if (rutaDetalleBase) {
                             router.push(`${rutaDetalleBase}/${t.id_ticket}`);
@@ -444,7 +432,6 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
                             router.push(rutaDetalleTicket(t));
                           }
                         }}
-                        style={{ fontSize: 12, padding: "5px 10px" }}
                       >
                         Ver Ficha
                       </button>
@@ -476,7 +463,7 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
               </div>
               <button
                 type="button"
-                className="modal-cerrar-boton"
+                className="boton-icono"
                 onClick={() => setModalFiltrosAbierto(false)}
                 title="Cerrar modal de filtros"
                 aria-label="Cerrar modal de filtros"
@@ -613,9 +600,8 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #e2e8f0", paddingTop: 16 }}>
                 <button
                   type="button"
-                  className="boton-mini"
+                  className="boton-secundario boton-sm"
                   onClick={limpiarFiltros}
-                  style={{ color: "#dc2626", borderColor: "#fca5a5" }}
                 >
                   Restablecer todo
                 </button>
@@ -624,14 +610,12 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
                     type="button"
                     className="boton-secundario"
                     onClick={() => setModalFiltrosAbierto(false)}
-                    style={{ width: "auto", padding: "7px 14px", fontSize: 13 }}
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
                     className="boton-primario"
-                    style={{ width: "auto", padding: "7px 20px", fontSize: 13 }}
                   >
                     Aplicar Filtros
                   </button>

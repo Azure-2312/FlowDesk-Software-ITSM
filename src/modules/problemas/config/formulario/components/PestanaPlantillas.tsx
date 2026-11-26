@@ -151,7 +151,6 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
           onClick={abrirEditorNuevo}
           disabled={!puedeEditar}
           className="boton-primario"
-          style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
         >
           Nueva plantilla
         </button>
@@ -174,7 +173,7 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
           <tbody className="divide-y divide-slate-100 text-slate-700">
             {plantillasFiltradas.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-12 text-center text-slate-400 italic">
+                <td colSpan={6} className="celda-vacia">
                   No se encontraron plantillas de problema.
                 </td>
               </tr>
@@ -262,14 +261,14 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
               <button
                 type="button"
                 onClick={() => setModalEditor(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold"
+                className="boton-icono"
               >
                 ×
               </button>
             </div>
 
             {/* Pestañas Internas del Editor (1 General, 2 Valores, 3 Tareas, 4 Vista Previa) */}
-            <div className="flex border-b border-slate-200 space-x-2 text-xs font-semibold">
+            <div className="pestanas">
               {[
                 { id: 1, label: "1. Parámetros Generales" },
                 { id: 2, label: "2. Valores Prellenados y Bloqueos" },
@@ -280,11 +279,7 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
                   key={p.id}
                   type="button"
                   onClick={() => setSubPestanaEditor(p.id as any)}
-                  className={`py-2 px-3 border-b-2 transition ${
-                    subPestanaEditor === p.id
-                      ? "border-blue-600 text-blue-600 font-bold"
-                      : "border-transparent text-slate-500 hover:text-slate-800"
-                  }`}
+                  className={subPestanaEditor === p.id ? "pestana pestana-activa" : "pestana"}
                 >
                   {p.label}
                 </button>
@@ -453,7 +448,7 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
                           },
                         ])
                       }
-                      className="px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded"
+                      className="boton-secundario boton-sm"
                     >
                       + Añadir tarea
                     </button>
@@ -494,7 +489,7 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
                           onClick={() =>
                             setTareasIncluidas(tareasIncluidas.filter((_, i) => i !== tIdx))
                           }
-                          className="text-rose-600 hover:text-rose-800 font-bold"
+                          className="boton-peligro"
                         >
                           ×
                         </button>
@@ -533,7 +528,7 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
               <button
                 type="button"
                 onClick={() => setModalEditor(false)}
-                className="px-4 py-2 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg"
+                className="boton-secundario boton-sm"
               >
                 Cancelar
               </button>
@@ -541,7 +536,7 @@ export const PestanaPlantillas: React.FC<PestanaPlantillasProps> = ({
                 type="button"
                 onClick={handleGuardarPlantilla}
                 disabled={guardando}
-                className="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm"
+                className="boton-primario boton-sm"
               >
                 {guardando ? "Guardando..." : "Guardar plantilla"}
               </button>

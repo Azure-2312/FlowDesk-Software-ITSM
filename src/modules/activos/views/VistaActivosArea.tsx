@@ -52,8 +52,8 @@ export default function VistaActivosArea() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Activos de mi área</h1>
-        <p>Equipos en custodia de los colaboradores de mi departamento (sin datos financieros).</p>
+        <h1 className="titulo-pagina">Activos de mi área</h1>
+        <p className="descripcion-pagina">Equipos en custodia de los colaboradores de mi departamento (sin datos financieros).</p>
       </div>
 
       <div style={{ marginBottom: 16 }}>

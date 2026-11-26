@@ -211,10 +211,10 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos",
     <div style={{ padding: "28px 32px 32px 32px", width: "100%", maxWidth: 1400, margin: "0 auto 0 0", boxSizing: "border-box" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 16 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+          <h1 className="titulo-pagina">
             Objetivos y Acuerdos de Nivel de Servicio (SLA)
           </h1>
-          <p style={{ margin: "6px 0 0 0", fontSize: 13, color: "#64748b", lineHeight: 1.45 }}>
+          <p className="descripcion-pagina">
             Parametrización de la matriz institucional de tiempos por prioridad, metas globales de cumplimiento, calendario laboral y reglas de congelación de cronómetros conforme a ITIL v4 e ISO/IEC 20000.
           </p>
         </div>
@@ -223,7 +223,7 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos",
           className="boton-primario"
           onClick={() => guardarObjetivos()}
           disabled={guardando || hayInconsistenciasTiempos}
-          style={{ width: "auto", padding: "8px 18px", fontSize: 13, flexShrink: 0 }}
+          style={{ flexShrink: 0 }}
           title={hayInconsistenciasTiempos ? "Corrija las inconsistencias de tiempos SLA/OLA para guardar." : ""}
         >
           {guardando ? "Guardando..." : "Guardar Configuración"}
@@ -233,47 +233,19 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos",
       {/* Selector de Pestañas SLA */}
       {!pestanaFija && (
         <div
-          style={{
-            display: "flex",
-            gap: 8,
-            borderBottom: "1px solid #e2e8f0",
-            marginBottom: 24,
-            justifyContent: "flex-start",
-            overflowX: "auto",
-            scrollbarWidth: "none"
-          }}
+          className="pestanas"
         >
           <button
             type="button"
             onClick={() => setPestañaActiva("tiempos")}
-            style={{
-              padding: "10px 16px",
-              fontSize: 13,
-              fontWeight: pestañaActiva === "tiempos" ? 600 : 500,
-              color: pestañaActiva === "tiempos" ? "#2563eb" : "#64748b",
-              borderBottom: pestañaActiva === "tiempos" ? "2px solid #2563eb" : "2px solid transparent",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-            }}
+            className={pestañaActiva === "tiempos" ? "pestana pestana-activa" : "pestana"}
           >
             Objetivos de Tiempo y Métricas SLA
           </button>
           <button
             type="button"
             onClick={() => setPestañaActiva("matriz")}
-            style={{
-              padding: "10px 16px",
-              fontSize: 13,
-              fontWeight: pestañaActiva === "matriz" ? 600 : 500,
-              color: pestañaActiva === "matriz" ? "#2563eb" : "#64748b",
-              borderBottom: pestañaActiva === "matriz" ? "2px solid #2563eb" : "2px solid transparent",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-            }}
+            className={pestañaActiva === "matriz" ? "pestana pestana-activa" : "pestana"}
           >
             Matriz Institucional de Prioridad (Impacto x Urgencia)
           </button>

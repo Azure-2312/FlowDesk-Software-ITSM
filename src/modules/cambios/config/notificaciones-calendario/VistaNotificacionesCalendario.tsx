@@ -208,10 +208,10 @@ export default function NotificacionesCalendarioPage() {
           marginBottom: 16
         }}>
           <div>
-            <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+            <h1 className="titulo-pagina">
               Notificaciones y Calendario de Cambios
             </h1>
-            <p style={{ margin: "6px 0 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
+            <p className="descripcion-pagina">
               Gobierno de eventos ITIL v4, alertas multicanal, ventanas de mantenimiento autorizadas y períodos de congelamiento de infraestructura.
             </p>
           </div>
@@ -222,7 +222,7 @@ export default function NotificacionesCalendarioPage() {
               type="button"
               disabled={guardando || deshabilitadoEdicion}
               className="boton-primario"
-              style={{ padding: "8px 18px", fontSize: 13, width: "auto", fontWeight: 700, flexShrink: 0 }}
+              style={{ flexShrink: 0 }}
             >
               {guardando ? "Guardando..." : "Guardar Configuración"}
             </button>
@@ -238,10 +238,9 @@ export default function NotificacionesCalendarioPage() {
                 Solicitud de control enviada al administrador
               </span>
             ) : (
-              <button
+              <button className="boton-peligro boton-sm"
                 type="button"
                 onClick={() => setSolicitudControlEnviada(true)}
-                style={{ padding: "4px 10px", background: "#991b1b", color: "#ffffff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12 }}
               >
                 Solicitar Control
               </button>
@@ -250,34 +249,15 @@ export default function NotificacionesCalendarioPage() {
         )}
 
         {/* Navegación horizontal de pestañas */}
-        <div style={{
-          display: "flex",
-          gap: 8,
-          borderBottom: "1px solid #e2e8f0",
-          marginBottom: 24,
-          justifyContent: "flex-start",
-          overflowX: "auto",
-          scrollbarWidth: "none"
-        }}>
+        <div className="pestanas">
           {(["ventanas_mantenimiento", "periodos_congelamiento", "feriados"] as TabId[]).map((tabKey) => {
             const tab = PESTANAS_INFO[tabKey];
             const activa = tabActiva === tabKey;
             return (
-              <button
+              <button type="button"
                 key={tabKey}
                 onClick={() => setTabActiva(tabKey)}
-                style={{
-                  padding: "10px 16px",
-                  border: "none",
-                  background: "transparent",
-                  borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
-                  color: activa ? "#2563eb" : "#64748b",
-                  fontWeight: activa ? 600 : 500,
-                  fontSize: 13,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  transition: "all 0.15s ease"
-                }}
+                className={activa ? "pestana pestana-activa" : "pestana"}
               >
                 {tab.titulo}
               </button>
@@ -294,7 +274,7 @@ export default function NotificacionesCalendarioPage() {
           <div style={{ padding: 40, textAlign: "center", color: "#b91c1c" }}>
             Error: {errorCarga}
             <div style={{ marginTop: 12 }}>
-              <button onClick={cargarDatos} style={{ padding: "6px 14px", background: "#2563eb", color: "#ffffff", border: "none", borderRadius: 4, cursor: "pointer" }}>
+              <button className="boton-primario" onClick={cargarDatos} >
                 Reintentar
               </button>
             </div>

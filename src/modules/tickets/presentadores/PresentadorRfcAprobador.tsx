@@ -270,7 +270,6 @@ export default function PresentadorRfcAprobador({
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", color: "#b45309", borderColor: "#fcd34d" }}
                 onClick={() => decidir("OBSERVADO")}
                 disabled={procesando || !puedeDecidir}
               >
@@ -279,7 +278,6 @@ export default function PresentadorRfcAprobador({
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto" }}
                 onClick={() => decidir("APROBADO_CON_CONDICIONES")}
                 disabled={procesando || !puedeDecidir}
               >
@@ -288,7 +286,6 @@ export default function PresentadorRfcAprobador({
               <button
                 type="button"
                 className="boton-secundario"
-                style={{ width: "auto", backgroundColor: "#dc2626", color: "#ffffff", borderColor: "#b91c1c" }}
                 onClick={() => decidir("RECHAZADO")}
                 disabled={procesando || !puedeDecidir}
               >
@@ -297,7 +294,6 @@ export default function PresentadorRfcAprobador({
               <button
                 type="button"
                 className="boton-primario"
-                style={{ width: "auto", backgroundColor: "#059669", borderColor: "#047857" }}
                 onClick={() => decidir("APROBADO")}
                 disabled={procesando || !puedeDecidir}
               >

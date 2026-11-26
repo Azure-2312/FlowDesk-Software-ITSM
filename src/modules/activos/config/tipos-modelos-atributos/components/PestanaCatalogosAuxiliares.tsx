@@ -380,7 +380,6 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
               onClick={() => abrirEdicion(catalogoActivo)}
               disabled={bloqueado}
               className="boton-primario"
-              style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
             >
               Nuevo valor
             </button>
@@ -388,7 +387,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
         </div>
 
         {/* Pestañas horizontales de catálogos */}
-        <div className="flex overflow-x-auto gap-2 border-b border-slate-200 mt-4 pb-0">
+        <div className="pestanas" style={{ marginTop: 16 }}>
           {[
             { id: "condicion_fisica", label: "Condición física", badge: condiciones.length },
             { id: "monedas", label: "Monedas", badge: monedas.length },
@@ -404,17 +403,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                 key={tab.id}
                 type="button"
                 onClick={() => setCatalogoActivo(tab.id as CatalogoId)}
-                style={{
-                  padding: "10px 14px",
-                  border: "none",
-                  background: "transparent",
-                  borderBottom: activa ? "2px solid #2563eb" : "2px solid transparent",
-                  color: activa ? "#2563eb" : "#64748b",
-                  fontWeight: activa ? 600 : 500,
-                  fontSize: 13,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap"
-                }}
+                className={activa ? "pestana pestana-activa" : "pestana"}
               >
                 {tab.label} ({tab.badge})
               </button>
@@ -459,14 +448,14 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                           <button
                             onClick={() => moverElemento("condicion_fisica", idx, "arriba")}
                             disabled={idx === 0 || bloqueado}
-                            className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
+                            className="boton-icono boton-sm"
                           >
                             <ArrowUp size={10} />
                           </button>
                           <button
                             onClick={() => moverElemento("condicion_fisica", idx, "abajo")}
                             disabled={idx === condiciones.length - 1 || bloqueado}
-                            className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
+                            className="boton-icono boton-sm"
                           >
                             <ArrowDown size={10} />
                           </button>
@@ -596,14 +585,14 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                           <button
                             onClick={() => moverElemento("tipos_adquisicion", idx, "arriba")}
                             disabled={idx === 0 || bloqueado}
-                            className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
+                            className="boton-icono boton-sm"
                           >
                             <ArrowUp size={10} />
                           </button>
                           <button
                             onClick={() => moverElemento("tipos_adquisicion", idx, "abajo")}
                             disabled={idx === tiposAdquisicion.length - 1 || bloqueado}
-                            className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
+                            className="boton-icono boton-sm"
                           >
                             <ArrowDown size={10} />
                           </button>
@@ -678,14 +667,14 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
                           <button
                             onClick={() => moverElemento("tipos_documento", idx, "arriba")}
                             disabled={idx === 0 || bloqueado}
-                            className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
+                            className="boton-icono boton-sm"
                           >
                             <ArrowUp size={10} />
                           </button>
                           <button
                             onClick={() => moverElemento("tipos_documento", idx, "abajo")}
                             disabled={idx === tiposDocumento.length - 1 || bloqueado}
-                            className="text-[9px] text-slate-400 hover:text-slate-700 disabled:opacity-20 leading-none"
+                            className="boton-icono boton-sm"
                           >
                             <ArrowDown size={10} />
                           </button>
@@ -1162,13 +1151,13 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
             <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
               <button
                 onClick={() => setModalEdicion({ abierto: false, catalogo: "condicion_fisica", esNuevo: true })}
-                className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-800"
+                className="boton-enlace"
               >
                 Cancelar
               </button>
               <button
                 onClick={guardarEdicion}
-                className="px-4 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded shadow-sm"
+                className="boton-primario boton-sm"
               >
                 Guardar en borrador
               </button>

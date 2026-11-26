@@ -42,8 +42,8 @@ export default function VistaEscalamientosSla() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Escalamientos y riesgos de SLA</h1>
-        <p>Tickets de mi área vencidos o a punto de vencer, para intervenir a tiempo.</p>
+        <h1 className="titulo-pagina">Escalamientos y riesgos de SLA</h1>
+        <p className="descripcion-pagina">Tickets de mi área vencidos o a punto de vencer, para intervenir a tiempo.</p>
       </div>
 
       {cargando ? (
@@ -51,7 +51,7 @@ export default function VistaEscalamientosSla() {
       ) : error ? (
         <p role="alert" className="mensaje-error">{error}</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio" >
           No hay tickets en riesgo ni vencidos en este momento.
         </div>
       ) : (

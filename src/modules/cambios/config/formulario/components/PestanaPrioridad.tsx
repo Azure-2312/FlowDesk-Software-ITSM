@@ -153,7 +153,6 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
           <Link
             href="/plataforma/servicios/configuracion/sla"
             className="boton-secundario"
-            style={{ fontSize: 12, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
             Ver Matriz Compartida en Catálogo de Servicios / SLA 
           </Link>

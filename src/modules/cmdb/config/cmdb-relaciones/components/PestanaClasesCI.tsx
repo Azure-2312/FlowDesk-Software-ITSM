@@ -163,7 +163,6 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
             type="button"
             onClick={() => setModalDiagrama(true)}
             className="boton-secundario"
-            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
             Ver diagrama de clases
           </button>
@@ -172,7 +171,6 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
             disabled={bloqueado}
             onClick={abrirNuevaClaseLogica}
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
             Clase de CI lógica
           </button>
@@ -203,11 +201,7 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
                       type="button"
                       disabled={bloqueado}
                       onClick={() => handleToggleActiva(clase.id)}
-                      className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold ${
-                        clase.activa
-                          ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
-                          : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                      }`}
+                      className="boton-secundario boton-sm" aria-pressed={clase.activa}
                     >
                       {clase.activa ? "Activa" : "Inactiva"}
                     </button>
@@ -285,7 +279,7 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
               <button
                 type="button"
                 onClick={() => setModalDiagrama(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold text-xs"
+                className="boton-enlace"
               >
                 Cerrar
               </button>
@@ -346,7 +340,7 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
               <button
                 type="button"
                 onClick={() => setModalDiagrama(false)}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-sm font-semibold"
+                className="boton-primario"
               >
                 Cerrar vista
               </button>
@@ -366,7 +360,7 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
               <button
                 type="button"
                 onClick={() => setModalEdicion({ abierto: false, esLogica: false })}
-                className="text-slate-400 hover:text-slate-600 font-bold text-xs"
+                className="boton-enlace"
               >
                 Cerrar
               </button>
@@ -448,7 +442,7 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
                   <button
                     type="button"
                     onClick={agregarRelacionMinima}
-                    className="px-3 py-1.5 bg-indigo-600 text-white rounded text-xs font-semibold hover:bg-indigo-700"
+                    className="boton-primario boton-sm"
                   >
                     Agregar
                   </button>
@@ -526,14 +520,14 @@ export function PestanaClasesCI({ datos, onChange, bloqueado }: Props) {
               <button
                 type="button"
                 onClick={() => setModalEdicion({ abierto: false, esLogica: false })}
-                className="px-3.5 py-1.5 border border-slate-300 rounded text-xs text-slate-700"
+                className="boton-secundario boton-sm"
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={guardarClase}
-                className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-semibold"
+                className="boton-primario boton-sm"
               >
                 Guardar cambios
               </button>

@@ -16,13 +16,11 @@ export default async function PaginaAdminServiciosSla({ searchParams }: PageProp
   return (
     <div className="space-y-4">
       {vistasPermitidas.length > 1 && (
-        <div className="bg-white px-6 pt-4 rounded-xl border border-slate-200 shadow-sm">
-          <PestanasVista
+        <PestanasVista
             vistas={vistasPermitidas}
             vistaActiva={vistaActiva}
             urlBase="/plataforma/servicios/configuracion/sla"
           />
-        </div>
       )}
       <ConfiguracionObjetivosSla pestanaFija={vistaActiva as "tiempos" | "matriz"} />
     </div>

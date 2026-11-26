@@ -131,10 +131,10 @@ function FormularioProblemasCrear() {
               Investigación de Problemas (ITIL v4)
             </span>
           </div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Registrar problema
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0" }}>
+          <p className="descripcion-pagina">
             Iniciación formal de investigación de causa raíz según el proceso ITIL Problem Management.
           </p>
         </div>
@@ -148,7 +148,6 @@ function FormularioProblemasCrear() {
             }
           }}
           className="boton-secundario"
-          style={{ width: "auto", fontSize: 12.5, padding: "8px 16px" }}
         >
           Volver a Mis problemas
         </button>
@@ -339,7 +338,6 @@ function FormularioProblemasCrear() {
               }
             }}
             className="boton-secundario"
-            style={{ width: "auto", padding: "8px 18px", fontSize: 13 }}
           >
             Cancelar
           </button>
@@ -347,7 +345,6 @@ function FormularioProblemasCrear() {
             type="submit"
             disabled={guardando}
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 22px", fontSize: 13 }}
           >
             {guardando ? "Registrando..." : "Registrar problema"}
           </button>

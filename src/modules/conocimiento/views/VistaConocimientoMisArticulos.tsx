@@ -37,10 +37,10 @@ export default function PaginaMisArticulos() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Flujo Editorial KCS & Autoría (ITIL v4)
           </span>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Mis artículos de conocimiento
           </h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", margin: "4px 0 0" }}>
+          <p className="descripcion-pagina">
             Artículos redactados por ti y estado del flujo editorial de publicación ({articulos.length} artículos)
           </p>
         </div>
@@ -60,18 +60,9 @@ export default function PaginaMisArticulos() {
           >
             Crear artículo
           </Link>
-          <button
+          <button className="boton-secundario"
             type="button"
             onClick={cargarMisArticulos}
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              fontSize: 13,
-              color: "#334155",
-              cursor: "pointer",
-            }}
           >
             Actualizar
           </button>

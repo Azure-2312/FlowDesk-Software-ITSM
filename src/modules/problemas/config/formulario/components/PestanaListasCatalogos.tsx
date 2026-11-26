@@ -173,11 +173,7 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                   setCatalogoActivo(cat.id);
                   setBusqueda("");
                 }}
-                className={`w-full text-left p-2.5 rounded-lg border text-xs transition flex flex-col ${
-                  catalogoActivo === cat.id
-                    ? "bg-blue-50/80 border-blue-400 font-bold text-blue-900 shadow-xs"
-                    : "bg-white border-transparent hover:bg-slate-50 text-slate-700"
-                }`}
+                className={catalogoActivo === cat.id ? "opcion-seleccionable opcion-seleccionada" : "opcion-seleccionable"}
               >
                 <span>{cat.nombre}</span>
                 <span className="text-[10px] font-normal text-slate-400 mt-0.5">{cat.desc}</span>
@@ -215,7 +211,6 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                     onClick={() => abrirModalNuevo(false)}
                     disabled={!puedeEditar}
                     className="boton-primario"
-                    style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                   >
                     Nueva categoría
                   </button>
@@ -224,7 +219,6 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                     onClick={() => abrirModalNuevo(true)}
                     disabled={!puedeEditar}
                     className="boton-secundario"
-                    style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                   >
                     Subcategoría
                   </button>
@@ -235,7 +229,6 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                   onClick={() => abrirModalNuevo(false)}
                   disabled={!puedeEditar}
                   className="boton-primario"
-                  style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
                 >
                   Nuevo valor
                 </button>
@@ -262,7 +255,7 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                   link.click();
                   document.body.removeChild(link);
                 }}
-                className="px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-300 transition"
+                className="boton-secundario boton-sm"
               >
                 Exportar CSV
               </button>
@@ -286,7 +279,7 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
               <tbody className="divide-y divide-slate-100 text-slate-700">
                 {itemsFiltrados.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-slate-400 italic">
+                    <td colSpan={7} className="celda-vacia">
                       No hay elementos registrados en este catálogo.
                     </td>
                   </tr>
@@ -350,11 +343,7 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                               onActualizarItem(catalogoActivo, idCampo, { activo: !item.activo })
                             }
                             disabled={item.es_sistema || !puedeEditar}
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                              item.activo
-                                ? "bg-emerald-100 text-emerald-800"
-                                : "bg-slate-200 text-slate-600"
-                            }`}
+                            className="boton-secundario boton-sm" aria-pressed={item.activo}
                           >
                             {item.activo ? "Activo" : "Inactivo"}
                           </button>
@@ -419,7 +408,7 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
               <button
                 type="button"
                 onClick={() => setModalEditar(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold"
+                className="boton-icono"
               >
                 ×
               </button>
@@ -539,14 +528,14 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                 <button
                   type="button"
                   onClick={() => setModalEditar(false)}
-                  className="px-3 py-1.5 rounded text-slate-700 bg-slate-100 hover:bg-slate-200"
+                  className="boton-secundario"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={guardando}
-                  className="px-4 py-1.5 rounded font-semibold text-white bg-blue-600 hover:bg-blue-700"
+                  className="boton-primario"
                 >
                   {guardando ? "Guardando..." : "Guardar valor"}
                 </button>
@@ -595,7 +584,7 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
               <button
                 type="button"
                 onClick={() => setModalFusion(false)}
-                className="px-3 py-1.5 rounded text-slate-700 bg-slate-100 hover:bg-slate-200"
+                className="boton-secundario"
               >
                 Cancelar
               </button>
@@ -603,7 +592,7 @@ export const PestanaListasCatalogos: React.FC<PestanaListasCatalogosProps> = ({
                 type="button"
                 onClick={handleFusionarSubmit}
                 disabled={!destinoFusionId || guardando}
-                className="px-4 py-1.5 rounded font-bold text-white bg-amber-600 hover:bg-amber-700 disabled:opacity-40"
+                className="boton-primario"
               >
                 {guardando ? "Fusionando..." : "Confirmar Fusión"}
               </button>

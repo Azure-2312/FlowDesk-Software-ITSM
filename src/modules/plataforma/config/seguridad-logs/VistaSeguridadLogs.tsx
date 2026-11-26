@@ -50,18 +50,18 @@ export default function PaginaSeguridadLogs() {
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1>Log de Seguridad y Control de Accesos</h1>
-          <p>
+          <h1 className="titulo-pagina">Log de Seguridad y Control de Accesos</h1>
+          <p className="descripcion-pagina">
             Trazabilidad ISO/IEC 27001 y SOX: Registro inmutable de intentos de inicio de sesión, mitigación de fuerza bruta y auditoría de direcciones IP.
           </p>
         </div>
         <button
-          className="boton-mini"
+          className="boton-secundario boton-sm"
           onClick={cargarLogs}
           disabled={cargando}
           title="Actualizar log de seguridad"
           aria-label="Actualizar log de seguridad"
-          style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 10px", flexShrink: 0 }}
+          style={{ flexShrink: 0 }}
         >
           <svg
             width="14"
@@ -109,8 +109,7 @@ export default function PaginaSeguridadLogs() {
           />
           <button
             type="submit"
-            className="boton-mini"
-            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "7px 10px" }}
+            className="boton-secundario boton-sm"
             title="Buscar eventos"
             aria-label="Buscar eventos"
           >
@@ -141,7 +140,7 @@ export default function PaginaSeguridadLogs() {
       {cargando ? (
         <p className="descripcion">Cargando registros de auditoría...</p>
       ) : logs.length === 0 ? (
-        <div style={{ padding: "32px 20px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px dashed #cbd5e1" }}>
+        <div className="estado-vacio">
           <p style={{ margin: 0, color: "#64748b" }}>No se encontraron eventos de seguridad con los filtros aplicados.</p>
         </div>
       ) : (

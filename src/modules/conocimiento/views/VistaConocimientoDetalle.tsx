@@ -130,7 +130,6 @@ export default function VistaConocimientoDetalle() {
             }
           }}
           className="boton-secundario"
-          style={{ fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px" }}
         >
            Volver a la base de conocimiento
         </button>
@@ -208,7 +207,7 @@ export default function VistaConocimientoDetalle() {
             </span>
           </div>
 
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a", margin: "0 0 14px", lineHeight: 1.3 }}>
+          <h1 className="titulo-pagina">
             {articulo.titulo}
           </h1>
 
@@ -280,37 +279,17 @@ export default function VistaConocimientoDetalle() {
               ¿Te resultó útil este artículo?
             </span>
             <div style={{ display: "flex", gap: 10 }}>
-              <button
+              <button className="boton-secundario"
                 type="button"
                 onClick={() => votar("POSITIVO")}
                 disabled={votando}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: "#ecfdf5",
-                  border: "1px solid #a7f3d0",
-                  borderRadius: 6,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#065f46",
-                  cursor: votando ? "not-allowed" : "pointer",
-                }}
               >
                 Útil ({articulo.utilidad_positiva})
               </button>
-              <button
+              <button className="boton-peligro"
                 type="button"
                 onClick={() => votar("NEGATIVO")}
                 disabled={votando}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: "#fef2f2",
-                  border: "1px solid #fecaca",
-                  borderRadius: 6,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#991b1b",
-                  cursor: votando ? "not-allowed" : "pointer",
-                }}
               >
                 No útil ({articulo.utilidad_negativa})
               </button>

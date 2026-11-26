@@ -222,7 +222,6 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
           <button
             type="button"
             className="boton-primario"
-            style={{ width: "auto", padding: "6px 14px", fontSize: 13 }}
             onClick={abrirCrear}
           >
             Nueva regla
@@ -250,7 +249,7 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
           <tbody>
             {reglas.length === 0 ? (
               <tr>
-                <td colSpan={9} style={{ textAlign: "center", padding: "30px 0", color: "#64748b" }}>
+                <td colSpan={9} className="celda-vacia">
                   No hay reglas de umbral configuradas. Haga clic en "Nueva regla" para definir una.
                 </td>
               </tr>
@@ -297,15 +296,9 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
                     </span>
                   </td>
                   <td style={{ textAlign: "center" }}>
-                    <button
+                    <button className="boton-enlace"
                       type="button"
                       onClick={() => toggleActiva(r)}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        padding: 0
-                      }}
                       title={r.activa ? "Pausar regla" : "Activar regla"}
                     >
                       <span className={`badge ${r.activa ? "badge-activo" : "badge-inactivo"}`}>
@@ -324,7 +317,6 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
                       <button
                         type="button"
                         className="boton-secundario"
-                        style={{ width: "auto", padding: "4px 8px", fontSize: 11.5 }}
                         onClick={() => abrirEditar(r)}
                       >
                         Editar
@@ -332,23 +324,13 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
                       <button
                         type="button"
                         className="boton-secundario"
-                        style={{ width: "auto", padding: "4px 8px", fontSize: 11.5 }}
                         onClick={() => duplicarRegla(r)}
                         title="Duplicar regla"
                       >
                         Duplicar
                       </button>
-                      <button
+                      <button className="boton-peligro boton-sm"
                         type="button"
-                        style={{
-                          background: "transparent",
-                          border: "1px solid #fecaca",
-                          borderRadius: 4,
-                          color: "#dc2626",
-                          padding: "4px 8px",
-                          fontSize: 11.5,
-                          cursor: "pointer"
-                        }}
                         onClick={() => eliminarRegla(r.id_regla)}
                       >
                         Eliminar
@@ -538,7 +520,6 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
                 <button
                   type="button"
                   className="boton-secundario"
-                  style={{ width: "auto", padding: "6px 14px", fontSize: 13 }}
                   onClick={() => setModalAbierto(false)}
                 >
                   Cancelar
@@ -546,7 +527,6 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
                 <button
                   type="submit"
                   className="boton-primario"
-                  style={{ width: "auto", padding: "6px 18px", fontSize: 13 }}
                   disabled={cargando}
                 >
                   {cargando ? "Guardando..." : "Guardar Regla"}

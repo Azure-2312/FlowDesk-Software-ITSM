@@ -401,7 +401,7 @@ export default function PaginaDetalleTicket({
         <div className="mensaje-error">
           Tu perfil activo no tiene habilitada la consulta de {esIncidente ? "incidentes" : "solicitudes"}.
         </div>
-        <button type="button" className="boton-secundario" style={{ width: "auto" }} onClick={() => router.push(rutaLista)}>
+        <button type="button" className="boton-secundario"  onClick={() => router.push(rutaLista)}>
           {etiquetaVolver}
         </button>
       </div>
@@ -441,20 +441,8 @@ export default function PaginaDetalleTicket({
               router.push(rutaLista);
             }
           }}
-          className="boton-texto"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            color: "#2563eb",
-            fontWeight: 600,
-            fontSize: 13,
-            padding: 0,
-            marginBottom: 10,
-            cursor: "pointer",
-            background: "none",
-            border: "none",
-          }}
+          className="boton-enlace"
+          style={{ marginBottom: 10 }}
         >
           {etiquetaVolver}
         </button>
@@ -502,30 +490,12 @@ export default function PaginaDetalleTicket({
 
       {/* Selector de Pestañas */}
       <div
-        style={{
-          display: "flex",
-          borderBottom: "2px solid #e2e8f0",
-          marginBottom: 20,
-          gap: 8,
-        }}
+        className="pestanas"
       >
         <button
           type="button"
           onClick={() => setPestanaActiva("informacion")}
-          style={{
-            padding: "10px 16px",
-            fontSize: 13,
-            fontWeight: pestanaActiva === "informacion" ? 700 : 500,
-            color: pestanaActiva === "informacion" ? "#2563eb" : "#64748b",
-            borderBottom: pestanaActiva === "informacion" ? "2px solid #2563eb" : "2px solid transparent",
-            marginBottom: -2,
-            background: "none",
-            borderTop: "none",
-            borderLeft: "none",
-            borderRight: "none",
-            cursor: "pointer",
-            transition: "all 0.15s ease",
-          }}
+          className={pestanaActiva === "informacion" ? "pestana pestana-activa" : "pestana"}
         >
           Información
         </button>
@@ -534,23 +504,7 @@ export default function PaginaDetalleTicket({
         <button
           type="button"
           onClick={() => setPestanaActiva("comunicacion")}
-          style={{
-            padding: "10px 16px",
-            fontSize: 13,
-            fontWeight: pestanaActiva === "comunicacion" ? 700 : 500,
-            color: pestanaActiva === "comunicacion" ? "#2563eb" : "#64748b",
-            borderBottom: pestanaActiva === "comunicacion" ? "2px solid #2563eb" : "2px solid transparent",
-            marginBottom: -2,
-            background: "none",
-            borderTop: "none",
-            borderLeft: "none",
-            borderRight: "none",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            transition: "all 0.15s ease",
-          }}
+          className={pestanaActiva === "comunicacion" ? "pestana pestana-activa" : "pestana"}
         >
           Comunicación
           {comentariosPublicos.length > 0 && (
@@ -574,23 +528,7 @@ export default function PaginaDetalleTicket({
           <button
             type="button"
             onClick={() => setPestanaActiva("interna")}
-            style={{
-              padding: "10px 16px",
-              fontSize: 13,
-              fontWeight: pestanaActiva === "interna" ? 700 : 500,
-              color: pestanaActiva === "interna" ? "#2563eb" : "#64748b",
-              borderBottom: pestanaActiva === "interna" ? "2px solid #2563eb" : "2px solid transparent",
-              marginBottom: -2,
-              background: "none",
-              borderTop: "none",
-              borderLeft: "none",
-              borderRight: "none",
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              transition: "all 0.15s ease",
-            }}
+            className={pestanaActiva === "interna" ? "pestana pestana-activa" : "pestana"}
           >
             Comunicación interna
             {comentariosInternos.length > 0 && (
@@ -798,7 +736,6 @@ export default function PaginaDetalleTicket({
                             onClick={() => ejecutarAccion({ id_usuario_asignado: usuarioActual?.id_usuario, id_estado: 3 })}
                             disabled={ejecutandoAccion}
                             className="boton-primario"
-                            style={{ fontSize: 12, padding: "6px 14px", width: "auto", backgroundColor: "#2563eb" }}
                           >
                             {ejecutandoAccion ? "Asignando..." : "Atender ticket"}
                           </button>
@@ -813,7 +750,6 @@ export default function PaginaDetalleTicket({
                               }}
                               disabled={ejecutandoAccion}
                               className="boton-secundario"
-                              style={{ fontSize: 12, padding: "6px 14px", width: "auto" }}
                             >
                               Asignar ticket
                             </button>
@@ -826,7 +762,6 @@ export default function PaginaDetalleTicket({
                               onClick={() => setModalOperativo("cancelar")}
                               disabled={ejecutandoAccion}
                               className="boton-secundario"
-                              style={{ fontSize: 12, padding: "6px 12px", width: "auto", color: "#dc2626", borderColor: "#fca5a5" }}
                             >
                               Cancelar ticket
                             </button>
@@ -844,7 +779,6 @@ export default function PaginaDetalleTicket({
                               onClick={() => ejecutarAccion({ id_estado: 3 })}
                               disabled={ejecutandoAccion}
                               className="boton-primario"
-                              style={{ fontSize: 12, padding: "6px 14px", width: "auto", backgroundColor: "#d97706" }}
                             >
                               Iniciar atención
                             </button>
@@ -858,7 +792,6 @@ export default function PaginaDetalleTicket({
                                 onClick={() => setModalOperativo("espera")}
                                 disabled={ejecutandoAccion}
                                 className="boton-secundario"
-                                style={{ fontSize: 12, padding: "6px 14px", width: "auto" }}
                               >
                                 Poner en espera
                               </button>
@@ -867,7 +800,6 @@ export default function PaginaDetalleTicket({
                                 onClick={() => setModalOperativo("resolver")}
                                 disabled={ejecutandoAccion}
                                 className="boton-primario"
-                                style={{ fontSize: 12, padding: "6px 16px", width: "auto", backgroundColor: "#16a34a" }}
                               >
                                 Resolver ticket
                               </button>
@@ -881,7 +813,6 @@ export default function PaginaDetalleTicket({
                               onClick={() => ejecutarAccion({ id_estado: 3 })}
                               disabled={ejecutandoAccion}
                               className="boton-primario"
-                              style={{ fontSize: 12, padding: "6px 16px", width: "auto", backgroundColor: "#2563eb" }}
                             >
                               Reanudar atención
                             </button>
@@ -898,7 +829,6 @@ export default function PaginaDetalleTicket({
                                 }}
                                 disabled={ejecutandoAccion}
                                 className="boton-secundario"
-                                style={{ fontSize: 12, padding: "6px 14px", width: "auto" }}
                               >
                                 Reasignar ticket
                               </button>
@@ -907,7 +837,6 @@ export default function PaginaDetalleTicket({
                                 onClick={() => setModalOperativo("cancelar")}
                                 disabled={ejecutandoAccion}
                                 className="boton-secundario"
-                                style={{ fontSize: 12, padding: "6px 12px", width: "auto", color: "#dc2626", borderColor: "#fca5a5" }}
                               >
                                 Cancelar ticket
                               </button>
@@ -920,18 +849,6 @@ export default function PaginaDetalleTicket({
                               <Link
                                 href={`/plataforma/problemas/${ticket.id_problema}`}
                                 className="boton-secundario"
-                                style={{
-                                  fontSize: 12,
-                                  padding: "6px 14px",
-                                  width: "auto",
-                                  backgroundColor: "#fdf2f8",
-                                  color: "#9d174d",
-                                  borderColor: "#fbcfe8",
-                                  textDecoration: "none",
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: 6
-                                }}
                                 title="Ver expediente del problema vinculado"
                               >
                                 <span style={{ width: 7, height: 7, borderRadius: "50%", backgroundColor: "#be185d" }} />
@@ -947,17 +864,6 @@ export default function PaginaDetalleTicket({
                                 }}
                                 disabled={ejecutandoAccion || elevandoProblema}
                                 className="boton-secundario"
-                                style={{
-                                  fontSize: 12,
-                                  padding: "6px 14px",
-                                  width: "auto",
-                                  backgroundColor: "#fdf2f8",
-                                  color: "#be185d",
-                                  borderColor: "#f472b6",
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: 6
-                                }}
                                 title="Escalar este incidente a investigación de causa raíz (Problema ITIL)"
                               >
 
@@ -975,7 +881,6 @@ export default function PaginaDetalleTicket({
                           onClick={() => setModalOperativo("reabrir")}
                           disabled={ejecutandoAccion}
                           className="boton-secundario"
-                          style={{ fontSize: 12, padding: "6px 14px", width: "auto" }}
                         >
                           Reabrir ticket
                         </button>
@@ -1365,16 +1270,7 @@ export default function PaginaDetalleTicket({
                               key={estrella}
                               type="button"
                               onClick={() => setCsatRating(estrella)}
-                              style={{
-                                padding: "6px 12px",
-                                borderRadius: 6,
-                                border: csatRating === estrella ? "2px solid #2563eb" : "1px solid #cbd5e1",
-                                backgroundColor: csatRating === estrella ? "#eff6ff" : "#ffffff",
-                                color: csatRating === estrella ? "#1d4ed8" : "#475569",
-                                fontWeight: 700,
-                                fontSize: 12,
-                                cursor: "pointer",
-                              }}
+                              className="boton-secundario boton-sm" aria-pressed={csatRating === estrella}
                             >
                               {estrella} de 5
                             </button>
@@ -1401,7 +1297,6 @@ export default function PaginaDetalleTicket({
                           type="submit"
                           disabled={guardandoCsat || !csatRating}
                           className="boton-primario"
-                          style={{ width: "auto", fontSize: 12.5, padding: "7px 16px" }}
                         >
                           {guardandoCsat ? "Enviando..." : "Enviar Calificación"}
                         </button>
@@ -1503,7 +1398,6 @@ export default function PaginaDetalleTicket({
                       disabled={enviandoMensaje || !nuevoMensaje.trim()}
                       onClick={() => enviarComentario(false)}
                       className="boton-primario"
-                      style={{ width: "auto", fontSize: 13, padding: "8px 20px" }}
                     >
                       {enviandoMensaje ? "Enviando..." : "Enviar Mensaje"}
                     </button>
@@ -1569,7 +1463,7 @@ export default function PaginaDetalleTicket({
               {/* Listado de Comentarios Internos */}
               <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
                 {comentariosInternos.length === 0 ? (
-                  <div style={{ padding: "24px 0", textAlign: "center", color: "#94a3b8", fontSize: 13, fontStyle: "italic" }}>
+                  <div className="estado-vacio">
                     No hay notas internas registradas en este ticket.
                   </div>
                 ) : (
@@ -1625,7 +1519,6 @@ export default function PaginaDetalleTicket({
                         disabled={enviandoMensaje || !nuevoMensaje.trim()}
                         onClick={() => enviarComentario(true)}
                         className="boton-primario"
-                        style={{ width: "auto", fontSize: 13, padding: "8px 20px", backgroundColor: "#7c3aed" }}
                       >
                         {enviandoMensaje ? "Registrando..." : "Registrar Nota Interna"}
                       </button>
@@ -1676,10 +1569,9 @@ export default function PaginaDetalleTicket({
                 {modalOperativo === "asignar" && "Asignar Especialista Técnico"}
                 {modalOperativo === "escalar_problema" && "Escalar Incidente a Problema (RCA / ITIL v4)"}
               </strong>
-              <button
+              <button className="boton-icono boton-sm"
                 type="button"
                 onClick={() => setModalOperativo("ninguno")}
-                style={{ background: "none", border: "none", fontSize: 18, color: "#64748b", cursor: "pointer", fontWeight: 700 }}
               >
                 X
               </button>
@@ -1723,7 +1615,6 @@ export default function PaginaDetalleTicket({
                       type="button"
                       onClick={() => setModalOperativo("ninguno")}
                       className="boton-secundario"
-                      style={{ width: "auto", fontSize: 12.5 }}
                     >
                       Cancelar
                     </button>
@@ -1732,7 +1623,6 @@ export default function PaginaDetalleTicket({
                       disabled={ejecutandoAccion}
                       onClick={() => ejecutarAccion({ id_estado: 4, id_motivo_espera: motivoEsperaId })}
                       className="boton-primario"
-                      style={{ width: "auto", fontSize: 12.5, backgroundColor: "#d97706" }}
                     >
                       {ejecutandoAccion ? "Pausando..." : "Confirmar Pausa"}
                     </button>
@@ -1778,7 +1668,6 @@ export default function PaginaDetalleTicket({
                       type="button"
                       onClick={() => setModalOperativo("ninguno")}
                       className="boton-secundario"
-                      style={{ width: "auto", fontSize: 12.5 }}
                     >
                       Cancelar
                     </button>
@@ -1793,7 +1682,6 @@ export default function PaginaDetalleTicket({
                         })
                       }
                       className="boton-primario"
-                      style={{ width: "auto", fontSize: 12.5, backgroundColor: "#16a34a" }}
                     >
                       {ejecutandoAccion ? "Guardando..." : "Confirmar Resolución"}
                     </button>
@@ -1822,7 +1710,6 @@ export default function PaginaDetalleTicket({
                       type="button"
                       onClick={() => setModalOperativo("ninguno")}
                       className="boton-secundario"
-                      style={{ width: "auto", fontSize: 12.5 }}
                     >
                       Volver
                     </button>
@@ -1836,7 +1723,6 @@ export default function PaginaDetalleTicket({
                         })
                       }
                       className="boton-primario"
-                      style={{ width: "auto", fontSize: 12.5, backgroundColor: "#dc2626" }}
                     >
                       {ejecutandoAccion ? "Cancelando..." : "Confirmar Cancelación"}
                     </button>
@@ -1865,7 +1751,6 @@ export default function PaginaDetalleTicket({
                       type="button"
                       onClick={() => setModalOperativo("ninguno")}
                       className="boton-secundario"
-                      style={{ width: "auto", fontSize: 12.5 }}
                     >
                       Cancelar
                     </button>
@@ -1880,7 +1765,6 @@ export default function PaginaDetalleTicket({
                         })
                       }
                       className="boton-primario"
-                      style={{ width: "auto", fontSize: 12.5, backgroundColor: "#2563eb" }}
                     >
                       {ejecutandoAccion ? "Reabriendo..." : "Confirmar Reapertura"}
                     </button>
@@ -1917,7 +1801,6 @@ export default function PaginaDetalleTicket({
                       type="button"
                       onClick={() => setModalOperativo("ninguno")}
                       className="boton-secundario"
-                      style={{ width: "auto", fontSize: 12.5 }}
                     >
                       Cancelar
                     </button>
@@ -1931,7 +1814,6 @@ export default function PaginaDetalleTicket({
                         })
                       }
                       className="boton-primario"
-                      style={{ width: "auto", fontSize: 12.5, backgroundColor: "#2563eb" }}
                     >
                       {ejecutandoAccion ? "Asignando..." : "Confirmar Asignación"}
                     </button>
@@ -1988,7 +1870,6 @@ export default function PaginaDetalleTicket({
                       type="button"
                       onClick={() => setModalOperativo("ninguno")}
                       className="boton-secundario"
-                      style={{ width: "auto", fontSize: 12.5 }}
                     >
                       Cancelar
                     </button>
@@ -1997,7 +1878,6 @@ export default function PaginaDetalleTicket({
                       disabled={elevandoProblema || !tituloProblema.trim()}
                       onClick={handleEscalarAProblema}
                       className="boton-primario"
-                      style={{ width: "auto", fontSize: 12.5, backgroundColor: "#be185d", borderColor: "#9d174d" }}
                     >
                       {elevandoProblema ? "Creando Problema..." : "Crear Problema y Vincular"}
                     </button>
@@ -2056,7 +1936,6 @@ export default function PaginaDetalleTicket({
                   href={imagenSeleccionada.url}
                   download={imagenSeleccionada.nombre}
                   className="boton-secundario"
-                  style={{ textDecoration: "none", fontSize: 12, padding: "5px 12px", width: "auto" }}
                 >
                   Descargar
                 </a>
@@ -2064,7 +1943,6 @@ export default function PaginaDetalleTicket({
                   type="button"
                   onClick={() => setImagenSeleccionada(null)}
                   className="boton-primario"
-                  style={{ fontSize: 12, padding: "5px 14px", width: "auto" }}
                 >
                   Cerrar
                 </button>

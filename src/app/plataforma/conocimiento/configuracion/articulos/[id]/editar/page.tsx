@@ -142,10 +142,10 @@ export default function PaginaEditarArticuloConocimiento() {
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <h1 className="text-xl font-bold text-slate-900">
+            <h1 className="titulo-pagina">
               Edición Administrativa de Artículo
             </h1>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="descripcion-pagina">
               Código institucional: <span className="font-mono font-semibold text-blue-600">{codigoArticulo}</span>
             </p>
           </div>
@@ -268,26 +268,18 @@ export default function PaginaEditarArticuloConocimiento() {
               <label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
                 Contenido del Artículo (Markdown)
               </label>
-              <div className="flex gap-2">
+              <div className="pestanas" style={{ marginBottom: 0 }}>
                 <button
                   type="button"
                   onClick={() => setVistaPrevia(false)}
-                  className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
-                    !vistaPrevia
-                      ? "bg-blue-100 text-blue-700 font-semibold"
-                      : "text-slate-500 hover:text-slate-700"
-                  }`}
+                  className={!vistaPrevia ? "pestana pestana-activa" : "pestana"}
                 >
                   Editor
                 </button>
                 <button
                   type="button"
                   onClick={() => setVistaPrevia(true)}
-                  className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
-                    vistaPrevia
-                      ? "bg-blue-100 text-blue-700 font-semibold"
-                      : "text-slate-500 hover:text-slate-700"
-                  }`}
+                  className={vistaPrevia ? "pestana pestana-activa" : "pestana"}
                 >
                   Vista Previa
                 </button>
@@ -325,7 +317,7 @@ export default function PaginaEditarArticuloConocimiento() {
           <button
             type="submit"
             disabled={guardando}
-            className="px-5 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors disabled:opacity-50"
+            className="boton-primario"
           >
             {guardando ? "Guardando Cambios..." : "Guardar Modificaciones"}
           </button>

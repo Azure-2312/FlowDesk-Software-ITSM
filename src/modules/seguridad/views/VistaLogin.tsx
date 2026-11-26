@@ -207,7 +207,7 @@ export default function PaginaLogin() {
           </div>
 
           <button
-            className="boton-texto"
+            className="boton-enlace"
             onClick={() => setPasoLogin("credenciales")}
             disabled={cargando}
           >
@@ -309,12 +309,11 @@ export default function PaginaLogin() {
               </label>
               <button
                 type="button"
-                className="boton-recargar-captcha"
+                className="boton-icono boton-sm"
                 onClick={cargarNuevoCaptcha}
                 disabled={cargandoCaptcha}
                 title="Generar nuevo código de verificación"
                 aria-label="Generar nuevo código de verificación"
-                style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "4px 8px" }}
               >
                 <svg
                   width="13"
@@ -360,13 +359,9 @@ export default function PaginaLogin() {
 
           <button
             type="submit"
-            className="boton-primario"
+            className="boton-primario boton-ancho-completo"
             disabled={cargando || captchaRespuesta.trim().length === 0 || cuentaBloqueadaDefinitivo}
-            style={{
-              marginTop: 18,
-              opacity: cargando || captchaRespuesta.trim().length === 0 || cuentaBloqueadaDefinitivo ? 0.6 : 1,
-              cursor: cargando || captchaRespuesta.trim().length === 0 || cuentaBloqueadaDefinitivo ? "not-allowed" : "pointer",
-            }}
+            style={{ marginTop: 18 }}
           >
             {cargando ? "Ingresando..." : "Ingresar"}
           </button>
@@ -378,7 +373,7 @@ export default function PaginaLogin() {
             <div className="modal-alerta-seguridad" style={{ position: "relative" }}>
               <button
                 type="button"
-                className="modal-cerrar-boton"
+                className="boton-icono"
                 style={{ position: "absolute", top: 12, right: 12 }}
                 onClick={() => setMostrarModalAlertaBloqueo(false)}
                 title="Cerrar aviso"
@@ -420,7 +415,7 @@ export default function PaginaLogin() {
                 <button
                   type="button"
                   className="boton-primario"
-                  style={{ backgroundColor: "#2563eb", width: "100%", justifyContent: "center" }}
+                  style={{ width: "100%" }}
                   onClick={() => {
                     setMostrarModalAlertaBloqueo(false);
                     setMostrarModalOlvideClave(true);
@@ -431,7 +426,7 @@ export default function PaginaLogin() {
                 <button
                   type="button"
                   className="boton-secundario"
-                  style={{ width: "100%", padding: "8px 14px", textAlign: "center" }}
+                  style={{ width: "100%" }}
                   onClick={() => setMostrarModalAlertaBloqueo(false)}
                 >
                   Entendido, volver a intentar
@@ -468,7 +463,6 @@ export default function PaginaLogin() {
                 <button
                   type="button"
                   className="boton-primario"
-                  style={{ width: "auto" }}
                   onClick={() => setMostrarModalOlvideClave(false)}
                 >
                   Entendido

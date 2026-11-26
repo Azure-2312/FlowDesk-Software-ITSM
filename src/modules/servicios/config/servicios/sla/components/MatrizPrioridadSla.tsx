@@ -176,21 +176,10 @@ export function MatrizPrioridadSla({ onRegistrarGuardar, ocultarBotonGuardar = f
         </div>
 
         {!ocultarBotonGuardar && (
-          <button
+          <button className="boton-primario"
             type="button"
             onClick={handleGuardarCambios}
             disabled={guardando}
-            style={{
-              padding: "9px 22px",
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#ffffff",
-              backgroundColor: "#2563eb",
-              borderRadius: 8,
-              border: "none",
-              cursor: guardando ? "not-allowed" : "pointer",
-              boxShadow: "0 1px 3px rgba(37,99,235,0.2)"
-            }}
           >
             {guardando ? "Guardando..." : "Guardar Matriz de Prioridad"}
           </button>

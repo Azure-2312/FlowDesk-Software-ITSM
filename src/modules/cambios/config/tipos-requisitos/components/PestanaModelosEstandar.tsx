@@ -269,7 +269,6 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
             type="button"
             onClick={abrirNuevoModelo}
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 16px", fontSize: 13 }}
           >
             Nuevo modelo
           </button>
@@ -300,7 +299,7 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
               </tr>
             ) : modelos.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ padding: 24, textAlign: "center", color: "#64748b" }}>
+                <td colSpan={7} className="celda-vacia">
                   No se encontraron modelos de cambio estándar registrados.
                 </td>
               </tr>
@@ -366,59 +365,53 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
 
                     <td style={{ padding: "10px 14px", textAlign: "right" }}>
                       <div style={{ display: "flex", justifyContent: "flex-end", gap: 4 }}>
-                        <button
+                        <button className="boton-secundario boton-sm"
                           type="button"
                           onClick={() => abrirEditarModelo(m)}
-                          style={{ padding: "3px 7px", fontSize: 11, border: "1px solid #cbd5e1", borderRadius: 4, cursor: "pointer", backgroundColor: "#ffffff" }}
                         >
                           Editar
                         </button>
 
                         {m.estado === "BORRADOR" && (
-                          <button
+                          <button className="boton-peligro boton-sm"
                             type="button"
                             onClick={() => ejecutarTransicion(m.id_modelo, "enviar_revision")}
-                            style={{ padding: "3px 7px", fontSize: 11, border: "1px solid #fef08a", borderRadius: 4, cursor: "pointer", backgroundColor: "#fef9c3", color: "#854d0e" }}
                           >
                             Enviar a revisión
                           </button>
                         )}
 
                         {(m.estado === "EN_REVISION" || m.estado === "BORRADOR") && (
-                          <button
+                          <button className="boton-secundario boton-sm"
                             type="button"
                             onClick={() => ejecutarTransicion(m.id_modelo, "aprobar")}
-                            style={{ padding: "3px 7px", fontSize: 11, border: "1px solid #bbf7d0", borderRadius: 4, cursor: "pointer", backgroundColor: "#dcfce7", color: "#166534", fontWeight: 600 }}
                           >
                             Aprobar
                           </button>
                         )}
 
                         {m.estado === "APROBADO" && (
-                          <button
+                          <button className="boton-peligro boton-sm"
                             type="button"
                             onClick={() => ejecutarTransicion(m.id_modelo, "suspender")}
-                            style={{ padding: "3px 7px", fontSize: 11, border: "1px solid #fecaca", borderRadius: 4, cursor: "pointer", backgroundColor: "#fff1f2", color: "#b91c1c" }}
                           >
                             Suspender
                           </button>
                         )}
 
                         {m.estado !== "RETIRADO" && (
-                          <button
+                          <button className="boton-secundario boton-sm"
                             type="button"
                             onClick={() => ejecutarTransicion(m.id_modelo, "retirar")}
-                            style={{ padding: "3px 7px", fontSize: 11, border: "1px solid #e2e8f0", borderRadius: 4, cursor: "pointer", backgroundColor: "#f1f5f9", color: "#475569" }}
                           >
                             Retirar
                           </button>
                         )}
 
                         {Number(m.veces_usado || 0) === 0 && (
-                          <button
+                          <button className="boton-peligro boton-sm"
                             type="button"
                             onClick={() => eliminarModelo(m.id_modelo)}
-                            style={{ padding: "3px 7px", fontSize: 11, border: "1px solid #fecaca", borderRadius: 4, cursor: "pointer", backgroundColor: "#fff1f2", color: "#b91c1c" }}
                           >
                             Eliminar
                           </button>
@@ -471,17 +464,16 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
                   Estado: <strong>{modeloEnEdicion.estado}</strong> · Versión v{modeloEnEdicion.version_modelo || 1}
                 </span>
               </div>
-              <button
+              <button className="boton-icono boton-sm"
                 type="button"
                 onClick={() => setModalAbierto(false)}
-                style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#64748b" }}
               >
                 ×
               </button>
             </div>
 
             {/* Selector de las 9 Pestañas Internas */}
-            <div style={{ display: "flex", borderBottom: "1px solid #cbd5e1", backgroundColor: "#f8fafc", overflowX: "auto" }}>
+            <div className="pestanas">
               {[
                 { n: 1, label: "1. General" },
                 { n: 2, label: "2. Alcance" },
@@ -497,17 +489,7 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
                   key={tab.n}
                   type="button"
                   onClick={() => setSubpestanaEditor(tab.n)}
-                  style={{
-                    padding: "9px 14px",
-                    fontSize: 12,
-                    fontWeight: subpestanaEditor === tab.n ? 700 : 500,
-                    border: "none",
-                    borderBottom: subpestanaEditor === tab.n ? "2px solid #16a34a" : "2px solid transparent",
-                    backgroundColor: subpestanaEditor === tab.n ? "#ffffff" : "transparent",
-                    color: subpestanaEditor === tab.n ? "#166534" : "#64748b",
-                    cursor: "pointer",
-                    whiteSpace: "nowrap"
-                  }}
+                  className={subpestanaEditor === tab.n ? "pestana pestana-activa" : "pestana"}
                 >
                   {tab.label}
                 </button>
@@ -630,10 +612,9 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
                       onChange={(e) => setNuevaCondicionElegibilidad(e.target.value)}
                       style={{ flex: 1, padding: "7px 10px", fontSize: 12.5, border: "1px solid #cbd5e1", borderRadius: 6 }}
                     />
-                    <button
+                    <button className="boton-primario boton-sm"
                       type="button"
                       onClick={agregarCondicionElegibilidad}
-                      style={{ padding: "7px 14px", fontSize: 12, fontWeight: 600, backgroundColor: "#16a34a", color: "#ffffff", border: "none", borderRadius: 6, cursor: "pointer" }}
                     >
                       + Agregar
                     </button>
@@ -654,10 +635,9 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
                         }}
                       >
                         <span style={{ fontSize: 12.5, color: "#1e293b" }}>{cond}</span>
-                        <button
+                        <button className="boton-peligro"
                           type="button"
                           onClick={() => quitarCondicionElegibilidad(idx)}
-                          style={{ background: "none", border: "none", color: "#dc2626", fontSize: 13, cursor: "pointer", fontWeight: 700 }}
                         >
                           Eliminar
                         </button>
@@ -913,18 +893,16 @@ export const PestanaModelosEstandar: React.FC<PestanaModelosEstandarProps> = () 
 
             {/* Pie del Editor */}
             <div style={{ padding: "14px 20px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "flex-end", gap: 10 }}>
-              <button
+              <button className="boton-secundario"
                 type="button"
                 onClick={() => setModalAbierto(false)}
-                style={{ padding: "7px 14px", fontSize: 12.5, border: "1px solid #cbd5e1", borderRadius: 6, backgroundColor: "#ffffff", cursor: "pointer" }}
               >
                 Cancelar
               </button>
-              <button
+              <button className="boton-primario"
                 type="button"
                 onClick={guardarModelo}
                 disabled={guardando}
-                style={{ padding: "7px 16px", fontSize: 12.5, fontWeight: 600, backgroundColor: "#16a34a", color: "#ffffff", border: "none", borderRadius: 6, cursor: "pointer" }}
               >
                 {guardando ? "Guardando..." : "Guardar modelo estándar"}
               </button>

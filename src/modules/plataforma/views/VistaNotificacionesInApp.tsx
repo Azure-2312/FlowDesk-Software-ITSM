@@ -96,10 +96,10 @@ export default function VistaNotificacionesInApp() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+          <h1 className="titulo-pagina">
             Centro de Notificaciones
           </h1>
-          <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0 0" }}>
+          <p className="descripcion-pagina">
             Eventos operacionales y requerimientos asignados directamente en el sistema.
           </p>
         </div>
@@ -110,35 +110,19 @@ export default function VistaNotificacionesInApp() {
               type="button"
               className="boton-secundario"
               onClick={marcarTodasLeidas}
-              style={{ fontSize: 12, padding: "6px 14px", height: "auto" }}
             >
               Marcar todas como leídas
             </button>
           )}
 
-          <div
-            style={{
-              display: "inline-flex",
-              borderRadius: 8,
-              border: "1px solid #cbd5e1",
-              overflow: "hidden",
-            }}
-          >
+          <div className="pestanas" style={{ marginBottom: 0 }}>
             <button
               type="button"
               onClick={() => {
                 setFiltroSinLeer(false);
                 setPagina(1);
               }}
-              style={{
-                border: "none",
-                padding: "6px 12px",
-                fontSize: 12,
-                fontWeight: !filtroSinLeer ? 700 : 500,
-                backgroundColor: !filtroSinLeer ? "#2563eb" : "#ffffff",
-                color: !filtroSinLeer ? "#ffffff" : "#475569",
-                cursor: "pointer",
-              }}
+              className={!filtroSinLeer ? "pestana pestana-activa" : "pestana"}
             >
               Todas ({total})
             </button>
@@ -148,16 +132,7 @@ export default function VistaNotificacionesInApp() {
                 setFiltroSinLeer(true);
                 setPagina(1);
               }}
-              style={{
-                border: "none",
-                padding: "6px 12px",
-                fontSize: 12,
-                fontWeight: filtroSinLeer ? 700 : 500,
-                backgroundColor: filtroSinLeer ? "#2563eb" : "#ffffff",
-                color: filtroSinLeer ? "#ffffff" : "#475569",
-                cursor: "pointer",
-                borderLeft: "1px solid #cbd5e1",
-              }}
+              className={filtroSinLeer ? "pestana pestana-activa" : "pestana"}
             >
               Sin leer ({noLeidas})
             </button>
@@ -187,13 +162,7 @@ export default function VistaNotificacionesInApp() {
         </div>
       ) : notificaciones.length === 0 ? (
         <div
-          style={{
-            padding: 60,
-            textAlign: "center",
-            backgroundColor: "#f8fafc",
-            borderRadius: 10,
-            border: "1px dashed #cbd5e1",
-          }}
+          className="estado-vacio"
         >
           <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#475569" }}>
             No hay notificaciones para mostrar
@@ -277,18 +246,9 @@ export default function VistaNotificacionesInApp() {
 
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                 {!notif.leida && (
-                  <button
+                  <button className="boton-enlace"
                     type="button"
                     onClick={(e) => marcarUnaLeida(e, notif.id)}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      color: "#64748b",
-                      fontSize: 12,
-                      cursor: "pointer",
-                      padding: "4px 8px",
-                      borderRadius: 4,
-                    }}
                     title="Marcar como leída"
                   >
                     Leída
@@ -321,7 +281,6 @@ export default function VistaNotificacionesInApp() {
             disabled={pagina <= 1}
             onClick={() => setPagina((p) => Math.max(1, p - 1))}
             className="boton-secundario"
-            style={{ fontSize: 12, padding: "4px 12px" }}
           >
              Anterior
           </button>
@@ -333,7 +292,6 @@ export default function VistaNotificacionesInApp() {
             disabled={pagina >= totalPaginas}
             onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
             className="boton-secundario"
-            style={{ fontSize: 12, padding: "4px 12px" }}
           >
             Siguiente 
           </button>

@@ -339,7 +339,6 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
             type="button"
             onClick={() => cargarDatos()}
             className="boton-primario"
-            style={{ width: "auto", padding: "8px 16px" }}
           >
             Reintentar cargar información
           </button>
@@ -347,7 +346,6 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
             type="button"
             onClick={() => router.refresh()}
             className="boton-secundario"
-            style={{ width: "auto", padding: "8px 16px" }}
           >
             Refrescar página
           </button>
@@ -393,8 +391,8 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
     <div className="vista-contenedor" style={{ maxWidth: 1400 }}>
       {/* Cabecera de Página informativa */}
       <div style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 4px 0", color: "#0f172a" }}>Mi Perfil de Usuario</h1>
-        <p className="descripcion" style={{ margin: 0, fontSize: 13, color: "#64748b" }}>
+        <h1 className="titulo-pagina">Mi Perfil de Usuario</h1>
+        <p className="descripcion-pagina" >
           Ficha institucional del colaborador, información empresarial y seguridad de credenciales.
         </p>
       </div>
@@ -489,39 +487,19 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
           </div>
 
           <div style={{ display: "flex", gap: 6 }}>
-            <button
+            <button className="boton-secundario boton-sm"
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={subiendoFoto}
-              style={{
-                fontSize: 11,
-                padding: "3px 8px",
-                borderRadius: 4,
-                border: "1px solid #cbd5e1",
-                backgroundColor: "#f8fafc",
-                color: "#1e293b",
-                cursor: subiendoFoto ? "wait" : "pointer",
-                fontWeight: 600,
-              }}
               title="Subir o cambiar foto de perfil"
             >
               {subiendoFoto ? "Cargando..." : "Cambiar foto"}
             </button>
             {fotoPerfil && (
-              <button
+              <button className="boton-peligro boton-sm"
                 type="button"
                 onClick={manejarEliminarFoto}
                 disabled={subiendoFoto}
-                style={{
-                  fontSize: 11,
-                  padding: "3px 8px",
-                  borderRadius: 4,
-                  border: "1px solid #fecaca",
-                  backgroundColor: "#fef2f2",
-                  color: "#dc2626",
-                  cursor: subiendoFoto ? "wait" : "pointer",
-                  fontWeight: 600,
-                }}
                 title="Quitar foto de perfil"
               >
                 Quitar
@@ -784,13 +762,6 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
             <button
               type="submit"
               className="boton-primario"
-              style={{
-                width: "auto",
-                padding: "8px 18px",
-                fontSize: 13,
-                backgroundColor: !cumpleTodosRequisitos || !clavesCoinciden || !claveActual ? "#9ca3af" : "#1e40af",
-                cursor: !cumpleTodosRequisitos || !clavesCoinciden || !claveActual ? "not-allowed" : "pointer"
-              }}
               disabled={!cumpleTodosRequisitos || !clavesCoinciden || !claveActual || guardandoClave}
             >
               {guardandoClave ? "Actualizando..." : "Actualizar contraseña"}

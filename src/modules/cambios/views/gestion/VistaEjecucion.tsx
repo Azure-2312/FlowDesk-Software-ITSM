@@ -73,8 +73,8 @@ export default function VistaEjecucion() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Seguimiento de ejecución</h1>
-        <p>Cambios en ejecución, extensiones de ventana, rollbacks y cierre exitoso o fallido.</p>
+        <h1 className="titulo-pagina">Seguimiento de ejecución</h1>
+        <p className="descripcion-pagina">Cambios en ejecución, extensiones de ventana, rollbacks y cierre exitoso o fallido.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -83,7 +83,7 @@ export default function VistaEjecucion() {
       {cargando ? (
         <p>Cargando...</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>
+        <div className="estado-vacio" >
           No hay cambios en ejecución en este momento.
         </div>
       ) : (
@@ -98,10 +98,10 @@ export default function VistaEjecucion() {
                 Ventana: {fechaHora(c.ventana_inicio)} → {fechaHora(c.ventana_fin)} {c.ventana_excedida ? "· excedida" : ""}
               </div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
-                <button className="boton-secundario" style={{ width: "auto" }} disabled={procesando === c.id_cambio} onClick={() => accion(c.id_cambio, { accion: "resultado", resultado: "EXITOSO" })}>Cerrar exitoso</button>
-                <button className="boton-secundario" style={{ width: "auto" }} disabled={procesando === c.id_cambio} onClick={() => accion(c.id_cambio, { accion: "resultado", resultado: "ROLLBACK", motivo: "Rollback manual desde el tablero" })}>Rollback</button>
-                <button className="boton-secundario" style={{ width: "auto" }} disabled={procesando === c.id_cambio} onClick={() => accion(c.id_cambio, { accion: "resultado", resultado: "FALLIDO", motivo: "Implementación fallida desde el tablero" })}>Marcar fallido</button>
-                <button className="boton-secundario" style={{ width: "auto" }} onClick={() => setAbierto(abierto === c.id_cambio ? null : c.id_cambio)}>
+                <button className="boton-secundario"  disabled={procesando === c.id_cambio} onClick={() => accion(c.id_cambio, { accion: "resultado", resultado: "EXITOSO" })}>Cerrar exitoso</button>
+                <button className="boton-secundario"  disabled={procesando === c.id_cambio} onClick={() => accion(c.id_cambio, { accion: "resultado", resultado: "ROLLBACK", motivo: "Rollback manual desde el tablero" })}>Rollback</button>
+                <button className="boton-secundario"  disabled={procesando === c.id_cambio} onClick={() => accion(c.id_cambio, { accion: "resultado", resultado: "FALLIDO", motivo: "Implementación fallida desde el tablero" })}>Marcar fallido</button>
+                <button className="boton-secundario"  onClick={() => setAbierto(abierto === c.id_cambio ? null : c.id_cambio)}>
                   {abierto === c.id_cambio ? "Cerrar" : "Extender ventana"}
                 </button>
               </div>
@@ -127,7 +127,6 @@ export default function VistaEjecucion() {
                   </label>
                   <button
                     className="boton-primario"
-                    style={{ width: "auto" }}
                     disabled={procesando === c.id_cambio}
                     onClick={() => accion(c.id_cambio, { accion: "extender", ventana_fin: extender[c.id_cambio]?.fin, motivo: extender[c.id_cambio]?.motivo })}
                   >

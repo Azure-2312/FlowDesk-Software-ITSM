@@ -105,8 +105,8 @@ export default function VistaImportacionActivos() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1>Importación masiva de activos</h1>
-        <p>Validación en seco, mapeo por cabecera y reversión del lote importado.</p>
+        <h1 className="titulo-pagina">Importación masiva de activos</h1>
+        <p className="descripcion-pagina">Validación en seco, mapeo por cabecera y reversión del lote importado.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -121,7 +121,7 @@ export default function VistaImportacionActivos() {
         <h2>Pegar lote (CSV)</h2>
         <p style={{ fontSize: 12, color: "#6b7280", marginTop: 0 }}>Cabecera esperada: codigo_patrimonial, numero_serie, tipo_activo, marca, modelo.</p>
         <textarea rows={8} value={texto} onChange={(e) => setTexto(e.target.value)} style={{ width: "100%", padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, fontFamily: "monospace", fontSize: 12.5 }} />
-        <button className="boton-primario" style={{ width: "auto", marginTop: 10 }} disabled={procesando === "validar"} onClick={() => accion("validar")}>
+        <button className="boton-primario" style={{ marginTop: 10 }} disabled={procesando === "validar"} onClick={() => accion("validar")}>
           {procesando === "validar" ? "Validando..." : "Validar en seco"}
         </button>
       </div>
@@ -130,7 +130,7 @@ export default function VistaImportacionActivos() {
       {cargando ? (
         <p>Cargando...</p>
       ) : items.length === 0 ? (
-        <div className="tarjeta-formulario" style={{ textAlign: "center", color: "#6b7280", fontSize: 13 }}>No hay importaciones registradas.</div>
+        <div className="estado-vacio" >No hay importaciones registradas.</div>
       ) : (
         <table className="tabla-datos">
           <thead><tr><th>Archivo</th><th>Total</th><th>Válidas</th><th>Inválidas</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
@@ -147,8 +147,8 @@ export default function VistaImportacionActivos() {
                   <td>{fechaHora(i.fecha_creacion)}</td>
                   <td>
                     <div style={{ display: "flex", gap: 6 }}>
-                      {i.estado === "VALIDADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando === i.id_importacion} onClick={() => accion("aplicar", i.id_importacion)}>Aplicar</button>}
-                      {i.estado === "APLICADO" && <button className="boton-secundario" style={{ width: "auto", fontSize: 11.5, padding: "5px 9px" }} disabled={procesando === i.id_importacion} onClick={() => accion("revertir", i.id_importacion)}>Revertir</button>}
+                      {i.estado === "VALIDADO" && <button className="boton-secundario"  disabled={procesando === i.id_importacion} onClick={() => accion("aplicar", i.id_importacion)}>Aplicar</button>}
+                      {i.estado === "APLICADO" && <button className="boton-secundario"  disabled={procesando === i.id_importacion} onClick={() => accion("revertir", i.id_importacion)}>Revertir</button>}
                     </div>
                   </td>
                 </tr>

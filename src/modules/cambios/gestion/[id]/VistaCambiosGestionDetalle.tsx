@@ -94,7 +94,7 @@ export default function PaginaDetalleTicketRFC() {
         <div style={{ backgroundColor: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: 20, color: "#991b1b", maxWidth: 500, margin: "0 auto" }}>
           <h3 style={{ margin: "0 0 8px 0", fontSize: 16 }}>Error al abrir la RFC</h3>
           <p style={{ margin: "0 0 16px 0", fontSize: 13 }}>{error || "El ticket solicitado no existe."}</p>
-          <Link href="/plataforma/cambios/gestion?vista=historial" className="boton-primario" style={{ fontSize: 12, textDecoration: "none" }}>
+          <Link href="/plataforma/cambios/gestion?vista=historial" className="boton-primario" >
             Volver al Historial de Cambios
           </Link>
         </div>
@@ -213,7 +213,7 @@ export default function PaginaDetalleTicketRFC() {
               </span>
             </div>
 
-            <h1 style={{ fontSize: 19, fontWeight: 800, color: "#0f172a", margin: "8px 0 4px 0" }}>
+            <h1 className="titulo-pagina">
               {cambio.titulo}
             </h1>
 
@@ -235,14 +235,12 @@ export default function PaginaDetalleTicketRFC() {
             <Link
               href="/plataforma/cambios/cab?vista=dictamen"
               className="boton-secundario"
-              style={{ fontSize: 12, textDecoration: "none" }}
             >
               Comité CAB
             </Link>
             <Link
               href="/plataforma/cambios/gestion/calendario"
               className="boton-secundario"
-              style={{ fontSize: 12, textDecoration: "none" }}
             >
               Ver en Calendario
             </Link>
@@ -255,7 +253,7 @@ export default function PaginaDetalleTicketRFC() {
         {/* Lado Izquierdo: Pestañas del Ticket RFC */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {/* Navegación de Pestañas */}
-          <div style={{ display: "flex", borderBottom: "2px solid #e2e8f0", gap: 6, overflowX: "auto" }}>
+          <div className="pestanas">
             {[
               { id: "solicitud", label: "5.4.1 Solicitud" },
               { id: "evaluacion", label: "5.4.2 Evaluación & Riesgo" },
@@ -269,18 +267,7 @@ export default function PaginaDetalleTicketRFC() {
                 key={t.id}
                 type="button"
                 onClick={() => setPestanaActiva(t.id)}
-                style={{
-                  padding: "8px 14px",
-                  border: "none",
-                  background: "none",
-                  cursor: "pointer",
-                  fontSize: 12.5,
-                  fontWeight: pestanaActiva === t.id ? 700 : 600,
-                  color: pestanaActiva === t.id ? "#2563eb" : "#475569",
-                  borderBottom: `3px solid ${pestanaActiva === t.id ? "#2563eb" : "transparent"}`,
-                  marginBottom: -2,
-                  whiteSpace: "nowrap",
-                }}
+                className={pestanaActiva === t.id ? "pestana pestana-activa" : "pestana"}
               >
                 {t.label}
               </button>
@@ -500,7 +487,7 @@ export default function PaginaDetalleTicketRFC() {
                     </div>
                   )}
                   {!cambio.codigo_problema && !cambio.incidente_codigo && (
-                    <div style={{ padding: 20, textAlign: "center", color: "#64748b", fontSize: 12 }}>
+                    <div className="estado-vacio">
                       No hay incidentes ni problemas asociados a esta RFC.
                     </div>
                   )}

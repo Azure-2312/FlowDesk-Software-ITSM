@@ -93,14 +93,13 @@ export default function VistaPanelArea() {
           <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
             Gestión Departamental & Coordinación de Área (ITIL v4)
           </span>
-          <h1 style={{ margin: 0 }}>Panel del área</h1>
-          <p style={{ marginTop: 4, color: "#64748b", fontSize: 13.5 }}>Resumen de {data.departamento}: solicitudes, aprobaciones y cambios que afectan a mi área.</p>
+          <h1 className="titulo-pagina">Panel del área</h1>
+          <p className="descripcion-pagina">Resumen de {data.departamento}: solicitudes, aprobaciones y cambios que afectan a mi área.</p>
         </div>
         <button
           type="button"
           className="boton-secundario"
           onClick={cargarDatos}
-          style={{ fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer" }}
           title="Actualizar panel"
         >
           Actualizar
@@ -119,14 +118,14 @@ export default function VistaPanelArea() {
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/plataforma/solicitudes/aprobaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Centro de aprobaciones de solicitudes</Link>
-            <Link href="/plataforma/cambios/aprobaciones" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Centro de aprobaciones de cambios</Link>
-            <Link href="/plataforma/incidentes/bandeja?vista=departamento" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Tickets de mi departamento</Link>
-            <Link href="/plataforma/reportes/operativos?vista=area" className="boton-secundario" style={{ textAlign: "center", textDecoration: "none" }}>Reportes del área</Link>
+            <Link href="/plataforma/solicitudes/aprobaciones" className="boton-secundario" >Centro de aprobaciones de solicitudes</Link>
+            <Link href="/plataforma/cambios/aprobaciones" className="boton-secundario" >Centro de aprobaciones de cambios</Link>
+            <Link href="/plataforma/incidentes/bandeja?vista=departamento" className="boton-secundario" >Tickets de mi departamento</Link>
+            <Link href="/plataforma/reportes/operativos?vista=area" className="boton-secundario" >Reportes del área</Link>
           </div>
         </div>
 
-        <div className="tarjeta-formulario" style={{ margin: 0 }}>
+        <div className="estado-vacio" style={{ margin: 0 }} >
           <h2>Cambios próximos que afectan a mi área</h2>
           {data.cambiosProximos.length === 0 ? (
             <p>No hay cambios programados que afecten a mi área.</p>

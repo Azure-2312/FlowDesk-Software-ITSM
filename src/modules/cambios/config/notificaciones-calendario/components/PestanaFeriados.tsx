@@ -231,21 +231,18 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
           <span style={{ fontSize: 12, color: "#64748b" }}>Tabla compartida con el resto de procesos de TI.</span>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-          <button
+          <button className="boton-secundario boton-sm"
             onClick={exportarCsv}
-            style={{ padding: "7px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 12, fontWeight: 500, color: "#334155", cursor: "pointer" }}
           >
             Exportar CSV
           </button>
-          <button
+          <button className="boton-secundario boton-sm"
             onClick={() => { setModalCsvAbierto(true); setCsvTexto(""); setCsvError(null); setCsvResultado(null); }}
-            style={{ padding: "7px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 12, fontWeight: 500, color: "#334155", cursor: "pointer" }}
           >
             Importar CSV
           </button>
-          <button
+          <button className="boton-primario boton-sm"
             onClick={() => abrirEditor()}
-            style={{ padding: "7px 14px", background: "#059669", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, color: "#ffffff", cursor: "pointer" }}
           >
             Nuevo Feriado
           </button>
@@ -270,7 +267,7 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
           <tbody>
             {feriados.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ padding: 30, textAlign: "center", color: "#64748b" }}>
+                <td colSpan={7} className="celda-vacia">
                   No hay feriados registrados en el calendario.
                 </td>
               </tr>
@@ -301,42 +298,23 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
                     </td>
                     <td style={{ padding: "10px 14px", textAlign: "center" }}>
                       <button
+                        type="button"
+                        role="switch"
+                        aria-checked={f.activo}
+                        className={f.activo ? "interruptor interruptor-activo" : "interruptor"}
                         onClick={() => toggleActivo(f.id)}
-                        style={{
-                          background: f.activo ? "#10b981" : "#cbd5e1",
-                          border: "none",
-                          color: "#ffffff",
-                          borderRadius: 12,
-                          width: 36,
-                          height: 20,
-                          cursor: "pointer",
-                          position: "relative"
-                        }}
                         title={f.activo ? "Desactivar feriado" : "Activar feriado"}
-                      >
-                        <div style={{
-                          position: "absolute",
-                          top: 2,
-                          left: f.activo ? 18 : 2,
-                          width: 16,
-                          height: 16,
-                          borderRadius: "50%",
-                          background: "#ffffff",
-                          transition: "left 0.2s"
-                        }} />
-                      </button>
+                      />
                     </td>
                     <td style={{ padding: "10px 14px", textAlign: "right" }}>
                       <div style={{ display: "flex", justifyContent: "flex-end", gap: 6 }}>
-                        <button
+                        <button className="boton-secundario boton-sm"
                           onClick={() => abrirEditor(f)}
-                          style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8", padding: "4px 8px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 500 }}
                         >
                           Editar
                         </button>
-                        <button
+                        <button className="boton-peligro boton-sm"
                           onClick={() => eliminarFeriado(f.id)}
-                          style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", padding: "4px 8px", borderRadius: 4, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 11 }}
                           title="Eliminar"
                         >
                           <Trash2 size={12} />
@@ -360,7 +338,7 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
               <h3 style={{ margin: 0, fontSize: 17, color: "#0f172a" }}>
                 {esNuevo ? "Nuevo Feriado o Día No Laborable" : `Editar: ${feriadoEditando.nombre}`}
               </h3>
-              <button onClick={() => setFeriadoEditando(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8" }}>
+              <button className="boton-icono boton-sm" onClick={() => setFeriadoEditando(null)} >
                 <X size={20} />
               </button>
             </div>
@@ -444,15 +422,13 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 24, borderTop: "1px solid #e2e8f0", paddingTop: 16 }}>
-              <button
+              <button className="boton-secundario"
                 onClick={() => setFeriadoEditando(null)}
-                style={{ padding: "8px 16px", border: "1px solid #cbd5e1", background: "#ffffff", borderRadius: 6, cursor: "pointer", fontSize: 13 }}
               >
                 Cancelar
               </button>
-              <button
+              <button className="boton-primario"
                 onClick={guardarFeriado}
-                style={{ padding: "8px 16px", border: "none", background: "#059669", color: "#ffffff", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: 13 }}
               >
                 Guardar Feriado
               </button>
@@ -467,7 +443,7 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
           <div style={{ background: "#ffffff", borderRadius: 8, padding: 24, width: 560, maxWidth: "90vw", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, borderBottom: "1px solid #e2e8f0", paddingBottom: 12 }}>
               <h3 style={{ margin: 0, fontSize: 16, color: "#0f172a" }}>Importar Feriados desde CSV</h3>
-              <button onClick={() => setModalCsvAbierto(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8" }}>
+              <button className="boton-icono boton-sm" onClick={() => setModalCsvAbierto(false)} >
                 <X size={20} />
               </button>
             </div>
@@ -496,15 +472,13 @@ export function PestanaFeriados({ config, onChange }: PestanaFeriadosProps) {
             />
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 16 }}>
-              <button
+              <button className="boton-secundario"
                 onClick={() => setModalCsvAbierto(false)}
-                style={{ padding: "8px 16px", border: "1px solid #cbd5e1", background: "#ffffff", borderRadius: 6, cursor: "pointer", fontSize: 13 }}
               >
                 Cerrar
               </button>
-              <button
+              <button className="boton-primario"
                 onClick={importarCsv}
-                style={{ padding: "8px 16px", border: "none", background: "#059669", color: "#ffffff", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: 13 }}
               >
                 Procesar e Importar
               </button>

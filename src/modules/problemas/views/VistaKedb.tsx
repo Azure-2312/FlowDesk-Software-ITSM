@@ -206,10 +206,10 @@ export default function VistaKedb() {
     <div className="vista-contenedor">
       {/* 1. Cabecera */}
       <div style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+        <h1 className="titulo-pagina">
           Base de errores conocidos (KEDB)
         </h1>
-        <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+        <p className="descripcion-pagina">
           Repositorio institucional de causas raíz documentadas y soluciones temporales (workarounds) para acelerar la resolución de incidentes.
         </p>
       </div>
@@ -227,24 +227,11 @@ export default function VistaKedb() {
       )}
 
       {/* 2. Selector de Pestañas */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, borderBottom: "2px solid #e2e8f0", marginBottom: 24 }}>
+      <div className="pestanas">
         <button
           type="button"
           onClick={() => setPestanaActiva("plantillas")}
-          style={{
-            padding: "8px 16px",
-            border: "none",
-            borderBottom: pestanaActiva === "plantillas" ? "3px solid #2563eb" : "3px solid transparent",
-            backgroundColor: "transparent",
-            color: pestanaActiva === "plantillas" ? "#2563eb" : "#64748b",
-            fontWeight: pestanaActiva === "plantillas" ? 700 : 500,
-            fontSize: 13.5,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: -2,
-          }}
+          className={pestanaActiva === "plantillas" ? "pestana pestana-activa" : "pestana"}
         >
           <span>Catálogo de errores conocidos</span>
           <span style={{ fontSize: 11, backgroundColor: pestanaActiva === "plantillas" ? "#dbeafe" : "#f1f5f9", color: pestanaActiva === "plantillas" ? "#1e40af" : "#64748b", padding: "2px 8px", borderRadius: 999 }}>
@@ -255,20 +242,7 @@ export default function VistaKedb() {
         <button
           type="button"
           onClick={() => setPestanaActiva("registrar")}
-          style={{
-            padding: "8px 16px",
-            border: "none",
-            borderBottom: pestanaActiva === "registrar" ? "3px solid #2563eb" : "3px solid transparent",
-            backgroundColor: "transparent",
-            color: pestanaActiva === "registrar" ? "#2563eb" : "#64748b",
-            fontWeight: pestanaActiva === "registrar" ? 700 : 500,
-            fontSize: 13.5,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: -2,
-          }}
+          className={pestanaActiva === "registrar" ? "pestana pestana-activa" : "pestana"}
         >
           <span>Registrar error conocido</span>
         </button>
@@ -276,20 +250,7 @@ export default function VistaKedb() {
         <button
           type="button"
           onClick={() => setPestanaActiva("aprobar")}
-          style={{
-            padding: "8px 16px",
-            border: "none",
-            borderBottom: pestanaActiva === "aprobar" ? "3px solid #2563eb" : "3px solid transparent",
-            backgroundColor: "transparent",
-            color: pestanaActiva === "aprobar" ? "#2563eb" : "#64748b",
-            fontWeight: pestanaActiva === "aprobar" ? 700 : 500,
-            fontSize: 13.5,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: -2,
-          }}
+          className={pestanaActiva === "aprobar" ? "pestana pestana-activa" : "pestana"}
         >
           <span>Aprobar publicaciones</span>
           <span style={{ fontSize: 11, backgroundColor: propuestas.length > 0 ? "#fef3c7" : "#f1f5f9", color: propuestas.length > 0 ? "#92400e" : "#64748b", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
@@ -326,7 +287,7 @@ export default function VistaKedb() {
               Cargando catálogo de errores conocidos (KEDB)...
             </div>
           ) : itemsFiltrados.length === 0 ? (
-            <div style={{ padding: 48, textAlign: "center", backgroundColor: "#ffffff", borderRadius: 10, border: "1px dashed #cbd5e1", color: "#64748b", fontSize: 14 }}>
+            <div className="estado-vacio">
               No se encontraron errores conocidos registrados.
             </div>
           ) : (
@@ -540,7 +501,6 @@ export default function VistaKedb() {
             <button
               type="button"
               className="boton-secundario"
-              style={{ width: "auto" }}
               disabled={procesando}
               onClick={() => setPestanaActiva("plantillas")}
             >
@@ -549,7 +509,6 @@ export default function VistaKedb() {
             <button
               type="submit"
               className="boton-primario"
-              style={{ width: "auto" }}
               disabled={procesando || !form.titulo.trim()}
             >
               {procesando ? "Guardando en KEDB..." : "Registrar Error en KEDB"}
@@ -571,7 +530,7 @@ export default function VistaKedb() {
           </div>
 
           {propuestas.length === 0 ? (
-            <div style={{ backgroundColor: "#ffffff", border: "1px dashed #cbd5e1", borderRadius: 8, padding: 32, textAlign: "center", color: "#64748b" }}>
+            <div className="estado-vacio">
               <div style={{ fontWeight: 600, fontSize: 13.5, color: "#1e293b" }}>No hay publicaciones KEDB pendientes de revisión</div>
               <p style={{ fontSize: 12.5, color: "#64748b", margin: "4px 0 0" }}>
                 Todos los análisis y workarounds registrados ya se encuentran aprobados o en investigación.
@@ -604,37 +563,17 @@ export default function VistaKedb() {
                     </div>
 
                     <div style={{ display: "flex", gap: 8 }}>
-                      <button
+                      <button className="boton-secundario"
                         type="button"
                         disabled={procesando}
                         onClick={() => rechazarKedb(p.id_problema)}
-                        style={{
-                          padding: "6px 14px",
-                          backgroundColor: "#ffffff",
-                          border: "1px solid #cbd5e1",
-                          color: "#64748b",
-                          borderRadius: 6,
-                          fontSize: 12.5,
-                          fontWeight: 500,
-                          cursor: "pointer",
-                        }}
                       >
                         Devolver a investigación
                       </button>
-                      <button
+                      <button className="boton-primario"
                         type="button"
                         disabled={procesando}
                         onClick={() => aprobarKedb(p.id_problema)}
-                        style={{
-                          padding: "6px 16px",
-                          backgroundColor: "#2563eb",
-                          color: "#ffffff",
-                          border: "none",
-                          borderRadius: 6,
-                          fontSize: 12.5,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
                       >
                         Aprobar y publicar en KEDB
                       </button>
