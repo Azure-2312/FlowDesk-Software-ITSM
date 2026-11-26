@@ -1,8 +1,8 @@
 "use client";
 
 // Activos → Configuración → Facturación electrónica (solo Administrador).
-// Parámetros de la integración fact_api, prueba de conexión y vínculo de cada
-// proveedor con su empresa/sucursal en fact_api.
+// Parámetros de la integración con Nubefact (proveedor autorizado por SUNAT),
+// prueba de conexión y datos tributarios de cada proveedor.
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -79,7 +79,7 @@ export default function VistaConfiguracionFacturacion() {
       return;
     }
     setEditando(null);
-    setAviso("Vínculo del proveedor guardado.");
+    setAviso("Datos del proveedor guardados.");
     cargar();
   }
 
@@ -92,8 +92,8 @@ export default function VistaConfiguracionFacturacion() {
         <div>
           <h1 className="titulo-pagina">Facturación electrónica (SUNAT)</h1>
           <p className="descripcion-pagina">
-            Integración con la API de facturación electrónica (fact_api) para los comprobantes de los proveedores de activos. Las
-            credenciales de la API se definen en el servidor (FACT_API_EMAIL / FACT_API_PASSWORD o FACT_API_TOKEN), no aquí.
+            Emisión de facturas y boletas electrónicas a SUNAT a través de Nubefact, proveedor autorizado por SUNAT. El token de
+            Nubefact se define en el servidor (variable NUBEFACT_TOKEN), nunca en esta pantalla.
           </p>
         </div>
       </div>
@@ -107,7 +107,7 @@ export default function VistaConfiguracionFacturacion() {
         <>
           <section className="tarjeta-contenido" style={{ marginBottom: 20 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
-              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>Conexión con fact_api</h2>
+              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>Conexión con Nubefact</h2>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 13 }}>{config.habilitado ? "Integración activa" : "Integración inactiva"}</span>
                 <button
@@ -122,21 +122,25 @@ export default function VistaConfiguracionFacturacion() {
             </div>
             <div style={rejilla}>
               <div className="campo">
-                <label className="etiqueta">URL base de fact_api</label>
-                <input className="input-base" value={config.url_base} onChange={(e) => set("url_base", e.target.value)} placeholder="https://facturacion.midominio.pe" />
+                <label className="etiqueta">Ruta de la cuenta (API Integración)</label>
+                <input className="input-base" value={config.ruta} onChange={(e) => set("ruta", e.target.value.trim())} placeholder="https://api.nubefact.com/api/v1/..." />
+              </div>
+              <div className="campo">
+                <label className="etiqueta">Serie de facturas</label>
+                <input className="input-base" maxLength={4} value={config.serie_factura} onChange={(e) => set("serie_factura", e.target.value.toUpperCase())} />
+              </div>
+              <div className="campo">
+                <label className="etiqueta">Serie de boletas</label>
+                <input className="input-base" maxLength={4} value={config.serie_boleta} onChange={(e) => set("serie_boleta", e.target.value.toUpperCase())} />
               </div>
               <div className="campo">
                 <label className="etiqueta">Tiempo de espera (ms)</label>
                 <input type="number" className="input-base" value={config.tiempo_espera_ms} onChange={(e) => set("tiempo_espera_ms", Number(e.target.value))} />
               </div>
               <div className="campo">
-                <label className="etiqueta">Credenciales en el servidor</label>
+                <label className="etiqueta">Token en el servidor</label>
                 <div style={{ fontSize: 13, paddingTop: 8 }}>
-                  {datos.credenciales.token
-                    ? "Token configurado (FACT_API_TOKEN)"
-                    : datos.credenciales.usuario
-                    ? "Usuario configurado (FACT_API_EMAIL)"
-                    : "Sin credenciales: defina las variables de entorno"}
+                  {datos.credenciales.token ? "Configurado (NUBEFACT_TOKEN)" : "Sin token: defina NUBEFACT_TOKEN en el servidor"}
                 </div>
               </div>
             </div>
@@ -180,9 +184,9 @@ export default function VistaConfiguracionFacturacion() {
           </section>
 
           <section className="tarjeta-contenido">
-            <h2 style={{ margin: "0 0 4px", fontSize: 15, fontWeight: 700 }}>Proveedores habilitados para emitir</h2>
+            <h2 style={{ margin: "0 0 4px", fontSize: 15, fontWeight: 700 }}>Datos tributarios de los proveedores</h2>
             <p className="descripcion-pagina" style={{ marginBottom: 14 }}>
-              Cada proveedor necesita su RUC y el ID de su empresa y sucursal en fact_api (donde están su certificado y credenciales SOL).
+              Los comprobantes se emiten desde la cuenta de Nubefact; el RUC y la razón social del proveedor identifican a quién corresponde cada comprobante en FlowDesk.
             </p>
             {datos.proveedores.length === 0 ? (
               <div className="estado-vacio">No hay proveedores registrados. Créelos en Activos → Contratos y proveedores.</div>
@@ -193,8 +197,6 @@ export default function VistaConfiguracionFacturacion() {
                     <tr>
                       <th>Proveedor</th>
                       <th>RUC</th>
-                      <th>Empresa / sucursal fact_api</th>
-                      <th>Series</th>
                       <th>Estado</th>
                       <th />
                     </tr>
@@ -208,14 +210,8 @@ export default function VistaConfiguracionFacturacion() {
                         </td>
                         <td>{p.ruc || "—"}</td>
                         <td>
-                          {p.fact_company_id ?? "—"} / {p.fact_branch_id ?? "—"}
-                        </td>
-                        <td>
-                          {p.serie_factura} · {p.serie_boleta}
-                        </td>
-                        <td>
                           <span className={p.habilitado_sunat ? "insignia insignia-exito" : "insignia insignia-aviso"}>
-                            {p.habilitado_sunat ? "Habilitado" : "Sin vínculo"}
+                            {p.habilitado_sunat ? "Con RUC" : "Sin RUC"}
                           </span>
                         </td>
                         <td style={{ textAlign: "right" }}>
@@ -238,16 +234,12 @@ export default function VistaConfiguracionFacturacion() {
           <div className="modal-contenido" style={{ maxWidth: 560 }} onClick={(e) => e.stopPropagation()}>
             <div style={{ padding: "18px 22px", borderBottom: "1px solid var(--color-borde)" }}>
               <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>{editando.nombre}</h2>
-              <p className="descripcion-pagina">Datos tributarios y vínculo con fact_api</p>
+              <p className="descripcion-pagina">Datos tributarios del proveedor</p>
             </div>
             <div style={{ padding: "18px 22px", ...rejilla }}>
               {[
                 ["ruc", "RUC"],
                 ["razon_social", "Razón social"],
-                ["fact_company_id", "ID empresa (company_id)"],
-                ["fact_branch_id", "ID sucursal (branch_id)"],
-                ["serie_factura", "Serie de facturas"],
-                ["serie_boleta", "Serie de boletas"],
               ].map(([k, etiqueta]) => (
                 <div className="campo" key={k}>
                   <label className="etiqueta">{etiqueta}</label>

@@ -6,7 +6,7 @@ interface PageProps {
   searchParams?: Promise<{ vista?: string }> | { vista?: string };
 }
 
-// Comprobantes electrónicos de proveedores (SUNAT vía fact_api).
+// Comprobantes electrónicos de proveedores (SUNAT vía Nubefact).
 // Misma información para todos; la pestaña autorizada al perfil define alcance y acciones.
 export default async function PaginaComprobantes({ searchParams }: PageProps) {
   const resolvedParams = searchParams ? await searchParams : undefined;

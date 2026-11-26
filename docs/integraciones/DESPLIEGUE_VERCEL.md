@@ -25,7 +25,7 @@ Ejecute, en este orden, los scripts que aún no estén aplicados en producción.
 | `JWT_SECRET` | Texto aleatorio largo (puede ser el mismo de `.env.local`) |
 | `API_KEY_SALT` | **Nuevo**, de al menos 32 caracteres. Se genera con `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`. No reutilice el valor antiguo, que estaba en el repositorio. |
 | `EQUIPO10_API_KEY` | La clave que el Equipo 10 les entregó por privado |
-| `FACT_API_EMAIL` / `FACT_API_PASSWORD` | Credenciales de fact_api (solo si la facturación SUNAT está en un servidor público) |
+| `NUBEFACT_TOKEN` | Token de la cuenta de Nubefact (*API Integración*). La ruta se registra en *Activos → Configuración → Facturación electrónica (SUNAT)* |
 
 **Nunca** suba al repositorio `.env.local` ni `APIS COMPARTIDAS/FlowDesk-API-Clientes/.env`.
 

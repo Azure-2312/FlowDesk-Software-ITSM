@@ -91,7 +91,7 @@ export const CAPACIDADES = {
   PROVEEDORES_VER: "proveedores:ver",
   PROVEEDORES_GESTIONAR: "proveedores:gestionar",
 
-  // Comprobantes electrónicos de proveedores (SUNAT vía fact_api)
+  // Comprobantes electrónicos de proveedores (SUNAT vía Nubefact)
   COMPROBANTES_VER: "comprobantes:ver",
   COMPROBANTES_GESTIONAR: "comprobantes:gestionar",
   COMPROBANTES_CONFORMIDAD: "comprobantes:conformidad",

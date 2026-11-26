@@ -305,7 +305,7 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     ],
   },
 
-  // #21276 Comprobantes electrónicos de proveedores (SUNAT vía fact_api).
+  // #21276 Comprobantes electrónicos de proveedores (SUNAT vía Nubefact).
   // Misma base de información; cada perfil ve su pestaña:
   // Gestor de Activos registra/emite, Gestor de Área da conformidad, Auditor consulta.
   "/plataforma/activos/comprobantes": {

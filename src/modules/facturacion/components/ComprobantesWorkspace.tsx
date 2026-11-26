@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================================
-// COMPROBANTES ELECTRÓNICOS DE PROVEEDORES (SUNAT vía fact_api)
+// COMPROBANTES ELECTRÓNICOS DE PROVEEDORES (SUNAT vía Nubefact)
 // Un solo espacio de trabajo sobre la misma base de información; el `modo`
 // (pestaña autorizada al perfil) decide qué se lista y qué acciones se ofrecen:
 //   registro     → Gestor de Activos / Admin: registrar, emitir a SUNAT, consultar estado
@@ -121,7 +121,8 @@ export default function ComprobantesWorkspace({ modo }: { modo: ModoComprobantes
     const cuenta = (e: string[]) => filas.filter((f) => e.includes(f.estado)).length;
     return [
       { id: "todos", etiqueta: "Todos", contador: filas.length },
-      { id: "por-enviar", etiqueta: "Por enviar", contador: cuenta(["BORRADOR", "REGISTRADO", "ERROR"]) },
+      { id: "por-enviar", etiqueta: "Por enviar", contador: cuenta(["BORRADOR", "ERROR"]) },
+      { id: "pendientes-sunat", etiqueta: "Pendientes en SUNAT", contador: cuenta(["REGISTRADO"]) },
       { id: "aceptados", etiqueta: "Aceptados", contador: cuenta(["ACEPTADO"]) },
       { id: "rechazados", etiqueta: "Rechazados", contador: cuenta(["RECHAZADO"]) },
     ];
@@ -133,7 +134,8 @@ export default function ComprobantesWorkspace({ modo }: { modo: ModoComprobantes
       if (filtro === "pendientes") lista = lista.filter((f) => f.estado === "ACEPTADO" && f.conformidad === "PENDIENTE");
       if (filtro === "atendidos") lista = lista.filter((f) => f.conformidad !== "PENDIENTE");
     } else {
-      if (filtro === "por-enviar") lista = lista.filter((f) => ["BORRADOR", "REGISTRADO", "ERROR"].includes(f.estado));
+      if (filtro === "por-enviar") lista = lista.filter((f) => ["BORRADOR", "ERROR"].includes(f.estado));
+      if (filtro === "pendientes-sunat") lista = lista.filter((f) => f.estado === "REGISTRADO");
       if (filtro === "aceptados") lista = lista.filter((f) => f.estado === "ACEPTADO");
       if (filtro === "rechazados") lista = lista.filter((f) => f.estado === "RECHAZADO");
     }
@@ -330,10 +332,10 @@ function DetalleComprobante({
     }
   }
 
-  const puedeEmitir = modo === "registro" && c && ["BORRADOR", "REGISTRADO", "ERROR"].includes(c.estado);
-  const puedeConsultar = modo === "registro" && c?.id_documento_api;
+  const puedeEmitir = modo === "registro" && c && ["BORRADOR", "ERROR"].includes(c.estado);
+  const puedeConsultar = modo === "registro" && c?.correlativo && !["BORRADOR", "ERROR"].includes(c.estado);
   const puedeConformidad = modo === "conformidad" && c?.estado === "ACEPTADO" && c?.conformidad !== "CONFORME";
-  const hayArchivos = Boolean(c?.id_documento_api);
+  const hayArchivos = Boolean(c?.correlativo) && !["BORRADOR", "ERROR"].includes(c?.estado);
 
   return (
     <div className="modal-overlay" onClick={onCerrar}>
@@ -377,7 +379,7 @@ function DetalleComprobante({
                   {c.recepcion_codigo || "—"} / {c.contrato_codigo || "—"}
                 </Dato>
                 <Dato etiqueta="Forma de pago">{c.forma_pago}</Dato>
-                <Dato etiqueta="ID en fact_api">{c.id_documento_api || "—"}</Dato>
+                <Dato etiqueta="Estado en SUNAT">{c.estado_sunat || "—"}</Dato>
               </div>
 
               {c.mensaje_sunat && (

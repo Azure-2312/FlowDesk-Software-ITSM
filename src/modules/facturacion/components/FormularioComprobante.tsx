@@ -45,7 +45,6 @@ export default function FormularioComprobante({ onCerrar, onCreado }: { onCerrar
       .catch((e) => setError(e.message));
   }, []);
 
-  const proveedor = cat?.proveedores.find((p: any) => String(p.id_proveedor) === f.id_proveedor);
   const recepciones = (cat?.recepciones || []).filter((r: any) => !f.id_proveedor || String(r.id_proveedor) === f.id_proveedor);
   const contratos = (cat?.contratos || []).filter((r: any) => !f.id_proveedor || String(r.id_proveedor) === f.id_proveedor);
 
@@ -115,7 +114,7 @@ export default function FormularioComprobante({ onCerrar, onCreado }: { onCerrar
         <div style={{ padding: "18px 22px", borderBottom: "1px solid var(--color-borde)", display: "flex", justifyContent: "space-between", gap: 12 }}>
           <div>
             <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>Registrar comprobante de proveedor</h2>
-            <p className="descripcion-pagina">Queda en borrador; el número lo asigna SUNAT/fact_api al emitirlo.</p>
+            <p className="descripcion-pagina">Queda en borrador; el número correlativo se asigna al emitirlo por Nubefact.</p>
           </div>
           <button type="button" className="boton-icono" onClick={onCerrar} title="Cerrar" aria-label="Cerrar">
             ×
@@ -135,7 +134,7 @@ export default function FormularioComprobante({ onCerrar, onCreado }: { onCerrar
                     <option value="">Seleccione...</option>
                     {cat.proveedores.map((p: any) => (
                       <option key={p.id_proveedor} value={p.id_proveedor} disabled={!p.habilitado_sunat}>
-                        {p.nombre} {p.ruc ? `· ${p.ruc}` : ""} {p.habilitado_sunat ? "" : "(sin vínculo SUNAT)"}
+                        {p.nombre} {p.ruc ? `· ${p.ruc}` : ""} {p.habilitado_sunat ? "" : "(sin RUC)"}
                       </option>
                     ))}
                   </select>
@@ -143,8 +142,8 @@ export default function FormularioComprobante({ onCerrar, onCreado }: { onCerrar
                 <div className="campo">
                   <label className="etiqueta">Tipo *</label>
                   <select className="input-base" value={f.tipo_documento} onChange={(e) => cambiar("tipo_documento", e.target.value)}>
-                    <option value="01">Factura (01) {proveedor ? `· serie ${proveedor.serie_factura}` : ""}</option>
-                    <option value="03">Boleta (03) {proveedor ? `· serie ${proveedor.serie_boleta}` : ""}</option>
+                    <option value="01">Factura (01)</option>
+                    <option value="03">Boleta (03)</option>
                   </select>
                 </div>
                 <div className="campo">

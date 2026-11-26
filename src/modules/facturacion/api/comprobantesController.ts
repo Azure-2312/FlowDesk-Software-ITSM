@@ -1,5 +1,5 @@
 // Controladores HTTP de comprobantes electrónicos de proveedores y de la
-// configuración de la integración fact_api.
+// configuración de la integración con Nubefact.
 
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
@@ -9,6 +9,7 @@ import type { SesionUsuario } from "@/types";
 import {
   actualizarEstadoSunat,
   anularBorrador,
+  archivoComprobante,
   catalogosRegistro,
   emitirComprobante,
   listarComprobantes,
@@ -16,14 +17,13 @@ import {
   registrarComprobante,
   registrarConformidad,
 } from "@/modules/facturacion/services/comprobantesService";
-import { descargarArchivo } from "@/modules/facturacion/services/factApiCliente";
 import {
   guardarConfiguracion,
   guardarVinculoProveedor,
   leerConfiguracion,
   listarProveedoresFacturacion,
 } from "@/modules/facturacion/services/configuracionFacturacionService";
-import { probarConexion } from "@/modules/facturacion/services/factApiCliente";
+import { probarConexion } from "@/modules/facturacion/services/nubefactCliente";
 
 type Contexto = { params: { id: string } };
 
@@ -118,21 +118,14 @@ export async function archivo(req: NextRequest, ctx: Contexto) {
     return NextResponse.json({ error: "Tipo de archivo no válido (pdf, xml o cdr)." }, { status: 400 });
   }
   try {
-    const c: any = await obtenerComprobante(idDe(ctx), s); // aplica alcance del perfil
-    if (!c.id_documento_api) throw new ErrorDominio("El comprobante aún no fue registrado en SUNAT.", 409);
-    const res = await descargarArchivo(c.tipo_documento, c.id_documento_api, tipo);
-    if (!res.ok) {
-      const msg = await res.json().then((j: any) => j.message).catch(() => null);
-      throw new ErrorDominio(msg || `fact_api no devolvió el archivo (HTTP ${res.status}).`, res.status === 404 ? 404 : 502);
-    }
-    const nombre = `${c.proveedor_ruc || "PROV"}-${c.tipo_documento}-${c.serie}-${c.correlativo || c.id_documento_api}`;
-    const ext = tipo === "pdf" ? "pdf" : tipo === "xml" ? "xml" : "zip";
-    return new NextResponse(res.body, {
+    const a = await archivoComprobante(idDe(ctx), s, tipo); // aplica alcance del perfil
+    return new NextResponse(new Uint8Array(a.contenido), {
       status: 200,
       headers: {
-        "Content-Type": res.headers.get("content-type") || "application/octet-stream",
-        "Content-Disposition": `attachment; filename="${tipo === "cdr" ? "R-" : ""}${nombre}.${ext}"`,
+        "Content-Type": a.tipoContenido,
+        "Content-Disposition": `attachment; filename="${a.nombre}"`,
         "Cache-Control": "no-store",
+        "X-Content-Type-Options": "nosniff",
       },
     });
   } catch (error) {

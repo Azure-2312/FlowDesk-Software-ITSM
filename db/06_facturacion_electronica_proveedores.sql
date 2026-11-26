@@ -1,11 +1,11 @@
 -- ============================================================================
--- 06 · FACTURACIÓN ELECTRÓNICA DE PROVEEDORES (SUNAT vía fact_api)
+-- 06 · FACTURACIÓN ELECTRÓNICA DE PROVEEDORES (SUNAT vía Nubefact)
 -- ----------------------------------------------------------------------------
--- Integra la API de facturación electrónica (https://github.com/angelitosystems/fact_api)
+-- Integra Nubefact (https://www.nubefact.com), proveedor autorizado por SUNAT,
 -- en la práctica de Gestión de Activos (ITIL v4: IT Asset Management /
 -- Supplier Management). El proveedor que entrega activos emite su comprobante
 -- electrónico (factura 01 / boleta 03) a la institución a través de FlowDesk;
--- FlowDesk lo envía a SUNAT por fact_api, guarda el estado/CDR y lo vincula a
+-- FlowDesk lo emite por Nubefact, que lo envía a SUNAT; guarda el estado/CDR y lo vincula a
 -- la recepción y a los activos. Una sola base de información; cada perfil ve:
 --   · Gestor de Activos (9) .... registro, emisión y envío a SUNAT
 --   · Gestor de Área (5) ....... conformidad de los comprobantes de su área
@@ -14,13 +14,15 @@
 -- Idempotente: se puede ejecutar más de una vez.
 -- ============================================================================
 
--- 1. Datos tributarios del proveedor y su vínculo con fact_api ---------------
+-- 1. Datos tributarios del proveedor ------------------------------------------
 ALTER TABLE proveedor_ti ADD COLUMN IF NOT EXISTS ruc VARCHAR(11);
 ALTER TABLE proveedor_ti ADD COLUMN IF NOT EXISTS razon_social VARCHAR(255);
-ALTER TABLE proveedor_ti ADD COLUMN IF NOT EXISTS fact_company_id INTEGER;
-ALTER TABLE proveedor_ti ADD COLUMN IF NOT EXISTS fact_branch_id INTEGER;
-ALTER TABLE proveedor_ti ADD COLUMN IF NOT EXISTS serie_factura VARCHAR(4) DEFAULT 'F001';
-ALTER TABLE proveedor_ti ADD COLUMN IF NOT EXISTS serie_boleta VARCHAR(4) DEFAULT 'B001';
+-- Columnas de una versión previa (fact_api) que ya no se usan: las series
+-- pertenecen a la cuenta emisora de Nubefact y van en la configuración.
+ALTER TABLE proveedor_ti DROP COLUMN IF EXISTS fact_company_id;
+ALTER TABLE proveedor_ti DROP COLUMN IF EXISTS fact_branch_id;
+ALTER TABLE proveedor_ti DROP COLUMN IF EXISTS serie_factura;
+ALTER TABLE proveedor_ti DROP COLUMN IF EXISTS serie_boleta;
 CREATE UNIQUE INDEX IF NOT EXISTS ux_proveedor_ti_ruc ON proveedor_ti (ruc) WHERE ruc IS NOT NULL AND estado_registro = true;
 
 -- 2. Comprobante electrónico del proveedor ------------------------------------
@@ -33,7 +35,7 @@ CREATE TABLE IF NOT EXISTS comprobante_proveedor (
   id_departamento_empresa INTEGER REFERENCES departamento_empresa(id_departamento_empresa), -- área destinataria
   tipo_documento          VARCHAR(2) NOT NULL CHECK (tipo_documento IN ('01', '03')),
   serie                   VARCHAR(4) NOT NULL,
-  correlativo             VARCHAR(10),                              -- lo asigna fact_api
+  correlativo             VARCHAR(10),                              -- número correlativo enviado a Nubefact
   fecha_emision           DATE NOT NULL,
   fecha_vencimiento       DATE,
   moneda                  VARCHAR(3) NOT NULL DEFAULT 'PEN' CHECK (moneda IN ('PEN', 'USD')),
@@ -41,11 +43,11 @@ CREATE TABLE IF NOT EXISTS comprobante_proveedor (
   subtotal                NUMERIC(14, 2) NOT NULL DEFAULT 0,
   igv                     NUMERIC(14, 2) NOT NULL DEFAULT 0,
   total                   NUMERIC(14, 2) NOT NULL DEFAULT 0,
-  -- Ciclo: BORRADOR → REGISTRADO (en fact_api) → ACEPTADO | RECHAZADO | ERROR
+  -- Ciclo: BORRADOR → ACEPTADO | REGISTRADO (pendiente en SUNAT) | RECHAZADO | ERROR
   estado                  VARCHAR(15) NOT NULL DEFAULT 'BORRADOR'
                           CHECK (estado IN ('BORRADOR', 'REGISTRADO', 'ACEPTADO', 'RECHAZADO', 'ERROR', 'ANULADO')),
-  id_documento_api        INTEGER,                                  -- id del documento en fact_api
-  estado_sunat            VARCHAR(30),                              -- valor devuelto por fact_api
+  id_documento_api        INTEGER,                                  -- número devuelto por Nubefact
+  estado_sunat            VARCHAR(30),                              -- estado en SUNAT según Nubefact
   codigo_respuesta_sunat  VARCHAR(20),
   mensaje_sunat           TEXT,
   fecha_envio_sunat       TIMESTAMPTZ,
@@ -100,11 +102,12 @@ CREATE INDEX IF NOT EXISTS ix_comprobante_evento_comprobante ON comprobante_prov
 
 -- 5. Configuración de la integración (sin secretos: las credenciales van en .env)
 INSERT INTO configuracion_sistema (clave, categoria, descripcion, valor, usuario_modificacion, fecha_modificacion)
-SELECT 'integracion_fact_api', 'INTEGRACIONES',
-       'API de facturación electrónica SUNAT (fact_api) para comprobantes de proveedores de activos',
-       '{"habilitado": false, "url_base": "http://localhost:8000", "ruc_institucion": "", "razon_social_institucion": "", "direccion_institucion": "", "tiempo_espera_ms": 20000, "exigir_conformidad_para_costo": true}'::jsonb,
+SELECT 'integracion_nubefact', 'INTEGRACIONES',
+       'Facturación electrónica SUNAT vía Nubefact (proveedor autorizado) para comprobantes de proveedores de activos',
+       '{"habilitado": false, "ruta": "", "serie_factura": "FFF1", "serie_boleta": "BBB1", "ruc_institucion": "", "razon_social_institucion": "", "direccion_institucion": "", "tiempo_espera_ms": 30000, "exigir_conformidad_para_costo": true}'::jsonb,
        1, now()
- WHERE NOT EXISTS (SELECT 1 FROM configuracion_sistema WHERE clave = 'integracion_fact_api');
+ WHERE NOT EXISTS (SELECT 1 FROM configuracion_sistema WHERE clave = 'integracion_nubefact');
+DELETE FROM configuracion_sistema WHERE clave = 'integracion_fact_api';
 
 -- 6. Menú: Activos → "Comprobantes electrónicos" y permisos por perfil --------
 UPDATE opciones_menu SET orden = orden + 1

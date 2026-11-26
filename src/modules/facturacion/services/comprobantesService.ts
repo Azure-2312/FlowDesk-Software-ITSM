@@ -12,12 +12,15 @@ import { query, queryRow, transaccion } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 import type { SesionUsuario } from "@/types";
 import {
-  consultarDocumentoSunat,
-  enviarDocumentoSunat,
-  obtenerConfigFactApi,
-  registrarDocumento,
+  TIPO_NUBEFACT,
+  consultarComprobante,
+  describirError,
+  generarComprobante,
+  obtenerConfigNubefact,
+  enlaceArchivo,
+  type RespuestaNubefact,
   type TipoComprobante,
-} from "./factApiCliente";
+} from "./nubefactCliente";
 
 export const PERFILES_ALCANCE_TOTAL = [1, 6, 9];
 
@@ -166,8 +169,7 @@ export async function obtenerComprobante(id: number, sesion: SesionUsuario) {
 export async function catalogosRegistro() {
   const [proveedores, recepciones, areas, activos, contratos] = await Promise.all([
     query(
-      `SELECT id_proveedor, COALESCE(razon_social, nombre) AS nombre, ruc, serie_factura, serie_boleta,
-              (ruc IS NOT NULL AND fact_company_id IS NOT NULL AND fact_branch_id IS NOT NULL) AS habilitado_sunat
+      `SELECT id_proveedor, COALESCE(razon_social, nombre) AS nombre, ruc, (ruc IS NOT NULL) AS habilitado_sunat
          FROM proveedor_ti WHERE estado_registro = true ORDER BY 2`
     ),
     query(
@@ -202,8 +204,8 @@ export async function registrarComprobante(entrada: ComprobanteEntrada, sesion: 
     if (!(Number(i.valor_unitario) >= 0)) throw new ErrorDominio(`Ítem ${n + 1}: el valor unitario no es válido.`);
   }
 
-  const proveedor = await queryRow<{ serie_factura: string; serie_boleta: string; ruc: string | null }>(
-    `SELECT serie_factura, serie_boleta, ruc FROM proveedor_ti WHERE id_proveedor = $1 AND estado_registro = true`,
+  const proveedor = await queryRow<{ ruc: string | null }>(
+    `SELECT ruc FROM proveedor_ti WHERE id_proveedor = $1 AND estado_registro = true`,
     [entrada.id_proveedor]
   );
   if (!proveedor) throw new ErrorDominio("Proveedor no encontrado.", 404);
@@ -221,7 +223,9 @@ export async function registrarComprobante(entrada: ComprobanteEntrada, sesion: 
   });
   const subtotal = redondear(calculados.reduce((s, i) => s + i.subtotal, 0));
   const igv = redondear(calculados.reduce((s, i) => s + i.igv, 0));
-  const serie = entrada.tipo_documento === "01" ? proveedor.serie_factura || "F001" : proveedor.serie_boleta || "B001";
+  // Las series pertenecen a la cuenta emisora de Nubefact (configuración de la integración).
+  const config = await obtenerConfigNubefact();
+  const serie = entrada.tipo_documento === "01" ? config.serie_factura || "FFF1" : config.serie_boleta || "BBB1";
 
   return transaccion(async (cliente) => {
     const anio = new Date().getFullYear();
@@ -266,145 +270,263 @@ export async function anularBorrador(id: number, sesion: SesionUsuario) {
 }
 
 // ---------------------------------------------------------------------------
-// Emisión y envío a SUNAT (fact_api)
+// Emisión y envío a SUNAT (Nubefact, proveedor autorizado por SUNAT)
 // ---------------------------------------------------------------------------
 
-function extraerCorrelativo(data: any): string | null {
-  if (!data) return null;
-  const v = data.correlativo ?? data.numero ?? data.number ?? null;
-  return v == null ? null : String(v);
+const ESTADO_SUNAT: Record<string, string> = {
+  ACEPTADO: "ACEPTADA POR SUNAT",
+  REGISTRADO: "PENDIENTE EN SUNAT",
+  RECHAZADO: "RECHAZADA POR SUNAT",
+  ANULADO: "ANULADA",
+};
+
+const dos = (n: number) => String(n).padStart(2, "0");
+
+/** Fecha AAAA-MM-DD (las columnas DATE llegan como Date en hora local). */
+function fechaIso(v: unknown): string {
+  if (v instanceof Date) return `${v.getFullYear()}-${dos(v.getMonth() + 1)}-${dos(v.getDate())}`;
+  return String(v || "").slice(0, 10);
 }
 
-function clasificarEstadoSunat(estado: string | null | undefined, ok: boolean): "ACEPTADO" | "RECHAZADO" | "REGISTRADO" {
-  const e = String(estado || "").toUpperCase();
-  if (e.includes("RECHAZ") || e.includes("ANUL")) return "RECHAZADO";
-  if (e.includes("ACEPT")) return "ACEPTADO";
-  return ok ? "ACEPTADO" : "REGISTRADO";
+function hoyLima(): string {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "America/Lima" });
+}
+
+function sumarDias(iso: string, dias: number): string {
+  const f = new Date(`${iso}T12:00:00Z`);
+  f.setUTCDate(f.getUTCDate() + dias);
+  return f.toISOString().slice(0, 10);
+}
+
+/** Nubefact exige fechas DD-MM-AAAA. */
+const aNubefact = (iso: string) => {
+  const [a, m, d] = iso.split("-");
+  return `${d}-${m}-${a}`;
+};
+
+/** Sin comillas dobles ni saltos (el manual pide evitarlos en textos). */
+const texto = (v: unknown, max: number) => String(v ?? "").replace(/["“”]/g, "").replace(/\s+/g, " ").trim().slice(0, max);
+
+function clasificar(r: RespuestaNubefact): "ACEPTADO" | "RECHAZADO" | "REGISTRADO" | "ANULADO" {
+  if (r.anulado) return "ANULADO";
+  if (r.aceptada_por_sunat) return "ACEPTADO";
+  const codigo = Number(r.sunat_responsecode);
+  // Códigos SUNAT 2000–3999 = rechazo; sin respuesta = pendiente (p. ej. boletas en resumen diario).
+  if (Number.isFinite(codigo) && codigo >= 2000 && codigo < 4000) return "RECHAZADO";
+  return "REGISTRADO";
+}
+
+function mensajeSunat(r: RespuestaNubefact): string | null {
+  return r.sunat_description || r.sunat_soap_error || r.sunat_note || null;
+}
+
+/** Arma el JSON de "generar_comprobante" según el manual de Nubefact. */
+function armarPayload(c: any, config: Awaited<ReturnType<typeof obtenerConfigNubefact>>, serie: string, numero: number, fecha: string) {
+  const items = (c.items as any[]).map((i) => {
+    const cantidad = Number(i.cantidad);
+    const valor = Number(i.valor_unitario);
+    const pIgv = Number(i.porcentaje_igv);
+    return {
+      unidad_de_medida: i.unidad || "NIU",
+      codigo: texto(i.codigo, 30),
+      codigo_producto_sunat: "",
+      descripcion: texto(i.descripcion, 250),
+      cantidad,
+      valor_unitario: valor,
+      precio_unitario: Math.round(valor * (1 + pIgv / 100) * 1e6) / 1e6,
+      descuento: "",
+      subtotal: Number(i.subtotal),
+      tipo_de_igv: pIgv > 0 ? 1 : 8, // 1 = gravado, 8 = exonerado (operación onerosa)
+      igv: Number(i.igv),
+      total: Number(i.total),
+      anticipo_regularizacion: false,
+      anticipo_documento_serie: "",
+      anticipo_documento_numero: "",
+    };
+  });
+  const gravada = redondear(items.filter((i) => i.tipo_de_igv === 1).reduce((s, i) => s + i.subtotal, 0));
+  const exonerada = redondear(items.filter((i) => i.tipo_de_igv === 8).reduce((s, i) => s + i.subtotal, 0));
+  const total = redondear(items.reduce((s, i) => s + i.total, 0));
+  const credito = c.forma_pago === "Credito";
+  const vencimiento = c.fecha_vencimiento ? fechaIso(c.fecha_vencimiento) : credito ? sumarDias(fecha, 30) : "";
+
+  return {
+    tipo_de_comprobante: TIPO_NUBEFACT[c.tipo_documento as TipoComprobante],
+    serie,
+    numero,
+    sunat_transaction: 1,
+    cliente_tipo_de_documento: 6,
+    cliente_numero_de_documento: config.ruc_institucion,
+    cliente_denominacion: texto(config.razon_social_institucion || "INSTITUCION", 100),
+    cliente_direccion: texto(config.direccion_institucion || "-", 100),
+    cliente_email: "",
+    fecha_de_emision: aNubefact(fecha),
+    fecha_de_vencimiento: vencimiento ? aNubefact(vencimiento) : "",
+    moneda: c.moneda === "USD" ? 2 : 1,
+    tipo_de_cambio: "",
+    porcentaje_de_igv: 18.0,
+    total_gravada: gravada || "",
+    total_exonerada: exonerada || "",
+    total_igv: redondear(items.reduce((s, i) => s + i.igv, 0)) || "",
+    total,
+    detraccion: false,
+    observaciones: texto(c.observaciones || `FlowDesk ${c.codigo}`, 1000),
+    enviar_automaticamente_a_la_sunat: true,
+    enviar_automaticamente_al_cliente: false,
+    condiciones_de_pago: credito ? "CREDITO" : "CONTADO",
+    ...(credito ? { venta_al_credito: [{ cuota: 1, fecha_de_pago: aNubefact(vencimiento), importe: total }] } : {}),
+    items,
+  };
 }
 
 /**
- * Registra el comprobante en fact_api (si aún no existe allí) y lo envía a SUNAT.
- * Estados: BORRADOR/ERROR → REGISTRADO → ACEPTADO | RECHAZADO (o ERROR si falla la red).
+ * Reserva el siguiente número correlativo de la serie (Nubefact exige que el
+ * sistema lo envíe). El bloqueo evita que dos emisiones tomen el mismo número.
+ */
+async function reservarNumero(id: number, tipo: TipoComprobante, serie: string, minimo = 1): Promise<number> {
+  return transaccion(async (cliente) => {
+    await cliente.query(`SELECT pg_advisory_xact_lock(hashtext($1))`, [`cpe:${tipo}:${serie}`]);
+    const r = await cliente.query(
+      `SELECT COALESCE(MAX(correlativo::int), 0) + 1 AS n FROM comprobante_proveedor
+        WHERE tipo_documento = $1 AND serie = $2 AND correlativo ~ '^[0-9]{1,8}$' AND id_comprobante <> $3`,
+      [tipo, serie, id]
+    );
+    const numero = Math.max(Number(r.rows[0].n), minimo);
+    await cliente.query(`UPDATE comprobante_proveedor SET serie = $2, correlativo = $3 WHERE id_comprobante = $1`, [id, serie, String(numero)]);
+    return numero;
+  });
+}
+
+async function guardarRespuesta(
+  id: number,
+  r: RespuestaNubefact,
+  sesion: SesionUsuario,
+  estadoAnterior: string,
+  accion: string,
+  fechaEmision: string | null = null
+) {
+  const estado = clasificar(r);
+  const mensaje = mensajeSunat(r);
+  await query(
+    `UPDATE comprobante_proveedor
+        SET estado = $2, estado_sunat = $3, codigo_respuesta_sunat = $4, mensaje_sunat = $5,
+            id_documento_api = COALESCE($6, id_documento_api), fecha_emision = COALESCE($7::date, fecha_emision),
+            fecha_envio_sunat = COALESCE(fecha_envio_sunat, now()), usuario_modificacion = $8, fecha_modificacion = now()
+      WHERE id_comprobante = $1`,
+    [id, estado, ESTADO_SUNAT[estado], r.sunat_responsecode ? String(r.sunat_responsecode).slice(0, 20) : null, mensaje,
+     r.numero ?? null, fechaEmision, sesion.id_usuario]
+  );
+  await registrarEvento(null, id, accion, sesion, estadoAnterior, estado, {
+    serie: r.serie, numero: r.numero, aceptada_por_sunat: r.aceptada_por_sunat ?? null, codigo_sunat: r.sunat_responsecode ?? null, mensaje,
+  });
+  return { estado, mensaje };
+}
+
+async function marcarError(id: number, sesion: SesionUsuario, estadoAnterior: string, accion: string, mensaje: string) {
+  await query(
+    `UPDATE comprobante_proveedor SET estado = 'ERROR', mensaje_sunat = $2, usuario_modificacion = $3, fecha_modificacion = now() WHERE id_comprobante = $1`,
+    [id, mensaje.slice(0, 1000), sesion.id_usuario]
+  );
+  await registrarEvento(null, id, accion, sesion, estadoAnterior, "ERROR", { mensaje });
+}
+
+/**
+ * Emite el comprobante en Nubefact, que genera el XML firmado y lo envía a SUNAT.
+ * Estados: BORRADOR/ERROR → ACEPTADO | REGISTRADO (pendiente en SUNAT) | RECHAZADO, o ERROR.
  */
 export async function emitirComprobante(id: number, sesion: SesionUsuario) {
   const c: any = await obtenerComprobante(id, sesion);
-  if (!["BORRADOR", "REGISTRADO", "ERROR"].includes(c.estado)) {
-    throw new ErrorDominio(`El comprobante está ${c.estado}; no se puede volver a enviar.`, 409);
+  if (!["BORRADOR", "ERROR"].includes(c.estado)) {
+    throw new ErrorDominio(
+      c.estado === "REGISTRADO"
+        ? "El comprobante ya fue enviado y espera respuesta de SUNAT; use Consultar estado."
+        : `El comprobante está ${c.estado}; no se puede volver a enviar.`,
+      409
+    );
   }
-  const config = await obtenerConfigFactApi();
+  const config = await obtenerConfigNubefact();
+  if (!config.habilitado) {
+    throw new ErrorDominio("La integración con SUNAT (Nubefact) está deshabilitada. Actívela en Activos → Configuración → Facturación electrónica.", 409);
+  }
   if (!config.ruc_institucion) {
     throw new ErrorDominio("Configure el RUC de la institución (cliente de los comprobantes) en Activos → Configuración → Facturación electrónica.", 409);
   }
-  const prov = await queryRow<{ fact_company_id: number | null; fact_branch_id: number | null }>(
-    `SELECT fact_company_id, fact_branch_id FROM proveedor_ti WHERE id_proveedor = $1`,
-    [c.id_proveedor]
-  );
-  if (!prov?.fact_company_id || !prov?.fact_branch_id) {
-    throw new ErrorDominio("El proveedor no está vinculado a una empresa y sucursal de fact_api.", 409);
-  }
-
-  let idDocumento: number | null = c.id_documento_api;
-  let estado = c.estado as string;
   const tipo = c.tipo_documento as TipoComprobante;
+  const serie = tipo === "01" ? config.serie_factura : config.serie_boleta;
+  const estadoAnterior = c.estado as string;
+  const tieneNumero = Boolean(c.correlativo) && c.serie === serie;
 
   try {
-    // 1) Registrar en fact_api (POST /api/v1/invoices | /boletas)
-    if (!idDocumento) {
-      const payload = {
-        company_id: prov.fact_company_id,
-        branch_id: prov.fact_branch_id,
-        serie: c.serie,
-        fecha_emision: String(c.fecha_emision).slice(0, 10),
-        ...(c.fecha_vencimiento ? { fecha_vencimiento: String(c.fecha_vencimiento).slice(0, 10) } : {}),
-        moneda: c.moneda,
-        tipo_operacion: "0101",
-        forma_pago_tipo: c.forma_pago,
-        client: {
-          tipo_documento: "6",
-          numero_documento: config.ruc_institucion,
-          razon_social: config.razon_social_institucion || "INSTITUCIÓN",
-          ...(config.direccion_institucion ? { direccion: config.direccion_institucion } : {}),
-        },
-        detalles: c.items.map((i: any) => ({
-          codigo: i.codigo,
-          descripcion: i.descripcion,
-          unidad: i.unidad,
-          cantidad: Number(i.cantidad),
-          mto_valor_unitario: Number(i.valor_unitario),
-          porcentaje_igv: Number(i.porcentaje_igv),
-          tip_afe_igv: i.tip_afe_igv || "10",
-        })),
-        ...(tipo === "03" ? { metodo_envio: "individual" } : {}),
-        usuario_creacion: `flowdesk:${sesion.id_usuario}`,
-      };
-      const reg = await registrarDocumento(tipo, payload);
-      if (!reg.ok || !reg.json.data?.id) {
-        const msg = reg.json.message || reg.json.error || `HTTP ${reg.status}`;
-        await query(
-          `UPDATE comprobante_proveedor SET estado = 'ERROR', mensaje_sunat = $2, usuario_modificacion = $3, fecha_modificacion = now() WHERE id_comprobante = $1`,
-          [id, `Registro en fact_api: ${msg}`, sesion.id_usuario]
-        );
-        await registrarEvento(null, id, "REGISTRO_API_FALLIDO", sesion, estado, "ERROR", { status: reg.status, mensaje: msg });
-        throw new ErrorDominio(`fact_api no registró el comprobante: ${msg}`, 502);
-      }
-      idDocumento = Number(reg.json.data.id);
-      const correlativo = extraerCorrelativo(reg.json.data);
-      await query(
-        `UPDATE comprobante_proveedor SET estado = 'REGISTRADO', id_documento_api = $2, correlativo = COALESCE($3, correlativo),
-                estado_sunat = $4, mensaje_sunat = NULL, usuario_modificacion = $5, fecha_modificacion = now()
-          WHERE id_comprobante = $1`,
-        [id, idDocumento, correlativo, reg.json.data.estado_sunat || "PENDIENTE", sesion.id_usuario]
-      );
-      await registrarEvento(null, id, "REGISTRO_API", sesion, estado, "REGISTRADO", { id_documento_api: idDocumento, correlativo });
-      estado = "REGISTRADO";
+    // Reintento tras un error: si Nubefact ya tiene ese número, solo se sincroniza (no se duplica).
+    if (tieneNumero) {
+      const previo = await consultarComprobante(tipo, serie, Number(c.correlativo), config);
+      if (!previo.json.errors) return guardarRespuesta(id, previo.json, sesion, estadoAnterior, "SINCRONIZACION_SUNAT");
     }
 
-    // 2) Enviar a SUNAT (POST .../send-sunat)
-    const env = await enviarDocumentoSunat(tipo, idDocumento!);
-    const data: any = env.json.data || {};
-    const nuevo = env.ok ? clasificarEstadoSunat(data.estado_sunat, true) : env.status === 400 && env.json.data ? "RECHAZADO" : "ERROR";
-    const yaAceptado = !env.ok && /ya fue enviada y aceptada/i.test(env.json.message || "");
-    const estadoFinal = yaAceptado ? "ACEPTADO" : nuevo;
-    await query(
-      `UPDATE comprobante_proveedor
-          SET estado = $2, estado_sunat = COALESCE($3, estado_sunat), codigo_respuesta_sunat = $4, mensaje_sunat = $5,
-              correlativo = COALESCE($6, correlativo), fecha_envio_sunat = now(),
-              usuario_modificacion = $7, fecha_modificacion = now()
-        WHERE id_comprobante = $1`,
-      [id, estadoFinal, data.estado_sunat || (estadoFinal === "ACEPTADO" ? "ACEPTADO" : null), env.json.error_code || data.codigo_respuesta || null,
-       env.json.message || null, extraerCorrelativo(data), sesion.id_usuario]
-    );
-    await registrarEvento(null, id, "ENVIO_SUNAT", sesion, estado, estadoFinal, { status: env.status, mensaje: env.json.message, error_code: env.json.error_code });
-    return { estado: estadoFinal, mensaje: env.json.message || null };
+    let numero = tieneNumero ? Number(c.correlativo) : await reservarNumero(id, tipo, serie);
+    const fecha = hoyLima();
+    for (let intento = 0; intento < 3; intento++) {
+      const r = await generarComprobante(armarPayload(c, config, serie, numero, fecha));
+      if (!r.json.errors) return guardarRespuesta(id, r.json, sesion, estadoAnterior, "EMISION_SUNAT", fecha);
+      if (r.json.codigo === 23) {
+        // Número ya usado en la cuenta (p. ej. emitido desde el panel de Nubefact): se toma el siguiente.
+        numero = await reservarNumero(id, tipo, serie, numero + 1);
+        continue;
+      }
+      const detalle = describirError(r.json);
+      await marcarError(id, sesion, estadoAnterior, "EMISION_FALLIDA", detalle);
+      throw new ErrorDominio(`Nubefact no emitió el comprobante: ${detalle}`, [10, 11, 50, 51].includes(Number(r.json.codigo)) ? 503 : 422);
+    }
+    const detalle = "Los números correlativos siguientes ya existen en Nubefact.";
+    await marcarError(id, sesion, estadoAnterior, "EMISION_FALLIDA", detalle);
+    throw new ErrorDominio(detalle, 409);
   } catch (error) {
-    if (error instanceof ErrorDominio && error.estado !== 502) throw error;
-    if (!(error instanceof ErrorDominio)) throw error;
-    // Falla de red/servicio después de registrar: queda en ERROR para reintentar
-    const actual = await queryRow<{ estado: string }>(`SELECT estado FROM comprobante_proveedor WHERE id_comprobante = $1`, [id]);
-    if (actual && actual.estado !== "ERROR") {
-      await query(`UPDATE comprobante_proveedor SET estado = 'ERROR', mensaje_sunat = $2, fecha_modificacion = now() WHERE id_comprobante = $1`, [id, error.message]);
-      await registrarEvento(null, id, "ENVIO_FALLIDO", sesion, actual.estado, "ERROR", { mensaje: error.message });
+    // Falla de red o tiempo agotado: queda en ERROR con su número para reintentar sin duplicar.
+    if (error instanceof ErrorDominio && error.estado === 502) {
+      await marcarError(id, sesion, estadoAnterior, "ENVIO_FALLIDO", error.message);
     }
     throw error;
   }
 }
 
-/** Consulta de validez del comprobante en SUNAT (consulta-cpe) */
+/** Consulta en Nubefact el estado del comprobante en SUNAT. */
 export async function actualizarEstadoSunat(id: number, sesion: SesionUsuario) {
   const c: any = await obtenerComprobante(id, sesion);
-  if (!c.id_documento_api) throw new ErrorDominio("El comprobante aún no fue registrado en fact_api.", 409);
-  const r = await consultarDocumentoSunat(c.tipo_documento, c.id_documento_api);
-  const data: any = r.json.data || {};
-  const estadoSunat = data.estado_sunat || data.estado || data.estadoCp || null;
-  const nuevo = r.ok && estadoSunat ? clasificarEstadoSunat(estadoSunat, false) : c.estado;
-  await query(
-    `UPDATE comprobante_proveedor SET estado = $2, estado_sunat = COALESCE($3, estado_sunat), mensaje_sunat = COALESCE($4, mensaje_sunat),
-            fecha_modificacion = now() WHERE id_comprobante = $1`,
-    [id, nuevo === "REGISTRADO" ? c.estado : nuevo, estadoSunat, r.json.message || null]
-  );
-  await registrarEvento(null, id, "CONSULTA_SUNAT", sesion, c.estado, nuevo === "REGISTRADO" ? c.estado : nuevo, { status: r.status, estado_sunat: estadoSunat, mensaje: r.json.message });
-  if (!r.ok) throw new ErrorDominio(`SUNAT/fact_api: ${r.json.message || `HTTP ${r.status}`}`, 502);
-  return { estado_sunat: estadoSunat, mensaje: r.json.message || null };
+  if (!c.correlativo || c.estado === "BORRADOR") throw new ErrorDominio("El comprobante aún no fue emitido.", 409);
+  const r = await consultarComprobante(c.tipo_documento, c.serie, Number(c.correlativo));
+  if (r.json.errors) {
+    const detalle = describirError(r.json);
+    await registrarEvento(null, id, "CONSULTA_SUNAT_FALLIDA", sesion, c.estado, c.estado, { mensaje: detalle });
+    throw new ErrorDominio(`Nubefact: ${detalle}`, 502);
+  }
+  return guardarRespuesta(id, r.json, sesion, c.estado, "CONSULTA_SUNAT");
+}
+
+/** Descarga el PDF, XML o CDR desde Nubefact (enlaces que devuelve la consulta). */
+export async function archivoComprobante(id: number, sesion: SesionUsuario, archivo: "pdf" | "xml" | "cdr") {
+  const c: any = await obtenerComprobante(id, sesion); // aplica el alcance del perfil
+  if (!c.correlativo || ["BORRADOR", "ERROR"].includes(c.estado)) throw new ErrorDominio("El comprobante aún no fue emitido.", 409);
+  const r = await consultarComprobante(c.tipo_documento, c.serie, Number(c.correlativo));
+  if (r.json.errors) throw new ErrorDominio(`Nubefact: ${describirError(r.json)}`, 502);
+  const url = enlaceArchivo(r.json, archivo);
+  if (!url) {
+    throw new ErrorDominio(archivo === "cdr" ? "SUNAT aún no devolvió la constancia de recepción (CDR)." : "Nubefact aún no generó el archivo.", 409);
+  }
+  const controlador = new AbortController();
+  const temporizador = setTimeout(() => controlador.abort(), 30000);
+  try {
+    const res = await fetch(url, { cache: "no-store", signal: controlador.signal });
+    if (!res.ok) throw new ErrorDominio(`Nubefact no devolvió el archivo (HTTP ${res.status}).`, res.status === 404 ? 404 : 502);
+    const contenido = Buffer.from(await res.arrayBuffer());
+    const tipoContenido = res.headers.get("content-type") || "application/octet-stream";
+    const ext = archivo === "pdf" ? "pdf" : archivo === "xml" ? "xml" : /xml/i.test(tipoContenido) ? "xml" : "zip";
+    return { contenido, tipoContenido, nombre: `${archivo === "cdr" ? "R-" : ""}${c.tipo_documento}-${c.serie}-${c.correlativo}.${ext}` };
+  } catch (error: any) {
+    if (error instanceof ErrorDominio) throw error;
+    throw new ErrorDominio("No se pudo descargar el archivo desde Nubefact.", 502);
+  } finally {
+    clearTimeout(temporizador);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -424,7 +546,7 @@ export async function registrarConformidad(
   const c: any = await obtenerComprobante(id, sesion); // aplica alcance del área
   if (c.estado !== "ACEPTADO") throw new ErrorDominio("Solo se da conformidad a comprobantes aceptados por SUNAT.", 409);
   if (c.conformidad === "CONFORME") throw new ErrorDominio("El comprobante ya tiene conformidad.", 409);
-  const config = await obtenerConfigFactApi();
+  const config = await obtenerConfigNubefact();
 
   await transaccion(async (cliente) => {
     await cliente.query(
