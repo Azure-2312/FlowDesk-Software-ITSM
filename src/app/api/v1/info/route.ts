@@ -1,28 +1,31 @@
-import { NextRequest, NextResponse } from "next/server";
+import { respuestaApi, TTL_TOKEN_MINUTOS } from "@/shared/lib/seguridad-api-externa";
+import { POR_PAGINA_MAX } from "@/modules/integraciones/services/solicitantesApiService";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest) {
-  return NextResponse.json({
-    nombre: "API RESTful de Gestión e Integración de Clientes y Usuarios",
-    plataforma: "FlowDesk ITSM",
-    version: "1.0.0",
+export async function GET() {
+  return respuestaApi({
+    nombre: "FlowDesk ITSM · API de Solicitantes",
+    version: "2.0.0",
     autenticacion: {
-      tipo: "API Key (X-API-KEY header)",
-      seguridad: "Criptografía HMAC-SHA256 con Salt corporativo",
-      almacenamiento_claves: "Hasheado unidireccional en base de datos (OWASP API Security)"
+      tipo: "Credencial de cliente canjeada por token temporal (Bearer)",
+      paso_1: "POST /api/v1/auth/token con JSON {client_id, client_secret}",
+      paso_2: "GET /api/v1/solicitantes con encabezado Authorization: Bearer <access_token>",
+      vigencia_token_segundos: TTL_TOKEN_MINUTOS * 60,
     },
-    endpoints_disponibles: [
-      { metodo: "GET", ruta: "/api/v1/health", descripcion: "Estado de salud y latencia de base de datos", acceso: "Público" },
-      { metodo: "GET", ruta: "/api/v1/info", descripcion: "Especificación técnica de la API", acceso: "Público" },
-      { metodo: "GET", ruta: "/api/v1/usuarios", descripcion: "Listado paginado de usuarios/trabajadores con filtros", acceso: "Privado (X-API-KEY)" },
-      { metodo: "GET", ruta: "/api/v1/clientes", descripcion: "Alias idéntico para integración externa de clientes", acceso: "Privado (X-API-KEY)" },
-      { metodo: "GET", ruta: "/api/v1/usuarios/:id", descripcion: "Detalle de trabajador por ID numérico", acceso: "Privado (X-API-KEY)" },
-      { metodo: "GET", ruta: "/api/v1/usuarios/dni/:dni", descripcion: "Búsqueda directa por DNI peruano (8 dígitos)", acceso: "Privado (X-API-KEY)" },
-      { metodo: "POST", ruta: "/api/v1/usuarios", descripcion: "Registrar nuevo trabajador en FlowDesk ITSM", acceso: "Privado (X-API-KEY)" },
-      { metodo: "POST", ruta: "/api/v1/clientes", descripcion: "Registrar nuevo cliente en FlowDesk ITSM", acceso: "Privado (X-API-KEY)" },
-      { metodo: "GET", ruta: "/api/v1/trazabilidad", descripcion: "Bitácora forense de auditoría inmutable", acceso: "Privado (X-API-KEY)" }
+    endpoints: [
+      { metodo: "POST", ruta: "/api/v1/auth/token", descripcion: "Obtener token temporal" },
+      {
+        metodo: "GET",
+        ruta: "/api/v1/solicitantes",
+        descripcion: "Solicitantes activos (paginado, solo lectura)",
+        parametros: {
+          pagina: "entero ≥ 1 (por defecto 1)",
+          por_pagina: `1 a ${POR_PAGINA_MAX} (por defecto 50)`,
+          correo: "opcional, búsqueda exacta",
+        },
+      },
+      { metodo: "GET", ruta: "/api/v1/health", descripcion: "Estado del servicio" },
     ],
-    timestamp: new Date().toISOString()
   });
 }

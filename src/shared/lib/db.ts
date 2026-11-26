@@ -25,11 +25,14 @@ export const pool =
   new Pool({
     connectionString: dbUrl,
     ssl: esLocal ? false : { rejectUnauthorized: false }, // Supabase / remoto requiere SSL; PostgreSQL local no soporta SSL
+    // En hosting serverless (Vercel) cada instancia abre su propio pool: pocas
+    // conexiones y liberación rápida para no agotar el pooler de Supabase (puerto 6543).
+    max: process.env.VERCEL ? 3 : 10,
+    idleTimeoutMillis: process.env.VERCEL ? 10_000 : 30_000,
   });
 
-if (process.env.NODE_ENV !== "production") {
-  global._pgPool = pool;
-}
+// Se reutiliza entre recargas (desarrollo) y entre invocaciones de la misma instancia (Vercel).
+global._pgPool = pool;
 
 /**
  * Helper para ejecutar una consulta SQL con parámetros.

@@ -455,6 +455,19 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
       { codigo: "accesos", etiqueta: "Registros de accesos", idsLegados: [21221] },
     ],
   },
+
+  // #21277 Integraciones API (solo Administrador)
+  "/plataforma/seguridad/integraciones-api": {
+    idOpcion: 21277,
+    urlBase: "/plataforma/seguridad/integraciones-api",
+    nombre: "Integraciones API",
+    vistaPorDefecto: "credenciales",
+    vistas: [
+      { codigo: "credenciales", etiqueta: "Credenciales de acceso", idsLegados: [21277] },
+      { codigo: "bitacora", etiqueta: "Bitácora de la API", idsLegados: [21277] },
+      { codigo: "externos", etiqueta: "Clientes de empresa externa", idsLegados: [21277] },
+    ],
+  },
 };
 
 // ----------------------------------------------------------------------------

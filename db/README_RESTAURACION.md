@@ -13,6 +13,7 @@ Si Supabase presenta caídas, se cambia de instancia en la nube o se desea despl
 | **`02_stored_procedures.sql`** | Lógica de negocio y seguridad en motor BD | 5 Stored Procedures ITIL + funciones PL/pgSQL + triggers de auditoría inmutable |
 | **`03_seed_data.sql`** | Catálogos iniciales y datos base | 10 perfiles, 150+ opciones de menú jerárquico, usuario admin, servicios y credenciales API |
 | **`04_menu_y_configuracion.sql`** | Menú vigente, permisos/vistas por perfil y `configuracion_sistema` | Se genera desde la BD real con `DATABASE_URL="..." node scripts/exportar_menu_actual.js`. **Sin este archivo el menú de `03` es el anterior a la reestructuración y el admin cae en 403.** |
+| **`07_api_integraciones_seguras.sql`** | API de Solicitantes para otros equipos y consumo de la API de clientes del Equipo 10 | Credenciales con `client_id`, vigencia, IPs permitidas y rotación; tabla `api_token_acceso` (tokens temporales hasheados); columnas `direccion`/`id_usuario`/`detalle` en la bitácora inmutable `api_log_auditoria`; clave `integracion_equipo10_clientes`; menú *Plataforma → Integraciones API* (#21277, solo Administrador). Revoca las claves del esquema anterior. Idempotente. Requiere `API_KEY_SALT` (≥ 32 caracteres) y `EQUIPO10_API_KEY`. |
 | **`archive/migrations_historicas.zip`** | Respaldo histórico | Las 67 migraciones incrementales previas comprimidas para trazabilidad |
 
 ---
