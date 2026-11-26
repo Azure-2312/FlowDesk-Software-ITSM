@@ -305,6 +305,21 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     ],
   },
 
+  // #21276 Comprobantes electrónicos de proveedores (SUNAT vía fact_api).
+  // Misma base de información; cada perfil ve su pestaña:
+  // Gestor de Activos registra/emite, Gestor de Área da conformidad, Auditor consulta.
+  "/plataforma/activos/comprobantes": {
+    idOpcion: 21276,
+    urlBase: "/plataforma/activos/comprobantes",
+    nombre: "Comprobantes electrónicos",
+    vistaPorDefecto: "registro",
+    vistas: [
+      { codigo: "registro", etiqueta: "Registro y emisión", idsLegados: [21276] },
+      { codigo: "conformidad", etiqueta: "Conformidad de mi área", idsLegados: [21276] },
+      { codigo: "consulta", etiqueta: "Consulta y trazabilidad", idsLegados: [21276] },
+    ],
+  },
+
   // 22. #21123 Bajas de activos
   "/plataforma/activos/bajas": {
     idOpcion: 21123,
@@ -340,6 +355,7 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
       { codigo: "fabricantes-modelos", etiqueta: "Fabricantes y modelos", idsLegados: [21150] },
       { codigo: "ubicaciones", etiqueta: "Ubicaciones", idsLegados: [21155] },
       { codigo: "listas", etiqueta: "Listas auxiliares", idsLegados: [21152] },
+      { codigo: "facturacion", etiqueta: "Facturación electrónica (SUNAT)", idsLegados: [21154] },
     ],
   },
 
@@ -508,6 +524,11 @@ export function obtenerVistaPorDefecto(urlBase: string, idPerfil?: number): stri
 
   if (pantalla.urlBase === "/plataforma/activos/inventario" && idPerfil === 2) {
     return "operativo";
+  }
+
+  if (pantalla.urlBase === "/plataforma/activos/comprobantes") {
+    if (idPerfil === 5) return "conformidad";
+    if (idPerfil === 6) return "consulta";
   }
 
   if (pantalla.urlBase === "/plataforma/reportes/operativos" && idPerfil === 4) {

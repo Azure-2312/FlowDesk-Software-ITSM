@@ -1,6 +1,7 @@
 import { exigirVistaPagina } from "@/shared/lib/vistas";
 import PestanasVista from "@/shared/components/ui/PestanasVista";
 import VistaTiposModelosAtributos from "@/modules/activos/config/tipos-modelos-atributos/VistaTiposModelosAtributos";
+import VistaConfiguracionFacturacion from "@/modules/facturacion/views/VistaConfiguracionFacturacion";
 
 interface PageProps {
   searchParams?: Promise<{ vista?: string }> | { vista?: string };
@@ -22,7 +23,11 @@ export default async function PaginaActivosConfiguracion({ searchParams }: PageP
             urlBase="/plataforma/activos/configuracion"
           />
       )}
-      <VistaTiposModelosAtributos vistaActivaN1={vistaActiva} />
+      {vistaActiva === "facturacion" ? (
+        <VistaConfiguracionFacturacion />
+      ) : (
+        <VistaTiposModelosAtributos vistaActivaN1={vistaActiva} />
+      )}
     </div>
   );
 }

@@ -91,6 +91,12 @@ export const CAPACIDADES = {
   PROVEEDORES_VER: "proveedores:ver",
   PROVEEDORES_GESTIONAR: "proveedores:gestionar",
 
+  // Comprobantes electrónicos de proveedores (SUNAT vía fact_api)
+  COMPROBANTES_VER: "comprobantes:ver",
+  COMPROBANTES_GESTIONAR: "comprobantes:gestionar",
+  COMPROBANTES_CONFORMIDAD: "comprobantes:conformidad",
+  FACTURACION_CONFIGURAR: "facturacion:configurar",
+
   // Administracion de plataforma
   ADMIN_USUARIOS: "admin:usuarios",
   ADMIN_PERFILES: "admin:perfiles",
@@ -211,6 +217,9 @@ export const CAPACIDADES_POR_PERFIL: Record<number, readonly Capacidad[]> = {
     CAPACIDADES.ACTIVOS_VER,
     CAPACIDADES.LICENCIAS_VER,
     CAPACIDADES.REPORTES_VER,
+    // Conformidad de comprobantes electrónicos de su área
+    CAPACIDADES.COMPROBANTES_VER,
+    CAPACIDADES.COMPROBANTES_CONFORMIDAD,
   ],
 
   // Auditor: lectura integral sin modificar datos.
@@ -234,6 +243,7 @@ export const CAPACIDADES_POR_PERFIL: Record<number, readonly Capacidad[]> = {
     CAPACIDADES.ORGANIZACION_VER,
     CAPACIDADES.PROBLEMAS_CONFIG_VER,
     CAPACIDADES.INDICADORES_VER,
+    CAPACIDADES.COMPROBANTES_VER,
   ],
 
   // Aprobador (CAB): autoriza cambios.
@@ -296,6 +306,8 @@ export const CAPACIDADES_POR_PERFIL: Record<number, readonly Capacidad[]> = {
     CAPACIDADES.CMDB_GESTIONAR,
     CAPACIDADES.PROVEEDORES_VER,
     CAPACIDADES.PROVEEDORES_GESTIONAR,
+    CAPACIDADES.COMPROBANTES_VER,
+    CAPACIDADES.COMPROBANTES_GESTIONAR,
   ],
 
   // Gestor de Problemas: coordina problemas y errores conocidos.
