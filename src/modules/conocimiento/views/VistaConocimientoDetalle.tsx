@@ -132,7 +132,7 @@ export default function VistaConocimientoDetalle() {
           className="boton-secundario"
           style={{ fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px" }}
         >
-          ← Volver a la base de conocimiento
+           Volver a la base de conocimiento
         </button>
       </div>
 

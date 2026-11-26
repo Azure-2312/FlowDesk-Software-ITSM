@@ -201,7 +201,7 @@ export default function PaginaReportes() {
       ) : (
         <div>
           {/* Fila 1: KPIs Principales */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 14, marginBottom: 24 }}>
             <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: 16 }}>
               <span style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase", fontWeight: 700 }}>
                 Cumplimiento General de SLA
@@ -252,7 +252,7 @@ export default function PaginaReportes() {
           </div>
 
           {/* Fila 2: Gráficos de Pastel (Pie Charts) */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 20, marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))", gap: 20, marginBottom: 24 }}>
             {/* Gráfico de Pastel 1: Incidentes vs Solicitudes */}
             <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
               <h3 style={{ fontSize: 14.5, margin: "0 0 14px", color: "#0f172a", fontWeight: 700 }}>
@@ -434,7 +434,7 @@ export default function PaginaReportes() {
             <h3 style={{ fontSize: 14.5, margin: "0 0 12px", color: "#0f172a", fontWeight: 700 }}>
               Pipeline Operativo del Ciclo de Vida de Atención
             </h3>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 10, textAlign: "center" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(130px, 100%), 1fr))", gap: 10, textAlign: "center" }}>
               <div style={{ padding: "12px 8px", backgroundColor: "#f8fafc", borderRadius: 6, border: "1px solid #e2e8f0" }}>
                 <span style={{ fontSize: 11, color: "#64748b", display: "block" }}>Abiertos</span>
                 <strong style={{ fontSize: 20, color: "#3b82f6" }}>{abiertos}</strong>

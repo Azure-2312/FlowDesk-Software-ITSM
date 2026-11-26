@@ -249,7 +249,7 @@ export function PestanaAtributosTipo({ datos, onChange, bloqueado }: Props) {
           <h4 style={{ fontSize: 13, fontWeight: 700, margin: "0 0 10px 0", color: "#0f172a" }}>
             Agregar Nuevo Atributo Técnico Parametrizado
           </h4>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10, marginBottom: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 10, marginBottom: 12 }}>
             <div>
               <label style={{ fontSize: 11, fontWeight: 600, color: "#475569", display: "block", marginBottom: 2 }}>
                 Etiqueta Visible *

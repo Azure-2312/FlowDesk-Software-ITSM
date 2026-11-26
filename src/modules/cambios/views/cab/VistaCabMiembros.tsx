@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import { PestanaComites } from "@/modules/cambios/config/flujo-evaluacion/components/PestanaComites";
+import { PestanaComites } from "@/modules/cambios/config/comites/PestanaComites";
 import { AlertCircle, CheckCircle2, RefreshCw } from "@/shared/components/ui/Iconos";
 
 export default function VistaCabMiembros() {

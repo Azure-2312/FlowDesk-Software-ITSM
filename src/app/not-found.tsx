@@ -87,7 +87,7 @@ export default function Pagina404NoEncontrada() {
               cursor: "pointer",
             }}
           >
-            <ArrowLeft size={14} />
+
             Volver
           </button>
 
@@ -103,7 +103,7 @@ export default function Pagina404NoEncontrada() {
               textDecoration: "none",
             }}
           >
-            <Home size={14} />
+
             Ir al inicio
           </Link>
         </div>

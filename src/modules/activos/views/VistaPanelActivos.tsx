@@ -109,7 +109,7 @@ export default function VistaPanelActivos() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 16, marginBottom: 24 }}>
         <Kpi titulo="Activos totales" valor={data.kpis.total_activos} subtitulo="Inventario registrado" />
         <Kpi titulo="Garantías por vencer" valor={data.kpis.garantias_por_vencer} color={data.kpis.garantias_por_vencer > 0 ? "#b45309" : undefined} subtitulo={data.kpis.garantias_por_vencer > 0 ? "Vencen en < 60 días" : "Sin vencimientos próximos"} />
         <Kpi titulo="Licencias en sobreuso" valor={data.kpis.sobreuso_licencias} color={data.kpis.sobreuso_licencias > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.sobreuso_licencias > 0 ? "Riesgo de cumplimiento SAM" : "Cumplimiento 100%"} />
@@ -118,7 +118,7 @@ export default function VistaPanelActivos() {
         <Kpi titulo="Actas pendientes" valor={data.kpis.actas_pendientes} color={data.kpis.actas_pendientes > 0 ? "#b45309" : undefined} subtitulo={data.kpis.actas_pendientes > 0 ? "Firma de usuario pendiente" : "Todas firmadas"} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

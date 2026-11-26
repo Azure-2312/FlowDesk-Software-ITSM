@@ -107,7 +107,7 @@ export default function VistaPanelArea() {
         </button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 16, marginBottom: 24 }}>
         <Kpi titulo="Tickets abiertos" valor={data.kpis.abiertos} subtitulo="En curso o en atención" />
         <Kpi titulo="Aprobaciones pendientes" valor={data.kpis.aprobaciones_pendientes} color={data.kpis.aprobaciones_pendientes > 0 ? "#b45309" : undefined} subtitulo={data.kpis.aprobaciones_pendientes > 0 ? "Requiere visto bueno" : "Sin pendientes"} />
         <Kpi titulo="Vencidos" valor={data.kpis.vencidos} color={data.kpis.vencidos > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.vencidos > 0 ? "Fuera de SLA" : "0 vencidos"} />
@@ -115,7 +115,7 @@ export default function VistaPanelArea() {
         <Kpi titulo="Satisfacción" valor={data.kpis.csat_promedio ?? "—"} subtitulo="CSAT del departamento" />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 16 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

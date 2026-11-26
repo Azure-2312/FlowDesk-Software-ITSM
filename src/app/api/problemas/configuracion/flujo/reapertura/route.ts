@@ -1,3 +1,0 @@
-export const dynamic = "force-dynamic";
-
-export { PUT } from "@/modules/problemas/api/config/flujoReaperturaController";

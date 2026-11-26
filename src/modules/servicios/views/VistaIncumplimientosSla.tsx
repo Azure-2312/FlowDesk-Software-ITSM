@@ -44,7 +44,7 @@ export default function VistaIncumplimientosSla() {
         <div style={{ fontSize: 28, fontWeight: 700, color: data.total > 0 ? "#b91c1c" : "#0f172a" }}>{data.total}</div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Por servicio</h2>
           {data.porServicio.length === 0 ? <p>Sin datos.</p> : (

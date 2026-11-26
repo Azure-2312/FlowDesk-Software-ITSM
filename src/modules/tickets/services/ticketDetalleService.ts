@@ -2,6 +2,7 @@ import { query, queryRow } from "@/shared/lib/db";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { validarCargaTecnico } from "./tecnicoCargaService";
+import { resolverFlujoEstados, resolverReglasVistaTicket } from "../reglasVistaTicket";
 import { Ticket, ComentarioTicket, ActualizarTicketPayload, TicketAprobacion, AdjuntoTicket } from "@/types";
 
 export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
@@ -136,6 +137,10 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
       }
     }
   }
+  // Aprobador (CAB / jefatura): ve las solicitudes sujetas a su compuerta de aprobación
+  if (idPerfil === 7) {
+    autorizado = Number(ticket.id_tipo_ticket) === 2 && !!ticket.estado_aprobacion;
+  }
   if (idPerfil === 4 && autorizado) {
     const supervisaDepartamento = await queryRow<{ existe: boolean }>(
       `SELECT EXISTS (
@@ -149,13 +154,31 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
   if (!autorizado) {
     throw new ErrorDominio("No tienes permiso para ver este ticket", 403);
   }
+
+  // Reglas operativas (vistas_ticket_perfil): misma fuente que usa la pantalla
+  const filaReglas = await queryRow<{ valor: any }>(
+    "SELECT valor FROM configuracion_sistema WHERE clave = 'vistas_ticket_perfil'"
+  );
+  const reglas = resolverReglasVistaTicket(filaReglas?.valor, idPerfil ?? null, sesion.id_usuario);
+  const esIncidenteTicket = Number(ticket.id_tipo_ticket) === 1;
+  if (esIncidenteTicket ? !reglas.ver_incidentes : !reglas.ver_solicitudes) {
+    throw new ErrorDominio(
+      `Tu perfil activo no tiene habilitada la consulta de ${esIncidenteTicket ? "incidentes" : "solicitudes"}.`,
+      403
+    );
+  }
   const userRow = await queryRow<{ nivel_prioridad: number }>(
     "SELECT COALESCE(nivel_prioridad, 5) AS nivel_prioridad FROM usuario WHERE id_usuario = $1",
     [sesion.id_usuario]
   );
   const esPersonalTI = [1, 2, 4, 6, 8, 9, 10].includes(idPerfil || 0);
   const esPrioridadEjecutivaOVip = Number(userRow?.nivel_prioridad || 5) <= 2;
-  const puedeVerNotasInternas = esPersonalTI || esPrioridadEjecutivaOVip;
+  // Notas internas: lo define la regla configurada; sin configuración se mantiene
+  // el criterio histórico (personal de TI o solicitante VIP/Ejecutivo).
+  const hayReglaConfigurada = !!filaReglas?.valor;
+  const puedeVerNotasInternas = hayReglaConfigurada
+    ? reglas.seccion_notas_internas
+    : esPersonalTI || esPrioridadEjecutivaOVip;
 
   // Calcular SLA restante
   const ahora = Date.now();
@@ -434,7 +457,7 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
     }
 
     if (esAccionReapertura) {
-      // Regla ITIL v4: Reapertura permitida únicamente en estado Resuelto (5) y dentro de 48 horas
+      // Regla ITIL v4: Reapertura permitida únicamente en estado Resuelto (5) y dentro de la ventana configurada (horas_reapertura)
       if (actual.id_estado !== 5) {
         throw new ErrorDominio(
           "Solo se puede reabrir un ticket cuando está en estado 'Resuelto'. Los tickets cerrados definitivamente requieren una nueva solicitud."
@@ -446,16 +469,21 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
       }
 
       if (actual.fecha_resolucion) {
+        // Ventana configurada en Reglas operativas (flujo_estados_acciones.horas_reapertura)
+        const filaFlujo = await queryRow<{ valor: any }>(
+          "SELECT valor FROM configuracion_sistema WHERE clave = 'flujo_estados_acciones'"
+        );
+        const { horas_reapertura } = resolverFlujoEstados(filaFlujo?.valor);
         const horasDesdeResolucion = (Date.now() - new Date(actual.fecha_resolucion).getTime()) / (1000 * 60 * 60);
-        if (horasDesdeResolucion > 48) {
+        if (horasDesdeResolucion > horas_reapertura) {
           throw new ErrorDominio(
-            "La ventana de reapertura (48 horas posteriores a la resolución) ha expirado. Por favor, registre un nuevo ticket de soporte."
+            `La ventana de reapertura (${horas_reapertura} horas posteriores a la resolución) ha expirado. Por favor, registre un nuevo ticket de soporte.`
           );
         }
       }
     } else if (body.id_estado !== 6 || actual.id_estado !== 5) {
       throw new ErrorDominio(
-        "El solicitante únicamente puede confirmar y cerrar un ticket resuelto, o solicitar su reapertura dentro de las 48 horas.",
+        "El solicitante únicamente puede confirmar y cerrar un ticket resuelto, o solicitar su reapertura dentro de la ventana configurada.",
         403
       );
     }
@@ -626,7 +654,7 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
       [
         idTicket,
         sesion.id_usuario,
-        `Ticket reabierto por el solicitante dentro de la ventana de 48h. Motivo de reapertura: "${motivoReapertura}"`
+        `Ticket reabierto por el solicitante dentro de la ventana de reapertura. Motivo de reapertura: "${motivoReapertura}"`
       ]
     );
   } else if (body.nota_cambio && body.nota_cambio.trim().length > 0) {

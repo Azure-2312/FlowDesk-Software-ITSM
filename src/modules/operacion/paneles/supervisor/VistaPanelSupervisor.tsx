@@ -117,7 +117,7 @@ export default function VistaPanelSupervisor() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 16, marginBottom: 24 }}>
         <Kpi titulo="Tickets abiertos" valor={data.kpis.abiertos} subtitulo="En curso o en atención" />
         <Kpi titulo="Sin asignar" valor={data.kpis.sin_asignar} color={data.kpis.sin_asignar > 0 ? "#b45309" : undefined} subtitulo={data.kpis.sin_asignar > 0 ? "Requiere asignación" : "Bandeja al día"} />
         <Kpi titulo="Vencidos" valor={data.kpis.vencidos} color={data.kpis.vencidos > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.vencidos > 0 ? "SLA sobrepasado" : "0 fuera de plazo"} />
@@ -125,7 +125,7 @@ export default function VistaPanelSupervisor() {
         <Kpi titulo="CSAT promedio" valor={data.kpis.csat_promedio ?? "—"} subtitulo="Calificación de usuarios" />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 14, marginBottom: 24 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Alertas y riesgos</h2>
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>

@@ -1,8 +1,12 @@
-import { exigirMenuPagina } from "@/shared/lib/page-auth";
+import { exigirAlgunPrefijoMenuPagina } from "@/shared/lib/page-auth";
 import VistaTicketsDetalle from "@/modules/tickets/[id]/VistaTicketsDetalle";
 
 export default async function PaginaSolicitudDetalle() {
-  const { idPerfil } = await exigirMenuPagina("/plataforma/solicitudes", { prefijo: true });
+  const { idPerfil } = await exigirAlgunPrefijoMenuPagina([
+    "/plataforma/solicitudes",
+    // Aprobador: dictamina solicitudes desde el Centro de aprobaciones de Cambios
+    "/plataforma/cambios/aprobaciones",
+  ]);
 
   let rutaLista = "/plataforma/solicitudes/bandeja";
   let etiquetaVolver = "Volver a Solicitudes";

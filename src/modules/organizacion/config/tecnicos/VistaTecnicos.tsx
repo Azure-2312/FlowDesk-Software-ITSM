@@ -370,7 +370,7 @@ export default function PaginaAdminTecnicos() {
                   padding: 0,
                 }}
               >
-                ← Volver a plantilla de técnicos
+                 Volver a plantilla de técnicos
               </button>
               <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
                 Configurar Parámetros Operativos: {tecnicoEditando.nombre_completo}
@@ -544,7 +544,7 @@ export default function PaginaAdminTecnicos() {
                   padding: 0,
                 }}
               >
-                ← Volver a plantilla de técnicos
+                 Volver a plantilla de técnicos
               </button>
               <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
                 Enrolar Usuario en la Estructura de Soporte Técnico
@@ -704,7 +704,7 @@ export default function PaginaAdminTecnicos() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))",
               gap: 12,
               marginBottom: 20,
             }}

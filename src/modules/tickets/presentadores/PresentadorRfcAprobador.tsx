@@ -141,7 +141,7 @@ export default function PresentadorRfcAprobador({
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12, fontSize: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))", gap: 12, fontSize: 12 }}>
           <div style={{ backgroundColor: "#f8fafc", padding: 10, borderRadius: 6 }}>
             <span style={{ color: "#64748b", display: "block", fontSize: 11, fontWeight: 600 }}>Nivel de Impacto</span>
             <strong style={{ color: "#0f172a" }}>{cambio.impacto_nombre || "Medio"}</strong>

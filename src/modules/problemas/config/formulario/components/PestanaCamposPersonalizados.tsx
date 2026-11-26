@@ -592,7 +592,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
                 disabled={pasoAsistente === 1}
                 style={{ fontSize: 12 }}
               >
-                ← Atrás
+                 Atrás
               </button>
 
               {pasoAsistente < 5 ? (
@@ -609,7 +609,7 @@ export const PestanaCamposPersonalizados: React.FC<PestanaCamposPersonalizadosPr
                   }}
                   style={{ fontSize: 12, backgroundColor: "#7c3aed" }}
                 >
-                  Siguiente →
+                  Siguiente 
                 </button>
               ) : (
                 <button

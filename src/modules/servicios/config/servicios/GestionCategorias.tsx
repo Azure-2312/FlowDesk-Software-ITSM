@@ -770,7 +770,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
       </div>
 
       {/* Tabs por Tipo (Debajo del Título General) */}
-      <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #e2e8f0", marginBottom: 24, justifyContent: "flex-start" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, borderBottom: "1px solid #e2e8f0", marginBottom: 24, justifyContent: "flex-start" }}>
         <button
           type="button"
           onClick={() => setFiltroTipo("todos")}
@@ -824,7 +824,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
       {/* PANEL PRINCIPAL: TABLA DE CATEGORÍAS */}
       <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 10, padding: 20 }}>
         {/* Tarjetas de Métricas Rápidas */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 18 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 12, marginBottom: 18 }}>
           <div style={{ padding: "12px 14px", backgroundColor: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
             <span style={{ fontSize: 11.5, color: "#64748b", fontWeight: 600 }}>Total Categorías</span>
             <div style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", marginTop: 2 }}>{totalCategorias}</div>
@@ -999,7 +999,7 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
                     </td>
 
                     <td style={{ textAlign: "right" }}>
-                      <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "flex-end" }}>
                         <button
                           type="button"
                           className="boton-accion-icono"

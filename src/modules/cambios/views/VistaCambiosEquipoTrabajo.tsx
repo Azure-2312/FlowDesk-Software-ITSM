@@ -18,7 +18,7 @@ export default function VistaCambiosEquipoTrabajo({ datos }: Props) {
   const { nombreEquipo, integrantes, cambioActivo, historial } = datos;
 
   return (
-    <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 20 }}>
+    <div className="vista-contenedor" style={{ gap: 20 }}>
       {/* 1. Cabecera Principal */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16, borderBottom: "1px solid #e2e8f0", paddingBottom: 16 }}>
         <div>
@@ -128,7 +128,7 @@ export default function VistaCambiosEquipoTrabajo({ datos }: Props) {
                 </Link>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, backgroundColor: "#f8fafc", padding: 12, borderRadius: 6, fontSize: 12.5 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 12, backgroundColor: "#f8fafc", padding: 12, borderRadius: 6, fontSize: 12.5 }}>
                 <div><strong>Tipo:</strong> {cambioActivo.tipo_cambio}</div>
                 <div><strong>Responsable:</strong> {cambioActivo.responsable || "Sin asignar"}</div>
                 <div><strong>Ventana inicio:</strong> {formatearFecha(cambioActivo.ventana_inicio)}</div>
@@ -150,7 +150,7 @@ export default function VistaCambiosEquipoTrabajo({ datos }: Props) {
             </h2>
           </div>
 
-          <div style={{ backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #e2e8f0", overflow: "hidden" }}>
+          <div style={{ backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #e2e8f0", overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
               <thead>
                 <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
@@ -203,7 +203,7 @@ export default function VistaCambiosEquipoTrabajo({ datos }: Props) {
             Historial de cambios ejecutados por el equipo ({historial.length})
           </h2>
 
-          <div style={{ backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #e2e8f0", overflow: "hidden" }}>
+          <div style={{ backgroundColor: "#ffffff", borderRadius: 8, border: "1px solid #e2e8f0", overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
               <thead>
                 <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>

@@ -154,7 +154,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
           </h3>
         </div>
 
-        <div style={{ display: "flex", gap: 4, backgroundColor: "#f1f5f9", padding: 3, borderRadius: 8 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, backgroundColor: "#f1f5f9", padding: 3, borderRadius: 8 }}>
           <button
             type="button"
             onClick={() => setSubpestanaActiva("campos")}

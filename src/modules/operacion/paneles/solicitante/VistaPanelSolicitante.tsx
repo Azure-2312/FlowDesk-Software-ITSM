@@ -116,14 +116,14 @@ export default function VistaPanelSolicitante() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 16, marginBottom: 24 }}>
         <Kpi titulo="Tickets abiertos" valor={data.kpis.abiertos} subtitulo="En curso o en atención" />
         <Kpi titulo="En espera" valor={data.kpis.en_espera} color={data.kpis.en_espera > 0 ? "#b45309" : undefined} subtitulo="Esperando información o tercero" />
         <Kpi titulo="Resueltos (30 días)" valor={data.kpis.resueltos_30d} subtitulo="Atendidos con éxito" />
         <Kpi titulo="Fuera de plazo" valor={data.kpis.vencidos} color={data.kpis.vencidos > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.vencidos > 0 ? "Requiere seguimiento" : "Sin incidencias fuera de SLA"} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, marginBottom: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16, marginBottom: 16 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Mis últimos tickets</h2>
           {data.ticketsRecientes.length === 0 ? (

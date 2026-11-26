@@ -250,7 +250,7 @@ export default function VistaActivosMapa() {
       ) : (
         /* 2. Distribución en 2 Paneles: Izquierdo (Relaciones) y Derecho (Pestañas Lista / Gráfico) */
         <div style={{ display: "grid", gridTemplateColumns: "350px 1fr", gap: 20, alignItems: "stretch" }}>
-          
+
           {/* PANEL IZQUIERDO: Listado de Todas las Relaciones con Buscador */}
           <div
             style={{
@@ -392,7 +392,7 @@ export default function VistaActivosMapa() {
 
               {pestañaDerecha === "grafico" && (
                 /* Controles de Zoom y Pan */
-                <div style={{ display: "flex", alignItems: "center", gap: 6, backgroundColor: "#ffffff", padding: "3px 8px", borderRadius: 6, border: "1px solid #cbd5e1" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, backgroundColor: "#ffffff", padding: "3px 8px", borderRadius: 6, border: "1px solid #cbd5e1" }}>
                   <button
                     type="button"
                     onClick={() => setZoom((z) => Math.min(Number((z + 0.15).toFixed(2)), 2.5))}
@@ -418,7 +418,7 @@ export default function VistaActivosMapa() {
                     title="Restablecer posición y zoom"
                     style={{ border: "none", background: "none", cursor: "pointer", fontSize: 12, color: "#2563eb", padding: "2px 6px" }}
                   >
-                    ↺ Reset
+                     Reset
                   </button>
                 </div>
               )}
@@ -492,7 +492,7 @@ export default function VistaActivosMapa() {
                     <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", marginTop: 2 }}>
                       {ciActivo.nombre}
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10, marginTop: 8, fontSize: 12, color: "#475569" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 10, marginTop: 8, fontSize: 12, color: "#475569" }}>
                       <div><strong>Tipo:</strong> {ciActivo.tipo_ci}</div>
                       <div><strong>Ambiente:</strong> {ciActivo.ambiente}</div>
                       <div><strong>Criticidad:</strong> {ciActivo.criticidad}</div>

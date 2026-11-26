@@ -322,7 +322,7 @@ export default function PanelApiClientes() {
               disabled={cargandoSalud}
               style={{ background: "#3b82f6", color: "white", border: "none", padding: "7px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
             >
-              🩺 /health
+               /health
             </button>
           </div>
         </div>
@@ -349,14 +349,14 @@ export default function PanelApiClientes() {
             onClick={() => setMostrarKey(!mostrarKey)}
             style={{ background: "white", border: "1px solid #cbd5e1", padding: "8px 12px", borderRadius: 6, cursor: "pointer", fontSize: "0.82rem", fontWeight: 600, marginTop: 14 }}
           >
-            {mostrarKey ? "🙈 Ocultar" : "👁️ Ver"}
+            {mostrarKey ? "Ocultar" : "Ver"}
           </button>
           <button
             type="button"
             onClick={guardarKeyLocal}
             style={{ background: "#2563eb", color: "white", border: "none", padding: "8px 14px", borderRadius: 6, cursor: "pointer", fontSize: "0.82rem", fontWeight: 600, marginTop: 14 }}
           >
-            💾 Recordar en esta sesión
+             Recordar en esta sesión
           </button>
           <button
             type="button"
@@ -385,13 +385,13 @@ export default function PanelApiClientes() {
                 onClick={cargarUsuarios}
                 style={{ background: "#2563eb", color: "white", border: "none", padding: "8px 14px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
               >
-                🔄 Consultar Usuarios
+                 Consultar Usuarios
               </button>
               <button
                 onClick={verificarSalud}
                 style={{ background: "white", border: "1px solid #cbd5e1", padding: "8px 14px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
               >
-                🩺 Probar /health
+                 Probar /health
               </button>
             </div>
             <pre style={{ background: "#090d16", color: "#e2e8f0", padding: 12, borderRadius: 8, fontFamily: "monospace", fontSize: "0.78rem", maxHeight: 220, overflowY: "auto", whiteSpace: "pre-wrap", marginTop: 10, border: "1px solid #1e293b" }}>
@@ -468,13 +468,13 @@ export default function PanelApiClientes() {
                 onClick={registrarUsuario}
                 style={{ background: "#16a34a", color: "white", border: "none", padding: "7px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
               >
-                ➕ Registrar Trabajador
+                 Registrar Trabajador
               </button>
               <button
                 onClick={probarDuplicado}
                 style={{ background: "#ca8a04", color: "white", border: "none", padding: "7px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
               >
-                ⚠️ Forzar Duplicado (409)
+                 Forzar Duplicado (409)
               </button>
             </div>
             <pre style={{ background: "#090d16", color: "#e2e8f0", padding: 12, borderRadius: 8, fontFamily: "monospace", fontSize: "0.78rem", maxHeight: 180, overflowY: "auto", whiteSpace: "pre-wrap", marginTop: 10, border: "1px solid #1e293b" }}>
@@ -510,7 +510,7 @@ export default function PanelApiClientes() {
                   onClick={realizarPeticionRateLimit}
                   style={{ background: "#2563eb", color: "white", border: "none", padding: "7px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
                 >
-                  ⚡ Hacer 1 Petición
+                   Hacer 1 Petición
                 </button>
               </div>
             </div>
@@ -518,7 +518,7 @@ export default function PanelApiClientes() {
               onClick={bombardearRateLimit}
               style={{ background: "#dc2626", color: "white", border: "none", padding: "7px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.82rem" }}
             >
-              🔥 Disparar Ráfaga (Probar bloqueo 429)
+               Disparar Ráfaga (Probar bloqueo 429)
             </button>
             <pre style={{ background: "#090d16", color: "#e2e8f0", padding: 12, borderRadius: 8, fontFamily: "monospace", fontSize: "0.78rem", maxHeight: 180, overflowY: "auto", whiteSpace: "pre-wrap", marginTop: 10, border: "1px solid #1e293b" }}>
               {typeof outputRateLimit === "string" ? outputRateLimit : JSON.stringify(outputRateLimit, null, 2)}
@@ -541,19 +541,19 @@ export default function PanelApiClientes() {
                 onClick={probarSinApiKey}
                 style={{ background: "#dc2626", color: "white", border: "none", padding: "7px 11px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.8rem" }}
               >
-                🚫 Probar Sin Clave (401)
+                 Probar Sin Clave (401)
               </button>
               <button
                 onClick={probarClaveFalsa}
                 style={{ background: "#ca8a04", color: "white", border: "none", padding: "7px 11px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.8rem" }}
               >
-                ❌ Probar Clave Falsa (401)
+                 Probar Clave Falsa (401)
               </button>
               <button
                 onClick={probarClaveCorrecta}
                 style={{ background: "#16a34a", color: "white", border: "none", padding: "7px 11px", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: "0.8rem" }}
               >
-                ✅ Clave Autorizada (200)
+                 Clave Autorizada (200)
               </button>
             </div>
             <pre style={{ background: "#090d16", color: "#e2e8f0", padding: 12, borderRadius: 8, fontFamily: "monospace", fontSize: "0.78rem", maxHeight: 180, overflowY: "auto", whiteSpace: "pre-wrap", border: "1px solid #1e293b" }}>
@@ -583,7 +583,7 @@ export default function PanelApiClientes() {
               disabled={cargandoLogs}
               style={{ background: "white", border: "1px solid #cbd5e1", padding: "6px 12px", borderRadius: 6, fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" }}
             >
-              🔄 Actualizar Bitácora
+               Actualizar Bitácora
             </button>
           </div>
 

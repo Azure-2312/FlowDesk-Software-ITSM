@@ -159,7 +159,7 @@ export default function VistaConfigPermisos({ onVolver }: { onVolver?: () => voi
                 padding: 0,
               }}
             >
-              ← Volver a la lista de perfiles
+               Volver a la lista de perfiles
             </button>
           )}
           <h1>Matriz de capacidades por perfil</h1>
@@ -196,7 +196,7 @@ export default function VistaConfigPermisos({ onVolver }: { onVolver?: () => voi
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))",
           gap: 12,
           marginBottom: 18,
         }}

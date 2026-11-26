@@ -129,7 +129,7 @@ export default function VistaCabAgenda() {
 
       <form onSubmit={crear} className="tarjeta-formulario" style={{ marginBottom: 20 }}>
         <h2>Nueva reunión</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 12 }}>
           <label style={{ fontSize: 12, color: "#374151" }}>
             Título
             <input value={titulo} onChange={(e) => setTitulo(e.target.value)} required style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }} />

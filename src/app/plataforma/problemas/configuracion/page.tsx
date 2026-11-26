@@ -1,6 +1,7 @@
 import { exigirVistaPagina } from "@/shared/lib/vistas";
 import PestanasVista from "@/shared/components/ui/PestanasVista";
 import VistaFormularioProblemas from "@/modules/problemas/config/formulario/VistaFormularioProblemas";
+import VistaUmbralProblemas from "@/modules/problemas/config/umbral/VistaUmbralProblemas";
 
 interface PageProps {
   searchParams?: Promise<{ vista?: string }> | { vista?: string };
@@ -26,6 +27,7 @@ export default async function PaginaProblemasConfiguracion({ searchParams }: Pag
       )}
       {vistaActiva === "campos" && <VistaFormularioProblemas pestanaFija="campos" />}
       {vistaActiva === "listas" && <VistaFormularioProblemas pestanaFija="listas_catalogos" />}
+      {vistaActiva === "umbral" && <VistaUmbralProblemas />}
     </div>
   );
 }

@@ -11,6 +11,120 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- ------------------------------------------------------------
 -- Tabla: acta_entrega
 -- ------------------------------------------------------------
+-- Secuencias requeridas por los DEFAULT nextval(...) (deben existir antes de las tablas)
+CREATE SEQUENCE IF NOT EXISTS acta_entrega_id_acta_seq;
+CREATE SEQUENCE IF NOT EXISTS activo_historial_id_historial_seq;
+CREATE SEQUENCE IF NOT EXISTS activo_id_activo_seq;
+CREATE SEQUENCE IF NOT EXISTS acuerdo_nivel_operativo_id_ola_seq;
+CREATE SEQUENCE IF NOT EXISTS adjunto_ticket_id_adjunto_seq;
+CREATE SEQUENCE IF NOT EXISTS api_credenciales_externas_id_credencial_seq;
+CREATE SEQUENCE IF NOT EXISTS api_log_auditoria_id_log_seq;
+CREATE SEQUENCE IF NOT EXISTS aprobacion_monto_id_aprobacion_monto_seq;
+CREATE SEQUENCE IF NOT EXISTS articulo_conocimiento_feedback_id_feedback_seq;
+CREATE SEQUENCE IF NOT EXISTS articulo_conocimiento_historial_id_historial_seq;
+CREATE SEQUENCE IF NOT EXISTS articulo_conocimiento_id_articulo_seq;
+CREATE SEQUENCE IF NOT EXISTS articulo_conocimiento_version_id_version_seq;
+CREATE SEQUENCE IF NOT EXISTS articulo_conocimiento_vinculo_ticket_id_vinculo_seq;
+CREATE SEQUENCE IF NOT EXISTS bloqueo_edicion_concurrente_id_bloqueo_seq;
+CREATE SEQUENCE IF NOT EXISTS cab_reunion_id_reunion_seq;
+CREATE SEQUENCE IF NOT EXISTS calendario_feriados_id_seq;
+CREATE SEQUENCE IF NOT EXISTS cambio_aprobacion_id_cambio_aprobacion_seq;
+CREATE SEQUENCE IF NOT EXISTS cambio_catalogo_item_id_item_seq;
+CREATE SEQUENCE IF NOT EXISTS cambio_enterado_id_enterado_seq;
+CREATE SEQUENCE IF NOT EXISTS cambio_excepcion_id_excepcion_seq;
+CREATE SEQUENCE IF NOT EXISTS cambio_id_cambio_seq;
+CREATE SEQUENCE IF NOT EXISTS cambio_modelo_estandar_id_modelo_seq;
+CREATE SEQUENCE IF NOT EXISTS campana_inventario_id_campana_seq;
+CREATE SEQUENCE IF NOT EXISTS campana_inventario_item_id_item_seq;
+CREATE SEQUENCE IF NOT EXISTS campo_personalizado_id_campo_seq;
+CREATE SEQUENCE IF NOT EXISTS categoria_ticket_id_categoria_seq;
+CREATE SEQUENCE IF NOT EXISTS cliente_id_cliente_seq;
+CREATE SEQUENCE IF NOT EXISTS cmdb_actualizacion_id_actualizacion_seq;
+CREATE SEQUENCE IF NOT EXISTS cmdb_inexactitud_id_inexactitud_seq;
+CREATE SEQUENCE IF NOT EXISTS cmdb_linea_base_id_linea_base_seq;
+CREATE SEQUENCE IF NOT EXISTS codigo_recuperacion_id_recuperacion_seq;
+CREATE SEQUENCE IF NOT EXISTS cola_correo_id_correo_seq;
+CREATE SEQUENCE IF NOT EXISTS colaborador_autorizacion_id_autorizacion_seq;
+CREATE SEQUENCE IF NOT EXISTS comentario_ticket_id_comentario_seq;
+CREATE SEQUENCE IF NOT EXISTS configuracion_modulo_versiones_id_version_seq;
+CREATE SEQUENCE IF NOT EXISTS contrato_ti_id_contrato_seq;
+CREATE SEQUENCE IF NOT EXISTS departamento_empresa_id_departamento_empresa_seq;
+CREATE SEQUENCE IF NOT EXISTS departamento_ti_id_departamento_seq;
+CREATE SEQUENCE IF NOT EXISTS ecab_decision_id_ecab_seq;
+CREATE SEQUENCE IF NOT EXISTS elemento_configuracion_id_ci_seq;
+CREATE SEQUENCE IF NOT EXISTS equipo_recurso_compartido_id_recurso_seq;
+CREATE SEQUENCE IF NOT EXISTS error_conocido_id_error_conocido_seq;
+CREATE SEQUENCE IF NOT EXISTS estado_ticket_id_estado_seq;
+CREATE SEQUENCE IF NOT EXISTS evento_servicio_id_evento_seq;
+CREATE SEQUENCE IF NOT EXISTS impacto_ticket_id_impacto_seq;
+CREATE SEQUENCE IF NOT EXISTS importacion_activos_id_importacion_seq;
+CREATE SEQUENCE IF NOT EXISTS incidente_mayor_id_incidente_mayor_seq;
+CREATE SEQUENCE IF NOT EXISTS informe_auditoria_id_informe_seq;
+CREATE SEQUENCE IF NOT EXISTS informe_evidencia_id_evidencia_seq;
+CREATE SEQUENCE IF NOT EXISTS licencia_asignacion_id_asignacion_seq;
+CREATE SEQUENCE IF NOT EXISTS licencia_software_id_licencia_seq;
+CREATE SEQUENCE IF NOT EXISTS log_acceso_id_log_seq;
+CREATE SEQUENCE IF NOT EXISTS log_auditoria_sistema_id_log_seq;
+CREATE SEQUENCE IF NOT EXISTS mantenimiento_activo_id_mantenimiento_seq;
+CREATE SEQUENCE IF NOT EXISTS matriz_prioridad_institucional_id_celda_seq;
+CREATE SEQUENCE IF NOT EXISTS modelo_activo_id_modelo_seq;
+CREATE SEQUENCE IF NOT EXISTS motivo_espera_ticket_id_motivo_espera_seq;
+CREATE SEQUENCE IF NOT EXISTS notificaciones_id_seq;
+CREATE SEQUENCE IF NOT EXISTS opciones_menu_id_opcion_menu_seq;
+CREATE SEQUENCE IF NOT EXISTS perfiles_id_perfil_seq;
+CREATE SEQUENCE IF NOT EXISTS periodos_congelamiento_id_seq;
+CREATE SEQUENCE IF NOT EXISTS plantilla_problema_id_plantilla_seq;
+CREATE SEQUENCE IF NOT EXISTS prioridad_ticket_id_prioridad_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_analisis_id_analisis_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_categoria_id_categoria_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_causa_raiz_categoria_id_causa_categoria_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_cierre_aprobacion_id_cierre_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_codigo_cierre_id_codigo_cierre_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_config_mayor_id_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_config_reapertura_id_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_criterio_mayor_id_criterio_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_estado_id_estado_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_id_problema_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_metodo_analisis_id_metodo_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_motivo_cancelacion_id_motivo_cancelacion_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_motivo_espera_id_motivo_espera_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_objetivo_tiempo_id_objetivo_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_origen_id_origen_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_regla_asignacion_id_regla_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_regla_escalamiento_id_escalamiento_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_regla_umbral_ejecucion_id_ejecucion_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_regla_umbral_id_regla_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_relaciones_version_id_version_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_tarea_catalogo_id_tarea_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_tarea_paquete_id_paquete_seq;
+CREATE SEQUENCE IF NOT EXISTS problema_transicion_id_transicion_seq;
+CREATE SEQUENCE IF NOT EXISTS proveedor_ti_id_proveedor_seq;
+CREATE SEQUENCE IF NOT EXISTS recepcion_activo_id_recepcion_seq;
+CREATE SEQUENCE IF NOT EXISTS recertificacion_acceso_id_recertificacion_seq;
+CREATE SEQUENCE IF NOT EXISTS regla_notificacion_id_regla_seq;
+CREATE SEQUENCE IF NOT EXISTS renovacion_contrato_id_renovacion_seq;
+CREATE SEQUENCE IF NOT EXISTS resiliencia_servicio_id_resiliencia_seq;
+CREATE SEQUENCE IF NOT EXISTS respuestas_predefinidas_id_respuesta_seq;
+CREATE SEQUENCE IF NOT EXISTS servicio_catalogo_id_servicio_seq;
+CREATE SEQUENCE IF NOT EXISTS servicio_workflow_paso_id_paso_seq;
+CREATE SEQUENCE IF NOT EXISTS software_autorizado_id_software_seq;
+CREATE SEQUENCE IF NOT EXISTS solicitud_baja_activo_id_solicitud_seq;
+CREATE SEQUENCE IF NOT EXISTS tarea_programada_id_tarea_seq;
+CREATE SEQUENCE IF NOT EXISTS tecnico_ausencias_id_ausencia_seq;
+CREATE SEQUENCE IF NOT EXISTS tecnico_detalle_id_tecnico_detalle_seq;
+CREATE SEQUENCE IF NOT EXISTS tecnico_recordatorios_id_recordatorio_seq;
+CREATE SEQUENCE IF NOT EXISTS tecnico_turnos_id_turno_seq;
+CREATE SEQUENCE IF NOT EXISTS ticket_aprobacion_id_ticket_aprobacion_seq;
+CREATE SEQUENCE IF NOT EXISTS ticket_id_ticket_seq;
+CREATE SEQUENCE IF NOT EXISTS ticket_lecturas_id_lectura_seq;
+CREATE SEQUENCE IF NOT EXISTS tipo_activo_catalogo_id_tipo_activo_seq;
+CREATE SEQUENCE IF NOT EXISTS tipo_ci_id_tipo_ci_seq;
+CREATE SEQUENCE IF NOT EXISTS tipo_ticket_id_tipo_ticket_seq;
+CREATE SEQUENCE IF NOT EXISTS ubicacion_id_ubicacion_seq;
+CREATE SEQUENCE IF NOT EXISTS urgencia_ticket_id_urgencia_seq;
+CREATE SEQUENCE IF NOT EXISTS usuario_id_usuario_seq;
+CREATE SEQUENCE IF NOT EXISTS ventanas_mantenimiento_id_seq;
+
 CREATE TABLE IF NOT EXISTS acta_entrega (
     id_acta INTEGER DEFAULT nextval('acta_entrega_id_acta_seq'::regclass) NOT NULL,
     id_activo INTEGER NOT NULL,
@@ -3003,8 +3117,6 @@ ALTER TABLE servicio_catalogo ADD CONSTRAINT servicio_catalogo_id_tipo_ticket_fk
 ALTER TABLE servicio_catalogo DROP CONSTRAINT IF EXISTS servicio_catalogo_id_departamento_resolutor_fkey;
 ALTER TABLE servicio_catalogo ADD CONSTRAINT servicio_catalogo_id_departamento_resolutor_fkey FOREIGN KEY (id_departamento_resolutor) REFERENCES departamento_ti(id_departamento);
 
-ALTER TABLE servicio_catalogo DROP CONSTRAINT IF EXISTS fk_servicio_categoria_tipo;
-ALTER TABLE servicio_catalogo ADD CONSTRAINT fk_servicio_categoria_tipo FOREIGN KEY (id_categoria, id_tipo_ticket) REFERENCES categoria_ticket(id_categoria, id_tipo_ticket);
 
 ALTER TABLE servicio_catalogo_perfiles DROP CONSTRAINT IF EXISTS servicio_catalogo_perfiles_id_servicio_fkey;
 ALTER TABLE servicio_catalogo_perfiles ADD CONSTRAINT servicio_catalogo_perfiles_id_servicio_fkey FOREIGN KEY (id_servicio) REFERENCES servicio_catalogo(id_servicio) ON DELETE CASCADE;
@@ -3057,8 +3169,6 @@ ALTER TABLE tecnico_turnos ADD CONSTRAINT tecnico_turnos_id_usuario_tecnico_fkey
 ALTER TABLE ticket DROP CONSTRAINT IF EXISTS ticket_id_motivo_espera_fkey;
 ALTER TABLE ticket ADD CONSTRAINT ticket_id_motivo_espera_fkey FOREIGN KEY (id_motivo_espera) REFERENCES motivo_espera_ticket(id_motivo_espera);
 
-ALTER TABLE ticket DROP CONSTRAINT IF EXISTS fk_ticket_categoria_tipo;
-ALTER TABLE ticket ADD CONSTRAINT fk_ticket_categoria_tipo FOREIGN KEY (id_categoria, id_tipo_ticket) REFERENCES categoria_ticket(id_categoria, id_tipo_ticket);
 
 ALTER TABLE ticket DROP CONSTRAINT IF EXISTS ticket_id_categoria_fkey;
 ALTER TABLE ticket ADD CONSTRAINT ticket_id_categoria_fkey FOREIGN KEY (id_categoria) REFERENCES categoria_ticket(id_categoria);
@@ -3252,3 +3362,9 @@ CREATE INDEX idx_ticket_servicio ON public.ticket USING btree (id_servicio);
 CREATE INDEX idx_ticket_solicitante ON public.ticket USING btree (id_usuario_solicitante);
 CREATE INDEX idx_ticket_tipo ON public.ticket USING btree (id_tipo_ticket);
 CREATE INDEX idx_ticket_aprobacion_ticket ON public.ticket_aprobacion USING btree (id_ticket);
+
+-- FKs compuestas: se crean al final porque dependen de uq_categoria_id_tipo
+ALTER TABLE servicio_catalogo DROP CONSTRAINT IF EXISTS fk_servicio_categoria_tipo;
+ALTER TABLE servicio_catalogo ADD CONSTRAINT fk_servicio_categoria_tipo FOREIGN KEY (id_categoria, id_tipo_ticket) REFERENCES categoria_ticket(id_categoria, id_tipo_ticket);
+ALTER TABLE ticket DROP CONSTRAINT IF EXISTS fk_ticket_categoria_tipo;
+ALTER TABLE ticket ADD CONSTRAINT fk_ticket_categoria_tipo FOREIGN KEY (id_categoria, id_tipo_ticket) REFERENCES categoria_ticket(id_categoria, id_tipo_ticket);

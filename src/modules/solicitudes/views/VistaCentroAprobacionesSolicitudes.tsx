@@ -1,7 +1,9 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useEffect, useState, useMemo } from "react";
-import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
+import { rutaDetalleTicket } from "@/modules/tickets/rutas";
 import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 import { Eye, Check, X, Clock, CheckCircle2, AlertCircle, RefreshCw, FileText } from "@/shared/components/ui/Iconos";
 
@@ -20,6 +22,7 @@ function obtenerIniciales(nombre?: string): string {
 }
 
 export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pendientes" }: Props) {
+  const router = useRouter();
   const [vista, setVista] = useState<"pendientes" | "historial">(vistaInicial);
   const [tickets, setTickets] = useState<any[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -27,7 +30,6 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
 
   // Modales
-  const [ticketSeleccionadoId, setTicketSeleccionadoId] = useState<number | null>(null);
   const [ticketAccion, setTicketAccion] = useState<{ id: number; decision: "APROBADO" | "RECHAZADO"; codigo?: string } | null>(null);
   const [comentarioAccion, setComentarioAccion] = useState("");
   const [procesando, setProcesando] = useState(false);
@@ -235,7 +237,7 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
               transition: "all 0.15s ease",
             }}
           >
-            <RefreshCw size={13} style={{ animation: cargando ? "spin 1s linear infinite" : "none" }} />
+
             <span>Actualizar</span>
           </button>
         </div>
@@ -383,10 +385,10 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
                         <button
                           type="button"
                           className="boton-tabla-detalle"
-                          onClick={() => setTicketSeleccionadoId(t.id_ticket)}
+                          onClick={() => router.push(rutaDetalleTicket({ id_ticket: t.id_ticket, id_tipo_ticket: 2 }))}
                           title="Consultar expediente completo"
                         >
-                          <Eye size={13} />
+
                           <span>Ver detalle</span>
                         </button>
 
@@ -396,7 +398,7 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
                           onClick={() => setTicketAccion({ id: t.id_ticket, decision: "APROBADO", codigo: t.codigo_ticket })}
                           title="Conceder autorización"
                         >
-                          <Check size={13} />
+
                           <span>Aprobar</span>
                         </button>
 
@@ -406,7 +408,7 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
                           onClick={() => setTicketAccion({ id: t.id_ticket, decision: "RECHAZADO", codigo: t.codigo_ticket })}
                           title="Denegar requerimiento"
                         >
-                          <X size={13} />
+
                           <span>Rechazar</span>
                         </button>
                       </div>
@@ -477,10 +479,10 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
                       <button
                         type="button"
                         className="boton-tabla-detalle"
-                        onClick={() => setTicketSeleccionadoId(t.id_ticket)}
+                        onClick={() => router.push(rutaDetalleTicket({ id_ticket: t.id_ticket, id_tipo_ticket: 2 }))}
                         title="Ver detalle"
                       >
-                        <Eye size={12} />
+
                         <span>Ver</span>
                       </button>
                     </td>
@@ -589,15 +591,6 @@ export default function VistaCentroAprobacionesSolicitudes({ vistaInicial = "pen
         </div>
       )}
 
-      {/* Modal de Detalle de Ticket */}
-      {ticketSeleccionadoId !== null && (
-        <ModalDetalleTicket
-          idTicket={ticketSeleccionadoId}
-          apiBase="/api/solicitudes"
-          onCerrar={() => setTicketSeleccionadoId(null)}
-          onActualizado={cargarDatos}
-        />
-      )}
     </div>
   );
 }

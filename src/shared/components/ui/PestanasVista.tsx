@@ -53,8 +53,9 @@ export default function PestanasVista({
         gap: 4,
         borderBottom: "1px solid #e2e8f0",
         marginBottom: 0,
-        overflowX: "auto",
-        WebkitOverflowScrolling: "touch",
+        // En pantallas estrechas las pestañas pasan a otra fila en vez de
+        // quedar ocultas detrás de un scroll horizontal.
+        flexWrap: "wrap",
       }}
     >
       {vistas.map((vista) => {

@@ -1908,7 +1908,7 @@ export function VistaCatalogoServicios({
                   Cargando categorías oficiales...
                 </div>
               ) : (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(290px, 1fr))", gap: 16 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(290px, 100%), 1fr))", gap: 16 }}>
                   {categorias
                     .filter((c) => c.id_tipo_ticket === tipoActual && c.estado_registro)
                     .filter((c) => {

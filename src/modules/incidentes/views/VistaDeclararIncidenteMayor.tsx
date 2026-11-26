@@ -204,7 +204,7 @@ export default function VistaDeclararIncidenteMayor() {
           className="boton-secundario"
           style={{ textDecoration: "none", fontSize: 13, padding: "8px 16px" }}
         >
-          ← Volver a la Bandeja
+           Volver a la Bandeja
         </Link>
       </div>
 

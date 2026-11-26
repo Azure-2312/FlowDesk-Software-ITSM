@@ -155,7 +155,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
             className="boton-secundario"
             style={{ fontSize: 12, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
-            Ver Matriz Compartida en Catálogo de Servicios / SLA →
+            Ver Matriz Compartida en Catálogo de Servicios / SLA 
           </Link>
         </div>
 

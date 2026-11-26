@@ -27,7 +27,7 @@ if (!dbUrl) {
 
 const pool = new Pool({
   connectionString: dbUrl,
-  ssl: { rejectUnauthorized: false }
+  ssl: /localhost|127.0.0.1|sslmode=disable/.test(String(dbUrl)) ? false : { rejectUnauthorized: false }
 });
 
 function hashApiKey(apiKey) {

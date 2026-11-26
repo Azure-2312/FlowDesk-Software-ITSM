@@ -62,7 +62,7 @@ export default function VistaReportesArea() {
         <p>Consumo por servicio, SLA percibido, satisfacción y costo referencial de {data.departamento}.</p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))", gap: 14, marginBottom: 24 }}>
         <Kpi titulo="Tickets totales" valor={r.total} />
         <Kpi titulo="SLA percibido" valor={r.sla_porcentaje !== null ? `${r.sla_porcentaje}%` : "—"} color={r.sla_porcentaje !== null && r.sla_porcentaje < 90 ? "#b45309" : undefined} />
         <Kpi titulo="Satisfacción" valor={r.csat_promedio ?? "—"} />

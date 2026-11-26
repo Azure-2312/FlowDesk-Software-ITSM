@@ -168,7 +168,7 @@ export default function VistaAnalisisProblemas({ problemaId }: VistaAnalisisProb
                 {METODOS.map((m) => <option key={m.valor} value={m.valor}>{m.etiqueta}</option>)}
               </select>
             </label>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 12 }}>
               <label style={{ fontSize: 12, color: "#374151" }}>
                 5 porqués (uno por línea)
                 <textarea value={porques} onChange={(e) => setPorques(e.target.value)} rows={5} placeholder={"¿Por qué falló el servicio?\n¿Por qué ...?"} style={{ display: "block", width: "100%", marginTop: 4, padding: "8px 10px", border: "1px solid #cbd5e1", borderRadius: 8 }} />

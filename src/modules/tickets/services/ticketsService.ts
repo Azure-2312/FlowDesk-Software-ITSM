@@ -32,6 +32,21 @@ export function calcularPrioridadITIL(nivelImpacto: number, nivelUrgencia: numbe
   return MATRIZ_PRIORIDAD_ITIL[`${nivelImpacto}-${nivelUrgencia}`] || "P4";
 }
 
+/**
+ * Prioridad según la matriz institucional configurada por el administrador
+ * (Servicios → Configuración SLA → Matriz). La constante solo se usa si la
+ * celda no está configurada.
+ */
+export async function resolverCodigoPrioridad(nivelImpacto: number, nivelUrgencia: number): Promise<string> {
+  const celda = await queryRow<{ codigo: string }>(
+    `SELECT p.codigo FROM matriz_prioridad_institucional m
+       JOIN prioridad_ticket p ON p.id_prioridad = m.id_prioridad
+      WHERE m.entidad = 'compartida' AND m.nivel_impacto = $1 AND m.nivel_urgencia = $2`,
+    [nivelImpacto, nivelUrgencia]
+  );
+  return celda?.codigo || calcularPrioridadITIL(nivelImpacto, nivelUrgencia);
+}
+
 export interface ContextoTickets {
   idUsuario: number;
   idPerfil: number;
@@ -357,7 +372,7 @@ export async function crearTicket(sesion: any, body: CrearTicketPayload) {
   }
 
   // 2. Calcular código de prioridad según matriz Impacto x Urgencia
-  const codigoPrioridad = calcularPrioridadITIL(impacto.nivel, urgencia.nivel);
+  const codigoPrioridad = await resolverCodigoPrioridad(impacto.nivel, urgencia.nivel);
 
   // 3. Obtener id_prioridad y horas base de SLA
   const prioridad = await queryRow<{ id_prioridad: number; tiempo_resolucion_horas: number; tiempo_primera_respuesta_hrs: number }>(

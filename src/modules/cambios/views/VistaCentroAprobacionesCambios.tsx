@@ -392,7 +392,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
               transition: "all 0.15s ease",
             }}
           >
-            <RefreshCw size={13} style={{ animation: cargando ? "spin 1s linear infinite" : "none" }} />
+
             <span>Actualizar</span>
           </button>
         </div>
@@ -535,7 +535,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
                             className="boton-tabla-detalle"
                             title="Ver detalle del cambio (RFC)"
                           >
-                            <Eye size={13} />
+
                             <span>Ver RFC</span>
                           </Link>
 
@@ -545,7 +545,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
                             onClick={() => setItemAccion({ item, decision: "APROBAR" })}
                             title="Emitir dictamen favorable"
                           >
-                            <Check size={13} />
+
                             <span>Aprobar</span>
                           </button>
 
@@ -555,7 +555,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
                             onClick={() => setItemAccion({ item, decision: "RECHAZAR" })}
                             title="Denegar o rechazar solicitud"
                           >
-                            <X size={13} />
+
                             <span>Rechazar</span>
                           </button>
                         </div>
@@ -649,7 +649,7 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
                         <td style={{ padding: "12px 16px", textAlign: "right", whiteSpace: "nowrap" }}>
                           {idRfc ? (
                             <Link href={`/plataforma/cambios/gestion/${idRfc}`} className="boton-tabla-detalle">
-                              <Eye size={12} />
+
                               <span>Ver RFC</span>
                             </Link>
                           ) : (

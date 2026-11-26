@@ -1006,3 +1006,22 @@ ON CONFLICT (api_key_hash) DO UPDATE SET
     limite_rpm = EXCLUDED.limite_rpm;
 
 SELECT setval(pg_get_serial_sequence('api_credenciales_externas', 'id_credencial'), coalesce((SELECT max(id_credencial) FROM api_credenciales_externas), 1));
+
+-- ---------- Sincronizar secuencias con los ids ya insertados ----------
+-- Sin esto, el primer INSERT de cada tabla con datos semilla falla con
+-- "llave duplicada" porque la secuencia empieza en 1.
+DO $$
+DECLARE r RECORD;
+BEGIN
+  FOR r IN
+    SELECT c.table_name, c.column_name,
+           substring(c.column_default FROM 'nextval\(''([^'']+)''') AS secuencia
+      FROM information_schema.columns c
+     WHERE c.table_schema = 'public' AND c.column_default LIKE 'nextval(%'
+  LOOP
+    EXECUTE format(
+      'SELECT setval(%L, COALESCE((SELECT MAX(%I) FROM %I), 0) + 1, false)',
+      r.secuencia, r.column_name, r.table_name
+    );
+  END LOOP;
+END $$;

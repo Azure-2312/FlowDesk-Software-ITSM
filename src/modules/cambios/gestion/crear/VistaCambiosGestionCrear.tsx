@@ -764,7 +764,7 @@ export default function VistaCambiosGestionCrear() {
             padding: "12px 16px",
             marginBottom: 20,
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))",
             gap: 12,
             fontSize: 12.5,
           }}
@@ -808,7 +808,7 @@ export default function VistaCambiosGestionCrear() {
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: 12 }}>
           {/* Opción NORMAL */}
           <button
             type="button"
@@ -1606,7 +1606,7 @@ export default function VistaCambiosGestionCrear() {
             <p style={{ margin: "0 0 16px", fontSize: 12.5, color: "#64748b" }}>
               Campos parametrizados en la política de cambios por la administración.
             </p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 16 }}>
               {camposPersonalizadosDef.map((cp) => (
                 <div key={cp.codigo} className="campo" style={{ margin: 0 }}>
                   <label className="etiqueta">

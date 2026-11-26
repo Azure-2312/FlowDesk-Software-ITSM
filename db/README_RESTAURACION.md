@@ -12,6 +12,7 @@ Si Supabase presenta caídas, se cambia de instancia en la nube o se desea despl
 | **`01_schema_completo.sql`** | Esquema DDL maestro consolidado | 129 tablas, llaves primarias, llaves foráneas, checks, vistas e índices |
 | **`02_stored_procedures.sql`** | Lógica de negocio y seguridad en motor BD | 5 Stored Procedures ITIL + funciones PL/pgSQL + triggers de auditoría inmutable |
 | **`03_seed_data.sql`** | Catálogos iniciales y datos base | 10 perfiles, 150+ opciones de menú jerárquico, usuario admin, servicios y credenciales API |
+| **`04_menu_y_configuracion.sql`** | Menú vigente, permisos/vistas por perfil y `configuracion_sistema` | Se genera desde la BD real con `DATABASE_URL="..." node scripts/exportar_menu_actual.js`. **Sin este archivo el menú de `03` es el anterior a la reestructuración y el admin cae en 403.** |
 | **`archive/migrations_historicas.zip`** | Respaldo histórico | Las 67 migraciones incrementales previas comprimidas para trazabilidad |
 
 ---

@@ -108,14 +108,14 @@ export default function VistaPanelAprobador() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 16, marginBottom: 24 }}>
         <Kpi titulo="Cambios por decidir" valor={data.kpis.pendientes} color={data.kpis.pendientes > 0 ? "#b45309" : undefined} subtitulo={data.kpis.pendientes > 0 ? "Votación pendiente" : "Sin casos pendientes"} />
         <Kpi titulo="Por vencer (48 h)" valor={data.kpis.por_vencer} color={data.kpis.por_vencer > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.por_vencer > 0 ? "Urgencia alta" : "Plazos en orden"} />
         <Kpi titulo="Bajas por monto" valor={data.kpis.bajas_pendientes} subtitulo="Activos de alto valor" />
         <Kpi titulo="Problemas mayores" valor={data.kpis.problemas_pendientes} subtitulo="RCA en revisión" />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Próxima reunión del CAB</h2>
           {data.proximaReunion ? (

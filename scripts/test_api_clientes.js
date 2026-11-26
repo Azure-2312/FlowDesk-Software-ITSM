@@ -268,7 +268,7 @@ async function runTests() {
 
     // 14. Inmutabilidad estricta de api_log_auditoria (trigger de PostgreSQL)
     if (dbUrl) {
-      const pool = new Pool({ connectionString: dbUrl, ssl: { rejectUnauthorized: false } });
+      const pool = new Pool({ connectionString: dbUrl, ssl: /localhost|127.0.0.1|sslmode=disable/.test(String(dbUrl)) ? false : { rejectUnauthorized: false } });
       try {
         await pool.query('DELETE FROM api_log_auditoria WHERE id_log = -999');
         assert('14. Inmutabilidad estricta: trigger bloquea DELETE en api_log_auditoria', false, 'El DELETE no fue bloqueado');

@@ -144,7 +144,7 @@ export default function PaginaPanelTecnico() {
     : null;
 
   return (
-    <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto" }}>
+    <div className="vista-contenedor">
       {/* Encabezado */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div>
@@ -475,7 +475,7 @@ export default function PaginaPanelTecnico() {
             </p>
           </div>
 
-          <div style={{ display: "flex", gap: 6 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             <button
               type="button"
               onClick={() => setPeriodoDesempeno("7_dias")}

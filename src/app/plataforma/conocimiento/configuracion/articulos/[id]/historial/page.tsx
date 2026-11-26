@@ -132,22 +132,22 @@ export default function PaginaHistorialArticuloDetallado() {
   return (
     <div className="max-w-6xl mx-auto py-6 px-4 space-y-6">
       {/* Cabecera y Navegación */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">
             <Link href="/plataforma/conocimiento/configuracion/articulos" className="hover:text-blue-600 transition-colors">
               Gestión de Conocimiento
             </Link>
             <span>/</span>
-            <span className="text-blue-600 dark:text-blue-400 font-mono">{articulo.codigo_articulo}</span>
+            <span className="text-blue-600 font-mono">{articulo.codigo_articulo}</span>
             <span>/</span>
             <span>Historial y Métricas de Auditoría</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-slate-900">
             {articulo.titulo}
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Categoría: <strong className="text-slate-700 dark:text-slate-300">{articulo.categoria_nombre || "General"}</strong> | Autor: <strong className="text-slate-700 dark:text-slate-300">{articulo.autor_nombre || "Especialista"}</strong> | Versión Actual: <strong className="text-slate-700 dark:text-slate-300">v{articulo.version || 1}</strong>
+          <p className="text-xs text-slate-500 mt-1">
+            Categoría: <strong className="text-slate-700">{articulo.categoria_nombre || "General"}</strong> | Autor: <strong className="text-slate-700">{articulo.autor_nombre || "Especialista"}</strong> | Versión Actual: <strong className="text-slate-700">v{articulo.version || 1}</strong>
           </p>
         </div>
 
@@ -160,7 +160,7 @@ export default function PaginaHistorialArticuloDetallado() {
           </Link>
           <Link
             href="/plataforma/conocimiento/configuracion/articulos"
-            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-lg transition-colors"
+            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-colors"
           >
             Volver
           </Link>
@@ -169,41 +169,41 @@ export default function PaginaHistorialArticuloDetallado() {
 
       {/* Tarjetas de Métricas de Calidad */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+        <div className="p-4 rounded-xl border border-slate-200 bg-white shadow-sm">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
             Total Lecturas / Vistas
           </span>
-          <div className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
+          <div className="text-2xl font-extrabold text-slate-900 mt-1">
             {articulo.visitas}
           </div>
           <p className="text-[11px] text-slate-400 mt-1">Consultas en portal y mesa</p>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+        <div className="p-4 rounded-xl border border-slate-200 bg-white shadow-sm">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-600">
             Valoraciones Útiles (Likes)
           </span>
-          <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">
+          <div className="text-2xl font-extrabold text-emerald-600 mt-1">
             +{articulo.utilidad_positiva}
           </div>
           <p className="text-[11px] text-slate-400 mt-1">Usuarios que confirmaron solución</p>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+        <div className="p-4 rounded-xl border border-slate-200 bg-white shadow-sm">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-rose-600">
             Valoraciones Negativas (Dislikes)
           </span>
-          <div className="text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1">
+          <div className="text-2xl font-extrabold text-rose-600 mt-1">
             -{articulo.utilidad_negativa}
           </div>
           <p className="text-[11px] text-slate-400 mt-1">Reportes de insatisfacción</p>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+        <div className="p-4 rounded-xl border border-slate-200 bg-white shadow-sm">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600">
             Tasa de Aprobación
           </span>
-          <div className="text-2xl font-extrabold text-blue-600 dark:text-blue-400 mt-1">
+          <div className="text-2xl font-extrabold text-blue-600 mt-1">
             {tasaAprobacion}%
           </div>
           <p className="text-[11px] text-slate-400 mt-1">{totalVotos} votos registrados</p>
@@ -211,12 +211,12 @@ export default function PaginaHistorialArticuloDetallado() {
       </div>
 
       {/* Sección 1: Registro Detallado de Feedback de Usuarios (Likes / Dislikes y Motivos) */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
-        <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+        <div className="border-b border-slate-100 pb-3">
+          <h2 className="text-base font-bold text-slate-900">
             1. Registro Detallado de Valoraciones y Feedback de Usuarios
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             Historial de votos positivos y motivos de rechazo dejados por solicitantes o técnicos.
           </p>
         </div>
@@ -228,7 +228,7 @@ export default function PaginaHistorialArticuloDetallado() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-800">
+              <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
                 <tr>
                   <th className="py-2.5 px-3">Fecha y Hora</th>
                   <th className="py-2.5 px-3">Usuario / Origen</th>
@@ -237,30 +237,30 @@ export default function PaginaHistorialArticuloDetallado() {
                   <th className="py-2.5 px-3">Comentario Textual</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100">
                 {feedbacks.map((f) => (
-                  <tr key={f.id_feedback} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                    <td className="py-2.5 px-3 font-mono text-slate-600 dark:text-slate-400">
+                  <tr key={f.id_feedback} className="hover:bg-slate-50/50">
+                    <td className="py-2.5 px-3 font-mono text-slate-600">
                       {new Date(f.fecha).toLocaleString()}
                     </td>
-                    <td className="py-2.5 px-3 font-medium text-slate-800 dark:text-slate-200">
+                    <td className="py-2.5 px-3 font-medium text-slate-800">
                       {f.usuario_nombre || `IP: ${f.ip || "Autoservicio"}`}
                     </td>
                     <td className="py-2.5 px-3 text-center">
                       <span
                         className={`inline-flex px-2 py-0.5 rounded text-[11px] font-bold ${
                           f.es_positivo
-                            ? "bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300"
-                            : "bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : "bg-rose-100 text-rose-800"
                         }`}
                       >
                         {f.es_positivo ? "ÚTIL (LIKE)" : "NO ÚTIL (DISLIKE)"}
                       </span>
                     </td>
-                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300 font-medium">
+                    <td className="py-2.5 px-3 text-slate-700 font-medium">
                       {f.motivo_negativo || "—"}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-600 dark:text-slate-400 italic max-w-sm">
+                    <td className="py-2.5 px-3 text-slate-600 italic max-w-sm">
                       {f.comentario || "Sin comentarios adicionales."}
                     </td>
                   </tr>
@@ -272,12 +272,12 @@ export default function PaginaHistorialArticuloDetallado() {
       </div>
 
       {/* Sección 2: Historial del Ciclo Editorial de Aprobaciones */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
-        <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+        <div className="border-b border-slate-100 pb-3">
+          <h2 className="text-base font-bold text-slate-900">
             2. Historial de Decisiones y Transiciones Editoriales
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             Pista inalterable de auditoría sobre revisiones, aprobaciones, devoluciones y retiros.
           </p>
         </div>
@@ -289,7 +289,7 @@ export default function PaginaHistorialArticuloDetallado() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-800">
+              <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
                 <tr>
                   <th className="py-2.5 px-3">Fecha y Hora</th>
                   <th className="py-2.5 px-3">Estado Previo</th>
@@ -298,22 +298,22 @@ export default function PaginaHistorialArticuloDetallado() {
                   <th className="py-2.5 px-3">Responsable</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100">
                 {historial.map((h) => (
-                  <tr key={h.id_historial} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                    <td className="py-2.5 px-3 font-mono text-slate-600 dark:text-slate-400">
+                  <tr key={h.id_historial} className="hover:bg-slate-50/50">
+                    <td className="py-2.5 px-3 font-mono text-slate-600">
                       {new Date(h.fecha).toLocaleString()}
                     </td>
                     <td className="py-2.5 px-3 text-slate-500">
                       {h.estado_anterior || "INICIAL"}
                     </td>
-                    <td className="py-2.5 px-3 font-bold text-blue-600 dark:text-blue-400">
+                    <td className="py-2.5 px-3 font-bold text-blue-600">
                       {h.estado_nuevo}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300">
+                    <td className="py-2.5 px-3 text-slate-700">
                       {h.comentario || "—"}
                     </td>
-                    <td className="py-2.5 px-3 font-medium text-slate-800 dark:text-slate-200">
+                    <td className="py-2.5 px-3 font-medium text-slate-800">
                       {h.usuario_nombre || "Sistema"}
                     </td>
                   </tr>
@@ -325,12 +325,12 @@ export default function PaginaHistorialArticuloDetallado() {
       </div>
 
       {/* Sección 3: Historial de Versiones Técnicas del Artículo */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
-        <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+        <div className="border-b border-slate-100 pb-3">
+          <h2 className="text-base font-bold text-slate-900">
             3. Registro de Versiones Históricas del Contenido
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             Snapshots de modificaciones realizadas sobre el título y texto Markdown.
           </p>
         </div>
@@ -344,21 +344,21 @@ export default function PaginaHistorialArticuloDetallado() {
             {versiones.map((v) => (
               <div
                 key={v.id_version}
-                className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 text-xs space-y-2"
+                className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50 text-xs space-y-2"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded font-mono font-bold bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300">
+                    <span className="px-2 py-0.5 rounded font-mono font-bold bg-blue-100 text-blue-800">
                       v{v.numero_version}
                     </span>
-                    <span className="font-semibold text-slate-900 dark:text-white">{v.titulo}</span>
+                    <span className="font-semibold text-slate-900">{v.titulo}</span>
                   </div>
                   <span className="text-slate-400 font-mono">
                     {new Date(v.fecha_creacion).toLocaleString()}
                   </span>
                 </div>
-                <p className="text-slate-600 dark:text-slate-400">
-                  <strong className="text-slate-700 dark:text-slate-300">Motivo:</strong> {v.motivo_cambio || "Actualización general"} | <strong className="text-slate-700 dark:text-slate-300">Autor:</strong> {v.autor_nombre || "Especialista"}
+                <p className="text-slate-600">
+                  <strong className="text-slate-700">Motivo:</strong> {v.motivo_cambio || "Actualización general"} | <strong className="text-slate-700">Autor:</strong> {v.autor_nombre || "Especialista"}
                 </p>
               </div>
             ))}
@@ -367,12 +367,12 @@ export default function PaginaHistorialArticuloDetallado() {
       </div>
 
       {/* Sección 4: Tickets de Mesa Resueltos Utilizando este Artículo (Solve Loop) */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
-        <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+        <div className="border-b border-slate-100 pb-3">
+          <h2 className="text-base font-bold text-slate-900">
             4. Tickets de Soporte Resueltos con este Artículo (KCS Solve Loop)
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             Registro de casos operativos de soporte donde los especialistas aplicaron exitosamente esta guía.
           </p>
         </div>
@@ -384,7 +384,7 @@ export default function PaginaHistorialArticuloDetallado() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-800">
+              <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
                 <tr>
                   <th className="py-2.5 px-3">Código Ticket</th>
                   <th className="py-2.5 px-3">Asunto del Incidente</th>
@@ -393,16 +393,16 @@ export default function PaginaHistorialArticuloDetallado() {
                   <th className="py-2.5 px-3 text-center">Efectividad</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100">
                 {vinculos.map((vk) => (
-                  <tr key={vk.id_vinculo} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+                  <tr key={vk.id_vinculo} className="hover:bg-slate-50/50">
                     <td className="py-2.5 px-3 font-mono font-bold text-blue-600">
                       {vk.codigo_ticket || `#${vk.id_ticket}`}
                     </td>
-                    <td className="py-2.5 px-3 font-medium text-slate-800 dark:text-slate-200">
+                    <td className="py-2.5 px-3 font-medium text-slate-800">
                       {vk.ticket_titulo}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-600 dark:text-slate-400">
+                    <td className="py-2.5 px-3 text-slate-600">
                       {vk.tecnico_nombre || "Especialista TI"}
                     </td>
                     <td className="py-2.5 px-3 font-mono text-slate-500">

@@ -3,7 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Ticket, CatalogosTickets, DepartamentoTI } from "@/types";
-import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
+import { rutaDetalleTicket } from "@/modules/tickets/rutas";
 import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface Props {
@@ -47,8 +47,6 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
   const [tempTecnico, setTempTecnico] = useState<string>("");
   const [tempBusqueda, setTempBusqueda] = useState<string>("");
 
-  // Modal de detalle del ticket
-  const [ticketSeleccionadoId, setTicketSeleccionadoId] = useState<number | null>(null);
 
   async function cargarCatalogosYDeptos() {
     try {
@@ -72,7 +70,9 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
     if (abrirId) {
       const idNum = parseInt(abrirId, 10);
       if (!Number.isNaN(idNum) && idNum > 0) {
-        setTicketSeleccionadoId(idNum);
+        router.push(
+          rutaDetalleTicket({ id_ticket: idNum, id_tipo_ticket: tipoFijo === "1" ? 1 : tipoFijo === "2" ? 2 : null })
+        );
       }
     }
   }, [abrirId]);
@@ -441,7 +441,7 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
                           } else if (t.tipo_codigo === "CAMBIO" || t.tipo_codigo?.startsWith("CAMBIO") || t.tipo_nombre?.includes("RFC") || t.codigo_ticket?.startsWith("RFC")) {
                             router.push("/plataforma/cambios/gestion?vista=historial");
                           } else {
-                            setTicketSeleccionadoId(t.id_ticket);
+                            router.push(rutaDetalleTicket(t));
                           }
                         }}
                         style={{ fontSize: 12, padding: "5px 10px" }}
@@ -642,15 +642,6 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
         </div>
       )}
 
-      {/* Modal de Detalle del Ticket Seleccionado */}
-      {ticketSeleccionadoId !== null && (
-        <ModalDetalleTicket
-          idTicket={ticketSeleccionadoId}
-          apiBase={tipoFijo === "1" ? "/api/incidentes" : tipoFijo === "2" ? "/api/solicitudes" : "/api/tickets"}
-          onCerrar={() => setTicketSeleccionadoId(null)}
-          onActualizado={cargarTickets}
-        />
-      )}
     </div>
   );
 }

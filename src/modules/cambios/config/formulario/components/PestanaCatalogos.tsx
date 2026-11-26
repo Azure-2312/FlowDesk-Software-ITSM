@@ -407,7 +407,7 @@ export const PestanaCatalogos: React.FC = () => {
                   className="boton-secundario"
                   style={{ width: "auto", fontSize: 11.5, padding: "4px 10px", display: "inline-flex", alignItems: "center", gap: 5 }}
                 >
-                  ← Volver a Categorías Principales
+                   Volver a Categorías Principales
                 </button>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0, display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: catPadreActual?.color || "#2563eb", display: "inline-block" }} />
@@ -484,7 +484,7 @@ export const PestanaCatalogos: React.FC = () => {
               No se encontraron categorías principales que coincidan con la búsqueda.
             </div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 14 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))", gap: 14 }}>
               {categoriasPrincipalesFiltradas.map((cat) => {
                 const subcats = items.filter((sub) => sub.id_padre === cat.id_item);
                 return (
@@ -559,7 +559,7 @@ export const PestanaCatalogos: React.FC = () => {
                         e.currentTarget.style.borderColor = "#e2e8f0";
                       }}
                     >
-                      
+
                     </button>
 
                     <div>

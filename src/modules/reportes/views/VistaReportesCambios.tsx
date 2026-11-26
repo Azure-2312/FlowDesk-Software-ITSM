@@ -69,7 +69,7 @@ export default function VistaReportesCambios() {
         <p>Tasa de éxito, emergencias, tiempo de ciclo, incidentes inducidos y cumplimiento de ventana.</p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))", gap: 14, marginBottom: 24 }}>
         <Kpi titulo="RFC totales" valor={r.total} />
         <Kpi titulo="Exitosos" valor={r.exitosos} color="#166534" />
         <Kpi titulo="Fallidos" valor={r.fallidos} color={r.fallidos > 0 ? "#b91c1c" : undefined} />

@@ -113,7 +113,7 @@ export default function Pagina403AccesoDenegado() {
                 cursor: "pointer",
               }}
             >
-              <ArrowLeft size={14} />
+
               Volver a la página anterior
             </button>
 
@@ -129,7 +129,7 @@ export default function Pagina403AccesoDenegado() {
                 textDecoration: "none",
               }}
             >
-              <Home size={14} />
+
               Ir al Panel Principal
             </Link>
           </div>

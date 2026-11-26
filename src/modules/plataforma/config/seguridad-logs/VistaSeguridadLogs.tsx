@@ -81,7 +81,7 @@ export default function PaginaSeguridadLogs() {
       </div>
 
       {/* Métricas rápidas */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 12, marginBottom: 20 }}>
         <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", padding: "12px 16px", borderRadius: 8 }}>
           <span style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase", fontWeight: 700 }}>Total Eventos</span>
           <div style={{ fontSize: 20, fontWeight: 700, color: "#0f172a" }}>{total}</div>

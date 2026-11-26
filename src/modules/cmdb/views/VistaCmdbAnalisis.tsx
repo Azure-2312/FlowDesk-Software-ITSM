@@ -199,7 +199,7 @@ export default function VistaCmdbAnalisis() {
   const requiereCi = tab !== "reconciliacion";
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: "reconciliacion", label: "Reconciliación Activo ↔ CI" },
+    { id: "reconciliacion", label: "Reconciliación activo-CI" },
     { id: "topologia", label: "Mapa de Topología" },
     { id: "impacto", label: "Análisis de Impacto" },
     { id: "historial", label: "Historial de Configuración" },
@@ -219,7 +219,7 @@ export default function VistaCmdbAnalisis() {
           className="boton-secundario"
           style={{ textDecoration: "none", fontSize: 13, padding: "8px 14px", display: "inline-flex", alignItems: "center", gap: 6 }}
         >
-          ← Volver a la CMDB
+           Volver a la CMDB
         </Link>
       </div>
 
@@ -297,7 +297,7 @@ export default function VistaCmdbAnalisis() {
       {/* 1. Reconciliacion */}
       {!cargando && tab === "reconciliacion" && reconciliacion && (
         <div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12, marginBottom: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))", gap: 12, marginBottom: 20 }}>
             {[
               { l: "CIs activos", v: reconciliacion.resumen.totalCi, c: "#0f172a" },
               { l: "Relaciones", v: reconciliacion.resumen.totalRelaciones, c: "#2563eb" },

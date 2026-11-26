@@ -270,7 +270,7 @@ export default function GobiernoConocimiento({
       {pestañaActiva === "articulos" && (
         <div>
           {/* Métricas Resumen */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 16, marginBottom: 20 }}>
             <div style={{ background: "#ffffff", padding: "16px 20px", borderRadius: 8, border: "1px solid #e2e8f0" }}>
               <span style={{ fontSize: 12, color: "#64748b", textTransform: "uppercase", fontWeight: 600 }}>En Revisión Técnica</span>
               <p style={{ fontSize: 24, fontWeight: 700, margin: "6px 0 0", color: "#d97706" }}>{conteoEnRevision}</p>
@@ -360,7 +360,7 @@ export default function GobiernoConocimiento({
               No se encontraron artículos con los criterios seleccionados.
             </div>
           ) : (
-            <div style={{ background: "#ffffff", borderRadius: 8, border: "1px solid #e2e8f0", overflow: "hidden" }}>
+            <div style={{ background: "#ffffff", borderRadius: 8, border: "1px solid #e2e8f0", overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
                   <tr>
@@ -482,7 +482,7 @@ export default function GobiernoConocimiento({
               <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 12px" }}>
                 Los usuarios con estos perfiles podrán redactar borradores técnicos y remitirlos a revisión.
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 8 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 8 }}>
                 {perfiles.map((p) => {
                   const check = politicas.perfiles_redaccion.includes(p.id_perfil);
                   return (
@@ -512,7 +512,7 @@ export default function GobiernoConocimiento({
               <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 12px" }}>
                 Solo los usuarios con estos perfiles pueden autorizar la publicación oficial hacia el autoservicio.
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 8 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 8 }}>
                 {perfiles.map((p) => {
                   const check = politicas.perfiles_aprobacion.includes(p.id_perfil);
                   return (

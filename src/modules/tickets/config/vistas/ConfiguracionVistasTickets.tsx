@@ -1,5 +1,7 @@
 "use client";
 
+import { clavePerfil, resolverReglasVistaTicket, type VistasTicketConfig } from "@/modules/tickets/reglasVistaTicket";
+
 import { useEffect, useState, Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { UsuarioConPerfiles, Perfil } from "@/types";
@@ -119,60 +121,20 @@ function ContenidoConfiguracionVistasTickets({
     cargarConfiguracion();
   }, []);
 
-  // Mapa constante para resolución O(1) de claves legadas por ID de perfil
-  const MAPA_PERFIL_LEGADO: Record<string, string> = {
-    "1": "administrador",
-    "2": "tecnico",
-    "3": "solicitante",
-    "4": "supervisor",
-    "5": "gestor_area",
-  };
-
-  // Clave en el objeto vistas (ej: "perfil_3", "usuario_5", o claves legadas "solicitante", "tecnico")
+  // Claves y valores por defecto compartidos con el detalle del ticket
+  // (src/modules/tickets/reglasVistaTicket.ts): lo configurado aquí es lo que se ve allí.
   const claveActual = useMemo(() => {
-    if (modoSeleccion === "perfil") {
-      return MAPA_PERFIL_LEGADO[claveSeleccionada] || `perfil_${claveSeleccionada}`;
-    }
+    if (modoSeleccion === "perfil") return clavePerfil(Number(claveSeleccionada));
     return `usuario_${claveSeleccionada}`;
   }, [modoSeleccion, claveSeleccionada]);
 
-  // Configuración resuelta para la clave actual
   const configActual: ConfiguracionPerfil = useMemo(() => {
-    if (vistas[claveActual]) {
-      return vistas[claveActual];
+    if (modoSeleccion === "perfil") {
+      return resolverReglasVistaTicket(vistas as VistasTicketConfig, Number(claveSeleccionada), null);
     }
-
-    // Si es usuario sin config directa, heredar de su perfil
-    if (modoSeleccion === "usuario") {
-      const u = usuarios.find((usr) => String(usr.id_usuario) === claveSeleccionada);
-      const perfilId = u?.perfiles?.[0]?.id_perfil;
-      if (perfilId) {
-        let claveLegada = `perfil_${perfilId}`;
-        if (perfilId === 1) claveLegada = "administrador";
-        if (perfilId === 2) claveLegada = "tecnico";
-        if (perfilId === 3) claveLegada = "solicitante";
-        if (perfilId === 4) claveLegada = "supervisor";
-        if (perfilId === 5) claveLegada = "gestor_area";
-        if (vistas[claveLegada]) {
-          return vistas[claveLegada];
-        }
-      }
-    }
-
-    // Default si no existe
-    const esTecnicoOSupervisor = claveActual === "tecnico" || claveActual === "supervisor";
-    return {
-      habilitado: true,
-      ver_incidentes: true,
-      ver_solicitudes: true,
-      ver_problemas: esTecnicoOSupervisor,
-      ver_cambios: esTecnicoOSupervisor,
-      seccion_notas_internas: esTecnicoOSupervisor,
-      seccion_respuestas_publicas: true,
-      seccion_cmdb: esTecnicoOSupervisor,
-      seccion_costos_sla: esTecnicoOSupervisor,
-      seccion_transiciones: esTecnicoOSupervisor,
-    };
+    const u = usuarios.find((usr) => String(usr.id_usuario) === claveSeleccionada);
+    const perfilId = u?.perfiles?.[0]?.id_perfil ?? null;
+    return resolverReglasVistaTicket(vistas as VistasTicketConfig, perfilId, Number(claveSeleccionada));
   }, [vistas, claveActual, modoSeleccion, claveSeleccionada, usuarios]);
 
   // Verificar si está habilitado para el tipo de ticket actual
@@ -686,10 +648,10 @@ function ContenidoConfiguracionVistasTickets({
                   Secciones Visibles en la Ficha del Ticket para {nombreSujeto}
                 </h3>
                 <p style={{ margin: "0 0 16px 0", fontSize: 12.5, color: "#64748b" }}>
-                  Active o desactive los componentes. Observe cómo la vista previa inferior se actualiza en tiempo real reflejando los cambios.
+                  Active o desactive los componentes. Los cambios se aplican al guardar.
                 </p>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 14 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 14 }}>
                   <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", border: "1px solid #e2e8f0", borderRadius: 6, backgroundColor: configActual.seccion_notas_internas ? "#f8faff" : "#ffffff" }}>
                     <div>
                       <strong style={{ fontSize: 13, color: "#0f172a" }}>Pestaña: Notas Técnicas Internas</strong>
@@ -757,294 +719,6 @@ function ContenidoConfiguracionVistasTickets({
                 </div>
               </div>
 
-              {/* VISTA PREVIA INTERACTIVA EN TIEMPO REAL */}
-              <div className="contenedor-tabla" style={{ padding: 22, backgroundColor: "#ffffff", border: "2px solid #3b82f6" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, borderBottom: "1px solid #e2e8f0", paddingBottom: 10 }}>
-                  <div>
-                    <span style={{ display: "inline-block", padding: "3px 8px", backgroundColor: "#dbeafe", color: "#1d4ed8", borderRadius: 4, fontSize: 11, fontWeight: 700, textTransform: "uppercase", marginBottom: 4 }}>
-                      Simulador en Vivo de Interfaz
-                    </span>
-                    <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
-                      Vista Previa Exacta: Así observa el ticket {nombreSujeto}
-                    </h3>
-                  </div>
-                  <span style={{ fontSize: 12, color: "#64748b", fontFamily: "monospace" }}>
-                    Tipo: {tipoTicket.toUpperCase()}
-                  </span>
-                </div>
-
-                {/* FICHA SIMULADA DEL TICKET */}
-                <div style={{ border: "1px solid #cbd5e1", borderRadius: 8, overflow: "hidden", backgroundColor: "#f8fafc" }}>
-                  {/* Barra de Título del Ticket */}
-                  <div style={{ backgroundColor: "#0f172a", color: "#ffffff", padding: "12px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 14, backgroundColor: "rgba(255,255,255,0.15)", padding: "2px 8px", borderRadius: 4 }}>
-                        #{tipoTicket === "incidente" ? "INC-2026-0042" : tipoTicket === "solicitud" ? "SOL-2026-0089" : tipoTicket === "problema" ? "PRB-2026-0012" : "RFC-2026-0007"}
-                      </span>
-                      <strong style={{ fontSize: 14 }}>
-                        {tipoTicket === "incidente" ? "Falla de conectividad VPN al servidor de base de datos" :
-                         tipoTicket === "solicitud" ? "Requerimiento de nueva estación de trabajo y monitor" :
-                         tipoTicket === "problema" ? "Degradación recurrente de ancho de banda en sede central" :
-                         "Actualización de firmware de switch central de distribución"}
-                      </strong>
-                    </div>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <span style={{ padding: "3px 10px", borderRadius: 12, fontSize: 11, fontWeight: 700, backgroundColor: "#dbeafe", color: "#1e40af" }}>
-                        En Proceso
-                      </span>
-                      <span style={{ padding: "3px 10px", borderRadius: 12, fontSize: 11, fontWeight: 700, backgroundColor: "#fee2e2", color: "#991b1b" }}>
-                        Prioridad Alta
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* LÍNEA DE TIEMPO DEL ESTADO DEL TICKET (ABIERTO -> ASIGNADO -> EN PAUSA -> TERMINADO -> CANCELADO) */}
-                  <div style={{ padding: "14px 18px", backgroundColor: "#ffffff", borderBottom: "1px solid #e2e8f0" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#64748b" }}>
-                        Línea de Tiempo del Estado: {tipoTicket === "incidente" ? "Incidente" : "Solicitud de Servicio"}
-                      </span>
-                      <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 700 }}>
-                        Estado Actual: Asignado (En Atención)
-                      </span>
-                    </div>
-
-                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", position: "relative" }}>
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 14,
-                          left: 24,
-                          right: 24,
-                          height: 2,
-                          backgroundColor: "#cbd5e1",
-                          zIndex: 0,
-                        }}
-                      />
-
-                      {/* 1. Abierto */}
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative", zIndex: 1 }}>
-                        <div style={{ width: 28, height: 28, borderRadius: "50%", backgroundColor: "#16a34a", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        </div>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: "#16a34a", marginTop: 4 }}>Abierto</span>
-                        <span style={{ fontSize: 9.5, color: "#64748b" }}>Registrado</span>
-                      </div>
-
-                      {/* 2. Asignado (Punto actual) */}
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative", zIndex: 1 }}>
-                        <div style={{ width: 28, height: 28, borderRadius: "50%", backgroundColor: "#2563eb", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, boxShadow: "0 0 0 4px #dbeafe" }}>
-                          2
-                        </div>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: "#2563eb", marginTop: 4 }}>Asignado</span>
-                        <span style={{ fontSize: 9.5, color: "#2563eb", fontWeight: 600 }}>Técnico Activo</span>
-                      </div>
-
-                      {/* 3. En Pausa */}
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative", zIndex: 1 }}>
-                        <div style={{ width: 28, height: 28, borderRadius: "50%", backgroundColor: "#ffffff", border: "2px solid #cbd5e1", color: "#64748b", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>
-                          3
-                        </div>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: "#475569", marginTop: 4 }}>En Pausa</span>
-                        <span style={{ fontSize: 9.5, color: "#94a3b8" }}>Espera / Terceros</span>
-                      </div>
-
-                      {/* 4. Terminado */}
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative", zIndex: 1 }}>
-                        <div style={{ width: 28, height: 28, borderRadius: "50%", backgroundColor: "#ffffff", border: "2px solid #cbd5e1", color: "#64748b", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>
-                          4
-                        </div>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: "#475569", marginTop: 4 }}>Terminado</span>
-                        <span style={{ fontSize: 9.5, color: "#94a3b8" }}>Resuelto / Solución</span>
-                      </div>
-
-                      {/* 5. Cancelado */}
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative", zIndex: 1 }}>
-                        <div style={{ width: 28, height: 28, borderRadius: "50%", backgroundColor: "#ffffff", border: "2px solid #cbd5e1", color: "#64748b", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>
-                          5
-                        </div>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: "#475569", marginTop: 4 }}>Cancelado</span>
-                        <span style={{ fontSize: 9.5, color: "#94a3b8" }}>Cerrado / Anulado</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Metadatos y Partes Interesadas (con Prioridad Institucional del Solicitante, Beneficiario y Aprobador) */}
-                  <div style={{ padding: "14px 18px", backgroundColor: "#ffffff", borderBottom: "1px solid #e2e8f0", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 14, fontSize: 12 }}>
-                    <div>
-                      <span style={{ color: "#64748b", display: "block" }}>Usuario Solicitante:</span>
-                      <strong style={{ color: "#0f172a" }}>Laura Morales (Finanzas)</strong>
-                      {/* Nivel de Prioridad del Solicitante (No visible para el solicitante) */}
-                      <div style={{ marginTop: 4 }}>
-                        <span style={{ padding: "2px 6px", backgroundColor: "#fee2e2", color: "#991b1b", borderRadius: 4, fontSize: 10.5, fontWeight: 700 }}>
-                          Prioridad VIP (Directorio)
-                        </span>
-                        <span style={{ fontSize: 10, color: "#94a3b8", display: "block", marginTop: 2 }}>
-                          (Oculto para el usuario solicitante)
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* En Solicitud: Usuario Beneficiario (mismo departamento) */}
-                    {tipoTicket === "solicitud" && (
-                      <div>
-                        <span style={{ color: "#64748b", display: "block" }}>Usuario Beneficiario:</span>
-                        <strong style={{ color: "#0f172a" }}>Carlos Mendoza (Finanzas)</strong>
-                        <span style={{ fontSize: 10.5, color: "#64748b", display: "block" }}>
-                          Colaborador del mismo departamento
-                        </span>
-                      </div>
-                    )}
-
-                    {/* En Solicitud: Sección para Determinar Aprobador */}
-                    {tipoTicket === "solicitud" && (
-                      <div>
-                        <span style={{ color: "#64748b", display: "block" }}>Aprobador Designado:</span>
-                        <strong style={{ color: "#0f172a" }}>Ing. Roberto Flores (Gerencia)</strong>
-                        <span style={{ padding: "2px 6px", backgroundColor: "#fef3c7", color: "#92400e", borderRadius: 4, fontSize: 10.5, fontWeight: 700, display: "inline-block", marginTop: 2 }}>
-                          Aprobación Pendiente
-                        </span>
-                      </div>
-                    )}
-
-                    <div>
-                      <span style={{ color: "#64748b", display: "block" }}>Espacio para Técnico:</span>
-                      <strong style={{ color: "#0f172a" }}>Carlos Quispe (Nivel 2)</strong>
-                      <span style={{ fontSize: 10.5, color: "#16a34a", display: "block" }}>
-                        Asignado formalmente
-                      </span>
-                    </div>
-
-                    <div>
-                      <span style={{ color: "#64748b", display: "block" }}>Prioridad Operativa del Ticket:</span>
-                      <strong style={{ color: "#dc2626" }}>P2 · Severidad Alta</strong>
-                      <span style={{ fontSize: 10, color: "#94a3b8", display: "block", marginTop: 2 }}>
-                        (Oculto para el usuario solicitante)
-                      </span>
-                    </div>
-
-                    <div>
-                      <span style={{ color: "#64748b", display: "block" }}>Fecha de Registro:</span>
-                      <strong style={{ color: "#0f172a" }}>01/10/2026 09:30 AM</strong>
-                    </div>
-                  </div>
-
-                  {/* Panel de Compromiso SLA (SI ESTÁ HABILITADO) */}
-                  {configActual.seccion_costos_sla ? (
-                    <div style={{ padding: "10px 18px", backgroundColor: "#eff6ff", borderBottom: "1px solid #bfdbfe", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <strong style={{ color: "#1e40af" }}>Reloj de SLA de Solución:</strong>
-                        <span style={{ color: "#1d4ed8" }}>3 horas 25 minutos restantes (75% transcurrido)</span>
-                      </div>
-                      <div style={{ width: 140, height: 8, backgroundColor: "#bfdbfe", borderRadius: 4, overflow: "hidden" }}>
-                        <div style={{ width: "75%", height: "100%", backgroundColor: "#2563eb" }} />
-                      </div>
-                    </div>
-                  ) : (
-                    <div style={{ padding: "6px 18px", backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", color: "#94a3b8", fontSize: 11, fontStyle: "italic" }}>
-                      [Panel de SLA oculto para este rol]
-                    </div>
-                  )}
-
-                  {/* Panel CMDB (SI ESTÁ HABILITADO) */}
-                  {configActual.seccion_cmdb && (
-                    <div style={{ padding: "10px 18px", backgroundColor: "#f1f5f9", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: 12, fontSize: 12 }}>
-                      <strong style={{ color: "#334155" }}>Elemento CMDB Afectado:</strong>
-                      <span style={{ padding: "2px 8px", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 4, fontFamily: "monospace", color: "#0f172a", fontWeight: 600 }}>
-                        CI: SRV-DB-PROD01 (Servidor Linux RedHat / Servidor Central de Base de Datos)
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Cuerpo del Ticket */}
-                  <div style={{ padding: "16px 18px", backgroundColor: "#ffffff", borderBottom: "1px solid #e2e8f0" }}>
-                    <h4 style={{ margin: "0 0 6px 0", fontSize: 13, color: "#475569" }}>Descripción del Caso:</h4>
-                    <p style={{ margin: 0, fontSize: 13, color: "#0f172a", lineHeight: 1.5 }}>
-                      Al intentar conectarse al software institucional desde el segmento de red comercial, la conexión se interrumpe tras 30 segundos arrojando un error de timeout. No es posible generar los reportes de ventas del cierre diario.
-                    </p>
-                  </div>
-
-                  {/* Pestañas de Conversación y Notas */}
-                  <div style={{ backgroundColor: "#ffffff", padding: "14px 18px" }}>
-                    <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #e2e8f0", paddingBottom: 8, marginBottom: 12 }}>
-                      {configActual.seccion_respuestas_publicas && (
-                        <span style={{ padding: "4px 12px", borderRadius: 4, fontSize: 12, fontWeight: 700, backgroundColor: "#e2e8f0", color: "#0f172a" }}>
-                          Respuestas al Solicitante
-                        </span>
-                      )}
-                      {configActual.seccion_notas_internas && (
-                        <span style={{ padding: "4px 12px", borderRadius: 4, fontSize: 12, fontWeight: 700, backgroundColor: "#fef3c7", color: "#92400e" }}>
-                          Notas Técnicas Internas (Work Notes)
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Mensajes Simulados */}
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                      {configActual.seccion_respuestas_publicas && (
-                        <div style={{ padding: "10px 14px", backgroundColor: "#f8fafc", borderRadius: 6, border: "1px solid #e2e8f0" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#64748b", marginBottom: 4 }}>
-                            <strong>Laura Morales (Solicitante)</strong>
-                            <span>01/10/2026 09:35 AM</span>
-                          </div>
-                          <p style={{ margin: 0, fontSize: 12.5, color: "#334155" }}>
-                            Por favor necesitamos su apoyo pronto, tenemos facturas pendientes por emitir antes del mediodía.
-                          </p>
-                        </div>
-                      )}
-
-                      {configActual.seccion_notas_internas ? (
-                        <div style={{ padding: "10px 14px", backgroundColor: "#fffbeb", borderRadius: 6, border: "1px solid #fde68a" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#b45309", marginBottom: 4 }}>
-                            <strong>Carlos Quispe (Técnico N2) - Nota Interna</strong>
-                            <span>01/10/2026 09:42 AM</span>
-                          </div>
-                          <p style={{ margin: 0, fontSize: 12.5, color: "#78350f" }}>
-                            Se revisó la tabla de conexiones en iptables. El puerto 5432 estaba saturado por sesiones huérfanas del pool anterior. Se ejecutó script de purga de sockets en el servidor.
-                          </p>
-                        </div>
-                      ) : (
-                        <div style={{ padding: "8px 12px", backgroundColor: "#fafafa", borderRadius: 4, border: "1px dashed #e2e8f0", color: "#94a3b8", fontSize: 11.5, textAlign: "center" }}>
-                          [Pestaña de Notas Técnicas Internas Oculta por Política de Privacidad para {nombreSujeto}]
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Barra de Acciones y Botones Operativos en el Fondo */}
-                  <div style={{ backgroundColor: "#f1f5f9", padding: "12px 18px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-                    {configActual.seccion_transiciones ? (
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        <button type="button" disabled tabIndex={-1} title="Vista previa - Botón no interactivo" style={{ padding: "6px 12px", backgroundColor: "#2563eb", color: "#ffffff", border: "none", borderRadius: 4, fontSize: 12, fontWeight: 600, pointerEvents: "none", cursor: "not-allowed", opacity: 0.65 }}>
-                          Iniciar Atención
-                        </button>
-                        <button type="button" disabled tabIndex={-1} title="Vista previa - Botón no interactivo" style={{ padding: "6px 12px", backgroundColor: "#f59e0b", color: "#ffffff", border: "none", borderRadius: 4, fontSize: 12, fontWeight: 600, pointerEvents: "none", cursor: "not-allowed", opacity: 0.65 }}>
-                          Poner En Espera
-                        </button>
-                        <button type="button" disabled tabIndex={-1} title="Vista previa - Botón no interactivo" style={{ padding: "6px 12px", backgroundColor: "#7c3aed", color: "#ffffff", border: "none", borderRadius: 4, fontSize: 12, fontWeight: 600, pointerEvents: "none", cursor: "not-allowed", opacity: 0.65 }}>
-                          Elevar a Problema ITIL
-                        </button>
-                        <button type="button" disabled tabIndex={-1} title="Vista previa - Botón no interactivo" style={{ padding: "6px 12px", backgroundColor: "#16a34a", color: "#ffffff", border: "none", borderRadius: 4, fontSize: 12, fontWeight: 600, pointerEvents: "none", cursor: "not-allowed", opacity: 0.65 }}>
-                          Resolver Ticket
-                        </button>
-                      </div>
-                    ) : (
-                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                        <span style={{ fontSize: 12, color: "#64748b", fontWeight: 500 }}>
-                          Modo Consulta / Usuario Final (Sin atribuciones de transición operativa de estado)
-                        </span>
-                        <button type="button" disabled tabIndex={-1} title="Vista previa - Botón no interactivo" style={{ padding: "6px 12px", backgroundColor: "#0f172a", color: "#ffffff", border: "none", borderRadius: 4, fontSize: 12, fontWeight: 600, pointerEvents: "none", cursor: "not-allowed", opacity: 0.65 }}>
-                          Responder Ticket
-                        </button>
-                      </div>
-                    )}
-
-                    <span style={{ fontSize: 11.5, color: "#64748b" }}>
-                      Previsualización fiel ISO 20000 / ITIL v4
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
           )}
         </div>

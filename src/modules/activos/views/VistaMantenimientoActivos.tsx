@@ -184,7 +184,7 @@ export default function VistaMantenimientoActivos({ vistaActiva }: Props = {}) {
         </div>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: vistaActiva ? "1fr" : "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: vistaActiva ? "1fr" : "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: 16 }}>
         {vistaActiva !== "garantias" && (
           <div>
             <h2>Mantenimientos y reparaciones</h2>

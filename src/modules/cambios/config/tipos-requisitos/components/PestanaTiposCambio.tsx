@@ -451,7 +451,7 @@ export const PestanaTiposCambio: React.FC<PestanaTiposCambioProps> = ({
               <p style={{ margin: "0 0 10px 0", fontSize: 12, color: "#64748b" }}>
                 Selecciona qué perfiles institucionales están habilitados para iniciar una solicitud de cambio con este tipo:
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 8 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(220px, 100%), 1fr))", gap: 8 }}>
                 {PERFILES_DISPONIBLES.map((perf) => {
                   const check = (tipoActual.perfiles_solicitud || []).includes(perf.id);
                   return (
@@ -858,7 +858,7 @@ export const PestanaTiposCambio: React.FC<PestanaTiposCambioProps> = ({
                       cursor: "pointer"
                     }}
                   >
-                    Editar en Matriz de autoridad →
+                    Editar en Matriz de autoridad 
                   </button>
                 )}
               </div>

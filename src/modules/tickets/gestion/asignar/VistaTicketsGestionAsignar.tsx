@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useEffect, useState, useMemo } from "react";
 import { Ticket, DepartamentoTI, TecnicoConCarga } from "@/types";
-import ModalDetalleTicket from "@/modules/tickets/components/ModalDetalleTicket";
+import { rutaDetalleTicket } from "@/modules/tickets/rutas";
 
 const ESTADOS_OPERATIVOS: Record<string, { etiqueta: string; color: string; bg: string }> = {
   DISPONIBLE: { etiqueta: "Disponible", color: "#059669", bg: "#ecfdf5" },
@@ -13,6 +15,7 @@ const ESTADOS_OPERATIVOS: Record<string, { etiqueta: string; color: string; bg: 
 };
 
 export default function PaginaAsignarTickets() {
+  const router = useRouter();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [tecnicos, setTecnicos] = useState<TecnicoConCarga[]>([]);
   const [departamentos, setDepartamentos] = useState<DepartamentoTI[]>([]);
@@ -26,7 +29,6 @@ export default function PaginaAsignarTickets() {
   const [errorAsignacion, setErrorAsignacion] = useState<string | null>(null);
 
   // Modal de detalle
-  const [verDetalleModalId, setVerDetalleModalId] = useState<number | null>(null);
 
   // Filtros de Tickets
   const [filtroAsignacion, setFiltroAsignacion] = useState<"sin_asignar" | "todos_activos">("sin_asignar");
@@ -210,7 +212,7 @@ export default function PaginaAsignarTickets() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))",
           gap: 12,
           marginBottom: 20,
         }}
@@ -345,7 +347,7 @@ export default function PaginaAsignarTickets() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
           gap: 20,
           alignItems: "start",
         }}
@@ -539,7 +541,7 @@ export default function PaginaAsignarTickets() {
                   <button
                     type="button"
                     className="boton-mini"
-                    onClick={() => setVerDetalleModalId(ticketSeleccionado.id_ticket)}
+                    onClick={() => router.push(rutaDetalleTicket(ticketSeleccionado))}
                     title="Ver detalle completo del ticket"
                     aria-label="Ver detalle completo del ticket"
                     style={{ padding: "5px 8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
@@ -723,14 +725,6 @@ export default function PaginaAsignarTickets() {
         </div>
       </div>
 
-      {/* Modal de Inspección Detallada */}
-      {verDetalleModalId !== null && (
-        <ModalDetalleTicket
-          idTicket={verDetalleModalId}
-          onCerrar={() => setVerDetalleModalId(null)}
-          onActualizado={cargarDatos}
-        />
-      )}
     </div>
   );
 }

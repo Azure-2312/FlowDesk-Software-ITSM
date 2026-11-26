@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, FormEvent, Suspense, ChangeEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CatalogosTickets, ServicioCatalogo, Usuario } from "@/types";
+import { CatalogosTickets, CampoFormularioServicio, ServicioCatalogo, Usuario } from "@/types";
 import {
   validarTexto,
   validarNombre,
@@ -13,6 +13,7 @@ import {
   validarSlaTiempos,
 } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
+import WidgetTicketDeflection from "@/modules/conocimiento/components/WidgetTicketDeflection";
 
 interface CampoConfigurado {
   id: string;
@@ -66,6 +67,14 @@ function normalizarTipoControl(t?: string): "texto" | "area" | "numero" | "fecha
   return "texto";
 }
 
+const INFO_PRIORIDAD: Record<string, { codigo: string; nombre: string; sla: number; color: string }> = {
+  P1: { codigo: "P1", nombre: "Crítica", sla: 4, color: "#dc2626" },
+  P2: { codigo: "P2", nombre: "Alta", sla: 8, color: "#ea580c" },
+  P3: { codigo: "P3", nombre: "Media", sla: 24, color: "#d97706" },
+  P4: { codigo: "P4", nombre: "Baja", sla: 72, color: "#2563eb" },
+};
+
+// Respaldo usado solo cuando la matriz institucional no tiene la celda configurada
 function deducirPrioridad(nivelImpacto: number, nivelUrgencia: number): { codigo: string; nombre: string; sla: number; color: string } {
   if (nivelImpacto === 3 && nivelUrgencia === 3) return { codigo: "P1", nombre: "Crítica", sla: 4, color: "#dc2626" };
   if (nivelImpacto === 3 && nivelUrgencia === 2) return { codigo: "P2", nombre: "Alta", sla: 8, color: "#ea580c" };
@@ -348,7 +357,9 @@ function ContenidoCrearTicket({
   }
 
   // Detección de rol de personal técnico o de soporte / gestor autorizado
-  const esPersonalTI = perfilesIds.some((id) => [1, 2, 4, 5, 8].includes(id));
+  // Se evalúa con el perfil ACTIVO: un usuario multirol que entra como Solicitante
+  // no debe ver opciones de personal técnico.
+  const esPersonalTI = idPerfilActivo !== null && [1, 2, 4, 5, 8].includes(idPerfilActivo);
 
   // Campos del administrador visibles según la prioridad del usuario
   const esIncidente = idTipo === 1;
@@ -369,6 +380,7 @@ function ContenidoCrearTicket({
         "archivos_adjuntos",
         "usuario_afectado_id",
         "justificacion",
+        "fecha_limite",
         "fecha_limite_deseada",
       ]),
     []
@@ -445,6 +457,44 @@ function ContenidoCrearTicket({
   const nivelPrioridadUsuario = Number(usuarioSeleccionado?.nivel_prioridad || usuarioActual?.nivel_prioridad || 5);
   const infoPrioridad = NIVELES_PRIORIDAD_MAP[nivelPrioridadUsuario] || NIVELES_PRIORIDAD_MAP[5];
 
+  // Propiedades que el administrador configura para los campos de sistema
+  // (etiqueta, placeholder, ayuda, visibilidad y obligatoriedad). Así lo que se
+  // configura en "Campos del formulario" es lo que ve quien llena el ticket.
+  const configCampoSistema = useMemo(() => {
+    const secciones = esIncidente ? camposConfig.secciones_incidente : camposConfig.secciones_solicitud;
+    const mapa = new Map<string, any>();
+    if (Array.isArray(secciones)) {
+      secciones.forEach((s: any) => (s.campos || []).forEach((c: any) => c?.codigo && mapa.set(c.codigo, c)));
+    }
+    return mapa;
+  }, [esIncidente, camposConfig]);
+  const etiquetaCampo = (codigo: string, porDefecto: string) =>
+    String(configCampoSistema.get(codigo)?.etiqueta || "").replace(/\s*\(Opcional\)\s*/gi, "").trim() || porDefecto;
+  const placeholderCampo = (codigo: string, porDefecto: string) => configCampoSistema.get(codigo)?.placeholder || porDefecto;
+  const ayudaCampo = (codigo: string, porDefecto: string) => configCampoSistema.get(codigo)?.ayuda || porDefecto;
+  const campoVisible = (codigo: string) => {
+    const c = configCampoSistema.get(codigo);
+    if (!c) return true;
+    return c.visible !== false && nivelPrioridadUsuario <= (c.prioridad_minima ?? 5);
+  };
+  const campoObligatorio = (codigo: string, porDefecto: boolean) => {
+    const c = configCampoSistema.get(codigo);
+    if (!c || c.obligatorio === undefined) return porDefecto;
+    return c.obligatorio === "si" || c.obligatorio === true;
+  };
+
+  const verJustificacion = !esIncidente && campoVisible("justificacion");
+  const justificacionObligatoria = verJustificacion && campoObligatorio("justificacion", true);
+  const verFechaLimite = !esIncidente && campoVisible("fecha_limite");
+  const fechaLimiteObligatoria = verFechaLimite && campoObligatorio("fecha_limite", false);
+  const verCmdb = campoVisible("ci_cmdb");
+
+  // Campos propios del servicio elegido (Servicios → Formulario del servicio).
+  // El servidor exige los obligatorios, así que deben mostrarse aquí.
+  const camposServicio: CampoFormularioServicio[] = Array.isArray((servicioSeleccionado as any)?.esquema_formulario)
+    ? (servicioSeleccionado as any).esquema_formulario
+    : [];
+
   const todosCamposVisibles = useMemo(
     () => listaCamposAdmin.filter((c: CampoConfigurado) => c.habilitado && nivelPrioridadUsuario <= c.prioridad_minima),
     [listaCamposAdmin, nivelPrioridadUsuario]
@@ -470,7 +520,10 @@ function ContenidoCrearTicket({
   // Cálculo de prioridad ITIL para incidentes (necesario antes del SLA dinámico)
   const nivelImpacto = catalogos?.impactos.find((i) => i.id_impacto === idImpacto)?.nivel || 2;
   const nivelUrgencia = catalogos?.urgencias.find((u) => u.id_urgencia === idUrgencia)?.nivel || 2;
-  const prioridadCalculada = deducirPrioridad(nivelImpacto, nivelUrgencia);
+  const codigoMatriz = catalogos?.matrizPrioridad?.find(
+    (c) => c.nivel_impacto === nivelImpacto && c.nivel_urgencia === nivelUrgencia
+  )?.codigo;
+  const prioridadCalculada = (codigoMatriz && INFO_PRIORIDAD[codigoMatriz]) || deducirPrioridad(nivelImpacto, nivelUrgencia);
 
   // SLA mostrado y validación en tiempo real:
   // - Con servicio: usa los SLA del servicio seleccionado del catálogo.
@@ -508,16 +561,26 @@ function ContenidoCrearTicket({
   // Validaciones reactivas en tiempo real del formulario de ticket (Incidentes y Solicitudes)
   const valTitulo = validarTexto(titulo, 5, 150, "El título", true);
   const valDescripcion = validarTexto(descripcion, 15, 3000, "La descripción", true);
-  const valJustificacion = esIncidente ? { valido: true } : validarTexto(justificacion, 10, 1000, "La justificación", true);
-  const valFechaDeseada = !esIncidente && fechaLimiteDeseada ? validarFechaNoPasada(fechaLimiteDeseada, "La fecha límite deseada") : { valido: true };
+  const valJustificacion =
+    !verJustificacion || (!justificacionObligatoria && !justificacion.trim())
+      ? { valido: true }
+      : validarTexto(justificacion, 10, 1000, "La justificación", true);
+  const valFechaDeseada = !verFechaLimite
+    ? { valido: true }
+    : fechaLimiteDeseada
+      ? validarFechaNoPasada(fechaLimiteDeseada, "La fecha límite deseada")
+      : { valido: !fechaLimiteObligatoria };
   const valBeneficiario = modoRegistro === "otro" && esPersonalTI ? usuarioSeleccionado !== null : true;
   const valCategoria = Boolean(idCategoria);
 
   // Campos dinámicos requeridos faltantes
-  const camposDinamicosFaltantes = camposDinamicosVisibles.filter((c: CampoConfigurado) => {
+  const camposDinamicosFaltantes = [
+    ...camposDinamicosVisibles.map((c: CampoConfigurado) => ({ id: c.id, etiqueta: c.etiqueta, obligatorio: c.obligatorio })),
+    ...camposServicio.map((c) => ({ id: c.clave, etiqueta: c.etiqueta, obligatorio: c.obligatorio })),
+  ].filter((c) => {
     if (!c.obligatorio) return false;
     const v = camposDinamicos[c.id];
-    return v === undefined || v === null || String(v).trim() === "";
+    return v === undefined || v === null || v === false || String(v).trim() === "";
   });
 
   const formularioTicketValido =
@@ -600,12 +663,18 @@ function ContenidoCrearTicket({
     }
 
     if (!esIncidente) {
-      const vJust = validarTexto(justificacion, 10, 1000, "La justificación institucional de tu solicitud", true);
-      if (!vJust.valido) {
-        setError(vJust.mensaje!);
+      if (verJustificacion && (justificacionObligatoria || justificacion.trim())) {
+        const vJust = validarTexto(justificacion, 10, 1000, "La justificación institucional de tu solicitud", true);
+        if (!vJust.valido) {
+          setError(vJust.mensaje!);
+          return;
+        }
+      }
+      if (fechaLimiteObligatoria && !fechaLimiteDeseada) {
+        setError(`El campo "${etiquetaCampo("fecha_limite", "Fecha límite deseada")}" es obligatorio.`);
         return;
       }
-      if (fechaLimiteDeseada) {
+      if (verFechaLimite && fechaLimiteDeseada) {
         const vFecha = validarFechaNoPasada(fechaLimiteDeseada, "La fecha límite deseada");
         if (!vFecha.valido) {
           setError(vFecha.mensaje!);
@@ -640,6 +709,14 @@ function ContenidoCrearTicket({
       }
     }
 
+    for (const campo of camposServicio) {
+      const valor = camposDinamicos[campo.clave];
+      if (campo.obligatorio && (valor === undefined || valor === null || valor === false || String(valor).trim() === "")) {
+        setError(`El campo "${campo.etiqueta}" es obligatorio.`);
+        return;
+      }
+    }
+
     setGuardando(true);
     try {
       const payloadCamposAdicionales: Record<string, any> = {
@@ -654,7 +731,7 @@ function ContenidoCrearTicket({
         payloadCamposAdicionales["en_nombre_de_otro_valor"] = enNombreDeOtroValor;
       }
       if (!esIncidente) {
-        payloadCamposAdicionales["justificacion"] = justificacion.trim();
+        if (justificacion.trim()) payloadCamposAdicionales["justificacion"] = justificacion.trim();
         if (fechaLimiteDeseada) {
           payloadCamposAdicionales["fecha_limite_deseada"] = fechaLimiteDeseada;
         }
@@ -1078,7 +1155,7 @@ function ContenidoCrearTicket({
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
               <label style={{ fontSize: 12.5, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-                Título *
+                {etiquetaCampo("titulo", "Título")} *
               </label>
               <span style={{ fontSize: 11, color: titulo.length >= 140 ? "#dc2626" : "#64748b" }}>
                 {titulo.length} / 150
@@ -1088,11 +1165,12 @@ function ContenidoCrearTicket({
               type="text"
               className="input-base"
               maxLength={150}
-              placeholder={
+              placeholder={placeholderCampo(
+                "titulo",
                 esIncidente
                   ? "Resuma brevemente la falla (ej. Pérdida intermitente de enlace de red)..."
                   : "Resuma brevemente el requerimiento (ej. Solicitud de acceso a base de datos contable)..."
-              }
+              )}
               value={titulo}
               onChange={(e) => setTitulo(e.target.value)}
               required
@@ -1107,16 +1185,24 @@ function ContenidoCrearTicket({
             )}
             {titulo.length === 0 && (
               <span style={{ fontSize: 11, color: "#64748b", marginTop: 3, display: "block" }}>
-                Mínimo 5 caracteres. Ingrese una síntesis clara del requerimiento.
+                {ayudaCampo("titulo", "Mínimo 5 caracteres. Ingrese una síntesis clara del requerimiento.")}
               </span>
             )}
           </div>
+
+          {/* ITIL v4 (shift-left): sugerir artículos de conocimiento antes de registrar el ticket */}
+          <WidgetTicketDeflection
+            textoBusqueda={titulo}
+            onDeflexionExitosa={() =>
+              router.push(rutaLista ?? (esIncidente ? "/plataforma/incidentes/mios" : "/plataforma/solicitudes/mios"))
+            }
+          />
 
           {/* 4. Descripción con texto de fondo guía */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
               <label style={{ fontSize: 12.5, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-                Descripción *
+                {etiquetaCampo("descripcion", "Descripción")} *
               </label>
               <span style={{ fontSize: 11, color: descripcion.length >= 2900 ? "#dc2626" : "#64748b" }}>
                 {descripcion.length} / 3000
@@ -1126,11 +1212,12 @@ function ContenidoCrearTicket({
               className="input-base"
               maxLength={3000}
               rows={4}
-              placeholder={
+              placeholder={placeholderCampo(
+                "descripcion",
                 esIncidente
                   ? "Indique:\n1) Frecuencia de la falla: permanente, intermitente o puntual.\n2) Pasos previos que lo llevaron a la falla.\n3) Hora y tiempo de duración de la falla.\n4) Mensajes o códigos de error arrojados en pantalla..."
                   : "Detalle su requerimiento:\n1) Especificaciones técnicas del equipo o software requerido.\n2) Accesos, carpetas o permisos necesarios.\n3) Justificación operativa y modalidad de entrega..."
-              }
+              )}
               value={descripcion}
               onChange={(e) => setDescripcion(e.target.value)}
               required
@@ -1146,7 +1233,7 @@ function ContenidoCrearTicket({
             )}
             {descripcion.length === 0 && (
               <span style={{ fontSize: 11, color: "#64748b", marginTop: 3, display: "block" }}>
-                Mínimo 15 caracteres. Describa en detalle los antecedentes y contexto del ticket.
+                {ayudaCampo("descripcion", "Mínimo 15 caracteres. Describa en detalle los antecedentes y contexto del ticket.")}
               </span>
             )}
           </div>
@@ -1157,7 +1244,7 @@ function ContenidoCrearTicket({
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 700, color: "#0f172a", display: "block", marginBottom: 4 }}>
-                    Nivel de Urgencia *
+                    {etiquetaCampo("urgencia", "Nivel de Urgencia")} *
                   </label>
                   <select
                     className="input-base"
@@ -1175,7 +1262,7 @@ function ContenidoCrearTicket({
 
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 700, color: "#0f172a", display: "block", marginBottom: 4 }}>
-                    Nivel de Impacto *
+                    {etiquetaCampo("impacto", "Nivel de Impacto")} *
                   </label>
                   <select
                     className="input-base"
@@ -1231,10 +1318,11 @@ function ContenidoCrearTicket({
           {/* CAMPOS ESPECÍFICOS DE SOLICITUDES: Justificación y Fecha Límite Deseada */}
           {!esIncidente && (
             <>
+              {verJustificacion && (
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
                   <label style={{ fontSize: 12.5, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-                    Justificación Institucional *
+                    {etiquetaCampo("justificacion", "Justificación Institucional")} {justificacionObligatoria ? "*" : "(Opcional)"}
                   </label>
                   <span style={{ fontSize: 11, color: justificacion.length >= 950 ? "#dc2626" : "#64748b" }}>
                     {justificacion.length} / 1000
@@ -1244,10 +1332,10 @@ function ContenidoCrearTicket({
                   className="input-base"
                   maxLength={1000}
                   rows={2}
-                  placeholder="Explique el motivo institucional o necesidad de negocio que sustenta esta solicitud..."
+                  placeholder={placeholderCampo("justificacion", "Explique el motivo institucional o necesidad de negocio que sustenta esta solicitud...")}
                   value={justificacion}
                   onChange={(e) => setJustificacion(e.target.value)}
-                  required
+                  required={justificacionObligatoria}
                   style={{
                     backgroundColor: justificacion.length > 0 && justificacion.trim().length < 10 ? "#fef2f2" : "white",
                     borderColor: justificacion.length > 0 && justificacion.trim().length < 10 ? "#ef4444" : undefined,
@@ -1259,19 +1347,22 @@ function ContenidoCrearTicket({
                 )}
                 {justificacion.length === 0 && (
                   <span style={{ fontSize: 11, color: "#64748b", marginTop: 3, display: "block" }}>
-                    Obligatorio en ITIL v4: Indique la necesidad de negocio para evaluación y compuertas de aprobación.
+                    {ayudaCampo("justificacion", "Indique la necesidad de negocio para evaluación y compuertas de aprobación.")}
                   </span>
                 )}
               </div>
+              )}
 
+              {verFechaLimite && (
               <div>
                 <label style={{ fontSize: 12.5, fontWeight: 700, color: "#0f172a", display: "block", marginBottom: 4 }}>
-                  Fecha Límite Deseada (Opcional)
+                  {etiquetaCampo("fecha_limite", "Fecha Límite Deseada")} {fechaLimiteObligatoria ? "*" : "(Opcional)"}
                 </label>
                 <input
                   type="date"
                   className="input-base"
                   value={fechaLimiteDeseada}
+                  required={fechaLimiteObligatoria}
                   onChange={(e) => setFechaLimiteDeseada(e.target.value)}
                   style={{ backgroundColor: "white", fontSize: 12.5 }}
                 />
@@ -1291,14 +1382,16 @@ function ContenidoCrearTicket({
                   return null;
                 })()}
               </div>
+              )}
             </>
           )}
 
           {/* Elemento CMDB (Ítems Tecnológicos Hardware / Software) */}
+          {verCmdb && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
               <label style={{ fontSize: 12.5, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-                Elemento CMDB (Ítems Tecnológicos Hardware / Software)
+                {etiquetaCampo("ci_cmdb", "Elemento CMDB (Ítems Tecnológicos Hardware / Software)")}
               </label>
               <span style={{ fontSize: 11, color: "#64748b", fontStyle: "italic" }}>
                 Opcional
@@ -1318,6 +1411,63 @@ function ContenidoCrearTicket({
               ))}
             </select>
           </div>
+          )}
+
+          {/* Campos propios del servicio seleccionado (Formulario del servicio) */}
+          {camposServicio.map((c) => {
+            const valorActual = camposDinamicos[c.clave] ?? "";
+            return (
+              <div key={`srv-${c.clave}`}>
+                <label style={{ fontSize: 12.5, fontWeight: 700, color: "#0f172a", display: "block", marginBottom: 4 }}>
+                  {c.etiqueta} {c.obligatorio ? "*" : "(Opcional)"}
+                </label>
+                {c.ayuda && (
+                  <span style={{ display: "block", fontSize: 11, color: "#64748b", marginBottom: 4 }}>{c.ayuda}</span>
+                )}
+                {c.tipo === "lista" ? (
+                  <select
+                    className="input-base"
+                    style={{ backgroundColor: "white", fontSize: 12.5 }}
+                    value={valorActual}
+                    onChange={(e) => actualizarCampoDinamico(c.clave, e.target.value)}
+                    required={c.obligatorio}
+                  >
+                    <option value="">Seleccione una opción...</option>
+                    {(c.opciones || []).map((op) => (
+                      <option key={op} value={op}>{op}</option>
+                    ))}
+                  </select>
+                ) : c.tipo === "area" ? (
+                  <textarea
+                    className="input-base"
+                    rows={2}
+                    value={valorActual}
+                    onChange={(e) => actualizarCampoDinamico(c.clave, e.target.value)}
+                    required={c.obligatorio}
+                    style={{ backgroundColor: "white", fontSize: 12.5 }}
+                  />
+                ) : c.tipo === "casilla" ? (
+                  <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, cursor: "pointer" }}>
+                    <input
+                      type="checkbox"
+                      checked={Boolean(valorActual)}
+                      onChange={(e) => actualizarCampoDinamico(c.clave, e.target.checked)}
+                    />
+                    <span>{c.etiqueta}</span>
+                  </label>
+                ) : (
+                  <input
+                    type={c.tipo === "numero" ? "number" : c.tipo === "fecha" ? "date" : c.tipo === "correo" ? "email" : "text"}
+                    className="input-base"
+                    value={valorActual}
+                    onChange={(e) => actualizarCampoDinamico(c.clave, e.target.value)}
+                    required={c.obligatorio}
+                    style={{ backgroundColor: "white", fontSize: 12.5 }}
+                  />
+                )}
+              </div>
+            );
+          })}
 
           {/* Campos adicionales y personalizados habilitados por el administrador */}
           {camposDinamicosVisibles
@@ -1426,7 +1576,7 @@ function ContenidoCrearTicket({
             )}
 
             {archivos.length > 0 && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 10, marginTop: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(180px, 100%), 1fr))", gap: 10, marginTop: 14 }}>
                 {archivos.map((a, idx) => {
                   const esImg = a.tipo.startsWith("image/") || /\.(png|jpe?g|gif|webp|svg)$/i.test(a.nombre);
                   return (
@@ -1487,7 +1637,7 @@ function ContenidoCrearTicket({
                 {!esIncidente && fechaLimiteDeseada && !validarFechaNoPasada(fechaLimiteDeseada).valido && <li>La fecha límite deseada no puede ser anterior a la fecha actual.</li>}
                 {!valSlaTicket.valido && <li>{valSlaTicket.mensaje}</li>}
                 {modoRegistro === "otro" && esPersonalTI && !usuarioSeleccionado && <li>Debe seleccionar un colaborador institucional beneficiario del ticket.</li>}
-                {camposDinamicosFaltantes.map((c: CampoConfigurado) => (
+                {camposDinamicosFaltantes.map((c) => (
                   <li key={c.id}>El campo obligatorio &quot;{c.etiqueta}&quot; debe completarse.</li>
                 ))}
               </ul>

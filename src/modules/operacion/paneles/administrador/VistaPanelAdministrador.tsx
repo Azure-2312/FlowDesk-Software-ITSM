@@ -206,7 +206,7 @@ export default function VistaPanelAdministrador() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))",
           gap: 14,
         }}
       >
@@ -288,7 +288,7 @@ export default function VistaPanelAdministrador() {
       </div>
 
       {/* Fila 1: Logs de Autenticación y Auditoría de Configuración del Sistema */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(420px, 100%), 1fr))", gap: 16 }}>
         {/* Panel 1: Logs de Inicio de Sesión y Seguridad */}
         <div className="tarjeta-formulario" style={{ margin: 0, padding: 18 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
@@ -421,7 +421,7 @@ export default function VistaPanelAdministrador() {
       </div>
 
       {/* Fila 2: Trazabilidad de Colaboradores Modificados Recientemente & Accesos Rápidos */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(420px, 100%), 1fr))", gap: 16 }}>
         {/* Panel 3: Trazabilidad Reciente de Colaboradores y Perfiles */}
         <div className="tarjeta-formulario" style={{ margin: 0, padding: 18 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
@@ -493,7 +493,7 @@ export default function VistaPanelAdministrador() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(190px, 100%), 1fr))",
               gap: 10,
             }}
           >

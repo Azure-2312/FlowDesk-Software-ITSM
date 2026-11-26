@@ -13,6 +13,14 @@ import Link from "next/link";
 import { Ticket, ComentarioTicket, Usuario, CatalogosTickets } from "@/types";
 import { validarTexto } from "@/shared/lib/validaciones";
 import TarjetaAprobacionSod from "@/modules/tickets/ticket-detail/secciones/TarjetaAprobacionSod";
+import CockpitTemporizadorSla from "@/modules/tickets/ticket-detail/secciones/CockpitTemporizadorSla";
+import {
+  FLUJO_POR_DEFECTO,
+  resolverFlujoEstados,
+  resolverReglasVistaTicket,
+  type FlujoEstadosAcciones,
+  type VistasTicketConfig,
+} from "@/modules/tickets/reglasVistaTicket";
 
 interface CampoConfigurado {
   id: string;
@@ -64,6 +72,8 @@ export default function PaginaDetalleTicket({
 
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [vistasConfig, setVistasConfig] = useState<VistasTicketConfig | null>(null);
+  const [flujo, setFlujo] = useState<FlujoEstadosAcciones>(FLUJO_POR_DEFECTO);
 
   // Acciones operativas ITIL
   const [ejecutandoAccion, setEjecutandoAccion] = useState(false);
@@ -105,12 +115,17 @@ export default function PaginaDetalleTicket({
     setCargando(true);
     setError(null);
     try {
-      const [resTicket, resUser, resConfig, resCat] = await Promise.all([
+      const [resTicket, resUser, resConfig, resCat, resVistas, resFlujo] = await Promise.all([
         fetch(`${apiBase}/${idTicket}`).then((r) => r.json()),
         fetch("/api/mi-cuenta").then((r) => r.json()),
         fetch("/api/operacion/configuracion?clave=formularios_solicitante_config").then((r) => r.json()),
         fetch("/api/tickets/catalogos").then((r) => r.json()).catch(() => null),
+        // Reglas operativas configuradas por el administrador (Incidentes/Solicitudes → Reglas)
+        fetch("/api/operacion/configuracion?clave=vistas_ticket_perfil").then((r) => r.json()).catch(() => null),
+        fetch("/api/operacion/configuracion?clave=flujo_estados_acciones").then((r) => r.json()).catch(() => null),
       ]);
+      setVistasConfig(resVistas?.configuracion?.valor || null);
+      setFlujo(resolverFlujoEstados(resFlujo?.configuracion?.valor));
 
       if (resTicket.error) {
         setError(resTicket.error);
@@ -235,13 +250,22 @@ export default function PaginaDetalleTicket({
     }
   }, [idTicket]);
 
-  // Regla de acceso a Comunicación interna:
-  // Como mínimo prioridad ejecutiva (nivel_prioridad <= 2: VIP=1, Ejecutiva=2) o personal técnico/TI
-  const esPersonalTI = perfilesIds.some((id) => [1, 2, 4, 6, 8, 9, 10].includes(id));
+  // Reglas de vista del perfil ACTIVO (configuradas en "Reglas operativas").
+  // Antes se evaluaban todos los perfiles asignados y reglas fijas en código.
+  const idPerfilActivo = perfilActivo?.id_perfil ?? null;
+  const reglas = resolverReglasVistaTicket(vistasConfig, idPerfilActivo, usuarioActual?.id_usuario ?? null);
+  const esPersonalTI = idPerfilActivo !== null && [1, 2, 4, 6, 8, 9, 10].includes(idPerfilActivo);
+  // ITIL v4: solo los practicantes de Gestión de Incidentes / Solicitudes de servicio
+  // (Administrador, Técnico, Supervisor) ejecutan transiciones; el Auditor es de solo lectura.
+  const puedeOperar = idPerfilActivo !== null && [1, 2, 4].includes(idPerfilActivo);
   const nivelPrioridad = Number(usuarioActual?.nivel_prioridad || 5);
   const infoPrioridad = NIVELES_PRIORIDAD_MAP[nivelPrioridad] || NIVELES_PRIORIDAD_MAP[5];
   const camposAdicionales = (ticket?.campos_adicionales as Record<string, any>) || {};
-  const tienePermisoInterno = nivelPrioridad <= 2 || esPersonalTI;
+  const tienePermisoInterno = reglas.seccion_notas_internas;
+  const verComunicacionPublica = reglas.seccion_respuestas_publicas;
+  const verTransiciones = reglas.seccion_transiciones;
+  const verCmdb = reglas.seccion_cmdb;
+  const verSla = reglas.seccion_costos_sla;
 
   // Redirigir a información si no tiene acceso a la pestaña interna
   useEffect(() => {
@@ -369,6 +393,20 @@ export default function PaginaDetalleTicket({
   }
 
   const esIncidente = ticket.id_tipo_ticket === 1;
+
+  // Reglas operativas: el perfil activo puede no tener habilitado este tipo de ticket
+  if (esIncidente ? !reglas.ver_incidentes : !reglas.ver_solicitudes) {
+    return (
+      <div className="vista-contenedor" style={{ maxWidth: 640, margin: "40px auto", textAlign: "center" }}>
+        <div className="mensaje-error">
+          Tu perfil activo no tiene habilitada la consulta de {esIncidente ? "incidentes" : "solicitudes"}.
+        </div>
+        <button type="button" className="boton-secundario" style={{ width: "auto" }} onClick={() => router.push(rutaLista)}>
+          {etiquetaVolver}
+        </button>
+      </div>
+    );
+  }
   const esFinalizado = [5, 6, 7].includes(ticket.id_estado); // Resuelto, Cerrado, Cancelado
 
   // Mapeo de estado para la línea de tiempo operativa ITIL (5 puntos)
@@ -492,6 +530,7 @@ export default function PaginaDetalleTicket({
           Información
         </button>
 
+        {verComunicacionPublica && (
         <button
           type="button"
           onClick={() => setPestanaActiva("comunicacion")}
@@ -529,6 +568,7 @@ export default function PaginaDetalleTicket({
             </span>
           )}
         </button>
+        )}
 
         {tienePermisoInterno && (
           <button
@@ -722,8 +762,11 @@ export default function PaginaDetalleTicket({
                 />
               )}
 
+              {/* Compromiso SLA en tiempo real (antes solo existía en la ventana emergente) */}
+              {verSla && !esFinalizado && <CockpitTemporizadorSla ticket={ticket} />}
+
               {/* Barra de Acciones Operativas ITIL (para Técnicos, Supervisores y Administradores) */}
-              {esPersonalTI && (
+              {puedeOperar && verTransiciones && (
                 <div
                   style={{
                     padding: 14,
@@ -917,11 +960,7 @@ export default function PaginaDetalleTicket({
                                 }}
                                 title="Escalar este incidente a investigación de causa raíz (Problema ITIL)"
                               >
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                  <circle cx="12" cy="12" r="10" />
-                                  <line x1="12" y1="8" x2="12" y2="12" />
-                                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                                </svg>
+
                                 Escalar a Problema
                               </button>
                             )
@@ -1039,10 +1078,12 @@ export default function PaginaDetalleTicket({
                   Detalles Registrados en el Ticket
                 </span>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                  <div>
-                    <span style={{ color: "#64748b" }}>Elemento CMDB:</span>{" "}
-                    <strong>{camposAdicionales.elemento_cmdb || "No asignado"}</strong>
-                  </div>
+                  {verCmdb && (
+                    <div>
+                      <span style={{ color: "#64748b" }}>Elemento CMDB:</span>{" "}
+                      <strong>{camposAdicionales.elemento_cmdb || "No asignado"}</strong>
+                    </div>
+                  )}
                   <div>
                     <span style={{ color: "#64748b" }}>Evidencias:</span>{" "}
                     <strong>
@@ -1055,14 +1096,18 @@ export default function PaginaDetalleTicket({
                     <span style={{ color: "#64748b" }}>Registrado en nombre de:</span>{" "}
                     <strong>{camposAdicionales.en_nombre_de_otro_valor || "No configurado"}</strong>
                   </div>
-                  <div>
-                    <span style={{ color: "#64748b" }}>SLA Respuesta:</span>{" "}
-                    <strong>{(ticket as any).sla_horas_respuesta ? `${(ticket as any).sla_horas_respuesta}h` : "2h"}</strong>
-                  </div>
-                  <div>
-                    <span style={{ color: "#64748b" }}>SLA Solución:</span>{" "}
-                    <strong>{ticket.tiempo_resolucion_horas ? `${ticket.tiempo_resolucion_horas}h` : (ticket as any).sla_horas_resolucion ? `${(ticket as any).sla_horas_resolucion}h` : "24h"}</strong>
-                  </div>
+                  {verSla && (
+                    <>
+                      <div>
+                        <span style={{ color: "#64748b" }}>SLA Respuesta:</span>{" "}
+                        <strong>{(ticket as any).sla_horas_respuesta ? `${(ticket as any).sla_horas_respuesta}h` : "2h"}</strong>
+                      </div>
+                      <div>
+                        <span style={{ color: "#64748b" }}>SLA Solución:</span>{" "}
+                        <strong>{ticket.tiempo_resolucion_horas ? `${ticket.tiempo_resolucion_horas}h` : (ticket as any).sla_horas_resolucion ? `${(ticket as any).sla_horas_resolucion}h` : "24h"}</strong>
+                      </div>
+                    </>
+                  )}
                   {esIncidente ? (
                     <>
                       <div>
@@ -1157,7 +1202,7 @@ export default function PaginaDetalleTicket({
                   <div
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                      gridTemplateColumns: "repeat(auto-fill, minmax(min(200px, 100%), 1fr))",
                       gap: 12,
                     }}
                   >
@@ -1372,7 +1417,7 @@ export default function PaginaDetalleTicket({
 
 
       {/* CONTENIDO PESTAÑA 2: COMUNICACIÓN (PÚBLICA) */}
-      {pestanaActiva === "comunicacion" && (
+      {pestanaActiva === "comunicacion" && verComunicacionPublica && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div
             style={{
@@ -1739,7 +1784,7 @@ export default function PaginaDetalleTicket({
                     </button>
                     <button
                       type="button"
-                      disabled={ejecutandoAccion || solucionTexto.trim().length < 10}
+                      disabled={ejecutandoAccion || (flujo.exigir_solucion_al_resolver && solucionTexto.trim().length < 10)}
                       onClick={() =>
                         ejecutarAccion({
                           id_estado: 5,

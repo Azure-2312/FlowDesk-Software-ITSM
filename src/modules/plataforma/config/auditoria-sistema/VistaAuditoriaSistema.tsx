@@ -119,7 +119,7 @@ export default function PaginaAuditoriaSistema() {
       </div>
 
       {/* Barra de Filtros */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10, marginBottom: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 10, marginBottom: 16 }}>
         <input
           type="text"
           className="input-base"
@@ -342,7 +342,7 @@ export default function PaginaAuditoriaSistema() {
                 Detalles y Modificaciones Específicas
               </span>
               {logSeleccionado.detalles && typeof logSeleccionado.detalles === "object" && logSeleccionado.detalles.cambios ? (
-                <div style={{ border: "1px solid #cbd5e1", borderRadius: 6, overflow: "hidden" }}>
+                <div style={{ border: "1px solid #cbd5e1", borderRadius: 6, overflowX: "auto" }}>
                   <table className="tabla-datos" style={{ fontSize: 12 }}>
                     <thead>
                       <tr>

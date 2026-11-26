@@ -154,7 +154,7 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
             Bloqueo estricto o condicionado de cambios durante cierres contables, auditorías o campañas institucionales. Evaluado en el registro y programación de RFCs.
           </p>
         </div>
-        <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
           <button
             onClick={exportarCsv}
             style={{ padding: "8px 12px", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13, fontWeight: 500, color: "#334155", cursor: "pointer" }}
@@ -271,7 +271,7 @@ export function PestanaPeriodosCongelamiento({ config, onChange, servicios, ciLi
                       </button>
                     </td>
                     <td style={{ padding: "10px 14px", textAlign: "right" }}>
-                      <div style={{ display: "flex", justifyContent: "flex-end", gap: 6 }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 6 }}>
                         <button
                           onClick={() => abrirEditor(p)}
                           style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8", padding: "4px 8px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 500 }}

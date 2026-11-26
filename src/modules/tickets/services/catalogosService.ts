@@ -89,7 +89,16 @@ export async function listarCatalogosTickets(sesion: any) {
     ),
   ]);
 
+  // Misma matriz Impacto × Urgencia que usa el servidor al crear el ticket
+  const matrizPrioridad = await query<{ nivel_impacto: number; nivel_urgencia: number; codigo: string }>(
+    `SELECT m.nivel_impacto, m.nivel_urgencia, p.codigo
+       FROM matriz_prioridad_institucional m
+       JOIN prioridad_ticket p ON p.id_prioridad = m.id_prioridad
+      WHERE m.entidad = 'compartida'`
+  );
+
   return {
+    matrizPrioridad,
     tipos,
     impactos,
     urgencias,

@@ -196,7 +196,7 @@ export function PestanaClasesTipos({ datos, onChange, bloqueado }: Props) {
               </span>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, marginBottom: 18 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 14, marginBottom: 18 }}>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 600, color: "#334155", display: "block", marginBottom: 4 }}>
                   Nombre de Clase
@@ -310,7 +310,7 @@ export function PestanaClasesTipos({ datos, onChange, bloqueado }: Props) {
               <h4 style={{ fontSize: 13, fontWeight: 700, margin: "0 0 10px 0", color: "#1e293b" }}>
                 Comportamiento y Reglas de Control
               </h4>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 10 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 10 }}>
                 <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#334155", cursor: "pointer" }}>
                   <input
                     type="checkbox"

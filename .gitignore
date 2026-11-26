@@ -29,3 +29,8 @@ yarn-error.log*
 *.zip
 .DS_Store
 Thumbs.db
+
+# respaldos de base de datos y salidas compiladas (no versionar)
+docs/reestructuracion/respaldo/
+scripts/dist/
+*.dump

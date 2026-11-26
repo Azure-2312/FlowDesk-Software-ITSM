@@ -411,7 +411,7 @@ export default function PaginaPerfiles({ soloLectura = false }: { soloLectura?: 
                   padding: 0
                 }}
               >
-                ← Volver a la lista de perfiles
+                 Volver a la lista de perfiles
               </button>
               <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
                 {soloLectura

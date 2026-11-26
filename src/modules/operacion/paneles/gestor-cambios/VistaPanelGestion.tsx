@@ -117,7 +117,7 @@ export default function VistaPanelGestion() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 16, marginBottom: 24 }}>
         <Kpi titulo="Por evaluar" valor={data.kpis.por_evaluar} color={data.kpis.por_evaluar > 0 ? "#b45309" : undefined} subtitulo={data.kpis.por_evaluar > 0 ? "Pendiente análisis de impacto" : "Al día"} />
         <Kpi titulo="Autorizaciones pendientes" valor={data.kpis.autorizaciones_pendientes} subtitulo="En revisión CAB" />
         <Kpi titulo="Cambios de hoy" valor={data.kpis.cambios_hoy} subtitulo="Ventana activa" />
@@ -126,7 +126,7 @@ export default function VistaPanelGestion() {
         <Kpi titulo="Emergencias abiertas" valor={data.kpis.emergencias_abiertas} subtitulo="Comité ECAB requerido" />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

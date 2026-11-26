@@ -309,7 +309,7 @@ function ContenidoCatalogo({
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              
+
               <div style={{ textAlign: "left" }}>
                 <div>Catálogo de Incidentes</div>
                 <div style={{ fontSize: 11.5, fontWeight: 400, color: tipoActivo === 1 ? "#b91c1c" : "#64748b" }}>
@@ -355,7 +355,7 @@ function ContenidoCatalogo({
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              
+
               <div style={{ textAlign: "left" }}>
                 <div>Catálogo de Solicitudes</div>
                 <div style={{ fontSize: 11.5, fontWeight: 400, color: tipoActivo === 2 ? "#1d4ed8" : "#64748b" }}>
@@ -422,7 +422,7 @@ function ContenidoCatalogo({
               No se encontraron categorías que coincidan con "{busqueda}".
             </div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(290px, 1fr))", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(290px, 100%), 1fr))", gap: 16 }}>
               {categoriasFiltradas.map((cat) => {
                 const serviciosDeCat = servicios.filter((s) => s.id_categoria === cat.id_categoria && s.estado_registro !== false);
 

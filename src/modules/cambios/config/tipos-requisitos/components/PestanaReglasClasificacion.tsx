@@ -286,7 +286,7 @@ export const PestanaReglasClasificacion: React.FC<PestanaReglasClasificacionProp
                 </td>
 
                 <td style={{ padding: "10px 14px", textAlign: "right" }}>
-                  <div style={{ display: "flex", justifyContent: "flex-end", gap: 4 }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 4 }}>
                     <button
                       type="button"
                       disabled={idx === 0}

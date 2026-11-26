@@ -655,7 +655,7 @@ export default function PaginaUsuarios() {
           <h4 style={{ margin: "0 0 14px 0", fontSize: 12, color: "#475569", textTransform: "uppercase", letterSpacing: 0.5 }}>
             Datos del Usuario
           </h4>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, fontSize: 13 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 14, fontSize: 13 }}>
             <div>
               <span style={{ color: "#64748b", display: "block", fontSize: 11, marginBottom: 2 }}>Nombre completo</span>
               <span style={{ color: "#0f172a", fontWeight: "normal" }}>{resumenNuevoUsuario.nombresCompletos}</span>

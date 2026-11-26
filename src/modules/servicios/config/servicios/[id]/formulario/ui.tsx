@@ -115,15 +115,8 @@ export default function FormularioServicioConfig({ id }: { id: string }) {
         </div>
       )}
 
-      {/* ARQUITECTURA SPLIT-SCREEN 50% / 50% */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(440px, 1fr))",
-          gap: 24,
-          alignItems: "start",
-        }}
-      >
+      {/* Campos y enrutamiento. Estos campos se muestran al usuario en "Registrar solicitud/incidente" al elegir el servicio. */}
+      <div style={{ maxWidth: 900 }}>
         {/* COLUMNA IZQUIERDA: GESTIÓN DE CAMPOS Y ENRUTAMIENTO */}
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <section className="tarjeta-formulario" style={{ backgroundColor: "#ffffff", padding: 20, borderRadius: 10, border: "1px solid #e2e8f0" }}>
@@ -359,87 +352,6 @@ export default function FormularioServicioConfig({ id }: { id: string }) {
               + Agregar regla de escalamiento
             </button>
           </section>
-        </div>
-
-        {/* COLUMNA DERECHA: VISTA PREVIA EN VIVO DEL FORMULARIO EN EL PORTAL */}
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 10,
-            border: "2px solid #3b82f6",
-            padding: 20,
-            boxShadow: "0 4px 14px rgba(59, 130, 246, 0.08)",
-            position: "sticky",
-            top: 20,
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, borderBottom: "1px solid #e2e8f0", paddingBottom: 10 }}>
-            <div>
-              <strong style={{ fontSize: 13.5, color: "#0f172a" }}>
-                Vista Previa del Portal de Autoservicio
-              </strong>
-              <span style={{ display: "block", fontSize: 11.5, color: "#64748b" }}>
-                Previsualización en tiempo real de la captura del usuario solicitante
-              </span>
-            </div>
-            <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 4, backgroundColor: "#eff6ff", color: "#2563eb" }}>
-              En Vivo
-            </span>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {/* Campos Base Estándar de la Plataforma */}
-            <div className="campo">
-              <label style={{ fontSize: 12, fontWeight: 600 }}>Título de la Solicitud *</label>
-              <input className="input-base" disabled value={`Solicitud de ${servicio?.nombre || "Servicio TI"}`} />
-            </div>
-
-            <div className="campo">
-              <label style={{ fontSize: 12, fontWeight: 600 }}>Descripción y Justificación *</label>
-              <textarea className="input-base" disabled rows={2} placeholder="Describa el detalle de su requerimiento institucional..." />
-            </div>
-
-            {/* Campos Dinámicos Configurados */}
-            {campos.length === 0 ? (
-              <div style={{ padding: 12, textAlign: "center", backgroundColor: "#f8fafc", borderRadius: 6, border: "1px dashed #cbd5e1", color: "#64748b", fontSize: 12 }}>
-                No hay campos adicionales configurados para este servicio.
-              </div>
-            ) : (
-              campos.map((c) => (
-                <div key={c.clave} className="campo">
-                  <label style={{ fontSize: 12, fontWeight: 600 }}>
-                    {c.etiqueta} {c.obligatorio && <span style={{ color: "#dc2626" }}>*</span>}
-                  </label>
-                  {c.tipo === "lista" ? (
-                    <select className="input-base" disabled>
-                      <option>Seleccione una opción...</option>
-                      {(c.opciones || []).map((o) => (
-                        <option key={o}>{o}</option>
-                      ))}
-                    </select>
-                  ) : c.tipo === "area" ? (
-                    <textarea className="input-base" disabled placeholder={c.ayuda || "Ingrese información..."} rows={2} />
-                  ) : c.tipo === "casilla" ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
-                      <input type="checkbox" disabled style={{ width: 16, height: 16 }} />
-                      <span style={{ fontSize: 12.5, color: "#475569" }}>{c.ayuda || c.etiqueta}</span>
-                    </div>
-                  ) : (
-                    <input className="input-base" disabled type={c.tipo === "correo" ? "email" : c.tipo === "numero" ? "number" : c.tipo === "fecha" ? "date" : "text"} placeholder={c.ayuda || `Ejemplo de ${c.etiqueta}...`} />
-                  )}
-                  {c.ayuda && c.tipo !== "casilla" && (
-                    <span style={{ fontSize: 11, color: "#64748b", marginTop: 2, display: "block" }}>{c.ayuda}</span>
-                  )}
-                </div>
-              ))
-            )}
-
-            <div style={{ paddingTop: 10, borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "flex-end" }}>
-              <button type="button" disabled className="boton-primario" style={{ width: "auto", opacity: 0.6, fontSize: 12, padding: "6px 14px" }}>
-                Enviar Solicitud
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>

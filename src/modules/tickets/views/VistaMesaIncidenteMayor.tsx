@@ -149,7 +149,7 @@ export default function VistaMesaIncidenteMayor() {
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16, marginTop: 14 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 16, marginTop: 14 }}>
                   <div>
                     <div style={{ fontSize: 12, fontWeight: 700, color: "#334155", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>Línea de tiempo</div>
                     <ul style={{ listStyle: "none", padding: 0, margin: 0, borderLeft: "2px solid #e2e8f0", paddingLeft: 14 }}>

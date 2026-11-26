@@ -102,7 +102,7 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
       {/* Selector de Pestañas Homogéneo */}
       <div
         style={{
-          display: "flex",
+          display: "flex", flexWrap: "wrap",
           gap: 8,
           borderBottom: "1px solid #e2e8f0",
           marginBottom: 24,

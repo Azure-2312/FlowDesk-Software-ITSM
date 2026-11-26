@@ -132,7 +132,7 @@ export default function VistaPanelProblemas() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 16, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))", gap: 16, marginBottom: 24 }}>
         <Kpi titulo="Abiertos" valor={data.kpis.abiertos} subtitulo="Investigaciones activas" />
         <Kpi titulo="Sin asignar" valor={data.kpis.sin_asignar} color={data.kpis.sin_asignar > 0 ? "#b45309" : undefined} subtitulo={data.kpis.sin_asignar > 0 ? "Requiere especialista" : "Todos asignados"} />
         <Kpi titulo="Vencidos" valor={data.kpis.vencidos} color={data.kpis.vencidos > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.vencidos > 0 ? "Objetivo sobrepasado" : "0 fuera de fecha"} />
@@ -142,7 +142,7 @@ export default function VistaPanelProblemas() {
         <Kpi titulo="Candidatos" valor={data.kpis.candidatos} subtitulo="Incidentes recurrentes" />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

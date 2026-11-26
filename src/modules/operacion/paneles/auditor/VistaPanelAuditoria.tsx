@@ -99,7 +99,7 @@ export default function VistaPanelAuditoria() {
         </button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 16, marginBottom: 24 }}>
         <Kpi titulo="Eventos (30 días)" valor={data.kpis.eventos_auditoria} subtitulo="Logs inmutables" />
         <Kpi titulo="Accesos fallidos (7 días)" valor={data.kpis.accesos_fallidos} color={data.kpis.accesos_fallidos > 0 ? "#b45309" : undefined} subtitulo={data.kpis.accesos_fallidos > 0 ? "Alertas de fuerza bruta" : "Sin incidentes de login"} />
         <Kpi titulo="Cambios sin aprobación" valor={data.kpis.cambios_sin_aprobacion} color={data.kpis.cambios_sin_aprobacion > 0 ? "#b91c1c" : undefined} subtitulo={data.kpis.cambios_sin_aprobacion > 0 ? "Desviación de control" : "0 no autorizados"} />
@@ -108,7 +108,7 @@ export default function VistaPanelAuditoria() {
         <Kpi titulo="Informes abiertos" valor={data.kpis.informes_abiertos} subtitulo="Auditorías en curso" />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 16 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Accesos rápidos</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

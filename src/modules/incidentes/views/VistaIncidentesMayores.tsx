@@ -147,7 +147,7 @@ export default function VistaIncidentesMayores() {
   }
 
   return (
-    <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto" }}>
+    <div className="vista-contenedor">
       {/* 1. Cabecera */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div>
@@ -290,7 +290,7 @@ export default function VistaIncidentesMayores() {
           No se encontraron incidentes mayores con los criterios seleccionados.
         </div>
       ) : (
-        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, overflow: "hidden" }}>
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, textAlign: "left" }}>
             <thead>
               <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #e2e8f0", color: "#475569" }}>
@@ -581,7 +581,7 @@ export default function VistaIncidentesMayores() {
                     No se especificaron involucrados adicionales al declarar.
                   </div>
                 ) : (
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 10 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))", gap: 10 }}>
                     {incidenteSeleccionado.involucrados.map((inv) => (
                       <div
                         key={inv.id_usuario}

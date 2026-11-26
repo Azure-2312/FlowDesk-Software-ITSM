@@ -14,7 +14,7 @@ envContent.split('\n').forEach(line => {
   }
 });
 
-const pool = new Pool({ connectionString: env.DATABASE_URL });
+const pool = new Pool({ connectionString: process.env.DATABASE_URL || env.DATABASE_URL, ssl: /localhost|127.0.0.1/.test(process.env.DATABASE_URL || env.DATABASE_URL) ? false : { rejectUnauthorized: false } });
 const JWT_SECRET = env.JWT_SECRET;
 const COOKIE_NAME = 'sesion';
 

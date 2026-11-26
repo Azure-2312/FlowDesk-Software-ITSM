@@ -158,9 +158,9 @@ export default function ProveedoresWorkspace({ puedeEditar }: { puedeEditar: boo
       {error && <p role="alert" className="mensaje-error">{error}</p>}
 
       {puedeEditar && (
-        <form onSubmit={crear} className="tarjeta-formulario" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 12, marginBottom: 20 }}>
+        <form onSubmit={crear} className="tarjeta-formulario" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(210px, 100%), 1fr))", gap: 12, marginBottom: 20 }}>
           <h2 style={{ gridColumn: "1/-1", margin: 0, fontSize: 16 }}>Registrar proveedor o contrato</h2>
-          
+
           <div>
             <input
               className="input-base"

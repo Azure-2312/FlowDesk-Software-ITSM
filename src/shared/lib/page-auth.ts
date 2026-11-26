@@ -52,8 +52,23 @@ export function exigirCapacidadPagina(capacidades: Capacidad | readonly Capacida
 export async function exigirMenuPagina(url: string, opciones?: { prefijo?: boolean }) {
   const sesion = obtenerSesionPagina();
   const menu = await obtenerMenuDelUsuario(sesion.id_usuario, sesion.perfilActivo?.id_perfil);
-  const permitido = opciones?.prefijo ? menuIncluyePrefijo(menu, url) : menuIncluyeUrl(menu, url);
+  // El Administrador tiene acceso total (mismo criterio que sus capacidades: TODAS)
+  const esAdministrador = sesion.perfilActivo?.id_perfil === 1;
+  const permitido = esAdministrador || (opciones?.prefijo ? menuIncluyePrefijo(menu, url) : menuIncluyeUrl(menu, url));
   if (!permitido) redirect("/403");
+  return {
+    idUsuario: sesion.id_usuario,
+    idPerfil: sesion.perfilActivo?.id_perfil || 0,
+    sesion,
+  };
+}
+
+/** Exige que el menú del perfil activo incluya ALGUNO de los prefijos indicados. */
+export async function exigirAlgunPrefijoMenuPagina(prefijos: string[]) {
+  const sesion = obtenerSesionPagina();
+  const menu = await obtenerMenuDelUsuario(sesion.id_usuario, sesion.perfilActivo?.id_perfil);
+  const esAdministrador = sesion.perfilActivo?.id_perfil === 1;
+  if (!esAdministrador && !prefijos.some((p) => menuIncluyePrefijo(menu, p))) redirect("/403");
   return {
     idUsuario: sesion.id_usuario,
     idPerfil: sesion.perfilActivo?.id_perfil || 0,

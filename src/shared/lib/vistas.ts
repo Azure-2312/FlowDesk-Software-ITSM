@@ -247,6 +247,7 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     vistas: [
       { codigo: "campos", etiqueta: "Campos del formulario", idsLegados: [21199] },
       { codigo: "listas", etiqueta: "Listas auxiliares", idsLegados: [21199] },
+      { codigo: "umbral", etiqueta: "Umbral de recurrencia", idsLegados: [21199] },
     ],
   },
 

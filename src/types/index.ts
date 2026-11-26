@@ -337,6 +337,8 @@ export interface ComentarioTicket {
 }
 
 export interface CatalogosTickets {
+  /** Celdas de la matriz institucional Impacto × Urgencia configurada por el administrador */
+  matrizPrioridad?: { nivel_impacto: number; nivel_urgencia: number; codigo: string }[];
   tipos: TipoTicket[];
   impactos: ImpactoTicket[];
   urgencias: UrgenciaTicket[];

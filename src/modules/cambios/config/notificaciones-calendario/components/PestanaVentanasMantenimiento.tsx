@@ -240,7 +240,7 @@ export function PestanaVentanasMantenimiento({ config, onChange, servicios, depa
                     </button>
                   </td>
                   <td style={{ padding: "10px 14px", textAlign: "right" }}>
-                    <div style={{ display: "flex", justifyContent: "flex-end", gap: 6 }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 6 }}>
                       <button
                         onClick={() => abrirEditor(v)}
                         style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8", padding: "4px 8px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 500 }}

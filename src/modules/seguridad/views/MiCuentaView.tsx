@@ -548,8 +548,8 @@ export default function PaginaMiCuenta({ datosIniciales, perfilActivo: propsPerf
       </div>
 
       {/* Grid de 2 Columnas: Datos Empresariales y Datos Personales (Solo Lectura) */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 20, alignItems: "start", marginBottom: 20 }}>
-        
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))", gap: 20, alignItems: "start", marginBottom: 20 }}>
+
         {/* SECCIÓN: DATOS EMPRESARIALES */}
         <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>

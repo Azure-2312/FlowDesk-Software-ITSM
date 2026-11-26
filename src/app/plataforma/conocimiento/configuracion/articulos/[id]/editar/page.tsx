@@ -137,12 +137,12 @@ export default function PaginaEditarArticuloConocimiento() {
             Base de Conocimiento
           </Link>
           <span>/</span>
-          <span className="text-slate-800 dark:text-slate-200 font-medium">Editar {codigoArticulo}</span>
+          <span className="text-slate-800 font-medium">Editar {codigoArticulo}</span>
         </nav>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-xl font-bold text-slate-900">
               Edición Administrativa de Artículo
             </h1>
             <p className="text-xs text-slate-500 mt-1">
@@ -152,13 +152,13 @@ export default function PaginaEditarArticuloConocimiento() {
           <div className="flex gap-2">
             <Link
               href={`/plataforma/conocimiento/configuracion/articulos/${idArticulo}/historial`}
-              className="px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg transition-colors"
+              className="px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
             >
               Ver Historial
             </Link>
             <Link
               href="/plataforma/conocimiento/configuracion/articulos"
-              className="px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg transition-colors"
+              className="px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
             >
               Volver a la Lista
             </Link>
@@ -168,22 +168,22 @@ export default function PaginaEditarArticuloConocimiento() {
 
       {/* Alertas */}
       {mensajeExito && (
-        <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 rounded-lg text-xs">
+        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-xs">
           {mensajeExito} Redirigiendo al catálogo...
         </div>
       )}
 
       {error && (
-        <div className="p-3 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300 rounded-lg text-xs">
+        <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs">
           {error}
         </div>
       )}
 
       {/* Formulario de Edición */}
       <form onSubmit={manejarGuardar} className="space-y-6">
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
               Título del Artículo
             </label>
             <input
@@ -191,20 +191,20 @@ export default function PaginaEditarArticuloConocimiento() {
               required
               value={titulo}
               onChange={(e) => setTitulo(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white"
+              className="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900"
               placeholder="Ej: Guía de resolución de conectividad remota VPN"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
                 Categoría
               </label>
               <select
                 value={idCategoria}
                 onChange={(e) => setIdCategoria(Number(e.target.value))}
-                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white"
+                className="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900"
               >
                 {categorias.map((cat) => (
                   <option key={cat.id_categoria} value={cat.id_categoria}>
@@ -215,13 +215,13 @@ export default function PaginaEditarArticuloConocimiento() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
                 Estado Editorial
               </label>
               <select
                 value={estadoEditorial}
                 onChange={(e) => setEstadoEditorial(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white font-medium"
+                className="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium"
               >
                 <option value="PUBLICADO">PUBLICADO</option>
                 <option value="EN_REVISION">EN_REVISION</option>
@@ -232,13 +232,13 @@ export default function PaginaEditarArticuloConocimiento() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
                 Plantilla KCS
               </label>
               <select
                 value={tipoPlantilla}
                 onChange={(e) => setTipoPlantilla(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white"
+                className="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900"
               >
                 <option value="GUIA">Guía Paso a Paso</option>
                 <option value="RESOLUCION_PROBLEMA">Resolución de Problema</option>
@@ -248,13 +248,13 @@ export default function PaginaEditarArticuloConocimiento() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
                 Clasificación de Seguridad
               </label>
               <select
                 value={clasificacionSeguridad}
                 onChange={(e) => setClasificacionSeguridad(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white"
+                className="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900"
               >
                 <option value="PUBLICO">Público (Solicitantes y Clientes)</option>
                 <option value="INTERNO">Interno (Personal Institucional)</option>
@@ -265,7 +265,7 @@ export default function PaginaEditarArticuloConocimiento() {
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
                 Contenido del Artículo (Markdown)
               </label>
               <div className="flex gap-2">
@@ -274,7 +274,7 @@ export default function PaginaEditarArticuloConocimiento() {
                   onClick={() => setVistaPrevia(false)}
                   className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
                     !vistaPrevia
-                      ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-semibold"
+                      ? "bg-blue-100 text-blue-700 font-semibold"
                       : "text-slate-500 hover:text-slate-700"
                   }`}
                 >
@@ -285,7 +285,7 @@ export default function PaginaEditarArticuloConocimiento() {
                   onClick={() => setVistaPrevia(true)}
                   className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
                     vistaPrevia
-                      ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-semibold"
+                      ? "bg-blue-100 text-blue-700 font-semibold"
                       : "text-slate-500 hover:text-slate-700"
                   }`}
                 >
@@ -300,11 +300,11 @@ export default function PaginaEditarArticuloConocimiento() {
                 rows={14}
                 value={contenidoMarkdown}
                 onChange={(e) => setContenidoMarkdown(e.target.value)}
-                className="w-full px-3 py-2 text-sm font-mono bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white leading-relaxed"
+                className="w-full px-3 py-2 text-sm font-mono bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-slate-900 leading-relaxed"
                 placeholder="Escriba las instrucciones, requisitos, solución técnica y recomendaciones..."
               />
             ) : (
-              <div className="p-4 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-lg min-h-[300px] text-sm text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed font-sans">
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg min-h-[300px] text-sm text-slate-800 whitespace-pre-wrap leading-relaxed font-sans">
                 {contenidoMarkdown.trim() ? (
                   contenidoMarkdown
                 ) : (
@@ -318,7 +318,7 @@ export default function PaginaEditarArticuloConocimiento() {
         <div className="flex items-center justify-end gap-3 pt-2">
           <Link
             href="/plataforma/conocimiento/configuracion/articulos"
-            className="px-4 py-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
           >
             Cancelar
           </Link>

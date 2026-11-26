@@ -9,29 +9,6 @@ export {
   type ActualizacionProblema,
 } from "./services/problemaService";
 
-export {
-  obtenerFlujo,
-  guardarBorradorFlujo,
-  publicarFlujo,
-  descartarBorradorFlujo,
-  crearEstadoProblema,
-  actualizarEstadoProblema,
-  eliminarEstadoProblema,
-  crearTransicionProblema,
-  actualizarTransicionProblema,
-  eliminarTransicionProblema,
-  crearReglaAsignacion,
-  actualizarReglaAsignacion,
-  eliminarReglaAsignacion,
-  crearReglaEscalamiento,
-  actualizarReglaEscalamiento,
-  eliminarReglaEscalamiento,
-  actualizarObjetivosOla,
-  actualizarConfigReapertura,
-  actualizarConfigMayor,
-  crearTareaOPaquete,
-  eliminarTareaOPaquete,
-} from "./services/flujoService";
 
 export {
   listarPlantillas,
@@ -71,7 +48,6 @@ export {
   type ConfigMatrizProblemas,
 } from "./services/matrizPrioridadService";
 
-export { probarCoincidenciaKedb, type PruebaCoincidenciaKedb } from "./services/relacionesKedbService";
 
 export {
   obtenerConfiguracionProblemas,

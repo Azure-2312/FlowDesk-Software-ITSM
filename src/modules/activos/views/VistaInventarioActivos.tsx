@@ -417,7 +417,7 @@ function ContenidoInventarioActivos() {
       </div>
 
       {/* Selector de Pestañas ITAM (Debajo del Título General) */}
-      <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #e2e8f0", marginBottom: 20, justifyContent: "flex-start", overflowX: "auto" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, borderBottom: "1px solid #e2e8f0", marginBottom: 20, justifyContent: "flex-start", overflowX: "auto" }}>
         <button
           type="button"
           onClick={() => { setPestanaItam("inventario"); setVista("tabla"); }}

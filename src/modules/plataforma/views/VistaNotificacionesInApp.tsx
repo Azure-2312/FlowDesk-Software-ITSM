@@ -323,7 +323,7 @@ export default function VistaNotificacionesInApp() {
             className="boton-secundario"
             style={{ fontSize: 12, padding: "4px 12px" }}
           >
-            ← Anterior
+             Anterior
           </button>
           <span style={{ fontSize: 12, color: "#64748b" }}>
             Página {pagina} de {totalPaginas}
@@ -335,7 +335,7 @@ export default function VistaNotificacionesInApp() {
             className="boton-secundario"
             style={{ fontSize: 12, padding: "4px 12px" }}
           >
-            Siguiente →
+            Siguiente 
           </button>
         </div>
       )}

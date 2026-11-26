@@ -48,13 +48,6 @@ export {
   importarCongelamientoCsv,
 } from "./services/notificacionesCalendarioCongelamientoCsvService";
 
-export {
-  VALORES_FABRICA_1333,
-  obtenerConfiguracionFlujoEvaluacion,
-  procesarAccionFlujoEvaluacion,
-  publicarConfiguracionFlujoEvaluacion,
-  descartarBorradorFlujoEvaluacion,
-} from "./services/flujoEvaluacionConfiguracionService";
 
 export {
   VALORES_FABRICA_1332,
@@ -80,19 +73,12 @@ export {
   descartarBorradorFormulario,
 } from "./services/formularioConfiguracionService";
 
-export { simularEscalamiento } from "./services/flujoEvaluacionSimularEscalamientoService";
 
-export { simularMatrizAutoridad } from "./services/matrizAutoridadSimularService";
 
-export { simularReglasClasificacion } from "./services/reglasClasificacionSimularService";
 
-export { simularEtapasFlujo } from "./services/flujoEvaluacionSimularEtapasService";
 
-export { simularQuorum } from "./services/flujoEvaluacionSimularQuorumService";
 
-export { validarFlujoCambios } from "./services/flujoEvaluacionValidarFlujoService";
 
-export { simularConflictosCalendario } from "./services/notificacionesCalendarioSimularConflictosService";
 
 // --- Consola del Gestor de Cambios (perfil 8): lógica de dominio movida desde
 // src/modules/perfiles/gestor-cambios para que el rol solo conserve su UI. ---

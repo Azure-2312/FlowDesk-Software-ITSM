@@ -203,7 +203,7 @@ export default function VistaKedb() {
   });
 
   return (
-    <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto", boxSizing: "border-box" }}>
+    <div className="vista-contenedor">
       {/* 1. Cabecera */}
       <div style={{ marginBottom: 20 }}>
         <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
@@ -227,7 +227,7 @@ export default function VistaKedb() {
       )}
 
       {/* 2. Selector de Pestañas */}
-      <div style={{ display: "flex", gap: 8, borderBottom: "2px solid #e2e8f0", marginBottom: 24 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, borderBottom: "2px solid #e2e8f0", marginBottom: 24 }}>
         <button
           type="button"
           onClick={() => setPestanaActiva("plantillas")}

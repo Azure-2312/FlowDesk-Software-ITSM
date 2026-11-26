@@ -454,7 +454,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                     </td>
                     <td style={{ textAlign: "center", fontWeight: 700 }}>x{preg.peso || 1}</td>
                     <td>
-                      <div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 6 }}>
                         <button
                           type="button"
                           className="boton-mini"
@@ -889,7 +889,7 @@ export const PestanaCuestionarioRiesgo: React.FC<PestanaCuestionarioRiesgoProps>
                         <option value="alto">Eleva a Alto</option>
                         <option value="critico">Eleva a Crítico</option>
                       </select>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 4 }}>
                         <button
                           type="button"
                           onClick={() => moverOpcionModal(idx, -1)}

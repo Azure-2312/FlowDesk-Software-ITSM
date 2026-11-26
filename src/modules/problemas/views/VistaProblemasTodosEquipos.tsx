@@ -72,7 +72,7 @@ export default function VistaProblemasTodosEquipos() {
   }
 
   return (
-    <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 20 }}>
+    <div className="vista-contenedor" style={{ gap: 20 }}>
       {/* 1. Cabecera Principal */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16, borderBottom: "1px solid #e2e8f0", paddingBottom: 16 }}>
         <div>
@@ -132,7 +132,7 @@ export default function VistaProblemasTodosEquipos() {
       )}
 
       {!cargando && !error && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(380px, 100%), 1fr))", gap: 16 }}>
           {equipos.map((eq) => (
             <div
               key={eq.id_departamento}

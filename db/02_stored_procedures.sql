@@ -558,6 +558,7 @@ RETURNS TABLE (
     celular VARCHAR,
     fecha_creacion TIMESTAMPTZ
 ) AS $$
+#variable_conflict use_column
 DECLARE
     v_nuevo_id INT;
     v_fecha TIMESTAMPTZ := now();
@@ -590,7 +591,7 @@ BEGIN
         p_nombres,
         p_apellido_paterno,
         p_apellido_materno,
-        LOWER(p_correo),
+        LOWER(p_correo)::VARCHAR,
         p_celular,
         v_fecha;
 END;
@@ -615,6 +616,7 @@ RETURNS TABLE (
     id_usuario INT,
     actualizado BOOLEAN
 ) AS $$
+#variable_conflict use_column
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM usuario WHERE usuario.id_usuario = p_id_usuario) THEN
         RAISE EXCEPTION 'USUARIO_NO_ENCONTRADO: Usuario % no existe.', p_id_usuario;

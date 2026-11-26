@@ -18,7 +18,7 @@ export default function PanelInfraestructuraCi({ ticket }: Props) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))",
           gap: 12,
           backgroundColor: "#f8fafc",
           border: "1px solid #e2e8f0",
@@ -100,7 +100,7 @@ export default function PanelInfraestructuraCi({ ticket }: Props) {
               borderRadius: 6,
               padding: "10px 14px",
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))",
               gap: 10,
               fontSize: 12,
             }}

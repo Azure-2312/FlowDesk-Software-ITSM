@@ -24,6 +24,21 @@ function FormularioProblemasCrear() {
   const [idImpacto, setIdImpacto] = useState<number>(Number(searchParams.get("impacto")) || 2);
   const [idUrgencia, setIdUrgencia] = useState<number>(Number(searchParams.get("urgencia")) || 2);
   const [metodoAnalisis, setMetodoAnalisis] = useState(searchParams.get("metodo") || "5_porques");
+  // Métodos de análisis configurados en Problemas → Configuración → Listas
+  const [metodosConfigurados, setMetodosConfigurados] = useState<{ codigo: string; nombre: string }[]>([]);
+
+  useEffect(() => {
+    fetch("/api/problemas/configuracion/catalogos?catalogo=metodos_analisis")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        const activos = (d?.metodos_analisis || []).filter((m: any) => m.activo !== false);
+        if (activos.length > 0) {
+          setMetodosConfigurados(activos.map((m: any) => ({ codigo: m.codigo, nombre: m.nombre })));
+          if (!searchParams.get("metodo")) setMetodoAnalisis(activos[0].codigo);
+        }
+      })
+      .catch(() => {});
+  }, [searchParams]);
 
   const [listaKedb, setListaKedb] = useState<ErrorConocidoItem[]>([]);
   const [cargandoKedb, setCargandoKedb] = useState(false);
@@ -155,7 +170,7 @@ function FormularioProblemasCrear() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          
+
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af" }}>
               Prellenar formulario desde Error Conocido (KEDB)
@@ -297,10 +312,18 @@ function FormularioProblemasCrear() {
                 fontSize: 13,
               }}
             >
-              <option value="5_porques">5 Porqués</option>
-              <option value="linea_tiempo">Línea de tiempo</option>
-              <option value="arbol_fallas">Árbol de Fallas (FTA)</option>
-              <option value="otro">Análisis Técnico Libre</option>
+              {metodosConfigurados.length > 0 ? (
+                metodosConfigurados.map((m) => (
+                  <option key={m.codigo} value={m.codigo}>{m.nombre}</option>
+                ))
+              ) : (
+                <>
+                  <option value="5_porques">5 Porqués</option>
+                  <option value="linea_tiempo">Línea de tiempo</option>
+                  <option value="arbol_fallas">Árbol de Fallas (FTA)</option>
+                  <option value="otro">Análisis Técnico Libre</option>
+                </>
+              )}
             </select>
           </div>
         </div>

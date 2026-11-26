@@ -220,7 +220,7 @@ export default function VistaCentroAprobacionesBajas({ vistaInicial = "pendiente
               transition: "all 0.15s ease",
             }}
           >
-            <RefreshCw size={13} style={{ animation: cargando ? "spin 1s linear infinite" : "none" }} />
+
             <span>Actualizar</span>
           </button>
         </div>
@@ -369,7 +369,7 @@ export default function VistaCentroAprobacionesBajas({ vistaInicial = "pendiente
                           onClick={() => setSolicitudAccion({ item: s, decision: "APROBAR" })}
                           title="Autorizar baja de activo"
                         >
-                          <Check size={13} />
+
                           <span>Aprobar Baja</span>
                         </button>
 
@@ -379,7 +379,7 @@ export default function VistaCentroAprobacionesBajas({ vistaInicial = "pendiente
                           onClick={() => setSolicitudAccion({ item: s, decision: "RECHAZAR" })}
                           title="Rechazar baja de activo"
                         >
-                          <X size={13} />
+
                           <span>Rechazar</span>
                         </button>
                       </div>

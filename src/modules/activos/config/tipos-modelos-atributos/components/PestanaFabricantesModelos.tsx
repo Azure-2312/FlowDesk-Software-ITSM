@@ -360,7 +360,7 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
               <h4 style={{ fontSize: 13, fontWeight: 700, margin: "0 0 10px 0", color: "#0f172a" }}>
                 Homologar Nuevo Modelo de Activo
               </h4>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10, alignItems: "flex-end" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))", gap: 10, alignItems: "flex-end" }}>
                 <div>
                   <label style={{ fontSize: 11, fontWeight: 600, color: "#475569", display: "block", marginBottom: 2 }}>
                     Fabricante *

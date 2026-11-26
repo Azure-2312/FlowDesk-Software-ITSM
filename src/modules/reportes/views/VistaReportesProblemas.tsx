@@ -65,7 +65,7 @@ export default function VistaReportesProblemas() {
         <p>Volumen por estado y prioridad, tiempo medio de cierre, errores conocidos y recurrencia por servicio.</p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))", gap: 14, marginBottom: 24 }}>
         <Kpi titulo="Problemas totales" valor={r.total} />
         <Kpi titulo="Abiertos" valor={r.abiertos} color={r.abiertos > 0 ? "#b45309" : undefined} />
         <Kpi titulo="Cerrados" valor={r.cerrados} color="#166534" />
@@ -76,7 +76,7 @@ export default function VistaReportesProblemas() {
         <Kpi titulo="Mayores activos" valor={r.mayores_activos} color={r.mayores_activos > 0 ? "#b91c1c" : undefined} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: 16 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2 style={{ marginTop: 0 }}>Por estado</h2>
           {data.porEstado.length === 0 ? (

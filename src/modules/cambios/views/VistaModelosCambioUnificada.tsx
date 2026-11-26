@@ -169,7 +169,7 @@ export default function VistaModelosCambioUnificada() {
   });
 
   return (
-    <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto", boxSizing: "border-box" }}>
+    <div className="vista-contenedor">
       {/* 1. Encabezado */}
       <div style={{ marginBottom: 20 }}>
         <h1 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
@@ -193,7 +193,7 @@ export default function VistaModelosCambioUnificada() {
       )}
 
       {/* 2. Selector de Pestañas Internas */}
-      <div style={{ display: "flex", gap: 8, borderBottom: "2px solid #e2e8f0", marginBottom: 24 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, borderBottom: "2px solid #e2e8f0", marginBottom: 24 }}>
         <button
           type="button"
           onClick={() => setPestanaActiva("plantillas")}
@@ -297,7 +297,7 @@ export default function VistaModelosCambioUnificada() {
               No se encontraron modelos de cambio estándar.
             </div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(380px, 1fr))", gap: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(380px, 100%), 1fr))", gap: 20 }}>
               {itemsFiltrados.map((m) => {
                 const pre = m.contenido_prellenado;
                 return (
@@ -389,7 +389,7 @@ export default function VistaModelosCambioUnificada() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {/* Fila 1 */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 14 }}>
               <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
                 Código Identificador *
                 <input
@@ -451,7 +451,7 @@ export default function VistaModelosCambioUnificada() {
             </div>
 
             {/* Fila 3: Parámetros técnicos */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, backgroundColor: "#f8fafc", padding: 12, borderRadius: 8 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(150px, 100%), 1fr))", gap: 12, backgroundColor: "#f8fafc", padding: 12, borderRadius: 8 }}>
               <label style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>
                 Entorno Objetivo
                 <select
@@ -687,7 +687,7 @@ export default function VistaModelosCambioUnificada() {
                     <p style={{ fontSize: 13, color: "#475569", margin: 0, lineHeight: 1.5 }}>{m.descripcion}</p>
                   )}
 
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10, padding: 12, backgroundColor: "#f8fafc", borderRadius: 6, fontSize: 12 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 10, padding: 12, backgroundColor: "#f8fafc", borderRadius: 6, fontSize: 12 }}>
                     <div><strong>Riesgo fijado:</strong> {(m.riesgo_fijo || "Bajo").toUpperCase()}</div>
                     <div><strong>Autorización automática:</strong> {m.autorizacion_automatica ? "Sí" : "No"}</div>
                     <div><strong>Versión:</strong> {m.version_modelo || "1"}</div>

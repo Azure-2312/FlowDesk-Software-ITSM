@@ -73,7 +73,7 @@ export default function VistaReportesActivos() {
         <p>Distribución por estado y tipo, antigüedad, costos, garantías y exactitud de la CMDB.</p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(170px, 100%), 1fr))", gap: 14, marginBottom: 24 }}>
         <Kpi titulo="Activos totales" valor={r.total} />
         <Kpi titulo="En operación" valor={r.en_operacion} color="#166534" />
         <Kpi titulo="En stock" valor={r.en_stock} />
@@ -82,7 +82,7 @@ export default function VistaReportesActivos() {
         <Kpi titulo="Costo total" valor={Number(r.costo_total).toLocaleString("es-PE", { minimumFractionDigits: 2 })} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: 16 }}>
         <div className="tarjeta-formulario" style={{ margin: 0 }}>
           <h2>Por tipo de activo</h2>
           {data.porTipo.length === 0 ? (

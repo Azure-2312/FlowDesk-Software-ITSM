@@ -52,19 +52,7 @@ export default function WidgetTicketDeflection({
 
   async function marcarResuelto(idArticulo: number) {
     setArticuloResuelto(idArticulo);
-    try {
-      await fetch("/api/deflexion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "MARCAR_DEFLEXION",
-          id_log: 1, // Log contextual
-          id_articulo: idArticulo,
-        }),
-      });
-    } catch {
-      // Silencioso
-    }
+    // El endpoint /api/deflexion nunca existió; la deflexión se resuelve en el cliente.
     if (onDeflexionExitosa) {
       onDeflexionExitosa();
     }
@@ -75,9 +63,9 @@ export default function WidgetTicketDeflection({
   }
 
   return (
-    <div className="p-4 rounded-xl border border-blue-200 dark:border-blue-900/40 bg-blue-50/50 dark:bg-blue-950/20 space-y-3">
+    <div className="p-4 rounded-xl border border-blue-200 bg-blue-50/50 space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">
+        <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
           ¿Alguna de estas guías resuelve tu problema?
         </span>
         {cargando && <span className="text-xs text-slate-400">Buscando...</span>}
@@ -87,7 +75,7 @@ export default function WidgetTicketDeflection({
         {sugerencias.map((art) => (
           <div
             key={art.id_articulo}
-            className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+            className="p-3 rounded-lg border border-slate-200 bg-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
           >
             <div>
               <div className="flex items-center gap-2">
@@ -95,12 +83,12 @@ export default function WidgetTicketDeflection({
                   {art.codigo_articulo}
                 </span>
                 {art.categoria_nombre && (
-                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
                     {art.categoria_nombre}
                   </span>
                 )}
               </div>
-              <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1">
+              <h4 className="text-xs font-bold text-slate-900 mt-1">
                 {art.titulo}
               </h4>
             </div>
@@ -109,7 +97,7 @@ export default function WidgetTicketDeflection({
               <Link
                 href={`/plataforma/conocimiento/${art.id_articulo}`}
                 target="_blank"
-                className="px-2.5 py-1 text-xs text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded font-medium transition-colors"
+                className="px-2.5 py-1 text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 rounded font-medium transition-colors"
               >
                 Ver Guía
               </Link>
