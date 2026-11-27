@@ -1,4 +1,5 @@
 import { query, queryRow } from "@/shared/lib/db";
+import { sqlPorVencer, sqlVencidoActivo } from "@/shared/lib/sla-sql";
 
 export interface MetadatosInforme {
   fecha_emision: string;
@@ -144,22 +145,27 @@ export async function generarInformeSupervision(idUsuarioSupervisor: number): Pr
   const slaStats = await queryRow<any>(`
     SELECT
       COUNT(*)::int AS total,
-      COUNT(*) FILTER (WHERE fecha_cierre IS NOT NULL AND (fecha_limite_sla IS NULL OR fecha_cierre <= fecha_limite_sla))::int AS cump_resolucion,
+      COUNT(*) FILTER (WHERE sla_cumplido = true)::int AS cump_resolucion,
       COUNT(*) FILTER (WHERE fecha_primera_respuesta IS NOT NULL AND (fecha_limite_respuesta_sla IS NULL OR fecha_primera_respuesta <= fecha_limite_respuesta_sla))::int AS cump_respuesta,
-      COUNT(*) FILTER (WHERE fecha_cierre IS NULL AND fecha_limite_sla IS NOT NULL AND fecha_limite_sla < now())::int AS vencidos,
-      COUNT(*) FILTER (WHERE fecha_cierre IS NULL AND fecha_limite_sla IS NOT NULL AND fecha_limite_sla >= now() AND fecha_limite_sla <= now() + interval '4 hours')::int AS en_riesgo
+      COUNT(*) FILTER (WHERE sla_cumplido IS NOT NULL)::int AS evaluados_resolucion,
+      COUNT(*) FILTER (WHERE fecha_primera_respuesta IS NOT NULL)::int AS evaluados_respuesta,
+      COUNT(*) FILTER (WHERE ${sqlVencidoActivo("ticket")})::int AS vencidos,
+      COUNT(*) FILTER (WHERE ${sqlPorVencer(4, "ticket")})::int AS en_riesgo
     FROM ticket
     WHERE estado_registro = true
   `);
 
-  const totalSla = slaStats?.total || 1;
-  const cumpResPct = Math.min(100, Math.round(((slaStats?.cump_resolucion || 0) / (totalSla || 1)) * 100));
-  const cumpRespPct = Math.min(100, Math.round(((slaStats?.cump_respuesta || 0) / (totalSla || 1)) * 100));
+  // Porcentaje sobre los tickets ya evaluados (resueltos / respondidos), no sobre
+  // el total: un ticket abierto todavía no cumple ni incumple.
+  const porcentaje = (cumplidos: number, evaluados: number) =>
+    evaluados > 0 ? Math.min(100, Math.round((cumplidos / evaluados) * 100)) : 0;
+  const cumpResPct = porcentaje(slaStats?.cump_resolucion || 0, slaStats?.evaluados_resolucion || 0);
+  const cumpRespPct = porcentaje(slaStats?.cump_respuesta || 0, slaStats?.evaluados_respuesta || 0);
 
   const slaOla: SlaOlaMetricas = {
     total_tickets_sla: slaStats?.total || 0,
-    cumplimiento_resolucion_pct: cumpResPct || 94,
-    cumplimiento_respuesta_pct: cumpRespPct || 96,
+    cumplimiento_resolucion_pct: cumpResPct,
+    cumplimiento_respuesta_pct: cumpRespPct,
     tickets_en_riesgo: slaStats?.en_riesgo || 0,
     tickets_vencidos: slaStats?.vencidos || 0,
     ola_promedio_horas: 3.5,

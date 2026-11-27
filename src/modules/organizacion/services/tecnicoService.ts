@@ -2,6 +2,7 @@ import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { TecnicoConCarga } from "@/types";
 import { validarNumeroPositivo, validarTexto } from "@/shared/lib/validaciones";
+import { sqlVencidoActivo } from "@/shared/lib/sla-sql";
 
 export interface FiltrosTecnicos {
   idDepartamento?: string | null;
@@ -76,7 +77,7 @@ export async function listarTecnicos(sesion: any, filtros: FiltrosTecnicos) {
       -- Cómputo de tickets críticos activos (P1 y P2)
       COUNT(t.id_ticket) FILTER (WHERE t.id_estado IN (1, 2, 3, 4) AND t.id_prioridad IN (1, 2) AND t.estado_registro = true)::int as tickets_criticos,
       -- Cómputo de tickets con SLA vencido activos
-      COUNT(t.id_ticket) FILTER (WHERE t.id_estado IN (1, 2, 3, 4) AND t.fecha_limite_sla < NOW() AND t.estado_registro = true)::int as tickets_sla_vencido
+      COUNT(t.id_ticket) FILTER (WHERE ${sqlVencidoActivo()} AND t.estado_registro = true)::int as tickets_sla_vencido
     FROM tecnico_detalle td
     INNER JOIN usuario u ON u.id_usuario = td.id_usuario
     INNER JOIN departamento_ti dep ON dep.id_departamento = td.id_departamento

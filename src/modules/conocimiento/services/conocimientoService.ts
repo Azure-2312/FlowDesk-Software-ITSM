@@ -1,4 +1,4 @@
-import { query, queryRow } from "@/shared/lib/db";
+import { query, queryRow, transaccion } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 
 export interface ContextoConocimiento {
@@ -144,8 +144,8 @@ export async function crearArticuloOperativo(body: any, contexto: ContextoConoci
   };
 }
 
-export async function obtenerArticulo(idArticulo: number) {
-  // Incrementar conteo de visitas
+/** Abre un artículo: cuenta la lectura y devuelve el voto de quien lo lee. */
+export async function obtenerArticulo(idArticulo: number, idUsuario?: number) {
   await query("UPDATE articulo_conocimiento SET visitas = visitas + 1 WHERE id_articulo = $1", [idArticulo]);
 
   const row = await queryRow(
@@ -165,32 +165,93 @@ export async function obtenerArticulo(idArticulo: number) {
         a.utilidad_positiva,
         a.utilidad_negativa,
         a.fecha_publicacion,
-        a.fecha_creacion
+        a.fecha_creacion,
+        (SELECT CASE WHEN f.es_positivo THEN 'POSITIVO' ELSE 'NEGATIVO' END
+           FROM articulo_conocimiento_feedback f
+          WHERE f.id_articulo = a.id_articulo AND f.id_usuario = $2
+          ORDER BY f.fecha DESC LIMIT 1) AS mi_voto
       FROM articulo_conocimiento a
       LEFT JOIN categoria_ticket cat ON a.id_categoria = cat.id_categoria
       LEFT JOIN usuario u ON a.id_autor = u.id_usuario
       WHERE a.id_articulo = $1 AND a.estado_registro = true
     `,
-    [idArticulo]
+    [idArticulo, idUsuario ?? null]
   );
 
   if (!row) throw new ErrorDominio("Artículo no encontrado", 404);
   return row;
 }
 
-export async function calificarArticulo(idArticulo: number, votoUtilidad: string) {
-  if (votoUtilidad === "POSITIVO") {
-    await query(
-      "UPDATE articulo_conocimiento SET utilidad_positiva = utilidad_positiva + 1 WHERE id_articulo = $1",
-      [idArticulo]
-    );
-  } else if (votoUtilidad === "NEGATIVO") {
-    await query(
-      "UPDATE articulo_conocimiento SET utilidad_negativa = utilidad_negativa + 1 WHERE id_articulo = $1",
-      [idArticulo]
-    );
+/**
+ * Voto "¿Te resultó útil?": uno por usuario y artículo, guardado con su autor
+ * en articulo_conocimiento_feedback. Si el usuario ya votó, se cambia su voto.
+ * Los contadores del artículo se recalculan de los votos registrados, así que
+ * nunca se desfasan ni se inflan con clics repetidos.
+ */
+export async function calificarArticulo(
+  idArticulo: number,
+  votoUtilidad: string,
+  contexto: { idUsuario: number; ip: string }
+) {
+  if (votoUtilidad !== "POSITIVO" && votoUtilidad !== "NEGATIVO") {
+    throw new ErrorDominio("El voto debe ser POSITIVO o NEGATIVO.");
   }
-  return { mensaje: "Voto registrado exitosamente." };
+  const esPositivo = votoUtilidad === "POSITIVO";
+
+  return transaccion(async (client) => {
+    // Bloquea el artículo: dos votos simultáneos del mismo usuario no se duplican
+    const articulo = await client.query(
+      `SELECT id_articulo FROM articulo_conocimiento
+        WHERE id_articulo = $1 AND estado_registro = true AND estado_editorial = 'PUBLICADO'
+        FOR UPDATE`,
+      [idArticulo]
+    );
+    if (articulo.rowCount === 0) {
+      throw new ErrorDominio("Solo se pueden valorar artículos publicados.", 404);
+    }
+
+    const previo = await client.query<{ id_feedback: number; es_positivo: boolean }>(
+      `SELECT id_feedback, es_positivo FROM articulo_conocimiento_feedback
+        WHERE id_articulo = $1 AND id_usuario = $2
+        ORDER BY fecha DESC LIMIT 1`,
+      [idArticulo, contexto.idUsuario]
+    );
+
+    let mensaje = "¡Gracias! Tu valoración fue registrada.";
+    if (previo.rowCount === 0) {
+      await client.query(
+        `INSERT INTO articulo_conocimiento_feedback (id_articulo, id_usuario, es_positivo, ip)
+         VALUES ($1, $2, $3, $4)`,
+        [idArticulo, contexto.idUsuario, esPositivo, contexto.ip]
+      );
+    } else if (previo.rows[0].es_positivo !== esPositivo) {
+      await client.query(
+        `UPDATE articulo_conocimiento_feedback
+            SET es_positivo = $2, motivo_negativo = NULL, fecha = now(), ip = $3
+          WHERE id_feedback = $1`,
+        [previo.rows[0].id_feedback, esPositivo, contexto.ip]
+      );
+      mensaje = "Actualizamos tu valoración.";
+    } else {
+      mensaje = "Ya habías registrado esta valoración.";
+    }
+
+    const conteo = await client.query<{ utilidad_positiva: number; utilidad_negativa: number }>(
+      `UPDATE articulo_conocimiento a SET
+         utilidad_positiva = (SELECT COUNT(*) FROM articulo_conocimiento_feedback f WHERE f.id_articulo = a.id_articulo AND f.es_positivo),
+         utilidad_negativa = (SELECT COUNT(*) FROM articulo_conocimiento_feedback f WHERE f.id_articulo = a.id_articulo AND NOT f.es_positivo)
+       WHERE a.id_articulo = $1
+       RETURNING utilidad_positiva, utilidad_negativa`,
+      [idArticulo]
+    );
+
+    return {
+      mensaje,
+      mi_voto: votoUtilidad,
+      utilidad_positiva: Number(conteo.rows[0].utilidad_positiva),
+      utilidad_negativa: Number(conteo.rows[0].utilidad_negativa),
+    };
+  });
 }
 
 /* ------------------------------------------------------------------ */
@@ -782,35 +843,6 @@ export async function crearVersionArticulo(
      RETURNING *`,
     [idArticulo, numeroVersion, titulo, contenido, motivo || "Actualización de contenido", idUsuario]
   );
-}
-
-export async function registrarFeedbackArticulo(
-  idArticulo: number,
-  esPositivo: boolean,
-  motivoNegativo: string | null,
-  comentario: string | null,
-  contexto: ContextoConocimiento
-) {
-  if (esPositivo) {
-    await query(
-      "UPDATE articulo_conocimiento SET utilidad_positiva = utilidad_positiva + 1 WHERE id_articulo = $1",
-      [idArticulo]
-    );
-  } else {
-    await query(
-      "UPDATE articulo_conocimiento SET utilidad_negativa = utilidad_negativa + 1 WHERE id_articulo = $1",
-      [idArticulo]
-    );
-  }
-
-  const feedback = await queryRow(
-    `INSERT INTO articulo_conocimiento_feedback (id_articulo, id_usuario, es_positivo, motivo_negativo, comentario, ip)
-     VALUES ($1, $2, $3, $4, $5, $6)
-     RETURNING *`,
-    [idArticulo, contexto.idUsuario || null, esPositivo, motivoNegativo || null, comentario || null, contexto.ip || "127.0.0.1"]
-  );
-
-  return { mensaje: "Calificación registrada exitosamente.", feedback };
 }
 
 export async function vincularArticuloTicket(

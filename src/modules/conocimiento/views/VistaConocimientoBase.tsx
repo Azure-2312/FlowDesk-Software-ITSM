@@ -9,6 +9,10 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import ValoracionArticulo, {
+  type ConteoValoracion,
+  type VotoArticulo,
+} from "@/modules/conocimiento/components/ValoracionArticulo";
 
 // ----------------------------------------------------------------------------
 // 1. MODELO DE DATOS: Estructura del artículo KCS y métricas de utilidad
@@ -22,7 +26,9 @@ interface Articulo {
   autor_nombre?: string;
   visitas: number;
   utilidad_positiva: number;
+  utilidad_negativa?: number;
   fecha_publicacion?: string;
+  mi_voto?: VotoArticulo | null;
 }
 
 export default function PaginaBaseConocimiento() {
@@ -34,6 +40,7 @@ export default function PaginaBaseConocimiento() {
   const [error, setError] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState("");
   const [articuloSeleccionado, setArticuloSeleccionado] = useState<Articulo | null>(null);
+  const [cargandoLectura, setCargandoLectura] = useState(false);
 
   // --------------------------------------------------------------------------
   // 3. CONSULTA A LA API: Obtención de artículos publicados desde /api/conocimiento
@@ -60,6 +67,36 @@ export default function PaginaBaseConocimiento() {
   useEffect(() => {
     cargarArticulos();
   }, []);
+
+  // Al abrir un artículo se consulta su ficha: cuenta la lectura y trae el
+  // voto de quien lo lee junto con los contadores actualizados.
+  async function abrirArticulo(art: Articulo) {
+    setArticuloSeleccionado(art);
+    setCargandoLectura(true);
+    try {
+      const res = await fetch(`/api/conocimiento/${art.id_articulo}`);
+      if (res.ok) {
+        const ficha = await res.json();
+        const actualizado: Articulo = {
+          ...art,
+          visitas: ficha.visitas,
+          utilidad_positiva: ficha.utilidad_positiva,
+          utilidad_negativa: ficha.utilidad_negativa,
+          mi_voto: ficha.mi_voto ?? null,
+        };
+        setArticuloSeleccionado((actual) => (actual?.id_articulo === art.id_articulo ? actualizado : actual));
+        setArticulos((lista) => lista.map((a) => (a.id_articulo === art.id_articulo ? actualizado : a)));
+      }
+    } finally {
+      setCargandoLectura(false);
+    }
+  }
+
+  function aplicarValoracion(idArticulo: number, conteo: ConteoValoracion) {
+    const aplicar = (a: Articulo) => (a.id_articulo === idArticulo ? { ...a, ...conteo } : a);
+    setArticulos((lista) => lista.map(aplicar));
+    setArticuloSeleccionado((actual) => (actual ? aplicar(actual) : actual));
+  }
 
   // --------------------------------------------------------------------------
   // 4. FILTRADO REACTIVO: Búsqueda dinámica en tiempo real por título y texto
@@ -126,7 +163,7 @@ export default function PaginaBaseConocimiento() {
                 cursor: "pointer",
                 transition: "border-color 0.15s ease",
               }}
-              onClick={() => setArticuloSeleccionado(art)}
+              onClick={() => abrirArticulo(art)}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
                 <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "#1e293b" }}>{art.titulo}</h3>
@@ -189,6 +226,17 @@ export default function PaginaBaseConocimiento() {
             <div style={{ whiteSpace: "pre-wrap", color: "#334155", fontSize: 14.5, lineHeight: 1.6 }}>
               {articuloSeleccionado.contenido_markdown}
             </div>
+            {cargandoLectura ? (
+              <p className="mensaje-cargando" style={{ marginTop: 24 }}>Cargando valoraciones...</p>
+            ) : (
+              <ValoracionArticulo
+                idArticulo={articuloSeleccionado.id_articulo}
+                utilidad_positiva={articuloSeleccionado.utilidad_positiva}
+                utilidad_negativa={articuloSeleccionado.utilidad_negativa ?? 0}
+                mi_voto={articuloSeleccionado.mi_voto ?? null}
+                onValorado={(conteo) => aplicarValoracion(articuloSeleccionado.id_articulo, conteo)}
+              />
+            )}
           </div>
         </div>
       )}

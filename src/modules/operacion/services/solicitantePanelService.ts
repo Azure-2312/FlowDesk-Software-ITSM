@@ -1,4 +1,5 @@
 import { query, queryRow } from "@/shared/lib/db";
+import { sqlVencidoActivo } from "@/shared/lib/sla-sql";
 
 /**
  * Servicio del panel del Solicitante (perfil 3).
@@ -13,7 +14,7 @@ export async function obtenerPanelSolicitante(idUsuario: number) {
        COUNT(*) FILTER (WHERE t.id_estado = 4)::int AS en_espera,
        COUNT(*) FILTER (WHERE t.id_estado IN (5, 6)
          AND COALESCE(t.fecha_resolucion, t.fecha_cierre) >= now() - interval '30 days')::int AS resueltos_30d,
-       COUNT(*) FILTER (WHERE t.id_estado IN (1, 2, 3, 4) AND t.fecha_limite_sla IS NOT NULL AND t.fecha_limite_sla < now())::int AS vencidos
+       COUNT(*) FILTER (WHERE ${sqlVencidoActivo()})::int AS vencidos
      FROM ticket t
      WHERE t.estado_registro = true AND t.id_usuario_solicitante = $1`,
     [idUsuario]

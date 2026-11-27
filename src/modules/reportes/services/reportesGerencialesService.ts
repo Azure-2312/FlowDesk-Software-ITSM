@@ -1,4 +1,5 @@
 import { query, queryRow } from "@/shared/lib/db";
+import { sqlVencidoActivo } from "@/shared/lib/sla-sql";
 
 /**
  * Reportes gerenciales (HU-27) y base para la exportacion CSV.
@@ -222,7 +223,7 @@ const SQL_KPIS = `
     COUNT(*) FILTER (WHERE t.id_estado = 4)::int AS en_espera,
     COUNT(*) FILTER (WHERE t.id_estado IN (5, 6))::int AS resueltos_total,
     COUNT(*) FILTER (WHERE t.id_estado IN (5, 6) AND t.sla_cumplido = true)::int AS a_tiempo,
-    COUNT(*) FILTER (WHERE t.id_estado IN (1, 2, 3, 4) AND t.fecha_limite_sla < now())::int AS sla_vencidos,
+    COUNT(*) FILTER (WHERE ${sqlVencidoActivo()})::int AS sla_vencidos,
     ${EXPRESION_MTTR} AS mttr_horas,
     ${EXPRESION_MTTA} AS mtta_horas,
     ROUND(AVG(t.calificacion_csat), 2)::float8 AS csat_promedio,

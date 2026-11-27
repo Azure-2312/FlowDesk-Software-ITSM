@@ -1,5 +1,12 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
+import {
+  sqlEnAtencion,
+  sqlEsperaAprobacion,
+  sqlIncumplido,
+  sqlLimiteEfectivo,
+  sqlVencidoActivo,
+} from "@/shared/lib/sla-sql";
 
 /**
  * Servicio de supervisión (perfil 4).
@@ -13,6 +20,13 @@ const DEPTS_DEL_SUPERVISOR = `SELECT d.id_departamento FROM departamento_ti d
    WHERE d.id_supervisor = $1 AND d.estado_registro = true`;
 
 const AREA_TICKETS = `t.id_departamento IN (${DEPTS_DEL_SUPERVISOR})`;
+// Reglas comunes (shared/lib/sla-sql): el panel cuenta igual que las bandejas.
+const EN_ATENCION = sqlEnAtencion();
+const LIMITE_EFECTIVO = sqlLimiteEfectivo();
+const ESPERA_APROBACION = sqlEsperaAprobacion();
+const VENCIDO_ACTIVO = sqlVencidoActivo();
+const INCUMPLIDO = sqlIncumplido();
+
 const AREA_ACTIVOS = `a.id_departamento IN (${DEPTS_DEL_SUPERVISOR})`;
 const AREA_CAMBIOS = `c.id_usuario_solicitante IN (
    SELECT u.id_usuario FROM usuario u
@@ -22,12 +36,14 @@ const AREA_CAMBIOS = `c.id_usuario_solicitante IN (
 export async function obtenerPanelSupervision(sesion: Sesion) {
   const kpis = await queryRow<any>(
     `SELECT
-       COUNT(*) FILTER (WHERE t.fecha_cierre IS NULL)::int AS abiertos,
-       COUNT(*) FILTER (WHERE t.fecha_cierre IS NULL AND t.id_usuario_asignado IS NULL)::int AS sin_asignar,
-       COUNT(*) FILTER (WHERE t.fecha_cierre IS NULL AND t.fecha_limite_sla < now())::int AS vencidos,
-       COUNT(*) FILTER (WHERE t.fecha_cierre IS NULL AND t.fecha_limite_sla BETWEEN now() AND now() + interval '4 hours')::int AS por_vencer,
+       COUNT(*) FILTER (WHERE ${EN_ATENCION})::int AS abiertos,
+       COUNT(*) FILTER (WHERE ${EN_ATENCION} AND t.id_usuario_asignado IS NULL AND NOT ${ESPERA_APROBACION})::int AS sin_asignar,
+       COUNT(*) FILTER (WHERE ${VENCIDO_ACTIVO})::int AS vencidos,
+       COUNT(*) FILTER (WHERE ${EN_ATENCION} AND NOT ${ESPERA_APROBACION}
+                          AND ${LIMITE_EFECTIVO} BETWEEN now() AND now() + interval '4 hours')::int AS por_vencer,
        ROUND(AVG(t.calificacion_csat)::numeric, 2) AS csat_promedio
      FROM ticket t
+     JOIN estado_ticket et ON et.id_estado = t.id_estado
      WHERE t.estado_registro = true AND ${AREA_TICKETS}`,
     [sesion.id_usuario]
   );
@@ -36,10 +52,11 @@ export async function obtenerPanelSupervision(sesion: Sesion) {
     `SELECT
        u.id_usuario,
        CONCAT(u.nombres, ' ', u.apellido_paterno) AS nombre,
-       COUNT(t.id_ticket) FILTER (WHERE t.fecha_cierre IS NULL)::int AS asignados_abiertos,
-       COUNT(t.id_ticket) FILTER (WHERE t.fecha_cierre IS NULL AND t.fecha_limite_sla < now())::int AS vencidos
+       COUNT(t.id_ticket) FILTER (WHERE ${EN_ATENCION})::int AS asignados_abiertos,
+       COUNT(t.id_ticket) FILTER (WHERE ${VENCIDO_ACTIVO})::int AS vencidos
      FROM usuario u
      LEFT JOIN ticket t ON t.id_usuario_asignado = u.id_usuario AND t.estado_registro = true
+     LEFT JOIN estado_ticket et ON et.id_estado = t.id_estado
      WHERE u.id_departamento IN (${DEPTS_DEL_SUPERVISOR}) AND u.estado_registro = true
      GROUP BY u.id_usuario, u.nombres, u.apellido_paterno
      ORDER BY asignados_abiertos DESC`,
@@ -50,9 +67,10 @@ export async function obtenerPanelSupervision(sesion: Sesion) {
     `SELECT
        (SELECT COUNT(*)::int FROM incidente_mayor im
           WHERE im.estado = 'ABIERTO' AND im.estado_registro = true) AS incidentes_mayores,
-       (SELECT COUNT(*)::int FROM ticket t
+       (SELECT COUNT(*)::int FROM ticket t JOIN estado_ticket et ON et.id_estado = t.id_estado
           WHERE t.estado_registro = true AND ${AREA_TICKETS}
-            AND t.fecha_cierre IS NULL AND t.id_usuario_asignado IS NULL AND t.id_prioridad IN (1, 2)) AS p1p2_sin_asignar`,
+            AND ${EN_ATENCION} AND NOT ${ESPERA_APROBACION}
+            AND t.id_usuario_asignado IS NULL AND t.id_prioridad IN (1, 2)) AS p1p2_sin_asignar`,
     [sesion.id_usuario]
   );
 
@@ -80,17 +98,17 @@ export async function listarEscalamientos(sesion: Sesion) {
     `SELECT
        t.id_ticket, t.codigo_ticket, t.titulo, t.id_estado, et.nombre AS estado_nombre,
        t.id_prioridad, pt.nombre AS prioridad_nombre,
-       t.fecha_limite_sla,
-       CASE WHEN t.fecha_limite_sla < now() THEN 'VENCIDO' ELSE 'EN_RIESGO' END AS riesgo,
+       ${LIMITE_EFECTIVO} AS fecha_limite_sla,
+       CASE WHEN ${LIMITE_EFECTIVO} < now() THEN 'VENCIDO' ELSE 'EN_RIESGO' END AS riesgo,
        CONCAT(ua.nombres, ' ', ua.apellido_paterno) AS asignado_nombre
      FROM ticket t
      LEFT JOIN estado_ticket et ON et.id_estado = t.id_estado
      LEFT JOIN prioridad_ticket pt ON pt.id_prioridad = t.id_prioridad
      LEFT JOIN usuario ua ON ua.id_usuario = t.id_usuario_asignado
      WHERE t.estado_registro = true AND ${AREA_TICKETS}
-       AND t.fecha_cierre IS NULL
-       AND t.fecha_limite_sla <= now() + interval '4 hours'
-     ORDER BY t.fecha_limite_sla ASC`,
+       AND ${EN_ATENCION} AND NOT ${ESPERA_APROBACION}
+       AND ${LIMITE_EFECTIVO} <= now() + interval '4 hours'
+     ORDER BY fecha_limite_sla ASC`,
     [sesion.id_usuario]
   );
 }
@@ -101,9 +119,10 @@ export async function listarIncumplimientos(sesion: Sesion) {
        COALESCE(s.nombre, 'Sin servicio') AS servicio,
        COUNT(*)::int AS vencidos
      FROM ticket t
+     JOIN estado_ticket et ON et.id_estado = t.id_estado
      LEFT JOIN servicio_catalogo s ON s.id_servicio = t.id_servicio
      WHERE t.estado_registro = true AND ${AREA_TICKETS}
-       AND t.fecha_limite_sla < now()
+       AND ${INCUMPLIDO}
      GROUP BY s.nombre
      ORDER BY vencidos DESC`,
     [sesion.id_usuario]
@@ -113,11 +132,12 @@ export async function listarIncumplimientos(sesion: Sesion) {
     `SELECT
        COALESCE(CONCAT(u.nombres, ' ', u.apellido_paterno), 'Sin asignar') AS tecnico,
        COUNT(*)::int AS vencidos,
-       COUNT(*) FILTER (WHERE t.fecha_cierre IS NULL)::int AS aun_abiertos
+       COUNT(*) FILTER (WHERE ${EN_ATENCION})::int AS aun_abiertos
      FROM ticket t
+     JOIN estado_ticket et ON et.id_estado = t.id_estado
      LEFT JOIN usuario u ON u.id_usuario = t.id_usuario_asignado
      WHERE t.estado_registro = true AND ${AREA_TICKETS}
-       AND t.fecha_limite_sla < now()
+       AND ${INCUMPLIDO}
      GROUP BY u.id_usuario, u.nombres, u.apellido_paterno
      ORDER BY vencidos DESC`,
     [sesion.id_usuario]
@@ -126,7 +146,8 @@ export async function listarIncumplimientos(sesion: Sesion) {
   const total = await queryRow<any>(
     `SELECT COUNT(*)::int AS vencidos
      FROM ticket t
-     WHERE t.estado_registro = true AND ${AREA_TICKETS} AND t.fecha_limite_sla < now()`,
+     JOIN estado_ticket et ON et.id_estado = t.id_estado
+     WHERE t.estado_registro = true AND ${AREA_TICKETS} AND ${INCUMPLIDO}`,
     [sesion.id_usuario]
   );
 
@@ -138,7 +159,7 @@ export async function listarProductividad(sesion: Sesion) {
     `SELECT
        u.id_usuario,
        CONCAT(u.nombres, ' ', u.apellido_paterno) AS tecnico,
-       COUNT(t.id_ticket) FILTER (WHERE t.fecha_cierre IS NOT NULL)::int AS resueltos,
+       COUNT(t.id_ticket) FILTER (WHERE t.fecha_resolucion IS NOT NULL)::int AS resueltos,
        ROUND(AVG(EXTRACT(EPOCH FROM (t.fecha_resolucion - t.fecha_creacion)) / 3600)::numeric, 1) AS horas_promedio,
        ROUND(AVG(t.calificacion_csat)::numeric, 2) AS csat_promedio,
        COUNT(t.id_ticket) FILTER (WHERE t.sla_cumplido = false)::int AS sla_incumplidos

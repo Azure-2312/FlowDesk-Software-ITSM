@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
+import { extraerIp } from "@/shared/lib/seguridad-api-externa";
 import {
   calificarArticulo,
   obtenerArticulo,
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   if (isNaN(idArticulo)) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
 
   try {
-    const row = await obtenerArticulo(idArticulo);
+    const row = await obtenerArticulo(idArticulo, sesion.id_usuario);
     return NextResponse.json(row);
   } catch (error) {
     if (!(error instanceof ErrorDominio)) console.error("Error al obtener artículo:", error);
@@ -33,11 +34,15 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (isNaN(idArticulo)) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
 
   try {
-    const body = await req.json();
-    const resultado = await calificarArticulo(idArticulo, body.voto_utilidad);
+    const body = await req.json().catch(() => ({}));
+    const resultado = await calificarArticulo(idArticulo, body?.voto_utilidad, {
+      idUsuario: sesion.id_usuario,
+      ip: extraerIp(req),
+    });
     return NextResponse.json(resultado);
   } catch (error) {
-    console.error("Error al calificar artículo:", error);
-    return NextResponse.json({ error: "Error interno al procesar calificación" }, { status: 500 });
+    if (!(error instanceof ErrorDominio)) console.error("Error al calificar artículo:", error);
+    const { error: mensaje, status } = respuestaError(error, "Error interno al procesar la valoración");
+    return NextResponse.json({ error: mensaje }, { status });
   }
 }

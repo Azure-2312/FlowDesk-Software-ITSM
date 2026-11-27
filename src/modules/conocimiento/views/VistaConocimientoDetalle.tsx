@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import ValoracionArticulo, { type VotoArticulo } from "@/modules/conocimiento/components/ValoracionArticulo";
 
 interface ArticuloDetalle {
   id_articulo: number;
@@ -20,6 +21,7 @@ interface ArticuloDetalle {
   utilidad_negativa: number;
   fecha_publicacion?: string | null;
   fecha_creacion?: string | null;
+  mi_voto: VotoArticulo | null;
 }
 
 const PALABRAS_VACIAS = new Set([
@@ -56,8 +58,6 @@ export default function VistaConocimientoDetalle() {
   const [cargando, setCargando] = useState(true);
   const [noEncontrado, setNoEncontrado] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [votando, setVotando] = useState(false);
-  const [mensajeVoto, setMensajeVoto] = useState<string | null>(null);
 
   useEffect(() => {
     async function cargar() {
@@ -85,37 +85,6 @@ export default function VistaConocimientoDetalle() {
     }
     if (idArticulo) cargar();
   }, [idArticulo]);
-
-  async function votar(voto: "POSITIVO" | "NEGATIVO") {
-    if (votando) return;
-    setVotando(true);
-    setMensajeVoto(null);
-    try {
-      const res = await fetch(`/api/conocimiento/${idArticulo}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voto_utilidad: voto }),
-      });
-      if (!res.ok) {
-        setMensajeVoto("No se pudo registrar tu valoración. Inténtalo de nuevo.");
-        return;
-      }
-      setArticulo((prev) =>
-        prev
-          ? {
-              ...prev,
-              utilidad_positiva: prev.utilidad_positiva + (voto === "POSITIVO" ? 1 : 0),
-              utilidad_negativa: prev.utilidad_negativa + (voto === "NEGATIVO" ? 1 : 0),
-            }
-          : prev
-      );
-      setMensajeVoto("¡Gracias! Tu valoración fue registrada.");
-    } catch {
-      setMensajeVoto("Error de conexión al registrar tu valoración.");
-    } finally {
-      setVotando(false);
-    }
-  }
 
   return (
     <div style={{ padding: "24px 32px", maxWidth: 900, margin: "0 auto" }}>
@@ -255,41 +224,14 @@ export default function VistaConocimientoDetalle() {
             {articulo.contenido_markdown}
           </div>
 
-          <div
-            style={{
-              marginTop: 24,
-              paddingTop: 18,
-              borderTop: "1px solid #f1f5f9",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: 12,
-            }}
-          >
-            <span style={{ fontSize: 13, color: "#334155", fontWeight: 600 }}>
-              ¿Te resultó útil este artículo?
-            </span>
-            <div style={{ display: "flex", gap: 10 }}>
-              <button className="boton-secundario"
-                type="button"
-                onClick={() => votar("POSITIVO")}
-                disabled={votando}
-              >
-                Útil ({articulo.utilidad_positiva})
-              </button>
-              <button className="boton-peligro"
-                type="button"
-                onClick={() => votar("NEGATIVO")}
-                disabled={votando}
-              >
-                No útil ({articulo.utilidad_negativa})
-              </button>
-            </div>
-          </div>
-
-          {mensajeVoto && (
-            <div style={{ marginTop: 12, fontSize: 12.5, color: "#475569" }}>{mensajeVoto}</div>
+          {articulo.estado_editorial === "PUBLICADO" && (
+            <ValoracionArticulo
+              idArticulo={articulo.id_articulo}
+              utilidad_positiva={articulo.utilidad_positiva}
+              utilidad_negativa={articulo.utilidad_negativa}
+              mi_voto={articulo.mi_voto}
+              onValorado={(conteo) => setArticulo((prev) => (prev ? { ...prev, ...conteo } : prev))}
+            />
           )}
         </article>
       )}

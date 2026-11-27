@@ -11,6 +11,7 @@ import { calcularFechaLimiteHorasHabiles, calcularFechaLimiteHorasHabilesAsync }
 import { validarTexto, validarArchivoAdjunto } from "@/shared/lib/validaciones";
 import { validarCargaTecnico } from "./tecnicoCargaService";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { sqlVencidoActivo } from "@/shared/lib/sla-sql";
 
 // ----------------------------------------------------------------------------
 // 1. MATRIZ DE PRIORIDAD ITIL: Cálculo bidimensional de Impacto × Urgencia O(1)
@@ -126,6 +127,9 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
     // Solo tickets pendientes que NO han sido asignados
     condiciones.push(`t.id_usuario_asignado IS NULL`);
     condiciones.push(`et.es_terminal = false`);
+    // Una solicitud que espera la decisión del jefe todavía no es trabajo de TI:
+    // aparece en el Centro de Aprobaciones, no en la cola de los técnicos.
+    condiciones.push(`COALESCE(t.estado_aprobacion, 'NO_APLICA') NOT IN ('PENDIENTE_APROBACION', 'RECHAZADO')`);
   } else if (vista === "resueltos") {
     condiciones.push(`t.id_estado IN (5, 6)`); // Resuelto o Cerrado
   } else if (vista === "aprobaciones") {
@@ -184,9 +188,9 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
   }
 
   if (slaVencido === "1") {
-    condiciones.push(`t.fecha_limite_sla < NOW() AND et.es_terminal = false`);
+    condiciones.push(sqlVencidoActivo());
   } else if (slaVencido === "0") {
-    condiciones.push(`(t.fecha_limite_sla >= NOW() OR et.es_terminal = true)`);
+    condiciones.push(`NOT ${sqlVencidoActivo()}`);
   }
 
   if (solicitante && solicitante.trim()) {
@@ -240,6 +244,7 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
       t.comentario_csat,
       t.fecha_csat,
       t.tiempo_pausado_minutos,
+      t.fecha_ultima_pausa,
       t.id_impacto,
       imp.nombre as impacto_nombre,
       imp.nivel as impacto_nivel,
@@ -300,10 +305,18 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
 
   // Calcular estado dinámico de SLA en minutos
   const ahora = Date.now();
-  const ticketsConSLA = tickets.map((t) => {
-    const limiteMs = new Date(t.fecha_limite_sla).getTime();
+  const ticketsConSLA = tickets.map((t: any) => {
+    // En pausa (En espera) el reloj del SLA está detenido: el tiempo en pausa
+    // se suma al límite, igual que al reanudar el ticket.
+    const pausaMs =
+      t.pausa_sla && t.fecha_ultima_pausa ? Math.max(0, ahora - new Date(t.fecha_ultima_pausa).getTime()) : 0;
+    const limiteMs = new Date(t.fecha_limite_sla).getTime() + pausaMs;
     const minutosRestantes = Math.round((limiteMs - ahora) / 60000);
-    const slaVencidoCalculado = !t.es_terminal && minutosRestantes < 0;
+    // Resuelto: el SLA ya se evaluó al resolver. Esperando aprobación: aún no es trabajo de TI.
+    const slaVencidoCalculado =
+      t.estado_codigo === "RESUELTO"
+        ? t.sla_cumplido === false
+        : !t.es_terminal && t.estado_aprobacion !== "PENDIENTE_APROBACION" && minutosRestantes < 0;
 
     return {
       ...t,

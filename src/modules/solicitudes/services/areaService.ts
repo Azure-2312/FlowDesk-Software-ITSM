@@ -1,6 +1,7 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { resolverAprobacionNegocio as resolverAprobacionNegocioDominio } from "@/modules/cambios";
+import { sqlVencidoActivo } from "@/shared/lib/sla-sql";
 
 /**
  * Servicio del portal del Gestor de Área (perfil 5).
@@ -36,7 +37,7 @@ export async function obtenerPanelArea(idUsuario: number) {
        COUNT(*) FILTER (WHERE et.es_terminal = false)::int AS abiertos,
        COUNT(*) FILTER (WHERE et.es_terminal = true)::int AS cerrados,
        COUNT(*) FILTER (WHERE t.estado_aprobacion = 'PENDIENTE_APROBACION')::int AS aprobaciones_pendientes,
-       COUNT(*) FILTER (WHERE et.es_terminal = false AND t.fecha_limite_sla < now())::int AS vencidos,
+       COUNT(*) FILTER (WHERE ${sqlVencidoActivo()})::int AS vencidos,
        ROUND(AVG(t.calificacion_csat)::numeric, 2) AS csat_promedio
      FROM vista_ticket t
      LEFT JOIN estado_ticket et ON et.id_estado = t.id_estado
@@ -176,7 +177,7 @@ export async function obtenerReportesArea(idUsuario: number) {
        COALESCE(s.nombre, 'Sin servicio') AS servicio,
        COUNT(*)::int AS tickets,
        COUNT(*) FILTER (WHERE et.es_terminal = false)::int AS abiertos,
-       COUNT(*) FILTER (WHERE et.es_terminal = false AND t.fecha_limite_sla < now())::int AS vencidos
+       COUNT(*) FILTER (WHERE ${sqlVencidoActivo()})::int AS vencidos
      FROM ticket t
      LEFT JOIN servicio_catalogo s ON s.id_servicio = t.id_servicio
      LEFT JOIN estado_ticket et ON et.id_estado = t.id_estado

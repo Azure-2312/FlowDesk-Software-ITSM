@@ -1,4 +1,5 @@
 import { queryRow } from "@/shared/lib/db";
+import { sqlVencidoActivo } from "@/shared/lib/sla-sql";
 
 export interface Contador {
   total: number;
@@ -21,7 +22,7 @@ export async function obtenerContadoresTecnico(idUsuario: number): Promise<Conta
     `
       SELECT 
         COUNT(*)::text as total,
-        COUNT(CASE WHEN fecha_limite_sla < NOW() THEN 1 END)::text as vencidos
+        COUNT(CASE WHEN ${sqlVencidoActivo("ticket")} THEN 1 END)::text as vencidos
       FROM ticket
       WHERE id_usuario_asignado = $1
         AND id_estado NOT IN (5, 6, 7)
