@@ -11,6 +11,7 @@ import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { PerfilBasico } from "@/types";
 import { validarCorreo } from "@/shared/lib/validaciones";
+import { DOMINIO_CORPORATIVO } from "@/shared/lib/constants";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 
 type PasoLogin = "credenciales" | "seleccionar-perfil";
@@ -249,7 +250,7 @@ export default function PaginaLogin() {
                 setCorreo(e.target.value);
                 setErrorLogin(null);
               }}
-              placeholder="usuario@systemticket.pe"
+              placeholder={`usuario${DOMINIO_CORPORATIVO}`}
               required
               autoFocus
             />

@@ -1,3 +1,4 @@
+import { DOMINIO_CORPORATIVO } from "./constants";
 /**
  * Utilidades para sanitización y generación de correos corporativos.
  * Este archivo no importa dependencias del servidor (como pg) para ser seguro de importar
@@ -23,7 +24,7 @@ export function sanitizarTextoParaCorreo(texto: string): string {
 
 /**
  * Genera el correo corporativo estándar (Opción B con sanitización completa):
- * Formato: [inicial_primer_nombre][apellido_paterno_sanitizado][inicial_apellido_materno]@systemticket.pe
+ * Formato: [inicial_primer_nombre][apellido_paterno_sanitizado][inicial_apellido_materno]@flowdesk.com
  * En caso de colisión (si ya existe), añade correlativo numérico: mapazap2@..., mapazap3@...
  */
 export function generarCorreoCorporativo(
@@ -49,7 +50,7 @@ export function generarCorreoCorporativo(
   const baseLocal = `${inicialNombre}${apellidoPatLimpio}${inicialMaterno}`;
   if (!baseLocal) return "";
 
-  const dominio = "@systemticket.pe";
+  const dominio = DOMINIO_CORPORATIVO;
   const candidatoBase = `${baseLocal}${dominio}`;
 
   const correosNormalizados = correosExistentes

@@ -1,4 +1,5 @@
 import { query } from "@/shared/lib/db";
+import { DOMINIO_CORPORATIVO } from "@/shared/lib/constants";
 import {
   compararClave,
   crearTokenPreSesion,
@@ -71,7 +72,7 @@ export async function iniciarSesion(datos: DatosLogin): Promise<ResultadoLogin> 
     };
   }
 
-  // 1.1) Restricción de dominio: solo el dominio corporativo (@systemticket.pe), salvo los
+  // 1.1) Restricción de dominio: solo el dominio corporativo (DOMINIO_CORPORATIVO), salvo los
   // correos externos autorizados en la variable de entorno CORREOS_EXCEPCION_DOMINIO
   // (separados por comas). Así ningún correo personal queda escrito en el código.
   const correoNormalizado = correo_electronico.toLowerCase().trim();
@@ -80,14 +81,14 @@ export async function iniciarSesion(datos: DatosLogin): Promise<ResultadoLogin> 
     .map((c) => c.trim().toLowerCase())
     .filter(Boolean);
   const esExcepcionAutorizada = excepciones.includes(correoNormalizado);
-  const tieneDominioCorporativo = correoNormalizado.endsWith("@systemticket.pe");
+  const tieneDominioCorporativo = correoNormalizado.endsWith(DOMINIO_CORPORATIVO);
 
   if (!esExcepcionAutorizada && !tieneDominioCorporativo) {
     await registrarLogAcceso(null, correo_electronico, false, ip);
     return {
       httpStatus: 403,
       payload: {
-        error: "Acceso denegado: solo está permitido iniciar sesión con el correo institucional de la empresa (@systemticket.pe), a excepción del usuario administrador autorizado.",
+        error: `Acceso denegado: solo está permitido iniciar sesión con el correo institucional de la empresa (${DOMINIO_CORPORATIVO}), a excepción del usuario administrador autorizado.`,
       },
     };
   }
