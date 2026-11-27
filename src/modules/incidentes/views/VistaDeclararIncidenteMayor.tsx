@@ -340,7 +340,7 @@ export default function VistaDeclararIncidenteMayor() {
           {/* Selector de Involucrados */}
           <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: 16, marginBottom: 20 }}>
             {/* Pestañas de Roles */}
-            <div className="pestanas" style={{ marginBottom: 14 }}>
+            <div className="pestanas" data-ambito="panel" style={{ marginBottom: 14 }}>
               {[
                 { id: "tecnico", label: "Técnicos Resolutores" },
                 { id: "gestor_area", label: "Gestores de Área" },
@@ -490,16 +490,7 @@ export default function VistaDeclararIncidenteMayor() {
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
           <Link
             href="/plataforma/incidentes/mayores?vista=listado"
-            style={{
-              padding: "10px 18px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: 6,
-              color: "#334155",
-              textDecoration: "none",
-              fontSize: 13,
-              fontWeight: 600,
-            }}
+            className="boton-secundario"
           >
             Cancelar
           </Link>

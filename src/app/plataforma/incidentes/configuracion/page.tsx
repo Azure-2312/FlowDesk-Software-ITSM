@@ -43,7 +43,7 @@ export default async function PaginaIncidentesConfiguracion({ searchParams }: Pr
             seccionInicial="estados"
             tipoFijo="incidente"
             ocultarTabsSuperiores={true}
-            ocultarCabecera={true}
+
           />
         )}
       </div>

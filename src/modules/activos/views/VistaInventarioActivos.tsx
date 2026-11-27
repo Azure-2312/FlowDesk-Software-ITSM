@@ -380,11 +380,36 @@ function ContenidoInventarioActivos() {
         </div>
       )}
 
-      {/* Cabecera General de la Vista */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 12 }}>
+      {/* Pestañas arriba; el título corresponde a la pestaña activa */}
+      <div className="pestanas">
+        <button
+          type="button"
+          onClick={() => { setPestanaItam("inventario"); setVista("tabla"); }}
+          className={pestanaItam === "inventario" ? "pestana pestana-activa" : "pestana"}
+        >
+          Inventario Operativo
+        </button>
+        <button
+          type="button"
+          onClick={() => setPestanaItam("tipos")}
+          className={pestanaItam === "tipos" ? "pestana pestana-activa" : "pestana"}
+        >
+          Tipos, Modelos y Reglas de Depreciación
+        </button>
+        <button
+          type="button"
+          onClick={() => setPestanaItam("ciclo-vida")}
+          className={pestanaItam === "ciclo-vida" ? "pestana pestana-activa" : "pestana"}
+        >
+          Ciclo de Vida y Transiciones Autorizadas
+        </button>
+      </div>
+
+      {/* Cabecera de la pestaña activa */}
+      <div className="cabecera-pagina">
         <div>
           <h1 className="titulo-pagina">
-            Inventario de Activos Tecnológicos
+            {pestanaItam === "inventario" ? "Inventario operativo de activos" : pestanaItam === "tipos" ? "Tipos, modelos y reglas de depreciación" : "Ciclo de vida y transiciones autorizadas"}
           </h1>
           <p className="descripcion-pagina">
             {pestanaItam === "inventario"
@@ -412,31 +437,6 @@ function ContenidoInventarioActivos() {
             Registrar Modelo Homologado
           </button>
         )}
-      </div>
-
-      {/* Selector de Pestañas ITAM (Debajo del Título General) */}
-      <div className="pestanas">
-        <button
-          type="button"
-          onClick={() => { setPestanaItam("inventario"); setVista("tabla"); }}
-          className={pestanaItam === "inventario" ? "pestana pestana-activa" : "pestana"}
-        >
-          Inventario Operativo
-        </button>
-        <button
-          type="button"
-          onClick={() => setPestanaItam("tipos")}
-          className={pestanaItam === "tipos" ? "pestana pestana-activa" : "pestana"}
-        >
-          Tipos, Modelos y Reglas de Depreciación
-        </button>
-        <button
-          type="button"
-          onClick={() => setPestanaItam("ciclo-vida")}
-          className={pestanaItam === "ciclo-vida" ? "pestana pestana-activa" : "pestana"}
-        >
-          Ciclo de Vida y Transiciones Autorizadas
-        </button>
       </div>
 
       {/* 1. SECCIÓN: INVENTARIO DE HARDWARE */}

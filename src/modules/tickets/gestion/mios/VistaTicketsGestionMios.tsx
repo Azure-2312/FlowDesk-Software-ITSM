@@ -96,7 +96,7 @@ export default function PaginaMisTickets({
 
   // Cantidad de filtros avanzados activos
   const cantidadFiltrosActivos =
-    (filtroTipo !== "todos" ? 1 : 0) +
+    (!tipoFijo && filtroTipo !== "todos" ? 1 : 0) +
     (filtroCategoria !== "todos" ? 1 : 0) +
     (filtroPrioridad !== "todos" ? 1 : 0) +
     (filtroEstado !== "todos" ? 1 : 0);
@@ -149,30 +149,40 @@ export default function PaginaMisTickets({
     return lista;
   }, [tickets, pestana, filtroTipo, filtroCategoria, filtroPrioridad, filtroEstado, busqueda, ticketsEnProceso, ticketsFinalizados]);
 
+  // El título y la descripción son los de la pestaña activa.
+  const base = titulo ?? "Mis tickets";
+  const femenino = tipoFijo === "2";
+  const textosPestana = {
+    en_proceso: {
+      titulo: `${base} en proceso`,
+      descripcion: "Casos que reportaste y que todavía están siendo atendidos por la Mesa de Servicio.",
+    },
+    finalizados: {
+      titulo: `${base} ${femenino ? "finalizadas" : "finalizados"}`,
+      descripcion: "Casos resueltos, cerrados o cancelados: revisa su historial y la solución aplicada.",
+    },
+    todos: {
+      titulo: `${femenino ? "Todas" : "Todos"} ${base.charAt(0).toLowerCase()}${base.slice(1)}`,
+      descripcion: "Todos los casos que reportaste en la Mesa de Servicio, en cualquier estado.",
+    },
+  }[pestana];
+
   return (
     <div className="vista-contenedor" style={{ maxWidth: 1200, margin: "0 auto" }}>
-      {/* Cabecera */}
-      <div
-        className="cabecera-pagina"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          flexWrap: "wrap",
-          gap: 16,
-          marginBottom: 24,
-        }}
-      >
+      <Pestanas
+        items={[
+          { id: "en_proceso", etiqueta: "En proceso", contador: ticketsEnProceso.length },
+          { id: "finalizados", etiqueta: femenino ? "Finalizadas" : "Finalizados", contador: ticketsFinalizados.length },
+          { id: "todos", etiqueta: femenino ? "Todas" : "Todos", contador: totalTickets },
+        ]}
+        activa={pestana}
+        onCambiar={setPestana}
+      />
+
+      <div className="cabecera-pagina">
         <div>
-          <span className="badge-tag" style={{ display: "inline-block", marginBottom: 6, backgroundColor: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
-            Mesa de Ayuda & Casos Personales (ITIL v4)
-          </span>
-          <h1 className="titulo-pagina">
-            {titulo ?? "Mis Tickets"}
-          </h1>
-          <p className="descripcion-pagina">
-            Consulta y realiza seguimiento de todos tus tickets reportados en la Mesa de Servicio.
-          </p>
+          <h1 className="titulo-pagina">{textosPestana.titulo}</h1>
+          <p className="descripcion-pagina">{textosPestana.descripcion}</p>
         </div>
 
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -191,16 +201,6 @@ export default function PaginaMisTickets({
           </Link>
         </div>
       </div>
-
-      <Pestanas
-        items={[
-          { id: "en_proceso", etiqueta: "En proceso", contador: ticketsEnProceso.length },
-          { id: "finalizados", etiqueta: "Finalizados", contador: ticketsFinalizados.length },
-          { id: "todos", etiqueta: "Todos", contador: totalTickets },
-        ]}
-        activa={pestana}
-        onCambiar={setPestana}
-      />
 
       {/* Barra de Búsqueda y Botón Filtrar */}
       <div

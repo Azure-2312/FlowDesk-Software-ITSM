@@ -289,11 +289,57 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
 
   return (
     <div className="vista-contenedor" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      {/* Pestañas arriba; el título corresponde al filtro activo */}
+      {vista === "pendientes" && pendientes.length > 0 && (
+        <div className="pestanas">
+          <button
+            type="button"
+            onClick={() => setFiltroTipo("TODOS")}
+            className={`pestana ${filtroTipo === "TODOS" ? "pestana-activa" : ""}`}
+          >
+            <span>Todos</span>
+            <span className="pestana-contador">{pendientes.length}</span>
+          </button>
+          {totalCab > 0 && (
+            <button
+              type="button"
+              onClick={() => setFiltroTipo("CAB")}
+              className={`pestana ${filtroTipo === "CAB" ? "pestana-activa" : ""}`}
+            >
+              <span>CAB</span>
+              <span className="pestana-contador">{totalCab}</span>
+            </button>
+          )}
+          {totalArea > 0 && (
+            <button
+              type="button"
+              onClick={() => setFiltroTipo("VB_AREA")}
+              className={`pestana ${filtroTipo === "VB_AREA" ? "pestana-activa" : ""}`}
+            >
+              <span>V°B° Área</span>
+              <span className="pestana-contador">{totalArea}</span>
+            </button>
+          )}
+          {totalTecnica > 0 && (
+            <button
+              type="button"
+              onClick={() => setFiltroTipo("TECNICA")}
+              className={`pestana ${filtroTipo === "TECNICA" ? "pestana-activa" : ""}`}
+            >
+              <span>Técnica</span>
+              <span className="pestana-contador">{totalTecnica}</span>
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Cabecera Corporativa */}
       <div className="cabecera-pagina">
         <div>
           <h1 className="titulo-pagina">
-            Centro de Aprobaciones
+            {vista === "pendientes" && filtroTipo !== "TODOS"
+              ? { CAB: "Aprobaciones pendientes del CAB", VB_AREA: "V°B° de área pendientes", TECNICA: "Evaluaciones técnicas pendientes" }[filtroTipo as "CAB" | "VB_AREA" | "TECNICA"] ?? "Centro de Aprobaciones"
+              : "Centro de Aprobaciones"}
           </h1>
           <p className="descripcion-pagina">
             Autorización de cambios (CAB), evaluación técnica de viabilidad y V°B° de área empresarial.
@@ -301,48 +347,6 @@ export default function VistaCentroAprobacionesCambios({ vistaInicial = "pendien
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-          {vista === "pendientes" && pendientes.length > 0 && (
-            <div className="pestanas">
-              <button
-                type="button"
-                onClick={() => setFiltroTipo("TODOS")}
-                className={`pestana ${filtroTipo === "TODOS" ? "pestana-activa" : ""}`}
-              >
-                <span>Todos</span>
-                <span className="pestana-contador">{pendientes.length}</span>
-              </button>
-              {totalCab > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setFiltroTipo("CAB")}
-                  className={`pestana ${filtroTipo === "CAB" ? "pestana-activa" : ""}`}
-                >
-                  <span>CAB</span>
-                  <span className="pestana-contador">{totalCab}</span>
-                </button>
-              )}
-              {totalArea > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setFiltroTipo("VB_AREA")}
-                  className={`pestana ${filtroTipo === "VB_AREA" ? "pestana-activa" : ""}`}
-                >
-                  <span>V°B° Área</span>
-                  <span className="pestana-contador">{totalArea}</span>
-                </button>
-              )}
-              {totalTecnica > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setFiltroTipo("TECNICA")}
-                  className={`pestana ${filtroTipo === "TECNICA" ? "pestana-activa" : ""}`}
-                >
-                  <span>Técnica</span>
-                  <span className="pestana-contador">{totalTecnica}</span>
-                </button>
-              )}
-            </div>
-          )}
 
           <button className="boton-secundario"
             type="button"

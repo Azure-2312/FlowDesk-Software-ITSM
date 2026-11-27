@@ -355,6 +355,26 @@ function ContenidoConfiguracionVistasTickets({
 
   return (
     <div className="vista-contenedor">
+      {/* Pestañas Principales (solo si no se especificó sección ni tipo estricto en la URL y no se ocultaron) */}
+      {!ocultarTabsSuperiores && !seccionParam && !tipoParam && (
+        <div className="pestanas" style={{ marginBottom: 18 }}>
+          <button
+            type="button"
+            onClick={() => setPestanaPrincipal("vistas")}
+            className={pestanaPrincipal === "vistas" ? "pestana pestana-activa" : "pestana"}
+          >
+            Vistas y Permisos por Perfil / Usuario
+          </button>
+          <button
+            type="button"
+            onClick={() => setPestanaPrincipal("estados")}
+            className={pestanaPrincipal === "estados" ? "pestana pestana-activa" : "pestana"}
+          >
+            Flujo de Estados y Acciones (Ciclo de Vida)
+          </button>
+        </div>
+      )}
+
       {!ocultarCabecera && (
         <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -381,26 +401,6 @@ function ContenidoConfiguracionVistasTickets({
 
       {error && <div className="mensaje-error" style={{ marginBottom: 16 }}>{error}</div>}
 
-      {/* Pestañas Principales (solo si no se especificó sección ni tipo estricto en la URL y no se ocultaron) */}
-      {!ocultarTabsSuperiores && !seccionParam && !tipoParam && (
-        <div className="pestanas" style={{ marginBottom: 18 }}>
-          <button
-            type="button"
-            onClick={() => setPestanaPrincipal("vistas")}
-            className={pestanaPrincipal === "vistas" ? "pestana pestana-activa" : "pestana"}
-          >
-            Vistas y Permisos por Perfil / Usuario
-          </button>
-          <button
-            type="button"
-            onClick={() => setPestanaPrincipal("estados")}
-            className={pestanaPrincipal === "estados" ? "pestana pestana-activa" : "pestana"}
-          >
-            Flujo de Estados y Acciones (Ciclo de Vida)
-          </button>
-        </div>
-      )}
-
       {cargando ? (
         <div className="contenedor-tabla" style={{ padding: 40, textAlign: "center", color: "#64748b" }}>
           Cargando configuración de vistas y usuarios...
@@ -417,7 +417,7 @@ function ContenidoConfiguracionVistasTickets({
                   Al seleccionar un usuario o perfil, se renderiza exactamente cómo observará el ticket en producción.
                 </span>
               </div>
-              <div className="pestanas">
+              <div className="pestanas" data-ambito="panel">
                 <button
                   type="button"
                   onClick={() => {

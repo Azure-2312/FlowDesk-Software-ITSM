@@ -221,15 +221,7 @@ export default function VistaConocimientoRevisiones({
                       <div style={{ display: "flex", gap: 6, justifyContent: "flex-end", alignItems: "center" }}>
                         <Link
                           href={`/plataforma/conocimiento/${a.id_articulo}`}
-                          style={{
-                            padding: "4px 10px",
-                            backgroundColor: "#f8fafc",
-                            border: "1px solid #cbd5e1",
-                            borderRadius: 4,
-                            fontSize: 12,
-                            color: "#1e293b",
-                            textDecoration: "none",
-                          }}
+                          className="boton-secundario boton-sm"
                         >
                           Examinar
                         </Link>

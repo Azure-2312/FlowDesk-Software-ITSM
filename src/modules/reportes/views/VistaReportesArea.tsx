@@ -49,8 +49,15 @@ export default function VistaReportesArea() {
     })();
   }, []);
 
-  if (cargando) return <div className="vista-contenedor"><p>Cargando...</p></div>;
-  if (error) return <div className="vista-contenedor"><p role="alert" className="mensaje-error">{error}</p></div>;
+  const cabeceraBase = (
+    <div className="cabecera-pagina">
+      <div>
+        <h1 className="titulo-pagina">Reportes del área</h1>
+      </div>
+    </div>
+  );
+  if (cargando) return <div className="vista-contenedor">{cabeceraBase}<div className="estado-vacio">Cargando...</div></div>;
+  if (error) return <div className="vista-contenedor">{cabeceraBase}<p role="alert" className="mensaje-error">{error}</p></div>;
   if (!data) return null;
 
   const r = data.resumen;

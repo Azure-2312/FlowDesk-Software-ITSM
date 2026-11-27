@@ -16,13 +16,19 @@ export interface PestanasProps<T extends string = string> {
   onCambiar: (id: T) => void;
   className?: string;
   etiquetaAccesible?: string;
+  /**
+   * Regla: las pestañas van ARRIBA del título de la pantalla. Solo un selector
+   * dentro de una tarjeta/panel ("panel") o de la ficha de un registro ("ficha")
+   * puede ir debajo; se marca aquí para que el verificador lo acepte.
+   */
+  ambito?: "panel" | "ficha";
 }
 
 /**
  * Pestañas del sistema de diseño para cambiar de sección dentro de una vista
  * (estado local). Comparte forma y clases con <PestanasVista>, que hace lo
  * mismo pero sincronizado con la URL (?vista=). Ninguna vista debe dibujar
- * pestañas propias.
+ * pestañas propias. Siempre se ubican antes del título (ver RanuraSubpestanas).
  */
 export default function Pestanas<T extends string = string>({
   items,
@@ -30,9 +36,10 @@ export default function Pestanas<T extends string = string>({
   onCambiar,
   className = "",
   etiquetaAccesible = "Secciones",
+  ambito,
 }: PestanasProps<T>) {
   return (
-    <div className={`pestanas ${className}`.trim()} role="tablist" aria-label={etiquetaAccesible}>
+    <div className={`pestanas ${className}`.trim()} role="tablist" aria-label={etiquetaAccesible} data-ambito={ambito}>
       {items.map((item) => {
         const estaActiva = item.id === activa;
         return (

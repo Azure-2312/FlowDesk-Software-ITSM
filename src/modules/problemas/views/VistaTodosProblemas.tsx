@@ -128,15 +128,7 @@ export default function VistaTodosProblemas() {
         <div style={{ display: "flex", gap: 10 }}>
           <Link
             href="/plataforma/problemas/crear"
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#2563eb",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#ffffff",
-              textDecoration: "none",
-            }}
+            className="boton-primario"
           >
             Registrar problema
           </Link>
@@ -268,15 +260,7 @@ export default function VistaTodosProblemas() {
                     <td style={{ padding: "10px 14px", textAlign: "right" }}>
                       <Link
                         href={`/plataforma/problemas/${p.id_problema}`}
-                        style={{
-                          padding: "4px 8px",
-                          fontSize: 11.5,
-                          border: "1px solid #cbd5e1",
-                          borderRadius: 4,
-                          color: "#1e293b",
-                          textDecoration: "none",
-                          backgroundColor: "#f8fafc",
-                        }}
+                        className="boton-secundario boton-sm"
                       >
                         Detalle
                       </Link>

@@ -9,6 +9,11 @@
 //   3. Botones con icono Y texto a la vez (regla: o icono o texto).
 //   4. Pestañas (.pestana) fuera de un contenedor .pestanas.
 //   5. Clases de botón antiguas que ya no existen en el CSS.
+//   6. Filas de pestañas DEBAJO del título de la pantalla (regla: pestañas
+//      arriba, el título es el de la pestaña activa). Se aceptan las que están
+//      dentro de un modal o marcadas con data-ambito / ambito ("panel" o "ficha").
+//   7. Enlaces (<Link>/<a>) dibujados como botón con estilos inline en vez de
+//      usar las clases boton-*.
 // Uso: node scripts/verificar_estilos.js [--detalle]
 // ============================================================================
 const fs = require("fs");
@@ -33,7 +38,7 @@ const archivos = [];
   }
 })(RAIZ);
 
-const fallos = { sinClase: [], estiloInline: [], iconoYTexto: [], pestanaSuelta: [], claseAntigua: [] };
+const fallos = { sinClase: [], estiloInline: [], iconoYTexto: [], pestanaSuelta: [], claseAntigua: [], pestanasBajoTitulo: [], enlaceComoBoton: [] };
 
 function atributo(op, nombre, sf) {
   return op.attributes.properties.find((a) => ts.isJsxAttribute(a) && a.name.getText(sf) === nombre);
@@ -72,6 +77,9 @@ for (const f of archivos) {
   const src = fs.readFileSync(f, "utf8");
   const sf = ts.createSourceFile(f, src, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   const linea = (n) => `${rel}:${sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1}`;
+  const esUi = /shared[\/]components[\/]ui/.test(f);
+  let primerTitulo = null;
+  const filasPestanas = [];
 
   (function v(n) {
     if (ts.isJsxElement(n) || ts.isJsxSelfClosingElement(n)) {
@@ -80,6 +88,25 @@ for (const f of archivos) {
       const cls = atributo(op, "className", sf);
       const clsTxt = cls ? cls.getText(sf) : "";
       const st = atributo(op, "style", sf);
+
+      // 6. Orden pestañas → título
+      if (!esUi) {
+        if (primerTitulo === null && (tag === "h1" || /titulo-pagina/.test(clsTxt))) primerTitulo = op.getStart(sf);
+        const esFila = tag === "Pestanas" || tag === "PestanasVista" || /(^|["'`s])pestanas(["'`s]|$)/.test(clsTxt);
+        if (esFila) {
+          const marcada = !!(atributo(op, "data-ambito", sf) || atributo(op, "ambito", sf));
+          let enModal = false;
+          for (let p = n.parent; p; p = p.parent) {
+            if (ts.isJsxElement(p) && /modal/i.test(p.openingElement.attributes.getText(sf))) { enModal = true; break; }
+          }
+          if (!marcada && !enModal) filasPestanas.push({ pos: op.getStart(sf), donde: linea(n) });
+        }
+      }
+      // 7. Enlaces con aspecto de botón hecho a mano
+      if ((tag === "Link" || tag === "a") && !cls && st) {
+        const at = op.attributes.getText(sf);
+        if (/background(Color)?s*:/.test(at) && /padding/.test(at)) fallos.enlaceComoBoton.push(linea(n));
+      }
 
       if (CLASES_ANTIGUAS.test(clsTxt)) fallos.claseAntigua.push(`${linea(n)}  ${clsTxt.slice(0, 80)}`);
 
@@ -112,6 +139,9 @@ for (const f of archivos) {
     }
     ts.forEachChild(n, v);
   })(sf);
+  if (primerTitulo !== null) {
+    for (const r of filasPestanas) if (r.pos > primerTitulo) fallos.pestanasBajoTitulo.push(r.donde);
+  }
 }
 
 const titulos = {
@@ -120,6 +150,8 @@ const titulos = {
   iconoYTexto: "Botones con icono y texto a la vez",
   pestanaSuelta: "Pestañas fuera de un contenedor .pestanas",
   claseAntigua: "Clases de botón antiguas (ya no existen en el CSS)",
+  pestanasBajoTitulo: "Pestañas debajo del título de la pantalla",
+  enlaceComoBoton: "Enlaces con aspecto de botón hecho con estilos inline",
 };
 let total = 0;
 const detalle = process.argv.includes("--detalle");

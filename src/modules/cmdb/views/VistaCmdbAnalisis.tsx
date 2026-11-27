@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Pestanas from "@/shared/components/ui/Pestanas";
 
 type CiItem = {
   id_ci: number;
@@ -198,45 +199,49 @@ export default function VistaCmdbAnalisis() {
 
   const requiereCi = tab !== "reconciliacion";
 
-  const tabs: { id: Tab; label: string }[] = [
-    { id: "reconciliacion", label: "Reconciliación activo-CI" },
-    { id: "topologia", label: "Mapa de Topología" },
-    { id: "impacto", label: "Análisis de Impacto" },
-    { id: "historial", label: "Historial de Configuración" },
+  const tabs: { id: Tab; label: string; titulo: string; descripcion: string }[] = [
+    {
+      id: "reconciliacion",
+      label: "Reconciliación activo-CI",
+      titulo: "Reconciliación entre activos y CIs",
+      descripcion: "Compara el inventario de activos con los elementos de configuración y detecta diferencias o registros huérfanos.",
+    },
+    {
+      id: "topologia",
+      label: "Mapa de Topología",
+      titulo: "Mapa de topología del CI",
+      descripcion: "Dependencias en red del elemento de configuración seleccionado.",
+    },
+    {
+      id: "impacto",
+      label: "Análisis de Impacto",
+      titulo: "Análisis de impacto",
+      descripcion: "Qué servicios y CIs se afectan aguas arriba y aguas abajo ante una falla o un cambio.",
+    },
+    {
+      id: "historial",
+      label: "Historial de Configuración",
+      titulo: "Historial de configuración",
+      descripcion: "Cambios registrados sobre los atributos y relaciones del CI seleccionado.",
+    },
   ];
+  const tabInfo = tabs.find((t) => t.id === tab) ?? tabs[0];
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+      <Pestanas items={tabs.map((t) => ({ id: t.id, etiqueta: t.label }))} activa={tab} onCambiar={setTab} />
+
+      <div className="cabecera-pagina">
         <div>
-          <h1 className="titulo-pagina">Análisis e Impacto de la CMDB</h1>
-          <p className="descripcion-pagina">
-            Topología de dependencias en red, análisis de impacto aguas arriba/abajo en fallas y cambios, reconciliación Activo ↔ CI e historial de configuración (ITIL v4).
-          </p>
+          <h1 className="titulo-pagina">{tabInfo.titulo}</h1>
+          <p className="descripcion-pagina">{tabInfo.descripcion}</p>
         </div>
-        <Link
-          href="/plataforma/cmdb/topologia"
-          className="boton-secundario"
-        >
-           Volver a la CMDB
+        <Link href="/plataforma/cmdb/topologia" className="boton-secundario">
+          Volver a la CMDB
         </Link>
       </div>
 
       {error && <div className="mensaje-error" style={{ marginBottom: 16 }}>{error}</div>}
-
-      {/* Pestanas */}
-      <div className="pestanas">
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => setTab(t.id)}
-            className={tab === t.id ? "pestana pestana-activa" : "pestana"}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
 
       {/* Selector de CI */}
       {requiereCi && (

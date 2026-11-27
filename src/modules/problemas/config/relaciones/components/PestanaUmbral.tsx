@@ -211,10 +211,10 @@ export function PestanaUmbral({ reglas, catalogos, onActualizar, onMarcarModific
       {/* Encabezado descriptivo */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+          <h1 className="titulo-pagina">
             Creación automática de problemas por umbral
-          </h2>
-          <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
+          </h1>
+          <p className="descripcion-pagina">
             Detecta clusters de incidentes recurrentes y genera proactivamente problemas o sugerencias de investigación antes de que escalen a fallas mayores.
           </p>
         </div>

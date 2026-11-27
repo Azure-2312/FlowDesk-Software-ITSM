@@ -159,15 +159,7 @@ export default function VistaConocimientoDetalle() {
           </p>
           <Link
             href="/plataforma/conocimiento/base"
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "#2563eb",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#ffffff",
-              textDecoration: "none",
-            }}
+            className="boton-primario"
           >
             Volver al listado
           </Link>

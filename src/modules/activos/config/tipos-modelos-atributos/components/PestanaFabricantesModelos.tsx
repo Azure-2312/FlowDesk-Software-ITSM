@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { BotonIcono } from "@/shared/components/ui/BotonIcono";
 import { Ban, Play } from "@/shared/components/ui/Iconos";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
+import { SubpestanasEnRanura } from "@/shared/components/ui/RanuraSubpestanas";
 
 interface Fabricante {
   id: number;
@@ -139,22 +140,24 @@ export function PestanaFabricantesModelos({ datos, onChange, bloqueado }: Props)
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Subnavegador */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 8 }}>
-        <div className="pestanas" style={{ marginBottom: 0, flex: 1 }}>
-          <button
-            type="button"
-            className={seccionActiva === "fabricantes" ? "pestana pestana-activa" : "pestana"}
-            onClick={() => setSeccionActiva("fabricantes")}
-          >
-            Catálogo de Fabricantes ({fabricantes.length})
-          </button>
-          <button
-            type="button"
-            className={seccionActiva === "modelos" ? "pestana pestana-activa" : "pestana"}
-            onClick={() => setSeccionActiva("modelos")}
-          >
-            Catálogo de Modelos Homologados ({modelos.length})
-          </button>
-        </div>
+        <SubpestanasEnRanura>
+          <div className="pestanas">
+            <button
+              type="button"
+              className={seccionActiva === "fabricantes" ? "pestana pestana-activa" : "pestana"}
+              onClick={() => setSeccionActiva("fabricantes")}
+            >
+              Catálogo de Fabricantes ({fabricantes.length})
+            </button>
+            <button
+              type="button"
+              className={seccionActiva === "modelos" ? "pestana pestana-activa" : "pestana"}
+              onClick={() => setSeccionActiva("modelos")}
+            >
+              Catálogo de Modelos Homologados ({modelos.length})
+            </button>
+          </div>
+        </SubpestanasEnRanura>
 
         <input
           type="text"

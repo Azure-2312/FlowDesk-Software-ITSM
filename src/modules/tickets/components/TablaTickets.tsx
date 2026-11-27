@@ -16,6 +16,13 @@ interface Props {
   rutaDetalleBase?: string;
 }
 
+const ETIQUETA_TIPO: Record<string, string> = {
+  "1": "incidentes",
+  "2": "solicitudes de servicio",
+  problemas: "problemas",
+  cambios: "cambios",
+};
+
 export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, tipoFijo, rutaDetalleBase }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -251,10 +258,35 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
 
   return (
     <div className="vista-contenedor">
+      {/* Pestañas de Acceso Rápido por Tipo de Ticket */}
+      {!tipoFijo && <div className="pestanas">
+        {[
+          { id: "", label: "Todos los Tipos" },
+          { id: "1", label: "Incidentes" },
+          { id: "2", label: "Solicitudes de Servicio" },
+          ...(vista === "todos" ? [
+            { id: "problemas", label: "Problemas ITIL" },
+            { id: "cambios", label: "Cambios RFC" },
+          ] : []),
+        ].map((tab) => {
+          const activo = filtroTipo === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setFiltroTipo(tab.id)}
+              className={activo ? "pestana pestana-activa" : "pestana"}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>}
+
       {/* Cabecera de Página */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 16, flexWrap: "nowrap" }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 className="titulo-pagina">{titulo}</h1>
+          <h1 className="titulo-pagina">{!tipoFijo && ETIQUETA_TIPO[filtroTipo] ? `${titulo}: ${ETIQUETA_TIPO[filtroTipo]}` : titulo}</h1>
           <p className="descripcion-pagina">
             {descripcion}
           </p>
@@ -280,31 +312,6 @@ export default function TablaTickets({ vista, titulo, descripcion, tipoInicial, 
           </button>
         </div>
       </div>
-
-      {/* Pestañas de Acceso Rápido por Tipo de Ticket */}
-      {!tipoFijo && <div className="pestanas">
-        {[
-          { id: "", label: "Todos los Tipos" },
-          { id: "1", label: "Incidentes" },
-          { id: "2", label: "Solicitudes de Servicio" },
-          ...(vista === "todos" ? [
-            { id: "problemas", label: "Problemas ITIL" },
-            { id: "cambios", label: "Cambios RFC" },
-          ] : []),
-        ].map((tab) => {
-          const activo = filtroTipo === tab.id;
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setFiltroTipo(tab.id)}
-              className={activo ? "pestana pestana-activa" : "pestana"}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>}
 
       {/* Barra de Búsqueda Rápida y Chips de Filtros Activos */}
       <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 16, flexWrap: "wrap" }}>

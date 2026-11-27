@@ -683,10 +683,10 @@ export function VistaCatalogoServicios({
               >
                 Volver al Catálogo de Servicios
               </button>
-              <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+              <h1 className="titulo-pagina">
                 {vistaParam === "crear" ? "Crear Nuevo Servicio en el Catálogo (Formulario Oficial)" : "Registrar Nuevo Servicio en el Catálogo (ITIL v4)"}
-              </h2>
-              <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: 13 }}>
+              </h1>
+              <p className="descripcion-pagina">
                 Defina los acuerdos de nivel de servicio (SLA), entregables oficiales, costos referenciales y requisitos de aprobación.
               </p>
             </div>

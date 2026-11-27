@@ -213,16 +213,7 @@ export default function PaginaInventarioActivos() {
                   <td style={{ padding: "12px 16px", textAlign: "right" }}>
                     <Link
                       href={`/plataforma/incidentes/crear?activo=${a.codigo_patrimonial}`}
-                      style={{
-                        padding: "4px 10px",
-                        backgroundColor: "#f8fafc",
-                        border: "1px solid #cbd5e1",
-                        borderRadius: 4,
-                        fontSize: 12,
-                        color: "#2563eb",
-                        fontWeight: 600,
-                        textDecoration: "none",
-                      }}
+                      className="boton-secundario boton-sm"
                     >
                       Reportar falla
                     </Link>

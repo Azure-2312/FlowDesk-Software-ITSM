@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Pestanas from "@/shared/components/ui/Pestanas";
 import { useRouter } from "next/navigation";
 
 interface ModeloEstandar {
@@ -170,14 +171,33 @@ export default function VistaModelosCambioUnificada() {
 
   return (
     <div className="vista-contenedor">
-      {/* 1. Encabezado */}
-      <div style={{ marginBottom: 20 }}>
-        <h1 className="titulo-pagina">
-          Modelos de cambio estándar
-        </h1>
-        <p className="descripcion-pagina">
-          Catálogo institucional de procedimientos operativos estándar preautorizados. Selecciona una plantilla para iniciar un cambio o gestiona nuevas propuestas.
-        </p>
+      <Pestanas
+        items={[
+          { id: "plantillas", etiqueta: "Plantillas de cambio", contador: items.length },
+          { id: "crear", etiqueta: "Crear modelo" },
+          { id: "aprobar", etiqueta: "Aprobar publicaciones", contador: pendientesAprobacion.length },
+        ]}
+        activa={pestanaActiva}
+        onCambiar={setPestanaActiva}
+      />
+
+      <div className="cabecera-pagina">
+        <div>
+          <h1 className="titulo-pagina">
+            {pestanaActiva === "plantillas"
+              ? "Plantillas de cambio estándar"
+              : pestanaActiva === "crear"
+              ? "Crear modelo de cambio estándar"
+              : "Aprobar publicaciones de modelos"}
+          </h1>
+          <p className="descripcion-pagina">
+            {pestanaActiva === "plantillas"
+              ? "Catálogo institucional de procedimientos estándar preautorizados. Selecciona una plantilla para iniciar un cambio."
+              : pestanaActiva === "crear"
+              ? "Propón un nuevo procedimiento estándar; quedará pendiente hasta que sea aprobado para publicación."
+              : "Modelos propuestos que esperan revisión antes de publicarse en el catálogo."}
+          </p>
+        </div>
       </div>
 
       {ok && (
@@ -191,39 +211,6 @@ export default function VistaModelosCambioUnificada() {
           {error}
         </div>
       )}
-
-      {/* 2. Selector de Pestañas Internas */}
-      <div className="pestanas">
-        <button
-          type="button"
-          onClick={() => setPestanaActiva("plantillas")}
-          className={pestanaActiva === "plantillas" ? "pestana pestana-activa" : "pestana"}
-        >
-          <span>Plantillas de cambio</span>
-          <span style={{ fontSize: 11, backgroundColor: pestanaActiva === "plantillas" ? "#dbeafe" : "#f1f5f9", color: pestanaActiva === "plantillas" ? "#1e40af" : "#64748b", padding: "2px 8px", borderRadius: 999 }}>
-            {items.length}
-          </span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setPestanaActiva("crear")}
-          className={pestanaActiva === "crear" ? "pestana pestana-activa" : "pestana"}
-        >
-          <span>Crear modelo</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setPestanaActiva("aprobar")}
-          className={pestanaActiva === "aprobar" ? "pestana pestana-activa" : "pestana"}
-        >
-          <span>Aprobar publicaciones</span>
-          <span style={{ fontSize: 11, backgroundColor: pendientesAprobacion.length > 0 ? "#fef3c7" : "#f1f5f9", color: pendientesAprobacion.length > 0 ? "#92400e" : "#64748b", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
-            {pendientesAprobacion.length}
-          </span>
-        </button>
-      </div>
 
       {/* 3. Contenido: Pestaña Plantillas */}
       {pestanaActiva === "plantillas" && (
@@ -315,17 +302,7 @@ export default function VistaModelosCambioUnificada() {
                     <div style={{ borderTop: "1px solid #f1f5f9", paddingTop: 12, display: "flex", justifyContent: "flex-end" }}>
                       <Link
                         href={`/plataforma/cambios/nuevo?tipo=ESTANDAR&modelo=${m.id_modelo}`}
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          padding: "7px 14px",
-                          backgroundColor: "#2563eb",
-                          color: "#ffffff",
-                          borderRadius: 6,
-                          fontSize: 12.5,
-                          fontWeight: 600,
-                          textDecoration: "none",
-                        }}
+                        className="boton-primario"
                       >
                         Crear cambio con este modelo
                       </Link>

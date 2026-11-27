@@ -207,15 +207,7 @@ export default function PaginaPanelTecnico() {
           </div>
           <Link
             href={`/plataforma/tickets/${incidenteMayorActivo.id_ticket}`}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "#dc2626",
-              color: "#ffffff",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
+            className="boton-peligro"
           >
             Atender de inmediato
           </Link>
@@ -385,16 +377,7 @@ export default function PaginaPanelTecnico() {
                     <td style={{ padding: "10px 16px", textAlign: "right" }}>
                       <Link
                         href={`/plataforma/tickets/${t.id_ticket}`}
-                        style={{
-                          padding: "3px 8px",
-                          backgroundColor: "#f8fafc",
-                          border: "1px solid #cbd5e1",
-                          borderRadius: 4,
-                          fontSize: 11.5,
-                          fontWeight: 600,
-                          color: "#1e293b",
-                          textDecoration: "none",
-                        }}
+                        className="boton-secundario boton-sm"
                       >
                         Abrir
                       </Link>
@@ -470,7 +453,7 @@ export default function PaginaPanelTecnico() {
             </p>
           </div>
 
-          <div className="pestanas">
+          <div className="pestanas" data-ambito="panel">
             <button
               type="button"
               onClick={() => setPeriodoDesempeno("7_dias")}

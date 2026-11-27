@@ -199,29 +199,6 @@ export default function GobiernoConocimiento({
 
   return (
     <div className="vista-contenedor">
-      {/* Cabecera Principal */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 16 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 className="titulo-pagina">
-            Gobierno de la Base de Conocimiento
-          </h1>
-          <p className="descripcion-pagina">
-            Supervise el ciclo editorial de artículos técnicos, audite la trazabilidad y configure las políticas de redacción y compuertas de publicación del autoservicio.
-          </p>
-        </div>
-        {pestañaActiva === "politicas" && (
-          <button
-            type="button"
-            className="boton-primario"
-            onClick={guardarPoliticasKCS}
-            disabled={guardandoPoliticas}
-            style={{ flexShrink: 0 }}
-          >
-            {guardandoPoliticas ? "Guardando..." : "Guardar Configuración"}
-          </button>
-        )}
-      </div>
-
       {/* Navegación por Pestañas (si no está fijada externamente) */}
       {!pestanaFija && (
         <div className="pestanas">
@@ -242,6 +219,29 @@ export default function GobiernoConocimiento({
           </button>
         </div>
       )}
+
+      {/* Cabecera Principal */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 className="titulo-pagina">
+            {pestañaActiva === "articulos" ? "Artículos y ciclo de vida editorial" : "Gobernanza, políticas KCS y categorías"}
+          </h1>
+          <p className="descripcion-pagina">
+            {pestañaActiva === "articulos" ? "Supervise el ciclo editorial de los artículos técnicos y audite su trazabilidad." : "Configure las políticas de redacción, las categorías y las compuertas de publicación del autoservicio."}
+          </p>
+        </div>
+        {pestañaActiva === "politicas" && (
+          <button
+            type="button"
+            className="boton-primario"
+            onClick={guardarPoliticasKCS}
+            disabled={guardandoPoliticas}
+            style={{ flexShrink: 0 }}
+          >
+            {guardandoPoliticas ? "Guardando..." : "Guardar Configuración"}
+          </button>
+        )}
+      </div>
 
       {error && <p role="alert" className="mensaje-error" style={{ marginBottom: 16 }}>{error}</p>}
       {ok && <p role="status" className="mensaje-exito" style={{ padding: "8px 12px", backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", color: "#166534", borderRadius: 6, marginBottom: 16 }}>{ok}</p>}
@@ -415,13 +415,13 @@ export default function GobiernoConocimiento({
                           )}
                           <Link
                             href={`/plataforma/conocimiento/configuracion/articulos/${a.id_articulo}/editar`}
-                            style={{ padding: "4px 8px", fontSize: 11, background: "#f1f5f9", color: "#334155", border: "1px solid #cbd5e1", borderRadius: 4, textDecoration: "none" }}
+                            className="boton-secundario boton-sm"
                           >
                             Editar
                           </Link>
                           <Link
                             href={`/plataforma/conocimiento/configuracion/articulos/${a.id_articulo}/historial`}
-                            style={{ padding: "4px 8px", fontSize: 11, background: "#f8fafc", color: "#64748b", border: "1px solid #e2e8f0", borderRadius: 4, textDecoration: "none" }}
+                            className="boton-secundario boton-sm"
                           >
                             Historial
                           </Link>

@@ -268,7 +268,7 @@ export default function PaginaEditarArticuloConocimiento() {
               <label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
                 Contenido del Artículo (Markdown)
               </label>
-              <div className="pestanas" style={{ marginBottom: 0 }}>
+              <div className="pestanas" data-ambito="panel" style={{ marginBottom: 0 }}>
                 <button
                   type="button"
                   onClick={() => setVistaPrevia(false)}

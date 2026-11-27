@@ -176,18 +176,7 @@ export default function VistaIncidentesMayores() {
         <div style={{ display: "flex", gap: 10 }}>
           <Link
             href="/plataforma/incidentes/mayores?vista=declarar"
-            style={{
-              padding: "9px 18px",
-              backgroundColor: "#dc2626",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 700,
-              color: "#ffffff",
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
+            className="boton-peligro"
           >
             + Declarar Incidente Mayor
           </Link>

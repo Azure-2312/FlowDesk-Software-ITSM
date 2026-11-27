@@ -82,8 +82,16 @@ export default function VistaPanelArea() {
     cargarDatos();
   }, []);
 
-  if (cargando) return <div className="vista-contenedor"><p>Cargando panel...</p></div>;
-  if (error) return <div className="vista-contenedor"><p role="alert" className="mensaje-error">{error}</p></div>;
+  const cabeceraBase = (
+    <div className="cabecera-pagina">
+      <div>
+        <h1 className="titulo-pagina">Panel del área</h1>
+        <p className="descripcion-pagina">Solicitudes, aprobaciones y cambios que afectan a tu área.</p>
+      </div>
+    </div>
+  );
+  if (cargando) return <div className="vista-contenedor">{cabeceraBase}<div className="estado-vacio">Cargando panel...</div></div>;
+  if (error) return <div className="vista-contenedor">{cabeceraBase}<p role="alert" className="mensaje-error">{error}</p></div>;
   if (!data) return null;
 
   return (

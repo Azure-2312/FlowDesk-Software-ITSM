@@ -209,27 +209,6 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos",
 
   return (
     <div style={{ padding: "28px 32px 32px 32px", width: "100%", maxWidth: 1400, margin: "0 auto 0 0", boxSizing: "border-box" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 16 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 className="titulo-pagina">
-            Objetivos y Acuerdos de Nivel de Servicio (SLA)
-          </h1>
-          <p className="descripcion-pagina">
-            Parametrización de la matriz institucional de tiempos por prioridad, metas globales de cumplimiento, calendario laboral y reglas de congelación de cronómetros conforme a ITIL v4 e ISO/IEC 20000.
-          </p>
-        </div>
-        <button
-          type="button"
-          className="boton-primario"
-          onClick={() => guardarObjetivos()}
-          disabled={guardando || hayInconsistenciasTiempos}
-          style={{ flexShrink: 0 }}
-          title={hayInconsistenciasTiempos ? "Corrija las inconsistencias de tiempos SLA/OLA para guardar." : ""}
-        >
-          {guardando ? "Guardando..." : "Guardar Configuración"}
-        </button>
-      </div>
-
       {/* Selector de Pestañas SLA */}
       {!pestanaFija && (
         <div
@@ -251,6 +230,27 @@ export default function ConfiguracionObjetivosSla({ pestañaInicial = "tiempos",
           </button>
         </div>
       )}
+
+      <div className="cabecera-pagina">
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 className="titulo-pagina">
+            {pestañaActiva === "matriz" ? "Matriz institucional de prioridad (impacto × urgencia)" : "Objetivos de tiempo y métricas de SLA"}
+          </h1>
+          <p className="descripcion-pagina">
+            Parametrización de la matriz institucional de tiempos por prioridad, metas globales de cumplimiento, calendario laboral y reglas de congelación de cronómetros conforme a ITIL v4 e ISO/IEC 20000.
+          </p>
+        </div>
+        <button
+          type="button"
+          className="boton-primario"
+          onClick={() => guardarObjetivos()}
+          disabled={guardando || hayInconsistenciasTiempos}
+          style={{ flexShrink: 0 }}
+          title={hayInconsistenciasTiempos ? "Corrija las inconsistencias de tiempos SLA/OLA para guardar." : ""}
+        >
+          {guardando ? "Guardando..." : "Guardar Configuración"}
+        </button>
+      </div>
 
       <div style={{ display: pestañaActiva === "matriz" ? "block" : "none" }}>
         <MatrizPrioridadSla

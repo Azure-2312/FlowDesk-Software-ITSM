@@ -199,6 +199,23 @@ export default function NotificacionesCalendarioPage() {
   return (
     <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f8fafc" }}>
       <div style={{ padding: "28px 32px 32px 32px", flex: 1, width: "100%", maxWidth: 1400, margin: "0 auto", boxSizing: "border-box" }}>
+        {/* Navegación horizontal de pestañas */}
+        <div className="pestanas">
+          {(["ventanas_mantenimiento", "periodos_congelamiento", "feriados"] as TabId[]).map((tabKey) => {
+            const tab = PESTANAS_INFO[tabKey];
+            const activa = tabActiva === tabKey;
+            return (
+              <button type="button"
+                key={tabKey}
+                onClick={() => setTabActiva(tabKey)}
+                className={activa ? "pestana pestana-activa" : "pestana"}
+              >
+                {tab.titulo}
+              </button>
+            );
+          })}
+        </div>
+
         {/* Encabezado Corporativo Formal Estandarizado */}
         <div style={{
           display: "flex",
@@ -209,10 +226,10 @@ export default function NotificacionesCalendarioPage() {
         }}>
           <div>
             <h1 className="titulo-pagina">
-              Notificaciones y Calendario de Cambios
+              {infoPestana.titulo}
             </h1>
             <p className="descripcion-pagina">
-              Gobierno de eventos ITIL v4, alertas multicanal, ventanas de mantenimiento autorizadas y períodos de congelamiento de infraestructura.
+              {infoPestana.descripcion}
             </p>
           </div>
 
@@ -247,23 +264,6 @@ export default function NotificacionesCalendarioPage() {
             )}
           </div>
         )}
-
-        {/* Navegación horizontal de pestañas */}
-        <div className="pestanas">
-          {(["ventanas_mantenimiento", "periodos_congelamiento", "feriados"] as TabId[]).map((tabKey) => {
-            const tab = PESTANAS_INFO[tabKey];
-            const activa = tabActiva === tabKey;
-            return (
-              <button type="button"
-                key={tabKey}
-                onClick={() => setTabActiva(tabKey)}
-                className={activa ? "pestana pestana-activa" : "pestana"}
-              >
-                {tab.titulo}
-              </button>
-            );
-          })}
-        </div>
 
         {/* Contenido de la Pestaña Activa */}
         {cargando ? (

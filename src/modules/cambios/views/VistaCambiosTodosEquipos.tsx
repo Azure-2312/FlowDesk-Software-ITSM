@@ -93,16 +93,7 @@ export default function VistaCambiosTodosEquipos() {
           </button>
           <Link
             href="/plataforma/cambios/equipo"
-            style={{
-              textDecoration: "none",
-              fontSize: 13,
-              fontWeight: 500,
-              padding: "8px 14px",
-              borderRadius: 6,
-              border: "1px solid #cbd5e1",
-              backgroundColor: "#ffffff",
-              color: "#334155",
-            }}
+            className="boton-secundario"
           >
             Mi equipo
           </Link>

@@ -37,7 +37,7 @@ export default function VistaUmbralProblemas() {
   if (error) return <div className="mensaje-error">{error}</div>;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm" style={{ padding: 20 }}>
+    <div className="vista-contenedor">
       <PestanaUmbral reglas={reglas} catalogos={catalogos} onActualizar={cargar} onMarcarModificado={() => {}} />
     </div>
   );

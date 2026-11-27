@@ -377,6 +377,28 @@ export default function ConfiguracionFormularioCambiosPage({ pestanaFija }: Vist
       <div style={{ padding: "32px 48px 48px 48px", flex: 1, width: "100%", maxWidth: 1650, margin: "0 auto 0 0", boxSizing: "border-box" }}>
 
 
+      {/* Selector de las 7 Pestañas (solo si no es pestaña fija) */}
+      {!pestanaFija && (
+      <div
+        className="pestanas"
+      >
+        {(Object.keys(PESTANAS_INFO) as TabId[]).map((tabKey) => {
+          const info = PESTANAS_INFO[tabKey];
+          const esActiva = tabActiva === tabKey;
+          return (
+            <button
+              key={tabKey}
+              type="button"
+              onClick={() => setTabActiva(tabKey)}
+              className={esActiva ? "pestana pestana-activa" : "pestana"}
+            >
+              {info.titulo}
+            </button>
+          );
+        })}
+      </div>
+      )}
+
       {/* 2. Encabezado con Indicador de Estado */}
       <div
         style={{
@@ -389,7 +411,7 @@ export default function ConfiguracionFormularioCambiosPage({ pestanaFija }: Vist
       >
         <div>
           <h1 className="titulo-pagina">
-            Configuración de Formulario de Cambios (RFC)
+            {pestanaActualInfo.titulo}
           </h1>
           <p className="descripcion-pagina">
             {pestanaActualInfo.descripcion}
@@ -430,28 +452,6 @@ export default function ConfiguracionFormularioCambiosPage({ pestanaFija }: Vist
             Esta pestaña está actualmente en edición por <strong>{bloqueadoPorOtro}</strong>. La pantalla se encuentra en modo de <strong>solo lectura</strong> para evitar colisiones concurrentes (el bloqueo expira tras 15 min de inactividad).
           </span>
         </div>
-      )}
-
-      {/* Selector de las 7 Pestañas (solo si no es pestaña fija) */}
-      {!pestanaFija && (
-      <div
-        className="pestanas"
-      >
-        {(Object.keys(PESTANAS_INFO) as TabId[]).map((tabKey) => {
-          const info = PESTANAS_INFO[tabKey];
-          const esActiva = tabActiva === tabKey;
-          return (
-            <button
-              key={tabKey}
-              type="button"
-              onClick={() => setTabActiva(tabKey)}
-              className={esActiva ? "pestana pestana-activa" : "pestana"}
-            >
-              {info.titulo}
-            </button>
-          );
-        })}
-      </div>
       )}
 
       {/* Contenido de la Pestaña Activa */}

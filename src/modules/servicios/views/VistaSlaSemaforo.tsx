@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Ticket } from "@/types";
 
 export default function PaginaSlaSemaforo({ alcanceInicial = "mios" }: { alcanceInicial?: "mios" | "area" } = {}) {
-  const [alcance, setAlcance] = useState<"mios" | "area">(alcanceInicial);
+  const alcance = alcanceInicial;
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,41 +59,21 @@ export default function PaginaSlaSemaforo({ alcanceInicial = "mios" }: { alcance
 
   return (
     <div style={{ padding: "24px 32px", maxWidth: 1500, margin: "0 auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+      {/* El alcance lo decide la pestaña de la página (Mi cola / Grupo) según el perfil. */}
+      <div className="cabecera-pagina">
         <div>
           <h1 className="titulo-pagina">
-            Semáforo de SLA de mi cola
+            {alcance === "mios" ? "Semáforo de SLA de mi cola" : "Semáforo de SLA de mi grupo"}
           </h1>
           <p className="descripcion-pagina">
-            Tablero visual de seguimiento proactivo según tiempos de expiración y estado de pausas
+            {alcance === "mios"
+              ? "Tickets asignados a ti, ordenados por tiempo restante de SLA y estado de pausa."
+              : "Tickets de tu departamento, ordenados por tiempo restante de SLA y estado de pausa."}
           </p>
         </div>
-
-        <div style={{ display: "flex", gap: 10 }}>
-          <div className="pestanas">
-            <button
-              type="button"
-              onClick={() => setAlcance("mios")}
-              className={alcance === "mios" ? "pestana pestana-activa" : "pestana"}
-            >
-              Mis tickets
-            </button>
-            <button
-              type="button"
-              onClick={() => setAlcance("area")}
-              className={alcance === "area" ? "pestana pestana-activa" : "pestana"}
-            >
-              Mi departamento
-            </button>
-          </div>
-
-          <button className="boton-secundario"
-            type="button"
-            onClick={cargarTickets}
-          >
-            Actualizar
-          </button>
-        </div>
+        <button className="boton-secundario" type="button" onClick={cargarTickets}>
+          Actualizar
+        </button>
       </div>
 
       {cargando && (

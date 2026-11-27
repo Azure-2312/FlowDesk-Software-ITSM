@@ -146,36 +146,6 @@ export default function ConfiguracionTiposRequisitosPage({ pestanaFija }: VistaT
   return (
     <div style={{ backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
       <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto 0 0", padding: "28px 32px 32px 32px", flex: 1, boxSizing: "border-box" }}>
-        {/* Encabezado Principal Estandarizado */}
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          gap: 16,
-          marginBottom: 16
-        }}>
-          <div>
-            <h1 className="titulo-pagina">
-              Tipos de Cambio y Requisitos
-            </h1>
-            <p className="descripcion-pagina">
-              Gobierno de directrices ITIL v4: tipos normativos, matriz de autoridad, catálogo de modelos estándar y reglas de elevación.
-            </p>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <button
-              type="button"
-              onClick={handleGuardarConfiguracion}
-              disabled={guardando || !puedeEditar}
-              className="boton-primario"
-              style={{ flexShrink: 0 }}
-            >
-              {guardando ? "Guardando..." : "Guardar Configuración"}
-            </button>
-          </div>
-        </div>
-
       {/* Selector de Pestañas */}
       {/* Selector de Pestañas (solo si no es pestaña fija) */}
       {!pestanaFija && (
@@ -198,6 +168,36 @@ export default function ConfiguracionTiposRequisitosPage({ pestanaFija }: VistaT
         })}
       </div>
       )}
+
+        {/* Encabezado Principal Estandarizado */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: 16,
+          marginBottom: 16
+        }}>
+          <div>
+            <h1 className="titulo-pagina">
+              {PESTANAS_INFO[tabActiva].titulo}
+            </h1>
+            <p className="descripcion-pagina">
+              {PESTANAS_INFO[tabActiva].descripcion}
+            </p>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <button
+              type="button"
+              onClick={handleGuardarConfiguracion}
+              disabled={guardando || !puedeEditar}
+              className="boton-primario"
+              style={{ flexShrink: 0 }}
+            >
+              {guardando ? "Guardando..." : "Guardar Configuración"}
+            </button>
+          </div>
+        </div>
 
       {/* Contenido Principal de la Pestaña Activa */}
       {cargando ? (

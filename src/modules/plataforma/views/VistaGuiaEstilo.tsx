@@ -54,17 +54,6 @@ export default function VistaGuiaEstilo() {
 
   return (
     <div className="vista-contenedor">
-      <div className="cabecera-pagina">
-        <div>
-          <h1 className="titulo-pagina">Guía del sistema de diseño</h1>
-          <p className="descripcion-pagina">
-            Única forma permitida de cada elemento visual de FlowDesk. Toda vista usa estas clases; el verificador
-            (<span style={codigo}>npm run test:estilos</span>) bloquea el build si algo se sale del catálogo.
-          </p>
-        </div>
-        <button type="button" className="boton-primario">Acción principal</button>
-      </div>
-
       <Pestanas
         items={[
           { id: "general", etiqueta: "General" },
@@ -75,9 +64,22 @@ export default function VistaGuiaEstilo() {
         onCambiar={setPestana}
       />
 
+      <div className="cabecera-pagina">
+        <div>
+          <h1 className="titulo-pagina">
+            {pestana === "general" ? "Guía del sistema de diseño" : pestana === "detalle" ? "Detalle de la guía" : "Historial de la guía"}
+          </h1>
+          <p className="descripcion-pagina">
+            Única forma permitida de cada elemento visual de FlowDesk. Toda vista usa estas clases; el verificador
+            (<span style={codigo}>npm run test:estilos</span>) bloquea el build si algo se sale del catálogo.
+          </p>
+        </div>
+        <button type="button" className="boton-primario">Acción principal</button>
+      </div>
+
       <Seccion
         titulo="Cabecera de página"
-        descripcion="Título a la izquierda (.titulo-pagina), descripción debajo (.descripcion-pagina) y acciones a la derecha. Las pestañas van inmediatamente debajo, sin tarjeta."
+        descripcion="Orden fijo de toda pantalla: 1) pestañas (si las hay; las sub-pestañas en una segunda fila), 2) título de la pestaña activa (.titulo-pagina) con su descripción (.descripcion-pagina) y acciones a la derecha, 3) contenido. Nunca hay pestañas debajo del título, como en esta misma página."
       >
         <p style={codigo}>{'<div className="cabecera-pagina"> <h1 className="titulo-pagina"/> <p className="descripcion-pagina"/> </div>'}</p>
       </Seccion>
@@ -113,9 +115,10 @@ export default function VistaGuiaEstilo() {
 
       <Seccion
         titulo="Pestañas"
-        descripcion="Una sola forma: línea inferior azul en la activa, contador opcional. <PestanasVista> si la pestaña cambia la URL (?vista=), <Pestanas> si es estado de la pantalla."
+        descripcion="Una sola forma: línea inferior azul en la activa, contador opcional. <PestanasVista> si la pestaña cambia la URL (?vista=), <Pestanas> si es estado de la pantalla. Siempre arriba del título. Única excepción: un selector dentro de una tarjeta o panel (como este ejemplo) o en la ficha de un registro, marcado con ambito."
       >
         <Pestanas
+          ambito="panel"
           items={[
             { id: "general", etiqueta: "Pendientes", contador: 12 },
             { id: "detalle", etiqueta: "Historial" },

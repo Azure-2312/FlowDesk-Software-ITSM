@@ -253,7 +253,7 @@ export default function PaginaDetalleTicketRFC() {
         {/* Lado Izquierdo: Pestañas del Ticket RFC */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {/* Navegación de Pestañas */}
-          <div className="pestanas">
+          <div className="pestanas" data-ambito="ficha">
             {[
               { id: "solicitud", label: "5.4.1 Solicitud" },
               { id: "evaluacion", label: "5.4.2 Evaluación & Riesgo" },

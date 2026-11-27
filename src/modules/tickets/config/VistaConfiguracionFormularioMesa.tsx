@@ -2,6 +2,7 @@
 
 import { useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Pestanas from "@/shared/components/ui/Pestanas";
 import { PestanaCamposMesa, PestanaCamposMesaHandle } from "./formulario/components/PestanaCamposMesa";
 import { PestanaCamposPersonalizadosMesa } from "./formulario/components/PestanaCamposPersonalizadosMesa";
 import { PestanaNivelesSolicitante, PestanaNivelesSolicitanteHandle } from "./formulario/components/PestanaNivelesSolicitante";
@@ -28,12 +29,24 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
   );
 
   const esIncidente = tipo === "incidente";
-  const titulo = esIncidente
-    ? "Configuración de Formulario: Incidentes"
-    : "Configuración de Formulario: Solicitudes de Servicio";
-  const descripcion = esIncidente
-    ? "Estructura, obligatoriedad, distribución de ancho y orden de los campos del formulario de reporte de incidentes y fallas técnicas."
-    : "Estructura, obligatoriedad, distribución de ancho y orden de los campos del formulario de requerimiento de servicios y accesos.";
+  const formulario = esIncidente ? "incidentes" : "solicitudes de servicio";
+  const TEXTOS_PESTANA = {
+    campos: {
+      titulo: `Campos del formulario de ${formulario}`,
+      descripcion: esIncidente
+        ? "Estructura, obligatoriedad, distribución de ancho y orden de los campos del formulario de reporte de incidentes y fallas técnicas."
+        : "Estructura, obligatoriedad, distribución de ancho y orden de los campos del formulario de requerimiento de servicios y accesos.",
+    },
+    personalizados: {
+      titulo: `Campos personalizados de ${formulario}`,
+      descripcion: "Campos adicionales definidos por la institución, con su tipo de dato, opciones y obligatoriedad.",
+    },
+    niveles_solicitante: {
+      titulo: "Niveles de solicitante (VIP)",
+      descripcion: "Niveles de atención por solicitante que elevan la prioridad y ajustan los tiempos de SLA.",
+    },
+  } as const;
+  const { titulo, descripcion } = TEXTOS_PESTANA[tabActiva];
 
   const handleGuardarConfiguracion = async () => {
     setGuardando(true);
@@ -58,8 +71,18 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
 
   return (
     <div className="vista-contenedor">
+      <Pestanas
+        items={[
+          { id: "campos", etiqueta: "Campos" },
+          { id: "personalizados", etiqueta: "Campos personalizados" },
+          { id: "niveles_solicitante", etiqueta: "Niveles de solicitante (VIP)" },
+        ]}
+        activa={tabActiva}
+        onCambiar={setTabActiva}
+      />
+
       {/* Cabecera Principal con Botón Guardar Configuración (solo texto) */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 16 }}>
+      <div className="cabecera-pagina">
         <div>
           <h1 className="titulo-pagina">
             {titulo}
@@ -91,35 +114,6 @@ function ContenidoConfiguracionFormularioMesa({ tipo }: VistaConfiguracionFormul
           {errorGlobal}
         </div>
       )}
-
-      {/* Selector de Pestañas Homogéneo */}
-      <div
-        className="pestanas"
-      >
-        <button
-          type="button"
-          onClick={() => setTabActiva("campos")}
-          className={tabActiva === "campos" ? "pestana pestana-activa" : "pestana"}
-        >
-          Campos
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setTabActiva("personalizados")}
-          className={tabActiva === "personalizados" ? "pestana pestana-activa" : "pestana"}
-        >
-          Campos personalizados
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setTabActiva("niveles_solicitante")}
-          className={tabActiva === "niveles_solicitante" ? "pestana pestana-activa" : "pestana"}
-        >
-          Niveles de solicitante (VIP)
-        </button>
-      </div>
 
       {/* Contenido persistente de pestañas: se mantienen montadas para no perder cambios en memoria */}
       <div style={{ display: tabActiva === "campos" ? "block" : "none" }}>

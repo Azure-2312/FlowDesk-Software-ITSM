@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { NotificacionRegistro } from "@/shared/lib/notificacionesService";
+import Pestanas from "@/shared/components/ui/Pestanas";
 
 export default function VistaNotificacionesInApp() {
   const router = useRouter();
@@ -82,62 +83,32 @@ export default function VistaNotificacionesInApp() {
 
   return (
     <div className="vista-contenedor" style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
-      <div
-        className="cabecera-seccion"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 12,
-          marginBottom: 20,
-          borderBottom: "1px solid #e2e8f0",
-          paddingBottom: 16,
+      <Pestanas
+        items={[
+          { id: "todas", etiqueta: "Todas", contador: filtroSinLeer ? null : total },
+          { id: "sin-leer", etiqueta: "Sin leer", contador: noLeidas },
+        ]}
+        activa={filtroSinLeer ? "sin-leer" : "todas"}
+        onCambiar={(id) => {
+          setFiltroSinLeer(id === "sin-leer");
+          setPagina(1);
         }}
-      >
+      />
+
+      <div className="cabecera-pagina">
         <div>
-          <h1 className="titulo-pagina">
-            Centro de Notificaciones
-          </h1>
+          <h1 className="titulo-pagina">{filtroSinLeer ? "Notificaciones sin leer" : "Todas las notificaciones"}</h1>
           <p className="descripcion-pagina">
-            Eventos operacionales y requerimientos asignados directamente en el sistema.
+            {filtroSinLeer
+              ? "Avisos que todavía no revisas: asignaciones, aprobaciones pendientes y cambios de estado."
+              : "Eventos operacionales y requerimientos asignados directamente en el sistema."}
           </p>
         </div>
-
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          {noLeidas > 0 && (
-            <button
-              type="button"
-              className="boton-secundario"
-              onClick={marcarTodasLeidas}
-            >
-              Marcar todas como leídas
-            </button>
-          )}
-
-          <div className="pestanas" style={{ marginBottom: 0 }}>
-            <button
-              type="button"
-              onClick={() => {
-                setFiltroSinLeer(false);
-                setPagina(1);
-              }}
-              className={!filtroSinLeer ? "pestana pestana-activa" : "pestana"}
-            >
-              Todas ({total})
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setFiltroSinLeer(true);
-                setPagina(1);
-              }}
-              className={filtroSinLeer ? "pestana pestana-activa" : "pestana"}
-            >
-              Sin leer ({noLeidas})
-            </button>
-          </div>
-        </div>
+        {noLeidas > 0 && (
+          <button type="button" className="boton-secundario" onClick={marcarTodasLeidas}>
+            Marcar todas como leídas
+          </button>
+        )}
       </div>
 
       {mensaje && (

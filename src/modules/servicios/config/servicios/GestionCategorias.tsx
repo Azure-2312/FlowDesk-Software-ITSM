@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo, FormEvent } from "react";
 import { validarTexto, validarNumeroPositivo, validarSlaTiempos } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
 import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
+import Pestanas from "@/shared/components/ui/Pestanas";
 
 export interface CategoriaAdmin {
   id_categoria: number;
@@ -737,48 +738,32 @@ export function GestionCategorias({ onActualizar }: { onActualizar?: () => void 
         </div>
       )}
 
-      {/* Cabecera General de la Vista */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "nowrap", gap: 16, marginBottom: 16 }}>
+      {/* Pestañas arriba; el título corresponde a la pestaña activa */}
+      <Pestanas
+        items={[
+          { id: "todos", etiqueta: "Todas", contador: totalCategorias },
+          { id: "1", etiqueta: "Incidentes", contador: cantIncidentes },
+          { id: "2", etiqueta: "Solicitudes", contador: cantSolicitudes },
+        ]}
+        activa={filtroTipo}
+        onCambiar={setFiltroTipo}
+      />
+
+      <div className="cabecera-pagina">
         <div style={{ flex: 1, minWidth: 0 }}>
           <h1 className="titulo-pagina">
-            Clasificación y Configuración de Categorías
+            {filtroTipo === "1"
+              ? "Categorías de incidentes"
+              : filtroTipo === "2"
+              ? "Categorías de solicitudes de servicio"
+              : "Todas las categorías"}
           </h1>
           <p className="descripcion-pagina">
             Administre las categorías maestras que agrupan los servicios y rigen los tiempos base de SLA en el catálogo y los formularios.
           </p>
         </div>
-        <button
-          type="button"
-          className="boton-primario"
-          style={{ flexShrink: 0 }}
-          onClick={abrirCrear}
-        >
+        <button type="button" className="boton-primario" onClick={abrirCrear}>
           Nueva Categoría
-        </button>
-      </div>
-
-      {/* Tabs por Tipo (Debajo del Título General) */}
-      <div className="pestanas">
-        <button
-          type="button"
-          onClick={() => setFiltroTipo("todos")}
-          className={filtroTipo === "todos" ? "pestana pestana-activa" : "pestana"}
-        >
-          Todas ({totalCategorias})
-        </button>
-        <button
-          type="button"
-          onClick={() => setFiltroTipo("1")}
-          className={filtroTipo === "1" ? "pestana pestana-activa" : "pestana"}
-        >
-          Incidentes ({cantIncidentes})
-        </button>
-        <button
-          type="button"
-          onClick={() => setFiltroTipo("2")}
-          className={filtroTipo === "2" ? "pestana pestana-activa" : "pestana"}
-        >
-          Solicitudes ({cantSolicitudes})
         </button>
       </div>
 

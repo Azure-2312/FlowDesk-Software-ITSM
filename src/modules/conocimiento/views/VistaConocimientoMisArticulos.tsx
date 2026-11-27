@@ -48,15 +48,7 @@ export default function PaginaMisArticulos() {
         <div style={{ display: "flex", gap: 10 }}>
           <Link
             href="/plataforma/conocimiento/crear"
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "#2563eb",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#ffffff",
-              textDecoration: "none",
-            }}
+            className="boton-primario"
           >
             Crear artículo
           </Link>
@@ -99,16 +91,7 @@ export default function PaginaMisArticulos() {
           </p>
           <Link
             href="/plataforma/conocimiento/crear"
-            style={{
-              display: "inline-block",
-              padding: "8px 16px",
-              backgroundColor: "#2563eb",
-              color: "#ffffff",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
+            className="boton-primario"
           >
             Crear mi primer artículo
           </Link>

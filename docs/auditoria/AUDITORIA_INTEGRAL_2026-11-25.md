@@ -411,7 +411,13 @@ Pedido del docente: cada elemento visual debe existir de una sola forma en todo 
 - Guía visual en **/plataforma/guia-estilo** (solo administrador).
 - `scripts/verificar_estilos.js` (`npm run test:estilos`, y antes de cada `npm run build`) falla si aparece un botón sin clase del sistema, estilos visuales inline en botones/pestañas, icono + texto en un botón, pestañas sueltas o clases antiguas. Resultado actual: 0 desviaciones.
 - Verificado en la app (base local): 63/63 páginas del menú cargan sin error; sin desbordes a 768 px.
-- Pendiente de decisión: en 31 páginas las pestañas de vista quedan **encima** del título (las pone la página) y las internas **debajo**; unificar el orden requiere mover la cabecera de cada vista a la página.
+- **Orden único de pantalla (revisión del 26/11, todo el menú y los 10 perfiles):** 1) pestañas (y, si la sección tiene, sus sub-pestañas en una segunda fila), 2) título y descripción **de la pestaña activa**, 3) contenido. Nunca hay pestañas debajo del título.
+  - Recorrido automático de 334 pantallas (cada opción del menú × cada vista × cada perfil) en la base local: había 21 pantallas con pestañas bajo un título general (p. ej. *Mis incidentes* y *Mis solicitudes* del Solicitante, *Notificaciones* en todos los perfiles, *Mis cambios*, *Modelos de cambio*, *KEDB*, *Análisis CMDB*, *Categorías*, *Semáforo SLA*, *Configuración de formularios*, *CAB*, *Calendario*, *Inventario*, *Configuración de activos*, *Comprobantes*) y 6 sin título.
+  - Revisión estática de las que dependen de datos (p. ej. filtros del *Centro de aprobaciones*, que solo aparecen con pendientes) y de las que el menú oculta: 17 casos más.
+  - *Configuración de activos* repetía en su fila interna las pestañas de la página (Fabricantes, Ubicaciones, Listas); ahora solo muestra las secciones propias de cada vista. *Semáforo de SLA* repetía Mi cola / Grupo y además dejaba al Técnico ver la cola de su departamento, que su perfil no tiene asignada; ahora manda la pestaña de la página.
+  - Las sub-pestañas que dibuja un componente hijo se ubican arriba con `ContenedorSubpestanas` / `RanuraSubpestanas` / `SubpestanasEnRanura` (`src/shared/components/ui/RanuraSubpestanas.tsx`).
+  - Excepciones explícitas (marcadas con `ambito`/`data-ambito`): selectores dentro de una tarjeta o panel (Lista/Gráfico de topología, periodo del panel del técnico, involucrados del incidente mayor, editor/vista previa de artículos, perfil/usuario en vistas de ticket) y la ficha de un registro (detalle de cambio).
+  - El verificador suma dos reglas: **pestañas debajo del título** y **enlaces con aspecto de botón hechos con estilos inline** (había 32, pasados a `boton-*`, `insignia` o `.tarjeta-acceso`).
 
 ---
 

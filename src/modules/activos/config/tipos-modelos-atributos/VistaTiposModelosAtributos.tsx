@@ -7,6 +7,7 @@ import { PestanaFabricantesModelos } from "./components/PestanaFabricantesModelo
 import { PestanaAtributosTipo } from "./components/PestanaAtributosTipo";
 import { PestanaUbicaciones } from "./components/PestanaUbicaciones";
 import { PestanaCatalogosAuxiliares } from "./components/PestanaCatalogosAuxiliares";
+import { ContenedorSubpestanas, RanuraSubpestanas, SeccionSubpestanas } from "@/shared/components/ui/RanuraSubpestanas";
 
 type TabId =
   | "clases_tipos"
@@ -116,6 +117,7 @@ export default function TiposModelosAtributosPage({
 
   const cambiarTab = (nuevaTab: TabId) => {
     setTabActiva(nuevaTab);
+    if (vistaActivaN1) return; // la URL (?vista=) pertenece a las pestañas de la página
     const slug = SLUG_POR_TAB[nuevaTab];
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
@@ -149,6 +151,21 @@ export default function TiposModelosAtributosPage({
   };
 
   const pestanaInfo = PESTANAS.find((p) => p.id === tabActiva) || PESTANAS[0];
+
+  // Cuando la pantalla ya tiene pestañas de página (?vista= de Configuración de
+  // activos), aquí solo se muestran las secciones propias de esa vista; las demás
+  // ya son pestañas de la página y no se repiten.
+  const SECCIONES_POR_VISTA_N1: Record<string, TabId[]> = {
+    "tipos-atributos": ["clases_tipos", "atributos"],
+    "fabricantes-modelos": ["fabricantes_modelos"],
+    ubicaciones: ["ubicaciones"],
+    listas: ["catalogos_auxiliares"],
+  };
+  const pestanasVisibles = vistaActivaN1
+    ? PESTANAS.filter((p) => (SECCIONES_POR_VISTA_N1[vistaActivaN1] ?? []).includes(p.id))
+    : vistaExclusiva
+    ? []
+    : PESTANAS;
 
   // Cargar datos de la pestaña activa desde la API
   const cargarDatos = useCallback(async () => {
@@ -312,6 +329,7 @@ export default function TiposModelosAtributosPage({
   const estaBloqueado = !!bloqueadoPorOtro;
 
   return (
+    <ContenedorSubpestanas>
     <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", width: "100%", boxSizing: "border-box", padding: "32px 48px 48px 48px" }}>
       <div style={{ maxWidth: 1400, width: "100%", margin: "0 auto 0 0" }}>
         {/* Toast informativo */}
@@ -320,6 +338,25 @@ export default function TiposModelosAtributosPage({
             {toastMensaje}
           </div>
         )}
+
+        {/* Pestañas arriba (y sub-pestañas de la sección); el título es el de la pestaña activa */}
+        {pestanasVisibles.length > 1 && (
+          <div className="pestanas">
+            {pestanasVisibles.map((tab) => {
+              const activa = tabActiva === tab.id;
+              return (
+                <button type="button"
+                  key={tab.id}
+                  onClick={() => cambiarTab(tab.id)}
+                  className={activa ? "pestana pestana-activa" : "pestana"}
+                >
+                  {tab.titulo}
+                </button>
+              );
+            })}
+          </div>
+        )}
+        <RanuraSubpestanas />
 
         {/* Encabezado Principal Estandarizado (Con márgenes superiores y laterales) */}
         <div style={{
@@ -331,7 +368,7 @@ export default function TiposModelosAtributosPage({
         }}>
           <div style={{ flex: 1, minWidth: 0 }}>
             <h1 className="titulo-pagina">
-              Jerarquía de Clases, Tipos y Modelos de Activos
+              {pestanaInfo.titulo}
             </h1>
             <p className="descripcion-pagina">
               {pestanaInfo.descripcion}
@@ -366,24 +403,6 @@ export default function TiposModelosAtributosPage({
           </div>
         )}
 
-        {/* 3. Barra de pestañas horizontales corporativa */}
-        {!vistaExclusiva && (
-          <div className="pestanas">
-            {PESTANAS.map((tab) => {
-              const activa = tabActiva === tab.id;
-              return (
-                <button type="button"
-                  key={tab.id}
-                  onClick={() => cambiarTab(tab.id)}
-                  className={activa ? "pestana pestana-activa" : "pestana"}
-                >
-                  {tab.titulo}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
         {/* 4. Cuerpo de la pantalla con el componente activo */}
         <div style={{ width: "100%" }}>
         {cargando ? (
@@ -406,44 +425,55 @@ export default function TiposModelosAtributosPage({
         ) : (
           <div>
             <div style={{ display: tabActiva === "clases_tipos" ? "block" : "none" }}>
-              <PestanaClasesTipos
-                datos={snapshotsPorTab["clases_tipos"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "clases_tipos")}
-                bloqueado={estaBloqueado}
-              />
+              <SeccionSubpestanas activa={tabActiva === "clases_tipos"}>
+                <PestanaClasesTipos
+                  datos={snapshotsPorTab["clases_tipos"] || configSnapshot}
+                  onChange={(d) => handleSnapshotChange(d, "clases_tipos")}
+                  bloqueado={estaBloqueado}
+                />
+              </SeccionSubpestanas>
             </div>
             <div style={{ display: tabActiva === "fabricantes_modelos" ? "block" : "none" }}>
-              <PestanaFabricantesModelos
-                datos={snapshotsPorTab["fabricantes_modelos"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "fabricantes_modelos")}
-                bloqueado={estaBloqueado}
-              />
+              <SeccionSubpestanas activa={tabActiva === "fabricantes_modelos"}>
+                <PestanaFabricantesModelos
+                  datos={snapshotsPorTab["fabricantes_modelos"] || configSnapshot}
+                  onChange={(d) => handleSnapshotChange(d, "fabricantes_modelos")}
+                  bloqueado={estaBloqueado}
+                />
+              </SeccionSubpestanas>
             </div>
             <div style={{ display: tabActiva === "atributos" ? "block" : "none" }}>
-              <PestanaAtributosTipo
-                datos={snapshotsPorTab["atributos"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "atributos")}
-                bloqueado={estaBloqueado}
-              />
+              <SeccionSubpestanas activa={tabActiva === "atributos"}>
+                <PestanaAtributosTipo
+                  datos={snapshotsPorTab["atributos"] || configSnapshot}
+                  onChange={(d) => handleSnapshotChange(d, "atributos")}
+                  bloqueado={estaBloqueado}
+                />
+              </SeccionSubpestanas>
             </div>
             <div style={{ display: tabActiva === "ubicaciones" ? "block" : "none" }}>
-              <PestanaUbicaciones
-                datos={snapshotsPorTab["ubicaciones"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "ubicaciones")}
-                bloqueado={estaBloqueado}
-              />
+              <SeccionSubpestanas activa={tabActiva === "ubicaciones"}>
+                <PestanaUbicaciones
+                  datos={snapshotsPorTab["ubicaciones"] || configSnapshot}
+                  onChange={(d) => handleSnapshotChange(d, "ubicaciones")}
+                  bloqueado={estaBloqueado}
+                />
+              </SeccionSubpestanas>
             </div>
             <div style={{ display: tabActiva === "catalogos_auxiliares" ? "block" : "none" }}>
-              <PestanaCatalogosAuxiliares
-                datos={snapshotsPorTab["catalogos_auxiliares"] || configSnapshot}
-                onChange={(d) => handleSnapshotChange(d, "catalogos_auxiliares")}
-                bloqueado={estaBloqueado}
-              />
+              <SeccionSubpestanas activa={tabActiva === "catalogos_auxiliares"}>
+                <PestanaCatalogosAuxiliares
+                  datos={snapshotsPorTab["catalogos_auxiliares"] || configSnapshot}
+                  onChange={(d) => handleSnapshotChange(d, "catalogos_auxiliares")}
+                  bloqueado={estaBloqueado}
+                />
+              </SeccionSubpestanas>
             </div>
           </div>
         )}
         </div>
       </div>
     </div>
+    </ContenedorSubpestanas>
   );
 }

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { BotonIcono } from "@/shared/components/ui/BotonIcono";
 import { Edit2, Ban, Play, ArrowUp, ArrowDown, X } from "@/shared/components/ui/Iconos";
+import { SubpestanasEnRanura } from "@/shared/components/ui/RanuraSubpestanas";
 
 export interface CondicionFisica {
   id: string;
@@ -86,6 +87,16 @@ type CatalogoId =
   | "centros_costo"
   | "etiquetas_sugeridas"
   | "motivos_auxiliares";
+
+const NOMBRE_CATALOGO: Record<CatalogoId, string> = {
+  condicion_fisica: "Condición física",
+  monedas: "Monedas",
+  tipos_adquisicion: "Tipos de adquisición",
+  tipos_documento: "Tipos de documento",
+  centros_costo: "Centros de costo",
+  etiquetas_sugeridas: "Etiquetas sugeridas",
+  motivos_auxiliares: "Motivos de reclasificación / fusión",
+};
 
 export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props) {
   const [catalogoActivo, setCatalogoActivo] = useState<CatalogoId>("condicion_fisica");
@@ -368,7 +379,7 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h3 className="text-base font-bold text-slate-800">
-              Listas y catálogos auxiliares de activos
+              {NOMBRE_CATALOGO[catalogoActivo]}
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               Administración de listas maestras para normalización de datos en ciclo de vida, finanzas y auditoría.
@@ -387,29 +398,31 @@ export function PestanaCatalogosAuxiliares({ datos, onChange, bloqueado }: Props
         </div>
 
         {/* Pestañas horizontales de catálogos */}
-        <div className="pestanas" style={{ marginTop: 16 }}>
-          {[
-            { id: "condicion_fisica", label: "Condición física", badge: condiciones.length },
-            { id: "monedas", label: "Monedas", badge: monedas.length },
-            { id: "tipos_adquisicion", label: "Tipos de adquisición", badge: tiposAdquisicion.length },
-            { id: "tipos_documento", label: "Tipos de documento", badge: tiposDocumento.length },
-            { id: "centros_costo", label: "Centros de costo", badge: centrosCosto.length },
-            { id: "etiquetas_sugeridas", label: "Etiquetas sugeridas", badge: etiquetasSugeridas.length },
-            { id: "motivos_auxiliares", label: "Motivos de reclasificación / fusión", badge: motivosAuxiliares.length }
-          ].map((tab) => {
-            const activa = catalogoActivo === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setCatalogoActivo(tab.id as CatalogoId)}
-                className={activa ? "pestana pestana-activa" : "pestana"}
-              >
-                {tab.label} ({tab.badge})
-              </button>
-            );
-          })}
-        </div>
+        <SubpestanasEnRanura>
+          <div className="pestanas">
+            {[
+              { id: "condicion_fisica", label: "Condición física", badge: condiciones.length },
+              { id: "monedas", label: "Monedas", badge: monedas.length },
+              { id: "tipos_adquisicion", label: "Tipos de adquisición", badge: tiposAdquisicion.length },
+              { id: "tipos_documento", label: "Tipos de documento", badge: tiposDocumento.length },
+              { id: "centros_costo", label: "Centros de costo", badge: centrosCosto.length },
+              { id: "etiquetas_sugeridas", label: "Etiquetas sugeridas", badge: etiquetasSugeridas.length },
+              { id: "motivos_auxiliares", label: "Motivos de reclasificación / fusión", badge: motivosAuxiliares.length }
+            ].map((tab) => {
+              const activa = catalogoActivo === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setCatalogoActivo(tab.id as CatalogoId)}
+                  className={activa ? "pestana pestana-activa" : "pestana"}
+                >
+                  {tab.label} ({tab.badge})
+                </button>
+              );
+            })}
+          </div>
+        </SubpestanasEnRanura>
       </div>
 
       {/* Contenido según catálogo activo */}

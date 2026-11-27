@@ -64,15 +64,7 @@ export default function PaginaProblemasAsignados() {
         <div style={{ display: "flex", gap: 10 }}>
           <Link
             href="/plataforma/problemas/crear"
-            style={{
-              padding: "8px 14px",
-              backgroundColor: "#2563eb",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#ffffff",
-              textDecoration: "none",
-            }}
+            className="boton-primario"
           >
             Registrar problema
           </Link>
@@ -109,16 +101,7 @@ export default function PaginaProblemasAsignados() {
           </p>
           <Link
             href="/plataforma/problemas/candidatos"
-            style={{
-              display: "inline-block",
-              padding: "8px 16px",
-              backgroundColor: "#2563eb",
-              color: "#ffffff",
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
+            className="boton-primario"
           >
             Explorar candidatos a problema
           </Link>
@@ -190,15 +173,7 @@ export default function PaginaProblemasAsignados() {
                     <td style={{ padding: "12px 16px", textAlign: "right" }}>
                       <Link
                         href={`/plataforma/problemas/${p.id_problema}`}
-                        style={{
-                          padding: "4px 10px",
-                          backgroundColor: "#f8fafc",
-                          border: "1px solid #cbd5e1",
-                          borderRadius: 4,
-                          fontSize: 12,
-                          color: "#1e293b",
-                          textDecoration: "none",
-                        }}
+                        className="boton-secundario boton-sm"
                       >
                         Ver detalle
                       </Link>

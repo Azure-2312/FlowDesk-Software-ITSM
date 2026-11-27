@@ -222,33 +222,7 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-      {/* Cabecera Unificada Corporativa */}
-      <div className="cabecera-pagina">
-        <div>
-          <h1 className="titulo-pagina">
-            Comités Colegiados: CAB y ECAB
-          </h1>
-          <p className="descripcion-pagina">
-            Gobernanza del Change Advisory Board (CAB) y Emergency CAB: composición, quórum, reglas de voto y agendas.
-          </p>
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-          {onGuardar && (
-            <button
-              type="button"
-              onClick={onGuardar}
-              disabled={guardando || disabled}
-              className="boton-primario"
-            >
-              
-              <span>{guardando ? "Guardando..." : "Guardar miembros y quórum"}</span>
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Selector de Comité: Segmented Switch Moderno */}
+      {/* Pestañas arriba; el título corresponde al comité activo */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
         <div className="pestanas">
           <button
@@ -272,6 +246,32 @@ export const PestanaComites: React.FC<PestanaComitesProps> = ({ snapshot, catalo
               {ecabConfig.miembros.length}
             </span>
           </button>
+        </div>
+      </div>
+
+      {/* Cabecera Unificada Corporativa */}
+      <div className="cabecera-pagina">
+        <div>
+          <h1 className="titulo-pagina">
+            {panelActivo === "cab" ? "Miembros y quórum del CAB" : "Miembros y quórum del ECAB"}
+          </h1>
+          <p className="descripcion-pagina">
+            {panelActivo === "cab" ? "Change Advisory Board: composición, quórum y reglas de voto para cambios normales." : "Emergency CAB: composición, quórum y reglas de voto para cambios de emergencia."}
+          </p>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+          {onGuardar && (
+            <button
+              type="button"
+              onClick={onGuardar}
+              disabled={guardando || disabled}
+              className="boton-primario"
+            >
+              
+              <span>{guardando ? "Guardando..." : "Guardar miembros y quórum"}</span>
+            </button>
+          )}
         </div>
       </div>
 

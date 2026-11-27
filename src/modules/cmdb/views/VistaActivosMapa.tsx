@@ -353,7 +353,7 @@ export default function VistaActivosMapa() {
           >
             {/* Header de Pestañas Derechas */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 18px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
-              <div className="pestanas">
+              <div className="pestanas" data-ambito="panel">
                 <button
                   type="button"
                   onClick={() => setPestañaDerecha("lista")}

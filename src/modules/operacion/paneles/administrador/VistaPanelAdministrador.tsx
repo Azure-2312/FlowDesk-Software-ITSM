@@ -503,26 +503,7 @@ export default function VistaPanelAdministrador() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: "10px 12px",
-                    backgroundColor: "#f8fafc",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                    textDecoration: "none",
-                    color: "inherit",
-                    transition: "all 0.15s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#ffffff";
-                    e.currentTarget.style.borderColor = "#93c5fd";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f8fafc";
-                    e.currentTarget.style.borderColor = "#e2e8f0";
-                  }}
+                  className="tarjeta-acceso"
                 >
                   <div
                     style={{

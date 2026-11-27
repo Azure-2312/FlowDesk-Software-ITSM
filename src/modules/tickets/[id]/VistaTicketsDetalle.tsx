@@ -581,19 +581,8 @@ export default function PaginaDetalleTicket({
                   {ticket.id_problema && (
                     <Link
                       href={`/plataforma/problemas/${ticket.id_problema}`}
-                      style={{
-                        backgroundColor: "#fce7f3",
-                        color: "#9d174d",
-                        border: "1px solid #f472b6",
-                        padding: "2px 8px",
-                        borderRadius: 4,
-                        fontSize: 11,
-                        fontWeight: 700,
-                        textDecoration: "none",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 4
-                      }}
+                      className="insignia insignia-peligro"
+                      style={{ textDecoration: "none", gap: 4 }}
                       title={`Problema vinculado: ${ticket.problema_titulo || ""}`}
                     >
                       <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#be185d" }} />

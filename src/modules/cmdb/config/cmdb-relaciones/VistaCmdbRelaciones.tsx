@@ -209,35 +209,6 @@ export default function CmdbRelacionesConfigPage({
           </div>
         )}
 
-        {/* Encabezado Principal Estandarizado (Con márgenes superiores y laterales) */}
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          gap: 24,
-          marginBottom: 20
-        }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <h1 className="titulo-pagina">
-              Elementos de Configuración y Relaciones de CMDB
-            </h1>
-            <p className="descripcion-pagina">
-              Modelado de clases lógicas y físicas, tipos de enlace topológico, propagación de impacto, integridad y auditoría continua.
-            </p>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, paddingTop: 4 }}>
-            <button
-              type="button"
-              onClick={handleGuardarRelaciones}
-              disabled={guardando || !puedeEditar}
-              className="boton-primario"
-            >
-              {guardando ? "Guardando..." : "Guardar Configuración"}
-            </button>
-          </div>
-        </div>
-
         {/* Navegación horizontal de pestañas */}
         {!pestanaFija && (
           <div className="pestanas">
@@ -255,6 +226,35 @@ export default function CmdbRelacionesConfigPage({
             })}
           </div>
         )}
+
+        {/* Encabezado Principal Estandarizado (Con márgenes superiores y laterales) */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: 24,
+          marginBottom: 20
+        }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h1 className="titulo-pagina">
+              {pestanaInfo.titulo}
+            </h1>
+            <p className="descripcion-pagina">
+              {pestanaInfo.descripcion}
+            </p>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, paddingTop: 4 }}>
+            <button
+              type="button"
+              onClick={handleGuardarRelaciones}
+              disabled={guardando || !puedeEditar}
+              className="boton-primario"
+            >
+              {guardando ? "Guardando..." : "Guardar Configuración"}
+            </button>
+          </div>
+        </div>
 
         {/* Contenido Principal de la Pestaña Activa */}
         <div style={{ width: "100%" }}>

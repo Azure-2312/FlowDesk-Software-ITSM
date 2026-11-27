@@ -43,7 +43,7 @@ export default async function PaginaSolicitudesConfiguracion({ searchParams }: P
             seccionInicial="estados"
             tipoFijo="solicitud"
             ocultarTabsSuperiores={true}
-            ocultarCabecera={true}
+
           />
         )}
       </div>

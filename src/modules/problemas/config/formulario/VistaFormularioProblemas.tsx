@@ -21,6 +21,15 @@ interface VistaFormularioProblemasProps {
   pestanaFija?: "campos" | "listas_catalogos";
 }
 
+const TITULOS_PESTANA: Record<string, string> = {
+  campos: "Campos del formulario de problemas",
+  campos_personalizados: "Campos personalizados de problemas",
+  listas_catalogos: "Listas y catálogos de problemas",
+  matriz_prioridad: "Matriz de prioridad de problemas",
+  plantillas: "Plantillas de problema",
+  vista_ticket: "Diseño de la ficha del problema",
+};
+
 export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormularioProblemasProps = {}) {
   const [tabActiva, setTabActiva] = useState<TabId>(pestanaFija || "campos");
 
@@ -421,37 +430,6 @@ export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormul
     <div style={{ width: "100%", backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", flex: 1 }}>
       <div style={{ width: "100%", maxWidth: 1400, margin: "0 auto", padding: "24px 32px", flex: 1, boxSizing: "border-box" }}>
 
-      {/* Encabezado Principal de la Pantalla */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        gap: 16,
-        marginBottom: 16
-      }}>
-        <div>
-          <h1 className="titulo-pagina">
-            Configuración de Formulario de Problemas
-          </h1>
-          <p className="descripcion-pagina">
-            Definición de campos, formularios de alta y edición, catálogos ITIL 4, matriz institucional y parametrización visual del ticket.
-          </p>
-        </div>
-
-        {/* Indicador de estado y Acción Primaria */}
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button
-            type="button"
-            onClick={handleGuardarBorrador}
-            disabled={guardando}
-            className="boton-primario"
-            style={{ flexShrink: 0 }}
-          >
-            {guardando ? "Guardando..." : "Guardar Configuración"}
-          </button>
-        </div>
-      </div>
-
       {/* Selector de Pestañas (solo si no es fija) */}
       {!pestanaFija && (
       <div className="pestanas">
@@ -477,6 +455,37 @@ export default function ConfiguracionFormularioPage({ pestanaFija }: VistaFormul
         })}
       </div>
       )}
+
+      {/* Encabezado Principal de la Pantalla */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        gap: 16,
+        marginBottom: 16
+      }}>
+        <div>
+          <h1 className="titulo-pagina">
+            {TITULOS_PESTANA[tabActiva] ?? "Configuración de formulario de problemas"}
+          </h1>
+          <p className="descripcion-pagina">
+            Definición de campos, formularios de alta y edición, catálogos ITIL 4, matriz institucional y parametrización visual del ticket.
+          </p>
+        </div>
+
+        {/* Indicador de estado y Acción Primaria */}
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <button
+            type="button"
+            onClick={handleGuardarBorrador}
+            disabled={guardando}
+            className="boton-primario"
+            style={{ flexShrink: 0 }}
+          >
+            {guardando ? "Guardando..." : "Guardar Configuración"}
+          </button>
+        </div>
+      </div>
 
       {/* Estados de Pantalla: Cargando / Error / Contenido */}
       {cargando ? (

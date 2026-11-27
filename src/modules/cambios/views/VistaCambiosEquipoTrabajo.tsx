@@ -33,31 +33,13 @@ export default function VistaCambiosEquipoTrabajo({ datos }: Props) {
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <Link
             href="/plataforma/cambios/equipos"
-            style={{
-              textDecoration: "none",
-              fontSize: 13,
-              fontWeight: 500,
-              padding: "8px 14px",
-              borderRadius: 6,
-              border: "1px solid #cbd5e1",
-              backgroundColor: "#ffffff",
-              color: "#334155",
-            }}
+            className="boton-secundario"
           >
             Ver todos los equipos
           </Link>
           <Link
             href="/plataforma/cambios/mis-cambios"
-            style={{
-              textDecoration: "none",
-              fontSize: 13,
-              fontWeight: 500,
-              padding: "8px 14px",
-              borderRadius: 6,
-              border: "1px solid #cbd5e1",
-              backgroundColor: "#ffffff",
-              color: "#334155",
-            }}
+            className="boton-secundario"
           >
             Mis cambios
           </Link>
@@ -114,15 +96,7 @@ export default function VistaCambiosEquipoTrabajo({ datos }: Props) {
 
                 <Link
                   href={`/plataforma/cambios/gestion/${cambioActivo.id_cambio}`}
-                  style={{
-                    padding: "7px 14px",
-                    backgroundColor: "#2563eb",
-                    color: "#ffffff",
-                    borderRadius: 6,
-                    fontSize: 12.5,
-                    fontWeight: 600,
-                    textDecoration: "none",
-                  }}
+                  className="boton-primario"
                 >
                   Abrir expediente
                 </Link>
@@ -254,15 +228,7 @@ export default function VistaCambiosEquipoTrabajo({ datos }: Props) {
                       <td style={{ padding: "10px 14px", textAlign: "right" }}>
                         <Link
                           href={`/plataforma/cambios/gestion/${h.id_cambio}`}
-                          style={{
-                            padding: "4px 8px",
-                            fontSize: 11.5,
-                            border: "1px solid #cbd5e1",
-                            borderRadius: 4,
-                            color: "#1e293b",
-                            textDecoration: "none",
-                            backgroundColor: "#f8fafc",
-                          }}
+                          className="boton-secundario boton-sm"
                         >
                           Ver
                         </Link>

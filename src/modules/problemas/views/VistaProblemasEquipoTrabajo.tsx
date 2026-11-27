@@ -32,31 +32,13 @@ export default function VistaProblemasEquipoTrabajo({ datos }: Props) {
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <Link
             href="/plataforma/problemas/equipos"
-            style={{
-              textDecoration: "none",
-              fontSize: 13,
-              fontWeight: 500,
-              padding: "8px 14px",
-              borderRadius: 6,
-              border: "1px solid #cbd5e1",
-              backgroundColor: "#ffffff",
-              color: "#334155",
-            }}
+            className="boton-secundario"
           >
             Ver todos los equipos
           </Link>
           <Link
             href="/plataforma/problemas/mios"
-            style={{
-              textDecoration: "none",
-              fontSize: 13,
-              fontWeight: 500,
-              padding: "8px 14px",
-              borderRadius: 6,
-              border: "1px solid #cbd5e1",
-              backgroundColor: "#ffffff",
-              color: "#334155",
-            }}
+            className="boton-secundario"
           >
             Mis problemas
           </Link>
@@ -175,15 +157,7 @@ export default function VistaProblemasEquipoTrabajo({ datos }: Props) {
                     <td style={{ padding: "10px 14px", textAlign: "right" }}>
                       <Link
                         href={`/plataforma/problemas/${p.id_problema}`}
-                        style={{
-                          padding: "4px 8px",
-                          fontSize: 11.5,
-                          border: "1px solid #cbd5e1",
-                          borderRadius: 4,
-                          color: "#1e293b",
-                          textDecoration: "none",
-                          backgroundColor: "#f8fafc",
-                        }}
+                        className="boton-secundario boton-sm"
                       >
                         Detalle
                       </Link>
@@ -238,15 +212,7 @@ export default function VistaProblemasEquipoTrabajo({ datos }: Props) {
                     <td style={{ padding: "10px 14px", textAlign: "right" }}>
                       <Link
                         href={`/plataforma/problemas/${h.id_problema}`}
-                        style={{
-                          padding: "4px 8px",
-                          fontSize: 11.5,
-                          border: "1px solid #cbd5e1",
-                          borderRadius: 4,
-                          color: "#1e293b",
-                          textDecoration: "none",
-                          backgroundColor: "#f8fafc",
-                        }}
+                        className="boton-secundario boton-sm"
                       >
                         Ver
                       </Link>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
+import Pestanas from "@/shared/components/ui/Pestanas";
 
 interface ErrorConocidoItem {
   id_problema: number;
@@ -204,14 +205,33 @@ export default function VistaKedb() {
 
   return (
     <div className="vista-contenedor">
-      {/* 1. Cabecera */}
-      <div style={{ marginBottom: 20 }}>
-        <h1 className="titulo-pagina">
-          Base de errores conocidos (KEDB)
-        </h1>
-        <p className="descripcion-pagina">
-          Repositorio institucional de causas raíz documentadas y soluciones temporales (workarounds) para acelerar la resolución de incidentes.
-        </p>
+      <Pestanas
+        items={[
+          { id: "plantillas", etiqueta: "Catálogo de errores conocidos", contador: items.length },
+          { id: "registrar", etiqueta: "Registrar error conocido" },
+          { id: "aprobar", etiqueta: "Aprobar publicaciones", contador: propuestas.length },
+        ]}
+        activa={pestanaActiva}
+        onCambiar={setPestanaActiva}
+      />
+
+      <div className="cabecera-pagina">
+        <div>
+          <h1 className="titulo-pagina">
+            {pestanaActiva === "plantillas"
+              ? "Catálogo de errores conocidos (KEDB)"
+              : pestanaActiva === "registrar"
+              ? "Registrar error conocido"
+              : "Aprobar publicaciones de la KEDB"}
+          </h1>
+          <p className="descripcion-pagina">
+            {pestanaActiva === "plantillas"
+              ? "Causas raíz documentadas y soluciones temporales (workarounds) para acelerar la resolución de incidentes."
+              : pestanaActiva === "registrar"
+              ? "Documenta la causa raíz y el workaround de un problema; quedará pendiente de aprobación antes de publicarse."
+              : "Errores conocidos propuestos que esperan revisión antes de publicarse en la KEDB."}
+          </p>
+        </div>
       </div>
 
       {ok && (
@@ -225,39 +245,6 @@ export default function VistaKedb() {
           {error}
         </div>
       )}
-
-      {/* 2. Selector de Pestañas */}
-      <div className="pestanas">
-        <button
-          type="button"
-          onClick={() => setPestanaActiva("plantillas")}
-          className={pestanaActiva === "plantillas" ? "pestana pestana-activa" : "pestana"}
-        >
-          <span>Catálogo de errores conocidos</span>
-          <span style={{ fontSize: 11, backgroundColor: pestanaActiva === "plantillas" ? "#dbeafe" : "#f1f5f9", color: pestanaActiva === "plantillas" ? "#1e40af" : "#64748b", padding: "2px 8px", borderRadius: 999 }}>
-            {items.length}
-          </span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setPestanaActiva("registrar")}
-          className={pestanaActiva === "registrar" ? "pestana pestana-activa" : "pestana"}
-        >
-          <span>Registrar error conocido</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setPestanaActiva("aprobar")}
-          className={pestanaActiva === "aprobar" ? "pestana pestana-activa" : "pestana"}
-        >
-          <span>Aprobar publicaciones</span>
-          <span style={{ fontSize: 11, backgroundColor: propuestas.length > 0 ? "#fef3c7" : "#f1f5f9", color: propuestas.length > 0 ? "#92400e" : "#64748b", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
-            {propuestas.length}
-          </span>
-        </button>
-      </div>
 
       {/* 3. Contenido: Pestaña Plantillas / Catálogo */}
       {pestanaActiva === "plantillas" && (
@@ -332,19 +319,7 @@ export default function VistaKedb() {
                         href={`/plataforma/problemas/crear?titulo=${encodeURIComponent(k.titulo)}&descripcion=${encodeURIComponent(
                           `${k.descripcion}\n\n[Causa Raíz Documentada]: ${k.causa_raiz || "N/A"}\n[Solución Temporal (Workaround)]: ${k.workaround || "N/A"}`
                         )}&impacto=${k.id_impacto || 2}&urgencia=${k.id_urgencia || 2}&metodo=${encodeURIComponent(k.metodo_analisis || "5_porques")}`}
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 6,
-                          padding: "8px 16px",
-                          backgroundColor: "#2563eb",
-                          color: "#ffffff",
-                          borderRadius: 8,
-                          fontSize: 12.5,
-                          fontWeight: 700,
-                          textDecoration: "none",
-                          boxShadow: "0 1px 2px rgba(37, 99, 235, 0.2)",
-                        }}
+                        className="boton-primario"
                       >
                         <span>Crear problema con esta plantilla</span>
                       </Link>
