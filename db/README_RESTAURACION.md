@@ -16,6 +16,7 @@ Si Supabase presenta caídas, se cambia de instancia en la nube o se desea despl
 | **`05_vista_umbral_problemas.sql`** | Pestaña "Umbral de recurrencia" en Problemas → Configuración | Idempotente |
 | **`06_facturacion_electronica_proveedores.sql`** | Integración SUNAT vía Nubefact (proveedor autorizado) para comprobantes de proveedores de activos | RUC y razón social en `proveedor_ti`, tablas `comprobante_proveedor` (+ detalle y bitácora), clave `integracion_nubefact`, menú *Activos → Comprobantes electrónicos* (#21276) y vistas por perfil (9 registro/consulta, 5 conformidad, 6 consulta). Idempotente. Requiere `NUBEFACT_TOKEN` en el entorno; la ruta de la cuenta se registra en la pantalla de configuración. |
 | **`07_api_integraciones_seguras.sql`** | API de Solicitantes para otros equipos y consumo de la API de clientes del Equipo 10 | Credenciales con `client_id`, vigencia, IPs permitidas y rotación; tabla `api_token_acceso` (tokens temporales hasheados); columnas `direccion`/`id_usuario`/`detalle` en la bitácora inmutable `api_log_auditoria`; clave `integracion_equipo10_clientes`; menú *Plataforma → Integraciones API* (#21277, solo Administrador). Revoca las claves del esquema anterior. Idempotente. Requiere `API_KEY_SALT` (≥ 32 caracteres) y `EQUIPO10_API_KEY`. |
+| **`08_comprobantes_archivos.sql`** | Archivo propio de los comprobantes electrónicos | Tabla `comprobante_proveedor_archivo` con el XML firmado, el CDR de SUNAT y el PDF de cada comprobante, su huella SHA-256 y un trigger que impide modificarlos o borrarlos. Requiere `06`. Idempotente. |
 | **`archive/migrations_historicas.zip`** | Respaldo histórico | Las 67 migraciones incrementales previas comprimidas para trazabilidad |
 
 ---
@@ -29,7 +30,7 @@ Si Supabase presenta caídas, se cambia de instancia en la nube o se desea despl
    1. Pega y corre el contenido de **`db/01_schema_completo.sql`** *(Crea las 129 tablas y relaciones)*.
    2. Pega y corre el contenido de **`db/02_stored_procedures.sql`** *(Crea los procedimientos almacenados y triggers)*.
    3. Pega y corre el contenido de **`db/03_seed_data.sql`** *(Inserta los catálogos, roles, menús y usuarios)*.
-   4. Corre en orden los complementos **`04`**, **`05`**, **`06`** y **`07`** (todos son idempotentes).
+   4. Corre en orden los complementos **`04`** a **`08`** (todos son idempotentes).
 4. En el archivo `.env.local` de FlowDesk, actualiza la variable `DATABASE_URL` con la nueva cadena de conexión.
 5. ¡Listo! La aplicación y la suite de pruebas estarán 100% operativas.
 
@@ -49,6 +50,7 @@ Si Supabase presenta caídas, se cambia de instancia en la nube o se desea despl
    psql -U postgres -h localhost -d flowdesk -f db/05_vista_umbral_problemas.sql
    psql -U postgres -h localhost -d flowdesk -f db/06_facturacion_electronica_proveedores.sql
    psql -U postgres -h localhost -d flowdesk -f db/07_api_integraciones_seguras.sql
+   psql -U postgres -h localhost -d flowdesk -f db/08_comprobantes_archivos.sql
    ```
 3. En `.env.local`, configurar:
    ```env

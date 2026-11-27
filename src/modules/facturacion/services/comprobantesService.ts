@@ -7,6 +7,7 @@
 // (9/1) · conformidad (5 de su área / 1) · descargar archivos (todos con acceso).
 // ============================================================================
 
+import crypto from "crypto";
 import type { PoolClient } from "pg";
 import { query, queryRow, transaccion } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
@@ -144,7 +145,7 @@ export async function obtenerComprobante(id: number, sesion: SesionUsuario) {
     params
   );
   if (!cabecera) throw new ErrorDominio("Comprobante no encontrado o fuera de su alcance.", 404);
-  const [items, eventos] = await Promise.all([
+  const [items, eventos, archivos] = await Promise.all([
     query(
       `SELECT dt.*, a.codigo_patrimonial
          FROM comprobante_proveedor_detalle dt
@@ -161,8 +162,15 @@ export async function obtenerComprobante(id: number, sesion: SesionUsuario) {
         WHERE e.id_comprobante = $1 ORDER BY e.fecha, e.id_evento`,
       [id]
     ),
+    // Solo metadatos: el contenido se entrega por la ruta de descarga.
+    query(
+      `SELECT tipo, nombre, tamano_bytes, hash_sha256, fecha_almacenamiento
+         FROM comprobante_proveedor_archivo WHERE id_comprobante = $1
+        ORDER BY CASE tipo WHEN 'xml' THEN 1 WHEN 'cdr' THEN 2 ELSE 3 END`,
+      [id]
+    ),
   ]);
-  return { ...cabecera, items, eventos };
+  return { ...cabecera, items, eventos, archivos };
 }
 
 /** Catálogos para el formulario de registro */
@@ -419,7 +427,115 @@ async function guardarRespuesta(
   await registrarEvento(null, id, accion, sesion, estadoAnterior, estado, {
     serie: r.serie, numero: r.numero, aceptada_por_sunat: r.aceptada_por_sunat ?? null, codigo_sunat: r.sunat_responsecode ?? null, mensaje,
   });
-  return { estado, mensaje };
+  const archivos = await almacenarArchivos(id, r, sesion);
+  return { estado, mensaje, archivos_almacenados: archivos };
+}
+
+// ---------------------------------------------------------------------------
+// Archivo propio de comprobantes (XML firmado, CDR de SUNAT y PDF)
+// ---------------------------------------------------------------------------
+
+type TipoArchivo = "xml" | "cdr" | "pdf";
+const TIPOS_ARCHIVO: TipoArchivo[] = ["xml", "cdr", "pdf"];
+const MAX_BYTES_ARCHIVO = 5 * 1024 * 1024;
+
+const sha256 = (b: Buffer) => crypto.createHash("sha256").update(b).digest("hex");
+
+/**
+ * Comprueba que el contenido sea realmente el documento esperado. Es estricto
+ * porque la tabla es de solo inserción: Nubefact responde "<xml>-</xml>"
+ * mientras un archivo no existe, y eso no debe quedar guardado para siempre.
+ */
+function contenidoValido(tipo: TipoArchivo, b: Buffer): boolean {
+  if (b.length < 200) return false;
+  if (tipo === "pdf") return b.subarray(0, 5).toString("latin1") === "%PDF-";
+  if (tipo === "cdr" && b.subarray(0, 2).toString("latin1") === "PK") return true; // CDR comprimido (ZIP)
+  const textoXml = b.subarray(0, 4096).toString("utf8");
+  if (!/^\s*(﻿)?<\?xml/.test(textoXml)) return false;
+  return tipo === "xml" ? /<(\w+:)?Invoice[\s>]/.test(textoXml) : /<(\w+:)?ApplicationResponse[\s>]/.test(textoXml);
+}
+
+/** SUNAT ya respondió (aceptado o rechazado): solo entonces existe el CDR. */
+const sunatRespondio = (r: RespuestaNubefact) =>
+  Boolean(r.aceptada_por_sunat) || (r.sunat_responsecode != null && String(r.sunat_responsecode).trim() !== "");
+
+function extension(tipo: TipoArchivo, tipoContenido: string, b: Buffer): string {
+  if (tipo === "pdf") return "pdf";
+  if (tipo === "xml") return "xml";
+  return b.subarray(0, 2).toString("latin1") === "PK" || /zip/i.test(tipoContenido) ? "zip" : "xml";
+}
+
+async function descargarDeNubefact(url: string): Promise<{ contenido: Buffer; tipoContenido: string }> {
+  const controlador = new AbortController();
+  const temporizador = setTimeout(() => controlador.abort(), 30000);
+  try {
+    const res = await fetch(url, { cache: "no-store", signal: controlador.signal });
+    if (!res.ok) throw new ErrorDominio(`Nubefact no devolvió el archivo (HTTP ${res.status}).`, res.status === 404 ? 404 : 502);
+    const contenido = Buffer.from(await res.arrayBuffer());
+    if (contenido.length === 0 || contenido.length > MAX_BYTES_ARCHIVO) throw new ErrorDominio("El archivo recibido de Nubefact no es válido.", 502);
+    return { contenido, tipoContenido: (res.headers.get("content-type") || "application/octet-stream").slice(0, 100) };
+  } catch (error: any) {
+    if (error instanceof ErrorDominio) throw error;
+    throw new ErrorDominio("No se pudo descargar el archivo desde Nubefact.", 502);
+  } finally {
+    clearTimeout(temporizador);
+  }
+}
+
+/**
+ * Descarga de Nubefact y guarda en FlowDesk los archivos que aún no tiene
+ * (cada uno una sola vez, con su huella SHA-256). Si alguno todavía no está
+ * disponible (p. ej. el CDR de una boleta pendiente) se guardará en la próxima
+ * consulta. Nunca interrumpe la emisión: los fallos quedan en la trazabilidad.
+ */
+async function almacenarArchivos(id: number, r: RespuestaNubefact, sesion: SesionUsuario): Promise<TipoArchivo[]> {
+  const guardados: TipoArchivo[] = [];
+  try {
+    const existentes = await query<{ tipo: TipoArchivo }>(`SELECT tipo FROM comprobante_proveedor_archivo WHERE id_comprobante = $1`, [id]);
+    const faltan = TIPOS_ARCHIVO.filter((t) => !existentes.some((e) => e.tipo === t));
+    if (faltan.length === 0) return guardados;
+    const c = await queryRow<{ tipo_documento: string; serie: string; correlativo: string }>(
+      `SELECT tipo_documento, serie, correlativo FROM comprobante_proveedor WHERE id_comprobante = $1`,
+      [id]
+    );
+    if (!c?.correlativo) return guardados;
+
+    const detalle: Record<string, unknown> = {};
+    for (const tipo of faltan) {
+      if (tipo === "cdr" && !sunatRespondio(r)) continue;
+      const url = enlaceArchivo(r, tipo);
+      if (!url) continue;
+      try {
+        const { contenido, tipoContenido } = await descargarDeNubefact(url);
+        if (!contenidoValido(tipo, contenido)) {
+          detalle[tipo] = "contenido no válido";
+          continue;
+        }
+        const nombre = `${tipo === "cdr" ? "R-" : ""}${c.tipo_documento}-${c.serie}-${c.correlativo}.${extension(tipo, tipoContenido, contenido)}`;
+        const hash = sha256(contenido);
+        const ins = await query(
+          `INSERT INTO comprobante_proveedor_archivo
+             (id_comprobante, tipo, nombre, tipo_contenido, tamano_bytes, hash_sha256, contenido, origen, id_usuario)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+           ON CONFLICT (id_comprobante, tipo) DO NOTHING
+           RETURNING tipo`,
+          [id, tipo, nombre, tipoContenido, contenido.length, hash, contenido, new URL(url).hostname, sesion.id_usuario]
+        );
+        if (ins.length > 0) {
+          guardados.push(tipo);
+          detalle[tipo] = { bytes: contenido.length, sha256: hash };
+        }
+      } catch (e: any) {
+        detalle[tipo] = e?.message || "no disponible";
+      }
+    }
+    if (Object.keys(detalle).length > 0) {
+      await registrarEvento(null, id, guardados.length > 0 ? "ARCHIVOS_ALMACENADOS" : "ARCHIVOS_PENDIENTES", sesion, null, null, detalle);
+    }
+  } catch (e: any) {
+    console.error("No se pudieron almacenar los archivos del comprobante", id, e?.message);
+  }
+  return guardados;
 }
 
 async function marcarError(id: number, sesion: SesionUsuario, estadoAnterior: string, accion: string, mensaje: string) {
@@ -502,31 +618,35 @@ export async function actualizarEstadoSunat(id: number, sesion: SesionUsuario) {
   return guardarRespuesta(id, r.json, sesion, c.estado, "CONSULTA_SUNAT");
 }
 
-/** Descarga el PDF, XML o CDR desde Nubefact (enlaces que devuelve la consulta). */
-export async function archivoComprobante(id: number, sesion: SesionUsuario, archivo: "pdf" | "xml" | "cdr") {
+/**
+ * Entrega el XML, CDR o PDF desde el archivo propio de FlowDesk, verificando
+ * su huella SHA-256. Si aún no está guardado, lo trae de Nubefact y lo guarda.
+ */
+export async function archivoComprobante(id: number, sesion: SesionUsuario, archivo: TipoArchivo) {
   const c: any = await obtenerComprobante(id, sesion); // aplica el alcance del perfil
   if (!c.correlativo || ["BORRADOR", "ERROR"].includes(c.estado)) throw new ErrorDominio("El comprobante aún no fue emitido.", 409);
-  const r = await consultarComprobante(c.tipo_documento, c.serie, Number(c.correlativo));
-  if (r.json.errors) throw new ErrorDominio(`Nubefact: ${describirError(r.json)}`, 502);
-  const url = enlaceArchivo(r.json, archivo);
-  if (!url) {
-    throw new ErrorDominio(archivo === "cdr" ? "SUNAT aún no devolvió la constancia de recepción (CDR)." : "Nubefact aún no generó el archivo.", 409);
+
+  const leerGuardado = () =>
+    queryRow<{ nombre: string; tipo_contenido: string; hash_sha256: string; contenido: Buffer }>(
+      `SELECT nombre, tipo_contenido, hash_sha256, contenido FROM comprobante_proveedor_archivo WHERE id_comprobante = $1 AND tipo = $2`,
+      [id, archivo]
+    );
+
+  let guardado = await leerGuardado();
+  if (!guardado) {
+    const r = await consultarComprobante(c.tipo_documento, c.serie, Number(c.correlativo));
+    if (r.json.errors) throw new ErrorDominio(`Nubefact: ${describirError(r.json)}`, 502);
+    await almacenarArchivos(id, r.json, sesion);
+    guardado = await leerGuardado();
+    if (!guardado) {
+      throw new ErrorDominio(archivo === "cdr" ? "SUNAT aún no devolvió la constancia de recepción (CDR)." : "Nubefact aún no generó el archivo.", 409);
+    }
   }
-  const controlador = new AbortController();
-  const temporizador = setTimeout(() => controlador.abort(), 30000);
-  try {
-    const res = await fetch(url, { cache: "no-store", signal: controlador.signal });
-    if (!res.ok) throw new ErrorDominio(`Nubefact no devolvió el archivo (HTTP ${res.status}).`, res.status === 404 ? 404 : 502);
-    const contenido = Buffer.from(await res.arrayBuffer());
-    const tipoContenido = res.headers.get("content-type") || "application/octet-stream";
-    const ext = archivo === "pdf" ? "pdf" : archivo === "xml" ? "xml" : /xml/i.test(tipoContenido) ? "xml" : "zip";
-    return { contenido, tipoContenido, nombre: `${archivo === "cdr" ? "R-" : ""}${c.tipo_documento}-${c.serie}-${c.correlativo}.${ext}` };
-  } catch (error: any) {
-    if (error instanceof ErrorDominio) throw error;
-    throw new ErrorDominio("No se pudo descargar el archivo desde Nubefact.", 502);
-  } finally {
-    clearTimeout(temporizador);
+  if (sha256(guardado.contenido) !== guardado.hash_sha256.trim()) {
+    await registrarEvento(null, id, "INTEGRIDAD_FALLIDA", sesion, null, null, { archivo });
+    throw new ErrorDominio("La huella del archivo no coincide: el archivo fue alterado.", 500);
   }
+  return { contenido: guardado.contenido, tipoContenido: guardado.tipo_contenido, nombre: guardado.nombre, hash: guardado.hash_sha256.trim() };
 }
 
 // ---------------------------------------------------------------------------

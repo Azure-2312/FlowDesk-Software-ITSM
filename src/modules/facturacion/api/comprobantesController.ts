@@ -126,6 +126,7 @@ export async function archivo(req: NextRequest, ctx: Contexto) {
         "Content-Disposition": `attachment; filename="${a.nombre}"`,
         "Cache-Control": "no-store",
         "X-Content-Type-Options": "nosniff",
+        "X-Contenido-SHA256": a.hash,
       },
     });
   } catch (error) {

@@ -9,6 +9,7 @@ Ejecute, en este orden, los scripts que aún no estén aplicados en producción.
 1. `db/05_vista_umbral_problemas.sql`
 2. `db/06_facturacion_electronica_proveedores.sql`
 3. `db/07_api_integraciones_seguras.sql`
+4. `db/08_comprobantes_archivos.sql`
 
 ## 2. Crear el proyecto en Vercel
 

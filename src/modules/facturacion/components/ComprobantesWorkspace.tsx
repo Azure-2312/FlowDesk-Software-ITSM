@@ -292,7 +292,7 @@ function DetalleComprobante({
   const [error, setError] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [ocupado, setOcupado] = useState(false);
-  const [seccion, setSeccion] = useState<"items" | "trazabilidad">("items");
+  const [seccion, setSeccion] = useState<"items" | "archivos" | "trazabilidad">("items");
   const [observacion, setObservacion] = useState("");
 
   const cargar = useCallback(async () => {
@@ -394,6 +394,7 @@ function DetalleComprobante({
               <Pestanas
                 items={[
                   { id: "items", etiqueta: "Ítems", contador: c.items.length },
+                  { id: "archivos", etiqueta: "Archivos", contador: c.archivos?.length ?? 0 },
                   { id: "trazabilidad", etiqueta: "Trazabilidad", contador: c.eventos.length },
                 ]}
                 activa={seccion}
@@ -440,6 +441,8 @@ function DetalleComprobante({
                     </tbody>
                   </table>
                 </div>
+              ) : seccion === "archivos" ? (
+                <ArchivosComprobante id={id} archivos={c.archivos || []} emitido={hayArchivos} />
               ) : c.eventos.length === 0 ? (
                 <div className="estado-vacio">Sin eventos registrados.</div>
               ) : (
@@ -467,7 +470,9 @@ function DetalleComprobante({
                             <div style={{ fontSize: 11.5, color: "var(--color-texto-tenue)" }}>{e.perfil || ""}</div>
                           </td>
                           <td style={{ fontSize: 12, color: "var(--color-texto-secundario)" }}>
-                            {e.detalle?.mensaje || e.detalle?.observacion || (e.detalle?.activos_actualizados != null ? `${e.detalle.activos_actualizados} activo(s) con costo actualizado` : "")}
+                            {e.accion === "ARCHIVOS_ALMACENADOS" || e.accion === "ARCHIVOS_PENDIENTES"
+                              ? Object.entries(e.detalle || {}).map(([k, v]: [string, any]) => `${k.toUpperCase()}: ${typeof v === "string" ? v : "guardado"}`).join(" · ")
+                              : e.detalle?.mensaje || e.detalle?.observacion || (e.detalle?.activos_actualizados != null ? `${e.detalle.activos_actualizados} activo(s) con costo actualizado` : "")}
                           </td>
                         </tr>
                       ))}
@@ -554,5 +559,64 @@ function Dato({ etiqueta, children }: { etiqueta: string; children: React.ReactN
       <div style={{ fontSize: 11.5, color: "var(--color-texto-tenue)", marginBottom: 3 }}>{etiqueta}</div>
       <div style={{ fontSize: 13.5, fontWeight: 600 }}>{children}</div>
     </div>
+  );
+}
+
+const NOMBRE_ARCHIVO: Record<string, string> = {
+  xml: "XML firmado (comprobante legal)",
+  cdr: "CDR de SUNAT (constancia de recepción)",
+  pdf: "PDF (representación impresa)",
+};
+
+/** Archivos que FlowDesk conserva del comprobante, con su huella SHA-256. */
+function ArchivosComprobante({ id, archivos, emitido }: { id: number; archivos: any[]; emitido: boolean }) {
+  if (archivos.length === 0) {
+    return (
+      <div className="estado-vacio">
+        {emitido
+          ? "Aún no hay archivos guardados. Se guardan al consultar el estado en SUNAT o al descargarlos por primera vez."
+          : "Los archivos se guardan cuando el comprobante se emite."}
+      </div>
+    );
+  }
+  return (
+    <>
+      <p className="descripcion-pagina" style={{ margin: "0 0 10px" }}>
+        Copias guardadas en FlowDesk al emitir el comprobante. No se pueden modificar ni borrar; la huella SHA-256 se verifica en cada descarga.
+      </p>
+      <div className="contenedor-tabla">
+        <table className="tabla">
+          <thead>
+            <tr>
+              <th>Archivo</th>
+              <th style={{ textAlign: "right" }}>Tamaño</th>
+              <th>Huella SHA-256</th>
+              <th>Guardado</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {archivos.map((a: any) => (
+              <tr key={a.tipo}>
+                <td>
+                  {NOMBRE_ARCHIVO[a.tipo] || a.tipo}
+                  <div style={{ fontSize: 11.5, color: "var(--color-texto-tenue)" }}>{a.nombre}</div>
+                </td>
+                <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>{(Number(a.tamano_bytes) / 1024).toFixed(1)} KB</td>
+                <td style={{ fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace", fontSize: 11.5, wordBreak: "break-all", minWidth: 160 }}>
+                  {String(a.hash_sha256).trim()}
+                </td>
+                <td style={{ whiteSpace: "nowrap" }}>{new Date(a.fecha_almacenamiento).toLocaleString("es-PE")}</td>
+                <td style={{ textAlign: "right" }}>
+                  <a className="boton-secundario boton-sm" href={`/api/facturacion/comprobantes/${id}/archivo?tipo=${a.tipo}`}>
+                    Descargar
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
