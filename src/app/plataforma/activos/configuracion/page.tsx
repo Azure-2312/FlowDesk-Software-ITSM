@@ -26,7 +26,9 @@ export default async function PaginaActivosConfiguracion({ searchParams }: PageP
       {vistaActiva === "facturacion" ? (
         <VistaConfiguracionFacturacion />
       ) : (
-        <VistaTiposModelosAtributos vistaActivaN1={vistaActiva} />
+        // key: cada pestaña monta su propia instancia; sin ella React reutiliza el
+        // componente y conserva la subpestaña anterior (p. ej. "Atributos por tipo").
+        <VistaTiposModelosAtributos key={vistaActiva} vistaActivaN1={vistaActiva} />
       )}
     </div>
   );
