@@ -57,7 +57,15 @@ export default function VistaConfiguracionFacturacion() {
     setProbando(true);
     setPrueba(null);
     try {
-      const res = await fetch("/api/facturacion/configuracion/probar", { method: "POST" });
+      const res = await fetch("/api/facturacion/configuracion/probar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ruta: config?.ruta ?? "",
+          serie_factura: config?.serie_factura,
+          tiempo_espera_ms: config?.tiempo_espera_ms,
+        }),
+      });
       const d = await res.json();
       setPrueba(res.ok ? d : { ok: false, pasos: [{ paso: "Prueba", ok: false, detalle: d.error }] });
     } finally {

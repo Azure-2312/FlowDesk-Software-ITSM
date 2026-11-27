@@ -18,6 +18,24 @@ export async function leerConfiguracion() {
   return { config, credenciales: { token: tokenConfigurado() } };
 }
 
+/**
+ * Configuración para "Probar conexión": la guardada, con la ruta, la serie de
+ * facturas y el tiempo de espera que el usuario tiene en el formulario. No se
+ * guarda nada. La ruta pasa por rutaValida al probar, así que el token solo
+ * puede enviarse a servidores de Nubefact.
+ */
+export async function configParaPrueba(entrada: Partial<ConfigNubefact>): Promise<ConfigNubefact> {
+  const config: ConfigNubefact = { ...CONFIG_POR_DEFECTO, ...(await obtenerConfigNubefact()) };
+  if (typeof entrada?.ruta === "string") config.ruta = entrada.ruta.trim().replace(/\/+$/, "");
+  if (typeof entrada?.serie_factura === "string" && /^F[A-Z0-9]{3}$/i.test(entrada.serie_factura.trim())) {
+    config.serie_factura = entrada.serie_factura.trim().toUpperCase();
+  }
+  if (entrada?.tiempo_espera_ms !== undefined) {
+    config.tiempo_espera_ms = Math.min(Math.max(Number(entrada.tiempo_espera_ms) || 30000, 5000), 60000);
+  }
+  return config;
+}
+
 export async function guardarConfiguracion(entrada: Partial<ConfigNubefact>, idUsuario: number) {
   const actual = await obtenerConfigNubefact();
   const nueva: ConfigNubefact = { ...CONFIG_POR_DEFECTO, ...actual };

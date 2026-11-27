@@ -18,6 +18,7 @@ import {
   registrarConformidad,
 } from "@/modules/facturacion/services/comprobantesService";
 import {
+  configParaPrueba,
   guardarConfiguracion,
   guardarVinculoProveedor,
   leerConfiguracion,
@@ -160,7 +161,9 @@ export async function editarConfiguracion(req: NextRequest) {
 export async function probar(req: NextRequest) {
   const s = exigir(req, CAPACIDADES.FACTURACION_CONFIGURAR);
   if (s instanceof NextResponse) return s;
-  return responder(() => probarConexion(), "No se pudo probar la conexión");
+  // Prueba con los datos que están en el formulario (aunque aún no se hayan guardado).
+  const body = await req.json().catch(() => ({}));
+  return responder(async () => probarConexion(await configParaPrueba(body)), "No se pudo probar la conexión");
 }
 
 // PUT /api/facturacion/proveedores/[id]
