@@ -11,7 +11,7 @@ export async function listarColaboradores(idUsuario: number) {
   }
 
   const colaboradores = await query(
-    `SELECT u.id_usuario,u.nombres,u.apellido_paterno,u.correo_electronico,COUNT(t.id_ticket) FILTER(WHERE et.es_terminal=false)::int AS tickets_abiertos FROM usuario u LEFT JOIN ticket t ON t.id_usuario_solicitante=u.id_usuario AND t.id_departamento_empresa=$1 AND t.estado_registro=true LEFT JOIN estado_ticket et ON et.id_estado=t.id_estado WHERE u.id_departamento_empresa=$1 AND u.estado_registro=true AND u.id_usuario<>$2 GROUP BY u.id_usuario ORDER BY u.apellido_paterno,u.nombres`,
+    `SELECT u.id_usuario,u.nombres,u.apellido_paterno,u.correo_electronico,COUNT(t.id_ticket) FILTER(WHERE t.id_estado IN (1,2,3,4))::int AS tickets_abiertos FROM usuario u LEFT JOIN ticket t ON t.id_usuario_solicitante=u.id_usuario AND t.id_departamento_empresa=$1 AND t.estado_registro=true LEFT JOIN estado_ticket et ON et.id_estado=t.id_estado WHERE u.id_departamento_empresa=$1 AND u.estado_registro=true AND u.id_usuario<>$2 GROUP BY u.id_usuario ORDER BY u.apellido_paterno,u.nombres`,
     [area.id_departamento_empresa, idUsuario]
   );
 

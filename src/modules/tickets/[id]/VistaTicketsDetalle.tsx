@@ -21,6 +21,7 @@ import {
   type FlujoEstadosAcciones,
   type VistasTicketConfig,
 } from "@/modules/tickets/reglasVistaTicket";
+import { ticketPorAsignar } from "@/shared/lib/reglas-ticket";
 
 interface CampoConfigurado {
   id: string;
@@ -719,7 +720,9 @@ export default function PaginaDetalleTicket({
                       {/* CASO 1: TICKET SIN RESPONSABLE ASIGNADO */}
                       {!ticket.es_terminal && !ticket.id_usuario_asignado && (
                         <>
-                          {/* Atender ticket: técnicos, supervisores y administradores */}
+                          {/* Atender ticket: técnicos, supervisores y administradores.
+                              Solo si está por asignar (no resuelto ni esperando aprobación). */}
+                          {ticketPorAsignar(ticket) && (
                           <button
                             type="button"
                             onClick={() => ejecutarAccion({ id_usuario_asignado: usuarioActual?.id_usuario, id_estado: 3 })}
@@ -728,9 +731,10 @@ export default function PaginaDetalleTicket({
                           >
                             {ejecutandoAccion ? "Asignando..." : "Atender ticket"}
                           </button>
+                          )}
 
                           {/* Asignar ticket: SOLO supervisores y administradores */}
-                          {(perfilesIds.includes(1) || perfilesIds.includes(4)) && (
+                          {ticketPorAsignar(ticket) && (perfilesIds.includes(1) || perfilesIds.includes(4)) && (
                             <button
                               type="button"
                               onClick={() => {

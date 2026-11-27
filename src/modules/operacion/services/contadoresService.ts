@@ -1,5 +1,5 @@
 import { queryRow } from "@/shared/lib/db";
-import { sqlVencidoActivo } from "@/shared/lib/sla-sql";
+import { sqlEsperaAprobacion, sqlVencidoActivo } from "@/shared/lib/sla-sql";
 
 export interface Contador {
   total: number;
@@ -43,6 +43,7 @@ export async function obtenerContadoresTecnico(idUsuario: number): Promise<Conta
       FROM ticket
       WHERE id_usuario_asignado IS NULL
         AND id_estado NOT IN (5, 6, 7)
+        AND NOT ${sqlEsperaAprobacion("ticket")}
         AND estado_registro = true
         AND ($1::int IS NULL OR id_departamento = $1)
     `,

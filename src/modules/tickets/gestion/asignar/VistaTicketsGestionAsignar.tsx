@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { Ticket, DepartamentoTI, TecnicoConCarga } from "@/types";
 import { rutaDetalleTicket } from "@/modules/tickets/rutas";
+import { ticketEnAtencion, ticketPorAsignar } from "@/shared/lib/reglas-ticket";
 
 const ESTADOS_OPERATIVOS: Record<string, { etiqueta: string; color: string; bg: string }> = {
   DISPONIBLE: { etiqueta: "Disponible", color: "#059669", bg: "#ecfdf5" },
@@ -107,8 +108,8 @@ export default function PaginaAsignarTickets() {
 
   // Filtrado de tickets
   const ticketsFiltrados = tickets.filter((t) => {
-    if (filtroAsignacion === "sin_asignar" && t.id_usuario_asignado !== null) return false;
-    if (filtroAsignacion === "todos_activos" && t.es_terminal) return false;
+    if (filtroAsignacion === "sin_asignar" && !ticketPorAsignar(t)) return false;
+    if (filtroAsignacion === "todos_activos" && !ticketEnAtencion(t)) return false;
     if (filtroPrioridad && t.prioridad_codigo !== filtroPrioridad) return false;
     if (filtroTipo && t.tipo_codigo !== filtroTipo) return false;
     if (busquedaTicket.trim()) {
@@ -127,16 +128,14 @@ export default function PaginaAsignarTickets() {
     let criticos = 0;
     let sla = 0;
     for (const t of tickets) {
-      if (!t.es_terminal) {
-        if (t.id_usuario_asignado === null) {
-          sinAsignar++;
-          if (t.prioridad_codigo === "P1" || t.prioridad_codigo === "P2") {
-            criticos++;
-          }
+      if (ticketPorAsignar(t)) {
+        sinAsignar++;
+        if (t.prioridad_codigo === "P1" || t.prioridad_codigo === "P2") {
+          criticos++;
         }
-        if (t.sla_vencido) {
-          sla++;
-        }
+      }
+      if (ticketEnAtencion(t) && t.sla_vencido) {
+        sla++;
       }
     }
     return { sinAsignarTotal: sinAsignar, criticosSinAsignar: criticos, slaVencidos: sla };

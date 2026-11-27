@@ -4,6 +4,7 @@ import { ErrorDominio } from "@/shared/lib/errores";
 import { validarCargaTecnico } from "./tecnicoCargaService";
 import { resolverFlujoEstados, resolverReglasVistaTicket } from "../reglasVistaTicket";
 import { Ticket, ComentarioTicket, ActualizarTicketPayload, TicketAprobacion, AdjuntoTicket } from "@/types";
+import { calcularSla, ticketEnAtencion, ticketEsperaAprobacion } from "@/shared/lib/reglas-ticket";
 
 export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
   const sqlTicket = `
@@ -181,13 +182,9 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
     : esPersonalTI || esPrioridadEjecutivaOVip;
 
   // Calcular SLA restante
-  const ahora = Date.now();
-  const limiteMs = new Date(ticket.fecha_limite_sla).getTime();
-  const minutosRestantes = Math.round((limiteMs - ahora) / 60000);
-  const slaVencido = !ticket.es_terminal && minutosRestantes < 0;
-
-  ticket.minutos_restantes_sla = minutosRestantes;
-  ticket.sla_vencido = slaVencido;
+  const sla = calcularSla(ticket);
+  ticket.minutos_restantes_sla = sla.minutos_restantes_sla;
+  ticket.sla_vencido = sla.sla_vencido;
 
   // Obtener comentarios
   let sqlComentarios = `
@@ -396,6 +393,25 @@ export async function actualizarTicket(sesion: any, idTicket: number, body: Actu
   }
   if (body.id_problema !== undefined && actual.id_tipo_ticket !== 1) {
     throw new ErrorDominio("Solo los incidentes pueden vincularse a un problema.");
+  }
+
+  // Solo se trabaja un ticket en atención y que no espere la decisión del jefe
+  // (regla común: shared/lib/reglas-ticket).
+  if (!body.decision_aprobacion) {
+    const asignaTecnico =
+      body.id_usuario_asignado !== undefined &&
+      body.id_usuario_asignado !== null &&
+      body.id_usuario_asignado !== actual.id_usuario_asignado;
+    if (asignaTecnico && (!ticketEnAtencion(actual) || ticketEsperaAprobacion(actual))) {
+      throw new ErrorDominio(
+        ticketEsperaAprobacion(actual)
+          ? "La solicitud todavía espera la aprobación del jefe (o fue rechazada); no se puede asignar a un técnico."
+          : "El ticket ya no está en atención (resuelto, cerrado o cancelado); no se puede asignar."
+      );
+    }
+    if (body.id_estado !== undefined && Number(body.id_estado) !== 7 && ticketEsperaAprobacion(actual)) {
+      throw new ErrorDominio("La solicitud todavía espera la aprobación del jefe (o fue rechazada); no se puede atender.");
+    }
   }
 
   if (body.id_usuario_asignado !== undefined && body.id_usuario_asignado !== actual.id_usuario_asignado) {

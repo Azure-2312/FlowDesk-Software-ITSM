@@ -1,7 +1,7 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { resolverAprobacionNegocio as resolverAprobacionNegocioDominio } from "@/modules/cambios";
-import { sqlVencidoActivo } from "@/shared/lib/sla-sql";
+import { sqlEnAtencion, sqlVencidoActivo } from "@/shared/lib/sla-sql";
 
 /**
  * Servicio del portal del Gestor de Área (perfil 5).
@@ -34,8 +34,8 @@ export async function obtenerPanelArea(idUsuario: number) {
 
   const kpis = await queryRow<any>(
     `SELECT
-       COUNT(*) FILTER (WHERE et.es_terminal = false)::int AS abiertos,
-       COUNT(*) FILTER (WHERE et.es_terminal = true)::int AS cerrados,
+       COUNT(*) FILTER (WHERE ${sqlEnAtencion()})::int AS abiertos,
+       COUNT(*) FILTER (WHERE NOT ${sqlEnAtencion()})::int AS cerrados,
        COUNT(*) FILTER (WHERE t.estado_aprobacion = 'PENDIENTE_APROBACION')::int AS aprobaciones_pendientes,
        COUNT(*) FILTER (WHERE ${sqlVencidoActivo()})::int AS vencidos,
        ROUND(AVG(t.calificacion_csat)::numeric, 2) AS csat_promedio
@@ -176,7 +176,7 @@ export async function obtenerReportesArea(idUsuario: number) {
     `SELECT
        COALESCE(s.nombre, 'Sin servicio') AS servicio,
        COUNT(*)::int AS tickets,
-       COUNT(*) FILTER (WHERE et.es_terminal = false)::int AS abiertos,
+       COUNT(*) FILTER (WHERE ${sqlEnAtencion()})::int AS abiertos,
        COUNT(*) FILTER (WHERE ${sqlVencidoActivo()})::int AS vencidos
      FROM ticket t
      LEFT JOIN servicio_catalogo s ON s.id_servicio = t.id_servicio

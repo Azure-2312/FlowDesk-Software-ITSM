@@ -1,6 +1,7 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { validarCargaTecnico } from "./tecnicoCargaService";
+import { sqlEnAtencion, sqlEsperaAprobacion } from "@/shared/lib/sla-sql";
 
 export interface UsuarioTecnico {
   idUsuario: number;
@@ -42,13 +43,15 @@ export async function tomarTicketDeMesa(idTicket: number, usuario: UsuarioTecnic
          AND id_usuario_asignado IS NULL
          AND id_departamento = $3
          AND estado_registro = true
+         AND ${sqlEnAtencion("ticket")}
+         AND NOT ${sqlEsperaAprobacion("ticket")}
        RETURNING id_ticket, codigo_ticket, titulo, id_estado`,
     [usuario.idUsuario, idTicket, tecnico.id_departamento]
   );
 
   if (!ticketTomado) {
     throw new ErrorDominio(
-      "El ticket ya fue tomado por otro especialista o no pertenece a tu departamento.",
+      "El ticket ya fue tomado por otro especialista, no pertenece a tu departamento o no está disponible (resuelto, cerrado, cancelado o pendiente de aprobación).",
       409
     );
   }

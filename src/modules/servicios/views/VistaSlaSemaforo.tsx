@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { Ticket } from "@/types";
+import { ticketEnAtencion, ticketEsperaAprobacion } from "@/shared/lib/reglas-ticket";
 
 export default function PaginaSlaSemaforo({ alcanceInicial = "mios" }: { alcanceInicial?: "mios" | "area" } = {}) {
   const alcance = alcanceInicial;
@@ -42,7 +43,9 @@ export default function PaginaSlaSemaforo({ alcanceInicial = "mios" }: { alcance
     const enCurso: Ticket[] = [];
     const enPausa: Ticket[] = [];
 
-    tickets.forEach((t) => {
+    // Regla común: solo lo que está en atención y ya es trabajo de TI
+    // (la vista de departamento trae también resueltos y cerrados).
+    tickets.filter((t) => ticketEnAtencion(t) && !ticketEsperaAprobacion(t)).forEach((t) => {
       if (t.id_estado === 4) {
         enPausa.push(t);
       } else if (t.sla_vencido) {

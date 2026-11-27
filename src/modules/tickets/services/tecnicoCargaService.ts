@@ -37,7 +37,7 @@ export async function validarCargaTecnico(
      INNER JOIN estado_ticket et ON et.id_estado = t.id_estado
      WHERE t.id_usuario_asignado = $1
        AND t.estado_registro = true
-       AND et.es_terminal = false
+       AND t.id_estado IN (1, 2, 3, 4) -- en atención (shared/lib/sla-sql)
        ${filtroExcluir}`,
     params
   );
