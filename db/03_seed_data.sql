@@ -1,5 +1,5 @@
 -- ============================================================
--- DATOS DE PRUEBA (SEED)
+-- DATOS BASE DEL SISTEMA (SEED): solo lo necesario para que el sistema funcione
 -- Ejecutar DESPUÉS de schema.sql
 -- ============================================================
 
@@ -18,15 +18,14 @@ INSERT INTO perfiles (id_perfil, nombre, descripcion, estado_registro) VALUES
 ON CONFLICT (id_perfil) DO UPDATE 
 SET nombre = EXCLUDED.nombre, descripcion = EXCLUDED.descripcion, estado_registro = true;
 
--- ---------- Usuario administrador de prueba ----------
--- correo: apazamiguel88@gmail.com   clave: admin123  (guardada ya hasheada con bcrypt)
+-- ---------- Usuario administrador inicial ----------
+-- Contraseña inicial conocida (hash bcrypt): cámbiela en el primer ingreso.
 INSERT INTO usuario (dni, nombres, apellido_paterno, apellido_materno, celular, correo_electronico, clave, estado_registro)
 VALUES ('00000001', 'Admin', 'Sistema', 'Prueba', '999999999', 'apazamiguel88@gmail.com',
         '$2b$10$3kQ0mHEC.2SfidxNgEyFD.4AcGMCsU16HdS4rd0QidqSr5qnQsfRm', true)
 ON CONFLICT (correo_electronico) DO NOTHING;
 
--- El admin de prueba tiene los 9 perfiles a la vez, para poder probar
--- la pantalla de "elige tu perfil" al iniciar sesión con todos los roles.
+-- El administrador inicial tiene todos los perfiles para poder configurar cada módulo.
 INSERT INTO usuario_perfiles (id_usuario, id_perfil, estado_registro)
 VALUES (1, 1, true), (1, 2, true), (1, 3, true), (1, 4, true), (1, 5, true), (1, 6, true), (1, 7, true), (1, 8, true), (1, 9, true)
 ON CONFLICT (id_usuario, id_perfil) DO UPDATE SET estado_registro = true;
@@ -660,7 +659,7 @@ INSERT INTO opciones_menu_perfiles (id_opcion_menu, id_perfil, orden, estado_reg
   (21267, 5, 1, true),
   (21267, 6, 1, true);
 -- ============================================================
--- CATÁLOGOS ITIL 4 Y DATOS DE PRUEBA
+-- CATÁLOGOS ITIL 4
 -- ============================================================
 
 -- Tipos de Ticket (Incidente vs Solicitud)
@@ -887,125 +886,10 @@ INSERT INTO departamento_ti (id_departamento, codigo, nombre, descripcion, id_su
 
 SELECT setval('departamento_ti_id_departamento_seq', (SELECT MAX(id_departamento) FROM departamento_ti));
 
--- Acuerdos de Nivel Operativo entre Equipos Internos (ITIL 4: OLA)
-INSERT INTO acuerdo_nivel_operativo (id_departamento, codigo_acuerdo, nombre_acuerdo, tipo_compromiso, tiempo_maximo_horas, tiempo_alerta_horas, descripcion) VALUES
-(1, 'OLA-MESA-01', 'Triaje y Asignación Inicial N1', 'TRIAJE_INICIAL', 1, 1, 'Tiempo máximo para clasificar, verificar pertinencia y asignar o resolver casos de primer contacto'),
-(1, 'OLA-MESA-02', 'Resolución de Autoservicio y Accesos N1', 'ATENCION_ESTANDAR', 4, 3, 'Reseteo asistido de claves, orientación en autoayuda y consultas estándar'),
-(2, 'OLA-CAMPO-01', 'Atención de Falla Presencial Crítica N2', 'ATENCION_CRITICA', 4, 3, 'Diagnóstico presencial urgente y entrega de equipo de contingencia temporal'),
-(2, 'OLA-CAMPO-02', 'Staging y Entrega de Hardware Nuevo N2', 'ATENCION_ESTANDAR', 24, 18, 'Clonación de imagen SOE, cifrado BitLocker y firma de acta patrimonial'),
-(3, 'OLA-RED-01', 'Restablecimiento de Conectividad Crítica', 'ATENCION_CRITICA', 2, 1, 'Diagnóstico y recuperación de corte de enlace o access point de sede'),
-(3, 'OLA-RED-02', 'Habilitación de Puntos y Telefonía IP', 'ATENCION_ESTANDAR', 12, 9, 'Tendido de cableado, parcheo en rack y aprovisionamiento de extensión telefónica'),
-(4, 'OLA-SIST-01', 'Recuperación de Servicios e Infraestructura N3', 'ATENCION_CRITICA', 4, 3, 'Atención a caídas de bases de datos, máquinas virtuales o servicios de dominio'),
-(4, 'OLA-SIST-02', 'Aprovisionamiento de Usuarios y Licencias N3', 'ATENCION_ESTANDAR', 12, 9, 'Creación de usuarios en Active Directory, ERP corporativo y buzones departamentales'),
-(5, 'OLA-SEC-01', 'Contención Inmediata de Incidentes de Seguridad', 'ATENCION_CRITICA', 1, 1, 'Aislamiento de terminales infectados, bloqueo perimetral de IP y análisis forense'),
-(5, 'OLA-SEC-02', 'Evaluación de Privilegios y Excepciones Web', 'ATENCION_ESTANDAR', 4, 3, 'Análisis de segregación de funciones (SoD) y revisión de solicitudes de navegación')
-ON CONFLICT (codigo_acuerdo) DO NOTHING;
-
 -- Detalle Operativo de Técnicos (Niveles N1/N2/N3 y Límites de Capacidad WIP)
 INSERT INTO tecnico_detalle (id_usuario, id_departamento, nivel_soporte, capacidad_maxima_tickets, estado_operativo, especialidad_principal, estado_registro) VALUES
 (1, 1, 2, 8, 'DISPONIBLE', 'Soporte General e Identidades corporativas', true)
 ON CONFLICT (id_usuario) DO NOTHING;
-
--- ============================================================
--- BLOQUE 9: DATOS DE PRUEBA ITIL v4 / ISO 20000 / ISO 27001
--- ============================================================
-
-INSERT INTO activo (id_activo, codigo_patrimonial, numero_serie, tipo_activo, marca, modelo, id_departamento, id_usuario_custodio, estado_activo, fecha_adquisicion, fecha_fin_garantia, costo_compra, usuario_creacion)
-VALUES 
-(1, 'ACT-SRV-001', 'SRV-DL380-9921', 'SERVIDOR', 'HPE', 'ProLiant DL380 Gen10', 4, 1, 'EN_OPERACION', '2024-01-15', '2027-01-15', 8500.00, 1),
-(2, 'ACT-SRV-002', 'SRV-R740-4412', 'SERVIDOR', 'Dell', 'PowerEdge R740', 4, 1, 'EN_OPERACION', '2024-03-10', '2027-03-10', 7900.00, 1),
-(3, 'ACT-SW-001', 'SW-CISCO-3850', 'SWITCH', 'Cisco', 'Catalyst 3850 48P', 3, 1, 'EN_OPERACION', '2023-06-20', '2026-06-20', 3200.00, 1),
-(4, 'ACT-LAP-101', 'LAP-LENOVO-X1', 'LAPTOP', 'Lenovo', 'ThinkPad X1 Carbon Gen 11', 2, 1, 'EN_OPERACION', '2024-05-02', '2027-05-02', 1850.00, 1),
-(5, 'ACT-LAP-102', 'LAP-DELL-5430', 'LAPTOP', 'Dell', 'Latitude 5430', 2, 1, 'EN_STOCK', '2024-08-11', '2027-08-11', 1400.00, 1)
-ON CONFLICT (codigo_patrimonial) DO NOTHING;
-
-INSERT INTO elemento_configuracion (id_ci, id_activo, codigo_ci, nombre, tipo_ci, ambiente, ip_principal, version_software, criticidad, id_departamento_soporte, usuario_creacion)
-VALUES
-(1, 1, 'CI-SRV-APP-01', 'Servidor de Aplicaciones Core Node.js', 'SERVIDOR_LOGICO', 'PRODUCCION', '10.0.1.15', 'Ubuntu 22.04 LTS / Node 20', 'CRITICA', 4, 1),
-(2, 2, 'CI-SRV-DB-01', 'Cluster Base de Datos PostgreSQL Produccion', 'BASE_DATOS', 'PRODUCCION', '10.0.1.20', 'PostgreSQL 16.2', 'CRITICA', 4, 1),
-(3, 3, 'CI-NET-SW-CORE', 'Switch de Core y Distribucion Principal Piso 2', 'NODO_RED', 'PRODUCCION', '10.0.0.1', 'Cisco IOS-XE 16.9', 'ALTA', 3, 1),
-(4, NULL, 'CI-APP-PORTAL', 'Portal Corporativo del Sistema de Tickets', 'APLICACION', 'PRODUCCION', '10.0.1.50', 'v2.4.0-itil', 'CRITICA', 4, 1)
-ON CONFLICT (codigo_ci) DO NOTHING;
-
-INSERT INTO ci_relacion (id_ci_padre, id_ci_hijo, tipo_relacion)
-VALUES
-(4, 1, 'DEPENDE_DE'),
-(1, 2, 'DEPENDE_DE'),
-(1, 3, 'CONECTADO_CON')
-ON CONFLICT (id_ci_padre, id_ci_hijo) DO NOTHING;
-
-INSERT INTO licencia_software (id_licencia, nombre_software, fabricante, clave_licencia, tipo_licencia, cantidad_adquirida, cantidad_en_uso, fecha_vencimiento, costo_anual, usuario_creacion)
-VALUES
-(1, 'Microsoft 365 E5 Corporativo', 'Microsoft Corporation', 'M365-E5-8841-CORP', 'SUSCRIPCION_ANUAL', 250, 185, '2026-12-31', 45000.00, 1),
-(2, 'Oracle Database Enterprise Edition', 'Oracle Corporation', 'ORA-EE-9912-LIC', 'PERPETUA', 4, 4, '2028-06-30', 28000.00, 1),
-(3, 'CrowdStrike Falcon Endpoint Security', 'CrowdStrike Inc.', 'CS-FLC-7712-ENT', 'SUSCRIPCION_ANUAL', 300, 240, '2026-11-15', 18500.00, 1),
-(4, 'AutoCAD 2026 Enterprise', 'Autodesk', 'ACAD-2026-3312', 'SUSCRIPCION_ANUAL', 20, 19, '2026-10-31', 9200.00, 1)
-ON CONFLICT (id_licencia) DO NOTHING;
-
-INSERT INTO problema (id_problema, codigo_problema, titulo, descripcion, id_impacto, id_urgencia, id_prioridad, id_estado, causa_raiz, metodo_analisis, workaround, es_error_conocido, id_ci_afectado, id_usuario_asignado, id_departamento, usuario_creacion)
-VALUES 
-(1, 'PRB-2026-0001', 'Microcortes aleatorios y desconexion en VPN corporativa SSL', 'Multiples colaboradores de diversas sedes reportan desconexiones de la VPN cada 45 minutos durante llamadas y transferencias.', 3, 3, 1, 3, 'Saturacion de conexiones simultaneas por asignacion insuficiente de pool de memoria en el Gateway perimetral.', '5_WHYS', 'Reiniciar el servicio openvpn-daemon en el nodo secundario y derivar usuarios al Gateway B.', true, 3, 1, 3, 1),
-(2, 'PRB-2026-0002', 'Lentitud y cuelgues recurrentes en reportes financieros del ERP', 'El módulo de consolidación contable se congela al emitir balances mensuales afectando a Gerencia de Finanzas.', 2, 2, 2, 4, 'Consultas de indices secuenciales sin cache en tablas de auditoria con mas de 5 millones de registros.', 'ISHIKAWA', 'Ejecutar VACUUM ANALYZE manual y restringir el rango de fechas de consulta a 6 meses.', true, 2, 1, 4, 1)
-ON CONFLICT (codigo_problema) DO NOTHING;
-
-INSERT INTO error_conocido (id_error_conocido, id_problema, codigo_kedb, titulo, sintomas, workaround, solucion_definitiva)
-VALUES
-(1, 1, 'KEDB-001', 'Fallo por Keepalive Timeout en VPN SSL Corporativa', 'El cliente VPN muestra "Connection Reset by Peer" y se desconecta de las carpetas de red.', 'Conectarse temporalmente mediante la URL de contingencia vpn-backup.empresa.com.', 'Actualizar el firmware del Firewall perimetral a la version 7.4.2 con ampliacion de buffer.'),
-(2, 2, 'KEDB-002', 'Saturacion de memoria compartida en reportes ERP', 'El navegador responde con error HTTP 504 Gateway Timeout al generar reportes de mas de 1000 paginas.', 'Descargar el reporte en formato CSV plano en lugar de PDF previsualizado.', 'Crear indices cubrientes en PostgreSQL sobre fecha_movimiento y id_cuenta_contable.')
-ON CONFLICT (codigo_kedb) DO NOTHING;
-
-INSERT INTO cambio (id_cambio, codigo_cambio, titulo, descripcion, tipo_cambio, id_impacto, id_urgencia, id_prioridad, id_estado, justificacion, plan_implementacion, plan_rollback, plan_pruebas, ventana_inicio, ventana_fin, id_ci_afectado, id_problema_origen, id_usuario_solicitante, id_usuario_responsable, usuario_creacion)
-VALUES
-(1, 'RFC-2026-0001', 'Actualizacion de firmware en Firewall perimetral Fortinet v7.4.2', 'Aplicacion de parche de seguridad critico para solucionar vulnerabilidad CVE-2026 y corregir microcortes de VPN.', 'NORMAL', 2, 2, 2, 3, 'Mitigar vulnerabilidades y solucionar el Problema PRB-2026-0001.', '1. Generar backup completo de configuracion. 2. Instalar imagen firmware v7.4.2. 3. Reiniciar nodo pasivo primero y verificar failover.', 'Restaurar imagen anterior v7.2.8 desde el slot de recuperacion secundaria en caso de falla de trafico.', 'Validar tuneles IPsec activos y pruebas de conexion remota con 5 usuarios de prueba.', '2026-10-04 23:00:00-05', '2026-10-05 03:00:00-05', 3, 1, 1, 1, 1),
-(2, 'RFC-2026-0002', 'Optimizacion de indices e incremento de memoria en PostgreSQL', 'Creacion de indices concurrentes sobre tablas financieras y ajuste de shared_buffers a 16GB.', 'NORMAL', 2, 1, 3, 2, 'Solucion definitiva para el Problema PRB-2026-0002 de lentitud en reportes.', '1. Tomar snapshot de volumen EBS. 2. Ejecutar script CREATE INDEX CONCURRENTLY. 3. Reiniciar servicio postgresql en ventana.', 'DROP INDEX CONCURRENTLY y restaurar postgresql.conf a configuracion previa.', 'Ejecucion de consulta de prueba y verificacion de tiempo de respuesta < 2 segundos.', '2026-10-11 22:00:00-05', '2026-10-12 01:00:00-05', 2, 2, 1, 1, 1)
-ON CONFLICT (codigo_cambio) DO NOTHING;
-
-INSERT INTO cambio_aprobacion (id_cambio_aprobacion, id_cambio, id_usuario_aprobador, decision, comentario)
-VALUES
-(1, 1, 1, 'APROBADO', 'Aprobado formalmente por comite CAB tras revision del plan de contingencia.')
-ON CONFLICT (id_cambio_aprobacion) DO NOTHING;
-
-INSERT INTO articulo_conocimiento (id_articulo, codigo_articulo, titulo, contenido_markdown, id_categoria, estado_editorial, id_autor, id_revisor, visitas, utilidad_positiva)
-VALUES 
-(1, 'ART-2026-001', 'Guia de Conexion y Solucion de Problemas con la VPN Corporativa', '1. Abre la aplicacion VPN en tu estacion de trabajo. 2. Ingresa credenciales institucionales y confirma 2FA. En caso de microcortes, conectarse a vpn-backup.empresa.com.', 2, 'PUBLICADO', 1, 1, 342, 48),
-(2, 'ART-2026-002', 'Procedimiento para Solicitud y Reemplazo de Baterias o Cargadores', 'Registra el requerimiento en el Catalogo de Servicios bajo SRV-HW-02 especificando el codigo patrimonial y acude al Area de Soporte en Sitio Piso 2.', 1, 'PUBLICADO', 1, 1, 198, 27),
-(3, 'ART-2026-003', 'Configuracion de Impresoras Multifuncionales de Red por Departamento', 'Rutas de impresion de red: Piso 2 Finanzas, Piso 3 Operaciones, Piso 4 TI. Presiona Win + R, escribe la ruta del servidor de impresion y presiona Enter.', 1, 'PUBLICADO', 1, 1, 510, 89)
-ON CONFLICT (codigo_articulo) DO NOTHING;
-
-SELECT setval(pg_get_serial_sequence('activo', 'id_activo'), coalesce((SELECT max(id_activo) FROM activo), 1));
-SELECT setval(pg_get_serial_sequence('elemento_configuracion', 'id_ci'), coalesce((SELECT max(id_ci) FROM elemento_configuracion), 1));
-SELECT setval(pg_get_serial_sequence('licencia_software', 'id_licencia'), coalesce((SELECT max(id_licencia) FROM licencia_software), 1));
-SELECT setval(pg_get_serial_sequence('problema', 'id_problema'), coalesce((SELECT max(id_problema) FROM problema), 1));
-SELECT setval(pg_get_serial_sequence('error_conocido', 'id_error_conocido'), coalesce((SELECT max(id_error_conocido) FROM error_conocido), 1));
-SELECT setval(pg_get_serial_sequence('cambio', 'id_cambio'), coalesce((SELECT max(id_cambio) FROM cambio), 1));
-SELECT setval(pg_get_serial_sequence('cambio_aprobacion', 'id_cambio_aprobacion'), coalesce((SELECT max(id_cambio_aprobacion) FROM cambio_aprobacion), 1));
-SELECT setval(pg_get_serial_sequence('articulo_conocimiento', 'id_articulo'), coalesce((SELECT max(id_articulo) FROM articulo_conocimiento), 1));
-
-
-
-
-
--- ============================================================
--- BLOQUE 10: CREDENCIALES DE API CLIENTES / INTEROPERABILIDAD
--- ============================================================
-INSERT INTO api_credenciales_externas (
-    id_credencial, nombre_grupo, contacto, api_key_prefijo, api_key_hash, permisos, limite_rpm, estado
-) VALUES (
-    1,
-    'Grupo 2 - Sistema Aliado Externo',
-    'representante.grupo2@universidad.edu.pe',
-    'fdk_live_aliado',
-    '169bae38347400c9a10075b4c20d21b34b44e98c3c833d2cd0eaff4931df01e4',
-    '["clientes:read", "clientes:write"]'::jsonb,
-    120,
-    true
-)
-ON CONFLICT (api_key_hash) DO UPDATE SET
-    estado = true,
-    permisos = EXCLUDED.permisos,
-    limite_rpm = EXCLUDED.limite_rpm;
-
-SELECT setval(pg_get_serial_sequence('api_credenciales_externas', 'id_credencial'), coalesce((SELECT max(id_credencial) FROM api_credenciales_externas), 1));
 
 -- ---------- Sincronizar secuencias con los ids ya insertados ----------
 -- Sin esto, el primer INSERT de cada tabla con datos semilla falla con

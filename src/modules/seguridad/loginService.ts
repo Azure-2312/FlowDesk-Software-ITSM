@@ -71,10 +71,15 @@ export async function iniciarSesion(datos: DatosLogin): Promise<ResultadoLogin> 
     };
   }
 
-  // 1.1) Restricción de dominio: solo dominio corporativo de la empresa (@systemticket.pe),
-  // excepto el administrador único autorizado con dominio externo (apazamiguel88@gmail.com).
+  // 1.1) Restricción de dominio: solo el dominio corporativo (@systemticket.pe), salvo los
+  // correos externos autorizados en la variable de entorno CORREOS_EXCEPCION_DOMINIO
+  // (separados por comas). Así ningún correo personal queda escrito en el código.
   const correoNormalizado = correo_electronico.toLowerCase().trim();
-  const esExcepcionAutorizada = correoNormalizado === "apazamiguel88@gmail.com";
+  const excepciones = (process.env.CORREOS_EXCEPCION_DOMINIO || "")
+    .split(",")
+    .map((c) => c.trim().toLowerCase())
+    .filter(Boolean);
+  const esExcepcionAutorizada = excepciones.includes(correoNormalizado);
   const tieneDominioCorporativo = correoNormalizado.endsWith("@systemticket.pe");
 
   if (!esExcepcionAutorizada && !tieneDominioCorporativo) {

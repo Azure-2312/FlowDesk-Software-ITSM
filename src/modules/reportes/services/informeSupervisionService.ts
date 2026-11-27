@@ -105,7 +105,7 @@ export async function generarInformeSupervision(idUsuarioSupervisor: number): Pr
   const metadatos: MetadatosInforme = {
     fecha_emision: new Date().toLocaleString("es-PE", { dateStyle: "long", timeStyle: "medium" }),
     supervisor_nombre: supInfo?.nombre || "Supervisor TI Institucional",
-    supervisor_correo: supInfo?.correo || "supervisor@empresa.com",
+    supervisor_correo: supInfo?.correo || "—",
     organizacion: "FlowDesk IT Service Management · ITIL v4",
     version_sistema: "FlowDesk Enterprise v2.5",
   };

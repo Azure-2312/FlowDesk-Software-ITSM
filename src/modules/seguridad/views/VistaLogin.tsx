@@ -87,14 +87,6 @@ export default function PaginaLogin() {
       return;
     }
 
-    const correoNorm = correo.toLowerCase().trim();
-    const esExcepcion = correoNorm === "apazamiguel88@gmail.com";
-    const esDominioCorporativo = correoNorm.endsWith("@systemticket.pe");
-    if (!esExcepcion && !esDominioCorporativo) {
-      setErrorLogin("Solo está permitido iniciar sesión con el correo institucional de la empresa (@systemticket.pe), a excepción de apazamiguel88@gmail.com.");
-      return;
-    }
-
     if (!clave) {
       setErrorLogin("Ingresa tu contraseña");
       return;
@@ -265,14 +257,6 @@ export default function PaginaLogin() {
               const v = validarCorreo(correo, "El correo electrónico", true);
               if (!v.valido) {
                 return <AlertaCampo error={v.mensaje} />;
-              }
-              const correoNorm = correo.toLowerCase().trim();
-              const esExcepcion = correoNorm === "apazamiguel88@gmail.com";
-              const esDominio = correoNorm.endsWith("@systemticket.pe");
-              if (!esExcepcion && !esDominio) {
-                return (
-                  <AlertaCampo error="Solo se permite el dominio institucional @systemticket.pe (a excepción de apazamiguel88@gmail.com)." />
-                );
               }
               return null;
             })()}
@@ -472,11 +456,6 @@ export default function PaginaLogin() {
           </div>
         )}
 
-        <p className="credenciales-prueba">
-          Prueba con: apazamiguel88@gmail.com / Admin-01
-          <br />
-          (tiene 4 perfiles — para ver la pantalla de selección)
-        </p>
       </div>
     </div>
   );

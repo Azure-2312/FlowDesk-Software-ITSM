@@ -224,21 +224,8 @@ export const VALORES_FABRICA_151: Record<string, any> = {
     ]
   },
   fabricantes_modelos: {
-    fabricantes: [
-      { id: 1, nombre: "Lenovo", sitio_web: "https://www.lenovo.com", contacto_soporte: "soporte@lenovo.com", activo: true, total_modelos: 2 },
-      { id: 2, nombre: "Dell Technologies", sitio_web: "https://www.dell.com", contacto_soporte: "support@dell.com", activo: true, total_modelos: 2 },
-      { id: 3, nombre: "Hewlett Packard Enterprise (HPE)", sitio_web: "https://www.hpe.com", contacto_soporte: "support@hpe.com", activo: true, total_modelos: 1 },
-      { id: 4, nombre: "Cisco Systems", sitio_web: "https://www.cisco.com", contacto_soporte: "tac@cisco.com", activo: true, total_modelos: 1 },
-      { id: 5, nombre: "Apple", sitio_web: "https://www.apple.com", contacto_soporte: "enterprise@apple.com", activo: true, total_modelos: 1 },
-      { id: 6, nombre: "Microsoft", sitio_web: "https://www.microsoft.com", contacto_soporte: "support@microsoft.com", activo: true, total_modelos: 1 }
-    ],
-    modelos: [
-      { id: 1, fabricante_id: 1, tipo_id: "portatil", nombre: "ThinkPad X1 Carbon Gen 11", numero_parte: "21HM0004LM", garantia_meses: 36, vida_util_meses: 48, eol: "2027-12-31", eos: "2029-12-31", activo: true },
-      { id: 2, fabricante_id: 2, tipo_id: "portatil", nombre: "Latitude 5430", numero_parte: "LAT-5430-I7", garantia_meses: 36, vida_util_meses: 48, eol: "2027-06-30", eos: "2029-06-30", activo: true },
-      { id: 3, fabricante_id: 3, tipo_id: "servidor_fisico", nombre: "ProLiant DL380 Gen10", numero_parte: "P02462-B21", garantia_meses: 36, vida_util_meses: 60, eol: "2028-12-31", eos: "2031-12-31", activo: true },
-      { id: 4, fabricante_id: 2, tipo_id: "servidor_fisico", nombre: "PowerEdge R740", numero_parte: "PER740-2U", garantia_meses: 36, vida_util_meses: 60, eol: "2027-12-31", eos: "2030-12-31", activo: true },
-      { id: 5, fabricante_id: 4, tipo_id: "switch_red", nombre: "Catalyst 3850 48P", numero_parte: "WS-C3850-48P-L", garantia_meses: 60, vida_util_meses: 72, eol: "2026-10-31", eos: "2028-10-31", activo: true }
-    ]
+    fabricantes: [],
+    modelos: []
   },
   atributos: {
     atributos_base: [

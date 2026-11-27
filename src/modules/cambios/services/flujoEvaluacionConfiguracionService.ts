@@ -88,13 +88,7 @@ export const VALORES_FABRICA_1333: Record<string, any> = {
         recordatorio_horas_antes: 24,
         plantilla_acta: "ACTA DE REUNIÓN CAB\nFecha: {{fecha}}\nAsistentes: {{asistentes}}\nQuórum: {{quorum}}\nRFCs Tratadas: {{rfcs}}\nVotación y Dictamen: {{dictamen}}\nObservaciones y Acuerdos: {{observaciones}}"
       },
-      miembros: [
-        { id_usuario: 11, nombre: "Diego Mendoza", correo: "diego.cambios@empresa.com", rol_comite: "presidente", perfil_origen: "Gestor de Cambios", suplente_id: 7, suplente_nombre: "Roberto Flores", activo: true },
-        { id_usuario: 10, nombre: "Elena Vargas", correo: "elena.cab@empresa.com", rol_comite: "secretario", perfil_origen: "Aprobador", suplente_id: 8, suplente_nombre: "Patricia Salazar", activo: true },
-        { id_usuario: 7, nombre: "Roberto Flores", correo: "roberto.supervisor@empresa.com", rol_comite: "miembro_voto", perfil_origen: "Supervisor", suplente_id: 5, suplente_nombre: "Carlos Quispe", activo: true },
-        { id_usuario: 12, nombre: "Andres Benitez", correo: "andres.activos@empresa.com", rol_comite: "miembro_voto", perfil_origen: "Gestor de Activos y Configuracion", suplente_id: null, suplente_nombre: "Sin asignar", activo: true },
-        { id_usuario: 9, nombre: "Fernando Castro", correo: "fernando.auditor@empresa.com", rol_comite: "observador", perfil_origen: "Auditor", suplente_id: null, suplente_nombre: "Sin asignar", activo: true }
-      ]
+      miembros: [] // Se asignan desde la configuración con usuarios reales del sistema
     },
     ecab: {
       nombre: "Comité de Cambios de Emergencia (ECAB)",
@@ -113,11 +107,7 @@ export const VALORES_FABRICA_1333: Record<string, any> = {
       permitir_decision_verbal: true,
       campos_decision_verbal: ["quien_autorizo", "medio_comunicacion", "fecha_hora"],
       revision_retroactiva_cab_obligatoria: true,
-      miembros: [
-        { id_usuario: 11, nombre: "Diego Mendoza", correo: "diego.cambios@empresa.com", rol_comite: "presidente", perfil_origen: "Gestor de Cambios", suplente_id: 7, suplente_nombre: "Roberto Flores", activo: true },
-        { id_usuario: 10, nombre: "Elena Vargas", correo: "elena.cab@empresa.com", rol_comite: "miembro_voto", perfil_origen: "Aprobador", suplente_id: 8, suplente_nombre: "Patricia Salazar", activo: true },
-        { id_usuario: 7, nombre: "Roberto Flores", correo: "roberto.supervisor@empresa.com", rol_comite: "miembro_voto", perfil_origen: "Supervisor", suplente_id: 5, suplente_nombre: "Carlos Quispe", activo: true }
-      ]
+      miembros: [] // Se asignan desde la configuración con usuarios reales del sistema
     }
   },
   plazos_escalamiento: {
