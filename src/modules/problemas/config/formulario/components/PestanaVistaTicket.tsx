@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { TablaDobleScroll } from "@/shared/components/ui/TablaDobleScroll";
 
 interface ElementoCabecera {
@@ -44,8 +44,18 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
   const [guardando, setGuardando] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
 
+  // Se resincroniza cuando el padre termina de cargar (o recarga) la configuración,
+  // y solo se avisa al padre cuando el USUARIO edita. Antes se avisaba en cada render
+  // del padre, devolviéndole las listas iniciales (vacías) y marcando un borrador falso.
+  const editadoPorUsuario = useRef(false);
+  const onActualizarVistaRef = useRef(onActualizarVista);
+  onActualizarVistaRef.current = onActualizarVista;
+  useEffect(() => setListaCabecera(cabecera), [cabecera]);
+  useEffect(() => setListaPestanas(pestanas), [pestanas]);
+
   const handleToggleVisiblePestana = (id: string) => {
     if (!puedeEditar) return;
+    editadoPorUsuario.current = true;
     setListaPestanas((prev) =>
       prev.map((p) => {
         if (p.id === id) {
@@ -68,15 +78,18 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
     const temp = nuevas[idx];
     nuevas[idx] = nuevas[targetIdx];
     nuevas[targetIdx] = temp;
+    editadoPorUsuario.current = true;
     setListaPestanas(nuevas);
   };
 
   useEffect(() => {
-    onActualizarVista({
+    if (!editadoPorUsuario.current) return;
+    editadoPorUsuario.current = false;
+    onActualizarVistaRef.current({
       cabecera: listaCabecera,
       pestanas: listaPestanas,
     });
-  }, [listaCabecera, listaPestanas, onActualizarVista]);
+  }, [listaCabecera, listaPestanas]);
 
   return (
     <div className="space-y-6">
@@ -136,6 +149,7 @@ export const PestanaVistaTicket: React.FC<PestanaVistaTicketProps> = ({
                   onClick={() => {
                     const nuevas = [...listaCabecera];
                     nuevas[idx].visible = !nuevas[idx].visible;
+                    editadoPorUsuario.current = true;
                     setListaCabecera(nuevas);
                   }}
                   className="boton-secundario boton-sm" aria-pressed={el.visible}

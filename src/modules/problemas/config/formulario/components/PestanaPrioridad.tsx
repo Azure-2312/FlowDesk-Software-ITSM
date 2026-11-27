@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export interface PrioridadConfigProblemas {
   usar_matriz_propia: boolean;
@@ -76,6 +76,17 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
   const [celdasLocal, setCeldasLocal] = useState<any[]>(celdasProblemas || []);
   const [guardando, setGuardando] = useState(false);
 
+  // Solo se avisa al padre cuando el USUARIO cambia algo. Si también se avisara al
+  // resincronizar desde las props, padre e hijo se actualizarían mutuamente sin fin
+  // ("Maximum update depth exceeded") y la pantalla dejaría de responder.
+  const editadoPorUsuario = useRef(false);
+  const onGuardarRef = useRef(onGuardar);
+  onGuardarRef.current = onGuardar;
+  const cambiarConfig = (nueva: PrioridadConfigProblemas) => {
+    editadoPorUsuario.current = true;
+    setConfigLocal(nueva);
+  };
+
   // Sincronizar cuando el padre recarga los datos
   useEffect(() => {
     setConfigLocal({
@@ -110,6 +121,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
   };
 
   const actualizarCelda = (nivelImpacto: number, nivelUrgencia: number, idPrioridad: number) => {
+    editadoPorUsuario.current = true;
     setCeldasLocal((prev) => {
       const existe = prev.find((c) => c.nivel_impacto === nivelImpacto && c.nivel_urgencia === nivelUrgencia);
       if (existe) {
@@ -122,8 +134,10 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
   };
 
   useEffect(() => {
-    onGuardar(configLocal, celdasLocal);
-  }, [configLocal, celdasLocal, onGuardar]);
+    if (!editadoPorUsuario.current) return;
+    editadoPorUsuario.current = false;
+    onGuardarRef.current(configLocal, celdasLocal);
+  }, [configLocal, celdasLocal]);
 
   const renderMatriz = (celdas: any[], editable: boolean, prefijo: string) => (
     <div style={{ display: "grid", gridTemplateColumns: "120px repeat(3, 1fr)", gap: 8, maxWidth: 680 }}>
@@ -268,10 +282,10 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
                     "¿Desea habilitar una matriz de prioridad independiente para Problemas? Esto separará las prioridades calculadas respecto a Incidentes y Cambios."
                   )
                 ) {
-                  setConfigLocal({ ...configLocal, usar_matriz_propia: true });
+                  cambiarConfig({ ...configLocal, usar_matriz_propia: true });
                 }
               } else {
-                setConfigLocal({ ...configLocal, usar_matriz_propia: false });
+                cambiarConfig({ ...configLocal, usar_matriz_propia: false });
               }
             }}
           />
@@ -294,7 +308,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
               id="chk-prioridad-manual"
               checked={configLocal.permitir_prioridad_manual}
               disabled={!puedeEditar}
-              onChange={(e) => setConfigLocal({ ...configLocal, permitir_prioridad_manual: e.target.checked })}
+              onChange={(e) => cambiarConfig({ ...configLocal, permitir_prioridad_manual: e.target.checked })}
             />
             <label htmlFor="chk-prioridad-manual" style={{ fontSize: 12.5, color: "#1e293b", cursor: "pointer" }}>
               Permitir la modificación manual de la prioridad calculada (con trazabilidad en bitácora)
@@ -307,7 +321,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
               id="chk-recalcular"
               checked={configLocal.recalcular_al_cambiar}
               disabled={!puedeEditar}
-              onChange={(e) => setConfigLocal({ ...configLocal, recalcular_al_cambiar: e.target.checked })}
+              onChange={(e) => cambiarConfig({ ...configLocal, recalcular_al_cambiar: e.target.checked })}
             />
             <label htmlFor="chk-recalcular" style={{ fontSize: 12.5, color: "#1e293b", cursor: "pointer" }}>
               Recalcular automáticamente la prioridad cuando cambien el impacto o la urgencia
@@ -330,7 +344,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
                       onChange={() => {
                         const actuales = configLocal.perfiles_prioridad_manual || [];
                         const nuevos = marcado ? actuales.filter((x) => x !== p.id) : [...actuales, p.id];
-                        setConfigLocal({ ...configLocal, perfiles_prioridad_manual: nuevos });
+                        cambiarConfig({ ...configLocal, perfiles_prioridad_manual: nuevos });
                       }}
                     />
                     {p.nombre}
@@ -367,7 +381,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
                   disabled={!puedeEditar}
                   value={configLocal.tooltips_impacto?.[t.key] || ""}
                   onChange={(e) =>
-                    setConfigLocal({
+                    cambiarConfig({
                       ...configLocal,
                       tooltips_impacto: { ...configLocal.tooltips_impacto, [t.key]: e.target.value },
                     })
@@ -396,7 +410,7 @@ export const PestanaPrioridad: React.FC<PestanaPrioridadProps> = ({
                   disabled={!puedeEditar}
                   value={configLocal.tooltips_urgencia?.[t.key] || ""}
                   onChange={(e) =>
-                    setConfigLocal({
+                    cambiarConfig({
                       ...configLocal,
                       tooltips_urgencia: { ...configLocal.tooltips_urgencia, [t.key]: e.target.value },
                     })
