@@ -132,6 +132,10 @@ export async function listarTickets(contexto: ContextoTickets, filtros: FiltrosT
     // Una solicitud que espera la decisión del jefe todavía no es trabajo de TI:
     // aparece en el Centro de Aprobaciones, no en la cola de los técnicos.
     condiciones.push(`NOT ${sqlEsperaAprobacion()}`);
+  } else if (vista === "en_atencion") {
+    // Todo lo que sigue abierto (de cualquier técnico, dentro del alcance del
+    // perfil): misma regla que "Tickets abiertos" de los paneles.
+    condiciones.push(sqlEnAtencion());
   } else if (vista === "resueltos") {
     condiciones.push(`t.id_estado IN (5, 6)`); // Resuelto o Cerrado
   } else if (vista === "aprobaciones") {

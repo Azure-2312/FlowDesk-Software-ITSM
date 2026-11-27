@@ -37,7 +37,7 @@ export default async function PaginaIncidentesBandeja({ searchParams }: Props) {
 
       <div>
         <TablaTickets
-          vista={vistaActiva as "bandeja" | "asignados" | "departamento" | "resueltos" | "todos"}
+          vista={vistaActiva as "bandeja" | "en_atencion" | "asignados" | "departamento" | "resueltos" | "todos"}
           tipoInicial="1"
           tipoFijo="1"
           rutaDetalleBase="/plataforma/incidentes"

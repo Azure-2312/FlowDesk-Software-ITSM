@@ -55,6 +55,7 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     vistaPorDefecto: "bandeja",
     vistas: [
       { codigo: "bandeja", etiqueta: "Sin asignar", idsLegados: [21233] },
+      { codigo: "en_atencion", etiqueta: "En atención", idsLegados: [21233] },
       { codigo: "asignados", etiqueta: "Asignados a mí", idsLegados: [21232] },
       { codigo: "departamento", etiqueta: "De mi departamento", idsLegados: [21235] },
       { codigo: "resueltos", etiqueta: "Resueltos", idsLegados: [21234] },
@@ -70,6 +71,7 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     vistaPorDefecto: "bandeja",
     vistas: [
       { codigo: "bandeja", etiqueta: "Sin asignar", idsLegados: [21244] },
+      { codigo: "en_atencion", etiqueta: "En atención", idsLegados: [21244] },
       { codigo: "asignados", etiqueta: "Asignadas a mí", idsLegados: [21243] },
       { codigo: "departamento", etiqueta: "De mi departamento", idsLegados: [21246] },
       { codigo: "resueltos", etiqueta: "Resueltas", idsLegados: [21245] },

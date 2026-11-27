@@ -557,6 +557,11 @@ INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, est
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21233, 5, 'departamento', true, '2026-11-17T21:05:12.835Z');
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21233, 6, 'resueltos', true, '2026-11-17T21:05:12.835Z');
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21233, 6, 'todos', true, '2026-11-17T21:05:12.835Z');
+INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21233, 1, 'en_atencion', true, '2026-11-27T12:00:00.000Z');
+INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21233, 2, 'en_atencion', true, '2026-11-27T12:00:00.000Z');
+INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21233, 4, 'en_atencion', true, '2026-11-27T12:00:00.000Z');
+INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21233, 5, 'en_atencion', true, '2026-11-27T12:00:00.000Z');
+INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21233, 6, 'en_atencion', true, '2026-11-27T12:00:00.000Z');
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21238, 1, 'declarar', true, '2026-11-21T20:26:45.139Z');
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21238, 1, 'listado', true, '2026-11-17T21:05:12.835Z');
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21238, 1, 'sala-crisis', true, '2026-11-17T21:05:12.835Z');
@@ -576,6 +581,11 @@ INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, est
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21244, 5, 'departamento', true, '2026-11-17T21:05:12.835Z');
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21244, 6, 'resueltos', true, '2026-11-17T21:05:12.835Z');
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21244, 6, 'todos', true, '2026-11-17T21:05:12.835Z');
+INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21244, 1, 'en_atencion', true, '2026-11-27T12:00:00.000Z');
+INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21244, 2, 'en_atencion', true, '2026-11-27T12:00:00.000Z');
+INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21244, 4, 'en_atencion', true, '2026-11-27T12:00:00.000Z');
+INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21244, 5, 'en_atencion', true, '2026-11-27T12:00:00.000Z');
+INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21244, 6, 'en_atencion', true, '2026-11-27T12:00:00.000Z');
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21250, 1, 'campos', true, '2026-11-17T21:05:12.835Z');
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21250, 1, 'reglas', true, '2026-11-17T21:05:12.835Z');
 INSERT INTO opciones_menu_vistas_perfiles (id_opcion_menu, id_perfil, vista, estado_registro, creado_en) VALUES (21268, 4, 'mis-problemas', true, '2026-11-21T20:26:45.139Z');

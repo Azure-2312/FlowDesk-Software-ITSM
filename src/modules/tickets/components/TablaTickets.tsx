@@ -7,7 +7,7 @@ import { rutaDetalleTicket } from "@/modules/tickets/rutas";
 import TablaDobleScroll from "@/shared/components/ui/TablaDobleScroll";
 
 interface Props {
-  vista: "mios" | "bandeja" | "asignados" | "departamento" | "resueltos" | "todos";
+  vista: "mios" | "bandeja" | "en_atencion" | "asignados" | "departamento" | "resueltos" | "todos";
   titulo: string;
   descripcion: string;
   tipoInicial?: string; // "1" = Incidente, "2" = Solicitud, etc.
