@@ -3,8 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Cambio } from "@/types";
+import { ACCIONES } from "@/shared/lib/capacidades";
+import { usePuede } from "@/shared/components/layout/PermisosProvider";
 
 export default function PaginaCalendarioCambios() {
+  const puedeRfc = usePuede(ACCIONES.CAMBIO_RFC_REGISTRAR);
   const [cambios, setCambios] = useState<Cambio[]>([]);
   const [cargando, setCargando] = useState(true);
 
@@ -53,10 +56,12 @@ export default function PaginaCalendarioCambios() {
             Programación de ventanas de intervención autorizadas, verificación de colisiones y congelamientos oficiales (Change Freeze).
           </p>
         </div>
+        {puedeRfc && (<>
         <Link href="/plataforma/cambios/nuevo" className="boton-primario" >
 
           Programar Cambio
         </Link>
+        </>)}
       </div>
 
       <div

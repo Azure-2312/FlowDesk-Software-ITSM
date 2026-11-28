@@ -3,8 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Cambio } from "@/types";
+import { ACCIONES } from "@/shared/lib/capacidades";
+import { usePuede } from "@/shared/components/layout/PermisosProvider";
 
 export default function PaginaTodosCambios() {
+  const puedeRfc = usePuede(ACCIONES.CAMBIO_RFC_REGISTRAR);
+  const puedeAsignar = usePuede(ACCIONES.CAMBIO_EQUIPO_ASIGNAR);
   const [cambios, setCambios] = useState<Cambio[]>([]);
   const [cargando, setCargando] = useState(true);
   const [filtroTipo, setFiltroTipo] = useState<string>("TODOS");
@@ -97,10 +101,12 @@ export default function PaginaTodosCambios() {
           </p>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
+          {puedeRfc && (<>
           <Link href="/plataforma/cambios/nuevo" className="boton-primario" >
 
             Nueva Solicitud RFC
           </Link>
+          </>)}
         </div>
       </div>
 
@@ -165,9 +171,11 @@ export default function PaginaTodosCambios() {
               ? "No hay cambios pendientes de asignación de equipo o especialista."
               : "No se encontraron solicitudes de cambio que coincidan con los filtros seleccionados."}
           </p>
+          {puedeRfc && (<>
           <Link href="/plataforma/cambios/nuevo" className="boton-secundario boton-sm" >
             Registrar la primera RFC
           </Link>
+          </>)}
         </div>
       ) : (
         <div className="contenedor-tabla">
@@ -223,6 +231,8 @@ export default function PaginaTodosCambios() {
                   <td>
                     {c.responsable_nombre ? (
                       <span style={{ fontSize: 12, color: "#1e293b" }}>{c.responsable_nombre}</span>
+                    ) : !puedeAsignar ? (
+                      <span style={{ fontSize: 12, color: "#6b7280" }}>Sin asignar</span>
                     ) : (
                       <button className="boton-peligro boton-sm"
                         type="button"

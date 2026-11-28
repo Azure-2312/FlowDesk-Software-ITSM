@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { useCapacidad } from "@/shared/components/layout/PermisosProvider";
 
 interface Cambio {
   id_cambio: number;
@@ -21,6 +23,7 @@ function fechaHora(valor: string | null) {
 }
 
 export default function VistaEjecucion() {
+  const puedeActuar = useCapacidad(CAPACIDADES.CAMBIOS_GESTIONAR); // cierre/rollback/extensión: Gestor de Cambios
   const [items, setItems] = useState<Cambio[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -98,12 +101,14 @@ export default function VistaEjecucion() {
                 Ventana: {fechaHora(c.ventana_inicio)} → {fechaHora(c.ventana_fin)} {c.ventana_excedida ? "· excedida" : ""}
               </div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
+                {puedeActuar && (<>
                 <button className="boton-secundario"  disabled={procesando === c.id_cambio} onClick={() => accion(c.id_cambio, { accion: "resultado", resultado: "EXITOSO" })}>Cerrar exitoso</button>
                 <button className="boton-secundario"  disabled={procesando === c.id_cambio} onClick={() => accion(c.id_cambio, { accion: "resultado", resultado: "ROLLBACK", motivo: "Rollback manual desde el tablero" })}>Rollback</button>
                 <button className="boton-secundario"  disabled={procesando === c.id_cambio} onClick={() => accion(c.id_cambio, { accion: "resultado", resultado: "FALLIDO", motivo: "Implementación fallida desde el tablero" })}>Marcar fallido</button>
                 <button className="boton-secundario"  onClick={() => setAbierto(abierto === c.id_cambio ? null : c.id_cambio)}>
                   {abierto === c.id_cambio ? "Cerrar" : "Extender ventana"}
                 </button>
+                </>)}
               </div>
               {abierto === c.id_cambio && (
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end", marginTop: 12, paddingTop: 12, borderTop: "1px solid #f1f5f9" }}>

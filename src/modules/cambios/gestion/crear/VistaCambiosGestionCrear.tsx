@@ -708,6 +708,19 @@ export default function VistaCambiosGestionCrear() {
     );
   }
 
+  // Misma regla que la ruta: solo los perfiles habilitados en la configuración de RFC
+  const perfilActual = sesion?.perfilActivo?.id_perfil || 0;
+  if (sesion && perfilActual !== 1 && !configRfc.perfiles_solicitantes.includes(perfilActual)) {
+    return (
+      <div className="vista-contenedor">
+        <h1 className="titulo-pagina">Nueva solicitud de cambio</h1>
+        <div className="estado-vacio">
+          Tu perfil no está habilitado para presentar RFC. Si el cambio afecta a tu área, pídele al Gestor de Cambios que lo registre.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="vista-contenedor">
       {/* Cabecera Principal */}

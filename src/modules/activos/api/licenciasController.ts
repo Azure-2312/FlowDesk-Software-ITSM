@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { ACCIONES, CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { accionPermitida } from "@/shared/lib/api-auth";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { actualizarLicencia, crearLicencia, listarLicencias } from "@/modules/activos/services/licenciasService";
 
@@ -33,10 +34,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  const perfilId = sesion.perfilActivo.id_perfil;
-  if (perfilId !== 9) {
-    return NextResponse.json({ error: "No autorizado para registrar licencias" }, { status: 403 });
-  }
+  const negadoAccion = accionPermitida(sesion, ACCIONES.LICENCIA_REGISTRAR);
+  if (negadoAccion) return negadoAccion;
 
   try {
     const body = await req.json();
@@ -57,11 +56,8 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  // Administrador (1) o Gestor de Activos (9)
-  const perfilId = sesion.perfilActivo.id_perfil;
-  if (perfilId !== 9) {
-    return NextResponse.json({ error: "No autorizado para modificar licencias" }, { status: 403 });
-  }
+  const negadoAccion = accionPermitida(sesion, ACCIONES.LICENCIA_REGISTRAR);
+  if (negadoAccion) return negadoAccion;
 
   try {
     const body = await req.json();

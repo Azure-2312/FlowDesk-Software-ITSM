@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_SESION, verificarTokenSesion } from "@/shared/lib/auth";
-import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { CAPACIDADES, sesionTieneCapacidad, ACCIONES } from "@/shared/lib/capacidades";
 import {
   obtenerDatosEquipoTrabajo,
   obtenerTodosLosEquiposTrabajo,
@@ -9,6 +9,7 @@ import {
   crearNuevoEquipoTrabajo,
   obtenerTecnicosDisponibles,
 } from "@/modules/cambios/services/cambiosEquipoService";
+import { accionPermitida } from "@/shared/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -42,9 +43,8 @@ export async function POST(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_GESTIONAR) && sesion.perfilActivo?.id_perfil !== 4) {
-    return NextResponse.json({ error: "No autorizado para gestionar equipos de cambios" }, { status: 403 });
-  }
+  const negadoAccion = accionPermitida(sesion, ACCIONES.CAMBIO_EQUIPO_ASIGNAR);
+  if (negadoAccion) return negadoAccion;
 
   try {
     const body = await req.json();

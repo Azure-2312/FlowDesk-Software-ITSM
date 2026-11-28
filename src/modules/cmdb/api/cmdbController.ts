@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { CAPACIDADES, sesionTieneCapacidad, ACCIONES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { actualizarCi, crearCi, listarCmdb } from "@/modules/cmdb/services/cmdbService";
+import { accionPermitida } from "@/shared/lib/api-auth";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -40,10 +41,8 @@ export async function POST(req: NextRequest) {
   }
 
   // Administrador (1) o Gestor de Activos (9)
-  const perfilId = sesion.perfilActivo.id_perfil;
-  if (perfilId !== 9) {
-    return NextResponse.json({ error: "Solo administradores y gestores de configuración pueden registrar CIs" }, { status: 403 });
-  }
+  const negadoAccion = accionPermitida(sesion, ACCIONES.CI_REGISTRAR);
+  if (negadoAccion) return negadoAccion;
 
   try {
     const body = await req.json();
@@ -65,10 +64,8 @@ export async function PATCH(req: NextRequest) {
   }
 
   // Administrador (1), Técnico (2) o Gestor de Activos (9)
-  const perfilId = sesion.perfilActivo.id_perfil;
-  if (![1, 2, 9].includes(perfilId)) {
-    return NextResponse.json({ error: "No autorizado para modificar CIs de la CMDB" }, { status: 403 });
-  }
+  const negadoAccion = accionPermitida(sesion, ACCIONES.CI_EDITAR);
+  if (negadoAccion) return negadoAccion;
 
   try {
     const body = await req.json();

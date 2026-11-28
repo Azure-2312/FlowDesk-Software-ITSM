@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { CAPACIDADES, ACCIONES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { perfilPermitido, sesionConCapacidad } from "@/shared/lib/api-auth";
+import { sesionConCapacidad, accionPermitida } from "@/shared/lib/api-auth";
 import { listarModelos, proponerModelo, cambiarEstadoModelo } from "@/modules/cambios";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.CAMBIOS_CONFIG_VER);
   if (error) return error;
   // Proponen modelos estándar el Supervisor y el Gestor de Cambios
-  const negado = perfilPermitido(sesion, [4, 8]);
+  const negado = accionPermitida(sesion, ACCIONES.CAMBIO_MODELO_PROPONER);
   if (negado) return negado;
 
   try {
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.CAMBIOS_CONFIG_VER);
   if (error) return error;
-  const negado = perfilPermitido(sesion, [7, 8]);
+  const negado = accionPermitida(sesion, ACCIONES.CAMBIO_MODELO_APROBAR);
   if (negado) return negado;
 
   try {

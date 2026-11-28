@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { useCapacidad } from "@/shared/components/layout/PermisosProvider";
 
 interface Problema {
   id_problema: number;
@@ -44,6 +46,7 @@ interface VistaAnalisisProblemasProps {
 }
 
 export default function VistaAnalisisProblemas({ problemaId }: VistaAnalisisProblemasProps = {}) {
+  const puedeAnalizar = useCapacidad(CAPACIDADES.PROBLEMAS_GESTIONAR); // misma regla que /api/problemas/gestion/analisis
   const [problemas, setProblemas] = useState<Problema[]>([]);
   const [analisis, setAnalisis] = useState<Analisis[]>([]);
   const [idProblema, setIdProblema] = useState<number | null>(problemaId ?? null);
@@ -160,6 +163,7 @@ export default function VistaAnalisisProblemas({ problemaId }: VistaAnalisisProb
 
       {idProblema && (
         <>
+          {puedeAnalizar && (<>
           <div className="tarjeta-formulario" style={{ marginBottom: 16 }}>
             <h2 style={{ marginTop: 0 }}>Registrar análisis de causa raíz</h2>
             <label style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 10 }}>
@@ -190,6 +194,7 @@ export default function VistaAnalisisProblemas({ problemaId }: VistaAnalisisProb
               {guardando ? "Guardando..." : "Guardar análisis"}
             </button>
           </div>
+          </>)}
 
           <div className="tarjeta-formulario">
             <h2 style={{ marginTop: 0 }}>Historial de análisis registrados</h2>

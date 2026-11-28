@@ -745,7 +745,7 @@ export default function PaginaDetalleTicket({
                           )}
 
                           {/* Asignar ticket: SOLO supervisores y administradores */}
-                          {ticketPorAsignar(ticket) && (perfilesIds.includes(1) || perfilesIds.includes(4)) && (
+                          {ticketPorAsignar(ticket) && (idPerfilActivo === 1 || idPerfilActivo === 4) && (
                             <button
                               type="button"
                               onClick={() => {
@@ -760,7 +760,7 @@ export default function PaginaDetalleTicket({
                           )}
 
                           {/* Cancelar ticket: SOLO supervisores y administradores */}
-                          {(perfilesIds.includes(1) || perfilesIds.includes(4)) && (
+                          {(idPerfilActivo === 1 || idPerfilActivo === 4) && (
                             <button
                               type="button"
                               onClick={() => setModalOperativo("cancelar")}
@@ -777,7 +777,7 @@ export default function PaginaDetalleTicket({
                       {!ticket.es_terminal && ticket.id_usuario_asignado && (
                         <>
                           {/* Iniciar atención si está en estado 2 (Asignado) */}
-                          {ticket.id_estado === 2 && (ticket.id_usuario_asignado === usuarioActual?.id_usuario || perfilesIds.includes(1) || perfilesIds.includes(4)) && (
+                          {ticket.id_estado === 2 && (ticket.id_usuario_asignado === usuarioActual?.id_usuario || idPerfilActivo === 1 || idPerfilActivo === 4) && (
                             <button
                               type="button"
                               onClick={() => ejecutarAccion({ id_estado: 3 })}
@@ -789,7 +789,7 @@ export default function PaginaDetalleTicket({
                           )}
 
                           {/* En proceso (3) -> Poner en espera o Resolver */}
-                          {ticket.id_estado === 3 && (ticket.id_usuario_asignado === usuarioActual?.id_usuario || perfilesIds.includes(1) || perfilesIds.includes(4)) && (
+                          {ticket.id_estado === 3 && (ticket.id_usuario_asignado === usuarioActual?.id_usuario || idPerfilActivo === 1 || idPerfilActivo === 4) && (
                             <>
                               <button
                                 type="button"
@@ -811,7 +811,7 @@ export default function PaginaDetalleTicket({
                           )}
 
                           {/* En espera (4) -> Reanudar atención */}
-                          {ticket.id_estado === 4 && (ticket.id_usuario_asignado === usuarioActual?.id_usuario || perfilesIds.includes(1) || perfilesIds.includes(4)) && (
+                          {ticket.id_estado === 4 && (ticket.id_usuario_asignado === usuarioActual?.id_usuario || idPerfilActivo === 1 || idPerfilActivo === 4) && (
                             <button
                               type="button"
                               onClick={() => ejecutarAccion({ id_estado: 3 })}
@@ -823,7 +823,7 @@ export default function PaginaDetalleTicket({
                           )}
 
                           {/* Reasignar y Cancelar: exclusivo de supervisores y administradores */}
-                          {(perfilesIds.includes(1) || perfilesIds.includes(4)) && (
+                          {(idPerfilActivo === 1 || idPerfilActivo === 4) && (
                             <>
                               <button
                                 type="button"
@@ -872,7 +872,7 @@ export default function PaginaDetalleTicket({
                           )}
 
                           {/* Escalamiento a Problema ITIL v4: Para incidentes no terminales */}
-                          {esIncidente && !ticket.es_terminal && (perfilesIds.includes(1) || perfilesIds.includes(2) || perfilesIds.includes(4) || ticket.id_usuario_asignado === usuarioActual?.id_usuario) && (
+                          {esIncidente && !ticket.es_terminal && (idPerfilActivo === 1 || idPerfilActivo === 2 || idPerfilActivo === 4 || ticket.id_usuario_asignado === usuarioActual?.id_usuario) && (
                             ticket.id_problema ? (
                               <Link
                                 href={`/plataforma/problemas/${ticket.id_problema}`}
@@ -903,7 +903,7 @@ export default function PaginaDetalleTicket({
                       )}
 
                       {/* CASO 3: TICKET RESUELTO (5) -> Reabrir */}
-                      {ticket.id_estado === 5 && (perfilesIds.includes(1) || perfilesIds.includes(4) || ticket.id_usuario_solicitante === usuarioActual?.id_usuario) && (
+                      {ticket.id_estado === 5 && (idPerfilActivo === 1 || idPerfilActivo === 4 || ticket.id_usuario_solicitante === usuarioActual?.id_usuario) && (
                         <button
                           type="button"
                           onClick={() => setModalOperativo("reabrir")}

@@ -6,6 +6,7 @@ import {
   type Capacidad,
   sesionTieneAlgunaCapacidad,
   sesionTieneCapacidad,
+  perfilPuedeAccion,
 } from "@/shared/lib/capacidades";
 
 /** Lee la sesion desde la cookie del request (o null si no hay/no es valida). */
@@ -126,4 +127,13 @@ export function exigirPerfil(perfiles: number[]): NextResponse | null {
   const sesion = token ? verificarTokenSesion(token) : null;
   if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
   return perfilPermitido(sesion, perfiles);
+}
+
+/**
+ * Guardia por acción de la tabla ACCIONES (la misma que usan las pantallas).
+ * Devuelve la respuesta 403 o null.
+ */
+export function accionPermitida(sesion: SesionUsuario, accion: readonly number[]): NextResponse | null {
+  if (perfilPuedeAccion(sesion.perfilActivo?.id_perfil, accion)) return null;
+  return NextResponse.json({ error: "Tu perfil no puede realizar esta acción." }, { status: 403 });
 }

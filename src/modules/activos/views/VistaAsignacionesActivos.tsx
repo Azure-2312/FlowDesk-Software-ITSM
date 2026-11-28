@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { ACCIONES } from "@/shared/lib/capacidades";
+import { usePuede } from "@/shared/components/layout/PermisosProvider";
 
 interface Activo {
   id_activo: number;
@@ -21,6 +23,7 @@ interface Simple {
 }
 
 export default function VistaAsignacionesActivos() {
+  const puedeRegistrarActa = usePuede(ACCIONES.ACTA_FIRMADA_REGISTRAR);
   const [activos, setActivos] = useState<Activo[]>([]);
   const [usuarios, setUsuarios] = useState<Simple[]>([]);
   const [departamentos, setDepartamentos] = useState<Simple[]>([]);
@@ -136,7 +139,7 @@ export default function VistaAsignacionesActivos() {
                   )}
                 </div>
                 <div style={{ display: "flex", gap: 8, alignItems: "flex-start", flexWrap: "wrap" }}>
-                  {a.acta_pendiente && (
+                  {a.acta_pendiente && puedeRegistrarActa && (
                     <button className="boton-primario" disabled={procesando === a.id_activo} onClick={() => mover(a.id_activo, "ACTA_FIRMADA")}>
                       Registrar acta firmada
                     </button>

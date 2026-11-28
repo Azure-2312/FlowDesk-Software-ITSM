@@ -10,10 +10,18 @@
 import { useEffect, useState, FormEvent, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Activo } from "@/types";
+import { ACCIONES, CAPACIDADES } from "@/shared/lib/capacidades";
+import { useCapacidad, usePuede } from "@/shared/components/layout/PermisosProvider";
 
 type ModoVista = "tabla" | "nuevo" | "editar" | "baja" | "historial";
 
 function ContenidoInventarioActivos() {
+  // Mismas reglas que las rutas: registrar/editar (Gestor de Activos), modelos
+  // (configuración de activos) y solicitar bajas (gestión de activos).
+  const puedeRegistrar = usePuede(ACCIONES.ACTIVO_REGISTRAR);
+  const puedeModelos = useCapacidad(CAPACIDADES.ACTIVOS_CONFIGURAR);
+  const puedeSolicitarBaja = useCapacidad(CAPACIDADES.ACTIVOS_GESTIONAR);
+
   // --------------------------------------------------------------------------
   // 1. ESTADOS LOCALES: Lista de activos, filtros, catálogos y modos de vista
   // --------------------------------------------------------------------------
@@ -423,7 +431,7 @@ function ContenidoInventarioActivos() {
               : "Gobernanza patrimonial: Matriz de estados autorizados, compuertas de seguridad y control estricto de custodios."}
           </p>
         </div>
-        {pestanaItam === "inventario" && vista === "tabla" && (
+        {pestanaItam === "inventario" && vista === "tabla" && puedeRegistrar && (
           <button
             type="button"
             className="boton-primario"
@@ -432,7 +440,7 @@ function ContenidoInventarioActivos() {
             Registrar Activo
           </button>
         )}
-        {pestanaItam === "tipos" && (
+        {pestanaItam === "tipos" && puedeModelos && (
           <button
             type="button"
             className="boton-primario"
@@ -1120,6 +1128,7 @@ function ContenidoInventarioActivos() {
                               <polyline points="12 6 12 12 16 14" />
                             </svg>
                           </button>
+                          {puedeRegistrar && (
                           <button
                             type="button"
                             className="boton-icono boton-sm"
@@ -1131,6 +1140,8 @@ function ContenidoInventarioActivos() {
                               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                           </button>
+                          )}
+                          {(a.estado_activo !== "BAJA" ? puedeSolicitarBaja : puedeRegistrar) && (
                           <button
                             type="button"
                             className={a.estado_activo !== "BAJA" ? "boton-icono boton-sm boton-icono-peligro" : "boton-icono boton-sm"}
@@ -1149,6 +1160,7 @@ function ContenidoInventarioActivos() {
                               </svg>
                             )}
                           </button>
+                          )}
                         </div>
                       </td>
                     </tr>

@@ -13,6 +13,8 @@ import ValoracionArticulo, {
   type ConteoValoracion,
   type VotoArticulo,
 } from "@/modules/conocimiento/components/ValoracionArticulo";
+import { ACCIONES } from "@/shared/lib/capacidades";
+import { usePuede } from "@/shared/components/layout/PermisosProvider";
 
 // ----------------------------------------------------------------------------
 // 1. MODELO DE DATOS: Estructura del artículo KCS y métricas de utilidad
@@ -32,6 +34,7 @@ interface Articulo {
 }
 
 export default function PaginaBaseConocimiento() {
+  const puedeRedactar = usePuede(ACCIONES.CONOCIMIENTO_REDACTAR);
   // --------------------------------------------------------------------------
   // 2. ESTADOS LOCALES: Listado de artículos, término de búsqueda y visor
   // --------------------------------------------------------------------------
@@ -124,12 +127,14 @@ export default function PaginaBaseConocimiento() {
             Consulta procedimientos, soluciones a errores conocidos y guías oficiales de soporte.
           </p>
         </div>
+        {puedeRedactar && (<>
         <Link
           href="/plataforma/conocimiento/crear"
           className="boton-primario"
         >
           <span>+ Redactar artículo</span>
         </Link>
+        </>)}
       </div>
 
       <div style={{ marginBottom: 24 }}>

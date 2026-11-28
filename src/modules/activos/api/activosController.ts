@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { CAPACIDADES, sesionTieneCapacidad, ACCIONES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { actualizarActivo, crearActivo, listarActivos } from "@/modules/activos/services/activosService";
+import { accionPermitida } from "@/shared/lib/api-auth";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
@@ -39,10 +40,8 @@ export async function POST(req: NextRequest) {
   }
 
   // El Gestor de Activos mantiene los registros; Administración configura políticas.
-  const perfilId = sesion.perfilActivo.id_perfil;
-  if (perfilId !== 9) {
-    return NextResponse.json({ error: "No autorizado para registrar activos" }, { status: 403 });
-  }
+  const negadoAccion = accionPermitida(sesion, ACCIONES.ACTIVO_REGISTRAR);
+  if (negadoAccion) return negadoAccion;
 
   try {
     const body = await req.json();
@@ -63,10 +62,8 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  const perfilId = sesion.perfilActivo.id_perfil;
-  if (perfilId !== 9) {
-    return NextResponse.json({ error: "No autorizado para modificar activos" }, { status: 403 });
-  }
+  const negadoAccion = accionPermitida(sesion, ACCIONES.ACTIVO_REGISTRAR);
+  if (negadoAccion) return negadoAccion;
 
   try {
     const body = await req.json();

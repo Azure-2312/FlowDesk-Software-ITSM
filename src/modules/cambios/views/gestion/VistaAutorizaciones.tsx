@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { useCapacidad } from "@/shared/components/layout/PermisosProvider";
 
 interface Cambio {
   id_cambio: number;
@@ -40,6 +42,7 @@ const COLORES: Record<string, { bg: string; fg: string }> = {
 };
 
 export default function VistaAutorizaciones() {
+  const puedeActuar = useCapacidad(CAPACIDADES.CAMBIOS_GESTIONAR); // recordar/escalar: Gestor de Cambios
   const [cambios, setCambios] = useState<Cambio[]>([]);
   const [detalle, setDetalle] = useState<Detalle[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -125,8 +128,10 @@ export default function VistaAutorizaciones() {
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-start" }}>
+                    {puedeActuar && (<>
                     <button className="boton-secundario"  disabled={procesando === c.id_cambio} onClick={() => notificar(c.id_cambio, "RECORDATORIO")}>Recordar</button>
                     <button className="boton-primario"  disabled={procesando === c.id_cambio} onClick={() => notificar(c.id_cambio, "ESCALAMIENTO")}>Escalar</button>
+                    </>)}
                     <button className="boton-secundario"  onClick={() => setExpandido(expandido === c.id_cambio ? null : c.id_cambio)}>
                       {expandido === c.id_cambio ? "Ocultar" : "Votos"}
                     </button>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { ACCIONES, CAPACIDADES, perfilPuedeAccion, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import {
   crearArticuloOperativo,
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   // Redactan artículos el Técnico y el Supervisor (y el Administrador); el
   // Gestor de Problemas los crea desde un problema por su propia ruta.
-  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CONOCIMIENTO_VER) || ![1, 2, 4].includes(Number(sesion.perfilActivo?.id_perfil))) {
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CONOCIMIENTO_VER) || !perfilPuedeAccion(sesion.perfilActivo?.id_perfil, ACCIONES.CONOCIMIENTO_REDACTAR)) {
     return NextResponse.json(
       { error: "Este perfil no puede publicar artículos de conocimiento." },
       { status: 403 }

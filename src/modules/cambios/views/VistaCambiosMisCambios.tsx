@@ -3,8 +3,11 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Pestanas from "@/shared/components/ui/Pestanas";
+import { ACCIONES } from "@/shared/lib/capacidades";
+import { usePuede } from "@/shared/components/layout/PermisosProvider";
 
 export default function PaginaMisCambios() {
+  const puedeRfc = usePuede(ACCIONES.CAMBIO_RFC_REGISTRAR);
   const [cambios, setCambios] = useState<any[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -81,9 +84,11 @@ export default function PaginaMisCambios() {
         </div>
 
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          {puedeRfc && (<>
           <Link href="/plataforma/cambios/nuevo" className="boton-primario">
             Registrar solicitud RFC
           </Link>
+          </>)}
           <button className="boton-secundario" type="button" onClick={() => cargarCambios()}>
             Actualizar
           </button>

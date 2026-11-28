@@ -4,6 +4,8 @@ import { useEffect, useState, FormEvent } from "react";
 import { LicenciaSoftware } from "@/types";
 import { validarTexto, validarNumeroPositivo } from "@/shared/lib/validaciones";
 import { AlertaCampo } from "@/shared/components/ui/AlertaCampo";
+import { ACCIONES, CAPACIDADES } from "@/shared/lib/capacidades";
+import { useCapacidad, usePuede } from "@/shared/components/layout/PermisosProvider";
 
 type ModoVista = "tabla" | "nuevo" | "editar" | "asignaciones";
 
@@ -18,6 +20,9 @@ function semaforoSam(adquiridas: any, enUso: any) {
 }
 
 export default function PaginaLicenciasActivos() {
+  // Registrar/editar licencias: Gestor de Activos. Asignar o revocar asientos: gestión de licencias.
+  const puedeRegistrar = usePuede(ACCIONES.LICENCIA_REGISTRAR);
+  const puedeAsignar = useCapacidad(CAPACIDADES.LICENCIAS_GESTIONAR);
   const [licencias, setLicencias] = useState<any[]>([]);
   const [cargando, setCargando] = useState(true);
   const [vista, setVista] = useState<ModoVista>("tabla");
@@ -254,6 +259,7 @@ export default function PaginaLicenciasActivos() {
           {mensajeExito && <div className="mensaje-exito" style={{ marginBottom: 16 }}>{mensajeExito}</div>}
 
           {/* Formulario de asignación de asiento */}
+          {puedeAsignar && (
           <div className="tarjeta-formulario" style={{ marginBottom: 20 }}>
             <h2 style={{ fontSize: 15, margin: "0 0 12px" }}>Asignar Asiento a Usuario o Activo de Hardware</h2>
             <form onSubmit={guardarAsignacion} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 12, alignItems: "end" }}>
@@ -298,6 +304,7 @@ export default function PaginaLicenciasActivos() {
               </button>
             </form>
           </div>
+          )}
 
           {/* Lista de asignaciones existentes */}
           <div className="contenedor-tabla">
@@ -353,7 +360,7 @@ export default function PaginaLicenciasActivos() {
                           </span>
                         </td>
                         <td style={{ textAlign: "right" }}>
-                          {activa && (
+                          {activa && puedeAsignar && (
                             <button
                               type="button"
                               className="boton-secundario boton-sm"
@@ -530,14 +537,14 @@ export default function PaginaLicenciasActivos() {
                 Supervisión de cumplimiento de licencias (Software Asset Management), asignación de asientos y vencimiento de garantías.
               </p>
             </div>
-            <button
+            {puedeRegistrar && <button
               type="button"
               className="boton-primario"
               onClick={abrirCrear}
             >
 
               Registrar Licencia
-            </button>
+            </button>}
           </div>
 
           {mensajeExito && (
@@ -667,13 +674,13 @@ export default function PaginaLicenciasActivos() {
                           >
                             Asignaciones ({l.cantidad_en_uso})
                           </button>
-                          <button
+                          {puedeRegistrar && <button
                             type="button"
                             className="boton-secundario boton-sm"
                             onClick={() => abrirEditar(l)}
                           >
                             Editar
-                          </button>
+                          </button>}
                         </td>
                       </tr>
                     ))}

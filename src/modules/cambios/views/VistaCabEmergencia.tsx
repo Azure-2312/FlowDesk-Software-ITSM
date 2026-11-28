@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { useCapacidad } from "@/shared/components/layout/PermisosProvider";
 
 interface Cambio {
   id_cambio: number;
@@ -35,6 +37,7 @@ function fechaHora(valor: string | null) {
 }
 
 export default function VistaCabEmergencia() {
+  const puedeActuar = useCapacidad(CAPACIDADES.CAMBIOS_APROBAR); // decide el ECAB (Aprobador)
   const [pendientes, setPendientes] = useState<Cambio[]>([]);
   const [recientes, setRecientes] = useState<Decision[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -118,8 +121,10 @@ export default function VistaCabEmergencia() {
                 <div style={{ fontSize: 12.5, color: "#374151", marginTop: 6 }}>Ventana: {fechaHora(c.ventana_inicio)} → {fechaHora(c.ventana_fin)}</div>
                 <p style={{ fontSize: 12.5, color: "#374151", marginTop: 8, whiteSpace: "pre-wrap" }}>{c.justificacion}</p>
                 <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                  {puedeActuar && (<>
                   <button className="boton-primario"  disabled={procesando === c.id_cambio} onClick={() => decidir(c.id_cambio, "APROBADO")}>Aprobar con condiciones</button>
                   <button className="boton-secundario"  disabled={procesando === c.id_cambio} onClick={() => decidir(c.id_cambio, "RECHAZADO")}>Rechazar</button>
+                  </>)}
                 </div>
               </div>
             ))}

@@ -15,6 +15,7 @@ import BarraLateral from "@/shared/components/layout/BarraLateral";
 import BotonLogout from "@/shared/components/layout/BotonLogout";
 import SelectorPerfil from "@/shared/components/layout/SelectorPerfil";
 import CampanaNotificaciones from "@/shared/components/layout/CampanaNotificaciones";
+import { PermisosProvider } from "@/shared/components/layout/PermisosProvider";
 
 // ----------------------------------------------------------------------------
 // 1. UTILIDAD DE AVATAR: Extrae iniciales del nombre para el círculo visual
@@ -123,7 +124,9 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
       {/* 5. ÁREA PRINCIPAL: Renderizado de la vista de negocio activa        */}
       {/* -------------------------------------------------------------------- */}
       <div className="app-area-principal">
-        <main className="contenido-principal">{children}</main>
+        <main className="contenido-principal">
+          <PermisosProvider idPerfil={sesion.perfilActivo?.id_perfil ?? null}>{children}</PermisosProvider>
+        </main>
       </div>
     </div>
   );

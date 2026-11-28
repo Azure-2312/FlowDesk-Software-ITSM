@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Pestanas from "@/shared/components/ui/Pestanas";
 import { useRouter } from "next/navigation";
+import { ACCIONES } from "@/shared/lib/capacidades";
+import { usePuede } from "@/shared/components/layout/PermisosProvider";
 
 interface ModeloEstandar {
   id_modelo: number;
@@ -33,6 +35,10 @@ interface ModeloEstandar {
 }
 
 export default function VistaModelosCambioUnificada() {
+  // Pestañas según lo que acepta la ruta: proponer (Supervisor, Gestor de Cambios) y aprobar (Gestor de Cambios)
+  const puedeProponer = usePuede(ACCIONES.CAMBIO_MODELO_PROPONER);
+  const puedeAprobar = usePuede(ACCIONES.CAMBIO_MODELO_APROBAR);
+  const puedeRfc = usePuede(ACCIONES.CAMBIO_RFC_REGISTRAR);
   const router = useRouter();
   const [pestanaActiva, setPestanaActiva] = useState<"plantillas" | "crear" | "aprobar">("plantillas");
   const [items, setItems] = useState<ModeloEstandar[]>([]);
@@ -174,8 +180,8 @@ export default function VistaModelosCambioUnificada() {
       <Pestanas
         items={[
           { id: "plantillas", etiqueta: "Plantillas de cambio", contador: items.length },
-          { id: "crear", etiqueta: "Crear modelo" },
-          { id: "aprobar", etiqueta: "Aprobar publicaciones", contador: pendientesAprobacion.length },
+          ...(puedeProponer ? [{ id: "crear" as const, etiqueta: "Crear modelo" }] : []),
+          ...(puedeAprobar ? [{ id: "aprobar" as const, etiqueta: "Aprobar publicaciones", contador: pendientesAprobacion.length }] : []),
         ]}
         activa={pestanaActiva}
         onCambiar={setPestanaActiva}
@@ -300,12 +306,14 @@ export default function VistaModelosCambioUnificada() {
                     </div>
 
                     <div style={{ borderTop: "1px solid #f1f5f9", paddingTop: 12, display: "flex", justifyContent: "flex-end" }}>
+                      {puedeRfc && (<>
                       <Link
                         href={`/plataforma/cambios/nuevo?tipo=ESTANDAR&modelo=${m.id_modelo}`}
                         className="boton-primario"
                       >
                         Crear cambio con este modelo
                       </Link>
+                      </>)}
                     </div>
                   </div>
                 );
@@ -316,7 +324,7 @@ export default function VistaModelosCambioUnificada() {
       )}
 
       {/* 4. Contenido: Pestaña Crear Nuevo Modelo */}
-      {pestanaActiva === "crear" && (
+      {pestanaActiva === "crear" && puedeProponer && (
         <form onSubmit={registrarModelo} style={{ backgroundColor: "#ffffff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 24, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <div style={{ marginBottom: 18, borderBottom: "1px solid #f1f5f9", paddingBottom: 12 }}>
             <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0f172a", margin: 0 }}>Registrar Nuevo Modelo de Cambio Estándar</h2>
@@ -537,7 +545,7 @@ export default function VistaModelosCambioUnificada() {
       )}
 
       {/* 5. Pestaña: Aprobar Publicaciones (Supervisión) */}
-      {pestanaActiva === "aprobar" && (
+      {pestanaActiva === "aprobar" && puedeAprobar && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 18 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0 }}>

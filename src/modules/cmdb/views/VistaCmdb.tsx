@@ -10,10 +10,15 @@
 import { useEffect, useState, FormEvent } from "react";
 import Link from "next/link";
 import { ElementoConfiguracion, CIRelacion } from "@/types";
+import { ACCIONES } from "@/shared/lib/capacidades";
+import { usePuede } from "@/shared/components/layout/PermisosProvider";
 
 type ModoVista = "tabla" | "nuevo" | "editar" | "relaciones" | "desactivar";
 
 export default function PaginaMapaCMDB() {
+  // Mismas reglas que /api/activos/cmdb: registrar CI y relaciones (Gestor de Activos); editar o dar de baja (Técnico, Gestor, Admin)
+  const puedeRegistrarCi = usePuede(ACCIONES.CI_REGISTRAR);
+  const puedeEditarCi = usePuede(ACCIONES.CI_EDITAR);
   // --------------------------------------------------------------------------
   // 1. ESTADOS LOCALES: Lista de CIs, relaciones de topología y filtros
   // --------------------------------------------------------------------------
@@ -811,6 +816,7 @@ export default function PaginaMapaCMDB() {
             </button>
           </div>
 
+          {puedeRegistrarCi && (<>
           {/* Formulario para agregar nueva dependencia */}
           <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: 18, marginBottom: 24 }}>
             <h3 style={{ fontSize: 14, fontWeight: 700, margin: "0 0 12px 0", color: "#1e293b" }}>
@@ -861,6 +867,7 @@ export default function PaginaMapaCMDB() {
               </button>
             </form>
           </div>
+          </>)}
 
           {/* Lista de relaciones existentes */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
@@ -901,12 +908,14 @@ export default function PaginaMapaCMDB() {
                           <span style={{ fontSize: 13, color: "#1e293b" }}>{r.padre_nombre}</span>
                           <div style={{ fontSize: 11, color: "#64748b" }}>Tipo: {r.tipo_relacion}</div>
                         </div>
+                        {puedeRegistrarCi && (<>
                         <button className="boton-peligro boton-sm"
                           type="button"
                           onClick={() => eliminarRelacion(r.id_ci_padre, r.id_ci_hijo)}
                         >
                           Desvincular
                         </button>
+                        </>)}
                       </div>
                     ))}
                 </div>
@@ -950,12 +959,14 @@ export default function PaginaMapaCMDB() {
                           <span style={{ fontSize: 13, color: "#1e293b" }}>{r.hijo_nombre}</span>
                           <div style={{ fontSize: 11, color: "#64748b" }}>Tipo: {r.tipo_relacion}</div>
                         </div>
+                        {puedeRegistrarCi && (<>
                         <button className="boton-peligro boton-sm"
                           type="button"
                           onClick={() => eliminarRelacion(r.id_ci_padre, r.id_ci_hijo)}
                         >
                           Desvincular
                         </button>
+                        </>)}
                       </div>
                     ))}
                 </div>
@@ -1065,6 +1076,7 @@ export default function PaginaMapaCMDB() {
               </p>
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              {puedeRegistrarCi && (<>
               <button
                 type="button"
                 className="boton-primario"
@@ -1072,6 +1084,7 @@ export default function PaginaMapaCMDB() {
               >
                 <span>+</span> Registrar CI
               </button>
+              </>)}
             </div>
           </div>
 
@@ -1298,6 +1311,7 @@ export default function PaginaMapaCMDB() {
                         </td>
                         <td style={{ textAlign: "right" }}>
                           <div style={{ display: "inline-flex", gap: 5 }}>
+                            {puedeEditarCi && (<>
                             <button
                               type="button"
                               className="boton-icono boton-sm"
@@ -1309,6 +1323,7 @@ export default function PaginaMapaCMDB() {
                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                               </svg>
                             </button>
+                            </>)}
                             <button
                               type="button"
                               className="boton-icono boton-sm"
@@ -1321,6 +1336,7 @@ export default function PaginaMapaCMDB() {
                                 <path d="M5 8v6a2 2 0 0 0 2 2h9" />
                               </svg>
                             </button>
+                            {puedeEditarCi && (<>
                             <button
                               type="button"
                               className={ci.estado_registro !== false ? "boton-icono boton-sm boton-icono-peligro" : "boton-icono boton-sm"}
@@ -1339,6 +1355,7 @@ export default function PaginaMapaCMDB() {
                                 </svg>
                               )}
                             </button>
+                            </>)}
                           </div>
                         </td>
                       </tr>

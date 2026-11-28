@@ -392,3 +392,38 @@ export function sesionTieneAlgunaCapacidad(
   const conjunto = capacidadesDeSesion(sesion);
   return capacidades.some((capacidad) => conjunto.has(capacidad));
 }
+
+/**
+ * Acciones que el servidor reserva a perfiles concretos (no a una capacidad).
+ * Es la fuente única: las rutas la usan con `accionPermitida` y las pantallas
+ * con `usePuede`, para que un botón nunca aparezca a quien la ruta rechaza.
+ * Cada lista es explícita: el Administrador (1) solo entra si figura en ella.
+ */
+export const ACCIONES = {
+  /** Registrar o editar un activo (inventario). */
+  ACTIVO_REGISTRAR: [9],
+  /** Registrar o editar una licencia de software. */
+  LICENCIA_REGISTRAR: [9],
+  /** Registrar el acta de entrega firmada por el custodio. */
+  ACTA_FIRMADA_REGISTRAR: [1, 9],
+  /** Crear un CI o sus relaciones en la CMDB. */
+  CI_REGISTRAR: [9],
+  /** Editar los datos de un CI. */
+  CI_EDITAR: [1, 2, 9],
+  /** Presentar una RFC: tope máximo; la configuración de RFC puede reducirlo (la ruta valida ambos). */
+  CAMBIO_RFC_REGISTRAR: [1, 2, 8],
+  /** Redactar un artículo de conocimiento (el Gestor de Problemas lo hace desde un problema). */
+  CONOCIMIENTO_REDACTAR: [1, 2, 4],
+  /** Asignar equipo técnico a un cambio. */
+  CAMBIO_EQUIPO_ASIGNAR: [1, 4, 8],
+  /** Proponer un modelo de cambio estándar. */
+  CAMBIO_MODELO_PROPONER: [1, 4, 8],
+  /** Aprobar o retirar un modelo de cambio estándar. */
+  CAMBIO_MODELO_APROBAR: [1, 8],
+} as const satisfies Record<string, readonly number[]>;
+
+export type Accion = (typeof ACCIONES)[keyof typeof ACCIONES];
+
+export function perfilPuedeAccion(idPerfil: number | null | undefined, accion: readonly number[]): boolean {
+  return idPerfil != null && accion.includes(Number(idPerfil));
+}

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { crearRelacionCmdb, eliminarRelacionCmdb } from "@/modules/cmdb/services/cmdbRelacionesService";
+import { accionPermitida } from "@/shared/lib/api-auth";
+import { ACCIONES } from "@/shared/lib/capacidades";
 
 export const dynamic = "force-dynamic";
 
@@ -14,10 +16,8 @@ export async function POST(req: NextRequest) {
   }
 
   // Administrador (1) o Gestor de Activos (9)
-  const perfilId = sesion.perfilActivo.id_perfil;
-  if (perfilId !== 9) {
-    return NextResponse.json({ error: "No autorizado para modificar dependencias en la CMDB" }, { status: 403 });
-  }
+  const negadoAccion = accionPermitida(sesion, ACCIONES.CI_REGISTRAR);
+  if (negadoAccion) return negadoAccion;
 
   try {
     const body = await req.json();
@@ -39,10 +39,8 @@ export async function DELETE(req: NextRequest) {
   }
 
   // Administrador (1) o Gestor de Activos (9)
-  const perfilId = sesion.perfilActivo.id_perfil;
-  if (perfilId !== 9) {
-    return NextResponse.json({ error: "No autorizado para eliminar dependencias en la CMDB" }, { status: 403 });
-  }
+  const negadoAccion = accionPermitida(sesion, ACCIONES.CI_REGISTRAR);
+  if (negadoAccion) return negadoAccion;
 
   try {
     const { searchParams } = new URL(req.url);

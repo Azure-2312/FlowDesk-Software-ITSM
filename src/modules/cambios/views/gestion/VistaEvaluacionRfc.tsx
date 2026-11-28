@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { useCapacidad } from "@/shared/components/layout/PermisosProvider";
 
 interface Cambio {
   id_cambio: number;
@@ -34,6 +36,7 @@ function fecha(valor: string | null) {
 }
 
 export default function VistaEvaluacionRfc() {
+  const puedeActuar = useCapacidad(CAPACIDADES.CAMBIOS_GESTIONAR); // asignar evaluador/enviar: Gestor de Cambios
   const [items, setItems] = useState<Cambio[]>([]);
   const [evaluadores, setEvaluadores] = useState<Evaluador[]>([]);
   const [seleccion, setSeleccion] = useState<Record<number, string>>({});
@@ -117,6 +120,7 @@ export default function VistaEvaluacionRfc() {
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-start" }}>
+                  {puedeActuar && (<>
                   <select
                     value={seleccion[c.id_cambio] ?? ""}
                     onChange={(e) => setSeleccion((prev) => ({ ...prev, [c.id_cambio]: e.target.value }))}
@@ -139,6 +143,7 @@ export default function VistaEvaluacionRfc() {
                   >
                     Enviar a autorización
                   </button>
+                  </>)}
                   <button className="boton-secundario"  onClick={() => setExpandido(expandido === c.id_cambio ? null : c.id_cambio)}>
                     {expandido === c.id_cambio ? "Ocultar" : "Detalle"}
                   </button>
