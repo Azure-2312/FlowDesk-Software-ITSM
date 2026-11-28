@@ -5,9 +5,14 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Cambio, SesionUsuario } from "@/types";
 import { PresentadorRfcAprobador, type DecisionRfc } from "@/modules/tickets/ui";
-import { PERFILES } from "@/shared/lib/capacidades";
+import { CAPACIDADES, PERFILES } from "@/shared/lib/capacidades";
+import { useCapacidad } from "@/shared/components/layout/PermisosProvider";
 
 export default function PaginaDetalleTicketRFC() {
+  // El CAB solo lo abren quienes votan (Aprobador) o lo convocan (Gestor de Cambios)
+  const votaCab = useCapacidad(CAPACIDADES.CAMBIOS_APROBAR);
+  const convocaCab = useCapacidad(CAPACIDADES.CAMBIOS_GESTIONAR);
+  const veCab = votaCab || convocaCab;
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
@@ -232,12 +237,14 @@ export default function PaginaDetalleTicketRFC() {
 
           {/* Barra de Acciones del Ticket (Sección 5.2) */}
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            {veCab && (<>
             <Link
               href="/plataforma/cambios/cab?vista=dictamen"
               className="boton-secundario"
             >
               Comité CAB
             </Link>
+            </>)}
             <Link
               href="/plataforma/cambios/gestion/calendario"
               className="boton-secundario"

@@ -1,5 +1,6 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { ACCIONES, perfilPuedeAccion } from "@/shared/lib/capacidades";
 
 export interface SesionProblema {
   idUsuario: number;
@@ -18,6 +19,12 @@ const SELECT_PROBLEMA = `
       ut.nombre AS urgencia_nombre,
       p.id_prioridad,
       pt.nombre AS prioridad_nombre,
+      (COALESCE(it.nivel, 0) = 3 OR COALESCE(pt.nivel, 9) = 1) AS es_mayor,
+      EXISTS (SELECT 1 FROM problema_cierre_aprobacion pca
+               WHERE pca.id_problema = p.id_problema AND pca.decision = 'APROBADO') AS cierre_autorizado,
+      (SELECT pca.comentario FROM problema_cierre_aprobacion pca
+        WHERE pca.id_problema = p.id_problema AND pca.decision = 'RECHAZADO'
+        ORDER BY pca.fecha_decision DESC LIMIT 1) AS ultima_devolucion,
       p.id_estado,
       CASE p.id_estado
         WHEN 1 THEN 'Registrado'
@@ -80,12 +87,13 @@ export async function listarProblemas(filtros: FiltrosProblemas, sesion: SesionP
     condiciones.push(`p.es_error_conocido = true`);
   }
 
-  if (filtros.vista === "todos") {
-    // Ver todos los problemas a nivel institucional
-  } else if (filtros.vista === "mios") {
+  // "mios" filtra lo asignado al usuario; el alcance del perfil se aplica
+  // siempre (también con vista=todos), igual que en el detalle.
+  if (filtros.vista === "mios") {
     condiciones.push(`p.id_usuario_asignado = $${paramIdx++}`);
     params.push(sesion.idUsuario);
-  } else if (sesion.idPerfil === 2) {
+  }
+  if (sesion.idPerfil === 2) {
     condiciones.push(
       `p.id_departamento = (SELECT td.id_departamento FROM tecnico_detalle td WHERE td.id_usuario = $${paramIdx++} AND td.estado_registro = true)`
     );
@@ -312,13 +320,24 @@ export async function actualizarProblema(
   body: ActualizacionProblema,
   sesion: SesionProblema
 ) {
-  const alcance = await queryRow<{ existe: boolean }>(
+  // Alcance: el Técnico, problemas de su grupo; el Supervisor, de los grupos que
+  // supervisa; el Gestor de Problemas y el Administrador, todos.
+  const sqlAlcance =
     sesion.idPerfil === 2
       ? `SELECT EXISTS (SELECT 1 FROM problema p JOIN tecnico_detalle td ON td.id_departamento = p.id_departamento WHERE p.id_problema = $1 AND td.id_usuario = $2 AND td.estado_registro = true) AS existe`
-      : `SELECT EXISTS (SELECT 1 FROM problema p JOIN departamento_ti d ON d.id_departamento = p.id_departamento WHERE p.id_problema = $1 AND d.id_supervisor = $2 AND d.estado_registro = true) AS existe`,
-    [idProblema, sesion.idUsuario]
-  );
+      : sesion.idPerfil === 4
+      ? `SELECT EXISTS (SELECT 1 FROM problema p JOIN departamento_ti d ON d.id_departamento = p.id_departamento WHERE p.id_problema = $1 AND d.id_supervisor = $2 AND d.estado_registro = true) AS existe`
+      : `SELECT EXISTS (SELECT 1 FROM problema p WHERE p.id_problema = $1 AND p.estado_registro = true AND $2::int IS NOT NULL) AS existe`;
+  const alcance = await queryRow<{ existe: boolean }>(sqlAlcance, [idProblema, sesion.idUsuario]);
   if (!alcance?.existe) throw new ErrorDominio("Problema no encontrado.", 404);
+
+  const actual = await queryRow<{ id_estado: number; solucion_definitiva: string | null; workaround: string | null }>(
+    `SELECT id_estado, solucion_definitiva, workaround FROM problema WHERE id_problema = $1`,
+    [idProblema]
+  );
+  if (Number(actual?.id_estado) === 6 && body.id_estado !== undefined && Number(body.id_estado) !== 6) {
+    throw new ErrorDominio("El problema está cerrado y no puede cambiar de estado.", 409);
+  }
 
   const {
     id_estado,
@@ -360,9 +379,28 @@ export async function actualizarProblema(
     if (!Number.isInteger(estadoNum) || estadoNum < 1 || estadoNum > 6) {
       throw new ErrorDominio("Estado de problema no válido.");
     }
-    // Un problema mayor (impacto alto o prioridad crítica) solo se cierra con
-    // la autorización del Aprobador (riesgo residual aceptado).
-    if (estadoNum === 6) {
+    // Resolver exige la solución definitiva (enviada ahora o ya registrada)
+    if (estadoNum === 5) {
+      const solucion = String(body.solucion_definitiva ?? actual?.solucion_definitiva ?? "").trim();
+      if (solucion.length < 10) {
+        throw new ErrorDominio("Para marcarlo como resuelto registra la solución definitiva (mínimo 10 caracteres).");
+      }
+    }
+    // Error conocido exige el workaround documentado
+    if (estadoNum === 4) {
+      const wa = String(body.workaround ?? actual?.workaround ?? "").trim();
+      if (wa.length < 10) throw new ErrorDominio("Para publicarlo como error conocido documenta el workaround (mínimo 10 caracteres).");
+    }
+    // Cerrar: solo el Gestor de Problemas (y el Administrador), y solo desde Resuelto.
+    // Un problema mayor (impacto alto o prioridad crítica) además necesita la
+    // autorización del Aprobador (riesgo residual aceptado).
+    if (estadoNum === 6 && Number(actual?.id_estado) !== 6) {
+      if (!perfilPuedeAccion(sesion.idPerfil, ACCIONES.PROBLEMA_CERRAR)) {
+        throw new ErrorDominio("Solo el Gestor de Problemas cierra problemas.", 403);
+      }
+      if (Number(actual?.id_estado) !== 5) {
+        throw new ErrorDominio("Solo se cierra un problema que está en estado Resuelto.", 409);
+      }
       const mayor = await queryRow<{ es_mayor: boolean; autorizado: boolean }>(
         `SELECT (COALESCE(it.nivel, 0) = 3 OR COALESCE(pt.nivel, 9) = 1) AS es_mayor,
                 EXISTS (SELECT 1 FROM problema_cierre_aprobacion pc

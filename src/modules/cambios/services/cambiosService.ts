@@ -28,18 +28,33 @@ export async function listarCambios(sesion: any, filtros: FiltrosCambios) {
   } else if (vista === "historial") {
     condiciones.push(`c.id_estado IN (6, 7, 8)`);
   } else if (vista === "todos") {
-    // Modo "todos los cambios": supervisor y admin ven todos los cambios de la organización
+    // Todos los cambios dentro del alcance del perfil (abajo)
   } else if (vista === "sin_asignar") {
     condiciones.push(`c.id_usuario_responsable IS NULL`);
   } else if (vista === "mis_cambios") {
     condiciones.push(`(c.id_usuario_solicitante = $${paramIdx} OR c.id_usuario_responsable = $${paramIdx})`);
     params.push(sesion.id_usuario);
     paramIdx++;
-  } else if (sesion.perfilActivo?.id_perfil === 2) {
+  }
+
+  // Alcance del perfil: se aplica con cualquier vista (igual que el detalle),
+  // salvo el calendario, que es la agenda compartida de la organización.
+  const perfilCambios = Number(sesion.perfilActivo?.id_perfil);
+  if (vista === "calendario") {
+    // sin filtro de alcance
+  } else if (perfilCambios === 2) {
     condiciones.push(`(c.id_usuario_solicitante = $${paramIdx} OR c.id_usuario_responsable = $${paramIdx})`);
     params.push(sesion.id_usuario);
     paramIdx++;
-  } else if (sesion.perfilActivo?.id_perfil === 4) {
+  } else if (perfilCambios === 5) {
+    condiciones.push(`EXISTS (
+      SELECT 1 FROM usuario ug
+       WHERE ug.id_usuario = $${paramIdx++} AND ug.id_departamento_empresa IS NOT NULL
+         AND (c.id_usuario_solicitante IN (SELECT id_usuario FROM usuario WHERE id_departamento_empresa = ug.id_departamento_empresa)
+              OR c.id_incidente_origen IN (SELECT id_ticket FROM ticket WHERE id_departamento_empresa = ug.id_departamento_empresa))
+    )`);
+    params.push(sesion.id_usuario);
+  } else if (perfilCambios === 4) {
     condiciones.push(`c.id_usuario_solicitante IN (
       SELECT u.id_usuario FROM usuario u
       WHERE u.id_departamento IN (

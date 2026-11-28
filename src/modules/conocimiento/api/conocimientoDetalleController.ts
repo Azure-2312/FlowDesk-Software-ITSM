@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   if (isNaN(idArticulo)) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
 
   try {
-    const row = await obtenerArticulo(idArticulo, sesion.id_usuario);
+    const row = await obtenerArticulo(idArticulo, sesion.id_usuario, sesion.perfilActivo?.id_perfil);
     return NextResponse.json(row);
   } catch (error) {
     if (!(error instanceof ErrorDominio)) console.error("Error al obtener artículo:", error);

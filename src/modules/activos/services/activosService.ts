@@ -1,3 +1,4 @@
+import { ACCIONES, perfilPuedeAccion } from "@/shared/lib/capacidades";
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { anularActasPendientes, registrarActaEntrega } from "./actasService";
@@ -12,7 +13,6 @@ export interface FiltrosActivos {
  * Auditores y el Administrador; el Gestor de Área (jefe de área) solo ve los
  * activos cuyos custodios son de su área. El resto ve el inventario sin custodio.
  */
-const PERFILES_VEN_CUSTODIO = [1, 2, 4, 5, 6, 9];
 
 export async function listarActivos(idPerfil: number, filtros: FiltrosActivos, idUsuario?: number) {
   const { tipo, estado } = filtros;
@@ -72,7 +72,7 @@ export async function listarActivos(idPerfil: number, filtros: FiltrosActivos, i
   `;
 
   const rows = await query<any>(sql, params);
-  if (!PERFILES_VEN_CUSTODIO.includes(idPerfil)) {
+  if (!perfilPuedeAccion(idPerfil, ACCIONES.CUSTODIO_VER)) {
     rows.forEach((r) => {
       r.id_usuario_custodio = null;
       r.custodio_nombre = null;

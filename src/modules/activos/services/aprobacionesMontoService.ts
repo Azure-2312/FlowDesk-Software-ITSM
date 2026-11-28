@@ -25,6 +25,18 @@ export async function listarBajasPorMonto() {
   );
 }
 
+/**
+ * Una decisión vale para el periodo de vigencia actual: si se aprobó, la
+ * licencia ya venció un año más tarde y la decisión queda antes del nuevo
+ * periodo, así que el próximo año vuelve a aparecer; si se rechazó, la
+ * licencia sigue con la misma fecha y no vuelve a pedirse.
+ */
+const DECIDIDA_EN_ESTE_PERIODO = `EXISTS (
+  SELECT 1 FROM aprobacion_monto am
+   WHERE am.tipo = 'RENOVACION' AND am.id_referencia = ls.id_licencia
+     AND am.fecha_decision >= ls.fecha_vencimiento - INTERVAL '1 year'
+)`;
+
 export async function listarRenovaciones() {
   return query(
     `SELECT ls.id_licencia, ls.nombre_software, ls.fabricante, ls.tipo_licencia,
@@ -36,12 +48,23 @@ export async function listarRenovaciones() {
        AND COALESCE(ls.costo_anual, 0) >= $1
        AND ls.fecha_vencimiento IS NOT NULL
        AND ls.fecha_vencimiento <= CURRENT_DATE + INTERVAL '90 days'
-       AND NOT EXISTS (
-         SELECT 1 FROM aprobacion_monto am
-         WHERE am.tipo = 'RENOVACION' AND am.id_referencia = ls.id_licencia
-       )
+       AND NOT ${DECIDIDA_EN_ESTE_PERIODO}
      ORDER BY ls.fecha_vencimiento ASC`,
     [UMBRAL_MONTO]
+  );
+}
+
+export async function listarHistorialRenovaciones() {
+  return query(
+    `SELECT am.id_aprobacion_monto, am.decision, am.comentario, am.monto, am.fecha_decision,
+            ls.id_licencia, ls.nombre_software, ls.fabricante,
+            CONCAT(u.nombres, ' ', u.apellido_paterno) AS aprobador_nombre
+       FROM aprobacion_monto am
+       JOIN licencia_software ls ON ls.id_licencia = am.id_referencia
+       LEFT JOIN usuario u ON u.id_usuario = am.id_aprobador
+      WHERE am.tipo = 'RENOVACION'
+      ORDER BY am.fecha_decision DESC
+      LIMIT 30`
   );
 }
 
@@ -56,6 +79,14 @@ export async function resolverRenovacion(idUsuario: number, idLicencia: number, 
     [idLicencia]
   );
   if (!licencia) throw new ErrorDominio("La licencia no existe.", 404);
+  const pendiente = await queryRow<{ en_ventana: boolean; decidida: boolean }>(
+    `SELECT (ls.fecha_vencimiento IS NOT NULL AND ls.fecha_vencimiento <= CURRENT_DATE + INTERVAL '90 days') AS en_ventana,
+            ${DECIDIDA_EN_ESTE_PERIODO} AS decidida
+       FROM licencia_software ls WHERE ls.id_licencia = $1`,
+    [idLicencia]
+  );
+  if (pendiente?.decidida) throw new ErrorDominio("La renovación de este periodo ya fue decidida.", 409);
+  if (!pendiente?.en_ventana) throw new ErrorDominio("La licencia todavía no está dentro de los 90 días previos a su vencimiento.", 409);
   if (Number(licencia.costo_anual) < UMBRAL_MONTO) {
     throw new ErrorDominio(`El monto no alcanza el umbral de autorización (${UMBRAL_MONTO}).`, 409);
   }
@@ -74,5 +105,9 @@ export async function resolverRenovacion(idUsuario: number, idLicencia: number, 
     );
   }
 
-  return { mensaje: "Decisión registrada." };
+  return {
+    mensaje: normalizada === "APROBADO"
+      ? "Renovación aprobada: la licencia vence un año más tarde."
+      : "Renovación rechazada: la licencia no se renovará en este periodo.",
+  };
 }

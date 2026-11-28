@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
+import { ErrorDominio } from "@/shared/lib/errores";
 import { listarHistorialActivo } from "@/modules/activos/services/activoHistorialService";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
@@ -21,9 +22,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 
   try {
-    const historial = await listarHistorialActivo(idActivo);
+    const historial = await listarHistorialActivo(idActivo, Number(sesion.perfilActivo?.id_perfil) || 0, sesion.id_usuario);
     return NextResponse.json({ historial });
   } catch (error) {
+    if (error instanceof ErrorDominio) return NextResponse.json({ error: error.message }, { status: error.estado });
     console.error("Error al obtener historial de activo:", error);
     return NextResponse.json({ error: "Error al consultar historial del activo" }, { status: 500 });
   }

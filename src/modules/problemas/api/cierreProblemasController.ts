@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { ACCIONES, CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { perfilPermitido, sesionConCapacidad } from "@/shared/lib/api-auth";
+import { accionPermitida, sesionConCapacidad } from "@/shared/lib/api-auth";
 import { listarProblemasMayores, resolverProblema } from "@/modules/problemas";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const { error } = sesionConCapacidad(CAPACIDADES.PROBLEMAS_VER);
+  const { sesion, error } = sesionConCapacidad(CAPACIDADES.PROBLEMAS_VER);
   if (error) return error;
+  const negado = accionPermitida(sesion, ACCIONES.PROBLEMA_CIERRE_AUTORIZAR);
+  if (negado) return negado;
 
   try {
     return NextResponse.json(await listarProblemasMayores());
@@ -22,7 +24,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.PROBLEMAS_VER);
   if (error) return error;
-  const negado = perfilPermitido(sesion, [7]);
+  const negado = accionPermitida(sesion, ACCIONES.PROBLEMA_CIERRE_AUTORIZAR);
   if (negado) return negado;
 
   try {

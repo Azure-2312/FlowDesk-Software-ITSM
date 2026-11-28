@@ -1260,8 +1260,11 @@ export default function PaginaDetalleTicket({
                 </div>
               )}
 
-              {/* ENCUESTA DE SATISFACCIÓN CSAT SI ESTÁ RESUELTO */}
-              {esFinalizado && (
+              {/* ENCUESTA DE SATISFACCIÓN CSAT: la responde solo el titular (perfil
+                  Solicitante) cuando está resuelto; el resto ve el resultado si ya existe */}
+              {esFinalizado &&
+                (csatEnviado ||
+                  (idPerfilActivo === 3 && ticket.id_estado === 5 && ticket.id_usuario_solicitante === usuarioActual?.id_usuario)) && (
                 <div
                   style={{
                     backgroundColor: "#ffffff",

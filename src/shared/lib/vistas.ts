@@ -334,15 +334,17 @@ export const REGISTRO_VISTAS: Record<string, PantallaConVistas> = {
     ],
   },
 
-  // #21275 Centro de aprobaciones (Activos: bajas de activos)
+  // #21275 Centro de aprobaciones (Activos: bajas y renovaciones por monto)
   "/plataforma/activos/aprobaciones": {
     idOpcion: 21275,
     urlBase: "/plataforma/activos/aprobaciones",
     nombre: "Centro de aprobaciones",
     vistaPorDefecto: "pendientes",
     vistas: [
-      { codigo: "pendientes", etiqueta: "Pendientes", idsLegados: [21275] },
-      { codigo: "historial", etiqueta: "Historial", idsLegados: [21275] },
+      { codigo: "pendientes", etiqueta: "Bajas pendientes", idsLegados: [21275] },
+      { codigo: "historial", etiqueta: "Historial de bajas", idsLegados: [21275] },
+      // Solo el Aprobador (y el Administrador): renovaciones de licencias que superan el umbral
+      { codigo: "renovaciones", etiqueta: "Renovaciones de licencias" },
     ],
   },
 

@@ -270,14 +270,8 @@ export const CAPACIDADES_POR_PERFIL: Record<number, readonly Capacidad[]> = {
   // Gestor de Cambios: coordina el calendario de cambios.
   [PERFILES.GESTOR_CAMBIOS]: [
     CAPACIDADES.TICKETS_VER,
-    CAPACIDADES.TICKETS_VISTA_TODOS,
+    // Sin bandejas de tickets: los incidentes le llegan vinculados a las RFC
     CAPACIDADES.TICKETS_VISTA_MIOS,
-    CAPACIDADES.TICKETS_VISTA_ASIGNADOS,
-    CAPACIDADES.TICKETS_VISTA_BANDEJA,
-    CAPACIDADES.TICKETS_VISTA_RESUELTOS,
-    CAPACIDADES.TICKETS_VISTA_EN_ATENCION,
-    CAPACIDADES.TICKETS_VISTA_DEPARTAMENTO,
-    CAPACIDADES.TICKETS_VISTA_AUDITORIA,
     CAPACIDADES.CAMBIOS_VER,
     CAPACIDADES.CAMBIOS_MODIFICAR,
     CAPACIDADES.CAMBIOS_GESTIONAR,
@@ -293,13 +287,8 @@ export const CAPACIDADES_POR_PERFIL: Record<number, readonly Capacidad[]> = {
   // Gestor de Activos y Configuracion: custodia inventario y CMDB.
   [PERFILES.GESTOR_ACTIVOS]: [
     CAPACIDADES.TICKETS_VER,
-    CAPACIDADES.TICKETS_VISTA_TODOS,
+    // Sin bandejas de tickets (no atiende tickets)
     CAPACIDADES.TICKETS_VISTA_MIOS,
-    CAPACIDADES.TICKETS_VISTA_ASIGNADOS,
-    CAPACIDADES.TICKETS_VISTA_BANDEJA,
-    CAPACIDADES.TICKETS_VISTA_RESUELTOS,
-    CAPACIDADES.TICKETS_VISTA_EN_ATENCION,
-    CAPACIDADES.TICKETS_VISTA_DEPARTAMENTO,
     CAPACIDADES.PROBLEMAS_VER,
     CAPACIDADES.CAMBIOS_VER,
     CAPACIDADES.CAMBIOS_CONFIG_VER,
@@ -320,13 +309,8 @@ export const CAPACIDADES_POR_PERFIL: Record<number, readonly Capacidad[]> = {
   // Gestor de Problemas: coordina problemas y errores conocidos.
   [PERFILES.GESTOR_PROBLEMAS]: [
     CAPACIDADES.TICKETS_VER,
-    CAPACIDADES.TICKETS_VISTA_TODOS,
+    // Sin bandejas de tickets: los incidentes le llegan como candidatos y vínculos del problema
     CAPACIDADES.TICKETS_VISTA_MIOS,
-    CAPACIDADES.TICKETS_VISTA_ASIGNADOS,
-    CAPACIDADES.TICKETS_VISTA_BANDEJA,
-    CAPACIDADES.TICKETS_VISTA_RESUELTOS,
-    CAPACIDADES.TICKETS_VISTA_EN_ATENCION,
-    CAPACIDADES.TICKETS_VISTA_DEPARTAMENTO,
     CAPACIDADES.PROBLEMAS_VER,
     CAPACIDADES.PROBLEMAS_GESTIONAR,
     CAPACIDADES.PROBLEMAS_CONFIGURAR,
@@ -414,6 +398,14 @@ export const ACCIONES = {
   CAMBIO_RFC_REGISTRAR: [1, 2, 8],
   /** Redactar un artículo de conocimiento (el Gestor de Problemas lo hace desde un problema). */
   CONOCIMIENTO_REDACTAR: [1, 2, 4],
+  /** Autorizar (o devolver) el cierre de un problema mayor: acepta el riesgo residual. */
+  PROBLEMA_CIERRE_AUTORIZAR: [1, 7],
+  /** Cerrar un problema resuelto (los mayores, solo con la autorización anterior). */
+  PROBLEMA_CERRAR: [1, 10],
+  /** Decidir la renovación de una licencia que supera el umbral de monto. */
+  RENOVACION_LICENCIA_DECIDIR: [1, 7],
+  /** Ver quién tiene cada equipo (el Gestor de Área, solo los de su área). */
+  CUSTODIO_VER: [1, 2, 4, 5, 6, 9],
   /** Asignar equipo técnico a un cambio. */
   CAMBIO_EQUIPO_ASIGNAR: [1, 4, 8],
   /** Proponer un modelo de cambio estándar. */

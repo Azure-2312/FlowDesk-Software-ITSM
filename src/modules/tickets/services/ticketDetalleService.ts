@@ -162,6 +162,11 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
     );
     autorizado = supervisaDepartamento?.existe === true;
   }
+  // Cualquier perfil puede consultar los tickets que él mismo registró
+  // (aparecen en su bandeja "Mis tickets").
+  if (!autorizado && ticket.id_usuario_solicitante === sesion.id_usuario) {
+    autorizado = true;
+  }
   if (!autorizado) {
     throw new ErrorDominio("No tienes permiso para ver este ticket", 403);
   }

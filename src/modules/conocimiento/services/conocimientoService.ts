@@ -1,3 +1,4 @@
+import { CAPACIDADES, tieneCapacidad } from "@/shared/lib/capacidades";
 import { query, queryRow, transaccion } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 
@@ -18,6 +19,11 @@ export interface FiltrosArticulos {
   vista?: string | null;
 }
 
+/** Revisan y publican artículos quienes gestionan el conocimiento (Supervisor y Administrador). */
+function esEditorConocimiento(idPerfil?: number) {
+  return tieneCapacidad(Number(idPerfil) || 0, CAPACIDADES.CONOCIMIENTO_GESTIONAR);
+}
+
 export async function listarArticulos(filtros: FiltrosArticulos, sesion: { idUsuario: number; idPerfil: number }) {
   const condiciones: string[] = ["a.estado_registro = true"];
   const params: any[] = [];
@@ -26,9 +32,9 @@ export async function listarArticulos(filtros: FiltrosArticulos, sesion: { idUsu
   if (filtros.vista === "mis_articulos") {
     condiciones.push(`a.id_autor = $${paramIdx++}`);
     params.push(sesion.idUsuario);
-  } else if (filtros.vista === "revisiones" || filtros.vista === "pendientes") {
+  } else if ((filtros.vista === "revisiones" || filtros.vista === "pendientes") && esEditorConocimiento(sesion.idPerfil)) {
     condiciones.push(`a.estado_editorial = 'EN_REVISION'`);
-  } else if (filtros.vista === "publicacion" || filtros.vista === "aprobados") {
+  } else if ((filtros.vista === "publicacion" || filtros.vista === "aprobados") && esEditorConocimiento(sesion.idPerfil)) {
     condiciones.push(`a.estado_editorial = 'APROBADO'`);
   } else {
     condiciones.push(`a.estado_editorial = 'PUBLICADO'`);
@@ -145,7 +151,23 @@ export async function crearArticuloOperativo(body: any, contexto: ContextoConoci
 }
 
 /** Abre un artículo: cuenta la lectura y devuelve el voto de quien lo lee. */
-export async function obtenerArticulo(idArticulo: number, idUsuario?: number) {
+export async function obtenerArticulo(idArticulo: number, idUsuario?: number, idPerfil?: number) {
+  // Mismo alcance que el listado: borradores solo para su autor, revisión y
+  // aprobados para quien edita el conocimiento, publicados para su audiencia.
+  const acceso = await queryRow<{ estado_editorial: string; id_autor: number | null; en_audiencia: boolean }>(
+    `SELECT estado_editorial, id_autor, ($2::int = ANY(COALESCE(audiencia_perfiles, '{}'))) AS en_audiencia
+       FROM articulo_conocimiento WHERE id_articulo = $1 AND estado_registro = true`,
+    [idArticulo, Number(idPerfil) || 0]
+  );
+  if (!acceso) throw new ErrorDominio("Artículo no encontrado", 404);
+  const perfil = Number(idPerfil) || 0;
+  const permitido =
+    perfil === 1 ||
+    (idUsuario != null && acceso.id_autor === idUsuario) ||
+    (acceso.estado_editorial === "PUBLICADO" && acceso.en_audiencia) ||
+    (["EN_REVISION", "APROBADO", "PUBLICADO"].includes(acceso.estado_editorial) && esEditorConocimiento(perfil));
+  if (!permitido) throw new ErrorDominio("Artículo no encontrado", 404);
+
   await query("UPDATE articulo_conocimiento SET visitas = visitas + 1 WHERE id_articulo = $1", [idArticulo]);
 
   const row = await queryRow(

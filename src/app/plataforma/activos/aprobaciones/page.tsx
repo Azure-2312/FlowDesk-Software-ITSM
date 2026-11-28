@@ -1,6 +1,7 @@
 import { exigirVistaPagina } from "@/shared/lib/vistas";
 import PestanasVista from "@/shared/components/ui/PestanasVista";
 import VistaCentroAprobacionesBajas from "@/modules/activos/views/VistaCentroAprobacionesBajas";
+import VistaRenovacionesLicencias from "@/modules/activos/views/VistaRenovacionesLicencias";
 
 interface PageProps {
   searchParams?: Promise<{ vista?: string }> | { vista?: string };
@@ -23,9 +24,14 @@ export default async function PaginaCentroAprobacionesBajas({ searchParams }: Pa
           />
       )}
 
-      <VistaCentroAprobacionesBajas
-        vistaInicial={vistaActiva as "pendientes" | "historial"}
-      />
+      {vistaActiva === "renovaciones" ? (
+        <VistaRenovacionesLicencias />
+      ) : (
+        <VistaCentroAprobacionesBajas
+          key={vistaActiva}
+          vistaInicial={vistaActiva as "pendientes" | "historial"}
+        />
+      )}
     </div>
   );
 }

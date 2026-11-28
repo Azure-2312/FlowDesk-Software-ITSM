@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Ticket, SesionUsuario, Problema, ErrorConocido } from "@/types";
 import { PresentadorProblema } from "@/modules/tickets/ui";
 import VistaAnalisisProblemas from "./VistaAnalisisProblemas";
+import GestionEstadoProblema from "@/modules/problemas/components/GestionEstadoProblema";
 
 type ProblemaDetalle = Problema & { errores_conocidos?: ErrorConocido[] };
 
@@ -177,9 +178,22 @@ export default function VistaProblemaDetalle() {
         onActualizado={() => void cargar()}
       />
 
+      {/* Avance del problema: resolver y cerrar según el perfil */}
+      <GestionEstadoProblema
+        idProblema={problema.id_problema}
+        idEstado={Number(problema.id_estado)}
+        esMayor={Boolean((problema as { es_mayor?: boolean }).es_mayor)}
+        cierreAutorizado={Boolean((problema as { cierre_autorizado?: boolean }).cierre_autorizado)}
+        ultimaDevolucion={(problema as { ultima_devolucion?: string | null }).ultima_devolucion ?? null}
+        causaRaiz={problema.causa_raiz ?? null}
+        workaround={problema.workaround ?? null}
+        solucionDefinitiva={problema.solucion_definitiva ?? null}
+        onActualizado={() => void cargar()}
+      />
+
       {/* Pestaña / Sección integrada de Análisis de Causa Raíz (RCA) - Bloque 6.3 */}
       <div style={{ marginTop: 20 }}>
-        <VistaAnalisisProblemas problemaId={problema.id_problema} />
+        <VistaAnalisisProblemas problemaId={problema.id_problema} cerrado={Number(problema.id_estado) === 6} />
       </div>
 
       {/* Incidentes vinculados al problema */}

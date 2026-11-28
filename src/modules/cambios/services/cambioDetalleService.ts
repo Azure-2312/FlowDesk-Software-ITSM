@@ -71,8 +71,27 @@ export async function obtenerDetalleCambio(sesion: any, idCambio: number) {
   if (!cambio) {
     throw new ErrorDominio("Cambio no encontrado", 404);
   }
-  if (sesion.perfilActivo?.id_perfil === 2 && (cambio as any).id_usuario_solicitante !== sesion.id_usuario) {
-    throw new ErrorDominio("Solo puedes consultar las RFC que registraste.", 403);
+  // Técnico: las RFC que registró o que le toca implementar
+  if (
+    sesion.perfilActivo?.id_perfil === 2 &&
+    (cambio as any).id_usuario_solicitante !== sesion.id_usuario &&
+    (cambio as any).id_usuario_responsable !== sesion.id_usuario
+  ) {
+    throw new ErrorDominio("Solo puedes consultar las RFC que registraste o que te toca implementar.", 403);
+  }
+  // Gestor de Área: solo las RFC que afectan a su área (misma regla que su V°B°)
+  if (sesion.perfilActivo?.id_perfil === 5) {
+    const delArea = await queryRow<{ existe: boolean }>(
+      `SELECT EXISTS (
+         SELECT 1 FROM cambio c
+           JOIN usuario ug ON ug.id_usuario = $2 AND ug.id_departamento_empresa IS NOT NULL
+          WHERE c.id_cambio = $1
+            AND (c.id_usuario_solicitante IN (SELECT id_usuario FROM usuario WHERE id_departamento_empresa = ug.id_departamento_empresa)
+                 OR c.id_incidente_origen IN (SELECT id_ticket FROM ticket WHERE id_departamento_empresa = ug.id_departamento_empresa))
+       ) AS existe`,
+      [idCambio, sesion.id_usuario]
+    );
+    if (!delArea?.existe) throw new ErrorDominio("Cambio no encontrado.", 404);
   }
   if (sesion.perfilActivo?.id_perfil === 4) {
     const dentroDelEquipo = await queryRow<{ existe: boolean }>(

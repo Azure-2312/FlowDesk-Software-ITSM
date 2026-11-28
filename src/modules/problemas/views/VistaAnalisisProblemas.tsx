@@ -43,9 +43,11 @@ function lineaTiempo(v: string) {
 
 interface VistaAnalisisProblemasProps {
   problemaId?: number;
+  /** Problema cerrado: el análisis queda solo como consulta. */
+  cerrado?: boolean;
 }
 
-export default function VistaAnalisisProblemas({ problemaId }: VistaAnalisisProblemasProps = {}) {
+export default function VistaAnalisisProblemas({ problemaId, cerrado = false }: VistaAnalisisProblemasProps = {}) {
   const puedeAnalizar = useCapacidad(CAPACIDADES.PROBLEMAS_GESTIONAR); // misma regla que /api/problemas/gestion/analisis
   const [problemas, setProblemas] = useState<Problema[]>([]);
   const [analisis, setAnalisis] = useState<Analisis[]>([]);
@@ -163,7 +165,7 @@ export default function VistaAnalisisProblemas({ problemaId }: VistaAnalisisProb
 
       {idProblema && (
         <>
-          {puedeAnalizar && (<>
+          {puedeAnalizar && !cerrado && (<>
           <div className="tarjeta-formulario" style={{ marginBottom: 16 }}>
             <h2 style={{ marginTop: 0 }}>Registrar análisis de causa raíz</h2>
             <label style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 10 }}>
