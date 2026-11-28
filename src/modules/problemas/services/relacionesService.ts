@@ -15,8 +15,7 @@ export async function obtenerRelacionesProblemas() {
     elementosConfig,
   ] = await Promise.all([
     query<any>(`
-      SELECT r.*,
-        (SELECT COUNT(*) FROM problema_regla_umbral_ejecucion e WHERE e.id_regla = r.id_regla) as total_ejecuciones
+      SELECT r.*
       FROM problema_regla_umbral r
       ORDER BY r.orden ASC, r.id_regla ASC
     `),
@@ -311,13 +310,12 @@ export async function restaurarFabricaRelaciones(confirmacion: string | undefine
     await client.query("DELETE FROM problema_regla_umbral");
     await client.query(`
       INSERT INTO problema_regla_umbral (
-          nombre, descripcion, orden, activa, estados_incluidos, prioridad_minima,
-          agrupar_por, umbral_incidentes, ventana_horas, accion, prioridad_problema,
-          evitar_duplicados, enfriamiento_horas
+          nombre, descripcion, orden, activa, prioridad_minima,
+          agrupar_por, umbral_incidentes, ventana_horas
       ) VALUES
-        ('5 incidentes de la misma categoría y CI en 7 días', 'Detección proactiva de fallas recurrentes por componente de infraestructura.', 1, false, '["ABIERTO", "EN_PROCESO", "RESUELTO"]', 'P4', 'ci', 5, 168, 'crear_automatico', 'maxima_incidentes', true, 48),
-        ('3 incidentes del mismo servicio en 24 horas', 'Alerta temprana por degradación operativa de un servicio de TI.', 2, false, '["ABIERTO", "EN_PROCESO"]', 'P3', 'servicio', 3, 24, 'sugerir', 'maxima_incidentes', true, 24),
-        ('Incidente mayor registrado (P1)', 'Generación obligatoria de problema ante incidentes críticos de alto impacto.', 3, false, '["ABIERTO", "EN_PROCESO"]', 'P1', 'servicio', 1, 24, 'crear_automatico', 'fija_p1', true, 12)
+        ('5 incidentes del mismo CI en 7 días', 'Fallas recurrentes de un mismo componente de infraestructura.', 1, false, 'P4', 'ci', 5, 168),
+        ('3 incidentes del mismo servicio en 24 horas', 'Alerta temprana por degradación operativa de un servicio de TI.', 2, false, 'P3', 'servicio', 3, 24),
+        ('Incidente crítico (P1) en un servicio', 'Todo incidente P1 se propone para investigar su causa raíz.', 3, false, 'P1', 'servicio', 1, 24)
     `);
 
     await client.query(`

@@ -74,6 +74,16 @@ export async function obtenerDetalleTicket(sesion: any, idTicket: number) {
       t.fecha_modificacion,
       t.campos_adicionales,
       t.id_problema,
+      t.es_incidente_mayor,
+      (SELECT COALESCE(json_agg(json_build_object(
+                'id_cambio', c.id_cambio, 'codigo_cambio', c.codigo_cambio, 'titulo', c.titulo,
+                'estado', CASE c.id_estado WHEN 1 THEN 'Registrado' WHEN 2 THEN 'Evaluación CAB' WHEN 3 THEN 'Aprobado'
+                          WHEN 4 THEN 'En planificación' WHEN 5 THEN 'En ejecución' WHEN 6 THEN 'Exitoso'
+                          WHEN 7 THEN 'Fallido' WHEN 8 THEN 'Cancelado' END)
+              ORDER BY c.id_cambio), '[]'::json)
+         FROM cambio c
+        WHERE c.estado_registro = true
+          AND (c.id_solicitud_origen = t.id_ticket OR c.id_incidente_origen = t.id_ticket)) AS cambios_vinculados,
       p.codigo_problema,
       p.titulo as problema_titulo,
       t.id_ci,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { sesionConCapacidad } from "@/shared/lib/api-auth";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import {
   actualizarReglaUmbral,
@@ -7,83 +8,60 @@ import {
   duplicarReglaUmbral,
   eliminarReglaUmbral,
   listarReglasUmbral,
-  simularReglaUmbral,
 } from "@/modules/problemas/services/relacionesUmbralService";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+// Reglas de detección de candidatos: verlas exige PROBLEMAS_CONFIG_VER y
+// modificarlas PROBLEMAS_CONFIGURAR (Administrador y Gestor de Problemas).
 
-  const { searchParams } = new URL(req.url);
+function fallo(error: unknown, mensaje: string) {
+  if (!(error instanceof ErrorDominio)) console.error(`${mensaje}:`, error);
+  const { error: texto, status } = respuestaError(error, mensaje);
+  return NextResponse.json({ error: texto }, { status });
+}
+
+export async function GET() {
+  const { error } = sesionConCapacidad(CAPACIDADES.PROBLEMAS_CONFIG_VER);
+  if (error) return error;
   try {
-    const data = await listarReglasUmbral(searchParams.get("id_regla"));
-    return NextResponse.json(data);
-  } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error al listar reglas de umbral:", error);
-    const { error: mensaje, status } = respuestaError(error, error?.message);
-    return NextResponse.json({ error: mensaje }, { status });
+    return NextResponse.json(await listarReglasUmbral());
+  } catch (err) {
+    return fallo(err, "Error al listar las reglas de detección");
   }
 }
 
 export async function POST(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-
+  const { error } = sesionConCapacidad(CAPACIDADES.PROBLEMAS_CONFIGURAR);
+  if (error) return error;
   try {
-    const body = await req.json();
-    const { accion, regla, diasSimulacion } = body;
-
-    if (accion === "simular") {
-      return NextResponse.json(await simularReglaUmbral(regla, diasSimulacion));
-    }
-    if (accion === "crear") {
-      return NextResponse.json(await crearReglaUmbral(regla));
-    }
-    if (accion === "duplicar") {
-      return NextResponse.json(await duplicarReglaUmbral(regla));
-    }
-
+    const { accion, regla } = await req.json();
+    if (accion === "crear") return NextResponse.json(await crearReglaUmbral(regla));
+    if (accion === "duplicar") return NextResponse.json(await duplicarReglaUmbral(regla));
     return NextResponse.json({ error: "Acción no soportada" }, { status: 400 });
-  } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error al procesar regla de umbral:", error);
-    const { error: mensaje, status } = respuestaError(error, error?.message);
-    return NextResponse.json({ error: mensaje }, { status });
+  } catch (err) {
+    return fallo(err, "Error al guardar la regla de detección");
   }
 }
 
 export async function PUT(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-
+  const { error } = sesionConCapacidad(CAPACIDADES.PROBLEMAS_CONFIGURAR);
+  if (error) return error;
   try {
-    const body = await req.json();
-    return NextResponse.json(await actualizarReglaUmbral(body));
-  } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error al actualizar regla de umbral:", error);
-    const { error: mensaje, status } = respuestaError(error, error?.message);
-    return NextResponse.json({ error: mensaje }, { status });
+    return NextResponse.json(await actualizarReglaUmbral(await req.json()));
+  } catch (err) {
+    return fallo(err, "Error al actualizar la regla de detección");
   }
 }
 
 export async function DELETE(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-  if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
+  const { error } = sesionConCapacidad(CAPACIDADES.PROBLEMAS_CONFIGURAR);
+  if (error) return error;
+  const id = new URL(req.url).searchParams.get("id");
   if (!id) return NextResponse.json({ error: "ID requerido" }, { status: 400 });
-
   try {
     return NextResponse.json(await eliminarReglaUmbral(id));
-  } catch (error: any) {
-    if (!(error instanceof ErrorDominio)) console.error("Error al eliminar regla de umbral:", error);
-    const { error: mensaje, status } = respuestaError(error, error?.message);
-    return NextResponse.json({ error: mensaje }, { status });
+  } catch (err) {
+    return fallo(err, "Error al eliminar la regla de detección");
   }
 }

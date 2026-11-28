@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, FormEvent, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ElementoConfiguracion, Problema, SesionUsuario } from "@/types";
 import { validarTexto, validarFechaNoPasada } from "@/shared/lib/validaciones";
 
@@ -80,6 +80,8 @@ interface ModeloEstandar {
 
 export default function VistaCambiosGestionCrear() {
   const router = useRouter();
+  // Desde el detalle de una solicitud se llega con ?solicitud=<id_ticket>
+  const solicitudInicial = useSearchParams().get("solicitud") ?? "";
 
   // Estados de sesión y configuración
   const [sesion, setSesion] = useState<SesionUsuario | null>(null);
@@ -145,9 +147,13 @@ export default function VistaCambiosGestionCrear() {
   const [idServicioAfectado, setIdServicioAfectado] = useState<number | "">("");
 
   // Relaciones
-  const [habilitarRelaciones, setHabilitarRelaciones] = useState(false);
+  const [habilitarRelaciones, setHabilitarRelaciones] = useState(Boolean(solicitudInicial));
   const [idIncidenteOrigen, setIdIncidenteOrigen] = useState<number | "">("");
   const [idProblemaOrigen, setIdProblemaOrigen] = useState<number | "">("");
+  const [idSolicitudOrigen, setIdSolicitudOrigen] = useState<number | "">(
+    /^\d+$/.test(solicitudInicial) ? Number(solicitudInicial) : ""
+  );
+  const [solicitudes, setSolicitudes] = useState<IncidenteRelacion[]>([]);
 
   // Ventana de fechas
   const [ventanaInicio, setVentanaInicio] = useState("");
@@ -217,6 +223,7 @@ export default function VistaCambiosGestionCrear() {
         if (Array.isArray(resServicios?.servicios)) setServicios(resServicios.servicios);
         if (Array.isArray(resPrb)) setProblemas(resPrb);
         if (Array.isArray(resInc?.incidentes)) setIncidentes(resInc.incidentes);
+        if (Array.isArray(resInc?.solicitudes)) setSolicitudes(resInc.solicitudes);
         if (Array.isArray(resAprob?.aprobadores)) setAprobadoresEmergencia(resAprob.aprobadores);
         if (Array.isArray(resModelos?.modelos)) setModelosEstandar(resModelos.modelos);
 
@@ -651,6 +658,8 @@ export default function VistaCambiosGestionCrear() {
         evidencias: evidencias.trim() || null,
         id_incidente_origen: idIncidenteOrigen ? Number(idIncidenteOrigen) : null,
         id_problema_origen: idProblemaOrigen ? Number(idProblemaOrigen) : null,
+        id_solicitud_origen:
+          tipoCambio !== "EMERGENCIA" && habilitarRelaciones && idSolicitudOrigen ? Number(idSolicitudOrigen) : null,
         // Estándar
         id_modelo_estandar: tipoCambio === "ESTANDAR" && modeloSeleccionadoId ? Number(modeloSeleccionadoId) : null,
         checklist_elegibilidad: tipoCambio === "ESTANDAR" ? checklistElegibilidad : null,
@@ -1308,12 +1317,32 @@ export default function VistaCambiosGestionCrear() {
                   onChange={(e) => setHabilitarRelaciones(e.target.checked)}
                 />
                 <span style={{ fontSize: 13, fontWeight: 600, color: "#334155" }}>
-                  Vincular con Incidente o Problema existente (Opcional)
+                  Vincular con Incidente, Problema o Solicitud existente (Opcional)
                 </span>
               </label>
 
               {habilitarRelaciones && (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 14 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: 16, marginTop: 14 }}>
+                  <div>
+                    <label className="etiqueta" htmlFor="rfc-solicitud-origen">Solicitud de servicio que origina el cambio</label>
+                    <select
+                      id="rfc-solicitud-origen"
+                      className="input-base"
+                      value={idSolicitudOrigen}
+                      onChange={(e) => setIdSolicitudOrigen(e.target.value ? Number(e.target.value) : "")}
+                    >
+                      <option value="">Ninguna / Sin solicitud asociada</option>
+                      {idSolicitudOrigen !== "" && !solicitudes.some((s) => s.id_ticket === idSolicitudOrigen) && (
+                        <option value={idSolicitudOrigen}>Solicitud #{idSolicitudOrigen}</option>
+                      )}
+                      {solicitudes.map((s) => (
+                        <option key={s.id_ticket} value={s.id_ticket}>
+                          [{s.codigo_ticket}] {s.titulo}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div>
                     <label className="etiqueta">Incidente Relacionado</label>
                     <select

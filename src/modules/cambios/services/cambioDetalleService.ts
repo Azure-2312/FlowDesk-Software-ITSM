@@ -41,6 +41,9 @@ export async function obtenerDetalleCambio(sesion: any, idCambio: number) {
       p.codigo_problema,
       c.id_incidente_origen,
       t.codigo_ticket AS incidente_codigo,
+      c.id_solicitud_origen,
+      sol.codigo_ticket AS solicitud_codigo,
+      sol.titulo AS solicitud_titulo,
       c.id_usuario_solicitante,
       CONCAT(us.nombres, ' ', us.apellido_paterno) AS solicitante_nombre,
       us.correo_electronico AS solicitante_email,
@@ -57,6 +60,7 @@ export async function obtenerDetalleCambio(sesion: any, idCambio: number) {
     LEFT JOIN elemento_configuracion ci ON c.id_ci_afectado = ci.id_ci
     LEFT JOIN problema p ON c.id_problema_origen = p.id_problema
     LEFT JOIN ticket t ON c.id_incidente_origen = t.id_ticket
+    LEFT JOIN ticket sol ON c.id_solicitud_origen = sol.id_ticket
     LEFT JOIN usuario us ON c.id_usuario_solicitante = us.id_usuario
     LEFT JOIN usuario ur ON c.id_usuario_responsable = ur.id_usuario
     WHERE c.id_cambio = $1 AND c.estado_registro = true

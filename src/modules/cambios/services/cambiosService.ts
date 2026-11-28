@@ -1,6 +1,7 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { validarTexto, validarFechaNoPasada } from "@/shared/lib/validaciones";
+import { sqlEnAtencion, sqlEsperaAprobacion } from "@/shared/lib/sla-sql";
 
 export interface FiltrosCambios {
   tipo: string | null;
@@ -97,6 +98,9 @@ export async function listarCambios(sesion: any, filtros: FiltrosCambios) {
       p.codigo_problema,
       c.id_incidente_origen,
       t.codigo_ticket AS incidente_codigo,
+      c.id_solicitud_origen,
+      sol.codigo_ticket AS solicitud_codigo,
+      sol.titulo AS solicitud_titulo,
       c.id_usuario_solicitante,
       CONCAT(us.nombres, ' ', us.apellido_paterno) AS solicitante_nombre,
       us.correo_electronico AS solicitante_email,
@@ -113,6 +117,7 @@ export async function listarCambios(sesion: any, filtros: FiltrosCambios) {
     LEFT JOIN elemento_configuracion ci ON c.id_ci_afectado = ci.id_ci
     LEFT JOIN problema p ON c.id_problema_origen = p.id_problema
     LEFT JOIN ticket t ON c.id_incidente_origen = t.id_ticket
+    LEFT JOIN ticket sol ON c.id_solicitud_origen = sol.id_ticket
     LEFT JOIN usuario us ON c.id_usuario_solicitante = us.id_usuario
     LEFT JOIN usuario ur ON c.id_usuario_responsable = ur.id_usuario
     WHERE ${condiciones.join(" AND ")}
@@ -183,12 +188,45 @@ export async function listarIncidentesParaRelacion() {
     id_prioridad: number;
     fecha_creacion: string;
   }>(`
-    SELECT id_ticket, codigo_ticket, titulo, id_prioridad, fecha_creacion
-    FROM ticket
-    WHERE estado_registro = true
-    ORDER BY id_ticket DESC
+    SELECT t.id_ticket, t.codigo_ticket, t.titulo, t.id_prioridad, t.fecha_creacion
+    FROM ticket t
+    JOIN tipo_ticket tt ON tt.id_tipo_ticket = t.id_tipo_ticket AND tt.codigo = 'INCIDENTE'
+    WHERE t.estado_registro = true
+    ORDER BY t.id_ticket DESC
     LIMIT 100
   `);
+}
+
+/** Solicitudes que pueden originar una RFC: en atención y ya autorizadas por el jefe. */
+export async function listarSolicitudesParaRelacion() {
+  return query<{ id_ticket: number; codigo_ticket: string; titulo: string; id_prioridad: number }>(`
+    SELECT t.id_ticket, t.codigo_ticket, t.titulo, t.id_prioridad
+    FROM ticket t
+    JOIN tipo_ticket tt ON tt.id_tipo_ticket = t.id_tipo_ticket AND tt.codigo = 'SOLICITUD'
+    WHERE t.estado_registro = true AND ${sqlEnAtencion("t")} AND NOT ${sqlEsperaAprobacion("t")}
+    ORDER BY t.id_ticket DESC
+    LIMIT 100
+  `);
+}
+
+/** Valida que el ticket sea una solicitud que todavía se atiende y no espera aprobación. */
+async function validarSolicitudOrigen(idSolicitud: unknown): Promise<number | null> {
+  if (idSolicitud === undefined || idSolicitud === null || idSolicitud === "") return null;
+  const id = Number(idSolicitud);
+  if (!Number.isInteger(id) || id <= 0) throw new ErrorDominio("La solicitud de origen no es válida.");
+  const fila = await queryRow<{ es_solicitud: boolean; en_atencion: boolean; espera: boolean }>(
+    `SELECT (tt.codigo = 'SOLICITUD') AS es_solicitud,
+            ${sqlEnAtencion("t")} AS en_atencion,
+            ${sqlEsperaAprobacion("t")} AS espera
+     FROM ticket t JOIN tipo_ticket tt ON tt.id_tipo_ticket = t.id_tipo_ticket
+     WHERE t.id_ticket = $1 AND t.estado_registro = true`,
+    [id]
+  );
+  if (!fila) throw new ErrorDominio("La solicitud de origen no existe.", 404);
+  if (!fila.es_solicitud) throw new ErrorDominio("El ticket de origen indicado no es una solicitud de servicio.");
+  if (fila.espera) throw new ErrorDominio("La solicitud todavía espera la aprobación del jefe (o fue rechazada).");
+  if (!fila.en_atencion) throw new ErrorDominio("La solicitud de origen ya está resuelta, cerrada o cancelada.");
+  return id;
 }
 
 export async function crearCambio(sesion: any, body: any) {
@@ -231,6 +269,7 @@ export async function crearCambio(sesion: any, body: any) {
     criterios_exito,
     id_problema_origen,
     id_incidente_origen,
+    id_solicitud_origen,
     id_modelo_estandar,
     checklist_elegibilidad,
     medio_autorizacion_emergencia,
@@ -242,6 +281,7 @@ export async function crearCambio(sesion: any, body: any) {
   } = body;
 
   const tipoNormalizado = String(tipo_cambio || "").toUpperCase();
+  const idSolicitudOrigen = await validarSolicitudOrigen(id_solicitud_origen);
   if (!["ESTANDAR", "NORMAL", "EMERGENCIA"].includes(tipoNormalizado)) {
     throw new ErrorDominio("Tipo de RFC no válido según las directrices ITIL v4.");
   }
@@ -495,12 +535,13 @@ export async function crearCambio(sesion: any, body: any) {
       id_ci_afectado,
       id_problema_origen,
       id_incidente_origen,
+      id_solicitud_origen,
       id_usuario_solicitante,
       id_usuario_responsable,
       usuario_creacion,
       campos_adicionales
     ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22
     ) RETURNING id_cambio, codigo_cambio
   `;
 
@@ -522,11 +563,25 @@ export async function crearCambio(sesion: any, body: any) {
     id_ci_afectado,
     id_problema_origen || null,
     id_incidente_origen || null,
+    idSolicitudOrigen,
     sesion.id_usuario,
     sesion.id_usuario,
     sesion.id_usuario,
     JSON.stringify(camposAdicionalesCompletos),
   ]);
+
+  // La solicitud deja constancia de la RFC que la atenderá.
+  if (idSolicitudOrigen && row) {
+    await query(
+      `INSERT INTO comentario_ticket (id_ticket, id_usuario, comentario, es_interno)
+       VALUES ($1, $2, $3, false)`,
+      [
+        idSolicitudOrigen,
+        sesion.id_usuario,
+        `Se registró la solicitud de cambio ${row.codigo_cambio} para atender esta solicitud. Su avance se sigue en Gestión de Cambios.`,
+      ]
+    );
+  }
 
   if (id_ci_afectado) {
     try {

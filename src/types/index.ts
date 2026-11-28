@@ -293,6 +293,7 @@ export interface Ticket {
   motivo_reapertura?: string | null;
   conteo_reaperturas?: number;
   es_incidente_mayor?: boolean | null;
+  cambios_vinculados?: { id_cambio: number; codigo_cambio: string; titulo: string; estado: string }[];
 }
 
 export interface AdjuntoTicket {
@@ -610,6 +611,9 @@ export interface Cambio {
   codigo_problema?: string | null;
   id_incidente_origen?: number | null;
   incidente_codigo?: string | null;
+  id_solicitud_origen?: number | null;
+  solicitud_codigo?: string | null;
+  solicitud_titulo?: string | null;
   id_usuario_solicitante: number;
   solicitante_nombre?: string;
   solicitante_email?: string;

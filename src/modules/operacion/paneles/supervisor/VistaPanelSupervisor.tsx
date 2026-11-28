@@ -82,7 +82,7 @@ export default function VistaPanelSupervisor() {
   if (!data) return null;
 
   const alertas = [
-    { texto: "Incidentes mayores abiertos", valor: data.alertas.incidentes_mayores, href: "/plataforma/incidentes/mayores" },
+    { texto: "Incidentes mayores activos", valor: data.alertas.incidentes_mayores, href: "/plataforma/incidentes/mayores" },
     { texto: "P1/P2 sin asignar", valor: data.alertas.p1p2_sin_asignar, href: "/plataforma/tickets/gestion/asignar" },
     { texto: "Técnicos sobrecargados", valor: data.alertas.tecnicos_sobrecargados, href: "/plataforma/organizacion/grupos-ti?vista=tecnicos" },
   ];

@@ -92,7 +92,6 @@ CREATE SEQUENCE IF NOT EXISTS problema_objetivo_tiempo_id_objetivo_seq;
 CREATE SEQUENCE IF NOT EXISTS problema_origen_id_origen_seq;
 CREATE SEQUENCE IF NOT EXISTS problema_regla_asignacion_id_regla_seq;
 CREATE SEQUENCE IF NOT EXISTS problema_regla_escalamiento_id_escalamiento_seq;
-CREATE SEQUENCE IF NOT EXISTS problema_regla_umbral_ejecucion_id_ejecucion_seq;
 CREATE SEQUENCE IF NOT EXISTS problema_regla_umbral_id_regla_seq;
 CREATE SEQUENCE IF NOT EXISTS problema_relaciones_version_id_version_seq;
 CREATE SEQUENCE IF NOT EXISTS problema_tarea_catalogo_id_tarea_seq;
@@ -433,6 +432,7 @@ CREATE TABLE IF NOT EXISTS cambio (
     id_ci_afectado INTEGER,
     id_problema_origen INTEGER,
     id_incidente_origen INTEGER,
+    id_solicitud_origen INTEGER,
     id_usuario_solicitante INTEGER NOT NULL,
     id_usuario_responsable INTEGER,
     resultado_pir TEXT,
@@ -1068,7 +1068,9 @@ CREATE TABLE IF NOT EXISTS incidente_mayor (
     id_problema INTEGER,
     involucrados JSONB DEFAULT '[]'::jsonb,
     CONSTRAINT incidente_mayor_pkey PRIMARY KEY (id_incidente_mayor),
-    CONSTRAINT incidente_mayor_codigo_key UNIQUE (codigo)
+    CONSTRAINT incidente_mayor_codigo_key UNIQUE (codigo),
+    CONSTRAINT incidente_mayor_estado_check CHECK (estado IN ('ABIERTO', 'MITIGADO', 'CERRADO')),
+    CONSTRAINT incidente_mayor_severidad_check CHECK (severidad IN ('P1', 'P2'))
 );
 
 -- ------------------------------------------------------------
@@ -1868,33 +1870,8 @@ CREATE TABLE IF NOT EXISTS problema_regla_umbral (
     sensibilidad_texto VARCHAR(20) DEFAULT 'media'::character varying,
     umbral_incidentes INTEGER DEFAULT 3 NOT NULL,
     ventana_horas INTEGER DEFAULT 24 NOT NULL,
-    accion VARCHAR(50) DEFAULT 'crear_automatico'::character varying NOT NULL,
-    id_plantilla INTEGER,
-    prioridad_problema VARCHAR(30) DEFAULT 'maxima_incidentes'::character varying NOT NULL,
-    id_departamento_destino INTEGER,
-    vincular_incidentes BOOLEAN DEFAULT true NOT NULL,
-    evitar_duplicados BOOLEAN DEFAULT true NOT NULL,
-    enfriamiento_horas INTEGER DEFAULT 24 NOT NULL,
-    notificar_destinatarios JSONB DEFAULT '["gestor_problemas"]'::jsonb NOT NULL,
-    notificar_plantilla VARCHAR(100) DEFAULT 'alerta_umbral_problema'::character varying,
-    ultima_ejecucion TIMESTAMPTZ,
-    problemas_generados INTEGER DEFAULT 0 NOT NULL,
     fecha_creacion TIMESTAMPTZ DEFAULT now() NOT NULL,
     CONSTRAINT problema_regla_umbral_pkey PRIMARY KEY (id_regla)
-);
-
--- ------------------------------------------------------------
--- Tabla: problema_regla_umbral_ejecucion
--- ------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS problema_regla_umbral_ejecucion (
-    id_ejecucion INTEGER DEFAULT nextval('problema_regla_umbral_ejecucion_id_ejecucion_seq'::regclass) NOT NULL,
-    id_regla INTEGER,
-    fecha_ejecucion TIMESTAMPTZ DEFAULT now() NOT NULL,
-    incidentes_analizados INTEGER DEFAULT 0 NOT NULL,
-    grupos_detectados INTEGER DEFAULT 0 NOT NULL,
-    problemas_creados INTEGER DEFAULT 0 NOT NULL,
-    detalle JSONB DEFAULT '[]'::jsonb NOT NULL,
-    CONSTRAINT problema_regla_umbral_ejecucion_pkey PRIMARY KEY (id_ejecucion)
 );
 
 -- ------------------------------------------------------------
@@ -2378,7 +2355,6 @@ CREATE TABLE IF NOT EXISTS ticket_incidente (
     id_ticket INTEGER NOT NULL,
     id_problema INTEGER,
     es_incidente_mayor BOOLEAN DEFAULT false NOT NULL,
-    causado_por_cambio_id INTEGER,
     CONSTRAINT ticket_incidente_pkey PRIMARY KEY (id_ticket)
 );
 
@@ -2696,6 +2672,8 @@ ALTER TABLE cambio ADD CONSTRAINT cambio_id_prioridad_fkey FOREIGN KEY (id_prior
 
 ALTER TABLE cambio DROP CONSTRAINT IF EXISTS cambio_id_incidente_origen_fkey;
 ALTER TABLE cambio ADD CONSTRAINT cambio_id_incidente_origen_fkey FOREIGN KEY (id_incidente_origen) REFERENCES ticket(id_ticket);
+ALTER TABLE cambio DROP CONSTRAINT IF EXISTS cambio_id_solicitud_origen_fkey;
+ALTER TABLE cambio ADD CONSTRAINT cambio_id_solicitud_origen_fkey FOREIGN KEY (id_solicitud_origen) REFERENCES ticket(id_ticket);
 
 ALTER TABLE cambio DROP CONSTRAINT IF EXISTS cambio_id_impacto_fkey;
 ALTER TABLE cambio ADD CONSTRAINT cambio_id_impacto_fkey FOREIGN KEY (id_impacto) REFERENCES impacto_ticket(id_impacto);
@@ -3039,8 +3017,6 @@ ALTER TABLE problema_regla_asignacion ADD CONSTRAINT problema_regla_asignacion_i
 ALTER TABLE problema_regla_asignacion DROP CONSTRAINT IF EXISTS problema_regla_asignacion_id_tecnico_fijo_fkey;
 ALTER TABLE problema_regla_asignacion ADD CONSTRAINT problema_regla_asignacion_id_tecnico_fijo_fkey FOREIGN KEY (id_tecnico_fijo) REFERENCES usuario(id_usuario);
 
-ALTER TABLE problema_regla_umbral_ejecucion DROP CONSTRAINT IF EXISTS problema_regla_umbral_ejecucion_id_regla_fkey;
-ALTER TABLE problema_regla_umbral_ejecucion ADD CONSTRAINT problema_regla_umbral_ejecucion_id_regla_fkey FOREIGN KEY (id_regla) REFERENCES problema_regla_umbral(id_regla) ON DELETE CASCADE;
 
 ALTER TABLE problema_relaciones_version DROP CONSTRAINT IF EXISTS problema_relaciones_version_creado_por_fkey;
 ALTER TABLE problema_relaciones_version ADD CONSTRAINT problema_relaciones_version_creado_por_fkey FOREIGN KEY (creado_por) REFERENCES usuario(id_usuario);
@@ -3215,8 +3191,6 @@ ALTER TABLE ticket_aprobacion ADD CONSTRAINT ticket_aprobacion_id_usuario_aproba
 ALTER TABLE ticket_aprobacion DROP CONSTRAINT IF EXISTS ticket_aprobacion_id_ticket_fkey;
 ALTER TABLE ticket_aprobacion ADD CONSTRAINT ticket_aprobacion_id_ticket_fkey FOREIGN KEY (id_ticket) REFERENCES ticket(id_ticket) ON DELETE CASCADE;
 
-ALTER TABLE ticket_incidente DROP CONSTRAINT IF EXISTS ticket_incidente_causado_por_cambio_id_fkey;
-ALTER TABLE ticket_incidente ADD CONSTRAINT ticket_incidente_causado_por_cambio_id_fkey FOREIGN KEY (causado_por_cambio_id) REFERENCES cambio(id_cambio);
 
 ALTER TABLE ticket_incidente DROP CONSTRAINT IF EXISTS ticket_incidente_id_problema_fkey;
 ALTER TABLE ticket_incidente ADD CONSTRAINT ticket_incidente_id_problema_fkey FOREIGN KEY (id_problema) REFERENCES problema(id_problema);
@@ -3308,7 +3282,6 @@ SELECT t.id_ticket,
     t.fecha_limite_respuesta_sla,
     ti.id_problema,
     COALESCE(ti.es_incidente_mayor, false) AS es_incidente_mayor,
-    ti.causado_por_cambio_id,
     COALESCE(ts.estado_aprobacion, 'NO_APLICA'::character varying) AS estado_aprobacion,
     ts.id_paso_actual
    FROM ((ticket t

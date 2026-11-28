@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 interface InvolucradoItem {
@@ -28,8 +28,19 @@ interface InvolucradosDisponibles {
   otros: InvolucradoItem[];
 }
 
+interface Vinculos {
+  incidentes: { id_ticket: number; codigo_ticket: string; titulo: string; prioridad: string | null }[];
+  problemas: { id_problema: number; codigo_problema: string; titulo: string }[];
+}
+
 export default function VistaDeclararIncidenteMayor() {
   const router = useRouter();
+  const parametros = useSearchParams();
+
+  // Vínculos: incidente que origina la crisis y problema que investiga la causa
+  const [idTicket, setIdTicket] = useState<string>(parametros.get("ticket") ?? "");
+  const [idProblema, setIdProblema] = useState<string>("");
+  const [vinculos, setVinculos] = useState<Vinculos>({ incidentes: [], problemas: [] });
 
   // Campos principales
   const [titulo, setTitulo] = useState("");
@@ -74,6 +85,10 @@ export default function VistaDeclararIncidenteMayor() {
       }
     }
     cargarDirectorio();
+    fetch("/api/tickets/incidentes-mayores?recurso=vinculos", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setVinculos({ incidentes: d.incidentes ?? [], problemas: d.problemas ?? [] }))
+      .catch(() => {});
   }, []);
 
   // Lista según la pestaña seleccionada
@@ -155,6 +170,8 @@ export default function VistaDeclararIncidenteMayor() {
           descripcion: descripcion.trim() || null,
           severidad,
           sala_virtual: salaVirtual.trim() || null,
+          id_ticket: idTicket ? Number(idTicket) : null,
+          id_problema: idProblema ? Number(idProblema) : null,
           involucrados,
         }),
       });
@@ -269,6 +286,48 @@ export default function VistaDeclararIncidenteMayor() {
               >
                 <option value="P1">P1 - Crítica (Interrupción total del servicio de negocio)</option>
                 <option value="P2">P2 - Alta (Degradación severa con riesgo inminente)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 16, marginBottom: 16 }}>
+            <div>
+              <label htmlFor="im-ticket" style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 6 }}>
+                Incidente de origen (opcional)
+              </label>
+              <select
+                id="im-ticket"
+                value={idTicket}
+                onChange={(e) => setIdTicket(e.target.value)}
+                style={{ width: "100%", padding: "10px 12px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13 }}
+              >
+                <option value="">Sin incidente de origen</option>
+                {idTicket && !vinculos.incidentes.some((i) => String(i.id_ticket) === idTicket) && (
+                  <option value={idTicket}>Ticket #{idTicket}</option>
+                )}
+                {vinculos.incidentes.map((i) => (
+                  <option key={i.id_ticket} value={i.id_ticket}>
+                    {i.codigo_ticket} · {i.prioridad ?? "—"} · {i.titulo}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="im-problema" style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 6 }}>
+                Problema vinculado (opcional)
+              </label>
+              <select
+                id="im-problema"
+                value={idProblema}
+                onChange={(e) => setIdProblema(e.target.value)}
+                style={{ width: "100%", padding: "10px 12px", border: "1px solid #cbd5e1", borderRadius: 6, fontSize: 13 }}
+              >
+                <option value="">Sin problema vinculado</option>
+                {vinculos.problemas.map((p) => (
+                  <option key={p.id_problema} value={p.id_problema}>
+                    {p.codigo_problema} · {p.titulo}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

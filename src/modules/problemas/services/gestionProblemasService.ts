@@ -1,5 +1,6 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { sqlMayorActivo } from "@/shared/lib/incidente-mayor";
 
 /**
  * Servicio de dominio de Gestión de Problemas (ITIL v4 / ISO 20000).
@@ -34,23 +35,27 @@ interface IncidenteAgrupable {
   ci: string | null;
   resolucion: string | null;
   fecha: string | null;
+  prioridad_nivel: number | null;
 }
 
-async function cargarIncidentes(dias: number): Promise<IncidenteAgrupable[]> {
+async function cargarIncidentes(dias: number, soloSinProblema = false): Promise<IncidenteAgrupable[]> {
   return query<IncidenteAgrupable>(
     `SELECT t.id_ticket, t.codigo_ticket, t.titulo,
             sc.nombre AS servicio,
             cat.nombre AS categoria,
             ci.codigo_ci AS ci,
             t.categoria_resolucion AS resolucion,
-            t.fecha_creacion AS fecha
+            t.fecha_creacion AS fecha,
+            pt.nivel AS prioridad_nivel
      FROM ticket t
      JOIN tipo_ticket tt ON tt.id_tipo_ticket = t.id_tipo_ticket AND tt.codigo = 'INCIDENTE'
      LEFT JOIN servicio_catalogo sc ON sc.id_servicio = t.id_servicio
      LEFT JOIN categoria_ticket cat ON cat.id_categoria = t.id_categoria
      LEFT JOIN elemento_configuracion ci ON ci.id_ci = t.id_ci
+     LEFT JOIN prioridad_ticket pt ON pt.id_prioridad = t.id_prioridad
      WHERE t.estado_registro = true
-       AND t.fecha_creacion >= now() - ($1 || ' days')::interval`,
+       AND t.fecha_creacion >= now() - ($1 || ' days')::interval
+       ${soloSinProblema ? "AND NOT EXISTS (SELECT 1 FROM problema_incidente pi WHERE pi.id_ticket = t.id_ticket)" : ""}`,
     [dias]
   );
 }
@@ -86,7 +91,7 @@ function agruparPor(incidentes: IncidenteAgrupable[], dimension: string) {
 
 async function detectarCandidatos() {
   const reglas = await query<any>(
-    `SELECT id_regla, nombre, agrupar_por, umbral_incidentes, ventana_horas, prioridad_problema
+    `SELECT id_regla, nombre, agrupar_por, umbral_incidentes, ventana_horas, prioridad_minima
      FROM problema_regla_umbral
      WHERE activa = true
      ORDER BY orden ASC, id_regla ASC`
@@ -95,18 +100,24 @@ async function detectarCandidatos() {
     (m, r) => Math.max(m, Math.ceil((r.ventana_horas ?? 720) / 24)),
     30
   );
-  const incidentes = await cargarIncidentes(maxDias);
+  // Los incidentes ya vinculados a un problema no vuelven a proponerse.
+  const incidentes = await cargarIncidentes(maxDias, true);
 
   const resultado: any[] = [];
   const vistos = new Set<string>();
   for (const regla of reglas) {
     const dimension = regla.agrupar_por || "servicio";
-    const dias = Math.ceil((regla.ventana_horas ?? 720) / 24);
-    const corte = Date.now() - dias * 86400000;
+    // Ventana en horas y prioridad mínima (P1 = nivel 1 … P4 = nivel 4).
+    const corte = Date.now() - Number(regla.ventana_horas ?? 720) * 3600000;
+    const nivelMinimo = Number(String(regla.prioridad_minima ?? "P4").replace(/\D/g, "")) || 4;
     const filtrados = incidentes.filter(
-      (i) => !i.fecha || new Date(i.fecha).getTime() >= corte
+      (i) =>
+        (!i.fecha || new Date(i.fecha).getTime() >= corte) &&
+        (i.prioridad_nivel == null || i.prioridad_nivel <= nivelMinimo)
     );
     for (const grupo of agruparPor(filtrados, dimension)) {
+      // Incidentes sin el dato (sin servicio, CI…) no forman un patrón común.
+      if (grupo.valor === "Sin clasificar") continue;
       if (grupo.total >= (regla.umbral_incidentes ?? 3)) {
         const clave = `${dimension}:${grupo.valor}`;
         if (vistos.has(clave)) continue;
@@ -145,8 +156,8 @@ export async function obtenerPanelProblemas() {
 
   const mayores = await queryRow<any>(
     `SELECT COUNT(*)::int AS activos
-     FROM incidente_mayor
-     WHERE estado_registro = true AND UPPER(COALESCE(estado,'')) <> 'CERRADO'`
+     FROM incidente_mayor im
+     WHERE im.estado_registro = true AND ${sqlMayorActivo("im")}`
   );
 
   const kedb = await query<any>(
@@ -289,7 +300,8 @@ export async function convertirCandidato(idUsuario: number, body: any) {
      RETURNING id_problema, codigo_problema`,
     [
       titulo,
-      body?.descripcion ? String(body.descripcion).trim() : null,
+      String(body?.descripcion ?? "").trim() ||
+        `Candidato detectado por recurrencia de ${ids.length} incidente(s).`,
       numOrNull(body?.id_impacto),
       numOrNull(body?.id_urgencia),
       numOrNull(body?.id_prioridad),
@@ -373,93 +385,6 @@ export async function guardarAnalisis(idUsuario: number, body: any) {
   );
 
   return { ok: true, id_analisis: fila.id_analisis };
-}
-
-/* ----------------------------------------------------- Problemas mayores */
-
-export async function listarMayores() {
-  const mayores = await query<any>(
-    `SELECT m.id_incidente_mayor, m.codigo, m.titulo, m.descripcion, m.severidad, m.estado,
-            m.sala_virtual, m.comunicados, m.fecha_declaracion, m.fecha_cierre,
-            m.id_problema, p.codigo_problema,
-            ${NOMBRE_USUARIO} AS declara
-     FROM incidente_mayor m
-     LEFT JOIN problema p ON p.id_problema = m.id_problema
-     LEFT JOIN usuario u ON u.id_usuario = m.id_usuario_declara
-     WHERE m.estado_registro = true
-     ORDER BY m.fecha_declaracion DESC NULLS LAST
-     LIMIT 100`
-  );
-  const candidatos = await query<any>(
-    `SELECT p.id_problema, p.codigo_problema, p.titulo,
-            pr.nombre AS prioridad_nombre,
-            ${ESTADO_CASE} AS estado_nombre
-     FROM problema p
-     LEFT JOIN prioridad_ticket pr ON pr.id_prioridad = p.id_prioridad
-     WHERE p.estado_registro = true AND p.id_estado NOT IN (5,6)
-       AND NOT EXISTS (
-         SELECT 1 FROM incidente_mayor m
-         WHERE m.id_problema = p.id_problema AND m.estado_registro = true
-           AND UPPER(COALESCE(m.estado,'')) <> 'CERRADO'
-       )
-     ORDER BY p.fecha_creacion DESC
-     LIMIT 50`
-  );
-  const departamentos = await query<any>(
-    `SELECT id_departamento, nombre FROM departamento_ti WHERE estado_registro = true ORDER BY nombre`
-  );
-  return { mayores, candidatos, departamentos };
-}
-
-export async function declararMayor(idUsuario: number, body: any) {
-  const titulo = String(body?.titulo ?? "").trim();
-  if (!titulo) throw new ErrorDominio("El título es obligatorio.");
-
-  const fila = await queryRow<any>(
-    `INSERT INTO incidente_mayor (codigo, titulo, descripcion, severidad, id_problema, id_departamento, estado, sala_virtual, id_usuario_declara, fecha_declaracion)
-     VALUES (
-       'MAY-' || to_char(now(),'YYYY') || '-' || lpad((COALESCE((SELECT MAX(id_incidente_mayor) FROM incidente_mayor),0)+1)::text, 4, '0'),
-       $1, $2, $3, $4, $5, 'ACTIVO', $6, $7, now()
-     )
-     RETURNING id_incidente_mayor, codigo`,
-    [
-      titulo,
-      body?.descripcion ? String(body.descripcion).trim() : null,
-      body?.severidad ?? "ALTA",
-      numOrNull(body?.id_problema),
-      numOrNull(body?.id_departamento),
-      body?.sala_virtual ?? null,
-      idUsuario,
-    ]
-  );
-  return { ok: true, id_incidente_mayor: fila.id_incidente_mayor, codigo: fila.codigo };
-}
-
-export async function actualizarMayor(_idUsuario: number, body: any) {
-  const id = Number(body?.id_incidente_mayor);
-  if (!id) throw new ErrorDominio("Debe indicar el incidente mayor.");
-  await query(
-    `UPDATE incidente_mayor
-     SET sala_virtual = COALESCE($1, sala_virtual),
-         comunicados = COALESCE($2, comunicados),
-         severidad = COALESCE($3, severidad)
-     WHERE id_incidente_mayor = $4`,
-    [body?.sala_virtual ?? null, body?.comunicados ?? null, body?.severidad ?? null, id]
-  );
-  return { ok: true };
-}
-
-export async function cerrarMayor(idUsuario: number, body: any) {
-  const id = Number(body?.id_incidente_mayor);
-  if (!id) throw new ErrorDominio("Debe indicar el incidente mayor.");
-  await query(
-    `UPDATE incidente_mayor
-     SET estado = 'CERRADO', fecha_cierre = now(), id_usuario_cierra = $1,
-         comunicados = COALESCE($2, comunicados)
-     WHERE id_incidente_mayor = $3`,
-    [idUsuario, body?.comunicados ?? null, id]
-  );
-  return { ok: true };
 }
 
 /* ------------------------------------------------ Cambios derivados (RFC) */
@@ -642,8 +567,8 @@ export async function obtenerReportesProblemas() {
 
   const mayores = await queryRow<any>(
     `SELECT COUNT(*)::int AS total,
-            COUNT(*) FILTER (WHERE UPPER(COALESCE(estado,'')) <> 'CERRADO')::int AS activos
-     FROM incidente_mayor WHERE estado_registro = true`
+            COUNT(*) FILTER (WHERE ${sqlMayorActivo("im")})::int AS activos
+     FROM incidente_mayor im WHERE im.estado_registro = true`
   );
 
   const recurrentes = (await listarRecurrentes("servicio")).grupos.slice(0, 8);

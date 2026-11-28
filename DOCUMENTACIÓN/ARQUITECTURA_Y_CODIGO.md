@@ -394,7 +394,7 @@ El núcleo transaccional desacopla los atributos comunes de los datos particular
         │ id_ticket (PK, FK)     │                    │ id_ticket (PK, FK)     │
         │ id_problema (FK)       │                    │ estado_aprobacion      │
         │ es_incidente_mayor bool│                    │ id_paso_actual (FK)    │
-        │ causado_por_cambio_id  │                    │ justificacion_negocio  │
+        │                        │                    │ justificacion_negocio  │
         └────────────────────────┘                    └────────────────────────┘
 ```
 

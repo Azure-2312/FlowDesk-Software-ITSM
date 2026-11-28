@@ -486,9 +486,16 @@ export default function PaginaDetalleTicketRFC() {
                       <strong>Incidente Origen:</strong> {cambio.incidente_codigo}
                     </div>
                   )}
-                  {!cambio.codigo_problema && !cambio.incidente_codigo && (
+                  {cambio.solicitud_codigo && (
+                    <div style={{ padding: 12, backgroundColor: "#f0fdf4", borderRadius: 6, border: "1px solid #bbf7d0", fontSize: 12.5 }}>
+                      <strong>Solicitud Origen:</strong>{" "}
+                      <Link href={`/plataforma/tickets/${cambio.id_solicitud_origen}`}>{cambio.solicitud_codigo}</Link>
+                      {cambio.solicitud_titulo ? ` · ${cambio.solicitud_titulo}` : ""}
+                    </div>
+                  )}
+                  {!cambio.codigo_problema && !cambio.incidente_codigo && !cambio.solicitud_codigo && (
                     <div className="estado-vacio">
-                      No hay incidentes ni problemas asociados a esta RFC.
+                      No hay incidentes, problemas ni solicitudes asociados a esta RFC.
                     </div>
                   )}
                 </div>

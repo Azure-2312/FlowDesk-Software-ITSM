@@ -1,6 +1,6 @@
 "use client";
 
-// Reglas de umbral de recurrencia (ITIL v4 – Gestión de Problemas proactiva).
+// Reglas de detección de candidatos (ITIL v4 – Gestión de Problemas proactiva).
 // Estas reglas las usa gestionProblemasService para proponer "Candidatos a
 // problema" cuando un mismo servicio/categoría/CI acumula incidentes.
 
@@ -9,7 +9,6 @@ import { PestanaUmbral } from "../relaciones/components/PestanaUmbral";
 
 export default function VistaUmbralProblemas() {
   const [reglas, setReglas] = useState<any[]>([]);
-  const [catalogos, setCatalogos] = useState<any>({ servicios: [], categorias: [], clasesCI: [] });
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,11 +16,10 @@ export default function VistaUmbralProblemas() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch("/api/problemas/configuracion/relaciones", { cache: "no-store" });
+      const res = await fetch("/api/problemas/configuracion/relaciones/umbral", { cache: "no-store" });
       const d = await res.json();
-      if (!res.ok) throw new Error(d.error || "No se pudo cargar la configuración.");
-      setReglas(d.reglasUmbral || []);
-      setCatalogos(d.catalogosAuxiliares || { servicios: [], categorias: [], clasesCI: [] });
+      if (!res.ok) throw new Error(d.error || "No se pudieron cargar las reglas.");
+      setReglas(d.reglas || []);
     } catch (e: any) {
       setError(e.message || "Error de conexión.");
     } finally {
@@ -38,7 +36,7 @@ export default function VistaUmbralProblemas() {
 
   return (
     <div className="vista-contenedor">
-      <PestanaUmbral reglas={reglas} catalogos={catalogos} onActualizar={cargar} onMarcarModificado={() => {}} />
+      <PestanaUmbral reglas={reglas} onActualizar={cargar} onMarcarModificado={() => {}} />
     </div>
   );
 }

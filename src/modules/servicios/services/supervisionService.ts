@@ -1,5 +1,6 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { sqlMayorActivo } from "@/shared/lib/incidente-mayor";
 import {
   sqlEnAtencion,
   sqlEsperaAprobacion,
@@ -66,7 +67,7 @@ export async function obtenerPanelSupervision(sesion: Sesion) {
   const alertasRow = await queryRow<any>(
     `SELECT
        (SELECT COUNT(*)::int FROM incidente_mayor im
-          WHERE im.estado = 'ABIERTO' AND im.estado_registro = true) AS incidentes_mayores,
+          WHERE ${sqlMayorActivo("im")} AND im.estado_registro = true) AS incidentes_mayores,
        (SELECT COUNT(*)::int FROM ticket t JOIN estado_ticket et ON et.id_estado = t.id_estado
           WHERE t.estado_registro = true AND ${AREA_TICKETS}
             AND ${EN_ATENCION} AND NOT ${ESPERA_APROBACION}

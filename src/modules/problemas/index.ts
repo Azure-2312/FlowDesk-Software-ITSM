@@ -26,7 +26,6 @@ export {
 
 export {
   listarReglasUmbral,
-  simularReglaUmbral,
   crearReglaUmbral,
   duplicarReglaUmbral,
   actualizarReglaUmbral,

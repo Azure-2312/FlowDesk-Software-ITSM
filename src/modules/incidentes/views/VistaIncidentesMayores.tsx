@@ -13,9 +13,24 @@ interface InvolucradoItem {
 
 interface Comunicado {
   texto: string;
-  fecha: string;
-  usuario?: number;
+  fecha: string | null;
+  usuario: string | null;
 }
+
+// Transiciones permitidas (misma regla que el servidor: shared/lib/incidente-mayor).
+const OPCIONES_ESTADO: Record<string, { valor: string; etiqueta: string }[]> = {
+  ABIERTO: [
+    { valor: "ABIERTO", etiqueta: "ABIERTO (Crisis activa)" },
+    { valor: "MITIGADO", etiqueta: "MITIGADO (Servicio restablecido)" },
+    { valor: "CERRADO", etiqueta: "CERRADO (Resuelto)" },
+  ],
+  MITIGADO: [
+    { valor: "MITIGADO", etiqueta: "MITIGADO (Servicio restablecido)" },
+    { valor: "ABIERTO", etiqueta: "ABIERTO (Crisis reactivada)" },
+    { valor: "CERRADO", etiqueta: "CERRADO (Resuelto)" },
+  ],
+  CERRADO: [{ valor: "CERRADO", etiqueta: "CERRADO (Resuelto)" }],
+};
 
 interface IncidenteMayor {
   id_incidente_mayor: number;
@@ -30,6 +45,8 @@ interface IncidenteMayor {
   fecha_declaracion: string;
   fecha_cierre: string | null;
   codigo_ticket: string | null;
+  codigo_problema: string | null;
+  id_problema: number | null;
   declarado_por: string | null;
   departamento_nombre: string | null;
 }
@@ -445,6 +462,17 @@ export default function VistaIncidentesMayores() {
                   Declarado el {new Date(incidenteSeleccionado.fecha_declaracion).toLocaleString("es-PE")} por{" "}
                   <strong>{incidenteSeleccionado.declarado_por || "Supervisor TI"}</strong>
                 </div>
+                <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>
+                  Ticket de origen: <strong>{incidenteSeleccionado.codigo_ticket || "—"}</strong>
+                  {" · "}Problema vinculado:{" "}
+                  {incidenteSeleccionado.id_problema ? (
+                    <Link href={`/plataforma/problemas/${incidenteSeleccionado.id_problema}`}>
+                      {incidenteSeleccionado.codigo_problema}
+                    </Link>
+                  ) : (
+                    <strong>—</strong>
+                  )}
+                </div>
               </div>
 
               <button className="boton-icono boton-sm"
@@ -475,8 +503,14 @@ export default function VistaIncidentesMayores() {
                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                     <select
                       value={incidenteSeleccionado.estado}
-                      disabled={actualizandoEstado}
-                      onChange={(e) => cambiarEstado(incidenteSeleccionado.id_incidente_mayor, e.target.value)}
+                      disabled={actualizandoEstado || incidenteSeleccionado.estado === "CERRADO"}
+                      onChange={(e) => {
+                        if (
+                          e.target.value === "CERRADO" &&
+                          !confirm("Un incidente mayor cerrado ya no se puede modificar. ¿Confirmas el cierre?")
+                        ) return;
+                        cambiarEstado(incidenteSeleccionado.id_incidente_mayor, e.target.value);
+                      }}
                       style={{
                         padding: "6px 12px",
                         borderRadius: 6,
@@ -486,9 +520,9 @@ export default function VistaIncidentesMayores() {
                         backgroundColor: "#ffffff",
                       }}
                     >
-                      <option value="ABIERTO">ABIERTO (Crisis activa)</option>
-                      <option value="MITIGADO">MITIGADO (Servicio restablecido)</option>
-                      <option value="CERRADO">CERRADO (Resuelto)</option>
+                      {(OPCIONES_ESTADO[incidenteSeleccionado.estado] ?? OPCIONES_ESTADO.ABIERTO).map((o) => (
+                        <option key={o.valor} value={o.valor}>{o.etiqueta}</option>
+                      ))}
                     </select>
                     {actualizandoEstado && <span style={{ fontSize: 12, color: "#64748b" }}>Actualizando...</span>}
                   </div>
@@ -622,8 +656,8 @@ export default function VistaIncidentesMayores() {
                         }}
                       >
                         <div style={{ display: "flex", justifyContent: "space-between", color: "#64748b", fontSize: 11, marginBottom: 3 }}>
-                          <strong>Boletín Oficial #{i + 1}</strong>
-                          <span>{new Date(c.fecha).toLocaleString("es-PE")}</span>
+                          <strong>Boletín Oficial #{i + 1}{c.usuario ? ` · ${c.usuario}` : ""}</strong>
+                          <span>{c.fecha ? new Date(c.fecha).toLocaleString("es-PE") : "—"}</span>
                         </div>
                         <div style={{ color: "#1e293b" }}>{c.texto}</div>
                       </div>
@@ -632,6 +666,7 @@ export default function VistaIncidentesMayores() {
                 )}
 
                 {/* Formulario para emitir comunicado */}
+                {incidenteSeleccionado.estado !== "CERRADO" && (
                 <form onSubmit={publicarComunicado} style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
                   <div style={{ flex: 1 }}>
                     <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#475569", marginBottom: 4 }}>
@@ -653,6 +688,7 @@ export default function VistaIncidentesMayores() {
                     {guardandoComunicado ? "Publicando..." : "Emitir Comunicado"}
                   </button>
                 </form>
+                )}
               </div>
             </div>
 

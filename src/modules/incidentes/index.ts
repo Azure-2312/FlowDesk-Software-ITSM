@@ -1,5 +1,8 @@
 export { obtenerIdTipoTicketPorCodigo, validarTipoTicket } from "./incidentesService";
 
-// --- Sala de crisis del incidente mayor, movida desde
-// src/modules/perfiles/tecnico para que el rol solo conserve su UI. ---
-export { listarSalaDeCrisis, agregarComunicado } from "./services/salaDeCrisisService";
+// --- Incidentes mayores: bandeja, declaración y sala de crisis usan el mismo servicio. ---
+export {
+  listarIncidentesMayores,
+  declararIncidenteMayor,
+  actualizarIncidenteMayor,
+} from "./services/incidentesMayoresService";

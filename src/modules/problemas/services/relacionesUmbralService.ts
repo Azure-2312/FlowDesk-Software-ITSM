@@ -1,209 +1,103 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 
-export async function listarReglasUmbral(idRegla?: string | null) {
-  if (idRegla) {
-    const ejecuciones = await query<any>(
-      `SELECT * FROM problema_regla_umbral_ejecucion WHERE id_regla = $1 ORDER BY fecha_ejecucion DESC LIMIT 50`,
-      [idRegla]
-    );
-    return { ok: true, ejecuciones };
-  }
+/**
+ * Reglas de detección de candidatos a problema (Gestión de Problemas proactiva).
+ * Una regla NO crea problemas: cuando un servicio, categoría, CI o código de
+ * resolución acumula incidentes por encima del umbral, el grupo aparece en
+ * Gestión de Problemas → Candidatos y el Gestor decide si lo convierte en problema.
+ */
 
+export const DIMENSIONES_UMBRAL = ["servicio", "categoria", "ci", "resolucion"] as const;
+const PRIORIDADES = ["P1", "P2", "P3", "P4"];
+
+interface DatosRegla {
+  nombre: string;
+  descripcion: string;
+  agrupar_por: string;
+  umbral_incidentes: number;
+  ventana_horas: number;
+  prioridad_minima: string;
+  activa: boolean;
+}
+
+function entero(valor: unknown, min: number, max: number, campo: string): number {
+  const n = Number(valor);
+  if (!Number.isInteger(n) || n < min || n > max) {
+    throw new ErrorDominio(`${campo} debe ser un número entero entre ${min} y ${max}.`);
+  }
+  return n;
+}
+
+function validarRegla(regla: any, base?: Partial<DatosRegla>): DatosRegla {
+  const nombre = String(regla?.nombre ?? base?.nombre ?? "").trim();
+  if (nombre.length < 3) throw new ErrorDominio("El nombre de la regla debe tener al menos 3 caracteres.");
+  const agrupar = String(regla?.agrupar_por ?? base?.agrupar_por ?? "servicio");
+  if (!(DIMENSIONES_UMBRAL as readonly string[]).includes(agrupar)) {
+    throw new ErrorDominio("El criterio de agrupación no es válido.");
+  }
+  const prioridad = String(regla?.prioridad_minima ?? base?.prioridad_minima ?? "P4").toUpperCase();
+  if (!PRIORIDADES.includes(prioridad)) throw new ErrorDominio("La prioridad mínima no es válida.");
+  return {
+    nombre: nombre.substring(0, 150),
+    descripcion: String(regla?.descripcion ?? base?.descripcion ?? "").trim(),
+    agrupar_por: agrupar,
+    umbral_incidentes: entero(regla?.umbral_incidentes ?? base?.umbral_incidentes ?? 3, 1, 100, "El umbral de incidentes"),
+    ventana_horas: entero(regla?.ventana_horas ?? base?.ventana_horas ?? 24, 1, 720, "La ventana de evaluación (horas)"),
+    prioridad_minima: prioridad,
+    activa: Boolean(regla?.activa ?? base?.activa ?? false),
+  };
+}
+
+export async function listarReglasUmbral() {
   const reglas = await query<any>(
-    `SELECT r.*,
-      (SELECT COUNT(*) FROM problema_regla_umbral_ejecucion e WHERE e.id_regla = r.id_regla) as total_ejecuciones
-     FROM problema_regla_umbral r
-     ORDER BY r.orden ASC, r.id_regla ASC`
+    `SELECT r.* FROM problema_regla_umbral r ORDER BY r.orden ASC, r.id_regla ASC`
   );
   return { ok: true, reglas };
 }
 
-export async function simularReglaUmbral(regla: any, diasSimulacion?: number) {
-  const dias = diasSimulacion || 30;
-  const { agrupar_por, umbral_incidentes } = regla || {};
-
-  const incidentes = await query<any>(`
-    SELECT t.id_ticket, t.codigo_ticket, t.titulo, t.id_servicio, s.nombre as servicio_nombre,
-           t.id_categoria, c.nombre as categoria_nombre, t.fecha_creacion, t.prioridad
-    FROM ticket t
-    LEFT JOIN servicio s ON s.id_servicio = t.id_servicio
-    LEFT JOIN categoria_ticket c ON c.id_categoria = t.id_categoria
-    WHERE t.tipo = 'INCIDENTE'
-      AND t.fecha_creacion >= NOW() - INTERVAL '${parseInt(String(dias))} days'
-    ORDER BY t.fecha_creacion DESC
-  `);
-
-  const gruposMap: { [key: string]: any[] } = {};
-  incidentes.forEach((inc) => {
-    let clave = "General";
-    if (agrupar_por === "servicio") {
-      clave = inc.servicio_nombre || `Servicio #${inc.id_servicio || "Sin asignar"}`;
-    } else if (agrupar_por === "categoria") {
-      clave = inc.categoria_nombre || `Categoría #${inc.id_categoria || "Sin categoría"}`;
-    } else if (agrupar_por === "ci") {
-      clave = `Componente CI vinculado (${inc.servicio_nombre || "TI"})`;
-    } else {
-      clave = inc.servicio_nombre || "Incidentes operativos";
-    }
-
-    if (!gruposMap[clave]) gruposMap[clave] = [];
-    gruposMap[clave].push(inc);
-  });
-
-  const gruposDetectados: any[] = [];
-  let totalProblemasPotenciales = 0;
-
-  Object.entries(gruposMap).forEach(([clave, items]) => {
-    if (items.length >= (umbral_incidentes || 3)) {
-      totalProblemasPotenciales++;
-      gruposDetectados.push({
-        criterio: clave,
-        total_incidentes: items.length,
-        muestra_tickets: items.slice(0, 5).map((t) => `${t.codigo_ticket}: ${t.titulo}`),
-        accion_sugerida: regla.accion === "sugerir" ? "Sugerir al Gestor" : "Crear Problema Automático",
-        prioridad_calculada: regla.prioridad_problema === "fija_p1" ? "P1" : "P2",
-      });
-    }
-  });
-
-  return {
-    ok: true,
-    resultadoSimulacion: {
-      periodoAnalizadoDias: dias,
-      totalIncidentesEvaluados: incidentes.length,
-      gruposSuperanUmbral: gruposDetectados.length,
-      problemasEstimados: totalProblemasPotenciales,
-      grupos: gruposDetectados,
-    },
-  };
-}
-
 export async function crearReglaUmbral(regla: any) {
+  const d = validarRegla(regla);
+  const orden = await queryRow<{ n: number }>(`SELECT COALESCE(MAX(orden), 0) + 1 AS n FROM problema_regla_umbral`);
   const nueva = await queryRow<any>(
-    `INSERT INTO problema_regla_umbral (
-      nombre, descripcion, orden, activa, estados_incluidos, prioridad_minima,
-      servicios_incluidos, categorias_incluidas, agrupar_por, sensibilidad_texto,
-      umbral_incidentes, ventana_horas, accion, prioridad_problema,
-      evitar_duplicados, enfriamiento_horas, notificar_destinatarios
-    ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
-    ) RETURNING *`,
-    [
-      regla.nombre || "Nueva Regla de Umbral",
-      regla.descripcion || "",
-      regla.orden || 1,
-      regla.activa ?? false,
-      JSON.stringify(regla.estados_incluidos || ["ABIERTO", "EN_PROCESO"]),
-      regla.prioridad_minima || "P4",
-      JSON.stringify(regla.servicios_incluidos || []),
-      JSON.stringify(regla.categorias_incluidas || []),
-      regla.agrupar_por || "servicio",
-      regla.sensibilidad_texto || "media",
-      regla.umbral_incidentes || 3,
-      regla.ventana_horas || 24,
-      regla.accion || "crear_automatico",
-      regla.prioridad_problema || "maxima_incidentes",
-      regla.evitar_duplicados ?? true,
-      regla.enfriamiento_horas || 24,
-      JSON.stringify(regla.notificar_destinatarios || ["gestor_problemas"]),
-    ]
+    `INSERT INTO problema_regla_umbral
+       (nombre, descripcion, orden, activa, prioridad_minima, agrupar_por, umbral_incidentes, ventana_horas)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+     RETURNING *`,
+    [d.nombre, d.descripcion, orden?.n ?? 1, d.activa, d.prioridad_minima, d.agrupar_por, d.umbral_incidentes, d.ventana_horas]
   );
-
   return { ok: true, regla: nueva };
 }
 
 export async function duplicarReglaUmbral(regla: any) {
-  if (!regla?.id_regla) throw new ErrorDominio("ID de regla requerido");
-
-  const orig = await queryRow<any>("SELECT * FROM problema_regla_umbral WHERE id_regla = $1", [
-    regla.id_regla,
-  ]);
+  const id = Number(regla?.id_regla);
+  if (!id) throw new ErrorDominio("ID de regla requerido");
+  const orig = await queryRow<any>("SELECT * FROM problema_regla_umbral WHERE id_regla = $1", [id]);
   if (!orig) throw new ErrorDominio("Regla no encontrada", 404);
-
-  const duplicada = await queryRow<any>(
-    `INSERT INTO problema_regla_umbral (
-      nombre, descripcion, orden, activa, estados_incluidos, prioridad_minima,
-      servicios_incluidos, categorias_incluidas, agrupar_por, sensibilidad_texto,
-      umbral_incidentes, ventana_horas, accion, prioridad_problema,
-      evitar_duplicados, enfriamiento_horas, notificar_destinatarios
-    ) VALUES (
-      $1, $2, $3, false, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
-    ) RETURNING *`,
-    [
-      `${orig.nombre} (Copia)`,
-      orig.descripcion,
-      (orig.orden || 1) + 1,
-      JSON.stringify(orig.estados_incluidos),
-      orig.prioridad_minima,
-      JSON.stringify(orig.servicios_incluidos),
-      JSON.stringify(orig.categorias_incluidas),
-      orig.agrupar_por,
-      orig.sensibilidad_texto,
-      orig.umbral_incidentes,
-      orig.ventana_horas,
-      orig.accion,
-      orig.prioridad_problema,
-      orig.evitar_duplicados,
-      orig.enfriamiento_horas,
-      JSON.stringify(orig.notificar_destinatarios),
-    ]
-  );
-
-  return { ok: true, regla: duplicada };
+  return crearReglaUmbral({ ...orig, nombre: `${orig.nombre} (Copia)`.substring(0, 150), activa: false });
 }
 
 export async function actualizarReglaUmbral(body: any) {
-  const { id_regla, activa, ...resto } = body;
+  const id = Number(body?.id_regla);
+  if (!id) throw new ErrorDominio("ID de regla requerido");
+  const actual = await queryRow<any>("SELECT * FROM problema_regla_umbral WHERE id_regla = $1", [id]);
+  if (!actual) throw new ErrorDominio("Regla no encontrada", 404);
 
-  if (!id_regla) {
-    throw new ErrorDominio("ID de regla requerido");
-  }
-
-  // Solo toggle de activa
-  if (Object.keys(resto).length === 0 && activa !== undefined) {
-    const act = await queryRow<any>(
-      "UPDATE problema_regla_umbral SET activa = $1 WHERE id_regla = $2 RETURNING *",
-      [activa, id_regla]
-    );
-    return { ok: true, regla: act };
-  }
-
+  const d = validarRegla(body, actual);
   const actualizada = await queryRow<any>(
     `UPDATE problema_regla_umbral
-     SET nombre = COALESCE($1, nombre),
-         descripcion = COALESCE($2, descripcion),
-         agrupar_por = COALESCE($3, agrupar_por),
-         umbral_incidentes = COALESCE($4, umbral_incidentes),
-         ventana_horas = COALESCE($5, ventana_horas),
-         accion = COALESCE($6, accion),
-         activa = COALESCE($7, activa),
-         prioridad_problema = COALESCE($8, prioridad_problema),
-         evitar_duplicados = COALESCE($9, evitar_duplicados),
-         enfriamiento_horas = COALESCE($10, enfriamiento_horas),
-         prioridad_minima = COALESCE($11, prioridad_minima)
-     WHERE id_regla = $12
+     SET nombre = $1, descripcion = $2, agrupar_por = $3, umbral_incidentes = $4,
+         ventana_horas = $5, prioridad_minima = $6, activa = $7
+     WHERE id_regla = $8
      RETURNING *`,
-    [
-      resto.nombre,
-      resto.descripcion,
-      resto.agrupar_por,
-      resto.umbral_incidentes,
-      resto.ventana_horas,
-      resto.accion,
-      activa,
-      resto.prioridad_problema,
-      resto.evitar_duplicados,
-      resto.enfriamiento_horas,
-      resto.prioridad_minima,
-      id_regla,
-    ]
+    [d.nombre, d.descripcion, d.agrupar_por, d.umbral_incidentes, d.ventana_horas, d.prioridad_minima, d.activa, id]
   );
-
   return { ok: true, regla: actualizada };
 }
 
 export async function eliminarReglaUmbral(id: string) {
-  await query("DELETE FROM problema_regla_umbral WHERE id_regla = $1", [id]);
+  const n = Number(id);
+  if (!Number.isInteger(n) || n <= 0) throw new ErrorDominio("ID de regla inválido");
+  await query("DELETE FROM problema_regla_umbral WHERE id_regla = $1", [n]);
   return { ok: true, mensaje: "Regla eliminada" };
 }

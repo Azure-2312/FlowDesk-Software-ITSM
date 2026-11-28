@@ -6,7 +6,13 @@ interface TicketRef {
   id_ticket: number;
   codigo_ticket: string;
   titulo: string;
-  fecha_creacion: string;
+  origen: boolean;
+}
+
+interface Comunicado {
+  texto: string;
+  fecha: string | null;
+  usuario: string | null;
 }
 
 interface IncidenteMayor {
@@ -17,7 +23,7 @@ interface IncidenteMayor {
   severidad: string | null;
   estado: string | null;
   sala_virtual: string | null;
-  comunicados: string[] | null;
+  comunicados: Comunicado[];
   fecha_declaracion: string | null;
   fecha_cierre: string | null;
   id_problema: number | null;
@@ -36,9 +42,8 @@ function fechaHora(valor: string | null) {
 
 function colorSeveridad(sev: string | null) {
   switch ((sev ?? "").toUpperCase()) {
-    case "CRITICA": return { bg: "#fee2e2", fg: "#991b1b" };
-    case "ALTA": return { bg: "#ffedd5", fg: "#9a3412" };
-    case "MEDIA": return { bg: "#fef9c3", fg: "#854d0e" };
+    case "P1": return { bg: "#fee2e2", fg: "#991b1b" };
+    case "P2": return { bg: "#ffedd5", fg: "#9a3412" };
     default: return { bg: "#e2e8f0", fg: "#334155" };
   }
 }
@@ -55,13 +60,13 @@ export default function VistaMesaIncidenteMayor() {
     setCargando(true);
     setError(null);
     try {
-      const res = await fetch(`/api/tickets/incidente-mayor?_t=${Date.now()}`, { cache: "no-store" });
+      const res = await fetch(`/api/tickets/incidentes-mayores?_t=${Date.now()}`, { cache: "no-store" });
       const data = await res.json();
       if (!res.ok || data.error) {
         setError(data.error || "No se pudieron obtener los incidentes mayores.");
         return;
       }
-      setIncidentes(Array.isArray(data.incidentes) ? data.incidentes : []);
+      setIncidentes(Array.isArray(data) ? data : []);
     } catch {
       setError("Error de conexión al cargar los incidentes mayores.");
     } finally {
@@ -81,8 +86,8 @@ export default function VistaMesaIncidenteMayor() {
     setError(null);
     setOk(null);
     try {
-      const res = await fetch("/api/tickets/incidente-mayor", {
-        method: "POST",
+      const res = await fetch("/api/tickets/incidentes-mayores", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_incidente_mayor: id, comunicado: texto }),
       });
@@ -143,7 +148,7 @@ export default function VistaMesaIncidenteMayor() {
                     <div style={{ fontSize: 14, color: "#0f172a", marginTop: 6 }}>{i.titulo}</div>
                     {i.descripcion && <div style={{ fontSize: 12.5, color: "#64748b", marginTop: 4 }}>{i.descripcion}</div>}
                     <div style={{ fontSize: 12, color: "#64748b", marginTop: 6 }}>
-                      Problema {i.codigo_problema ?? "—"} · Ticket {i.codigo_ticket ?? "—"}
+                      Ticket de origen {i.codigo_ticket ?? "—"} · Problema {i.codigo_problema ?? "—"}
                       {i.sala_virtual ? ` · Sala: ${i.sala_virtual}` : ""}
                     </div>
                   </div>
@@ -157,7 +162,9 @@ export default function VistaMesaIncidenteMayor() {
                         <strong>Declarado</strong> · {fechaHora(i.fecha_declaracion)}
                       </li>
                       {(i.comunicados ?? []).map((c, idx) => (
-                        <li key={idx} style={{ fontSize: 12.5, color: "#334155", marginBottom: 6 }}>{c}</li>
+                        <li key={idx} style={{ fontSize: 12.5, color: "#334155", marginBottom: 6 }}>
+                          <strong>{fechaHora(c.fecha)}</strong>{c.usuario ? ` · ${c.usuario}` : ""} · {c.texto}
+                        </li>
                       ))}
                       {i.fecha_cierre && (
                         <li style={{ fontSize: 12.5, color: "#166534" }}><strong>Cerrado</strong> · {fechaHora(i.fecha_cierre)}</li>
@@ -168,12 +175,13 @@ export default function VistaMesaIncidenteMayor() {
                   <div>
                     <div style={{ fontSize: 12, fontWeight: 700, color: "#334155", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>Tickets vinculados</div>
                     {i.tickets.length === 0 ? (
-                      <p style={{ fontSize: 12.5, color: "#64748b", margin: 0 }}>Sin tickets vinculados al problema.</p>
+                      <p style={{ fontSize: 12.5, color: "#64748b", margin: 0 }}>Sin tickets vinculados.</p>
                     ) : (
                       <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 6 }}>
                         {i.tickets.map((t) => (
                           <li key={t.id_ticket} style={{ fontSize: 12.5, color: "#334155" }}>
                             <strong>{t.codigo_ticket}</strong> · {t.titulo}
+                            {t.origen ? " (origen)" : ""}
                           </li>
                         ))}
                       </ul>

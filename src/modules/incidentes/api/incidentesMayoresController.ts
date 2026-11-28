@@ -5,6 +5,7 @@ import { sesionConCapacidad } from "@/shared/lib/api-auth";
 import {
   listarIncidentesMayores,
   listarInvolucradosDisponibles,
+  listarVinculosDisponibles,
   declararIncidenteMayor,
   actualizarIncidenteMayor,
 } from "@/modules/incidentes/services/incidentesMayoresService";
@@ -19,6 +20,9 @@ export async function GET(req: NextRequest) {
     const url = new URL(req.url);
     if (url.searchParams.get("recurso") === "involucrados") {
       return NextResponse.json(await listarInvolucradosDisponibles());
+    }
+    if (url.searchParams.get("recurso") === "vinculos") {
+      return NextResponse.json(await listarVinculosDisponibles());
     }
     return NextResponse.json(await listarIncidentesMayores());
   } catch (err) {

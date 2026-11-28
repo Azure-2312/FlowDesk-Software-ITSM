@@ -21,7 +21,7 @@ import {
   type FlujoEstadosAcciones,
   type VistasTicketConfig,
 } from "@/modules/tickets/reglasVistaTicket";
-import { ticketPorAsignar } from "@/shared/lib/reglas-ticket";
+import { ticketEsperaAprobacion, ticketPorAsignar } from "@/shared/lib/reglas-ticket";
 
 interface CampoConfigurado {
   id: string;
@@ -590,6 +590,17 @@ export default function PaginaDetalleTicket({
                       Problema: {ticket.problema_codigo || ticket.codigo_problema || `PRB-${ticket.id_problema}`}
                     </Link>
                   )}
+                  {(ticket.cambios_vinculados ?? []).map((c) => (
+                    <Link
+                      key={c.id_cambio}
+                      href={`/plataforma/cambios/gestion/${c.id_cambio}`}
+                      className="insignia insignia-info"
+                      style={{ textDecoration: "none" }}
+                      title={`Cambio vinculado: ${c.titulo}`}
+                    >
+                      Cambio: {c.codigo_cambio}
+                    </Link>
+                  ))}
                 </div>
                 <span className="badge-itil" style={{ backgroundColor: "#1e3a8a", color: "#bfdbfe", fontSize: 11 }}>
                   {esIncidente
@@ -834,6 +845,30 @@ export default function PaginaDetalleTicket({
                                 Cancelar ticket
                               </button>
                             </>
+                          )}
+
+                          {/* Escalamiento a Incidente mayor: lo declara el Supervisor o el Administrador */}
+                          {esIncidente && !ticket.es_terminal && !ticket.es_incidente_mayor && (idPerfilActivo === 1 || idPerfilActivo === 4) && (
+                            <Link
+                              href={`/plataforma/incidentes/mayores?vista=declarar&ticket=${ticket.id_ticket}`}
+                              className="boton-secundario"
+                              title="Declarar un incidente mayor a partir de este incidente"
+                            >
+                              Declarar incidente mayor
+                            </Link>
+                          )}
+
+                          {/* Solicitud → Cambio: cumplirla exige modificar producción. La RFC la
+                              registran el Administrador, el Técnico o el Gestor de Cambios. */}
+                          {!esIncidente && !ticket.es_terminal && !ticketEsperaAprobacion(ticket) &&
+                            (idPerfilActivo === 1 || idPerfilActivo === 2 || idPerfilActivo === 8) && (
+                            <Link
+                              href={`/plataforma/cambios/nuevo?solicitud=${ticket.id_ticket}`}
+                              className="boton-secundario"
+                              title="Registrar una solicitud de cambio (RFC) para cumplir esta solicitud"
+                            >
+                              Solicitar cambio
+                            </Link>
                           )}
 
                           {/* Escalamiento a Problema ITIL v4: Para incidentes no terminales */}

@@ -1,22 +1,26 @@
-import { NextRequest, NextResponse } from "next/server";
-import { verificarTokenSesion, COOKIE_SESION } from "@/shared/lib/auth";
-import { listarIncidentesParaRelacion } from "@/modules/cambios/services/cambiosService";
+import { NextResponse } from "next/server";
+import { CAPACIDADES } from "@/shared/lib/capacidades";
+import { sesionConCapacidad } from "@/shared/lib/api-auth";
+import {
+  listarIncidentesParaRelacion,
+  listarSolicitudesParaRelacion,
+} from "@/modules/cambios/services/cambiosService";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest) {
-  const token = req.cookies.get(COOKIE_SESION)?.value;
-  const sesion = token ? verificarTokenSesion(token) : null;
-
-  if (!sesion) {
-    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  }
+/** Tickets que pueden originar una RFC: incidentes y solicitudes autorizadas en atención. */
+export async function GET() {
+  const { error } = sesionConCapacidad(CAPACIDADES.CAMBIOS_VER);
+  if (error) return error;
 
   try {
-    const incidentes = await listarIncidentesParaRelacion();
-    return NextResponse.json({ incidentes });
-  } catch (error) {
-    console.error("Error al listar incidentes para relacionar:", error);
-    return NextResponse.json({ error: "Error al consultar incidentes" }, { status: 500 });
+    const [incidentes, solicitudes] = await Promise.all([
+      listarIncidentesParaRelacion(),
+      listarSolicitudesParaRelacion(),
+    ]);
+    return NextResponse.json({ incidentes, solicitudes });
+  } catch (err) {
+    console.error("Error al listar tickets para relacionar:", err);
+    return NextResponse.json({ error: "Error al consultar los tickets" }, { status: 500 });
   }
 }
