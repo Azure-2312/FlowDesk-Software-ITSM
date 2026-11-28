@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { sesionConCapacidad } from "@/shared/lib/api-auth";
-import { listarBajasAprobaciones, resolverBajaArea } from "@/modules/activos/services/supervisionBajasService";
+import { decidirBaja, listarBajasAprobaciones } from "@/modules/activos/services/supervisionBajasService";
 
 export const dynamic = "force-dynamic";
+
+// Bandeja única de bajas: cada perfil ve y decide solo lo que le corresponde
+// (la regla vive en supervisionBajasService).
 
 export async function GET(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.ACTIVOS_VER);
@@ -12,7 +15,9 @@ export async function GET(req: NextRequest) {
 
   try {
     const vista = req.nextUrl.searchParams.get("vista") || "pendientes";
-    return NextResponse.json(await listarBajasAprobaciones(sesion, vista));
+    return NextResponse.json(
+      await listarBajasAprobaciones({ id_usuario: sesion.id_usuario, id_perfil: sesion.perfilActivo?.id_perfil }, vista)
+    );
   } catch (err) {
     if (!(err instanceof ErrorDominio)) console.error("Error al listar bajas:", err);
     const { error: mensaje, status } = respuestaError(err, "Error al consultar bajas");
@@ -26,9 +31,14 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    if (!body.id_solicitud) throw new ErrorDominio("Falta el identificador de la solicitud.");
-    const data = await resolverBajaArea(sesion.id_usuario, Number(body.id_solicitud), body.decision, body.comentario);
-    return NextResponse.json(data);
+    return NextResponse.json(
+      await decidirBaja(
+        { id_usuario: sesion.id_usuario, id_perfil: sesion.perfilActivo?.id_perfil },
+        Number(body.id_solicitud),
+        body.decision,
+        body.comentario
+      )
+    );
   } catch (err) {
     if (!(err instanceof ErrorDominio)) console.error("Error al resolver baja:", err);
     const { error: mensaje, status } = respuestaError(err, "Error al resolver la solicitud de baja");

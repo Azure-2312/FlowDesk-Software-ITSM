@@ -304,8 +304,8 @@ function ContenidoInventarioActivos() {
     if (!activoSeleccionado) return;
 
     const esBaja = activoSeleccionado.estado_activo !== "BAJA";
-    if (esBaja && motivoBaja.trim().length < 5) {
-      setError("Debe ingresar una justificación detallada (mínimo 5 caracteres) para dar de baja el activo.");
+    if (esBaja && motivoBaja.trim().length < 10) {
+      setError("Debe ingresar una justificación detallada (mínimo 10 caracteres) para solicitar la baja del activo.");
       return;
     }
 
@@ -314,15 +314,19 @@ function ContenidoInventarioActivos() {
     setMensajeExito(null);
 
     try {
-      const res = await fetch("/api/activos", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id_activo: activoSeleccionado.id_activo,
-          estado_activo: esBaja ? "BAJA" : "EN_OPERACION",
-          motivo_inactivacion: esBaja ? motivoBaja.trim() : null,
-        }),
-      });
+      // La baja es una solicitud: la aprueba el Gestor de Activos o de Área
+      // (o el Aprobador si el equipo supera el umbral de monto).
+      const res = esBaja
+        ? await fetch("/api/activos/bajas", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id_activo: activoSeleccionado.id_activo, motivo: motivoBaja.trim() }),
+          })
+        : await fetch("/api/activos", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id_activo: activoSeleccionado.id_activo, estado_activo: "EN_OPERACION" }),
+          });
 
       const data = await res.json();
       if (!res.ok) {
@@ -332,7 +336,7 @@ function ContenidoInventarioActivos() {
 
       setMensajeExito(
         esBaja
-          ? `Activo [${activoSeleccionado.codigo_patrimonial}] dado de baja exitosamente.`
+          ? data.mensaje || `Solicitud de baja de [${activoSeleccionado.codigo_patrimonial}] registrada; queda pendiente de aprobación.`
           : `Activo [${activoSeleccionado.codigo_patrimonial}] reincorporado a operación.`
       );
       setVista("tabla");
@@ -845,13 +849,13 @@ function ContenidoInventarioActivos() {
 
           <h2 style={{ fontSize: 19, fontWeight: 700, margin: "0 0 6px 0", color: activoSeleccionado.estado_activo !== "BAJA" ? "#b91c1c" : "#16a34a" }}>
             {activoSeleccionado.estado_activo !== "BAJA"
-              ? `Dar de Baja Activo: [${activoSeleccionado.codigo_patrimonial}] ${activoSeleccionado.marca} ${activoSeleccionado.modelo}`
+              ? `Solicitar baja: [${activoSeleccionado.codigo_patrimonial}] ${activoSeleccionado.marca} ${activoSeleccionado.modelo}`
               : `Reactivar Activo: [${activoSeleccionado.codigo_patrimonial}] ${activoSeleccionado.marca} ${activoSeleccionado.modelo}`}
           </h2>
 
           <p style={{ margin: "0 0 20px 0", color: "#64748b", fontSize: 13 }}>
             {activoSeleccionado.estado_activo !== "BAJA"
-              ? "Dar de baja un activo lo retira del stock operacional y del inventario activo. Debe justificar el motivo del desecho o baja patrimonial."
+              ? "La baja se registra como solicitud: el activo sigue en su estado actual hasta que la aprueben el Gestor de Activos o el Gestor de Área (o el Aprobador, si el equipo vale 2 000 o más). Justifique el motivo."
               : "Reincorporar este activo lo devuelve al estado En Operación."}
           </p>
 
@@ -893,7 +897,7 @@ function ContenidoInventarioActivos() {
                 {guardando
                   ? "Procesando..."
                   : activoSeleccionado.estado_activo !== "BAJA"
-                  ? "Confirmar Baja Patrimonial"
+                  ? "Enviar solicitud de baja"
                   : "Confirmar Reactivación"}
               </button>
             </div>

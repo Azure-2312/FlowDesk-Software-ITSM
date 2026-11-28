@@ -1,6 +1,7 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
 import { validarTexto } from "@/shared/lib/validaciones";
+import { anularActasPendientes, registrarActaEntrega } from "./actasService";
 
 /**
  * Servicio del portal del Gestor de Activos y Configuración (perfil 9): panel,
@@ -308,6 +309,7 @@ export async function registrarMovimientoActivo(idUsuario: number, body: any) {
        VALUES ($1, $2, 'EN_STOCK', $3, NULL, $4, $5)`,
       [idActivo, activo.estado_activo, activo.id_usuario_custodio, body.motivo ?? "Devolución de custodia", idUsuario]
     );
+    await anularActasPendientes(idActivo, "el activo volvió al stock");
     return { mensaje: "Activo devuelto a stock." };
   }
 
@@ -328,7 +330,12 @@ export async function registrarMovimientoActivo(idUsuario: number, body: any) {
      VALUES ($1, $2, 'EN_OPERACION', $3, $4, $5, $6)`,
     [idActivo, activo.estado_activo, activo.id_usuario_custodio, idCustodio, String(body.motivo).trim(), idUsuario]
   );
-  return { mensaje: accion === "TRANSFERIR" ? "Custodia transferida." : "Activo asignado con acta registrada." };
+  await registrarActaEntrega(idActivo, idCustodio, accion === "TRANSFERIR" ? "TRANSFERENCIA" : "ENTREGA", String(body.motivo).trim());
+  return {
+    mensaje:
+      (accion === "TRANSFERIR" ? "Custodia transferida." : "Activo asignado.") +
+      " El acta de entrega queda pendiente de aceptación del custodio en Mis activos.",
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -425,29 +432,6 @@ export async function listarBajas() {
      WHERE s.estado_registro = true
      ORDER BY (s.estado = 'PENDIENTE') DESC, s.fecha_solicitud DESC`
   );
-}
-
-export async function resolverBaja(idUsuario: number, idSolicitud: number, decision: string, comentario?: string) {
-  const normalizada = String(decision || "").toUpperCase();
-  if (!["APROBAR", "RECHAZAR"].includes(normalizada)) throw new ErrorDominio("La decisión debe ser APROBAR o RECHAZAR.");
-  const estado = normalizada === "APROBAR" ? "APROBADA" : "RECHAZADA";
-  const fila = await queryRow<any>(
-    `UPDATE solicitud_baja_activo
-     SET estado = $2, id_usuario_resuelve = $3, comentario_resolucion = $4, fecha_resolucion = now()
-     WHERE id_solicitud = $1 AND estado = 'PENDIENTE'
-     RETURNING id_solicitud, id_activo, estado`,
-    [idSolicitud, estado, idUsuario, comentario ?? null]
-  );
-  if (!fila) throw new ErrorDominio("La solicitud no existe o ya fue resuelta.", 404);
-
-  if (estado === "APROBADA") {
-    await query(
-      `UPDATE activo SET estado_activo = 'BAJA', fecha_modificacion = now(), usuario_modificacion = $2
-       WHERE id_activo = $1 AND estado_registro = true`,
-      [fila.id_activo, idUsuario]
-    );
-  }
-  return { mensaje: `Solicitud ${estado.toLowerCase()}.`, solicitud: fila };
 }
 
 export async function registrarDisposicion(idUsuario: number, body: any) {

@@ -25,50 +25,6 @@ export async function listarBajasPorMonto() {
   );
 }
 
-export async function resolverBaja(idUsuario: number, idSolicitud: number, decision: string, comentario?: string) {
-  const normalizada = String(decision || "").toUpperCase();
-  if (!["APROBADO", "RECHAZADO"].includes(normalizada)) throw new ErrorDominio("La decisión debe ser APROBADO o RECHAZADO.");
-  if (!comentario || String(comentario).trim().length < 3) throw new ErrorDominio("El comentario de la decisión es obligatorio.");
-
-  const solicitud = await queryRow<any>(
-    `SELECT s.id_solicitud, s.id_activo, s.estado, COALESCE(a.costo_compra, 0) AS costo_compra
-     FROM solicitud_baja_activo s
-     JOIN activo a ON a.id_activo = s.id_activo
-     WHERE s.id_solicitud = $1 AND s.estado_registro = true`,
-    [idSolicitud]
-  );
-  if (!solicitud) throw new ErrorDominio("La solicitud de baja no existe.", 404);
-  if (solicitud.estado !== "PENDIENTE") throw new ErrorDominio("La solicitud ya fue resuelta.", 409);
-  if (Number(solicitud.costo_compra) < UMBRAL_MONTO) {
-    throw new ErrorDominio(`El monto no alcanza el umbral de autorización (${UMBRAL_MONTO}).`, 409);
-  }
-
-  await query(
-    `INSERT INTO aprobacion_monto (tipo, id_referencia, monto, decision, comentario, id_aprobador)
-     VALUES ('BAJA', $1, $2, $3, $4, $5)`,
-    [idSolicitud, solicitud.costo_compra, normalizada, String(comentario).trim(), idUsuario]
-  );
-
-  await query(
-    `UPDATE solicitud_baja_activo
-     SET estado = $1, id_usuario_resuelve = $2, comentario_resolucion = $3, fecha_resolucion = now()
-     WHERE id_solicitud = $4`,
-    [normalizada === "APROBADO" ? "APROBADA" : "RECHAZADA", idUsuario, String(comentario).trim(), idSolicitud]
-  );
-
-  if (normalizada === "APROBADO") {
-    await query(
-      `UPDATE activo
-       SET estado_activo = 'BAJA', motivo_inactivacion = COALESCE(motivo_inactivacion, $1),
-           fecha_inactivacion = now(), usuario_inactivacion = $2
-       WHERE id_activo = $3 AND estado_activo <> 'BAJA'`,
-      ["Baja autorizada por monto", idUsuario, solicitud.id_activo]
-    );
-  }
-
-  return { mensaje: "Decisión registrada." };
-}
-
 export async function listarRenovaciones() {
   return query(
     `SELECT ls.id_licencia, ls.nombre_software, ls.fabricante, ls.tipo_licencia,

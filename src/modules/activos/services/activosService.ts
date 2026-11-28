@@ -1,5 +1,6 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { anularActasPendientes, registrarActaEntrega } from "./actasService";
 
 export interface FiltrosActivos {
   tipo?: string | null;
@@ -175,6 +176,10 @@ export async function crearActivo(sesion: any, body: any) {
        VALUES ($1, null, $2, null, $3, 'Alta inicial de activo en el sistema', $4, now())`,
       [row.id_activo, estado_activo || "EN_STOCK", id_usuario_custodio ? Number(id_usuario_custodio) : null, sesion.id_usuario]
     );
+    // Si nace asignado, el custodio debe aceptar su acta de entrega
+    if (id_usuario_custodio) {
+      await registrarActaEntrega(row.id_activo, Number(id_usuario_custodio), "ENTREGA", "Entrega en el alta del activo");
+    }
   }
 
   return { mensaje: "Activo de hardware registrado exitosamente.", activo: row };
@@ -196,6 +201,15 @@ export async function actualizarActivo(sesion: any, body: any) {
   let motivoInactivacion = actual.motivo_inactivacion;
   let fechaInactivacion = actual.fecha_inactivacion;
   let usuarioInactivacion = actual.usuario_inactivacion;
+
+  // La baja no se aplica directo: se solicita y la aprueba quien corresponde
+  // según el monto (ver supervisionBajasService).
+  if (estadoActivo === "BAJA" && actual.estado_activo !== "BAJA") {
+    throw new ErrorDominio(
+      "La baja se registra como solicitud (Dar de baja) y queda pendiente de aprobación.",
+      409
+    );
+  }
 
   if (estadoActivo !== actual.estado_activo) {
     const transicion = await queryRow<{ requiere_motivo: boolean }>(
@@ -314,6 +328,20 @@ export async function actualizarActivo(sesion: any, body: any) {
         sesion.id_usuario,
       ]
     );
+  }
+
+  // Cambio de custodio: acta de entrega pendiente para el nuevo custodio
+  if (body.id_usuario_custodio !== undefined && id_usuario_custodio !== actual.id_usuario_custodio) {
+    if (id_usuario_custodio) {
+      await registrarActaEntrega(
+        id_activo,
+        id_usuario_custodio,
+        actual.id_usuario_custodio ? "TRANSFERENCIA" : "ENTREGA",
+        body.motivo || null
+      );
+    } else {
+      await anularActasPendientes(id_activo, "el activo quedó sin custodio");
+    }
   }
 
   return { mensaje: "Activo actualizado exitosamente.", activo: actualizado };
