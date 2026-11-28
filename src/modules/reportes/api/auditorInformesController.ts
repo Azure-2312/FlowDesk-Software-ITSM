@@ -20,7 +20,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const { sesion, error } = sesionConCapacidad(CAPACIDADES.REPORTES_VER);
+  const { sesion, error } = sesionConCapacidad(CAPACIDADES.AUDITORIA_VER);
   if (error) return error;
 
   try {
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const { sesion, error } = sesionConCapacidad(CAPACIDADES.REPORTES_VER);
+  const { sesion, error } = sesionConCapacidad(CAPACIDADES.AUDITORIA_VER);
   if (error) return error;
 
   try {

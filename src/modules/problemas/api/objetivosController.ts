@@ -20,7 +20,7 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  const { sesion, error } = sesionConCapacidad(CAPACIDADES.PROBLEMAS_CONFIG_VER);
+  const { sesion, error } = sesionConCapacidad(CAPACIDADES.PROBLEMAS_CONFIGURAR);
   if (error) return error;
 
   try {

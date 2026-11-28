@@ -183,6 +183,7 @@ export async function listarAprobacionesTecnicas(sesion: Sesion) {
      FROM cambio c
      LEFT JOIN usuario us ON us.id_usuario = c.id_usuario_solicitante
      WHERE c.estado_registro = true AND ${AREA_CAMBIOS} AND c.id_estado = 2
+       AND NOT (COALESCE(c.campos_adicionales, '{}'::jsonb) ? 'aprobacion_tecnica')
      ORDER BY c.fecha_creacion ASC`,
     [sesion.id_usuario]
   );

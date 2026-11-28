@@ -99,7 +99,7 @@ export async function listarBajasAprobaciones(sesion: SesionBajas, vista: string
   const filtro = await filtroPerfil(sesion, params);
   if (filtro === null) return [];
 
-  return query(
+  const filas = await query<any>(
     `SELECT s.id_solicitud, s.id_activo, s.motivo, s.estado, s.comentario_resolucion,
             s.fecha_solicitud, s.fecha_resolucion, s.destino_final, s.fecha_disposicion,
             a.codigo_patrimonial, a.tipo_activo, a.marca, a.modelo,
@@ -119,6 +119,9 @@ export async function listarBajasAprobaciones(sesion: SesionBajas, vista: string
       ORDER BY ${esHistorial ? "s.fecha_resolucion DESC NULLS LAST, s.fecha_solicitud DESC" : "s.fecha_solicitud ASC"}`,
     params
   );
+  // El Aprobador decide por monto y motivo; no necesita saber quién tiene el equipo
+  if (sesion.id_perfil === PERFIL.APROBADOR) filas.forEach((f) => { f.custodio_nombre = null; });
+  return filas;
 }
 
 function normalizarDecision(decision: unknown): "APROBADA" | "RECHAZADA" {

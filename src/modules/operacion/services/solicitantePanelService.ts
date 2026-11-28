@@ -4,7 +4,7 @@ import { sqlVencidoActivo } from "@/shared/lib/sla-sql";
 /**
  * Servicio del panel del Solicitante (perfil 3).
  * Alcance: los tickets que el usuario registro (`ticket.id_usuario_solicitante`)
- * y los activos de los que es custodio.
+ * (no consulta equipos: eso lo ven Gestión de Activos, TI y su jefe de área).
  */
 
 export async function obtenerPanelSolicitante(idUsuario: number) {
@@ -52,29 +52,7 @@ export async function obtenerPanelSolicitante(idUsuario: number) {
      LIMIT 4`
   );
 
-  // Equipos en custodia y, por cada uno, si tiene un acta de entrega por aceptar
-  const equipos = await query<{
-    id_activo: number;
-    codigo_patrimonial: string;
-    tipo_activo: string;
-    marca: string;
-    modelo: string;
-    estado_activo: string;
-    fecha_fin_garantia: string | null;
-    acta_pendiente: string | null;
-  }>(
-    `SELECT a.id_activo, a.codigo_patrimonial, a.tipo_activo, a.marca, a.modelo, a.estado_activo, a.fecha_fin_garantia,
-            (SELECT ae.observaciones FROM acta_entrega ae
-              WHERE ae.id_activo = a.id_activo AND ae.id_usuario = $1 AND ae.estado = 'PENDIENTE'
-              ORDER BY ae.creado_en DESC LIMIT 1) AS acta_pendiente
-       FROM activo a
-      WHERE a.estado_registro = true AND a.id_usuario_custodio = $1
-      ORDER BY a.codigo_patrimonial`,
-    [idUsuario]
-  );
-
   return {
-    equipos,
     kpis: {
       abiertos: kpis?.abiertos ?? 0,
       en_espera: kpis?.en_espera ?? 0,

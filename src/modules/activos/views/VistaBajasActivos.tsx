@@ -15,8 +15,28 @@ interface Solicitud {
   solicitante_nombre: string | null;
 }
 
+interface BajaAprobada {
+  id_solicitud: number;
+  estado: string;
+  destino_final: string | null;
+  codigo_patrimonial: string;
+  tipo_activo: string;
+  marca: string;
+  modelo: string;
+  motivo: string;
+}
+
+const DESTINOS = [
+  { valor: "RECICLAJE", etiqueta: "Reciclaje" },
+  { valor: "DONACION", etiqueta: "Donación" },
+  { valor: "REVENTA", etiqueta: "Reventa" },
+  { valor: "DESTRUCCION", etiqueta: "Destrucción" },
+];
+
 export default function VistaBajasActivos() {
   const [items, setItems] = useState<Solicitud[]>([]);
+  const [porDisponer, setPorDisponer] = useState<BajaAprobada[]>([]);
+  const [destinos, setDestinos] = useState<Record<number, string>>({});
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
@@ -30,10 +50,44 @@ export default function VistaBajasActivos() {
       const json = await res.json();
       if (res.ok) setItems(Array.isArray(json) ? json : []);
       else setError(json.error ?? "No se pudieron cargar las solicitudes.");
+      // Bajas aprobadas sin destino final (solo el Gestor de Activos las ve)
+      const resB = await fetch(`/api/activos/bajas?_t=${Date.now()}`);
+      const jsonB = await resB.json().catch(() => []);
+      setPorDisponer(
+        resB.ok && Array.isArray(jsonB) ? jsonB.filter((b: BajaAprobada) => b.estado === "APROBADA" && !b.destino_final) : []
+      );
     } catch {
       setError("Error de conexión al cargar las solicitudes.");
     } finally {
       setCargando(false);
+    }
+  }
+
+  async function registrarDestino(id: number) {
+    const destino = destinos[id];
+    if (!destino) {
+      setError("Selecciona el destino final.");
+      return;
+    }
+    setProcesando(id);
+    setError(null);
+    setOk(null);
+    try {
+      const res = await fetch("/api/activos/bajas", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_solicitud: id, destino_final: destino }),
+      });
+      const json = await res.json();
+      if (!res.ok) setError(json.error ?? "No se pudo registrar el destino final.");
+      else {
+        setOk(json.mensaje ?? "Destino final registrado.");
+        await cargar();
+      }
+    } catch {
+      setError("Error de conexión al registrar el destino final.");
+    } finally {
+      setProcesando(null);
     }
   }
 
@@ -66,8 +120,8 @@ export default function VistaBajasActivos() {
   return (
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
-        <h1 className="titulo-pagina">Aprobación de bajas de mi área</h1>
-        <p className="descripcion-pagina">Aprueba o rechaza las solicitudes de baja de activos de mi área técnica.</p>
+        <h1 className="titulo-pagina">Bajas de activos</h1>
+        <p className="descripcion-pagina">Aprueba o rechaza las solicitudes de baja que te corresponden y registra en qué terminó cada activo dado de baja.</p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -77,7 +131,7 @@ export default function VistaBajasActivos() {
         <p>Cargando...</p>
       ) : items.length === 0 ? (
         <div className="estado-vacio" >
-          No hay solicitudes de baja registradas para mi área.
+          No hay solicitudes de baja pendientes de tu decisión.
         </div>
       ) : (
         <div className="tarjeta-formulario">
@@ -104,6 +158,43 @@ export default function VistaBajasActivos() {
                     ) : (
                       <span style={{ color: "#6b7280" }}>—</span>
                     )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {!cargando && porDisponer.length > 0 && (
+        <div className="tarjeta-formulario" style={{ marginTop: 16 }}>
+          <h2>Destino final de bajas aprobadas</h2>
+          <p style={{ fontSize: 13, color: "#6b7280", marginTop: 0 }}>Indica en qué terminó cada activo dado de baja.</p>
+          <table className="tabla-datos">
+            <thead>
+              <tr><th>Activo</th><th>Tipo</th><th>Motivo</th><th>Destino final</th><th></th></tr>
+            </thead>
+            <tbody>
+              {porDisponer.map((b) => (
+                <tr key={b.id_solicitud}>
+                  <td><strong>{b.codigo_patrimonial}</strong></td>
+                  <td>{b.tipo_activo} {b.marca} {b.modelo}</td>
+                  <td>{b.motivo}</td>
+                  <td>
+                    <select
+                      aria-label={`Destino final de ${b.codigo_patrimonial}`}
+                      value={destinos[b.id_solicitud] ?? ""}
+                      onChange={(e) => setDestinos((prev) => ({ ...prev, [b.id_solicitud]: e.target.value }))}
+                      style={{ padding: "6px 8px", border: "1px solid #cbd5e1", borderRadius: 8 }}
+                    >
+                      <option value="">Selecciona...</option>
+                      {DESTINOS.map((d) => <option key={d.valor} value={d.valor}>{d.etiqueta}</option>)}
+                    </select>
+                  </td>
+                  <td>
+                    <button className="boton-primario" disabled={procesando === b.id_solicitud || !destinos[b.id_solicitud]} onClick={() => registrarDestino(b.id_solicitud)}>
+                      Guardar
+                    </button>
                   </td>
                 </tr>
               ))}

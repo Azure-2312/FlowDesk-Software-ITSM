@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { sesionConCapacidad } from "@/shared/lib/api-auth";
+import { perfilPermitido, sesionConCapacidad } from "@/shared/lib/api-auth";
 import {
   listarRecursosEquipo,
   crearRecursoEquipo,
@@ -27,6 +27,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.TICKETS_VER);
   if (error) return error;
+  const negado = perfilPermitido(sesion, [4]);
+  if (negado) return negado;
 
   try {
     const body = await req.json();
@@ -41,6 +43,8 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.TICKETS_VER);
   if (error) return error;
+  const negado = perfilPermitido(sesion, [4]);
+  if (negado) return negado;
 
   try {
     const { searchParams } = new URL(req.url);

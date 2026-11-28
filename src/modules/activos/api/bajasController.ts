@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { sesionConCapacidad } from "@/shared/lib/api-auth";
+import { perfilPermitido, sesionConCapacidad } from "@/shared/lib/api-auth";
 import { listarBajas, registrarDisposicion } from "@/modules/activos/services/gestorActivosService";
 import { solicitarBaja } from "@/modules/activos/services/supervisionBajasService";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const { error } = sesionConCapacidad(CAPACIDADES.ACTIVOS_GESTIONAR);
+  const { sesion, error } = sesionConCapacidad(CAPACIDADES.ACTIVOS_GESTIONAR);
   if (error) return error;
+  const negado = perfilPermitido(sesion, [9]);
+  if (negado) return negado;
 
   try {
     return NextResponse.json(await listarBajas());
@@ -38,9 +40,12 @@ export async function POST(req: NextRequest) {
   }
 }
 
+/** Destino final de una baja aprobada: solo el Gestor de Activos (y el Administrador). */
 export async function PUT(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.ACTIVOS_GESTIONAR);
   if (error) return error;
+  const negado = perfilPermitido(sesion, [9]);
+  if (negado) return negado;
 
   try {
     const body = await req.json();

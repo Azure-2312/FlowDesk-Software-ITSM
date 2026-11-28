@@ -45,11 +45,7 @@ export async function resolverAprobacionNegocio(
     [idCambio, idUsuario, normalizada, String(comentario).trim()]
   );
 
-  if (normalizada === "APROBADO") {
-    await query(`UPDATE cambio SET id_estado = 3 WHERE id_cambio = $1 AND id_estado = 2`, [idCambio]);
-  } else if (normalizada === "RECHAZADO") {
-    await query(`UPDATE cambio SET id_estado = 8 WHERE id_cambio = $1 AND id_estado = 2`, [idCambio]);
-  }
-
-  return { mensaje: "Decisión registrada.", aprobacion };
+  // El V°B° del área queda como opinión para el CAB: no cambia el estado de la
+  // RFC ni cuenta para el quórum (ver votacionCabService).
+  return { mensaje: "V°B° del área registrado. La decisión final es del CAB.", aprobacion };
 }

@@ -3,6 +3,7 @@ import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { sesionConCapacidad } from "@/shared/lib/api-auth";
 import { listarAsignaciones, registrarMovimientoActivo } from "@/modules/activos/services/gestorActivosService";
+import { registrarActaFirmada } from "@/modules/activos/services/actasService";
 import {
   validarAccionAsignacion,
   validarCoherenciaCustodia,
@@ -30,6 +31,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
+
+    // El Gestor registra que el custodio firmó el acta de entrega
+    if (String(body.accion || "").toUpperCase() === "ACTA_FIRMADA") {
+      return NextResponse.json(await registrarActaFirmada(Number(body.id_activo), sesion.id_usuario));
+    }
 
     const vAccion = validarAccionAsignacion(body.accion);
     if (!vAccion.valido) throw new ErrorDominio(vAccion.mensaje!);

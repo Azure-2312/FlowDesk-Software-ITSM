@@ -1,5 +1,6 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { registrarVotoCab } from "./votacionCabService";
 import { UMBRAL_MONTO_APROBACION as UMBRAL_MONTO } from "@/shared/lib/parametros";
 
 /**
@@ -96,47 +97,9 @@ export async function listarCambiosPendientes(idUsuario: number) {
   );
 }
 
+/** Voto del Aprobador CAB desde su bandeja: misma regla de quórum que el detalle. */
 export async function resolverCambio(idUsuario: number, idCambio: number, decision: string, comentario?: string) {
-  let normalizada = String(decision || "").toUpperCase();
-  let comentarioFinal = String(comentario || "").trim();
-  if (normalizada === "APROBADO_CON_CONDICIONES") {
-    normalizada = "APROBADO";
-    comentarioFinal = `Condiciones: ${comentarioFinal}`;
-  }
-  if (!["APROBADO", "RECHAZADO", "OBSERVADO"].includes(normalizada)) {
-    throw new ErrorDominio("La decisión debe ser APROBADO, RECHAZADO, OBSERVADO o APROBADO_CON_CONDICIONES.");
-  }
-  if (comentarioFinal.length < 3) throw new ErrorDominio("El comentario de la decisión es obligatorio.");
-
-  const cambio = await queryRow<{ id_estado: number; id_usuario_solicitante: number }>(
-    `SELECT id_estado, id_usuario_solicitante FROM cambio WHERE id_cambio = $1 AND estado_registro = true`,
-    [idCambio]
-  );
-  if (!cambio) throw new ErrorDominio("El cambio no existe.", 404);
-  if (cambio.id_usuario_solicitante === idUsuario) {
-    throw new ErrorDominio("Violación de Segregación de Funciones (SoD): El solicitante no puede aprobar su propio cambio.", 403);
-  }
-
-  const existente = await queryRow<{ existe: boolean }>(
-    `SELECT EXISTS (SELECT 1 FROM cambio_aprobacion WHERE id_cambio = $1 AND id_usuario_aprobador = $2 AND estado_registro = true) AS existe`,
-    [idCambio, idUsuario]
-  );
-  if (existente?.existe) throw new ErrorDominio("Ya registraste una decisión para este cambio.", 409);
-
-  const fila = await queryRow<any>(
-    `INSERT INTO cambio_aprobacion (id_cambio, id_usuario_aprobador, decision, comentario)
-     VALUES ($1, $2, $3, $4)
-     RETURNING id_cambio_aprobacion, decision, fecha_decision`,
-    [idCambio, idUsuario, normalizada, comentarioFinal]
-  );
-
-  if (normalizada === "APROBADO") {
-    await query(`UPDATE cambio SET id_estado = 3 WHERE id_cambio = $1 AND id_estado = 2`, [idCambio]);
-  } else if (normalizada === "RECHAZADO") {
-    await query(`UPDATE cambio SET id_estado = 8 WHERE id_cambio = $1 AND id_estado = 2`, [idCambio]);
-  }
-
-  return { mensaje: "Decisión registrada.", aprobacion: fila };
+  return registrarVotoCab(idUsuario, idCambio, decision, comentario);
 }
 
 export async function listarModelosCambio() {

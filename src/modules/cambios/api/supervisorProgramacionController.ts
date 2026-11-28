@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { sesionConCapacidad } from "@/shared/lib/api-auth";
+import { perfilPermitido, sesionConCapacidad } from "@/shared/lib/api-auth";
 import { listarCambiosProgramables } from "@/modules/servicios/services/supervisionService";
 import { reprogramarCambio } from "@/modules/cambios";
 
@@ -23,6 +23,8 @@ export async function GET() {
 export async function PATCH(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.CAMBIOS_VER);
   if (error) return error;
+  const negado = perfilPermitido(sesion, [4, 8]);
+  if (negado) return negado;
 
   try {
     const body = await req.json();

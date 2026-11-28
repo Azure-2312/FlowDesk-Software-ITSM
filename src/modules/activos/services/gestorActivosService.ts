@@ -266,6 +266,9 @@ export async function listarAsignaciones() {
   const [activos, usuarios, departamentos] = await Promise.all([
     query(
       `SELECT a.id_activo, a.codigo_patrimonial, a.tipo_activo, a.marca, a.modelo, a.estado_activo,
+              (SELECT ae.observaciones FROM acta_entrega ae
+                WHERE ae.id_activo = a.id_activo AND ae.estado = 'PENDIENTE' AND ae.id_usuario = a.id_usuario_custodio
+                ORDER BY ae.creado_en DESC LIMIT 1) AS acta_pendiente,
               a.id_departamento,
               d.nombre AS departamento_nombre,
               CONCAT(u.nombres, ' ', u.apellido_paterno) AS custodio_nombre
@@ -334,7 +337,7 @@ export async function registrarMovimientoActivo(idUsuario: number, body: any) {
   return {
     mensaje:
       (accion === "TRANSFERIR" ? "Custodia transferida." : "Activo asignado.") +
-      " El acta de entrega queda pendiente de aceptación del custodio en Mis activos.",
+      " El acta de entrega queda pendiente hasta registrar la firma del custodio.",
   };
 }
 
@@ -441,18 +444,19 @@ export async function registrarDisposicion(idUsuario: number, body: any) {
   if (!["REVENTA", "DONACION", "RECICLAJE", "DESTRUCCION"].includes(destino)) {
     throw new ErrorDominio("El destino final debe ser REVENTA, DONACION, RECICLAJE o DESTRUCCION.");
   }
-  const vActa = validarTexto(body.acta, 5, 4000, "El acta de disposición", true);
-  if (!vActa.valido) throw new ErrorDominio(vActa.mensaje!);
+  // Solo se elige el destino de una lista; el acta queda con un texto estándar
+  const ETIQUETA: Record<string, string> = { REVENTA: "reventa", DONACION: "donación", RECICLAJE: "reciclaje", DESTRUCCION: "destrucción" };
+  const acta = String(body.acta ?? "").trim() || `Destino final: ${ETIQUETA[destino]}. Registrado por el Gestor de Activos.`;
 
   const fila = await queryRow<any>(
     `UPDATE solicitud_baja_activo
      SET destino_final = $1, borrado_seguro = $2, acta = $3, fecha_disposicion = now()
-     WHERE id_solicitud = $4 AND estado = 'APROBADA' AND estado_registro = true
+     WHERE id_solicitud = $4 AND estado = 'APROBADA' AND destino_final IS NULL AND estado_registro = true
      RETURNING id_solicitud, destino_final, borrado_seguro`,
-    [destino, Boolean(body.borrado_seguro), String(body.acta).trim(), idSolicitud]
+    [destino, Boolean(body.borrado_seguro), acta, idSolicitud]
   );
-  if (!fila) throw new ErrorDominio("La solicitud debe estar aprobada para registrar la disposición.", 409);
-  return { mensaje: "Disposición final registrada con acta.", solicitud: fila };
+  if (!fila) throw new ErrorDominio("La baja debe estar aprobada y sin destino final registrado.", 409);
+  return { mensaje: `Destino final registrado: ${ETIQUETA[destino]}.`, solicitud: fila };
 }
 
 // ---------------------------------------------------------------------------

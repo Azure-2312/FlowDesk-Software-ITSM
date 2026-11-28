@@ -1,6 +1,7 @@
 import { query, queryRow } from "@/shared/lib/db";
 import { CAPACIDADES, sesionTieneCapacidad } from "@/shared/lib/capacidades";
 import { ErrorDominio } from "@/shared/lib/errores";
+import { registrarVotoCab } from "./votacionCabService";
 
 export async function obtenerDetalleCambio(sesion: any, idCambio: number) {
   const cambioSql = `
@@ -127,82 +128,12 @@ export async function actualizarCambio(sesion: any, idCambio: number, body: any)
 
   const { decision, comentario, id_estado, resultado_pir, incidentes_inducidos } = body;
 
-  // Caso A: Emisión de Voto en el Comité CAB
+  // Caso A: voto en el Comité CAB (misma regla que la bandeja del Aprobador)
   if (decision) {
-    // Solo el perfil oficial Aprobador CAB puede emitir votos.
     if (!sesionTieneCapacidad(sesion, CAPACIDADES.CAMBIOS_APROBAR)) {
       throw new ErrorDominio("Solo el perfil Aprobador CAB puede emitir un voto.", 403);
     }
-
-    if (cambioActual.id_estado !== 2) {
-      throw new ErrorDominio("La RFC no está en evaluación CAB.");
-    }
-
-    // 2. SoD Autoexclusión: El solicitante de la RFC NO puede votar su propia solicitud
-    if (cambioActual.id_usuario_solicitante === sesion.id_usuario || cambioActual.id_usuario_responsable === sesion.id_usuario) {
-      throw new ErrorDominio("Regla SoD: el solicitante o responsable de la RFC no puede votar sobre su propio cambio.", 403);
-    }
-
-    const decisionUpper = (decision as string).toUpperCase();
-    if (!["APROBADO", "RECHAZADO", "OBSERVADO"].includes(decisionUpper)) {
-      throw new ErrorDominio("Decisión inválida. Use APROBADO, RECHAZADO u OBSERVADO.");
-    }
-
-    if (!comentario || comentario.trim().length === 0) {
-      throw new ErrorDominio("El sustento o comentario técnico del voto CAB es obligatorio.");
-    }
-
-    const votoPrevio = await queryRow(
-      "SELECT id_cambio_aprobacion FROM cambio_aprobacion WHERE id_cambio = $1 AND id_usuario_aprobador = $2 AND estado_registro = true",
-      [idCambio, sesion.id_usuario]
-    );
-    if (votoPrevio) {
-      throw new ErrorDominio("Ya registraste tu voto para esta RFC.", 409);
-    }
-
-    const totalMiembros = await queryRow<{ total: string }>(
-      "SELECT COUNT(DISTINCT up.id_usuario)::text AS total FROM usuario_perfiles up JOIN usuario u ON u.id_usuario = up.id_usuario WHERE up.id_perfil = 7 AND up.estado_registro = true AND u.estado_registro = true"
-    );
-    const cabCount = Number(totalMiembros?.total || 0);
-    if (cabCount === 0) {
-      throw new ErrorDominio("No hay miembros activos asignados al perfil Aprobador CAB.", 409);
-    }
-
-    try {
-      await query(
-        `INSERT INTO cambio_aprobacion (id_cambio, id_usuario_aprobador, decision, comentario)
-         VALUES ($1, $2, $3, $4)`,
-        [idCambio, sesion.id_usuario, decisionUpper, comentario]
-      );
-    } catch (error: any) {
-      if (error?.code === "23505") {
-        throw new ErrorDominio("Ya registraste tu voto para esta RFC.", 409);
-      }
-      throw error;
-    }
-
-    const votos = await query<{ decision: string; total: string }>(
-      "SELECT decision, COUNT(*)::text AS total FROM cambio_aprobacion WHERE id_cambio = $1 AND estado_registro = true GROUP BY decision",
-      [idCambio]
-    );
-    const quorum = Math.floor(cabCount / 2) + 1;
-    const aprobados = Number(votos.find((v) => v.decision === "APROBADO")?.total || 0);
-    const rechazados = Number(votos.find((v) => v.decision === "RECHAZADO")?.total || 0);
-    let nuevoEstado = cambioActual.id_estado;
-    if (aprobados >= quorum) nuevoEstado = 3;
-    else if (rechazados >= quorum) nuevoEstado = 8;
-
-    if (nuevoEstado !== cambioActual.id_estado) {
-      await query(
-        "UPDATE cambio SET id_estado = $1, usuario_modificacion = $2, fecha_modificacion = now() WHERE id_cambio = $3",
-        [nuevoEstado, sesion.id_usuario, idCambio]
-      );
-    }
-
-    return {
-      mensaje: `Voto ${decisionUpper} registrado exitosamente en el comité CAB.`,
-      nuevo_estado: nuevoEstado,
-    };
+    return registrarVotoCab(sesion.id_usuario, idCambio, decision, comentario);
   }
 
   // Solo Gestor de Cambios puede actualizar ejecución y revisión post-implementación.

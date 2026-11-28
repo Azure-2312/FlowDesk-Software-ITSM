@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { sesionConCapacidad } from "@/shared/lib/api-auth";
+import { perfilPermitido, sesionConCapacidad } from "@/shared/lib/api-auth";
 import { listarAprobacionesTecnicas } from "@/modules/servicios/services/supervisionService";
 import { resolverAprobacionTecnica } from "@/modules/cambios";
 
@@ -23,6 +23,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.CAMBIOS_VER);
   if (error) return error;
+  const negado = perfilPermitido(sesion, [4]);
+  if (negado) return negado;
 
   try {
     const body = await req.json();
@@ -31,7 +33,8 @@ export async function POST(req: NextRequest) {
       sesion.id_usuario,
       Number(body.id_cambio),
       body.decision,
-      body.comentario
+      body.comentario,
+      Number(sesion.perfilActivo?.id_perfil) === 1
     );
     return NextResponse.json(data);
   } catch (err) {

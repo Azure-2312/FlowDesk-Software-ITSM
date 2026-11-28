@@ -21,24 +21,7 @@ interface PanelSolicitante {
     fecha_limite_sla: string | null;
   }[];
   articulos: { id_articulo: number; titulo: string }[];
-  equipos: {
-    id_activo: number;
-    codigo_patrimonial: string;
-    tipo_activo: string;
-    marca: string;
-    modelo: string;
-    estado_activo: string;
-    fecha_fin_garantia: string | null;
-    acta_pendiente: string | null;
-  }[];
 }
-
-const ESTADO_EQUIPO: Record<string, string> = {
-  EN_OPERACION: "En uso",
-  MANTENIMIENTO: "En reparación",
-  EN_STOCK: "En stock",
-  BAJA: "Dado de baja",
-};
 
 function Kpi({ titulo, valor, color, subtitulo }: { titulo: string; valor: string | number; color?: string; subtitulo?: string }) {
   return (
@@ -99,28 +82,6 @@ export default function VistaPanelSolicitante() {
     cargarDatos();
   }, []);
 
-  const [aceptando, setAceptando] = useState<number | null>(null);
-  const [avisoActa, setAvisoActa] = useState<string | null>(null);
-
-  async function aceptarActa(idActivo: number) {
-    setAceptando(idActivo);
-    setAvisoActa(null);
-    try {
-      const res = await fetch("/api/activos/mis-activos/aceptar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id_activo: idActivo }),
-      });
-      const json = await res.json().catch(() => ({}));
-      setAvisoActa(res.ok ? "Acta de entrega aceptada." : json.error || "No se pudo aceptar el acta.");
-      if (res.ok) await cargarDatos();
-    } catch {
-      setAvisoActa("Error de conexión al aceptar el acta.");
-    } finally {
-      setAceptando(null);
-    }
-  }
-
   if (cargando) return <div className="vista-contenedor"><p>Cargando panel...</p></div>;
   if (error) return <div className="vista-contenedor"><p role="alert" className="mensaje-error">{error}</p></div>;
   if (!data) return null;
@@ -133,7 +94,7 @@ export default function VistaPanelSolicitante() {
             Portal de Autoservicio & Solicitudes (ITIL v4)
           </span>
           <h1 className="titulo-pagina">Panel del solicitante</h1>
-          <p className="descripcion-pagina">Estado de mis solicitudes, mis activos asignados y las guías disponibles para resolver por mi cuenta.</p>
+          <p className="descripcion-pagina">Estado de mis solicitudes y las guías disponibles para resolver por mi cuenta.</p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
@@ -193,41 +154,6 @@ export default function VistaPanelSolicitante() {
             <Link href="/plataforma/conocimiento/base" className="boton-secundario" >Base de conocimiento</Link>
           </div>
         </div>
-      </div>
-
-      <div className="tarjeta-formulario" style={{ margin: "0 0 16px" }}>
-        <h2>Mis equipos</h2>
-        {avisoActa && <p role="status" style={{ fontSize: 13, color: "#334155" }}>{avisoActa}</p>}
-        {(data.equipos ?? []).length === 0 ? (
-          <p>No tienes equipos asignados.</p>
-        ) : (
-          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-            {data.equipos.map((e) => (
-              <li
-                key={e.id_activo}
-                style={{ fontSize: 13, borderBottom: "1px solid #f1f5f9", paddingBottom: 8, display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "center" }}
-              >
-                <div>
-                  <strong>{e.codigo_patrimonial}</strong> · {e.marca} {e.modelo}
-                  <div style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>
-                    {ESTADO_EQUIPO[e.estado_activo] ?? e.estado_activo} · garantía hasta {fechaCorta(e.fecha_fin_garantia)}
-                    {e.acta_pendiente ? ` · Acta pendiente: ${e.acta_pendiente}` : ""}
-                  </div>
-                </div>
-                {e.acta_pendiente && (
-                  <button
-                    type="button"
-                    className="boton-primario boton-sm"
-                    disabled={aceptando === e.id_activo}
-                    onClick={() => aceptarActa(e.id_activo)}
-                  >
-                    {aceptando === e.id_activo ? "Aceptando..." : "Aceptar acta de entrega"}
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
 
       <div>

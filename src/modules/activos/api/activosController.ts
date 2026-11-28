@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     const rows = await listarActivos(sesion.perfilActivo?.id_perfil || 0, {
       tipo: searchParams.get("tipo"),
       estado: searchParams.get("estado"),
-    });
+    }, sesion.id_usuario);
     return NextResponse.json(rows);
   } catch (error) {
     console.error("Error al obtener activos:", error);

@@ -8,30 +8,51 @@ import { ErrorDominio } from "@/shared/lib/errores";
  * su UI y su alcance (consultas filtradas por departamento).
  */
 
+/**
+ * Concepto técnico del Supervisor sobre una RFC en evaluación. Queda registrado
+ * en la RFC para que lo vea el CAB, pero NO la aprueba ni la rechaza: eso lo
+ * decide la votación del CAB (o el ECAB en emergencias). Solo sobre RFC de
+ * técnicos de sus grupos; el Administrador, sobre cualquiera.
+ */
 export async function resolverAprobacionTecnica(
   idUsuario: number,
   idCambio: number,
   decision: string,
-  comentario?: string
+  comentario?: string,
+  esAdministrador = false
 ) {
-  const normalizada = String(decision || "").toUpperCase();
-  if (!["APROBAR", "RECHAZAR"].includes(normalizada)) {
-    throw new ErrorDominio("La decisión debe ser APROBAR o RECHAZAR.");
+  // La pantalla envía APROBADO u OBSERVADO; se aceptan ambos vocabularios.
+  const d = String(decision || "").toUpperCase();
+  const normalizada = ["APROBAR", "APROBADO"].includes(d) ? "APROBAR"
+    : ["RECHAZAR", "RECHAZADO", "OBSERVADO"].includes(d) ? "RECHAZAR" : "";
+  if (!normalizada) {
+    throw new ErrorDominio("La decisión debe ser APROBAR u OBSERVAR.");
   }
-  const idEstado = normalizada === "APROBAR" ? 3 : 8;
+  const texto = String(comentario ?? "").trim();
+  if (normalizada === "RECHAZAR" && texto.length < 5) {
+    throw new ErrorDominio("Indica por qué no recomiendas el cambio (mínimo 5 caracteres).");
+  }
   const fila = await queryRow<any>(
-    `UPDATE cambio
-     SET id_estado = $2,
-         campos_adicionales = COALESCE(campos_adicionales, '{}'::jsonb) ||
+    `UPDATE cambio c
+     SET campos_adicionales = COALESCE(c.campos_adicionales, '{}'::jsonb) ||
            jsonb_build_object('aprobacion_tecnica', jsonb_build_object(
-             'decision', $3, 'comentario', $4, 'fecha', now(), 'usuario', $5)),
-         usuario_modificacion = $5, fecha_modificacion = now()
-     WHERE id_cambio = $1 AND id_estado = 2
-     RETURNING id_cambio, codigo_cambio, id_estado`,
-    [idCambio, idEstado, normalizada, comentario ?? null, idUsuario]
+             'decision', $2::text, 'comentario', $3::text, 'fecha', now(), 'usuario', $4::int)),
+         usuario_modificacion = $4, fecha_modificacion = now()
+     WHERE c.id_cambio = $1 AND c.id_estado = 2 AND c.estado_registro = true
+       AND ($5::boolean OR c.id_usuario_solicitante IN (
+             SELECT u.id_usuario FROM usuario u
+              WHERE u.id_departamento IN (SELECT d.id_departamento FROM departamento_ti d
+                                           WHERE d.id_supervisor = $4 AND d.estado_registro = true)))
+     RETURNING c.id_cambio, c.codigo_cambio, c.id_estado`,
+    [idCambio, normalizada, texto || null, idUsuario, esAdministrador]
   );
-  if (!fila) throw new ErrorDominio("La RFC no existe o ya no está pendiente de aprobación técnica.", 404);
-  return { mensaje: "Decisión registrada.", cambio: fila };
+  if (!fila) {
+    throw new ErrorDominio("La RFC no existe, ya no está en evaluación o no es de tus grupos.", 404);
+  }
+  return {
+    mensaje: `Concepto técnico registrado (${normalizada === "APROBAR" ? "recomienda" : "no recomienda"} el cambio). La decisión final es del CAB.`,
+    cambio: fila,
+  };
 }
 
 export async function reprogramarCambio(
@@ -44,6 +65,21 @@ export async function reprogramarCambio(
   const fin = new Date(ventanaFin).getTime();
   if (!Number.isFinite(inicio) || !Number.isFinite(fin) || fin <= inicio) {
     throw new ErrorDominio("La ventana debe tener fechas válidas y el fin posterior al inicio.");
+  }
+  if (inicio < Date.now()) {
+    throw new ErrorDominio("La nueva ventana no puede empezar en el pasado.");
+  }
+  // Mismas reglas que al registrar la RFC: sin choques en el mismo CI
+  const choque = await queryRow<{ codigo_cambio: string }>(
+    `SELECT o.codigo_cambio
+       FROM cambio c JOIN cambio o ON o.id_ci_afectado = c.id_ci_afectado AND o.id_cambio <> c.id_cambio
+      WHERE c.id_cambio = $1 AND o.estado_registro = true AND o.id_estado IN (3, 4, 5)
+        AND o.ventana_inicio < $3 AND o.ventana_fin > $2
+      LIMIT 1`,
+    [idCambio, ventanaInicio, ventanaFin]
+  );
+  if (choque) {
+    throw new ErrorDominio(`La nueva ventana choca con ${choque.codigo_cambio} sobre el mismo elemento de configuración.`, 409);
   }
   const fila = await queryRow<any>(
     `UPDATE cambio

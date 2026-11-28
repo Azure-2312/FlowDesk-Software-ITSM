@@ -356,8 +356,29 @@ export async function actualizarProblema(
   let idx = 2;
 
   if (id_estado !== undefined) {
+    const estadoNum = Number(id_estado);
+    if (!Number.isInteger(estadoNum) || estadoNum < 1 || estadoNum > 6) {
+      throw new ErrorDominio("Estado de problema no válido.");
+    }
+    // Un problema mayor (impacto alto o prioridad crítica) solo se cierra con
+    // la autorización del Aprobador (riesgo residual aceptado).
+    if (estadoNum === 6) {
+      const mayor = await queryRow<{ es_mayor: boolean; autorizado: boolean }>(
+        `SELECT (COALESCE(it.nivel, 0) = 3 OR COALESCE(pt.nivel, 9) = 1) AS es_mayor,
+                EXISTS (SELECT 1 FROM problema_cierre_aprobacion pc
+                         WHERE pc.id_problema = p.id_problema AND pc.decision = 'APROBADO') AS autorizado
+           FROM problema p
+           LEFT JOIN impacto_ticket it ON it.id_impacto = p.id_impacto
+           LEFT JOIN prioridad_ticket pt ON pt.id_prioridad = p.id_prioridad
+          WHERE p.id_problema = $1`,
+        [idProblema]
+      );
+      if (mayor?.es_mayor && !mayor.autorizado) {
+        throw new ErrorDominio("Es un problema mayor: su cierre requiere la autorización del Aprobador.", 409);
+      }
+    }
     updates.push(`id_estado = $${idx++}`);
-    paramsUpdate.push(id_estado);
+    paramsUpdate.push(estadoNum);
   }
   if (causa_raiz !== undefined) {
     updates.push(`causa_raiz = $${idx++}`);

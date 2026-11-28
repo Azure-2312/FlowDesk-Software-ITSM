@@ -101,3 +101,14 @@ export function sesionConCapacidad(capacidad: Capacidad): ResultadoGuardia {
 
   return { sesion };
 }
+
+/**
+ * Acciones que decide un rol concreto (aprobar, programar, cerrar…): además de
+ * la capacidad de lectura del módulo, el perfil activo debe estar en la lista.
+ * El Administrador (perfil 1) siempre puede. Devuelve la respuesta 403 o null.
+ */
+export function perfilPermitido(sesion: SesionUsuario, perfiles: number[]): NextResponse | null {
+  const perfil = Number(sesion.perfilActivo?.id_perfil);
+  if (perfil === 1 || perfiles.includes(perfil)) return null;
+  return NextResponse.json({ error: "Tu perfil no puede realizar esta acción." }, { status: 403 });
+}

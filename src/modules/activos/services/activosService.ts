@@ -7,12 +7,25 @@ export interface FiltrosActivos {
   estado?: string | null;
 }
 
-export async function listarActivos(idPerfil: number, filtros: FiltrosActivos) {
+/**
+ * Quién tiene qué equipo solo lo ven Gestión de Activos, Técnicos, Supervisores,
+ * Auditores y el Administrador; el Gestor de Área (jefe de área) solo ve los
+ * activos cuyos custodios son de su área. El resto ve el inventario sin custodio.
+ */
+const PERFILES_VEN_CUSTODIO = [1, 2, 4, 5, 6, 9];
+
+export async function listarActivos(idPerfil: number, filtros: FiltrosActivos, idUsuario?: number) {
   const { tipo, estado } = filtros;
 
   const condiciones: string[] = ["a.estado_registro = true"];
   const params: any[] = [];
   let paramIdx = 1;
+
+  if (idPerfil === 5) {
+    condiciones.push(`u.id_departamento_empresa IS NOT NULL AND u.id_departamento_empresa =
+      (SELECT ug.id_departamento_empresa FROM usuario ug WHERE ug.id_usuario = $${paramIdx++})`);
+    params.push(idUsuario ?? 0);
+  }
 
   if (tipo && tipo !== "TODOS") {
     condiciones.push(`a.tipo_activo = $${paramIdx++}`);
@@ -59,42 +72,18 @@ export async function listarActivos(idPerfil: number, filtros: FiltrosActivos) {
   `;
 
   const rows = await query<any>(sql, params);
+  if (!PERFILES_VEN_CUSTODIO.includes(idPerfil)) {
+    rows.forEach((r) => {
+      r.id_usuario_custodio = null;
+      r.custodio_nombre = null;
+    });
+  }
   if (idPerfil === 2) {
     rows.forEach((r) => {
       delete r.costo_compra;
       delete r.valor_residual;
     });
   }
-  return rows;
-}
-
-/**
- * Activos bajo custodia del usuario autenticado (página /activos/mis-activos).
- * No expone datos financieros: es una vista de autoservicio.
- */
-export async function listarMisActivos(idUsuario: number) {
-  const rows = await query<any>(
-    `SELECT
-       a.id_activo,
-       a.codigo_patrimonial,
-       a.numero_serie,
-       a.tipo_activo,
-       a.marca,
-       a.modelo,
-       dep.nombre AS departamento_nombre,
-       a.estado_activo,
-       a.fecha_adquisicion,
-       a.fecha_fin_garantia,
-       a.atributos,
-       m.nombre_modelo,
-       m.fabricante AS modelo_fabricante
-     FROM activo a
-     LEFT JOIN departamento_ti dep ON a.id_departamento = dep.id_departamento
-     LEFT JOIN modelo_activo m ON a.id_modelo = m.id_modelo
-     WHERE a.estado_registro = true AND a.id_usuario_custodio = $1
-     ORDER BY a.id_activo ASC`,
-    [idUsuario]
-  );
   return rows;
 }
 

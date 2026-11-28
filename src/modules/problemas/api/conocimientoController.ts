@@ -23,7 +23,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const { sesion, error } = sesionConCapacidad(CAPACIDADES.CONOCIMIENTO_VER);
+  const { sesion, error } = sesionConCapacidad(CAPACIDADES.PROBLEMAS_GESTIONAR);
   if (error) return error;
 
   try {

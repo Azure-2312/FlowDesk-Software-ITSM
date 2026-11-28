@@ -12,6 +12,7 @@ interface Activo {
   id_departamento: number | null;
   departamento_nombre: string | null;
   custodio_nombre: string | null;
+  acta_pendiente: string | null;
 }
 
 interface Simple {
@@ -39,8 +40,11 @@ export default function VistaAsignacionesActivos() {
       const json = await res.json();
       if (res.ok) {
         setActivos(Array.isArray(json?.activos) ? json.activos : []);
-        setUsuarios(Array.isArray(json?.usuarios) ? json.usuarios : []);
-        setDepartamentos(Array.isArray(json?.departamentos) ? json.departamentos : []);
+        // La API devuelve id_usuario / id_departamento
+        setUsuarios(Array.isArray(json?.usuarios) ? json.usuarios.map((u: any) => ({ id: u.id_usuario, nombre: u.nombre })) : []);
+        setDepartamentos(
+          Array.isArray(json?.departamentos) ? json.departamentos.map((d: any) => ({ id: d.id_departamento, nombre: d.nombre })) : []
+        );
       } else setError(json.error ?? "No se pudieron cargar las asignaciones.");
     } catch {
       setError("Error de conexión al cargar las asignaciones.");
@@ -103,7 +107,9 @@ export default function VistaAsignacionesActivos() {
     <div className="vista-contenedor">
       <div className="cabecera-pagina" style={{ marginBottom: 20 }}>
         <h1 className="titulo-pagina">Asignación, custodia y actas</h1>
-        <p className="descripcion-pagina">Asigna, transfiere y devuelve activos; cada movimiento queda con su acta y aceptación del custodio.</p>
+        <p className="descripcion-pagina">
+          Asigna, transfiere y devuelve activos. Cada entrega genera un acta que el custodio firma en físico; registra aquí la firma.
+        </p>
       </div>
 
       {ok && <p role="status" style={{ color: "#15803d", fontWeight: 600, marginBottom: 12 }}>{ok}</p>}
@@ -125,8 +131,16 @@ export default function VistaAsignacionesActivos() {
                   <div style={{ fontSize: 12, color: "#6b7280", marginTop: 3 }}>
                     Estado {a.estado_activo} · Custodio {a.custodio_nombre ?? "sin asignar"} · Área {a.departamento_nombre ?? "—"}
                   </div>
+                  {a.acta_pendiente && (
+                    <div style={{ fontSize: 12, color: "#b45309", marginTop: 3 }}>Acta de entrega pendiente de firma: {a.acta_pendiente}</div>
+                  )}
                 </div>
-                <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                <div style={{ display: "flex", gap: 8, alignItems: "flex-start", flexWrap: "wrap" }}>
+                  {a.acta_pendiente && (
+                    <button className="boton-primario" disabled={procesando === a.id_activo} onClick={() => mover(a.id_activo, "ACTA_FIRMADA")}>
+                      Registrar acta firmada
+                    </button>
+                  )}
                   <button className="boton-secundario"  onClick={() => setAbierto(abierto === a.id_activo ? null : a.id_activo)}>
                     {abierto === a.id_activo ? "Cerrar" : "Asignar / transferir"}
                   </button>
