@@ -7,6 +7,7 @@ import {
   procesarAccionCmdbRelaciones,
   publicarConfiguracionCmdbRelaciones,
 } from "@/modules/cmdb/services/cmdbRelacionesConfiguracionService";
+import { exigirPerfil } from "@/shared/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  // Solo el perfil dueño de esta configuración (y el Administrador) escribe
+  const negado = exigirPerfil([9]);
+  if (negado) return negado;
   try {
     const usuario = await getUsuarioSesionConfig(req);
     if (!usuario?.id_usuario) {
@@ -42,6 +46,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  // Solo el perfil dueño de esta configuración (y el Administrador) escribe
+  const negado = exigirPerfil([9]);
+  if (negado) return negado;
   try {
     const usuario = await getUsuarioSesionConfig(req);
     if (!usuario?.id_usuario) {
@@ -59,6 +66,9 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  // Solo el perfil dueño de esta configuración (y el Administrador) escribe
+  const negado = exigirPerfil([9]);
+  if (negado) return negado;
   try {
     const usuario = await getUsuarioSesionConfig(req);
     if (!usuario?.id_usuario) {

@@ -33,7 +33,9 @@ export async function POST(req: NextRequest) {
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
   if (!sesion) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CONOCIMIENTO_VER)) {
+  // Redactan artículos el Técnico y el Supervisor (y el Administrador); el
+  // Gestor de Problemas los crea desde un problema por su propia ruta.
+  if (!sesionTieneCapacidad(sesion, CAPACIDADES.CONOCIMIENTO_VER) || ![1, 2, 4].includes(Number(sesion.perfilActivo?.id_perfil))) {
     return NextResponse.json(
       { error: "Este perfil no puede publicar artículos de conocimiento." },
       { status: 403 }

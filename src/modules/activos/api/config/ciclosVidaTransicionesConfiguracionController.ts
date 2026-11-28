@@ -7,6 +7,7 @@ import {
   procesarAccionCiclosVidaTransiciones,
   publicarConfiguracionCiclosVidaTransiciones,
 } from "@/modules/activos/services/ciclosVidaTransicionesConfiguracionService";
+import { exigirPerfil } from "@/shared/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  // Solo el perfil dueño de esta configuración (y el Administrador) escribe
+  const negado = exigirPerfil([9]);
+  if (negado) return negado;
   try {
     const usuario = await getUsuarioSesionConfig(req);
     const body = await req.json();
@@ -40,6 +44,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  // Solo el perfil dueño de esta configuración (y el Administrador) escribe
+  const negado = exigirPerfil([9]);
+  if (negado) return negado;
   try {
     const usuario = await getUsuarioSesionConfig(req);
     const body = await req.json();
@@ -55,6 +62,9 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  // Solo el perfil dueño de esta configuración (y el Administrador) escribe
+  const negado = exigirPerfil([9]);
+  if (negado) return negado;
   try {
     const { searchParams } = new URL(req.url);
     const data = await descartarBorradorCiclosVidaTransiciones(searchParams.get("pestana") || "");

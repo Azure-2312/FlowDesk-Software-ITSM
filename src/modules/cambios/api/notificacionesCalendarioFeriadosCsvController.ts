@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
 import { exportarFeriadosCsv, importarFeriadosCsv } from "@/modules/cambios/services/notificacionesCalendarioFeriadosCsvService";
+import { exigirPerfil } from "@/shared/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  // Solo el perfil dueño de esta configuración (y el Administrador) escribe
+  const negado = exigirPerfil([8]);
+  if (negado) return negado;
   try {
     const body = await req.json();
     const { csv } = body;

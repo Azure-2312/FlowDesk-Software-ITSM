@@ -22,6 +22,9 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const { sesion, error } = sesionConCapacidad(CAPACIDADES.CAMBIOS_CONFIG_VER);
   if (error) return error;
+  // Proponen modelos estándar el Supervisor y el Gestor de Cambios
+  const negado = perfilPermitido(sesion, [4, 8]);
+  if (negado) return negado;
 
   try {
     const body = await req.json();

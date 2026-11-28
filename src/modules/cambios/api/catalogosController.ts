@@ -9,6 +9,7 @@ import {
   eliminarCatalogoCambio,
   listarCatalogosCambio,
 } from "@/modules/cambios/services/catalogosService";
+import { exigirPerfil } from "@/shared/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  // Solo el perfil dueño de esta configuración (y el Administrador) escribe
+  const negado = exigirPerfil([8]);
+  if (negado) return negado;
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 
@@ -56,6 +60,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  // Solo el perfil dueño de esta configuración (y el Administrador) escribe
+  const negado = exigirPerfil([8]);
+  if (negado) return negado;
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 
@@ -79,6 +86,9 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  // Solo el perfil dueño de esta configuración (y el Administrador) escribe
+  const negado = exigirPerfil([8]);
+  if (negado) return negado;
   const token = req.cookies.get(COOKIE_SESION)?.value;
   const sesion = token ? verificarTokenSesion(token) : null;
 

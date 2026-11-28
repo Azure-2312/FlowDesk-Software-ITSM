@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CAPACIDADES } from "@/shared/lib/capacidades";
 import { ErrorDominio, respuestaError } from "@/shared/lib/errores";
-import { sesionConCapacidad } from "@/shared/lib/api-auth";
+import { perfilPermitido, sesionConCapacidad } from "@/shared/lib/api-auth";
 import { listarAsignaciones, registrarMovimientoActivo } from "@/modules/activos/services/gestorActivosService";
 import { registrarActaFirmada } from "@/modules/activos/services/actasService";
 import {
@@ -32,8 +32,10 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // El Gestor registra que el custodio firmó el acta de entrega
+    // Solo el Gestor de Activos registra que el custodio firmó el acta de entrega
     if (String(body.accion || "").toUpperCase() === "ACTA_FIRMADA") {
+      const negado = perfilPermitido(sesion, [9]);
+      if (negado) return negado;
       return NextResponse.json(await registrarActaFirmada(Number(body.id_activo), sesion.id_usuario));
     }
 

@@ -112,3 +112,18 @@ export function perfilPermitido(sesion: SesionUsuario, perfiles: number[]): Next
   if (perfil === 1 || perfiles.includes(perfil)) return null;
   return NextResponse.json({ error: "Tu perfil no puede realizar esta acción." }, { status: 403 });
 }
+
+/**
+ * Guardia para escrituras que solo hacen ciertos perfiles (p. ej. publicar la
+ * configuración de un módulo). Lee la sesión de la cookie y devuelve la
+ * respuesta 401/403 lista para retornar, o null si puede continuar.
+ *
+ *   const negado = exigirPerfil([9]);
+ *   if (negado) return negado;
+ */
+export function exigirPerfil(perfiles: number[]): NextResponse | null {
+  const token = cookies().get(COOKIE_SESION)?.value;
+  const sesion = token ? verificarTokenSesion(token) : null;
+  if (!sesion) return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
+  return perfilPermitido(sesion, perfiles);
+}
