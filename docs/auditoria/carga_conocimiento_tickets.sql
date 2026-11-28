@@ -485,10 +485,15 @@ Durante los últimos días de cada mes el ERP financiero responde con lentitud (
       ELSE v_inicio + r1 * (v_ahora - v_inicio - INTERVAL '2 hours') END;
   -- La semana en curso tiene más movimiento: así las bandejas no quedan vacías
   UPDATE _tk SET t0 = v_ahora - r4 * INTERVAL '6 days' WHERE patron IS NULL AND r5 BETWEEN 0.5 AND 0.56;
+  -- El fin de semana se mueve HACIA ATRÁS (al viernes): hacia adelante podía
+  -- caer en el futuro si la carga se ejecuta un sábado o domingo.
   UPDATE _tk SET t0 = ((date_trunc('day', t0 AT TIME ZONE 'America/Lima') + INTERVAL '8 hours' + r3 * INTERVAL '10 hours')
-                       + CASE extract(isodow FROM t0 AT TIME ZONE 'America/Lima') WHEN 6 THEN INTERVAL '2 days' WHEN 7 THEN INTERVAL '1 day' ELSE INTERVAL '0' END)
+                       - CASE extract(isodow FROM t0 AT TIME ZONE 'America/Lima') WHEN 6 THEN INTERVAL '1 day' WHEN 7 THEN INTERVAL '2 days' ELSE INTERVAL '0' END)
                       AT TIME ZONE 'America/Lima';
+  -- Lo que aún quede en el futuro (hoy, más tarde) pasa al día hábil anterior
   UPDATE _tk SET t0 = t0 - INTERVAL '1 day' WHERE t0 > v_ahora - INTERVAL '30 minutes';
+  UPDATE _tk SET t0 = t0 - CASE extract(isodow FROM t0 AT TIME ZONE 'America/Lima')
+                             WHEN 6 THEN INTERVAL '1 day' WHEN 7 THEN INTERVAL '2 days' ELSE INTERVAL '0' END;
   UPDATE _tk SET t0 = t0 - INTERVAL '1 month' WHERE patron = 'FIN_MES' AND t0 > v_ahora - INTERVAL '30 minutes';
 
   -- 3b. Solicitudes que explican el inventario --------------------------------

@@ -76,7 +76,8 @@ export default function VistaProblemaDetalle() {
     titulo: problema.titulo,
     descripcion: problema.descripcion,
     id_ci: problema.id_ci_afectado ?? null,
-    ci_codigo: problema.ci_codigo ?? null,
+    // La API devuelve el código del CI como `codigo_ci`.
+    ci_codigo: problema.ci_codigo ?? (problema as { codigo_ci?: string | null }).codigo_ci ?? null,
     ci_nombre: problema.ci_nombre ?? null,
     problema_codigo: problema.codigo_problema,
     problema_titulo: problema.titulo,
